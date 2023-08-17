@@ -1,0 +1,31 @@
+name: On Branch Push (non-develop/main)
+
+on:
+  push:
+    branches:
+      - "**"
+      - "!develop"
+      - "!main"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup-runner:
+    name: Setup Runner
+    runs-on: self-hosted
+    uses: ./.github/workflows/setup_runner.yml
+
+  check:
+    runs-on: self-hosted
+    name: Run unit test suite
+    needs: setup-runner
+    uses: ./.github/workflows/unit_test.yml
+
+  report:
+    runs-on: self-hosted
+    needs: check
+    if: always()
+    uses: ./.github/workflows/upload_artefacts.yml
