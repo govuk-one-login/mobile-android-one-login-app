@@ -1,4 +1,4 @@
-package com.example.onelogin
+package uk.gov.onelogin
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.onelogin
+package uk.gov.onelogin
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -9,7 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
-import com.example.onelogin.databinding.ActivityMainBinding
+import uk.gov.onelogin.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

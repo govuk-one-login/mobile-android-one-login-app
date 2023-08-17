@@ -49,9 +49,20 @@ dependencies {
         "androidx.appcompat:appcompat:1.6.1",
         "com.google.android.material:material:1.9.0",
         "androidx.constraintlayout:constraintlayout:2.1.4",
-        "androidx.navigation:navigation-fragment-ktx:2.7.0",
-        "androidx.navigation:navigation-ui-ktx:2.7.0",
     ).forEach(::implementation)
+
+    listOf(
+        "androidx.navigation:navigation-fragment-ktx:2.6.0",
+        "androidx.navigation:navigation-ui-ktx:2.6.0",
+    ).forEach { dep: String ->
+        implementation(dep) {
+            because(
+                "Bumping to 2.7.0 requires compile SDK 34, which the " +
+                    "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
+                    "is at the time of this writing, not released as a stable version yet."
+            )
+        }
+    }
 
     testImplementation("junit:junit:4.13.2")
 }
