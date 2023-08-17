@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: Gradle check
     steps:
       - name: Check

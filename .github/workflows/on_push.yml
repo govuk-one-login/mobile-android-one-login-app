@@ -15,7 +15,7 @@ concurrency:
 jobs:
   setup-runner:
     name: Setup Runner
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - id: setup-runner-step
         uses: ./.github/workflows/setup_runner.yml

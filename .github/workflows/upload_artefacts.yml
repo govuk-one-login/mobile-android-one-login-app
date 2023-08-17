@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   report:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: Generate and Upload build artefacts
     needs: test
     steps:
