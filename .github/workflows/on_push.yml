@@ -21,7 +21,7 @@ jobs:
         uses: ./.github/workflows/setup_runner.yml
 
   check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     name: Run unit test suite
     needs: setup-runner
     steps:
@@ -29,7 +29,7 @@ jobs:
         uses: ./.github/workflows/unit_test.yml
 
   report:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: check
     if: always()
     steps:
