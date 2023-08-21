@@ -28,7 +28,9 @@ jobs:
     name: Setup Runner
     needs: checkout-code
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/setup_runner.yml
+    steps:
+      - name: Setup GitHub Runner workflow
+        uses: ./.github/workflows/setup_runner.yml
 
   check:
     runs-on: ubuntu-latest
