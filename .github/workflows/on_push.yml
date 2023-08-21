@@ -36,9 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Run unit test suite
     needs: setup-runner
-    uses: ./.github/workflows/unit_test.yml
+    steps:
+      - name: Run gradle unit tests
+        uses: ./.github/workflows/unit_test.yml
 
   report:
     runs-on: ubuntu-latest
     needs: check
-    uses: ./.github/workflows/upload_artefacts.yml
+    steps:
+      - name: Upload artefacts
+        uses: ./.github/workflows/upload_artefacts.yml
