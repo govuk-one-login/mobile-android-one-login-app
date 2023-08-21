@@ -29,6 +29,13 @@ jobs:
     needs: checkout-code
     runs-on: ubuntu-latest
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Setup GitHub Runner workflow
         uses: ./.github/workflows/setup_runner.yml
 
@@ -37,6 +44,13 @@ jobs:
     name: Run unit test suite
     needs: setup-runner
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Run gradle unit tests
         uses: ./.github/workflows/unit_test.yml
 
@@ -44,5 +58,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: check
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Upload artefacts
         uses: ./.github/workflows/upload_artefacts.yml
