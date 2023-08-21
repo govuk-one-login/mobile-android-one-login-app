@@ -17,7 +17,15 @@ jobs:
     name: Setup Runner
     runs-on: ubuntu-latest
     steps:
-      - id: setup-runner-step
+      - name: Checkout code
+        id: checkoutCode
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+
+      - name: Setup Environment
+        id: setup-runner-step
         uses: ./.github/workflows/setup_runner.yml
 
   check:
