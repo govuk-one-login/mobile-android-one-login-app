@@ -13,32 +13,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  checkout-code:
+    uses: actions/checkout@v3
+    with:
+      lfs: 'true'
+      fetch-depth: 0
+
   setup-runner:
     name: Setup Runner
+    needs: checkout-code
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        id: checkoutCode
-        uses: actions/checkout@v3
-        with:
-          lfs: 'true'
-          fetch-depth: 0
-
-      - name: Setup Environment
-        id: setup-runner-step
-        uses: ./.github/workflows/setup_runner.yml
+    uses: ./.github/workflows/setup_runner.yml
 
   check:
     runs-on: ubuntu-latest
     name: Run unit test suite
     needs: setup-runner
-    steps:
-      - id: check-step
-        uses: ./.github/workflows/unit_test.yml
+    uses: ./.github/workflows/unit_test.yml
 
   report:
     runs-on: ubuntu-latest
     needs: check
-    steps:
-      - id: report-step
-        uses: ./.github/workflows/upload_artefacts.yml
+    uses: ./.github/workflows/upload_artefacts.yml
