@@ -31,7 +31,6 @@ jobs:
   report:
     runs-on: ubuntu-latest
     needs: check
-    if: always()
     steps:
       - id: report-step
         uses: ./.github/workflows/upload_artefacts.yml

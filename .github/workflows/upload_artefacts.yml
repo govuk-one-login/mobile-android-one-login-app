@@ -10,19 +10,17 @@ concurrency:
 
 jobs:
   report:
-    runs-on: ubuntu-latest
     name: Generate and Upload build artefacts
-    needs: test
     steps:
       - name: Bundle build reports
-        if: always()
+        id: bundleReports
         run: |
           zip -9 -r reports.zip **/build/reports
 
       - name: Upload build reports
         id: uploadBuildReports
         uses: actions/upload-artifact@v3
-        if: always()
+        needs: bundleReports
         with:
           name: build-reports
           retention-days: 14

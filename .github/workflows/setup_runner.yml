@@ -10,7 +10,6 @@ concurrency:
 
 jobs:
   environment-setup:
-    runs-on: ubuntu-latest
     name: Setup Runner
     steps:
       - name: Enable hardware acceleration
@@ -27,12 +26,15 @@ jobs:
           echo "JAVA_HOME=$(/usr/libexec/java_home -v 17)" >> $GITHUB_ENV
 
       - name: Checkout code
+        id: checkoutCode
         uses: actions/checkout@v3
         with:
           lfs: 'true'
           fetch-depth: 0
 
       - name: Setup Gradle
+        id: setupGradle
+        needs: checkoutCode
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
@@ -40,6 +42,7 @@ jobs:
           gradle-version: "wrapper"
 
       - name: Setup Android SDK
+        needs: setupGradle
         uses: android-actions/setup-android@v2
 
       - name: Store GitHub actions ENV from AWS SecretManager
