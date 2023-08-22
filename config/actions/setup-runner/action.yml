@@ -16,6 +16,11 @@ runs:
       shell: bash
       run: echo "/usr/local/bin" >> $GITHUB_PATH
 
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'oracle'
+        java-version: ${{ inputs.JDK-Version }}
+
     - name: Add JAVA_HOME globally
       env:
         JDK_VERSION: ${{ inputs.JDK-Version }}
