@@ -28,7 +28,7 @@ jobs:
         uses: ./config/actions/setup-runner
 
       - name: Run gradle unit tests
-        uses: ./config/actions/gradle-check.yml
+        uses: ./config/actions/gradle-check
 
       - name: Bundle reports folder
-        uses: ./config/actions/bundle-reports.yml
+        uses: ./config/actions/bundle-reports
