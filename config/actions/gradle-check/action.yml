@@ -1,0 +1,12 @@
+name: 'Run gradle check'
+description: 'Run the "check" command for a Gradle project'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Gradle Check
+      shell: bash
+      run: |
+        ./gradlew check --stacktrace
+      env:
+        CI: 'true'

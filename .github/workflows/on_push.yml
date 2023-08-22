@@ -27,31 +27,8 @@ jobs:
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
 
-  check:
-    runs-on: ubuntu-latest
-    name: Run unit test suite
-    needs: onPushJob
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@v3
-        with:
-          lfs: 'true'
-          fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref_name }}
-
       - name: Run gradle unit tests
-        uses: ./.github/workflows/unit_test.yml
+        uses: ./config/actions/gradle-check.yml
 
-#  report:
-#    runs-on: ubuntu-latest
-#    needs: check
-#    steps:
-#      - name: Run checkout github action
-#        uses: actions/checkout@v3
-#        with:
-#          lfs: 'true'
-#          fetch-depth: 0
-#          ref: ${{ github.head_ref || github.ref_name }}
-#
-#      - name: Upload artefacts
-#        uses: ./.github/workflows/upload_artefacts.yml
+      - name: Bundle reports folder
+        uses: ./config/actions/bundle-reports.yml
