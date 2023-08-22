@@ -5,8 +5,12 @@ plugins {
 }
 
 rootProject.ext {
+    this.set("configDir", "${rootProject.rootDir}/config")
     this.set("appId", "uk.gov.onelogin")
     this.set("compileSdkVersion", 33)
     this.set("minSdkVersion", 29)
     this.set("targetSdkVersion", 33)
 }
+
+apply(plugin = "lifecycle-base")
+apply(from = file(rootProject.ext["configDir"] as String + "/styles/tasks.gradle.kts"))
