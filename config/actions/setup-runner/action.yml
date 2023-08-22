@@ -12,13 +12,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Enable hardware acceleration
-      shell: bash
-      run: |
-        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-        sudo udevadm control --reload-rules
-        sudo udevadm trigger --name-match=kvm
-
     - name: Add path globally
       shell: bash
       run: echo "/usr/local/bin" >> $GITHUB_PATH
@@ -28,6 +21,10 @@ runs:
         JDK_VERSION: ${{ inputs.JDK-Version }}
       run: |
         echo "JAVA_HOME=$(/usr/libexec/java_home -v ${JDK_VERSION})" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Install KVM hardware acceleration
+      run: yes | sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils; kvm-ok
       shell: bash
 
     - name: Setup Gradle
@@ -40,6 +37,10 @@ runs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
+
+    - name: Verify hardware acceleration
+      run: emulator -accel-check
+      shell: bash
 
     - name: Store GitHub actions ENV from AWS SecretManager
       id: secrets
