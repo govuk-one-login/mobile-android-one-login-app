@@ -13,20 +13,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  checkout-code:
-    name: Checkout code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@v3
-        with:
-          lfs: 'true'
-          fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref_name }}
-
-  setup-runner:
-    name: Setup Runner
-    needs: checkout-code
+  onPushJob:
+    name: Verify code base when pushed
     runs-on: ubuntu-latest
     steps:
       - name: Run checkout github action
@@ -37,7 +25,7 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup GitHub Runner workflow
-        uses: ./.github/workflows/setup_runner.yml
+        uses: ./config/actions/setup-runner
 
   check:
     runs-on: ubuntu-latest

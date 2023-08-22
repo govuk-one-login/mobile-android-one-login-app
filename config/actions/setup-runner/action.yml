@@ -1,0 +1,63 @@
+name: 'Setup Runner'
+description: 'Set up GitHub Runner environment for building the Android OneLogin app'
+inputs:
+  JDK-Version:  # id of input
+    description: 'The Java Development Kit (JDK) version to use'
+    required: true
+    default: '17'
+  Gradle-Version:
+    description: 'The version of gradle for the "gradle/gradle-build-action" step.'
+    required: true
+    default: 'wrapper'
+outputs:
+  random-number:
+    description: "Random number"
+    value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.who-to-greet }}.
+      shell: bash
+    - id: random-number-generator
+      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
+      shell: bash
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - run: goodbye.sh
+      shell: bash
+
+    - name: Enable hardware acceleration
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Add path globally
+      shell: bash
+      run: echo "/usr/local/bin" >> $GITHUB_PATH
+
+    - name: Add JAVA_HOME globally
+      env:
+        JDK_VERSION: ${{ inputs.JDK-Version }}
+      run: |
+        echo "JAVA_HOME=$(/usr/libexec/java_home -v ${JDK_VERSION})" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Setup Gradle
+      id: setupGradle
+      uses: gradle/gradle-build-action@v2
+      env:
+        CI: 'true'
+      with:
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Store GitHub actions ENV from AWS SecretManager
+      id: secrets
+      uses: say8425/aws-secrets-manager-actions@v2
+      with:
+        AWS_DEFAULT_REGION: 'eu-west-2'
+        SECRET_NAME: 'di-ipv-dca-mob-android/github-actions-env'
