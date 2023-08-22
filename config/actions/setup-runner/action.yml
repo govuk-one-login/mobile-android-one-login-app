@@ -24,7 +24,7 @@ runs:
       shell: bash
 
     - name: Install KVM hardware acceleration
-      run: yes | sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+      run: sudo apt-get install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
       shell: bash
 
     - name: Setup Gradle
