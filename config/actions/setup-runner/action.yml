@@ -30,7 +30,7 @@ runs:
 
     - name: Install snap dependencies
       run: |
-        snap install vale --edge
+        sudo snap install vale --edge
       shell: bash
 
     - name: Install Dependencies
