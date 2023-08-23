@@ -33,13 +33,28 @@ runs:
         sudo snap install vale --edge
       shell: bash
 
-    - name: Install Dependencies
+    - name: Install KVM hardware acceleration Dependencies
       run: |
         sudo apt-get install \
           bridge-utils \
+          cpu-checker \
           libvirt-clients \
           libvirt-daemon-system \
           qemu-kvm
+      shell: bash
+
+    - name: Add runner user to KVM groups
+      run: |
+        sudo adduser $(id -un) libvirt
+        sudo adduser $(id -un) kvm
+        rmmod kvm
+        modprobe -a kvm
+      shell: bash
+
+    - name: Confirm KVM hardware acceleration is installed
+      run: |
+        egrep -c '(vmx|svm)' /proc/cpuinfo
+        kvm-ok
       shell: bash
 
     - name: Setup Gradle
