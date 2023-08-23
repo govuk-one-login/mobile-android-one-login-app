@@ -38,7 +38,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           arch: x86_64
-          profile: pixel_7_pro
+          profile: pixel_5
           disable-linux-hw-accel: false
           script: |
             ./gradlew connectedDebugAndroidTest --continue --stacktrace
