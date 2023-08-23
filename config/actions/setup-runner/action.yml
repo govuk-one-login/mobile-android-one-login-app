@@ -48,13 +48,13 @@ runs:
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
 #        modprobe --remove kvm
-#        modprobe --all kvm
+        modprobe --all kvm
       shell: bash
 
     - name: Confirm KVM hardware acceleration is installed
       run: |
-        egrep --count '(vmx|svm)' /proc/cpuinfo
         kvm-ok
+        egrep --count '(vmx|svm)' /proc/cpuinfo
       shell: bash
 
     - name: Setup Gradle
