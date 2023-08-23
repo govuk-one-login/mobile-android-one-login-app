@@ -52,7 +52,7 @@ runs:
 
     - name: Modify KVM groups / rules
       run: |
-        sudo udevadm control --reload-rules;
+        sudo udevadm control --reload-rules
         sudo udevadm trigger --name-match=kvm
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
