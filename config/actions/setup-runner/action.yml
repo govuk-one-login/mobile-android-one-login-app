@@ -47,8 +47,8 @@ runs:
       run: |
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
-        modprobe --remove kvm
-        modprobe --all kvm
+#        modprobe --remove kvm
+#        modprobe --all kvm
       shell: bash
 
     - name: Confirm KVM hardware acceleration is installed
