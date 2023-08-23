@@ -28,14 +28,18 @@ runs:
         echo "JAVA_HOME=$(/usr/libexec/java_home -v ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
 
+    - name: Install snap dependencies
+      run: |
+        snap install vale --edge
+      shell: bash
+
     - name: Install Dependencies
       run: |
         sudo apt-get install \
           bridge-utils \
           libvirt-clients \
           libvirt-daemon-system \
-          qemu-kvm \
-          vale
+          qemu-kvm
       shell: bash
 
     - name: Setup Gradle
