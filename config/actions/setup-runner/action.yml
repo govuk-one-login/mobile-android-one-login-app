@@ -25,7 +25,7 @@ runs:
       env:
         JDK_VERSION: ${{ inputs.JDK-Version }}
       run: |
-        echo "JAVA_HOME=$(/usr/libexec/java_home -v ${JDK_VERSION})" >> $GITHUB_ENV
+        echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
 
     - name: Install snap dependencies
@@ -47,13 +47,13 @@ runs:
       run: |
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
-        rmmod kvm
-        modprobe -a kvm
+        modprobe --remove kvm
+        modprobe --all kvm
       shell: bash
 
     - name: Confirm KVM hardware acceleration is installed
       run: |
-        egrep -c '(vmx|svm)' /proc/cpuinfo
+        egrep --count '(vmx|svm)' /proc/cpuinfo
         kvm-ok
       shell: bash
 
