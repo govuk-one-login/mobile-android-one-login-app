@@ -18,15 +18,15 @@ jobs:
     runs-on: macos-latest
 #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     steps:
-      - name: Deteect OS
-        uses: ./config/actions/detect-os
-
       - name: Run checkout github action
         uses: actions/checkout@v3
         with:
           lfs: 'true'
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Detect OS
+        uses: ./config/actions/detect-os
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
