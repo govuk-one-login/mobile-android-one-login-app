@@ -32,6 +32,13 @@ runs:
       run: |
         sudo snap install vale --edge
       shell: bash
+      if: ${{ $OS_IN_USE == "Linux" }}
+
+    - name: Install brew dependencies
+      run: |
+        brew install vale
+      shell: bash
+      if: ${{ $OS_IN_USE == "Mac" }}
 
     - name: Install KVM hardware acceleration Dependencies
       run: |
@@ -42,6 +49,7 @@ runs:
           libvirt-daemon-system \
           qemu-kvm
       shell: bash
+      if: ${{ $OS_IN_USE == "Linux" }}
 
 
 # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
@@ -49,6 +57,7 @@ runs:
       run:
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
       shell: bash
+      if: ${{ $OS_IN_USE == "Linux" }}
 
     - name: Modify KVM groups / rules
       run: |
@@ -57,12 +66,14 @@ runs:
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
       shell: bash
+      if: ${{ $OS_IN_USE == "Linux" }}
 
     - name: Confirm KVM hardware acceleration is installed
       run: |
         kvm-ok
         egrep --count '(vmx|svm)' /proc/cpuinfo
       shell: bash
+      if: ${{ $OS_IN_USE == "Linux" }}
 
     - name: Setup Gradle
       id: setupGradle
