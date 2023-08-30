@@ -13,7 +13,9 @@ runs:
           Darwin*)    machine=Mac;;
           *)          machine="UNKNOWN:${unameS}"
         esac
-        echo "OS_IN_USE=$machine" >> $GITHUB_ENV
         unameM="$(uname -m)"
+        echo "OS_IN_USE: $machine"
+        echo "OS_IN_USE=$machine" >> $GITHUB_ENV
+        echo "ARCH_IN_USE: $unameM"
         echo "ARCH_IN_USE=$unameM" >> $GITHUB_ENV
       shell: bash
