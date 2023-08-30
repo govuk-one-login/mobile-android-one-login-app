@@ -1,0 +1,52 @@
+name: On Pull Request (develop)
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  onPullRequestJob:
+    name: Verify code base when pull request is published/updated
+    runs-on: macos-latest
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Detect OS
+        uses: ./config/actions/detect-os
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+      - name: Run gradle unit tests
+        uses: ./config/actions/gradle-check
+
+      - name: Run gradle instrumentation tests
+        uses: ./config/actions/gradle-connected-test
+        with:
+          architecture: 'arm64-v8a'
+          device-profile: 'pixel_xl'
+        if: env.ARCH_IN_USE == 'arm64'
+
+      - name: Run gradle instrumentation tests
+        uses: ./config/actions/gradle-connected-test
+        if: env.ARCH_IN_USE != 'arm64'
+
+      - name: Bundle reports folder
+        uses: ./config/actions/bundle-reports
