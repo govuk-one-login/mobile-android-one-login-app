@@ -34,18 +34,5 @@ jobs:
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
 
-      - name: Instrumentation tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: playstore
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          arch: x86_64
-          profile: pixel_5
-          disable-linux-hw-accel: false
-          script: |
-            ./gradlew connectedDebugAndroidTest --continue --stacktrace
-
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports

@@ -1,0 +1,31 @@
+name: 'Run gradle check'
+description: 'Run the "check" command for a Gradle project'
+
+inputs:
+  device-profile:
+    description: 'AVD device profile to use'
+    required: false
+    default: 'pixel_5'
+  locale:
+    description: 'Locale used within the emulator'
+    required: false
+    default: 'en-GB'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run gradle connected test
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        arch: x86_64
+        avd-name: ${{ inputs.device-profile }}
+        disable-animations: true
+        disable-linux-hw-accel: false
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        profile: ${{ inputs.device-profile }}
+        target: playstore
+        pre-emulator-launch-script: |
+          emulator -avd ${{ inputs.device-profile }} -change-locale ${{ inputs.locale }}
+        script: |
+          ./gradlew connectedDebugAndroidTest --continue --stacktrace
