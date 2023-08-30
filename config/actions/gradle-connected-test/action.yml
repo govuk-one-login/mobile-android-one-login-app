@@ -26,10 +26,8 @@ runs:
         avd-name: ${{ inputs.device-profile }}
         disable-animations: true
         disable-linux-hw-accel: false
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -change-locale ${{ inputs.locale }}
         profile: ${{ inputs.device-profile }}
         target: playstore
-        pre-emulator-launch-script: |
-          emulator -avd ${{ inputs.device-profile }} -change-locale ${{ inputs.locale }}
         script: |
           ./gradlew connectedDebugAndroidTest --continue --stacktrace
