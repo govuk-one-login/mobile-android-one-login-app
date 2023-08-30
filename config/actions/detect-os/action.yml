@@ -7,11 +7,12 @@ runs:
     - name: Detect OS
       id: detectOs
       run: |
-        unameOut="$(uname -s)"
-        case "${unameOut}" in
+        unameS="$(uname -s)"
+        case "${unameS}" in
           Linux*)     machine=Linux;;
           Darwin*)    machine=Mac;;
-          *)          machine="UNKNOWN:${unameOut}"
+          *)          machine="UNKNOWN:${unameS}"
         esac
-        echo "OS_IN_USE=$machine" >> $GITHUB_ENV
+        unameM="$(uname -m)"
+        echo "ARCH_IN_USE=$unameM" >> $GITHUB_ENV
       shell: bash
