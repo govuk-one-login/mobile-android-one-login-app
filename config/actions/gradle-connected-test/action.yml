@@ -2,6 +2,10 @@ name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
 inputs:
+  architecture:
+    description: 'AVD architecture to use'
+    required: false
+    default: 'x86_64'
   device-profile:
     description: 'AVD device profile to use'
     required: false
@@ -18,7 +22,7 @@ runs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        arch: x86_64
+        arch: ${{ inputs.architecture }}
         avd-name: ${{ inputs.device-profile }}
         disable-animations: true
         disable-linux-hw-accel: false
