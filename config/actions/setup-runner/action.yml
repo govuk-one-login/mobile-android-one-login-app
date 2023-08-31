@@ -51,7 +51,6 @@ runs:
       shell: bash
       if: env.OS_IN_USE == 'Linux'
 
-
 # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
     - name: Configure KVM hardware acceleration
       run:

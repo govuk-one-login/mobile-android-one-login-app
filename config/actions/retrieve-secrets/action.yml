@@ -1,0 +1,19 @@
+name: 'Run gradle check'
+description: 'Run the "check" command for a Gradle project'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Retrieve GitHub actions ENV from AWS SecretManager
+      id: secrets
+      uses: say8425/aws-secrets-manager-actions@v2
+      with:
+        AWS_DEFAULT_REGION: "eu-west-2"
+        SECRET_NAME: "di-mobile-android-onelogin-app/github-actions-env"
+
+    - name: Retrieve Google Play Service ENV from AWS SecretManager
+      id: googlePlayServiceSecrets
+      uses: say8425/aws-secrets-manager-actions@v2
+      with:
+        AWS_DEFAULT_REGION: "eu-west-2"
+        SECRET_NAME: "di-mobile-android-onelogin-app/google-play-service-account-json"
