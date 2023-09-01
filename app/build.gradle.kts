@@ -36,6 +36,46 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    signingConfigs {
+        create("release") {
+            val tmpFilePath = System.getProperty("user.home") + "/work/_temp/keystore/"
+            val allFilesFromDir = File(tmpFilePath).listFiles()
+            val configDir = rootProject.extra["configDir"] as String
+
+            storeFile = file("$configDir/keystore.jks")
+
+            if (allFilesFromDir != null) {
+                val keystoreFile = allFilesFromDir.first()
+                keystoreFile.renameTo(storeFile)
+            }
+
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+    flavorDimensions += "env"
+    productFlavors {
+        create("dev") {
+            dimension = "env"
+            applicationIdSuffix = ".dev"
+        }
+        create("build") {
+            dimension = "env"
+            applicationIdSuffix = ".build"
+        }
+        create("staging") {
+            dimension = "env"
+            applicationIdSuffix = ".staging"
+        }
+        create("integration") {
+            dimension = "env"
+            applicationIdSuffix = ".integration"
+        }
+        create("production") {
+            dimension = "env"
+        }
+    }
 }
 
 dependencies {
@@ -58,8 +98,8 @@ dependencies {
         implementation(dep) {
             because(
                 "Bumping to 2.7.0 requires compile SDK 34, which the " +
-                    "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
-                    "is at the time of this writing, not released as a stable version yet."
+                        "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
+                        "is at the time of this writing, not released as a stable version yet."
             )
         }
     }
