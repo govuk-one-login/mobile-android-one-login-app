@@ -14,6 +14,12 @@ inputs:
     description: 'Locale used within the emulator'
     required: false
     default: 'en-GB'
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
 
 runs:
   using: "composite"
@@ -29,5 +35,5 @@ runs:
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -change-locale ${{ inputs.locale }}
         profile: ${{ inputs.device-profile }}
         script: |
-          ./gradlew connectedDebugAndroidTest --continue --stacktrace
+          ./gradlew connectedDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace
         target: playstore

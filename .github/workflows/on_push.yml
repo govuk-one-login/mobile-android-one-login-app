@@ -31,8 +31,21 @@ jobs:
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
 
+      - name: Get latest tag
+        id: latest-tag
+        uses: ./config/actions/get-latest-tag
+        with:
+          pattern: 'v*'
+
+      - name: Generate version code
+        id: version-code
+        uses: ./config/actions/generate-version-code
+
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports

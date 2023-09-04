@@ -1,12 +1,24 @@
 name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
+inputs:
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+
 runs:
   using: "composite"
   steps:
     - name: Run Gradle Check
       shell: bash
       run: |
-        ./gradlew check --stacktrace
+        ./gradlew \
+          check \
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME \
+          --stacktrace
       env:
         CI: 'true'

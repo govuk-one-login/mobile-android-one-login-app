@@ -115,7 +115,7 @@ fun getVersionCode(): Int {
     val code = if (project.hasProperty("versionCode")) {
         (project.property("versionCode") as String).toInt()
     } else {
-        -1
+        1
     }
     println("VersionCode is set to $code")
     return code
