@@ -1,0 +1,42 @@
+name: 'Get the latest annotated tag'
+description: 'Gets the latest tag on a branch'
+
+inputs:
+  abb-paths:
+    description: 'Paths to build flavor abb'
+  package-name:
+    description: 'App package name'
+    required: false
+    default: 'uk.gov.onelogin'
+  version-name:
+    description: 'Version name'
+    required: true
+
+outputs:
+  current-tag:
+    description: 'Current tag'
+    value: ${{ steps.get-latest-tag.outputs.current-tag }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Git tag bundles
+      run: |
+        BUNDLES=($(echo $INPUT_ABB_PATHS | tr ";" "\n"))
+        
+        for BUNDLE in ${FLAVORS[@]}
+        do
+          IFS=- read -r FLAVOR ABB_PATH <<< $BUNDLE
+        
+          case $FLAVOR in
+            production*) 
+              git tag -a "${INPUT_VERSION_NAME}" -m "Publish ${INPUT_VERSION_NAME} - uk.gov.documentchecking - internal"
+              git push origin "${INPUT_VERSION_NAME}"
+              ;&
+            *)
+              git tag -a "${FLAVOR}-${INPUT_VERSION_NAME}" -m "Publish ${INPUT_VERSION_NAME} - ${INPUT_PACKAGE_NAME}.${FLAVOR} - internal"
+              git push origin "${FLAVOR}-${INPUT_VERSION_NAME}"
+              ;;
+          esac
+        done
+      shell: bash
