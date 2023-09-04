@@ -11,8 +11,8 @@ android {
         applicationId = rootProject.ext["appId"] as String
         minSdk = rootProject.ext["minSdkVersion"] as Int
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = getVersionCode()
+        versionName = getVersionName()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -109,4 +109,24 @@ dependencies {
     }
 
     testImplementation("junit:junit:4.13.2")
+}
+
+fun getVersionCode(): Int {
+    val code = if (project.hasProperty("versionCode")) {
+        (project.property("versionCode") as String).toInt()
+    } else {
+        -1
+    }
+    println("VersionCode is set to $code")
+    return code
+}
+
+fun getVersionName(): String {
+    val name = if (project.hasProperty("versionName")) {
+        project.property("versionName") as String
+    } else {
+        "1.0"
+    }
+    println("VersionName is set to $name")
+    return name
 }
