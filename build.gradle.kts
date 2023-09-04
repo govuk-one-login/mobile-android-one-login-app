@@ -10,6 +10,7 @@ rootProject.ext {
     this.set("compileSdkVersion", 33)
     this.set("minSdkVersion", 29)
     this.set("targetSdkVersion", 33)
+    this.set("configDir", "${rootProject.rootDir}/config")
 }
 
 apply(plugin = "lifecycle-base")
