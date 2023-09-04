@@ -18,7 +18,7 @@ runs:
     - name: Get latest tagged version
       id: get-latest-tag
       run: |
-        echo "Pattern = $PATTERN"
+        echo "PATTERN = $PATTERN"
         git pull --tags
         RAW_TAG=$(git describe --match $PATTERN --abbrev=0 --tags || echo "${PATTERN%?}0.0.0")
         echo "RAW_TAG = $RAW_TAG"
