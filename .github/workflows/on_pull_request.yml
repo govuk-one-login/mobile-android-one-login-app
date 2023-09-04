@@ -1,9 +1,11 @@
-name: On Pull Request (develop)
+name: On Pull Request (develop/release/main)
 
 on:
   pull_request:
     branches:
       - develop
+      - main
+      - release/*
     types:
       - opened
       - reopened
