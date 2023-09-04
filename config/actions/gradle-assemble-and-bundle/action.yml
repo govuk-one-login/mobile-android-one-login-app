@@ -1,0 +1,49 @@
+name: 'Run gradle assemble and bundle (release build type)'
+description: 'Run the "assembleRelease" and "bundleRelease" commands for a Gradle project'
+
+inputs:
+  flavors:
+    description: 'App flavors to return paths for, comma separated'
+    required: false
+    default: 'production'
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+
+outputs:
+  abb-paths:
+    description: 'Paths to build flavor abb'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Bundle release
+      id: gradleAssembleAndBundle
+      run: |
+        ./gradlew \
+          assembleRelease \
+          bundleRelease \
+          dokkaGfmMultiModule \
+          dokkaHtmlMultiModule \
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME
+        
+        FLAVORS=($(echo $INPUT_FLAVORS | tr "," "\n"))
+        OUTPUT=""
+        
+        for FLAVOR in "${FLAVORS[@]}"
+        do
+          OUTPUT+="$FLAVOR:app/build/outputs/bundle/${FLAVOR}Release/app-${FLAVOR}-release.aab;"
+        done
+        
+        echo "abb-paths=${OUTPUT}" >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        CI: true
+        READID_API_KEY: ${{ env.READID_API_KEY }}
+        SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_KEY_ALIAS }}
+        SIGNING_KEY_PASSWORD: ${{ env.KEYSTORE_KEY_PASSWORD }}
+        SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
