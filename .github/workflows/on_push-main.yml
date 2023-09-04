@@ -1,0 +1,81 @@
+name: On Branch Push (main)
+
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  onPushDevelopJob:
+    name: Verify code base when pushed
+    runs-on: macos-latest
+    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Detect OS
+        uses: ./config/actions/detect-os
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+      - name: Retrieve secrets
+        uses: ./config/actions/retrieve-secrets
+        if: ${{ !env.ACT }}
+
+      - name: Get latest tag
+        id: latest-tag
+        uses: ./config/actions/get-latest-tag
+        with:
+          pattern: 'v*'
+
+      - name: Determine semver bump
+        id: semver-bump
+        uses: ./config/actions/determine-semver-bump
+
+      - name: Bump version
+        id: bump-version
+        uses: ./config/actions/bump-version
+        with:
+          bump: ${{ steps.semver-bump.outputs.bump }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
+      - name: Generate version code
+        id: version-code
+        uses: ./config/actions/generate-version-code
+
+      - name: Bundle release
+        id: bundle-release
+        uses: ./config/actions/gradle-assemble-and-bundle
+        with:
+          flavors: 'production'
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.bump-version.outputs.version-name }}
+
+      - name: Update fastlane
+        uses: ./config/actions/update-fastlane
+
+      - name: Upload to play store
+        uses: ./config/actions/upload-to-play-store
+        with:
+          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
+
+      - name: Git tag bundles
+        uses: ./config/actions/tag-bundles
+        with:
+          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
+          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
+
+      - name: Clean workspace
+        if: always()
+        uses: ./config/actions/clean-workspace
