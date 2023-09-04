@@ -30,3 +30,6 @@ runs:
           bundle exec fastlane supply --package_name "${PACKAGE_NAME}" --json_key_data "${json_key_data}" --aab ${ABB_PATH} --track internal
         done
       shell: bash
+      env:
+        INPUT_ABB_PATHS: ${{ inputs.abb-paths }}
+        INPUT_PACKAGE_NAME: ${{ inputs.package-name }}

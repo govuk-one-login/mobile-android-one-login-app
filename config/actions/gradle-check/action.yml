@@ -22,3 +22,5 @@ runs:
           --stacktrace
       env:
         CI: 'true'
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}

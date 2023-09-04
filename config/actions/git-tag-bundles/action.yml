@@ -40,3 +40,7 @@ runs:
           esac
         done
       shell: bash
+      env:
+        INPUT_ABB_PATHS: ${{ inputs.app-paths }}
+        INPUT_PACKAGE_NAME: ${{ inputs.package-name }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}

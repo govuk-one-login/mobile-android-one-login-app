@@ -43,6 +43,8 @@ runs:
       shell: bash
       env:
         CI: true
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
         READID_API_KEY: ${{ env.READID_API_KEY }}
         SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ env.KEYSTORE_KEY_PASSWORD }}

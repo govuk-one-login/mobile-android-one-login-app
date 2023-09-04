@@ -26,6 +26,9 @@ runs:
   steps:
     - name: Run gradle connected test
       uses: reactivecircus/android-emulator-runner@v2
+      env:
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
       with:
         api-level: 29
         arch: ${{ inputs.architecture }}
