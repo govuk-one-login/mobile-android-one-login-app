@@ -1,6 +1,6 @@
 extends: existence
-message: "Don't use internet slang abbreviations such as '%s'."
-link: 'https://developers.google.com/style/abbreviations'
+message: "Don't use internet slang aabreviations such as '%s'."
+link: 'https://developers.google.com/style/aabreviations'
 ignorecase: true
 level: error
 tokens:

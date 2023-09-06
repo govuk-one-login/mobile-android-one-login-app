@@ -5,12 +5,11 @@ plugins {
 }
 
 rootProject.ext {
-    this.set("configDir", "${rootProject.rootDir}/config")
     this.set("appId", "uk.gov.onelogin")
     this.set("compileSdkVersion", 33)
+    this.set("configDir", "${rootProject.rootDir}/config")
     this.set("minSdkVersion", 29)
     this.set("targetSdkVersion", 33)
-    this.set("configDir", "${rootProject.rootDir}/config")
 }
 
 apply(plugin = "lifecycle-base")

@@ -1,8 +1,8 @@
 name: 'Upload to play store'
-description: 'Uploads the supplied abbs to the Google Play Store'
+description: 'Uploads the supplied aabs to the Google Play Store'
 
 inputs:
-  abb-paths:
+  aab-paths:
     description: 'App bundle paths to upload, JSON object'
     required: false
     default: 'production'
@@ -16,20 +16,20 @@ runs:
   steps:
     - name: Upload to play store
       run: |
-        BUNDLES=($(echo $INPUT_ABB_PATHS | tr ";" "\n"))
+        BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
         
         for BUNDLE in ${FLAVORS[@]}
         do
-          IFS=- read -r FLAVOR ABB_PATH <<< $BUNDLE
+          IFS=- read -r FLAVOR AAB_PATH <<< $BUNDLE
         
           case $FLAVOR in
             production*) PACKAGE_NAME=$INPUT_PACKAGE_NAME;;
             *) PACKAGE_NAME=${INPUT_PACKAGE_NAME}.${$FLAVOR};;
           esac
         
-          bundle exec fastlane supply --package_name "${PACKAGE_NAME}" --json_key_data "${json_key_data}" --aab ${ABB_PATH} --track internal
+          bundle exec fastlane supply --package_name "${PACKAGE_NAME}" --json_key_data "${json_key_data}" --aab ${AAB_PATH} --track internal
         done
       shell: bash
       env:
-        INPUT_ABB_PATHS: ${{ inputs.abb-paths }}
+        INPUT_AAB_PATHS: ${{ inputs.aab-paths }}
         INPUT_PACKAGE_NAME: ${{ inputs.package-name }}

@@ -2,8 +2,8 @@ name: 'Get the latest annotated tag'
 description: 'Gets the latest tag on a branch'
 
 inputs:
-  abb-paths:
-    description: 'Paths to build flavor abb'
+  aab-paths:
+    description: 'Paths to build flavor aab'
   package-name:
     description: 'App package name'
     required: false
@@ -22,11 +22,11 @@ runs:
   steps:
     - name: Git tag bundles
       run: |
-        BUNDLES=($(echo $INPUT_ABB_PATHS | tr ";" "\n"))
+        BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
         
         for BUNDLE in ${FLAVORS[@]}
         do
-          IFS=- read -r FLAVOR ABB_PATH <<< $BUNDLE
+          IFS=- read -r FLAVOR AAB_PATH <<< $BUNDLE
         
           case $FLAVOR in
             production*) 
@@ -41,6 +41,6 @@ runs:
         done
       shell: bash
       env:
-        INPUT_ABB_PATHS: ${{ inputs.app-paths }}
+        INPUT_AAB_PATHS: ${{ inputs.app-paths }}
         INPUT_PACKAGE_NAME: ${{ inputs.package-name }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}

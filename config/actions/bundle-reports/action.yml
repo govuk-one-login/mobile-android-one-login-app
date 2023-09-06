@@ -1,5 +1,5 @@
-name: 'Run gradle check'
-description: 'Run the "check" command for a Gradle project'
+name: 'Bundle reports'
+description: 'Zip and upload build reports'
 
 runs:
   using: "composite"

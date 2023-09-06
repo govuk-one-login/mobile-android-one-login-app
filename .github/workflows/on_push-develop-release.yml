@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "develop"
-      - "release/*"
   workflow_dispatch:
 
 concurrency:
@@ -32,7 +31,6 @@ jobs:
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
-        if: ${{ !env.ACT }}
 
       - name: Get latest tag
         id: latest-tag
@@ -48,9 +46,9 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          flavors: 'build,dev,staging'
+          flavors: 'build,dev,staging,integration'
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
 
       - name: Update fastlane
         uses: ./config/actions/update-fastlane
@@ -58,13 +56,13 @@ jobs:
       - name: Upload to play store
         uses: ./config/actions/upload-to-play-store
         with:
-          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
 
       - name: Git tag bundles
         uses: ./config/actions/tag-bundles
         with:
-          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
-          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+          version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
 
       - name: Clean workspace
         if: always()

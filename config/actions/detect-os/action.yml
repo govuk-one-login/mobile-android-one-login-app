@@ -1,5 +1,11 @@
 name: 'Detect OS'
-description: 'Determines wether the current runner is OSx or *nix'
+description: 'Determines whether the current runner is OSx or *nix'
+
+outputs:
+  arch-in-use:
+    description: 'The architecture currently in use'
+  os-in-use:
+    description: 'The OS currently in use'
 
 runs:
   using: "composite"
@@ -15,7 +21,7 @@ runs:
         esac
         unameM="$(uname -m)"
         echo "OS_IN_USE: $machine"
-        echo "OS_IN_USE=$machine" >> $GITHUB_ENV
+        echo "os-in-use=$machine" >> $GITHUB_OUTPUT
         echo "ARCH_IN_USE: $unameM"
-        echo "ARCH_IN_USE=$unameM" >> $GITHUB_ENV
+        echo "arch-in-use=$unameM" >> $GITHUB_OUTPUT
       shell: bash

@@ -23,6 +23,7 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Detect OS
+        id: detect-os
         uses: ./config/actions/detect-os
 
       - name: Setup GitHub Runner workflow
@@ -36,11 +37,11 @@ jobs:
         with:
           architecture: 'arm64-v8a'
           device-profile: 'pixel_xl'
-        if: env.ARCH_IN_USE == 'arm64'
+        if: ${{ steps.detect-os.outputs.arch-in-use }} == 'arm64'
 
       - name: Run gradle instrumentation tests - en
         uses: ./config/actions/gradle-connected-test
-        if: env.ARCH_IN_USE != 'arm64'
+        if: ${{ steps.detect-os.outputs.arch-in-use }} != 'arm64'
 
       - name: Run gradle instrumentation tests - cy
         uses: ./config/actions/gradle-connected-test
@@ -48,13 +49,13 @@ jobs:
           architecture: 'arm64-v8a'
           device-profile: 'pixel_xl'
           locale: cy-GB
-        if: env.ARCH_IN_USE == 'arm64'
+        if: ${{ steps.detect-os.outputs.arch-in-use }} == 'arm64'
 
       - name: Run gradle instrumentation tests - cy
         uses: ./config/actions/gradle-connected-test
         with:
           locale: cy-GB
-        if: env.ARCH_IN_USE != 'arm64'
+        if: ${{ steps.detect-os.outputs.arch-in-use }} != 'arm64'
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports

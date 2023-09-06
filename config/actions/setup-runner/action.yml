@@ -1,13 +1,15 @@
 name: 'Setup Runner'
 description: 'Set up GitHub Runner environment for building the Android OneLogin app'
 inputs:
-  JDK-Version:  # id of input
+  os-in-use:
+    description: 'The current OS in use'
+  jdk-version:
     description: 'The Java Development Kit (JDK) version to use'
-    required: true
+    required: false
     default: '17'
-  Gradle-Version:
+  gradle-version:
     description: 'The version of gradle for the "gradle/gradle-build-action" step.'
-    required: true
+    required: false
     default: 'wrapper'
 runs:
   using: "composite"
@@ -19,11 +21,11 @@ runs:
     - uses: actions/setup-java@v3
       with:
         distribution: 'oracle'
-        java-version: ${{ inputs.JDK-Version }}
+        java-version: ${{ inputs.jdk-version }}
 
     - name: Add JAVA_HOME globally
       env:
-        JDK_VERSION: ${{ inputs.JDK-Version }}
+        JDK_VERSION: ${{ inputs.jdk-version }}
       run: |
         echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
@@ -32,13 +34,13 @@ runs:
       run: |
         sudo snap install vale --edge
       shell: bash
-      if: env.OS_IN_USE == 'Linux'
+      if: inputs.os-in-use == 'Linux'
 
     - name: Install brew dependencies
       run: |
         brew install vale
       shell: bash
-      if: env.OS_IN_USE == 'Mac'
+      if: inputs.os-in-use == 'Mac'
 
     - name: Install KVM hardware acceleration Dependencies
       run: |
@@ -49,14 +51,14 @@ runs:
           libvirt-daemon-system \
           qemu-kvm
       shell: bash
-      if: env.OS_IN_USE == 'Linux'
+      if: inputs.os-in-use == 'Linux'
 
 # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
     - name: Configure KVM hardware acceleration
       run:
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
       shell: bash
-      if: env.OS_IN_USE == 'Linux'
+      if: inputs.os-in-use == 'Linux'
 
     - name: Modify KVM groups / rules
       run: |
@@ -65,14 +67,14 @@ runs:
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
       shell: bash
-      if: env.OS_IN_USE == 'Linux'
+      if: inputs.os-in-use == 'Linux'
 
     - name: Confirm KVM hardware acceleration is installed
       run: |
         kvm-ok
         egrep --count '(vmx|svm)' /proc/cpuinfo
       shell: bash
-      if: env.OS_IN_USE == 'Linux'
+      if: inputs.os-in-use == 'Linux'
 
     - name: Setup Gradle
       id: setupGradle

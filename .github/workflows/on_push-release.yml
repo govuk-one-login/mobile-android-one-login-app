@@ -1,9 +1,9 @@
-name: On Branch Push (main)
+name: On Branch Push (release)
 
 on:
   push:
     branches:
-      - "main"
+      - "releasae/**"
   workflow_dispatch:
 
 concurrency:
@@ -24,6 +24,7 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Detect OS
+        id: detect-os
         uses: ./config/actions/detect-os
 
       - name: Setup GitHub Runner workflow
@@ -31,7 +32,6 @@ jobs:
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
-        if: ${{ !env.ACT }}
 
       - name: Get latest tag
         id: latest-tag
@@ -68,12 +68,12 @@ jobs:
       - name: Upload to play store
         uses: ./config/actions/upload-to-play-store
         with:
-          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
 
       - name: Git tag bundles
         uses: ./config/actions/tag-bundles
         with:
-          abb-paths: ${{ steps.bundle-release.outputs.abb-paths }}
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
 
       - name: Clean workspace

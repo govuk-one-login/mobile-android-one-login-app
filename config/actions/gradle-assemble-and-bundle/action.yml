@@ -14,8 +14,8 @@ inputs:
     required: true
 
 outputs:
-  abb-paths:
-    description: 'Paths to build flavor abb'
+  aab-paths:
+    description: 'Paths to build flavor aab'
 
 runs:
   using: "composite"
@@ -39,7 +39,7 @@ runs:
           OUTPUT+="$FLAVOR:app/build/outputs/bundle/${FLAVOR}Release/app-${FLAVOR}-release.aab;"
         done
         
-        echo "abb-paths=${OUTPUT}" >> $GITHUB_OUTPUT
+        echo "aab-paths=${OUTPUT}" >> $GITHUB_OUTPUT
       shell: bash
       env:
         CI: true
