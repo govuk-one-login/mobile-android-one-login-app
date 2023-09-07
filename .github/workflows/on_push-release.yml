@@ -11,10 +11,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  onPushDevelopJob:
+  prepareForRelease:
     name: Verify code base when pushed
     runs-on: macos-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    outputs:
+      version: ${{ steps.next-version.outputs.next-version }}
     steps:
       - name: Run checkout github action
         uses: actions/checkout@v3
@@ -39,16 +41,54 @@ jobs:
         with:
           pattern: 'v*'
 
-      - name: Determine semver bump
-        id: semver-bump
-        uses: ./config/actions/determine-semver-bump
+      - name: Get next version from branch
+        id: next-version
+        uses: ./config/actions/get-next-version-from-branch
 
-      - name: Bump version
-        id: bump-version
-        uses: ./config/actions/bump-version
+      - name: Get latest tag for release
+        id: latest-tag-for-release
+        uses: ./config/actions/get-latest-tag
         with:
-          bump: ${{ steps.semver-bump.outputs.bump }}
-          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+          pattern: ${{ steps.next-version.outputs.next-version-pattern }}
+
+      - name: Ensure version is correct
+        id: version-number
+        uses: ./config/actions/ensure-version-is-correct
+        env:
+          CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
+          NEXT_VERSION: ${{ steps.next-version.outputs.next-version }}
+
+      - name: Display version jump
+        run: |
+          echo "Moving from $CURRENT_VERSION to $NEXT_VERSION"
+        shell: bash
+        env:
+          CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
+          NEXT_VERSION: ${{ steps.version-number.outputs.version }}
+
+  buildAndPublishRelease:
+    name: Verify code base when pushed
+    needs: prepareForRelease
+    runs-on: macos-latest
+    environment: release
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Detect OS
+        id: detect-os
+        uses: ./config/actions/detect-os
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+      - name: Retrieve secrets
+        uses: ./config/actions/retrieve-secrets
 
       - name: Generate version code
         id: version-code
@@ -58,9 +98,9 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          flavors: 'production'
+          flavors: 'staging,production'
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.bump-version.outputs.version-name }}
+          version-name: ${{ needs.prepareForRelease.outputs.version }}
 
       - name: Update fastlane
         uses: ./config/actions/update-fastlane
@@ -74,7 +114,7 @@ jobs:
         uses: ./config/actions/tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ needs.prepareForRelease.outputs.version }}
 
       - name: Clean workspace
         if: always()
