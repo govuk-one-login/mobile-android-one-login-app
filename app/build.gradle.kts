@@ -112,8 +112,8 @@ dependencies {
 }
 
 fun getVersionCode(): Int {
-    val code = if (project.hasProperty("versionCode")) {
-        (project.property("versionCode") as String).toInt()
+    val code = if (rootProject.hasProperty("versionCode")) {
+        (rootProject.property("versionCode") as String).toInt()
     } else {
         1
     }
@@ -122,8 +122,8 @@ fun getVersionCode(): Int {
 }
 
 fun getVersionName(): String {
-    val name = if (project.hasProperty("versionName")) {
-        project.property("versionName") as String
+    val name = if (rootProject.hasProperty("versionName")) {
+        rootProject.property("versionName") as String
     } else {
         "1.0"
     }
