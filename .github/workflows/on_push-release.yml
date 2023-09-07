@@ -16,7 +16,7 @@ jobs:
     runs-on: macos-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     outputs:
-      version: ${{ steps.next-version.outputs.next-version }}
+      version: ${{ steps.version-number.outputs.version }}
     steps:
       - name: Run checkout github action
         uses: actions/checkout@v3
@@ -44,12 +44,6 @@ jobs:
       - name: Get next version from branch
         id: next-version
         uses: ./config/actions/get-next-version-from-branch
-
-      - name: Get latest tag for release
-        id: latest-tag-for-release
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: ${{ steps.next-version.outputs.next-version-pattern }}
 
       - name: Ensure version is correct
         id: version-number

@@ -37,7 +37,7 @@ runs:
         then
           echo "version=$NEXT" >> $GITHUB_OUTPUT
         else if [[ "${NEXT_MAJOR}.${NEXT_MINOR}" == "${CURRENT_MAJOR}.${CURRENT_MINOR}" ]]
-          NEXT_PATCH=$(( NEXT_PATH + 1 ))
+          NEXT_PATCH=$(( CURRENT_PATCH + 1 ))
           echo "version=${NEXT_MAJOR}.${NEXT_MINOR}.${NEXT_PATCH}" >> $GITHUB_OUTPUT
         else
           echo "Next version ($NEXT) is behind current ($CURRENT)"
