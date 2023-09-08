@@ -9,11 +9,11 @@ runs:
       uses: say8425/aws-secrets-manager-actions@v2
       with:
         AWS_DEFAULT_REGION: "eu-west-2"
-        SECRET_NAME: "di-mobile-android-onelogin-app/github-actions-env"
+        SECRET_NAME: "di-ipv-dca-mob-android/github-actions-env"
 
     - name: Retrieve Google Play Service ENV from AWS SecretManager
       id: googlePlayServiceSecrets
       uses: say8425/aws-secrets-manager-actions@v2
       with:
         AWS_DEFAULT_REGION: "eu-west-2"
-        SECRET_NAME: "di-ipv-dca-mob-android/google-play-service-account-json"
+        SECRET_NAME: "di-mobile-android-onelogin-app/github-actions-env"
