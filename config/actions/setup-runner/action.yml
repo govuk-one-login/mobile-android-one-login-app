@@ -14,6 +14,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Debug
+      run: |
+        echo "os-in-use - $OS_IN_USE"
+      shell: bash
+      env:
+        OS_IN_USE: ${{ inputs.os-in-use }}
+
     - name: Add path globally
       shell: bash
       run: echo "/usr/local/bin" >> $GITHUB_PATH
