@@ -1,0 +1,49 @@
+name: 'Ensure version number is correct'
+description: 'Ensures the <major>.<minor> version is greater than the current and bumps the <patch> if necessary'
+
+inputs:
+  current-version:
+    description: 'Current version number'
+    required: true
+  next-version:
+    description: 'Next version number'
+    required: true
+
+outputs:
+  version:
+    description: 'Finalised version number after bumping'
+    value: ${{ steps.get-version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get latest tagged version
+      id: get-latest-tag
+      run: |
+        if [[ $CURRENT == v* ]]
+        then
+          CURRENT=${CURRENT:1}
+        fi
+        
+        if [[ $NEXT == v* ]]
+        then
+          NEXT=${NEXT:1}
+        fi
+        
+        IFS=. read -r CURRENT_MAJOR CURRENT_MINOR CURRENT_PATCH <<< $CURRENT
+        IFS=. read -r NEXT_MAJOR NEXT_MINOR NEXT_PATCH <<< $NEXT
+        
+        if [[ "$NEXT" > "$CURRENT" ]]
+        then
+          echo "version=$NEXT" >> $GITHUB_OUTPUT
+        else if [[ "${NEXT_MAJOR}.${NEXT_MINOR}" == "${CURRENT_MAJOR}.${CURRENT_MINOR}" ]]
+          NEXT_PATCH=$(( CURRENT_PATCH + 1 ))
+          echo "version=${NEXT_MAJOR}.${NEXT_MINOR}.${NEXT_PATCH}" >> $GITHUB_OUTPUT
+        else
+          echo "Next version ($NEXT) is behind current ($CURRENT)"
+          exit 1
+        fi
+      shell: bash
+      env:
+        CURRENT: ${{ inputs.current-version }}
+        NEXT: ${{ inputs.next-version }}

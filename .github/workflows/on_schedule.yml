@@ -1,0 +1,61 @@
+name: On Schedule (default branch)
+
+on:
+  schedule:
+    - cron: 0 4 * * *
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  onScheduleJob:
+    name: Verify code base when pushed
+    runs-on: macos-latest
+#    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@v3
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Detect Arch
+        id: detect-arch
+        uses: ./config/actions/detect-arch
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+      - name: Run gradle unit tests
+        uses: ./config/actions/gradle-check
+
+      - name: Run gradle instrumentation tests - en
+        uses: ./config/actions/gradle-connected-test
+        with:
+          architecture: 'arm64-v8a'
+          device-profile: 'pixel_xl'
+        if: ${{ steps.detect-arch.outputs.arch-in-use }} == 'arm64'
+
+      - name: Run gradle instrumentation tests - en
+        uses: ./config/actions/gradle-connected-test
+        if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
+
+      - name: Run gradle instrumentation tests - cy
+        uses: ./config/actions/gradle-connected-test
+        with:
+          architecture: 'arm64-v8a'
+          device-profile: 'pixel_xl'
+          locale: cy-GB
+        if: ${{ steps.detect-arch.outputs.arch-in-use }} == 'arm64'
+
+      - name: Run gradle instrumentation tests - cy
+        uses: ./config/actions/gradle-connected-test
+        with:
+          locale: cy-GB
+        if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
+
+      - name: Bundle reports folder
+        uses: ./config/actions/bundle-reports

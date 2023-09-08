@@ -1,0 +1,35 @@
+name: 'Upload to play store'
+description: 'Uploads the supplied aabs to the Google Play Store'
+
+inputs:
+  aab-paths:
+    description: 'App bundle paths to upload, JSON object'
+    required: false
+    default: 'production'
+  package-name:
+    description: 'App package name'
+    required: false
+    default: 'uk.gov.onelogin'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload to play store
+      run: |
+        BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
+        
+        for BUNDLE in ${FLAVORS[@]}
+        do
+          IFS=- read -r FLAVOR AAB_PATH <<< $BUNDLE
+        
+          case $FLAVOR in
+            production*) PACKAGE_NAME=$INPUT_PACKAGE_NAME;;
+            *) PACKAGE_NAME=${INPUT_PACKAGE_NAME}.${$FLAVOR};;
+          esac
+        
+          bundle exec fastlane supply --package_name "${PACKAGE_NAME}" --json_key_data "${json_key_data}" --aab ${AAB_PATH} --track internal
+        done
+      shell: bash
+      env:
+        INPUT_AAB_PATHS: ${{ inputs.aab-paths }}
+        INPUT_PACKAGE_NAME: ${{ inputs.package-name }}
