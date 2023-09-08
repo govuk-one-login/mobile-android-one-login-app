@@ -1,8 +1,6 @@
 name: 'Setup Runner'
 description: 'Set up GitHub Runner environment for building the Android OneLogin app'
 inputs:
-  os-in-use:
-    description: 'The current OS in use'
   jdk-version:
     description: 'The Java Development Kit (JDK) version to use'
     required: false
@@ -19,7 +17,7 @@ runs:
         echo "os-in-use - $OS_IN_USE"
       shell: bash
       env:
-        OS_IN_USE: ${{ inputs.os-in-use }}
+        OS_IN_USE: ${{ runner.os == 'macOS' }}
 
     - name: Add path globally
       shell: bash
@@ -41,13 +39,13 @@ runs:
       run: |
         sudo snap install vale --edge
       shell: bash
-      if: inputs.os-in-use == 'Linux'
+      if: runner.os == 'Linux'
 
     - name: Install brew dependencies
       run: |
         brew install vale
       shell: bash
-      if: inputs.os-in-use == 'Mac'
+      if: runner.os == 'macOS'
 
     - name: Install KVM hardware acceleration Dependencies
       run: |
@@ -58,14 +56,14 @@ runs:
           libvirt-daemon-system \
           qemu-kvm
       shell: bash
-      if: inputs.os-in-use == 'Linux'
+      if: runner.os == 'Linux'
 
 # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
     - name: Configure KVM hardware acceleration
       run:
         echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
       shell: bash
-      if: inputs.os-in-use == 'Linux'
+      if: runner.os == 'Linux'
 
     - name: Modify KVM groups / rules
       run: |
@@ -74,14 +72,14 @@ runs:
         sudo adduser $(id -un) libvirt
         sudo adduser $(id -un) kvm
       shell: bash
-      if: inputs.os-in-use == 'Linux'
+      if: runner.os == 'Linux'
 
     - name: Confirm KVM hardware acceleration is installed
       run: |
         kvm-ok
         egrep --count '(vmx|svm)' /proc/cpuinfo
       shell: bash
-      if: inputs.os-in-use == 'Linux'
+      if: runner.os == 'Linux'
 
     - name: Setup Gradle
       id: setupGradle

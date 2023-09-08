@@ -23,14 +23,12 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref_name }}
 
-      - name: Detect OS
-        is: detect-os
-        uses: ./config/actions/detect-os
+      - name: Detect Arch
+        is: detect-arch
+        uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
-        with:
-          os-in-use: ${{ steps.detect-os.outputs.os-in-use }}
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
