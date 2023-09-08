@@ -13,11 +13,13 @@ inputs:
 outputs:
   version-name:
     description: 'Version name'
+    value: ${{ steps.bump-version.outputs.version-name }}
 
 runs:
   using: "composite"
   steps:
     - name: Bump version
+      id: bump-version
       uses: actions/github-script@v6
       env:
         INPUT_BUMP: ${{ inputs.bump }}

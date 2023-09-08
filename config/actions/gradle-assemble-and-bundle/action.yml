@@ -16,12 +16,13 @@ inputs:
 outputs:
   aab-paths:
     description: 'Paths to build flavor aab'
+    value: ${{ steps.gradle-assemble-and-bundle.outputs.aab-paths }}
 
 runs:
   using: "composite"
   steps:
     - name: Bundle release
-      id: gradleAssembleAndBundle
+      id: gradle-assemble-and-bundle
       run: |
         ./gradlew \
           assembleRelease \

@@ -4,6 +4,7 @@ description: 'Determines which semver value to bump (major, minor, patch)'
 outputs:
   bump:
     description: 'Semver value to bump (major, minor, patch)'
+    value: ${{ steps.determine-semver-bump.outputs.bump }}
 
 runs:
   using: "composite"

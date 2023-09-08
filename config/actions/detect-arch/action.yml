@@ -4,6 +4,7 @@ description: 'Determines the current runner architecture'
 outputs:
   arch-in-use:
     description: 'The architecture currently in use'
+    value: ${{ steps.detect-arch.outputs.arc-in-use }}
 
 runs:
   using: "composite"
