@@ -62,7 +62,7 @@ jobs:
         run: |
           echo "Arch is not arm64 - $ARCH_IN_USE"
         if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
-        with:
+        env:
           ARCH_IN_USE: ${{ steps.detect-arch.outputs.arch-in-use }}
 
       - name: Run gradle instrumentation tests
