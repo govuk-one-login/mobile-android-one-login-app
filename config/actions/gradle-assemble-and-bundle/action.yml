@@ -26,8 +26,6 @@ runs:
         ./gradlew \
           assembleRelease \
           bundleRelease \
-          dokkaGfmMultiModule \
-          dokkaHtmlMultiModule \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME
         

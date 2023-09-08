@@ -1,4 +1,4 @@
-name: On Branch Push (develop/release)
+name: On Branch Push (develop)
 
 on:
   push:
