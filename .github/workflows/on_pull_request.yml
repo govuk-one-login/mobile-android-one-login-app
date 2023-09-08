@@ -36,6 +36,8 @@ jobs:
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
+        with:
+          os-in-use: ${{ steps.detect-os.outputs.os-in-use }}
 
       - name: Get latest tag
         id: latest-tag

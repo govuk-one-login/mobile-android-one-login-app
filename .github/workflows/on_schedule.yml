@@ -28,6 +28,8 @@ jobs:
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
+        with:
+          os-in-use: ${{ steps.detect-os.outputs.os-in-use }}
 
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
