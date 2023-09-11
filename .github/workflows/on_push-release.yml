@@ -83,6 +83,8 @@ jobs:
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
+        with:
+          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
       - name: Generate version code
         id: version-code
