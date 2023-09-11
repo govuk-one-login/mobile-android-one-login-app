@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1-node16
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         aws-region: eu-west-2
         role-to-assume: ${{ inputs.actions-role-arn }}
