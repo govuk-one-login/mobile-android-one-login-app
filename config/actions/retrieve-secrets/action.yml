@@ -1,6 +1,11 @@
 name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
+inputs:
+  actions-role-arn:
+    description: "AWS role ARN to assume"
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -8,7 +13,7 @@ runs:
       uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-region: eu-west-2
-        role-to-assume: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
+        role-to-assume: ${{ inputs.actions-role-arn }}
         role-duration-seconds: 1200
         role-skip-session-tagging: true
 
