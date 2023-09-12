@@ -51,10 +51,14 @@ jobs:
           architecture: 'arm64-v8a'
           device-profile: 'pixel_xl'
         if: ${{ steps.detect-arch.outputs.arch-in-use }} == 'arm64'
+        env:
+          ARCH_IN_USE: ${{ steps.detect-arch.outputs.arch-in-use }}
 
       - name: Run gradle instrumentation tests - en
         uses: ./config/actions/gradle-connected-test
         if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
+        env:
+          ARCH_IN_USE: ${{ steps.detect-arch.outputs.arch-in-use }}
 
       - name: Run gradle instrumentation tests - cy
         uses: ./config/actions/gradle-connected-test
