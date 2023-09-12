@@ -17,9 +17,9 @@ runs:
         role-duration-seconds: 1200
         role-skip-session-tagging: true
 
-    - name: Retrieve Google Play Service ENV from AWS SecretManager
-      id: googlePlayServiceSecrets
-      uses: say8425/aws-secrets-manager-actions@v2
-      with:
-        AWS_DEFAULT_REGION: "eu-west-2"
-        SECRET_NAME: "di-mobile-android-onelogin-app/github-actions-env"
+#    - name: Retrieve Google Play Service ENV from AWS SecretManager
+#      id: googlePlayServiceSecrets
+#      uses: say8425/aws-secrets-manager-actions@v2
+#      with:
+#        AWS_DEFAULT_REGION: "eu-west-2"
+#        SECRET_NAME: "di-mobile-android-onelogin-app/github-actions-env"
