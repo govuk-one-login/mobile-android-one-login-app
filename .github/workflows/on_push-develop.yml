@@ -38,38 +38,38 @@ jobs:
         with:
           actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
-      - name: Get latest tag
-        id: latest-tag
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: 'v*'
+      # - name: Get latest tag
+      #   id: latest-tag
+      #   uses: ./config/actions/get-latest-tag
+      #   with:
+      #     pattern: 'v*'
 
-      - name: Generate version code
-        id: version-code
-        uses: ./config/actions/generate-version-code
+      # - name: Generate version code
+      #   id: version-code
+      #   uses: ./config/actions/generate-version-code
 
-      - name: Bundle release
-        id: bundle-release
-        uses: ./config/actions/gradle-assemble-and-bundle
-        with:
-          flavors: 'build,dev,staging,integration'
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
+      # - name: Bundle release
+      #   id: bundle-release
+      #   uses: ./config/actions/gradle-assemble-and-bundle
+      #   with:
+      #     flavors: 'build,dev,staging,integration'
+      #     version-code: ${{ steps.version-code.outputs.version-code }}
+      #     version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
 
-      - name: Update fastlane
-        uses: ./config/actions/update-fastlane
+      # - name: Update fastlane
+      #   uses: ./config/actions/update-fastlane
 
-      - name: Upload to play store
-        uses: ./config/actions/upload-to-play-store
-        with:
-          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+      # - name: Upload to play store
+      #   uses: ./config/actions/upload-to-play-store
+      #   with:
+      #     aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
 
-      - name: Git tag bundles
-        uses: ./config/actions/tag-bundles
-        with:
-          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
+      # - name: Git tag bundles
+      #   uses: ./config/actions/tag-bundles
+      #   with:
+      #     aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+      #     version-name: "${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}"
 
-      - name: Clean workspace
-        if: always()
-        uses: ./config/actions/clean-workspace
+      # - name: Clean workspace
+      #   if: always()
+      #   uses: ./config/actions/clean-workspace
