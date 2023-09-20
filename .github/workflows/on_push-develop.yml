@@ -3,7 +3,7 @@ name: On Branch Push (develop)
 on:
   push:
     branches:
-      - "develop"
+      - "DCMAW-6745"
   workflow_dispatch:
 
 concurrency:
