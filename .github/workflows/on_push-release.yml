@@ -107,6 +107,7 @@ jobs:
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 
       - name: Clean workspace
