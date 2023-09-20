@@ -12,38 +12,36 @@ inputs:
 outputs:
   version:
     description: 'Finalised version number after bumping'
-    value: ${{ steps.get-version.outputs.version }}
+    value: ${{ steps.get-latest-tag.outputs.version }}
 
 runs:
   using: "composite"
   steps:
     - name: Get latest tagged version
       id: get-latest-tag
-      run: |
-        if [[ $CURRENT == v* ]]
-        then
-          CURRENT=${CURRENT:1}
-        fi
-        
-        if [[ $NEXT == v* ]]
-        then
-          NEXT=${NEXT:1}
-        fi
-        
-        IFS=. read -r CURRENT_MAJOR CURRENT_MINOR CURRENT_PATCH <<< $CURRENT
-        IFS=. read -r NEXT_MAJOR NEXT_MINOR NEXT_PATCH <<< $NEXT
-        
-        if [[ "$NEXT" > "$CURRENT" ]]
-        then
-          echo "version=$NEXT" >> $GITHUB_OUTPUT
-        else if [[ "${NEXT_MAJOR}.${NEXT_MINOR}" == "${CURRENT_MAJOR}.${CURRENT_MINOR}" ]]
-          NEXT_PATCH=$(( CURRENT_PATCH + 1 ))
-          echo "version=${NEXT_MAJOR}.${NEXT_MINOR}.${NEXT_PATCH}" >> $GITHUB_OUTPUT
-        else
-          echo "Next version ($NEXT) is behind current ($CURRENT)"
-          exit 1
-        fi
-      shell: bash
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const current = process.env.CURRENT
+          const next = process.env.NEXT
+          const [cMaj, cMin, cPat] = current.split(".")
+          const [nMaj, nMin, nPat] = next.split(".")
+          
+          if (
+            nMaj > cMaj ||
+            (nMaj == cMaj && nMin > cMin) ||
+            (nMaj == cMaj && nMin == cMin && nPat > cPat)
+          ) {
+            console.log(`Setting version to ${next}`)
+            core.setOutput('version', next)
+          } else if (nMaj == cMaj && nMin == cMin && nPat == cPat) {
+            const newVersion = [nMaj, nMin, parseInt(nPat) + 1].join(".")
+            console.log(`Setting version to ${newVersion} - Patch bump`)
+            core.setOutput('version', newVersion)
+          } else {
+            console.error(`Next version (${next}) is behind current (${current})`)
+            process.exit(1)
+          }
       env:
         CURRENT: ${{ inputs.current-version }}
         NEXT: ${{ inputs.next-version }}

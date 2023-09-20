@@ -1,10 +1,11 @@
-name: On Branch Push (non-develop/main)
+name: On Branch Push (non-develop/release/main)
 
 on:
   push:
     branches:
       - "**"
       - "!develop"
+      - "!release/**"
       - "!main"
   workflow_dispatch:
 
@@ -19,11 +20,10 @@ jobs:
 #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     steps:
       - name: Run checkout github action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
           fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Detect Arch
         id: detect-arch
@@ -42,11 +42,18 @@ jobs:
         id: version-code
         uses: ./config/actions/generate-version-code
 
+      - name: Generate version name
+        id: version-name
+        uses: ./config/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-version }}-${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.version-name.outputs.version-name }}
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
