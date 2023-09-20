@@ -19,7 +19,7 @@ runs:
       id: get-latest-tag
       run: |
         echo "PATTERN = $PATTERN"
-        git pull --tags
+        git fetch --tags
         RAW_TAG=$(git describe --match "$PATTERN" --abbrev=0 --tags || echo "${PATTERN%?}0.0.0")
         echo "RAW_TAG = $RAW_TAG"
         TAG=$(echo $RAW_TAG | cut -c ${#PATTERN}-${#RAW_TAG})
