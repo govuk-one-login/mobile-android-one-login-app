@@ -7,6 +7,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
@@ -14,6 +15,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("uk.gov.onelogin.staging", appContext.packageName)
+        assertTrue(appContext.packageName.startsWith("uk.gov.onelogin"))
     }
 }

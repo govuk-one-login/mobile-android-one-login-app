@@ -36,7 +36,7 @@ runs:
 
     - name: Install brew dependencies
       run: |
-        brew install vale
+        brew install vale rbenv ruby-build
       shell: bash
       if: runner.os == 'macOS'
 
@@ -47,7 +47,9 @@ runs:
           cpu-checker \
           libvirt-clients \
           libvirt-daemon-system \
-          qemu-kvm
+          qemu-kvm \
+          rbenv \
+          ruby-build
       shell: bash
       if: runner.os == 'Linux'
 
