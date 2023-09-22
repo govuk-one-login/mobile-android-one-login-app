@@ -58,7 +58,8 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          flavors: 'build,dev,staging,integration'
+          flavors: 'staging'
+#          flavors: 'build,dev,staging,integration'
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
 

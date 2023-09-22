@@ -95,6 +95,7 @@ jobs:
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
           flavors: 'staging,production'
+#          flavors: 'staging,production'
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 
