@@ -27,12 +27,12 @@ runs:
     - name: Git tag bundles
       run: |
         BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
-  
+        
         for BUNDLE in ${BUNDLES[@]}
         do
           echo "Bundle = $BUNDLE"
           IFS=: VER=(${BUNDLE})
-      
+        
           FLAVOR=${VER[0]}
           AAB_PATH=${VER[1]}
           echo "Flavor = $FLAVOR"
@@ -40,9 +40,9 @@ runs:
         
           case $FLAVOR in
             production*)
-              git tag -a "${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE}" -m "Publish ${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE} - uk.gov.onelogin - internal"
-              git push origin "${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE}"
-              git tag -a "v${INPUT_VERSION_NAME}" -a "${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE}"
+              git tag -a "${INPUT_VERSION_NAME}-${INPUT_VERSION_CODE}" -m "Publish ${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE} - uk.gov.documentchecking - internal"
+              git push origin "${INPUT_VERSION_NAME}-${INPUT_VERSION_CODE}"
+              git tag -a "v${INPUT_VERSION_NAME}" -m "${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE}"
               git push origin "v${INPUT_VERSION_NAME}"
               ;;
             *)

@@ -15,6 +15,9 @@ jobs:
     name: Verify code base when pushed
     runs-on: macos-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    permissions:
+      id-token: write
+      contents: write
     outputs:
       version: ${{ steps.version-number.outputs.version }}
     steps:
