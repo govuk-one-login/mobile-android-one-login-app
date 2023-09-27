@@ -111,6 +111,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation ("androidx.compose.material3:material3:1.0.0-alpha02")
 }
 
 fun getVersionCode(): Int {
