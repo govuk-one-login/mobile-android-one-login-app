@@ -38,8 +38,14 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        compose = true
         viewBinding = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
     signingConfigs {
         create("release") {
             val tmpFilePath = System.getProperty("user.home") + "/work/_temp/keystore/"
