@@ -38,8 +38,14 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        compose = true
         viewBinding = true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
+    }
+
     signingConfigs {
         create("release") {
             val tmpFilePath = System.getProperty("user.home") + "/work/_temp/keystore/"
@@ -109,6 +115,11 @@ dependencies {
     }
 
     testImplementation("junit:junit:4.13.2")
+
+    implementation("androidx.compose.material:material:1.5.1")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha08")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
 
 fun getVersionCode(): Int {
