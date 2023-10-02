@@ -7,7 +7,7 @@
 
     <style name="Theme.OneLogin" parent="Base.Theme.OneLogin" />
 
-    <style name="Theme.App.OneLogin" parent="Theme.SplashScreen">
+    <style name="Theme.OneLogin.Starting" parent="Theme.SplashScreen">
         <!-- Set the splash screen background, animated icon, and animation
         duration. -->
         <item name="windowSplashScreenBackground">@color/icon_background</item>
@@ -17,7 +17,7 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
 
         <!-- Required for animated icons. -->
-<!--        <item name="windowSplashScreenAnimationDuration">200</item>-->
+        <item name="windowSplashScreenAnimationDuration">1000</item>
 
         <!-- Set the theme of the Activity that directly follows your splash
         screen. This is required. -->
