@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import java.util.UUID
 
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen().apply {}
+        val state = UUID.randomUUID().toString()
         setContent { 
             GdsTheme {
                 Column(
@@ -41,24 +43,25 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(onClick = {
-                        val url = "https://gov.uk"
+                        val nonce = UUID.randomUUID().toString()
+                        val url = Uri.parse("https://oidc.staging.account.gov.uk/authorize")
+                            .buildUpon().appendQueryParameter("response_type", "code")
+                            .appendQueryParameter("scope", "openid%20email%20phone%20offline_access")
+                            .appendQueryParameter("client_id", "CLIENT_ID")
+                            .appendQueryParameter("state", state)
+                            .appendQueryParameter("redirect_uri", "https://mobile-staging.account.gov.uk/redirect")
+                            .appendQueryParameter("nonce", nonce)
+                            .appendQueryParameter("vtr", "[\"Cl.Cm.P0\"]")
+                            .appendQueryParameter("ui_locales", "en")
+                            .build()
                         val intent = CustomTabsIntent.Builder()
                             .build()
-                        intent.launchUrl(this@MainActivity, Uri.parse(url))
+                        intent.launchUrl(this@MainActivity, url)
                     }) {
                         Text(text = "Sign In")
                     }
                 }
             }
         }
-
-//        val signInButton = findViewById<Button>(R.id.signin,)
-//            .setOnClickListener {
-//                val url = "https://gov.uk"
-//                val intent = CustomTabsIntent.Builder()
-//                    .build()
-//                intent.launchUrl(this@MainActivity, Uri.parse(url))
-//            }
-
     }
 }
