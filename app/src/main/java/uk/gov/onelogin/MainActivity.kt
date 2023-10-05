@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                         val nonce = UUID.randomUUID().toString()
                         val url = Uri.parse("https://oidc.staging.account.gov.uk/authorize")
                             .buildUpon().appendQueryParameter("response_type", "code")
-                            .appendQueryParameter("scope", "openid%20email%20phone%20offline_access")
+                            .appendQueryParameter("scope", "openid email phone offline_access")
                             .appendQueryParameter("client_id", "CLIENT_ID")
                             .appendQueryParameter("state", state)
                             .appendQueryParameter("redirect_uri", "https://mobile-staging.account.gov.uk/redirect")
@@ -62,6 +62,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
+//            TODO extract url into a new function (base uri, redirect and client id will change)
+//            extract sign in button composable
         }
     }
 }
