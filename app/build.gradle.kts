@@ -112,8 +112,9 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 
+    implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.compose.material:material:1.5.1")
-    implementation ("androidx.compose.material3:material3:1.2.0-alpha08")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
