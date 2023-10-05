@@ -95,6 +95,11 @@ dependencies {
         "androidx.appcompat:appcompat:1.6.1",
         "com.google.android.material:material:1.9.0",
         "androidx.constraintlayout:constraintlayout:2.1.4",
+        "androidx.browser:browser:1.5.0",
+        "androidx.compose.material:material:1.5.1",
+        "androidx.compose.material3:material3:1.2.0-alpha08",
+        "androidx.core:core-splashscreen:1.0.1",
+        "androidx.hilt:hilt-navigation-compose:1.0.0",
     ).forEach(::implementation)
 
     listOf(
@@ -104,19 +109,13 @@ dependencies {
         implementation(dep) {
             because(
                 "Bumping to 2.7.0 requires compile SDK 34, which the " +
-                        "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
-                        "is at the time of this writing, not released as a stable version yet."
+                    "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
+                    "is at the time of this writing, not released as a stable version yet.",
             )
         }
     }
 
     testImplementation("junit:junit:4.13.2")
-
-    implementation("androidx.browser:browser:1.5.0")
-    implementation("androidx.compose.material:material:1.5.1")
-    implementation("androidx.compose.material3:material3:1.2.0-alpha08")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
 
 fun getVersionCode(): Int {
