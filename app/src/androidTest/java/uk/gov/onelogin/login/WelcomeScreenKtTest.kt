@@ -32,7 +32,7 @@ class WelcomeScreenKtTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            WelcomeScreen(state = state, nonce = nonce)
+            WelcomeScreen(state = state)
         }
     }
 

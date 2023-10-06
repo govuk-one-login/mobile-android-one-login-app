@@ -10,7 +10,7 @@ data class UriBuilder(
     val redirectUri: String,
     val clientID: String,
 ) {
-  val url = Uri.parse("https://oidc.staging.account.gov.uk/authorize")
+  val url = Uri.parse(baseUri)
             .buildUpon().appendQueryParameter("response_type", "code")
             .appendQueryParameter("scope", "openid email phone offline_access")
             .appendQueryParameter("client_id", clientID)

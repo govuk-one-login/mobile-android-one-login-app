@@ -19,8 +19,8 @@ fun WelcomeScreen(
     context: Context = LocalContext.current
 ) {
     val baseUri = "https://oidc.staging.account.gov.uk/authorize"
-    val redirectUri = "CLIENT_ID"
-    val clientID = "https://mobile-staging.account.gov.uk/redirect"
+    val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
+    val clientID = "CLIENT_ID"
 
     Column(
         modifier = Modifier
