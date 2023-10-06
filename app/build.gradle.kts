@@ -85,10 +85,21 @@ android {
 }
 
 dependencies {
+    val composeVersion: String by rootProject.extra
+    val intentsVersion: String by rootProject.extra
+    val navigationVersion: String by rootProject.extra
+
     listOf(
         "androidx.test.ext:junit:1.1.5",
         "androidx.test.espresso:espresso-core:3.5.1",
+        "androidx.compose.ui:ui-test-junit4:$composeVersion",
+        "androidx.navigation:navigation-testing:$navigationVersion",
+        "androidx.test.espresso:espresso-intents:$intentsVersion"
     ).forEach(::androidTestImplementation)
+
+    listOf(
+        "androidx.compose.ui:ui-test-manifest:$composeVersion",
+    ).forEach(::debugImplementation)
 
     listOf(
         "androidx.core:core-ktx:1.10.1",
@@ -103,8 +114,8 @@ dependencies {
     ).forEach(::implementation)
 
     listOf(
-        "androidx.navigation:navigation-fragment-ktx:2.6.0",
-        "androidx.navigation:navigation-ui-ktx:2.6.0",
+        "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
+        "androidx.navigation:navigation-ui-ktx:$navigationVersion",
     ).forEach { dep: String ->
         implementation(dep) {
             because(

@@ -18,6 +18,7 @@ import java.util.UUID
 @Composable
 fun WelcomeScreen(
     state: String,
+    nonce: String = UUID.randomUUID().toString(),
     context: Context = LocalContext.current,
 ) {
     // DCMAW-6345: extract url into a new function (base uri, redirect and client id will change)
@@ -30,7 +31,6 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onClick = {
-            val nonce = UUID.randomUUID().toString()
             val url = Uri.parse("https://oidc.staging.account.gov.uk/authorize")
                 .buildUpon().appendQueryParameter("response_type", "code")
                 .appendQueryParameter("scope", "openid email phone offline_access")

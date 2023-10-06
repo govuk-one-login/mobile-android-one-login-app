@@ -7,7 +7,7 @@ import androidx.navigation.navigation
 object LoginRoutes {
     const val ROOT: String = "/login"
 
-    const val START: String = "/start"
+    const val START: String = "$ROOT/start"
 
     fun NavGraphBuilder.loginFlowRoutes(state: String) {
         navigation(

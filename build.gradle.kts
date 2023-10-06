@@ -12,5 +12,9 @@ rootProject.ext {
     this.set("targetSdkVersion", 34)
 }
 
+val composeVersion by project.extra("1.5.3")
+val intentsVersion by project.extra("3.4.0")
+val navigationVersion by project.extra("2.6.0")
+
 apply(plugin = "lifecycle-base")
 apply(from = file(rootProject.ext["configDir"] as String + "/styles/tasks.gradle.kts"))
