@@ -10,7 +10,6 @@ object LoginRoutes {
     const val START: String = "$ROOT/start"
 
     fun NavGraphBuilder.loginFlowRoutes(state: String) {
-        lateinit var welcomeScreenUrl: WelcomeScreenUrl
 
         navigation(
             route = ROOT,
