@@ -18,8 +18,6 @@ fun WelcomeScreen(
     state: String,
     context: Context = LocalContext.current
 ) {
-// DCMAW-6345: extract url into a new function (base uri, redirect and client id will change)
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,7 +26,12 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onClick = {
-            val url = WelcomeScreenUrl(state = state).build()
+            val baseUri = "https://oidc.staging.account.gov.uk/authorize"
+            val redirectUri = "CLIENT_ID"
+            val clientID = "https://mobile-staging.account.gov.uk/redirect"
+
+            val url = UriBuilder(state = state)
+                .build(baseUri, redirectUri, clientID)
             val intent = Builder()
                 .build()
             intent.launchUrl(context, url)
