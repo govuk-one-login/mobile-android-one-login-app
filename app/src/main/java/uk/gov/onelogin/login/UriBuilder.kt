@@ -5,14 +5,12 @@ import java.util.UUID
 
 data class UriBuilder(
     val state: String,
-    val nonce: String = UUID.randomUUID().toString(),
+    val nonce: String = UUID.randomUUID().toString() ,
+    val baseUri: String,
+    val redirectUri: String,
+    val clientID: String,
 ) {
-    fun build(
-        baseUri: String,
-        redirectUri: String,
-        clientID: String
-    ): Uri {
-        return Uri.parse(baseUri)
+  val url = Uri.parse("https://oidc.staging.account.gov.uk/authorize")
             .buildUpon().appendQueryParameter("response_type", "code")
             .appendQueryParameter("scope", "openid email phone offline_access")
             .appendQueryParameter("client_id", clientID)
@@ -24,5 +22,4 @@ data class UriBuilder(
             .appendQueryParameter("vtr", "[\"Cl.Cm.P0\"]")
             .appendQueryParameter("ui_locales", "en")
             .build()
-    }
 }

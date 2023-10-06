@@ -18,6 +18,10 @@ fun WelcomeScreen(
     state: String,
     context: Context = LocalContext.current
 ) {
+    val baseUri = "https://oidc.staging.account.gov.uk/authorize"
+    val redirectUri = "CLIENT_ID"
+    val clientID = "https://mobile-staging.account.gov.uk/redirect"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,15 +30,15 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onClick = {
-            val baseUri = "https://oidc.staging.account.gov.uk/authorize"
-            val redirectUri = "CLIENT_ID"
-            val clientID = "https://mobile-staging.account.gov.uk/redirect"
-
-            val url = UriBuilder(state = state)
-                .build(baseUri, redirectUri, clientID)
+            val url = UriBuilder(
+                state = state,
+                baseUri = baseUri,
+                redirectUri = redirectUri,
+                clientID = clientID,
+            )
             val intent = Builder()
                 .build()
-            intent.launchUrl(context, url)
+            intent.launchUrl(context, url.url)
         }) {
             Text(text = "Sign In")
         }
