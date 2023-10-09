@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Run checks
+# Linting is done on a per-environment basis, due to the differing values that exist.
+./gradlew \
+  lint \
+  test \
+  --daemon \
+  --stacktrace

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="openIdConnectBaseUrl" translatable="false">https://oidc.integration.account.gov.uk%1$s</string>
+    <string name="openIdConnectClientId" translatable="false">CLIENT_ID</string>
+    <string name="webBaseUrl" translatable="false">https://mobile-integration.account.gov.uk%1$s</string>
+</resources>
