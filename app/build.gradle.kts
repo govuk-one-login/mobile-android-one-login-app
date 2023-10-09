@@ -62,24 +62,19 @@ android {
 
     flavorDimensions += "env"
     productFlavors {
-        create("dev") {
-            dimension = "env"
-            applicationIdSuffix = ".dev"
-        }
-        create("build") {
-            dimension = "env"
-            applicationIdSuffix = ".build"
-        }
-        create("staging") {
-            dimension = "env"
-            applicationIdSuffix = ".staging"
-        }
-        create("integration") {
-            dimension = "env"
-            applicationIdSuffix = ".integration"
-        }
-        create("production") {
-            dimension = "env"
+        listOf(
+            "dev",
+            "build",
+            "staging",
+            "integration",
+            "production",
+        ).forEach { environment ->
+            create(environment) {
+                dimension = "env"
+                if (environment != "production") {
+                    applicationIdSuffix = ".$environment"
+                }
+            }
         }
     }
 }
@@ -94,7 +89,7 @@ dependencies {
         "androidx.test.espresso:espresso-core:3.5.1",
         "androidx.compose.ui:ui-test-junit4:$composeVersion",
         "androidx.navigation:navigation-testing:$navigationVersion",
-        "androidx.test.espresso:espresso-intents:$intentsVersion"
+        "androidx.test.espresso:espresso-intents:$intentsVersion",
     ).forEach(::androidTestImplementation)
 
     listOf(
