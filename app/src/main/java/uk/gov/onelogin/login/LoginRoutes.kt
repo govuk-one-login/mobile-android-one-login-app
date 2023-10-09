@@ -24,9 +24,12 @@ object LoginRoutes {
                     id = R.string.openIdConnectBaseUrl,
                     stringResource(id = R.string.openIdConnectAuthorizeEndpoint),
                 )
-                val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
+                val redirectUri = stringResource(
+                    id = R.string.webBaseUrl,
+                    stringResource(id = R.string.webRedirectEndpoint),
+                )
                 val nonce = UUID.randomUUID().toString()
-                val clientID = "CLIENT_ID"
+                val clientID = stringResource(id = R.string.openIdConnectClientId)
 
                 UriBuilder(
                     state = state,
