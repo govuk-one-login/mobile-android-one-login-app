@@ -12,19 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import uk.gov.onelogin.R
-import java.util.UUID
 
 @Composable
 fun WelcomeScreen(
-    state: String,
-    nonce: String = UUID.randomUUID().toString(),
-    context: Context = LocalContext.current
+    builder: UriBuilder,
+    context: Context = LocalContext.current,
 ) {
-    val baseUri = "https://oidc.staging.account.gov.uk/authorize"
-    val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
-    val clientID = "CLIENT_ID"
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,16 +26,9 @@ fun WelcomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Button(onClick = {
-            val url = UriBuilder(
-                state = state,
-                nonce = nonce,
-                baseUri = baseUri,
-                redirectUri = redirectUri,
-                clientID = clientID,
-            )
             val intent = Builder()
                 .build()
-            intent.launchUrl(context, url.url)
+            intent.launchUrl(context, builder.url)
         }) {
             Text(text = "Sign In")
         }

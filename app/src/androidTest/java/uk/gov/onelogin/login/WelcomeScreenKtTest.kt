@@ -23,8 +23,19 @@ class WelcomeScreenKtTest {
 
     private val state = UUID.randomUUID().toString()
     private val nonce = UUID.randomUUID().toString()
+    private val baseUri = "https://oidc.staging.account.gov.uk/authorize"
+    private val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
+    private val clientID = "CLIENT_ID"
 
     private lateinit var navController: TestNavHostController
+
+    private val builder = UriBuilder(
+        state = state,
+        nonce = nonce,
+        baseUri = baseUri,
+        redirectUri = redirectUri,
+        clientID = clientID,
+    )
 
     @Before
     fun setupNavigation() {
@@ -32,7 +43,7 @@ class WelcomeScreenKtTest {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            WelcomeScreen(state = state, nonce = nonce)
+            WelcomeScreen(builder = builder)
         }
     }
 
@@ -54,21 +65,7 @@ class WelcomeScreenKtTest {
 
         Intents.intended(
             allOf(
-                hasData(
-                    Uri.parse("https://oidc.staging.account.gov.uk/authorize")
-                        .buildUpon().appendQueryParameter("response_type", "code")
-                        .appendQueryParameter("scope", "openid email phone offline_access")
-                        .appendQueryParameter("client_id", "CLIENT_ID")
-                        .appendQueryParameter("state", state)
-                        .appendQueryParameter(
-                            "redirect_uri",
-                            "https://mobile-staging.account.gov.uk/redirect",
-                        )
-                        .appendQueryParameter("nonce", nonce)
-                        .appendQueryParameter("vtr", "[\"Cl.Cm.P0\"]")
-                        .appendQueryParameter("ui_locales", "en")
-                        .build(),
-                ),
+                hasData(builder.url),
             ),
         )
     }
