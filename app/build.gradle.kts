@@ -62,60 +62,66 @@ android {
 
     flavorDimensions += "env"
     productFlavors {
-        create("dev") {
-            dimension = "env"
-            applicationIdSuffix = ".dev"
-        }
-        create("build") {
-            dimension = "env"
-            applicationIdSuffix = ".build"
-        }
-        create("staging") {
-            dimension = "env"
-            applicationIdSuffix = ".staging"
-        }
-        create("integration") {
-            dimension = "env"
-            applicationIdSuffix = ".integration"
-        }
-        create("production") {
-            dimension = "env"
+        listOf(
+            "dev",
+            "build",
+            "staging",
+            "integration",
+            "production",
+        ).forEach { environment ->
+            create(environment) {
+                dimension = "env"
+                if (environment != "production") {
+                    applicationIdSuffix = ".$environment"
+                }
+            }
         }
     }
 }
 
 dependencies {
+    val composeVersion: String by rootProject.extra
+    val intentsVersion: String by rootProject.extra
+    val navigationVersion: String by rootProject.extra
+
     listOf(
         "androidx.test.ext:junit:1.1.5",
         "androidx.test.espresso:espresso-core:3.5.1",
+        "androidx.compose.ui:ui-test-junit4:$composeVersion",
+        "androidx.navigation:navigation-testing:$navigationVersion",
+        "androidx.test.espresso:espresso-intents:$intentsVersion",
     ).forEach(::androidTestImplementation)
+
+    listOf(
+        "androidx.compose.ui:ui-test-manifest:$composeVersion",
+    ).forEach(::debugImplementation)
 
     listOf(
         "androidx.core:core-ktx:1.10.1",
         "androidx.appcompat:appcompat:1.6.1",
         "com.google.android.material:material:1.9.0",
         "androidx.constraintlayout:constraintlayout:2.1.4",
+        "androidx.browser:browser:1.5.0",
+        "androidx.compose.material:material:1.5.1",
+        "androidx.compose.material3:material3:1.2.0-alpha08",
+        "androidx.core:core-splashscreen:1.0.1",
+        "androidx.hilt:hilt-navigation-compose:1.0.0",
     ).forEach(::implementation)
 
     listOf(
-        "androidx.navigation:navigation-fragment-ktx:2.6.0",
-        "androidx.navigation:navigation-ui-ktx:2.6.0",
+        "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
+        "androidx.navigation:navigation-ui-ktx:$navigationVersion",
     ).forEach { dep: String ->
         implementation(dep) {
             because(
                 "Bumping to 2.7.0 requires compile SDK 34, which the " +
-                        "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
-                        "is at the time of this writing, not released as a stable version yet."
+                    "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
+                    "is at the time of this writing, not released as a stable version yet.",
             )
         }
     }
 
     testImplementation("junit:junit:4.13.2")
-
-    implementation("androidx.compose.material:material:1.5.1")
-    implementation ("androidx.compose.material3:material3:1.2.0-alpha08")
-    implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 }
 
 fun getVersionCode(): Int {

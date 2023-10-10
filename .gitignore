@@ -282,7 +282,6 @@ proguard/
 /*/build/
 /*/local.properties
 /*/out
-/*/*/build
 .navigation/
 *.ipr
 *~
