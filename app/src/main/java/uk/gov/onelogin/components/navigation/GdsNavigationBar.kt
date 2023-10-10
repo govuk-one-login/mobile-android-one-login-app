@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
 /**
- * Wrapper data class for the [NavigationBar] composable.
+ * Wrapper data class for the [NavigationBar] Composable.
  *
  * - [Developer guide](https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary#navigationbar)
  * - [Material 3 Design](https://m3.material.io/components/navigation-bar/overview)
@@ -31,7 +31,7 @@ data class GdsNavigationBar(
     },
 ) {
     /**
-     * Converts the [GdsNavigationBar] into a [NavigationBar] composable.
+     * Converts the [GdsNavigationBar] into a [NavigationBar] Composable.
      */
     val generate: @Composable () -> Unit
         get() = {

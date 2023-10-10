@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 /**
- * Wrapper data class for the [NavigationBarItem] composable.
+ * Wrapper data class for the [NavigationBarItem] Composable.
  */
 data class GdsNavigationItem(
     private val icon: @Composable () -> Unit,
@@ -26,7 +26,7 @@ data class GdsNavigationItem(
     private val label: @Composable (() -> Unit)? = null,
 ) {
     /**
-     * Converts the [GdsNavigationItem] into a [NavigationBarItem] composable.
+     * Converts the [GdsNavigationItem] into a [NavigationBarItem] Composable.
      */
     val generate: @Composable RowScope.() -> Unit
         get() = {

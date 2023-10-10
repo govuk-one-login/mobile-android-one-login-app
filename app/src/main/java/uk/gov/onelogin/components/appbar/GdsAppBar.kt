@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 /**
- * Wrapper data class for the [TopAppBar] composable.
+ * Wrapper data class for the [TopAppBar] Composable.
  *
  * - [Developer guide](https://developer.android.com/jetpack/compose/components/app-bars)
  * - [Material 3 design](https://m3.material.io/components/top-app-bar/overview)
