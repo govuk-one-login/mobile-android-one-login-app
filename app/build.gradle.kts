@@ -102,7 +102,6 @@ dependencies {
         "com.google.android.material:material:1.9.0",
         "androidx.constraintlayout:constraintlayout:2.1.4",
         "androidx.browser:browser:1.5.0",
-        "androidx.compose.material:material:1.5.1",
         "androidx.compose.material3:material3:1.2.0-alpha08",
         "androidx.core:core-splashscreen:1.0.1",
         "androidx.hilt:hilt-navigation-compose:1.0.0",
