@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import uk.gov.onelogin.login.LoginRoutes.loginFlowRoutes
 import java.util.UUID
+import uk.gov.onelogin.home.HomeRoutes.homeFlowRoutes
 import uk.gov.onelogin.login.LoginRoutes
 
 @Composable
@@ -16,5 +17,6 @@ fun AppRoutes(
 
     NavHost(navController = navController, startDestination = startDestination) {
         loginFlowRoutes(state)
+        homeFlowRoutes()
     }
 }
