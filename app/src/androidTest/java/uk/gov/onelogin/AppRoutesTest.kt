@@ -10,6 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.home.HomeTestRoutes
 import uk.gov.onelogin.login.LoginTestRoutes
 
@@ -23,8 +24,8 @@ class AppRoutesTest {
 
     @Test
     fun loginFlowStartsByDefault() {
-        setupComposeTestRule {
-            AppRoutes(navController)
+        navController = composeTestRule.setupComposeTestRule { innerNavController ->
+            AppRoutes(innerNavController)
         }
 
         assertEquals(
@@ -36,8 +37,8 @@ class AppRoutesTest {
 
     @Test
     fun homeFlowIsDeclaredInTheAppRoutes() {
-        setupComposeTestRule {
-            AppRoutes(navController, startDestination = HomeTestRoutes.ROOT)
+        navController = composeTestRule.setupComposeTestRule { innerNavController ->
+            AppRoutes(innerNavController, startDestination = HomeTestRoutes.ROOT)
         }
 
         assertEquals(
@@ -45,13 +46,5 @@ class AppRoutesTest {
             HomeTestRoutes.START,
             navController.currentDestination?.route,
         )
-    }
-
-    private fun setupComposeTestRule(screenToLoad: @Composable () -> Unit) {
-        composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            screenToLoad()
-        }
     }
 }
