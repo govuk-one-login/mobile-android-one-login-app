@@ -94,17 +94,19 @@ dependencies {
 
     listOf(
         "androidx.compose.ui:ui-test-manifest:$composeVersion",
+        "androidx.compose.ui:ui-tooling:$composeVersion",
     ).forEach(::debugImplementation)
 
     listOf(
-        "androidx.core:core-ktx:1.10.1",
         "androidx.appcompat:appcompat:1.6.1",
-        "com.google.android.material:material:1.9.0",
-        "androidx.constraintlayout:constraintlayout:2.1.4",
         "androidx.browser:browser:1.5.0",
         "androidx.compose.material3:material3:1.2.0-alpha08",
+        "androidx.compose.ui:ui-tooling-preview:$composeVersion",
+        "androidx.constraintlayout:constraintlayout:2.1.4",
+        "androidx.core:core-ktx:1.10.1",
         "androidx.core:core-splashscreen:1.0.1",
         "androidx.hilt:hilt-navigation-compose:1.0.0",
+        "com.google.android.material:material:1.9.0",
     ).forEach(::implementation)
 
     listOf(

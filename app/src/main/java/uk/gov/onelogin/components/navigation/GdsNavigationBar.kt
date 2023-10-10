@@ -1,5 +1,7 @@
 package uk.gov.onelogin.components.navigation
 
+import android.content.res.Configuration
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -8,7 +10,10 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import uk.gov.onelogin.GdsTheme
 
 /**
  * Wrapper data class for the [NavigationBar] Composable.
@@ -47,4 +52,23 @@ data class GdsNavigationBar(
                 }
             }
         }
+}
+
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+)
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun GdsNavigationBarPreview(
+    @PreviewParameter(GdsNavigationBarProvider::class)
+    parameters: GdsNavigationBar,
+) {
+    GdsTheme {
+        parameters.generate()
+    }
 }
