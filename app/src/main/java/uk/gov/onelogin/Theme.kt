@@ -1,12 +1,12 @@
 package uk.gov.onelogin
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     background = md_theme_dark_background,
     error = md_theme_dark_error,
     onBackground = md_theme_dark_onBackground,
@@ -15,13 +15,11 @@ private val DarkColorPalette = darkColors(
     onSecondary = md_theme_dark_onSecondary,
     onSurface = md_theme_dark_onSurface,
     primary = md_theme_dark_primary,
-    primaryVariant = md_theme_dark_primaryVariant,
     secondary = md_theme_dark_secondary,
-    secondaryVariant = md_theme_dark_secondary,
-    surface = md_theme_dark_surface
+    surface = md_theme_dark_surface,
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     background = md_theme_light_background,
     error = md_theme_light_error,
     onBackground = md_theme_light_onBackground,
@@ -30,16 +28,14 @@ private val LightColorPalette = lightColors(
     onSecondary = md_theme_light_onSecondary,
     onSurface = md_theme_light_onSurface,
     primary = md_theme_light_primary,
-    primaryVariant = md_theme_light_primaryVariant,
     secondary = md_theme_light_secondary,
-    secondaryVariant = md_theme_light_secondary,
-    surface = md_theme_light_surface
+    surface = md_theme_light_surface,
 )
 
 @Composable
 fun GdsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) {
         DarkColorPalette
@@ -48,7 +44,7 @@ fun GdsTheme(
     }
 
     MaterialTheme(
-        colors = colors,
-        content = content
+        colorScheme = colors,
+        content = content,
     )
 }

@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.util.UUID
+import uk.gov.onelogin.ext.setupComposeTestRule
 
 class WelcomeScreenKtTest {
     @get:Rule
@@ -26,8 +27,6 @@ class WelcomeScreenKtTest {
     private val baseUri = "https://oidc.staging.account.gov.uk/authorize"
     private val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
     private val clientID = "CLIENT_ID"
-
-    private lateinit var navController: TestNavHostController
 
     private val builder = UriBuilder(
         state = state,
@@ -40,9 +39,7 @@ class WelcomeScreenKtTest {
     @Before
     fun setupNavigation() {
         Intents.init()
-        composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
+        composeTestRule.setupComposeTestRule { _ ->
             WelcomeScreen(builder = builder)
         }
     }

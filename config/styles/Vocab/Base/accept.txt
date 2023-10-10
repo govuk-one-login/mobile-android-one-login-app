@@ -15,6 +15,7 @@ JDK
 JIRA
 JRE
 Jacoco
+jetpack
 Jetpack
 Jira
 LFS
