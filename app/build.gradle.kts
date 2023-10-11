@@ -95,6 +95,7 @@ dependencies {
     listOf(
         "androidx.compose.ui:ui-test-manifest:$composeVersion",
         "androidx.compose.ui:ui-tooling:$composeVersion",
+        "androidx.compose.ui:ui-tooling",
     ).forEach(::debugImplementation)
 
     listOf(
@@ -102,6 +103,7 @@ dependencies {
         "androidx.browser:browser:1.5.0",
         "androidx.compose.material3:material3:1.2.0-alpha08",
         "androidx.compose.ui:ui-tooling-preview:$composeVersion",
+        "androidx.compose.ui:ui-tooling-preview",
         "androidx.constraintlayout:constraintlayout:2.1.4",
         "androidx.core:core-ktx:1.10.1",
         "androidx.core:core-splashscreen:1.0.1",
