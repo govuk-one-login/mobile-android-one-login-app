@@ -1,13 +1,9 @@
 package uk.gov.onelogin.login
 
-import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import org.hamcrest.CoreMatchers.allOf
@@ -18,7 +14,7 @@ import org.junit.Test
 import java.util.UUID
 import uk.gov.onelogin.ext.setupComposeTestRule
 
-class WelcomeScreenKtTest {
+class SigninScreenKtTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -40,7 +36,7 @@ class WelcomeScreenKtTest {
     fun setupNavigation() {
         Intents.init()
         composeTestRule.setupComposeTestRule { _ ->
-            WelcomeScreen(builder = builder)
+            SigninScreen(builder = builder)
         }
     }
 

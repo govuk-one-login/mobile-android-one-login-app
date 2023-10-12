@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun WelcomeScreen(
+fun SigninScreen(
     builder: UriBuilder,
     context: Context = LocalContext.current,
 ) {

@@ -38,7 +38,7 @@ object LoginRoutes {
                     redirectUri = redirectUri,
                     clientID = clientID,
                 ).apply {
-                    WelcomeScreen(
+                    SigninScreen(
                         builder = this,
                     )
                 }
