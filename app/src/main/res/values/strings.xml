@@ -7,7 +7,11 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="StagingEnv">staging</string>
+    <!-- Sign in -->
+    <string name="signinTitle">GOV.UK One Login</string>
+    <string name="signinSubTitle">Sign in with the same email address you use for your GOV.UK One Login.</string>
+    <string name="SigninButton">Sign in</string>
+
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
