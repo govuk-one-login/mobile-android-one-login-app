@@ -89,12 +89,10 @@ The download of components will start
 
 Once the download is complete click `Finish` and you're done!
 
-
-
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
 ![Screenshot showing the SDK selection screen](./assets/requiredSoftware/androidStudio_welcome.png)
 
 </div>
 
-Your Android Studio installation and setup is now complete. Next we'll move on to getting the Git repository cloned and opened in the IDE.
+Your Android Studio installation and setup is now complete.

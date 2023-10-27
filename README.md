@@ -19,9 +19,3 @@ This project uses a git-flow branching strategy, briefly:
 
 A number of how-to documents are provided to get a new developer up to speed with:
 - the required software
-- creating a virtual device to test with
-- extending the functionality of a class
-- writing a unit test
-- running unit tests
-- running instrumentation tests 
-- ensuring your code is clean 
