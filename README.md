@@ -18,4 +18,5 @@ This project uses a git-flow branching strategy, briefly:
 ## Getting started
 
 A number of how-to documents are provided to get a new developer up to speed with:
-- the required software
+- [the required software](./docs/howTo/requiredSoftware.md)
+- [running the code](./docs/howTo/runningTheCode.md)
