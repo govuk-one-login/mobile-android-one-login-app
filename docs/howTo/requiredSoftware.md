@@ -97,4 +97,4 @@ Once the download is complete click `Finish` and you're done!
 
 </div>
 
-You're Android Studio installation and setup is now complete. Next we'll move on to getting the Git repository cloned and opened in the IDE.
+Your Android Studio installation and setup is now complete. Next we'll move on to getting the Git repository cloned and opened in the IDE.
