@@ -1,4 +1,4 @@
-# Commit template
+# Commit Template
 
 The [Commit Template File] exists as a way to standardise the formatting of
 commits within the repository. Using the [Commit Template File] is positively
