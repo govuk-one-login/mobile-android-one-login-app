@@ -12,7 +12,7 @@ You'll need to accept the terms and conditions, and select the appropriate versi
 
 <div class="filter: drop-shadow(0px 0px 20px rgba(0, 0, 0, 0.3)); margin: 60px 0; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the Terms and Conditions for downloading Android Studio for Mac](./assets/requiredSoftware/androidStudioDownload_termsAndConditions.png)
+![Screenshot showing the Terms and Conditions for downloading Android Studio for Mac](assets/pre-requisite-software/androidStudioDownload_termsAndConditions.png)
 
 </div>
 
@@ -22,7 +22,7 @@ Once the download is complete locate the `.dmg` file and open it. You will be pr
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the Android Studio install dialog](./assets/requiredSoftware/androidStudioDownload_installDialog.png)
+![Screenshot showing the Android Studio install dialog](assets/pre-requisite-software/androidStudioDownload_installDialog.png)
 
 </div>
 
@@ -31,7 +31,7 @@ Drag the Android Studio icon into the Applications icon. Double-click the Applic
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the Applications window in Finder with the newly installed Android Studio app's icon visible](./assets/requiredSoftware/androidStudioDownload_applicationsWindow.png)
+![Screenshot showing the Applications window in Finder with the newly installed Android Studio app's icon visible](assets/pre-requisite-software/androidStudioDownload_applicationsWindow.png)
 
 </div>
 
@@ -39,7 +39,7 @@ You may be shown Apple's malicious software dialog; click `Open`
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing Apple's malicious software dialog](./assets/requiredSoftware/androidStudioDownload_appleMaliciousSoftware.png)
+![Screenshot showing Apple's malicious software dialog](assets/pre-requisite-software/androidStudioDownload_appleMaliciousSoftware.png)
 
 </div>
 
@@ -47,8 +47,8 @@ Android Studio should launch to its splash screen, followed by a prompt to insta
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the Android Studio Giraffe splash screen](./assets/requiredSoftware/androidStudio_splash.png)
-![Screenshot showing the Android Studio SDK installation prompt](./assets/requiredSoftware/androidStudio_installSDK.png)
+![Screenshot showing the Android Studio Giraffe splash screen](assets/pre-requisite-software/androidStudio_splash.png)
+![Screenshot showing the Android Studio SDK installation prompt](assets/pre-requisite-software/androidStudio_installSDK.png)
 
 </div>
 
@@ -56,7 +56,7 @@ Hit `Next` to continue to the SDK selection screen
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the SDK selection screen](./assets/requiredSoftware/androidStudio_installSDK-selection.png)
+![Screenshot showing the SDK selection screen](assets/pre-requisite-software/androidStudio_installSDK-selection.png)
 
 </div>
 
@@ -64,7 +64,7 @@ Leave the default selection and click `Next`
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the verify SDK selection screen](./assets/requiredSoftware/androidStudio_verifySelection.png)
+![Screenshot showing the verify SDK selection screen](assets/pre-requisite-software/androidStudio_verifySelection.png)
 
 </div>
 
@@ -72,7 +72,7 @@ Click `Next` in the Verify Settings screen
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the SDK licence acceptance screen](./assets/requiredSoftware/androidStudio_acceptLicence.png)
+![Screenshot showing the SDK licence acceptance screen](assets/pre-requisite-software/androidStudio_acceptLicence.png)
 
 </div>
 
@@ -82,8 +82,8 @@ The download of components will start
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the SDK components being downloaded](./assets/requiredSoftware/androidStudio_downloadingComponents.png)
-![Screenshot showing the SDK components being downloaded](./assets/requiredSoftware/androidStudio_downloadComponents-finish.png)
+![Screenshot showing the SDK components being downloaded](assets/pre-requisite-software/androidStudio_downloadingComponents.png)
+![Screenshot showing the SDK components being downloaded](assets/pre-requisite-software/androidStudio_downloadComponents-finish.png)
 
 </div>
 
@@ -91,7 +91,7 @@ Once the download is complete click `Finish` and you're done!
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the SDK selection screen](./assets/requiredSoftware/androidStudio_welcome.png)
+![Screenshot showing the SDK selection screen](assets/pre-requisite-software/androidStudio_welcome.png)
 
 </div>
 
