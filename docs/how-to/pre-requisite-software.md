@@ -1,4 +1,4 @@
-# How To - Required software
+# Pre-Requisite Software
 
 ## Introduction
 
@@ -15,8 +15,6 @@ You'll need to accept the terms and conditions, and select the appropriate versi
 ![Screenshot showing the Terms and Conditions for downloading Android Studio for Mac](assets/pre-requisite-software/androidStudioDownload_termsAndConditions.png)
 
 </div>
-
-> ``ℹ️`` Check out the [how to on finding which chip your Mac is using](./whichChip.md)
 
 Once the download is complete locate the `.dmg` file and open it. You will be presented with the following dialog:
 

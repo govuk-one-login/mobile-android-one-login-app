@@ -1,6 +1,6 @@
 # One Login - Android
 
-This repository hosts the Android Mobile app for GOV.uk's One Login.
+This repository hosts the Android Mobile app for GOV.UK's One Login.
 
 ## Branching strategy and releases
 
