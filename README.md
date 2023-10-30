@@ -1,6 +1,6 @@
 # One Login - Android
 
-This repository hosts the Android Mobile app for GOV.uk's One Login.
+This repository hosts the Android Mobile app for GOV.UK's One Login.
 
 ## Branching strategy and releases
 
@@ -18,4 +18,5 @@ This project uses a git-flow branching strategy, briefly:
 ## Getting started
 
 A number of how-to documents are provided to get a new developer up to speed with:
-- the required software
+- [pre-requisite software](docs/how-to/pre-requisite-software.md)
+- [running the code](docs/how-to/running-the-code.md)

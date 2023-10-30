@@ -1,4 +1,4 @@
-# Git hooks
+# Git Hooks
 
 Git hooks are scripts that execute in an event-driven way. Each type of event
 has the ability to include a script to run. What gets executed is contextually
