@@ -11,10 +11,12 @@ android {
         applicationId = rootProject.ext["appId"] as String
         minSdk = rootProject.ext["minSdkVersion"] as Int
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = getVersionCode()
-        versionName = getVersionName()
+        versionCode = rootProject.ext["versionCode"] as Int
+        versionName = rootProject.ext["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        compileSdkPreview = "UpsideDownCake"
     }
 
     signingConfigs {

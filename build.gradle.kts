@@ -1,3 +1,7 @@
+
+import java.io.FileInputStream
+import java.util.Properties
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id("com.android.application") version "8.1.2" apply false
@@ -10,6 +14,40 @@ rootProject.ext {
     this.set("configDir", "${rootProject.rootDir}/config")
     this.set("minSdkVersion", 29)
     this.set("targetSdkVersion", 34)
+
+    val localProperties = Properties()
+    if (rootProject.file("local.properties").exists()) {
+        localProperties.load(FileInputStream(rootProject.file("local.properties")))
+    }
+
+    fun getVersionCode(): Int {
+        var code = 1
+
+        if (rootProject.hasProperty("versionCode")) {
+            code = rootProject.property("versionCode").toString().toInt()
+        } else if (localProperties.getProperty("versionCode") != null) {
+            code = localProperties.getProperty("versionCode").toString().toInt()
+        }
+
+        println("VersionCode is set to $code")
+        return code
+    }
+
+    fun getVersionName(): String {
+        var name = "1.0.0"
+
+        if (rootProject.hasProperty("versionName")) {
+            name = rootProject.property("versionName") as String
+        } else if (localProperties.getProperty("versionName") != null) {
+            name = localProperties.getProperty("versionName") as String
+        }
+
+        println("VersionName is set to $name")
+        return name
+    }
+
+    this.set("versionCode", getVersionCode())
+    this.set("versionName", getVersionName())
 }
 
 val composeVersion by project.extra("1.5.3")
