@@ -35,7 +35,7 @@ runs:
       env:
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
-        TOKEN: ${{ input.access-token }}
+        TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
       with:
         api-level: 29
