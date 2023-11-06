@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">OneLogin</string>
     <string name="action_settings">Settings</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <!-- Sign in -->
+    <string name="signInTitle">GOV.UK One Login</string>
+    <string name="signInSubTitle">Sign in with the same email address you use for your GOV.UK One Login.</string>
+    <string name="signInButton">Sign in</string>
 
     <string name="StagingEnv">staging</string>
 
