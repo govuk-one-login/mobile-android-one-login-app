@@ -1,13 +1,9 @@
 package uk.gov.onelogin.login
 
-import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import org.hamcrest.CoreMatchers.allOf
@@ -15,10 +11,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.UUID
+import uk.gov.onelogin.R
+import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
+import java.util.UUID
 
-class WelcomeScreenKtTest {
+class WelcomeScreenKtTest : TestCase() {
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -49,10 +47,14 @@ class WelcomeScreenKtTest {
         Intents.release()
     }
 
-    private val signInButton = hasText("Sign In")
+    private val signInTitle = hasText(resources.getString(R.string.signInTitle))
+    private val signInSubTitle = hasText(resources.getString(R.string.signInSubTitle))
+    private val signInButton = hasText(resources.getString(R.string.signInButton))
 
     @Test
     fun verifyStrings() {
+        composeTestRule.onNode(signInTitle).assertIsDisplayed()
+        composeTestRule.onNode(signInSubTitle).assertIsDisplayed()
         composeTestRule.onNode(signInButton).assertIsDisplayed()
     }
 
