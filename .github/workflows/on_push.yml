@@ -52,6 +52,8 @@ jobs:
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
+          access-token: ${{ secrets.PACKAGES_PAT }}
+          username: ${{ secrets.PACKAGES_USER }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
 
