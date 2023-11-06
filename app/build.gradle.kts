@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -109,6 +110,9 @@ dependencies {
         "androidx.core:core-splashscreen:1.0.1",
         "androidx.hilt:hilt-navigation-compose:1.0.0",
         "com.google.android.material:material:1.9.0",
+        "uk.gov.android:components:1.6.0",
+        "uk.gov.android:pages:1.6.0",
+        "uk.gov.android:theme:1.6.0",
     ).forEach(::implementation)
 
     listOf(
