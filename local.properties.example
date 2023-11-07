@@ -1,8 +1,8 @@
 ## This file must *NOT* be checked into Version Control Systems,
 # as it contains information specific to your local configuration.
 #
-# Location of the SDK. This is only used by Gradle.
-# For customization when using a Version Control System, please read the
-# header note.
-versionCode=1893456000
-versionName=99.99.99
+# Setting versionCode to a positive integer value and versionName to a valid semver will overload
+# the defaults when running locally. Running `date +%s` will give you the current unix timestamp
+# for use as `versionCode`
+versionCode=
+versionName=
