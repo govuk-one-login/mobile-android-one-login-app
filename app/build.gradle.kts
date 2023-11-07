@@ -16,8 +16,6 @@ android {
         versionName = rootProject.ext["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        compileSdkPreview = "UpsideDownCake"
     }
 
     signingConfigs {
@@ -43,6 +41,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
+            compileSdkPreview = "UpsideDownCake"
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
