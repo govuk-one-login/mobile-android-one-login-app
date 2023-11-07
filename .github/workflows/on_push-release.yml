@@ -97,8 +97,10 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          flavors: 'staging,production'
+          access-token: ${{ secrets.PACKAGES_PAT }}
+          flavors: 'staging'
 #          flavors: 'staging,production'
+          username: ${{ secrets.PACKAGES_USER }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 

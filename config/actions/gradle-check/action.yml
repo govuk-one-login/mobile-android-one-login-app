@@ -2,6 +2,12 @@ name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
 inputs:
+  access-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
+  username:
+    description: 'Service account username that allows publishing packages'
+    required: true
   version-code:
     description: 'Version code'
     required: true
@@ -24,3 +30,5 @@ runs:
         CI: 'true'
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.access-token }}
+        USERNAME: ${{ inputs.username }}

@@ -10,6 +10,24 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://maven.pkg.github.com/alphagov/di-mobile-android-ui"){
+            if (file("${rootProject.projectDir.path}/github.properties").exists()) {
+                val propsFile = File("${rootProject.projectDir.path}/github.properties")
+                val props = java.util.Properties().also { it.load(java.io.FileInputStream(propsFile)) }
+                val ghUsername = props["ghUsername"] as String?
+                val ghToken = props["ghToken"] as String?
+
+                credentials {
+                    username = ghUsername
+                    password = ghToken
+                }
+            } else {
+                credentials {
+                    username = System.getenv("USERNAME")
+                    password = System.getenv("TOKEN")
+                }
+            }
+        }
     }
 }
 

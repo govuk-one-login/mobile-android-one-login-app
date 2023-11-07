@@ -2,10 +2,16 @@ name: 'Run gradle assemble and bundle (release build type)'
 description: 'Run the "assembleRelease" and "bundleRelease" commands for a Gradle project'
 
 inputs:
+  access-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
   flavors:
     description: 'App flavors to return paths for, comma separated'
     required: false
     default: 'production'
+  username:
+    description: 'Service account username that allows publishing packages'
+    required: true
   version-code:
     description: 'Version code'
     required: true
@@ -54,3 +60,5 @@ runs:
         SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ env.KEYSTORE_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
+        TOKEN: ${{ inputs.access-token }}
+        USERNAME: ${{ inputs.username }}

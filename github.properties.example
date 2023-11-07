@@ -1,0 +1,8 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# You should add your github username and access token into a copy of this file without the
+# `.example` suffix. Your token can be retrieved by running `gh auth token`
+# @link https://cli.github.com/
+ghUsername=
+ghToken=

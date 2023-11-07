@@ -1,0 +1,8 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Setting versionCode to a positive integer value and versionName to a valid semver will overload
+# the defaults when running locally. Running `date +%s` will give you the current unix timestamp
+# for use as `versionCode`
+versionCode=
+versionName=

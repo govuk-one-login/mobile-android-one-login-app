@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -11,10 +12,12 @@ android {
         applicationId = rootProject.ext["appId"] as String
         minSdk = rootProject.ext["minSdkVersion"] as Int
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = getVersionCode()
-        versionName = getVersionName()
+        versionCode = rootProject.ext["versionCode"] as Int
+        versionName = rootProject.ext["versionName"] as String
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        compileSdkPreview = "UpsideDownCake"
     }
 
     signingConfigs {
@@ -107,6 +110,9 @@ dependencies {
         "androidx.core:core-splashscreen:1.0.1",
         "androidx.hilt:hilt-navigation-compose:1.0.0",
         "com.google.android.material:material:1.9.0",
+        "uk.gov.android:components:1.5.0",
+        "uk.gov.android:pages:1.5.0",
+        "uk.gov.android:theme:1.5.0",
     ).forEach(::implementation)
 
     listOf(
