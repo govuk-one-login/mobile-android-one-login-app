@@ -12,7 +12,7 @@ data class UriBuilder(
 ) {
   val url: Uri = Uri.parse(baseUri)
             .buildUpon().appendQueryParameter("response_type", "code")
-            .appendQueryParameter("scope", "openid email phone offline_access")
+            .appendQueryParameter("scope", "openid offline_access")
             .appendQueryParameter("client_id", clientID)
             .appendQueryParameter("state", state)
             .appendQueryParameter(
