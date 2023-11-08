@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import uk.gov.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.GdsTheme
 
 /**
  * Wrapper data class for the [TopAppBar] Composable.
