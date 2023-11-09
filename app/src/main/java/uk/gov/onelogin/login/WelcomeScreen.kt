@@ -8,11 +8,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import uk.gov.documentchecking.pages.LandingPage
-import uk.gov.documentchecking.pages.LandingPageParameters
+import uk.gov.android.ui.pages.LandingPage
+import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.onelogin.R
-import uk.gov.ui.components.content.GdsContentText
-import uk.gov.ui.theme.GdsTheme
+import uk.gov.android.ui.components.content.GdsContentText
+import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
 fun WelcomeScreen(
