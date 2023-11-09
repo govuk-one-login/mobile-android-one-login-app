@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="openIdConnectBaseUrl" translatable="false">https://oidc.build.account.gov.uk%1$s</string>
-    <string name="openIdConnectClientId" translatable="false">CLIENT_ID</string>
+    <string name="openIdConnectBaseUrl" translatable="false">https://auth-stub.mobile.dev.account.gov.uk%1$s</string>
+    <string name="openIdConnectClientId" translatable="false">TEST_CLIENT_ID</string>
     <string name="webBaseUrl" translatable="false">https://mobile-build.account.gov.uk%1$s</string>
 </resources>
