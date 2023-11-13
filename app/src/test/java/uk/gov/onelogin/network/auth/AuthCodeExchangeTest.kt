@@ -11,14 +11,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.network.auth.TokenExchange.Companion.TokenExchangeCodeArgError
-import uk.gov.onelogin.network.auth.TokenExchange.Companion.TokenExchangeOfflineError
-import uk.gov.onelogin.network.auth.TokenExchange.Companion.TokenExchangeServerError
+import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeCodeArgError
+import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeOfflineError
+import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeServerError
 import uk.gov.onelogin.network.utils.HttpClientStub
 import uk.gov.onelogin.network.utils.HttpClientStub.Companion.HttpClientStubResponse
 import uk.gov.onelogin.network.utils.OnlineCheckerStub
 
-class TokenExchangeTest {
+class AuthCodeExchangeTest {
     private val code = "aCode"
     private val httpClient = HttpClientStub()
     private val redirectUrl = Url("https://example.com/redirect")
@@ -39,9 +39,9 @@ class TokenExchangeTest {
         )
     }
 
-    @Test(expected = TokenExchangeCodeArgError::class)
+    @Test(expected = AuthCodeExchangeCodeArgError::class)
     fun `throws a TokenExchangeCodeArgError when an empty code is passed`() {
-        TokenExchange(
+        AuthCodeExchange(
             code = "",
             onlineChecker = stubOnlineChecker,
             redirectUrl = redirectUrl,
@@ -50,11 +50,11 @@ class TokenExchangeTest {
         )
     }
 
-    @Test(expected = TokenExchangeOfflineError::class)
+    @Test(expected = AuthCodeExchangeOfflineError::class)
     fun `throws a TokenExchangeOfflineError when the device is offline`() {
         stubOnlineChecker.online = false
 
-        TokenExchange(
+        AuthCodeExchange(
             code = code,
             onlineChecker = stubOnlineChecker,
             redirectUrl = redirectUrl,
@@ -63,7 +63,7 @@ class TokenExchangeTest {
         )
     }
 
-    @Test(expected = TokenExchangeServerError::class)
+    @Test(expected = AuthCodeExchangeServerError::class)
     fun `throws a TokenExchangeServerError when a 500 range error is received`() = runBlocking {
         val expectedUrl = URLBuilder(url).apply {
             parameters.apply {
@@ -87,7 +87,7 @@ class TokenExchangeTest {
             response = response
         )
 
-        TokenExchange(
+        AuthCodeExchange(
             code = code,
             onlineChecker = stubOnlineChecker,
             redirectUrl = redirectUrl,
