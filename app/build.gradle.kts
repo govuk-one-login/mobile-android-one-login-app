@@ -111,6 +111,7 @@ dependencies {
         AndroidX.hilt.navigationCompose,
         Google.android.material,
         libs.components,
+        libs.ktor.client.android,
         libs.pages,
         libs.theme
     ).forEach(::implementation)
