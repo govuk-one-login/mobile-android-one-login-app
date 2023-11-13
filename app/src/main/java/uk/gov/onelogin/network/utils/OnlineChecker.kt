@@ -5,7 +5,7 @@ import android.net.NetworkCapabilities
 
 class OnlineChecker constructor(
     private val connectivityManager: ConnectivityManager
-): IOnlineChecker {
+) : IOnlineChecker {
 
     private val applicableTransportTypes = arrayOf(
         NetworkCapabilities.TRANSPORT_CELLULAR,
