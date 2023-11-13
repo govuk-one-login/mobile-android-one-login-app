@@ -82,6 +82,7 @@ android {
 }
 
 dependencies {
+    testImplementation(libs.ktor.client.mock)
     val composeVersion: String by rootProject.extra
     val intentsVersion: String by rootProject.extra
     val navigationVersion: String by rootProject.extra
