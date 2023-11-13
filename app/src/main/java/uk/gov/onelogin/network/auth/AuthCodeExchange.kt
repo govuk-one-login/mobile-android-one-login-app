@@ -43,6 +43,10 @@ class AuthCodeExchange constructor(
                 throw AuthCodeExchangeServerError("Server Error received - ${response.status}")
             response.status >= HttpStatusCode.BadRequest ->
                 throw AuthCodeExchangeClientError("Client Error received - ${response.status}")
+            response.status != HttpStatusCode.OK ->
+                throw AuthCodeExchangeUnexpectedResponse("Unexpected response received - ${
+                    response.status
+                }")
         }
     }
 
@@ -51,5 +55,6 @@ class AuthCodeExchange constructor(
         class AuthCodeExchangeCodeArgError constructor(message: String) : Error(message)
         class AuthCodeExchangeOfflineError constructor(message: String) : Error(message)
         class AuthCodeExchangeServerError constructor(message: String) : Error(message)
+        class AuthCodeExchangeUnexpectedResponse constructor(message: String) : Error(message)
     }
 }
