@@ -4,8 +4,8 @@ import java.util.Properties
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.1.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.10" apply false
+    id("com.android.application") apply false
+    id("org.jetbrains.kotlin.android") apply false
 }
 
 rootProject.ext {
@@ -21,12 +21,16 @@ rootProject.ext {
     }
 
     fun getVersionCode(): Int {
-        var code = 1
+        var code: Int
 
         if (rootProject.hasProperty("versionCode")) {
             code = rootProject.property("versionCode").toString().toInt()
         } else if (localProperties.getProperty("versionCode") != null) {
             code = localProperties.getProperty("versionCode").toString().toInt()
+        } else {
+            throw Error(
+                "Version code was not found as a command line parameter or a local property"
+            )
         }
 
         println("VersionCode is set to $code")
@@ -34,12 +38,16 @@ rootProject.ext {
     }
 
     fun getVersionName(): String {
-        var name = "1.0.0"
+        var name: String
 
         if (rootProject.hasProperty("versionName")) {
             name = rootProject.property("versionName") as String
         } else if (localProperties.getProperty("versionName") != null) {
             name = localProperties.getProperty("versionName") as String
+        } else {
+            throw Error(
+                "Version name was not found as a command line parameter or a local property"
+            )
         }
 
         println("VersionName is set to $name")

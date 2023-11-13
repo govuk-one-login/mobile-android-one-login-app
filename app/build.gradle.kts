@@ -86,48 +86,40 @@ dependencies {
     val navigationVersion: String by rootProject.extra
 
     listOf(
-        "androidx.test.ext:junit:1.1.5",
-        "androidx.test.espresso:espresso-core:3.5.1",
-        "androidx.compose.ui:ui-test-junit4:$composeVersion",
-        "androidx.navigation:navigation-testing:$navigationVersion",
-        "androidx.test.espresso:espresso-intents:$intentsVersion",
+        AndroidX.test.ext.junit,
+        AndroidX.test.espresso.core,
+        AndroidX.compose.ui.testJunit4,
+        AndroidX.navigation.testing,
+        AndroidX.test.espresso.intents,
     ).forEach(::androidTestImplementation)
 
     listOf(
-        "androidx.compose.ui:ui-test-manifest:$composeVersion",
-        "androidx.compose.ui:ui-tooling:$composeVersion",
+        AndroidX.compose.ui.testManifest,
+        AndroidX.compose.ui.tooling,
     ).forEach(::debugImplementation)
 
     listOf(
-        "androidx.appcompat:appcompat:1.6.1",
-        "androidx.browser:browser:1.5.0",
-        "androidx.compose.material:material:1.5.4",
-        "androidx.compose.material3:material3:1.2.0-alpha08",
-        "androidx.compose.ui:ui-tooling-preview:$composeVersion",
-        "androidx.constraintlayout:constraintlayout:2.1.4",
-        "androidx.core:core-ktx:1.10.1",
-        "androidx.core:core-splashscreen:1.0.1",
-        "androidx.hilt:hilt-navigation-compose:1.0.0",
-        "com.google.android.material:material:1.9.0",
-        "uk.gov.android:components:2.0.0",
-        "uk.gov.android:pages:2.0.0",
-        "uk.gov.android:theme:2.0.0",
+        AndroidX.appCompat,
+        AndroidX.browser,
+        AndroidX.compose.material,
+        AndroidX.compose.material3,
+        AndroidX.compose.ui.toolingPreview,
+        AndroidX.constraintLayout,
+        AndroidX.core.ktx,
+        AndroidX.core.splashscreen,
+        AndroidX.hilt.navigationCompose,
+        Google.android.material,
+        libs.components,
+        libs.pages,
+        libs.theme,
     ).forEach(::implementation)
 
     listOf(
-        "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
-        "androidx.navigation:navigation-ui-ktx:$navigationVersion",
-    ).forEach { dep: String ->
-        implementation(dep) {
-            because(
-                "Bumping to 2.7.0 requires compile SDK 34, which the " +
-                    "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
-                    "is at the time of this writing, not released as a stable version yet.",
-            )
-        }
-    }
+        AndroidX.navigation.fragmentKtx,
+        AndroidX.navigation.uiKtx,
+    ).forEach(::implementation)
 
-    testImplementation("junit:junit:4.13.2")
+    testImplementation(Testing.junit4)
 }
 
 fun getVersionCode(): Int {

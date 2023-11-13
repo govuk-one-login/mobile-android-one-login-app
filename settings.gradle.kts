@@ -31,8 +31,17 @@ dependencyResolutionManagement {
     }
 }
 
+plugins {
+    // See https://jmfayard.github.io/refreshVersions
+    id("de.fayard.refreshVersions") version "0.60.3"
+}
+
 // https://docs.gradle.org/8.0/userguide/kotlin_dsl.html#type-safe-accessors
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "OneLogin-Android"
 include(":app")
+
+refreshVersions {
+    enableBuildSrcLibs()
+}
