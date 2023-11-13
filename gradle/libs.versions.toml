@@ -35,3 +35,4 @@ org-jacoco-agent = "org.jacoco:org.jacoco.agent:0.8.11"
 
 kotlin-parcelize-compiler = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-compiler", version.ref = "kotlin" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version = "2.3.6" }
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.3.6" }
