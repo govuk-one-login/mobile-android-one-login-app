@@ -15,6 +15,7 @@ import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeC
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeCodeArgError
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeOfflineError
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeServerError
+import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeUnexpectedResponse
 import uk.gov.onelogin.network.utils.HttpClientStub
 import uk.gov.onelogin.network.utils.HttpClientStub.Companion.HttpClientStubResponse
 import uk.gov.onelogin.network.utils.OnlineCheckerStub
@@ -114,6 +115,72 @@ class AuthCodeExchangeTest {
                 ContentType.Application.Json.toString()
             ),
             status = HttpStatusCode.BadRequest
+        )
+
+        httpClient.addResponse(
+            url = expectedUrl,
+            response = response
+        )
+
+        AuthCodeExchange(
+            code = code,
+            onlineChecker = stubOnlineChecker,
+            redirectUrl = redirectUrl,
+            url = url,
+            httpClient = httpClient.client
+        ).send()
+    }
+
+    @Test(expected = AuthCodeExchangeUnexpectedResponse::class)
+    fun `throws a AuthCodeExchangeUnexpectedResponse when a 300 range response is received`() = runBlocking {
+        val expectedUrl = URLBuilder(url).apply {
+            parameters.apply {
+                append("grant_type", "authorization_code" )
+                append("code", code)
+                append("redirect_uri", redirectUrl.toString())
+            }
+        }.build()
+
+        val response = HttpClientStubResponse(
+            content = "",
+            headers = headersOf(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json.toString()
+            ),
+            status = HttpStatusCode.MultipleChoices
+        )
+
+        httpClient.addResponse(
+            url = expectedUrl,
+            response = response
+        )
+
+        AuthCodeExchange(
+            code = code,
+            onlineChecker = stubOnlineChecker,
+            redirectUrl = redirectUrl,
+            url = url,
+            httpClient = httpClient.client
+        ).send()
+    }
+
+    @Test(expected = AuthCodeExchangeUnexpectedResponse::class)
+    fun `throws a AuthCodeExchangeUnexpectedResponse when a non-200 response is received`() = runBlocking {
+        val expectedUrl = URLBuilder(url).apply {
+            parameters.apply {
+                append("grant_type", "authorization_code" )
+                append("code", code)
+                append("redirect_uri", redirectUrl.toString())
+            }
+        }.build()
+
+        val response = HttpClientStubResponse(
+            content = "",
+            headers = headersOf(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json.toString()
+            ),
+            status = HttpStatusCode.Created
         )
 
         httpClient.addResponse(
