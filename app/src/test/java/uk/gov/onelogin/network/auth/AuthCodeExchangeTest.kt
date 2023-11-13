@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeClientError
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeCodeArgError
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeOfflineError
 import uk.gov.onelogin.network.auth.AuthCodeExchange.Companion.AuthCodeExchangeServerError
@@ -40,7 +41,7 @@ class AuthCodeExchangeTest {
     }
 
     @Test(expected = AuthCodeExchangeCodeArgError::class)
-    fun `throws a TokenExchangeCodeArgError when an empty code is passed`() {
+    fun `throws a AuthCodeCodeArgError when an empty code is passed`() {
         AuthCodeExchange(
             code = "",
             onlineChecker = stubOnlineChecker,
@@ -51,7 +52,7 @@ class AuthCodeExchangeTest {
     }
 
     @Test(expected = AuthCodeExchangeOfflineError::class)
-    fun `throws a TokenExchangeOfflineError when the device is offline`() {
+    fun `throws a AuthCodeOfflineError when the device is offline`() {
         stubOnlineChecker.online = false
 
         AuthCodeExchange(
@@ -64,7 +65,7 @@ class AuthCodeExchangeTest {
     }
 
     @Test(expected = AuthCodeExchangeServerError::class)
-    fun `throws a TokenExchangeServerError when a 500 range error is received`() = runBlocking {
+    fun `throws a AuthCodeServerError when a 500 range error is received`() = runBlocking {
         val expectedUrl = URLBuilder(url).apply {
             parameters.apply {
                 append("grant_type", "authorization_code" )
@@ -80,6 +81,39 @@ class AuthCodeExchangeTest {
                 ContentType.Application.Json.toString()
             ),
             status = HttpStatusCode.InternalServerError
+        )
+
+        httpClient.addResponse(
+            url = expectedUrl,
+            response = response
+        )
+
+        AuthCodeExchange(
+            code = code,
+            onlineChecker = stubOnlineChecker,
+            redirectUrl = redirectUrl,
+            url = url,
+            httpClient = httpClient.client
+        ).send()
+    }
+
+    @Test(expected = AuthCodeExchangeClientError::class)
+    fun `throws a AuthCodeClientError when a 400 range error is received`() = runBlocking {
+        val expectedUrl = URLBuilder(url).apply {
+            parameters.apply {
+                append("grant_type", "authorization_code" )
+                append("code", code)
+                append("redirect_uri", redirectUrl.toString())
+            }
+        }.build()
+
+        val response = HttpClientStubResponse(
+            content = "",
+            headers = headersOf(
+                HttpHeaders.ContentType,
+                ContentType.Application.Json.toString()
+            ),
+            status = HttpStatusCode.BadRequest
         )
 
         httpClient.addResponse(
