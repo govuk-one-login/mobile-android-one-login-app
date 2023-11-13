@@ -38,12 +38,16 @@ class AuthCodeExchange constructor(
             )
         }
 
-        if (response.status >= HttpStatusCode.InternalServerError) {
-            throw AuthCodeExchangeServerError("Server Error received - ${response.status}")
+        when {
+            response.status >= HttpStatusCode.InternalServerError ->
+                throw AuthCodeExchangeServerError("Server Error received - ${response.status}")
+            response.status >= HttpStatusCode.BadRequest ->
+                throw AuthCodeExchangeClientError("Client Error received - ${response.status}")
         }
     }
 
     companion object {
+        class AuthCodeExchangeClientError constructor(message: String) : Error(message)
         class AuthCodeExchangeCodeArgError constructor(message: String) : Error(message)
         class AuthCodeExchangeOfflineError constructor(message: String) : Error(message)
         class AuthCodeExchangeServerError constructor(message: String) : Error(message)
