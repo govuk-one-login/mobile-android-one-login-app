@@ -82,11 +82,6 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.ktor.client.mock)
-    val composeVersion: String by rootProject.extra
-    val intentsVersion: String by rootProject.extra
-    val navigationVersion: String by rootProject.extra
-
     listOf(
         AndroidX.test.ext.junit,
         AndroidX.test.espresso.core,
@@ -110,19 +105,21 @@ dependencies {
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
         AndroidX.hilt.navigationCompose,
+        AndroidX.navigation.fragmentKtx,
+        AndroidX.navigation.uiKtx,
         Google.android.material,
         libs.components,
+        libs.gson,
+        libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.pages,
         libs.theme
     ).forEach(::implementation)
 
     listOf(
-        AndroidX.navigation.fragmentKtx,
-        AndroidX.navigation.uiKtx
-    ).forEach(::implementation)
-
-    testImplementation(Testing.junit4)
+        Testing.junit4,
+        libs.ktor.client.mock
+    ).forEach(::testImplementation)
 }
 
 fun getVersionCode(): Int {
