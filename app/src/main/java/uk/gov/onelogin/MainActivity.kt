@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GdsTheme {
                 AppRoutes(
-                    navController = rememberNavController(),
+                    navController = rememberNavController()
                 )
             }
         }

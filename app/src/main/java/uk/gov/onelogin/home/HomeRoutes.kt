@@ -11,12 +11,11 @@ object HomeRoutes {
     fun NavGraphBuilder.homeFlowRoutes() {
         navigation(
             route = ROOT,
-            startDestination = START,
+            startDestination = START
         ) {
             composable(
-                route = START,
+                route = START
             ) {
-
             }
         }
     }

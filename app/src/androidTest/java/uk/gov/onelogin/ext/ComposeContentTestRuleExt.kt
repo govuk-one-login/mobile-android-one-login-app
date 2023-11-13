@@ -8,7 +8,7 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 
 fun ComposeContentTestRule.setupComposeTestRule(
-    screenToLoad: @Composable (NavHostController) -> Unit,
+    screenToLoad: @Composable (NavHostController) -> Unit
 ): TestNavHostController {
     lateinit var navHostController: TestNavHostController
 
