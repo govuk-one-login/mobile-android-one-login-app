@@ -8,7 +8,7 @@ import io.ktor.http.Url
 import io.ktor.http.contentType
 import uk.gov.onelogin.network.utils.IOnlineChecker
 
-class TokenExchange constructor(
+class AuthCodeExchange constructor(
     private val code: String,
     private val httpClient: HttpClient,
     onlineChecker: IOnlineChecker,
@@ -17,11 +17,11 @@ class TokenExchange constructor(
 ) {
     init {
         if (code.isEmpty()) {
-            throw TokenExchangeCodeArgError("Code should be a non-empty string")
+            throw AuthCodeExchangeCodeArgError("Code should be a non-empty string")
         }
 
         if (!onlineChecker.isOnline()) {
-            throw TokenExchangeOfflineError("The device appears to be offline")
+            throw AuthCodeExchangeOfflineError("The device appears to be offline")
         }
     }
     suspend fun send() {
@@ -39,13 +39,13 @@ class TokenExchange constructor(
         }
 
         if (response.status >= HttpStatusCode.InternalServerError) {
-            throw TokenExchangeServerError("Server Error received - ${response.status}")
+            throw AuthCodeExchangeServerError("Server Error received - ${response.status}")
         }
     }
 
     companion object {
-        class TokenExchangeCodeArgError constructor(message: String) : Error(message)
-        class TokenExchangeOfflineError constructor(message: String) : Error(message)
-        class TokenExchangeServerError constructor(message: String) : Error(message)
+        class AuthCodeExchangeCodeArgError constructor(message: String) : Error(message)
+        class AuthCodeExchangeOfflineError constructor(message: String) : Error(message)
+        class AuthCodeExchangeServerError constructor(message: String) : Error(message)
     }
 }
