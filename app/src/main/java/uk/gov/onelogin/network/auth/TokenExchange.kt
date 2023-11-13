@@ -2,7 +2,6 @@ package uk.gov.onelogin.network.auth
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
-import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
@@ -26,20 +25,13 @@ class TokenExchange constructor(
         }
     }
     suspend fun send() {
-        val response = httpClient.post {
-            url(url.toString()) {
-                parameters.append(
-                    "grant_type",
-                    "authorization_code"
-                )
-                parameters.append(
-                    "code",
-                    code
-                )
-                parameters.append(
-                    "redirect_uri",
-                    redirectUrl.toString()
-                )
+        val response = httpClient.post(url) {
+            url {
+                parameters.apply {
+                    append("grant_type", "authorization_code" )
+                    append("code", code)
+                    append("redirect_uri", redirectUrl.toString())
+                }
             }
             contentType(
                 ContentType.Application.FormUrlEncoded
