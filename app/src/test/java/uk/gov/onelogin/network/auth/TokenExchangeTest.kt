@@ -17,7 +17,7 @@ import uk.gov.onelogin.network.auth.TokenExchange.Companion.TokenExchangeServerE
 import uk.gov.onelogin.network.utils.IOnlineChecker
 
 class TokenExchangeTest {
-    class OnlineCheckerStub: IOnlineChecker {
+    class OnlineCheckerStub : IOnlineChecker {
         var online: Boolean = true
 
         override fun isOnline(): Boolean = online
@@ -27,15 +27,19 @@ class TokenExchangeTest {
 
     private val redirectUrl = Url("https://example.com/redirect")
     private val url = Url("https://example.com/token")
-    private val httpClient = HttpClient(MockEngine{
-        respond(
-            content = "",
-            status = HttpStatusCode.InternalServerError,
-            headers = headersOf(
-                HttpHeaders.ContentType, ContentType.Application.Json.toString()
+    private val httpClient = HttpClient(
+        MockEngine {
+            respond(
+                content = "",
+                status = HttpStatusCode.InternalServerError,
+                headers = headersOf(
+                    HttpHeaders.ContentType,
+                    ContentType.Application.Json.toString()
+                )
             )
-        )
-    })
+        }
+    )
+
     @Before
     fun setup() {
         stubOnlineChecker.online = true
@@ -63,9 +67,8 @@ class TokenExchangeTest {
             url = url,
             httpClient = httpClient
         )
-
-
     }
+
     @Test(expected = TokenExchangeServerError::class)
     fun `throws a TokenExchangeServerError when a 500 range error is received`() = runBlocking {
         TokenExchange(
@@ -75,7 +78,5 @@ class TokenExchangeTest {
             url = url,
             httpClient = httpClient
         ).send()
-
-
     }
 }

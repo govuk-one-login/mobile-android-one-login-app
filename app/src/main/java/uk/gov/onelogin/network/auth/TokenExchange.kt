@@ -13,7 +13,7 @@ class TokenExchange constructor(
     private val code: String,
     private val httpClient: HttpClient,
     onlineChecker: IOnlineChecker,
-    private val redirectUrl:Url,
+    private val redirectUrl: Url,
     private val url: Url
 ) {
     init {
@@ -25,17 +25,20 @@ class TokenExchange constructor(
             throw TokenExchangeOfflineError("The device appears to be offline")
         }
     }
-    suspend fun send () {
+    suspend fun send() {
         val response = httpClient.post {
-            url(url.toString()){
+            url(url.toString()) {
                 parameters.append(
-                    "grant_type","authorization_code"
+                    "grant_type",
+                    "authorization_code"
                 )
                 parameters.append(
-                    "code", code
+                    "code",
+                    code
                 )
                 parameters.append(
-                    "redirect_uri", redirectUrl.toString()
+                    "redirect_uri",
+                    redirectUrl.toString()
                 )
             }
             contentType(
@@ -43,15 +46,14 @@ class TokenExchange constructor(
             )
         }
 
-        if (response.status >= HttpStatusCode.InternalServerError){
+        if (response.status >= HttpStatusCode.InternalServerError) {
             throw TokenExchangeServerError("Server Error received - ${response.status}")
         }
     }
 
     companion object {
-        class TokenExchangeCodeArgError constructor(message: String): Error(message)
-        class TokenExchangeOfflineError constructor(message: String): Error(message)
-        class TokenExchangeServerError constructor(message: String): Error(message)
-
+        class TokenExchangeCodeArgError constructor(message: String) : Error(message)
+        class TokenExchangeOfflineError constructor(message: String) : Error(message)
+        class TokenExchangeServerError constructor(message: String) : Error(message)
     }
 }
