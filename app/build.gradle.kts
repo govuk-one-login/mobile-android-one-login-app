@@ -72,10 +72,16 @@ android {
             "production"
         ).forEach { environment ->
             create(environment) {
+                var suffix = ""
+
                 dimension = "env"
+
                 if (environment != "production") {
+                    suffix = ".$environment"
                     applicationIdSuffix = ".$environment"
                 }
+
+                manifestPlaceholders["flavorSuffix"] = suffix
             }
         }
     }
