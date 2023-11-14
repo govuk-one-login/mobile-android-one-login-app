@@ -177,7 +177,7 @@ class AuthCodeExchangeTest {
         runBlocking {
             val expectedUrl = URLBuilder(url).apply {
                 parameters.apply {
-                    append("grant_type", "authorization_code" )
+                    append("grant_type", "authorization_code")
                     append("code", code)
                     append("redirect_uri", redirectUrl.toString())
                 }
@@ -211,7 +211,7 @@ class AuthCodeExchangeTest {
     fun `returns a TokenResponse when a 200 response is received`() {
         val expectedUrl = URLBuilder(url).apply {
             parameters.apply {
-                append("grant_type", "authorization_code" )
+                append("grant_type", "authorization_code")
                 append("code", code)
                 append("redirect_uri", redirectUrl.toString())
             }
