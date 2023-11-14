@@ -25,7 +25,7 @@ class HttpClientStub {
 
             val response = responses.removeFirst()
 
-            calls.put(it.url, calls.getOrDefault(it.url, 0) + 1)
+            calls[it.url] = calls.getOrDefault(it.url, 0) + 1
 
             respond(
                 content = response.content,
@@ -40,7 +40,7 @@ class HttpClientStub {
 
         responseList.add(response)
 
-        responses.put(url, responseList)
+        responses[url] = responseList
     }
 
     fun callsRemaining(): Int {
