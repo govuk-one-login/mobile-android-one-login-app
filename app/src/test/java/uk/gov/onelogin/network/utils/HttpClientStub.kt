@@ -15,13 +15,11 @@ class HttpClientStub {
     val client = HttpClient(
         MockEngine {
             if (!responses.containsKey(it.url)) {
-                println("CSG - No mock response found for ${it.url}")
                 throw AssertionFailedError("No mock response found for ${it.url}")
             }
             val responses = responses.get(it.url)
 
             if (responses.isNullOrEmpty()) {
-                println("CSG - Expected a mock response for ${it.url} but none were left")
                 throw AssertionFailedError("Expected a mock response for ${it.url} but none were left")
             }
 
