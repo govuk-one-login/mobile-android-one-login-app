@@ -1,8 +1,12 @@
 plugins {
     id("com.android.application")
-    id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
+    id("uk.gov.onelogin.jvm-toolchains")
+    id("com.google.dagger.hilt.android")
+
+    kotlin("kapt")
 }
 
 android {
@@ -85,6 +89,10 @@ android {
             }
         }
     }
+
+    packaging {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
@@ -114,6 +122,7 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
+        Google.dagger.hilt.android,
         libs.components,
         libs.gson,
         libs.kotlinx.serialization.json,
@@ -123,9 +132,21 @@ dependencies {
     ).forEach(::implementation)
 
     listOf(
+        Google.dagger.hilt.compiler
+    ).forEach(::kapt)
+
+    listOf(
         Testing.junit4,
         libs.ktor.client.mock
     ).forEach(::testImplementation)
+}
+
+hilt {
+    enableAggregatingTask = true
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {
