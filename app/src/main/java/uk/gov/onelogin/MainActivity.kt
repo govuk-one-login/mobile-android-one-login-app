@@ -3,10 +3,6 @@ package uk.gov.onelogin
 import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
-<<<<<<< HEAD
-=======
-import androidx.activity.viewModels
->>>>>>> f35012f (Add hilt DI)
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController

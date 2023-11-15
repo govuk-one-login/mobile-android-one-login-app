@@ -12,7 +12,7 @@ class AuthCodeExchangeStub(
     private val redirectUrl: Url,
     private val url: Url
 ): IAuthCodeExchange {
-    override suspend fun exchangeCode(): TokenResponse {
+    override suspend fun exchangeCode(code: String): TokenResponse {
         return TokenResponse(
             access = "accessToken",
             expires = 180,
