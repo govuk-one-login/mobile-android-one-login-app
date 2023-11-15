@@ -34,7 +34,7 @@ class AuthCodeExchange @Inject constructor(
     @VisibleForTesting(otherwise = PRIVATE)
     private var url: Url = Url(
         context.resources.getString(
-            R.string.webBaseUrl,
+            R.string.apiBaseUrl,
             context.resources.getString(R.string.tokenExchangeEndpoint)
         )
     )
@@ -63,9 +63,13 @@ class AuthCodeExchange @Inject constructor(
 
         return when {
             response.status >= HttpStatusCode.InternalServerError ->
-                throw AuthCodeExchangeServerError("Server Error received - ${response.status}")
+                throw AuthCodeExchangeServerError(
+                    "Server Error received - ${response.status} - ${response.bodyAsText()}"
+                )
             response.status >= HttpStatusCode.BadRequest ->
-                throw AuthCodeExchangeClientError("Client Error received - ${response.status}")
+                throw AuthCodeExchangeClientError(
+                    "Client Error received - ${response.status} - ${response.bodyAsText()}"
+                )
             response.status != HttpStatusCode.OK ->
                 throw AuthCodeExchangeUnexpectedResponse("Unexpected response received - ${
                     response.status

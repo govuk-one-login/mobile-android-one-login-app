@@ -42,3 +42,4 @@ pages = "uk.gov.android:pages:2.1.0"
 theme = "uk.gov.android:theme:2.1.0"
 
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.1.0" }

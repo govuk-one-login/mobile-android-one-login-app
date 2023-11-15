@@ -3,4 +3,5 @@
     <string name="openIdConnectBaseUrl" translatable="false">https://oidc.account.gov.uk%1$s</string>
     <string name="openIdConnectClientId" translatable="false">CLIENT_ID</string>
     <string name="webBaseUrl" translatable="false">https://mobile.account.gov.uk%1$s</string>
+    <string name="apiBaseUrl" translatable="false">https://www.mobile.account.gov.uk%1$s</string>
 </resources>
