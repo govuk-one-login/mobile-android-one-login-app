@@ -93,6 +93,25 @@ android {
     packaging {
         resources.excludes.add("META-INF/*")
     }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+        animationsDisabled = true
+        unitTests.all {
+            it.useJUnitPlatform()
+            it.testLogging {
+                events = setOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
+            }
+        }
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -137,6 +156,7 @@ dependencies {
 
     listOf(
         Testing.junit4,
+        Testing.junit.jupiter,
         libs.ktor.client.mock,
         libs.mockito.kotlin
     ).forEach(::testImplementation)
