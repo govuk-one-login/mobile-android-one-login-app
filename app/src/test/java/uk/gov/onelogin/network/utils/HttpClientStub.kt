@@ -6,7 +6,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.http.Headers
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
-import junit.framework.AssertionFailedError
+import org.opentest4j.AssertionFailedError
 import uk.gov.onelogin.network.http.IHttpClient
 
 class HttpClientStub : IHttpClient {

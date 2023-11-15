@@ -3,8 +3,9 @@ package uk.gov.onelogin.network.utils
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Named.named
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.Arguments.arguments
@@ -20,13 +21,15 @@ internal class OnlineCheckerTest {
     private val connectivityManager: ConnectivityManager = mock()
     private val network: Network = mock()
     private val networkCapabilities: NetworkCapabilities = mock()
-    private val checker = OnlineChecker(connectivityManager)
 
-    @BeforeEach
-    fun setUp() {
+    private lateinit var checker: OnlineChecker
+
+    private fun setup() {
         whenever(connectivityManager.activeNetwork).thenReturn(network)
         whenever(connectivityManager.getNetworkCapabilities(eq(network)))
             .thenReturn(networkCapabilities)
+
+        checker = OnlineChecker(connectivityManager)
     }
 
     @ParameterizedTest(name = "{0}")
@@ -34,6 +37,7 @@ internal class OnlineCheckerTest {
     fun `Checks a subset of Transport types`(
         networkCapability: Int
     ) {
+        setup()
         checker.isOnline()
         verify(networkCapabilities).hasTransport(networkCapability)
     }
@@ -43,8 +47,20 @@ internal class OnlineCheckerTest {
     fun `Does not check a subset transport types`(
         networkCapability: Int
     ) {
+        setup()
         checker.isOnline()
         verify(networkCapabilities, never()).hasTransport(networkCapability)
+    }
+
+    @Test
+    fun `Returns false when getNetworkCapabilities returns null`() {
+        whenever(connectivityManager.activeNetwork).thenReturn(network)
+        whenever(connectivityManager.getNetworkCapabilities(eq(network)))
+            .thenReturn(null)
+
+        checker = OnlineChecker(connectivityManager)
+
+        assertFalse(checker.isOnline())
     }
 
     companion object {
