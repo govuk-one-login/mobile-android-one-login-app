@@ -65,7 +65,7 @@ class MainActivityViewModel constructor(
     private fun storeTokens(
         tokens: TokenResponse
     ) {
-        with(
+        with (
             context.getSharedPreferences(
                 TOKENS_PREFERENCES_FILE,
                 Context.MODE_PRIVATE

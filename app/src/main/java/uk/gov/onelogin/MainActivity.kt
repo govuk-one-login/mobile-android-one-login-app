@@ -3,9 +3,14 @@ package uk.gov.onelogin
 import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.compose.setContent
+<<<<<<< HEAD
+=======
+import androidx.activity.viewModels
+>>>>>>> f35012f (Add hilt DI)
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.network.auth.AuthCodeExchange
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
@@ -32,6 +37,7 @@ class MainActivity : AppCompatActivity() {
             authCodeExchange = authCodeExchange,
             context = this
         ).create(MainActivityViewModel::class.java)
+
 
         installSplashScreen().apply {
             setKeepOnScreenCondition { isLoading }

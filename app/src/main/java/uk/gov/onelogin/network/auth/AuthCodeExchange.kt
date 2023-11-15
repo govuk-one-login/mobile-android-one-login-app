@@ -18,6 +18,7 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.network.auth.response.TokenResponse
 import uk.gov.onelogin.network.http.IHttpClient
 import uk.gov.onelogin.network.utils.IOnlineChecker
+import javax.inject.Inject
 
 class AuthCodeExchange constructor(
     context: Context,
