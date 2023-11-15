@@ -98,7 +98,7 @@ class AuthCodeExchangeTest {
                 redirectUrl = redirectUrl,
                 url = url,
                 httpClient = httpClient.client
-            ).send()
+            ).exchangeCode()
         }
     }
 
@@ -133,7 +133,7 @@ class AuthCodeExchangeTest {
                 redirectUrl = redirectUrl,
                 url = url,
                 httpClient = httpClient.client
-            ).send()
+            ).exchangeCode()
         }
     }
 
@@ -168,7 +168,7 @@ class AuthCodeExchangeTest {
                 redirectUrl = redirectUrl,
                 url = url,
                 httpClient = httpClient.client
-            ).send()
+            ).exchangeCode()
         }
     }
 
@@ -203,7 +203,7 @@ class AuthCodeExchangeTest {
                 redirectUrl = redirectUrl,
                 url = url,
                 httpClient = httpClient.client
-            ).send()
+            ).exchangeCode()
         }
     }
 
@@ -249,7 +249,7 @@ class AuthCodeExchangeTest {
                 redirectUrl = redirectUrl,
                 url = url,
                 httpClient = httpClient.client
-            ).send()
+            ).exchangeCode()
         }
 
         assertEquals(tokens, tokenResponse)

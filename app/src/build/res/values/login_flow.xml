@@ -3,4 +3,5 @@
     <string name="openIdConnectBaseUrl" translatable="false">https://auth-stub.mobile.dev.account.gov.uk%1$s</string>
     <string name="openIdConnectClientId" translatable="false">TEST_CLIENT_ID</string>
     <string name="webBaseUrl" translatable="false">https://mobile.build.account.gov.uk%1$s</string>
+    <string name="webBaseHost" translatable="false">mobile.build.account.gov.uk</string>
 </resources>

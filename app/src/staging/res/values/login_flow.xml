@@ -3,5 +3,6 @@
     <string name="openIdConnectBaseUrl" translatable="false">https://oidc.integration.account.gov.uk%1$s</string>
     <string name="openIdConnectClientId" translatable="false">sdJChz1oGajIz0O0tdPdh0CA2zW</string>
     <string name="webBaseUrl" translatable="false">https://mobile.staging.account.gov.uk%1$s</string>
+    <string name="webBaseHost" translatable="false">mobile.staging.account.gov.uk</string>
 </resources>
 
