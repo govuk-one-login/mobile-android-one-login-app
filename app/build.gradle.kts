@@ -153,6 +153,7 @@ dependencies {
     ).forEach(::kapt)
 
     listOf(
+        Testing.junit4,
         Testing.junit.jupiter,
         libs.ktor.client.mock,
         libs.mockito.kotlin,
