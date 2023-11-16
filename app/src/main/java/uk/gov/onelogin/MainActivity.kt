@@ -6,15 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.AndroidEntryPoint
-import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.onelogin.network.auth.AuthCodeExchange
-import uk.gov.onelogin.network.auth.IAuthCodeExchange
-import uk.gov.onelogin.network.http.HttpClient
-import uk.gov.onelogin.network.utils.OnlineChecker
+import uk.gov.android.ui.theme.GdsTheme
 
 class MainActivity : AppCompatActivity() {
-    private var isLoading: Boolean = true
     private lateinit var authCodeExchange: IAuthCodeExchange
     private lateinit var viewModel: MainActivityViewModel
 
@@ -35,22 +29,25 @@ class MainActivity : AppCompatActivity() {
         ).create(MainActivityViewModel::class.java)
 
 
-        installSplashScreen().apply {
-            setKeepOnScreenCondition { isLoading }
-        }
+        installSplashScreen()
 
-        viewModel.isLoading.observe(this) {
-            isLoading = it
-        }
-
-        viewModel.handleDeepLink(
-            data = intent.data
-        )
+        val lifecycleOwner = this
 
         setContent {
+            val navController = rememberNavController()
+
+            viewModel.apply {
+                next.observe(lifecycleOwner) {
+                    navController.navigate(it)
+                }
+                handleDeepLink(
+                    data = intent.data
+                )
+            }
+
             GdsTheme {
                 AppRoutes(
-                    navController = rememberNavController()
+                    navController = navController
                 )
             }
         }

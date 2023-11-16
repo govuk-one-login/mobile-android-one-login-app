@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import uk.gov.onelogin.home.HomeRoutes
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
 import uk.gov.onelogin.network.auth.response.TokenResponse
 
@@ -19,6 +20,10 @@ class MainActivityViewModel constructor(
     private val _isLoading = MutableLiveData(true)
 
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _next = MutableLiveData<String>()
+
+    val next: LiveData<String> = _next
 
     private val tag = this::class.java.simpleName
 
@@ -33,7 +38,11 @@ class MainActivityViewModel constructor(
                 val code = data.getQueryParameter(AUTH_CODE_PARAMETER)
 
                 if (!code.isNullOrEmpty()) {
-                    exchangeCode(code)
+                    exchangeCode(code) { successful ->
+                        if (successful) {
+                            _next.value = HomeRoutes.START
+                        }
+                    }
                 }
             }
         } else {
@@ -47,18 +56,23 @@ class MainActivityViewModel constructor(
     }
 
     private fun exchangeCode(
-        code: String
+        code: String,
+        block: (success: Boolean) -> Unit
     ) {
         viewModelScope.launch {
             try {
                 val tokens = authCodeExchange.exchangeCode(code = code)
 
                 storeTokens(tokens)
+
+                block(true)
             } catch (e: Exception) {
                 println("$tag - Caught exception - $e")
             } catch (e: Error) {
                 println("$tag - Caught error - $e")
             }
+
+            block(false)
         }
     }
 
