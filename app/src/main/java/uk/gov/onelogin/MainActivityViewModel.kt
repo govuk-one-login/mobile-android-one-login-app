@@ -74,12 +74,21 @@ class MainActivityViewModel constructor(
             putString(TOKENS_PREFERENCES_KEY, Gson().toJson(tokens))
             apply()
         }
+        context.getSharedPreferences(
+            TOKENS_PREFERENCES_FILE,
+            Context.MODE_PRIVATE
+        ).getString(TOKENS_PREFERENCES_KEY, null)?.let {
+            val tokens = Gson().fromJson(
+                it,
+                TokenResponse::class.java
+            )
+        }
     }
 
     companion object {
         private const val AUTH_CODE_PARAMETER = "code"
-        private const val TOKENS_PREFERENCES_FILE = "tokens"
-        private const val TOKENS_PREFERENCES_KEY = "authTokens"
+        const val TOKENS_PREFERENCES_FILE = "tokens"
+        const val TOKENS_PREFERENCES_KEY = "authTokens"
 
         class Factory(
             private val authCodeExchange: IAuthCodeExchange,

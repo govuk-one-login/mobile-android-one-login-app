@@ -13,6 +13,7 @@
     <string name="signInSubTitle">Sign in with the same email address you use for your GOV.UK One Login.</string>
     <string name="signInButton">Sign in</string>
 
+    <string name="homeScreenTitle">Home Screen</string>
     <string name="StagingEnv">staging</string>
 
     <string name="lorem_ipsum">
