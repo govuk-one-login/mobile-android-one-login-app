@@ -84,3 +84,4 @@ jobs:
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
+        if: always()

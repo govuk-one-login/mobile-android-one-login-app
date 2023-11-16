@@ -17,5 +17,12 @@ runs:
         name: build-reports
         retention-days: 1
         if-no-files-found: error
-        path: |
-          reports.zip
+        path: reports.zip
+
+    - name: Upload logcat
+      uses: actions/upload-artifact@v3
+      with:
+        name: logcat
+        retention-days: 1
+        if-no-files-found: error
+        path: logcat.txt
