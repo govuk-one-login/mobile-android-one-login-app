@@ -11,7 +11,7 @@ class AuthCodeExchangeStub(
     onlineChecker: IOnlineChecker,
     private val redirectUrl: Url,
     private val url: Url
-): IAuthCodeExchange {
+) : IAuthCodeExchange {
     override suspend fun exchangeCode(code: String): TokenResponse {
         return TokenResponse(
             access = "accessToken",
