@@ -143,6 +143,7 @@ dependencies {
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.navigation.compose,
+        libs.ktor.client.content.negotiation,
         libs.pages,
         libs.slf4j.api,
         libs.theme
