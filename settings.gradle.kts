@@ -13,7 +13,7 @@ pluginManagement {
         kotlin("plugin.serialization") version "1.9.20"
     }
 
-//    includeBuild("buildLogic")
+    includeBuild("buildLogic")
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)

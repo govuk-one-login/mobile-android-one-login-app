@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
-//    id("uk.gov.onelogin.jvm-toolchains")
+    id("uk.gov.onelogin.jvm-toolchains")
     id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
