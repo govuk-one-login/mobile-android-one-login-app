@@ -155,8 +155,9 @@ dependencies {
     ).forEach(::kapt)
 
     listOf(
-        Testing.junit4,
         Testing.junit.jupiter,
+        Testing.junit4,
+        libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin
     ).forEach(::testImplementation)
