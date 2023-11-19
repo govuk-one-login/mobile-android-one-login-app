@@ -120,7 +120,11 @@ dependencies {
         AndroidX.test.espresso.core,
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
-        AndroidX.test.espresso.intents
+        AndroidX.test.espresso.intents,
+        libs.allure.kotlin.commons,
+        libs.allure.kotlin.junit4,
+        libs.allure.kotlin.model,
+        libs.junit.foundation
     ).forEach(::androidTestImplementation)
 
     listOf(

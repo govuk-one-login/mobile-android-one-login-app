@@ -2,7 +2,7 @@ package uk.gov.onelogin
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.testing.TestNavHostController
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.qameta.allure.kotlin.junit4.AllureRunner
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -11,7 +11,7 @@ import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.home.HomeTestRoutes
 import uk.gov.onelogin.login.LoginTestRoutes
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(AllureRunner::class)
 class AppRoutesTest {
 
     @get:Rule

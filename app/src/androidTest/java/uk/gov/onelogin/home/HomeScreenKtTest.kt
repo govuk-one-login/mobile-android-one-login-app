@@ -1,13 +1,13 @@
 package uk.gov.onelogin.home
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.qameta.allure.kotlin.junit4.AllureRunner
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.onelogin.ext.setupComposeTestRule
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(AllureRunner::class)
 class HomeScreenKtTest {
     @get:Rule
     val composeTestRule = createComposeRule()

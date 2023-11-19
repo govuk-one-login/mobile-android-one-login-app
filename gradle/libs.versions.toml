@@ -44,3 +44,7 @@ theme = "uk.gov.android:theme:2.1.0"
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.1.0" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version = "2.48.1" }
+allure-kotlin-model = { group = "io.qameta.allure", name = "allure-kotlin-model", version = "2.4.0" }
+allure-kotlin-commons = { group = "io.qameta.allure", name = "allure-kotlin-commons", version = "2.4.0" }
+allure-kotlin-junit4 = { group = "io.qameta.allure", name = "allure-kotlin-junit4", version = "2.4.0" }
+junit-foundation = { group = "com.nordstrom.tools", name = "junit-foundation", version = "17.0.3" }
