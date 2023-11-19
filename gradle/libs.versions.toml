@@ -48,3 +48,4 @@ allure-kotlin-model = { group = "io.qameta.allure", name = "allure-kotlin-model"
 allure-kotlin-commons = { group = "io.qameta.allure", name = "allure-kotlin-commons", version = "2.4.0" }
 allure-kotlin-junit4 = { group = "io.qameta.allure", name = "allure-kotlin-junit4", version = "2.4.0" }
 junit-foundation = { group = "com.nordstrom.tools", name = "junit-foundation", version = "17.0.3" }
+allure-kotlin-android = { group = "io.qameta.allure", name = "allure-kotlin-android", version = "2.4.0" }

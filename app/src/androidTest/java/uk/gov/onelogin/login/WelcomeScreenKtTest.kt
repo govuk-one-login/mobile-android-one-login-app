@@ -6,19 +6,16 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import io.qameta.allure.kotlin.junit4.AllureRunner
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 import java.util.UUID
 
-@RunWith(AllureRunner::class)
 class WelcomeScreenKtTest : TestCase() {
     @get:Rule
     val composeTestRule = createComposeRule()

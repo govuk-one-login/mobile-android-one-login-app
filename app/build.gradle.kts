@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("kotlin-android")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
@@ -20,7 +21,10 @@ android {
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner = "io.qameta.allure.android.runners.AllureAndroidJUnitRunner"
+        testInstrumentationRunnerArguments(mapOf("clearPackageData" to "true"))
     }
 
     signingConfigs {
@@ -121,6 +125,7 @@ dependencies {
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
         AndroidX.test.espresso.intents,
+        libs.allure.kotlin.android,
         libs.allure.kotlin.commons,
         libs.allure.kotlin.junit4,
         libs.allure.kotlin.model,
@@ -161,6 +166,9 @@ dependencies {
     listOf(
         Testing.junit.jupiter,
         Testing.junit4,
+        libs.allure.kotlin.commons,
+        libs.allure.kotlin.junit4,
+        libs.allure.kotlin.model,
         libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin
