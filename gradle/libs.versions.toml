@@ -52,3 +52,4 @@ allure-kotlin-android = { group = "io.qameta.allure", name = "allure-kotlin-andr
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version = "2.48.1" }
 espresso-accessibility = { group = "androidx.test.espresso", name = "espresso-accessibility", version = "3.6.0-alpha01" }
 tracing = { group = "androidx.tracing", name = "tracing", version = "1.1.0" }
+perfmark-api = { group = "io.perfmark", name = "perfmark-api", version = "0.26.0" }

@@ -168,6 +168,7 @@ dependencies {
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.pages,
+        libs.perfmark.api,
         libs.theme,
         libs.tracing
     ).forEach(::implementation)
