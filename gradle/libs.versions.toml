@@ -54,3 +54,5 @@ espresso-accessibility = { group = "androidx.test.espresso", name = "espresso-ac
 tracing = { group = "androidx.tracing", name = "tracing", version = "1.1.0" }
 perfmark-api = { group = "io.perfmark", name = "perfmark-api", version = "0.26.0" }
 perfmark-traceviewer = { group = "io.perfmark", name = "perfmark-traceviewer", version = "0.26.0" }
+netty5-all = { group = "io.netty", name = "netty5-all", version = "5.0.0.Alpha5" }
+grpc-all = { group = "io.grpc", name = "grpc-all", version = "1.59.0" }
