@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.MergeJavaResWorkAction
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -23,8 +25,7 @@ android {
 
 //        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        testInstrumentationRunner = "io.qameta.allure.android.runners.AllureAndroidJUnitRunner"
-        testInstrumentationRunnerArguments(mapOf("clearPackageData" to "true"))
+        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
     signingConfigs {
@@ -95,7 +96,7 @@ android {
     }
 
     packaging {
-        resources.excludes.add("META-INF/*")
+        resources.excludes.add("META-INF/gradle/incremental.annotation.processors")
     }
 
     testOptions {
@@ -129,8 +130,19 @@ dependencies {
         libs.allure.kotlin.commons,
         libs.allure.kotlin.junit4,
         libs.allure.kotlin.model,
+//        libs.espresso.accessibility,
+        libs.hilt.android.compiler,
+        libs.hilt.android.testing,
         libs.junit.foundation
     ).forEach(::androidTestImplementation)
+
+    /**
+     * Workaround for `Duplicate class org.checkerframework.checker` errors
+     * @see https://github.com/android/android-test/issues/861
+     */
+    androidTestImplementation(libs.espresso.accessibility) {
+        exclude(group = "org.checkerframework", module = "checker")
+    }
 
     listOf(
         AndroidX.compose.ui.testManifest,
@@ -156,7 +168,8 @@ dependencies {
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.pages,
-        libs.theme
+        libs.theme,
+        libs.tracing
     ).forEach(::implementation)
 
     listOf(
