@@ -54,4 +54,3 @@ espresso-accessibility = { group = "androidx.test.espresso", name = "espresso-ac
 tracing = { group = "androidx.tracing", name = "tracing", version = "1.1.0" }
 perfmark-api = { group = "io.perfmark", name = "perfmark-api", version = "0.26.0" }
 perfmark-impl = { group = "io.perfmark", name = "perfmark-impl", version = "0.26.0" }
-perfmark-impl-api = { group = "io.perfmark", name = "perfmark-impl-api", version = "0.14.0" }
