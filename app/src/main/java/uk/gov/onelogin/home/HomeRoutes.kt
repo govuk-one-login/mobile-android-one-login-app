@@ -2,6 +2,7 @@ package uk.gov.onelogin.home
 
 import android.content.Context
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -13,7 +14,9 @@ object HomeRoutes {
     const val ROOT: String = "/home"
     const val START: String = "$ROOT/start"
 
-    fun NavGraphBuilder.homeFlowRoutes() {
+    fun NavGraphBuilder.homeFlowRoutes(
+        navController: NavController
+    ) {
         navigation(
             route = ROOT,
             startDestination = START
@@ -32,7 +35,10 @@ object HomeRoutes {
                     tokenString,
                     TokenResponse::class.java
                 )
-                HomeScreen(tokens = tokens)
+                HomeScreen(
+                    navController = navController,
+                    tokens = tokens
+                )
             }
         }
     }

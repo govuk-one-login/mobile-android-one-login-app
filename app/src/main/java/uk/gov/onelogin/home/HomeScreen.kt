@@ -2,14 +2,18 @@ package uk.gov.onelogin.home
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
@@ -22,60 +26,64 @@ import uk.gov.onelogin.network.auth.response.TokenResponse
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    navController: NavController,
     tokens: TokenResponse
-
 ) {
-    Column {
-        /* DCMAW-7031: Configure top app bar: */
-        GdsTopAppBar(
-            title = {
-                GdsHeading(
-                    headingParameters = HeadingParameters(
-                        size = HeadingSize.H1(),
-                        text = R.string.homeScreenTitle
+    val context = LocalContext.current
+
+    GdsTheme {
+        Column {
+            /* DCMAW-7031: Configure top app bar: */
+            GdsTopAppBar(
+                title = {
+                    GdsHeading(
+                        headingParameters = HeadingParameters(
+                            size = HeadingSize.H1(),
+                            text = R.string.homeScreenTitle
+                        )
                     )
+                }
+            ).generate()
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = "Access Token",
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    tokens.access?.let { it } ?: "No access token set!",
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+                Text(
+                    text = "ID Token",
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = tokens.id?.let { it } ?: "No id token set!",
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+                Text(
+                    text = "Refresh Token",
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = tokens.refresh?.let { it } ?: "No refresh token set!",
+                    modifier = Modifier
+                        .padding(
+                            all = 16.dp
+                        )
                 )
             }
-        ).generate()
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
-        ) {
-
-            Text(
-                text = "Access Token",
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                tokens.access,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-            Text(
-                text = "ID Token",
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = tokens.id,
-                modifier = Modifier
-                    .padding(16.dp)
-            )
-            Text(
-                text = "Refresh Token",
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = tokens.refresh,
-                modifier = Modifier
-                    .padding(
-                        all = 16.dp
-                    )
-            )
+            /* DCMAW-7045: Configure bottom navigation bar: */
+            GdsNavigationBar(items = listOf()).generate()
         }
-        /* DCMAW-7045: Configure bottom navigation bar: */
-        GdsNavigationBar(items = listOf()).generate()
     }
 }
 @Composable
@@ -90,7 +98,5 @@ fun Preview() {
         type = "type"
     )
 
-    GdsTheme {
-        HomeScreen(tokens = tokens)
-    }
+    HomeScreen(tokens = tokens, navController = rememberNavController())
 }

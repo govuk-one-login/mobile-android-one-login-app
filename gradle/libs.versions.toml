@@ -34,6 +34,7 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 org-jacoco-agent = "org.jacoco:org.jacoco.agent:0.8.11"
 org-jacoco-ant = "org.jacoco:org.jacoco.ant:0.8.11"
 pages = "uk.gov.android:pages:3.0.0"
+runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version = "1.5.4" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.9" }
 theme = "uk.gov.android:theme:3.0.0"
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }

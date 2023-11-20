@@ -47,6 +47,7 @@ android {
         debug {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
+            isDebuggable = true
         }
     }
     compileOptions {
@@ -146,6 +147,7 @@ dependencies {
         libs.ktor.client.content.negotiation,
         libs.pages,
         libs.slf4j.api,
+        libs.runtime.livedata,
         libs.theme
     ).forEach(::implementation)
 
