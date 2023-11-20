@@ -96,10 +96,8 @@ android {
     }
 
     packaging {
-        resources.excludes.add("META-INF/DEPENDENCIES")
-        resources.excludes.add("META-INF/INDEX.LIST")
-        resources.excludes.add("META-INF/gradle/incremental.annotation.processors")
-        resources.excludes.add("META-INF/io.netty.versions.properties")
+        resources.excludes.add("META-INF/*")
+        resources.excludes.add("META-INF/**/*")
     }
 
     testOptions {
