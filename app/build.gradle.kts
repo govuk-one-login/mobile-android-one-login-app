@@ -96,7 +96,10 @@ android {
     }
 
     packaging {
+        resources.excludes.add("META-INF/DEPENDENCIES")
+        resources.excludes.add("META-INF/INDEX.LIST")
         resources.excludes.add("META-INF/gradle/incremental.annotation.processors")
+        resources.excludes.add("META-INF/io.netty.versions.properties")
     }
 
     testOptions {
@@ -131,6 +134,7 @@ dependencies {
         libs.allure.kotlin.junit4,
         libs.allure.kotlin.model,
 //        libs.espresso.accessibility,
+        libs.hamcrest,
         libs.hilt.android.compiler,
         libs.hilt.android.testing,
         libs.junit.foundation
