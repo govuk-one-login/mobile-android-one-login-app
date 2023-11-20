@@ -38,7 +38,8 @@ runs:
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
       with:
-        api-level: 29
+        api-level: 30
+#        api-level: 29
         arch: ${{ inputs.architecture }}
         avd-name: ${{ inputs.device-profile }}
         disable-animations: true
