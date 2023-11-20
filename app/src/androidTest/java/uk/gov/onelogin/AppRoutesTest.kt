@@ -2,6 +2,7 @@ package uk.gov.onelogin
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.testing.TestNavHostController
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -9,6 +10,7 @@ import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.home.HomeTestRoutes
 import uk.gov.onelogin.login.LoginTestRoutes
 
+@HiltAndroidTest
 class AppRoutesTest {
 
     @get:Rule

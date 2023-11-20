@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -16,6 +17,7 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 import java.util.UUID
 
+@HiltAndroidTest
 class WelcomeScreenKtTest : TestCase() {
     @get:Rule
     val composeTestRule = createComposeRule()
