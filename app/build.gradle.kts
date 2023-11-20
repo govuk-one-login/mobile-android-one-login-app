@@ -169,6 +169,8 @@ dependencies {
         libs.ktor.client.android,
         libs.pages,
         libs.perfmark.api,
+        libs.perfmark.impl,
+        libs.perfmark.impl.api,
         libs.theme,
         libs.tracing
     ).forEach(::implementation)
