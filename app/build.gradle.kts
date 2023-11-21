@@ -4,7 +4,6 @@ plugins {
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
-    id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
 }
@@ -51,11 +50,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -116,31 +115,25 @@ dependencies {
         AndroidX.constraintLayout,
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
-        AndroidX.hilt.navigationCompose,
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
-        Google.dagger.hilt.android,
         libs.components,
         libs.gson,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
+        libs.navigation.compose,
         libs.pages,
         libs.theme
     ).forEach(::implementation)
 
     listOf(
-        Google.dagger.hilt.compiler
-    ).forEach(::kapt)
-
-    listOf(
         Testing.junit4,
-        libs.ktor.client.mock
+        Testing.junit.jupiter,
+        libs.ktor.client.mock,
+        libs.mockito.kotlin,
+        kotlin("test")
     ).forEach(::testImplementation)
-}
-
-hilt {
-    enableAggregatingTask = true
 }
 
 kapt {
@@ -165,4 +158,8 @@ fun getVersionName(): String {
     }
     println("VersionName is set to $name")
     return name
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

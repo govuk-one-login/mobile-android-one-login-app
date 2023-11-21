@@ -7,8 +7,6 @@ plugins {
     id("com.android.application") apply false
     id("org.jetbrains.kotlin.android") apply false
     id("org.jlleitschuh.gradle.ktlint") apply true
-
-    id("com.google.dagger.hilt.android") version "2.48.1" apply false
 }
 
 rootProject.ext {

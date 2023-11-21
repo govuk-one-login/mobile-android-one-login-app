@@ -7,12 +7,13 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.Url
 import junit.framework.AssertionFailedError
+import uk.gov.onelogin.network.http.IHttpClient
 
-class HttpClientStub {
+class HttpClientStub : IHttpClient {
     private val responses: MutableMap<Url, MutableList<HttpClientStubResponse>> = mutableMapOf()
     private val calls: MutableMap<Url, Int> = mutableMapOf()
 
-    val client = HttpClient(
+    override fun client(): HttpClient = HttpClient(
         MockEngine {
             if (!responses.containsKey(it.url)) {
                 throw AssertionFailedError("No mock response found for ${it.url}")
