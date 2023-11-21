@@ -15,18 +15,18 @@ object LoginRoutes {
     fun NavGraphBuilder.loginFlowRoutes(state: String) {
         navigation(
             route = ROOT,
-            startDestination = START,
+            startDestination = START
         ) {
             composable(
-                route = START,
+                route = START
             ) {
                 val baseUri = stringResource(
                     id = R.string.openIdConnectBaseUrl,
-                    stringResource(id = R.string.openIdConnectAuthorizeEndpoint),
+                    stringResource(id = R.string.openIdConnectAuthorizeEndpoint)
                 )
                 val redirectUri = stringResource(
                     id = R.string.webBaseUrl,
-                    stringResource(id = R.string.webRedirectEndpoint),
+                    stringResource(id = R.string.webRedirectEndpoint)
                 )
                 val nonce = UUID.randomUUID().toString()
                 val clientID = stringResource(id = R.string.openIdConnectClientId)
@@ -36,10 +36,10 @@ object LoginRoutes {
                     nonce = nonce,
                     baseUri = baseUri,
                     redirectUri = redirectUri,
-                    clientID = clientID,
+                    clientID = clientID
                 ).apply {
                     WelcomeScreen(
-                        builder = this,
+                        builder = this
                     )
                 }
             }

@@ -4,13 +4,18 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+
+    plugins {
+        // See https://github.com/JLLeitschuh/ktlint-gradle
+        id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+    }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-ui"){
+        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-ui") {
             if (file("${rootProject.projectDir.path}/github.properties").exists()) {
                 val propsFile = File("${rootProject.projectDir.path}/github.properties")
                 val props = java.util.Properties().also { it.load(java.io.FileInputStream(propsFile)) }

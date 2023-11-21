@@ -25,7 +25,7 @@ viewbinding = { group = "androidx.databinding", name = "viewbinding", version.re
 
 kotlin-parcelize-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
 
-components = "uk.gov.android:components:2.0.2"
+components = "uk.gov.android:components:2.1.0"
 
 pages = "uk.gov.android:pages:2.0.2"
 

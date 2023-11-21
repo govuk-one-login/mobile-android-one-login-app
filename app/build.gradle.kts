@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.android")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {
@@ -36,7 +37,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -68,7 +69,7 @@ android {
             "build",
             "staging",
             "integration",
-            "production",
+            "production"
         ).forEach { environment ->
             create(environment) {
                 dimension = "env"
@@ -90,12 +91,12 @@ dependencies {
         AndroidX.test.espresso.core,
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
-        AndroidX.test.espresso.intents,
+        AndroidX.test.espresso.intents
     ).forEach(::androidTestImplementation)
 
     listOf(
         AndroidX.compose.ui.testManifest,
-        AndroidX.compose.ui.tooling,
+        AndroidX.compose.ui.tooling
     ).forEach(::debugImplementation)
 
     listOf(
@@ -111,12 +112,12 @@ dependencies {
         Google.android.material,
         libs.components,
         libs.pages,
-        libs.theme,
+        libs.theme
     ).forEach(::implementation)
 
     listOf(
         AndroidX.navigation.fragmentKtx,
-        AndroidX.navigation.uiKtx,
+        AndroidX.navigation.uiKtx
     ).forEach(::implementation)
 
     testImplementation(Testing.junit4)

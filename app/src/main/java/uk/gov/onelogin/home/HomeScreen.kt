@@ -13,7 +13,7 @@ fun HomeScreen() {
     GdsTopAppBar(
         title = {
             Text(text = "This should change")
-        },
+        }
     ).generate()
 
     /* DCMAW-7045: Configure bottom navigation bar: */

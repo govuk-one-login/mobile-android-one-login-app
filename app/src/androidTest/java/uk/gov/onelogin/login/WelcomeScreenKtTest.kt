@@ -31,7 +31,7 @@ class WelcomeScreenKtTest : TestCase() {
         nonce = nonce,
         baseUri = baseUri,
         redirectUri = redirectUri,
-        clientID = clientID,
+        clientID = clientID
     )
 
     @Before
@@ -64,8 +64,8 @@ class WelcomeScreenKtTest : TestCase() {
 
         Intents.intended(
             allOf(
-                hasData(builder.url),
-            ),
+                hasData(builder.url)
+            )
         )
     }
 }
