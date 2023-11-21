@@ -69,10 +69,8 @@ android {
     flavorDimensions += "env"
     productFlavors {
         listOf(
-            "dev",
             "build",
             "staging",
-            "integration",
             "production"
         ).forEach { environment ->
             create(environment) {
