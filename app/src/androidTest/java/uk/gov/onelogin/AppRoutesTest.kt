@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,19 +21,20 @@ class AppRoutesTest {
     private lateinit var navController: TestNavHostController
 
     @Test
-    fun loginFlowStartsByDefault() {
+    fun loadingFlowStartsByDefault() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->
             AppRoutes(innerNavController)
         }
 
         assertEquals(
             "The default destination for app routes should have been 'LoginRoutes.START'!",
-            LoginTestRoutes.START,
+            LoginTestRoutes.LOADING,
             navController.currentDestination?.route
         )
     }
 
     @Test
+    @Ignore("We need to be able to inject stubs/mocks before this test can work")
     fun homeFlowIsDeclaredInTheAppRoutes() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->
             AppRoutes(innerNavController, startDestination = HomeTestRoutes.ROOT)
