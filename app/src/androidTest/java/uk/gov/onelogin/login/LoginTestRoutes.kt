@@ -6,4 +6,5 @@ package uk.gov.onelogin.login
 object LoginTestRoutes {
     private const val ROOT: String = "/login"
     const val START: String = "$ROOT/start"
+    const val LOADING: String = "$ROOT/loading"
 }

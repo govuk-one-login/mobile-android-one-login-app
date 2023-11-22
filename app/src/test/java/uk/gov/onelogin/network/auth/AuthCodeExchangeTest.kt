@@ -184,7 +184,7 @@ class AuthCodeExchangeTest {
                 HttpHeaders.ContentType,
                 ContentType.Application.Json.toString()
             ),
-            status = HttpStatusCode.OK
+            status = HttpStatusCode.Created
         )
 
         httpClient.addResponse(

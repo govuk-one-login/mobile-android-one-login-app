@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val navController = rememberNavController()
-            println("CSG - ${intent}")
+            println("CSG - $intent")
             viewModel.apply {
                 next.observe(lifecycleOwner) {
                     navController.navigate(it)

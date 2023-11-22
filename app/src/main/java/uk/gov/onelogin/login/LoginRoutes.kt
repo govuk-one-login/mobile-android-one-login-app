@@ -56,7 +56,6 @@ object LoginRoutes {
                 }
             }
 
-
             composable(
                 route = LOADING
             ) {
