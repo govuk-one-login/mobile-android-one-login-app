@@ -3,4 +3,5 @@
     <string name="openIdConnectAuthorizeEndpoint">/authorize</string>
 
     <string name="webRedirectEndpoint">/redirect</string>
+    <string name="tokenExchangeEndpoint">/token</string>
 </resources>

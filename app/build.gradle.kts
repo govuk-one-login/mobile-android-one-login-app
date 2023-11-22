@@ -1,8 +1,11 @@
 plugins {
     id("com.android.application")
-    id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
+    id("uk.gov.onelogin.jvm-toolchains")
+
+    kotlin("kapt")
 }
 
 android {
@@ -47,11 +50,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     buildFeatures {
         compose = true
@@ -65,27 +68,31 @@ android {
     flavorDimensions += "env"
     productFlavors {
         listOf(
-            "dev",
             "build",
             "staging",
-            "integration",
             "production"
         ).forEach { environment ->
             create(environment) {
+                var suffix = ""
+
                 dimension = "env"
+
                 if (environment != "production") {
+                    suffix = ".$environment"
                     applicationIdSuffix = ".$environment"
                 }
+
+                manifestPlaceholders["flavorSuffix"] = suffix
             }
         }
+    }
+
+    packaging {
+        resources.excludes.add("META-INF/*")
     }
 }
 
 dependencies {
-    val composeVersion: String by rootProject.extra
-    val intentsVersion: String by rootProject.extra
-    val navigationVersion: String by rootProject.extra
-
     listOf(
         AndroidX.test.ext.junit,
         AndroidX.test.espresso.core,
@@ -108,19 +115,29 @@ dependencies {
         AndroidX.constraintLayout,
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
-        AndroidX.hilt.navigationCompose,
+        AndroidX.navigation.fragmentKtx,
+        AndroidX.navigation.uiKtx,
         Google.android.material,
         libs.components,
+        libs.gson,
+        libs.kotlinx.serialization.json,
+        libs.ktor.client.android,
+        libs.navigation.compose,
         libs.pages,
         libs.theme
     ).forEach(::implementation)
 
     listOf(
-        AndroidX.navigation.fragmentKtx,
-        AndroidX.navigation.uiKtx
-    ).forEach(::implementation)
+        Testing.junit4,
+        Testing.junit.jupiter,
+        libs.ktor.client.mock,
+        libs.mockito.kotlin,
+        kotlin("test")
+    ).forEach(::testImplementation)
+}
 
-    testImplementation(Testing.junit4)
+kapt {
+    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {
@@ -141,4 +158,8 @@ fun getVersionName(): String {
     }
     println("VersionName is set to $name")
     return name
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
