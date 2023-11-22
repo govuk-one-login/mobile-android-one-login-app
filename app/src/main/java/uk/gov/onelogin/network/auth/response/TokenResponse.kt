@@ -14,7 +14,7 @@ data class TokenResponse(
     @SerializedName("id_token")
     val id: String,
     @SerializedName("refresh_token")
-    val refresh: String,
+    val refresh: String?,
     val scope: String,
     @SerializedName("token_type")
     val type: String

@@ -20,7 +20,7 @@ import uk.gov.onelogin.network.http.IHttpClient
 import uk.gov.onelogin.network.utils.IOnlineChecker
 
 class AuthCodeExchange constructor(
-    private val context: Context,
+    context: Context,
     private val httpClient: IHttpClient,
     private val onlineChecker: IOnlineChecker
 ) : IAuthCodeExchange {

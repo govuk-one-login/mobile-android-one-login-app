@@ -6,6 +6,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.onelogin.ext.setupComposeTestRule
+import uk.gov.onelogin.network.auth.response.TokenResponse
 
 @RunWith(AndroidJUnit4::class)
 class HomeScreenKtTest {
@@ -15,7 +16,16 @@ class HomeScreenKtTest {
     @Test
     fun initialisesHomeScreen() {
         composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen()
+            HomeScreen(
+                tokens = TokenResponse(
+                    access = "access_token",
+                    expires = 180,
+                    id = "id_token",
+                    refresh = "refresh_token",
+                    scope = "scope",
+                    type = "type"
+                )
+            )
         }
     }
 }
