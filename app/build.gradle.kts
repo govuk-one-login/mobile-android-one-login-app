@@ -124,6 +124,7 @@ dependencies {
         libs.ktor.client.android,
         libs.navigation.compose,
         libs.pages,
+        libs.slf4j.api,
         libs.theme
     ).forEach(::implementation)
 
