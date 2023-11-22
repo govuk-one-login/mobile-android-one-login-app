@@ -1,7 +1,6 @@
 package uk.gov.onelogin.home
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.compose.rememberNavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Rule
 import org.junit.Test
@@ -18,7 +17,6 @@ class HomeScreenKtTest {
     fun initialisesHomeScreen() {
         composeTestRule.setupComposeTestRule { _ ->
             HomeScreen(
-                navController = rememberNavController(),
                 tokens = TokenResponse(
                     access = "access_token",
                     expires = 180,

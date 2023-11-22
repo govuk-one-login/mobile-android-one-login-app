@@ -17,6 +17,6 @@ fun AppRoutes(
 
     NavHost(navController = navController, startDestination = startDestination) {
         loginFlowRoutes(state)
-        homeFlowRoutes(navController = navController)
+        homeFlowRoutes()
     }
 }

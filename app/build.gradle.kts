@@ -138,7 +138,6 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
-        Google.dagger.hilt.android,
         libs.components,
         libs.gson,
         libs.kotlinx.serialization.json,
@@ -150,10 +149,6 @@ dependencies {
         libs.runtime.livedata,
         libs.theme
     ).forEach(::implementation)
-
-    listOf(
-        Google.dagger.hilt.compiler
-    ).forEach(::kapt)
 
     listOf(
         Testing.junit4,
