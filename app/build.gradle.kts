@@ -118,6 +118,7 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
+        libs.com.google.dagger.hilt.android.gradle.plugin,
         libs.components,
         libs.gson,
         libs.kotlinx.serialization.json,
