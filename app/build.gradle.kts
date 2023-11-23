@@ -88,9 +88,10 @@ android {
         }
     }
 
-    packaging {
-        resources.excludes.add("META-INF/*")
-    }
+//    packaging {
+////        resources.excludes.add("META-INF/*")
+//        resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+//    }
 }
 
 dependencies {
@@ -131,7 +132,8 @@ dependencies {
     ).forEach(::implementation)
 
     listOf(
-        libs.hilt.android.compiler
+        libs.hilt.android.compiler,
+        libs.hilt.compiler
     ).forEach(::kapt)
 
     listOf(
