@@ -119,6 +119,7 @@ dependencies {
         AndroidX.navigation.uiKtx,
         Google.android.material,
         libs.components,
+        libs.constraintlayout.compose,
         libs.gson,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,

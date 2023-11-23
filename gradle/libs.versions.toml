@@ -34,3 +34,4 @@ theme = "uk.gov.android:theme:2.1.0"
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.5" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.9" }
+constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }

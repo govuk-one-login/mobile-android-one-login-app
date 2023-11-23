@@ -17,6 +17,12 @@
 
     <string name="StagingEnv">staging</string>
 
+
+    <!-- Error Screen -->
+    <string name="errorScreenTitle">Something went wrong</string>
+    <string name="errorScreenSubTitle">You can try again or confirm your identity another way</string>
+    <string name="errorScreenButton">Try again</string>
+
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
