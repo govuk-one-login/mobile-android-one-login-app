@@ -12,9 +12,7 @@ import uk.gov.onelogin.network.auth.IAuthCodeExchange
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity @Inject constructor(
-    private var authCodeExchange: IAuthCodeExchange
-) : AppCompatActivity() {
+class MainActivity @Inject constructor() : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
 
