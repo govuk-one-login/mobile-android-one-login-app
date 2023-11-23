@@ -2,8 +2,9 @@ package uk.gov.onelogin.network.utils
 
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import javax.inject.Inject
 
-class OnlineChecker constructor(
+class OnlineChecker @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) : IOnlineChecker {
 

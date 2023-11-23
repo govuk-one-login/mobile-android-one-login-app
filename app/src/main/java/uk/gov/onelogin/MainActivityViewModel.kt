@@ -5,18 +5,19 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.home.HomeRoutes
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
 import uk.gov.onelogin.network.auth.response.TokenResponse
+import javax.inject.Inject
 
-class MainActivityViewModel constructor(
-    private val authCodeExchange: IAuthCodeExchange,
-    private val context: Context
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
+    private val authCodeExchange: IAuthCodeExchange
 ) : ViewModel() {
     private val _next = MutableLiveData<String>()
 
@@ -25,16 +26,17 @@ class MainActivityViewModel constructor(
     private val tag = this::class.java.simpleName
 
     fun handleIntent(
-        data: Uri?
+        data: Uri?,
+        context: Context
     ) {
         when {
-            data != null -> handleIntentData(data)
-            tokensAvailable() -> _next.value = HomeRoutes.START
+            data != null -> handleIntentData(data, context)
+            tokensAvailable(context) -> _next.value = HomeRoutes.START
             else -> _next.value = LoginRoutes.START
         }
     }
 
-    private fun handleIntentData(data: Uri) {
+    private fun handleIntentData(data: Uri, context: Context) {
         val webBaseHost = context.resources.getString(R.string.webBaseHost)
         val host = data.host.toString()
 
@@ -42,7 +44,7 @@ class MainActivityViewModel constructor(
             val code = data.getQueryParameter(AUTH_CODE_PARAMETER)
 
             if (!code.isNullOrEmpty()) {
-                exchangeCode(code) { successful ->
+                exchangeCode(code, context) { successful ->
                     if (successful) {
                         _next.value = HomeRoutes.START
                     }
@@ -53,13 +55,14 @@ class MainActivityViewModel constructor(
 
     private fun exchangeCode(
         code: String,
+        context: Context,
         block: (success: Boolean) -> Unit
     ) {
         viewModelScope.launch {
             try {
                 val tokens = authCodeExchange.exchangeCode(code = code)
 
-                storeTokens(tokens)
+                storeTokens(tokens, context)
 
                 block(true)
             } catch (e: Exception) {
@@ -73,7 +76,8 @@ class MainActivityViewModel constructor(
     }
 
     private fun storeTokens(
-        tokens: TokenResponse
+        tokens: TokenResponse,
+        context: Context
     ) {
         with(
             context.getSharedPreferences(
@@ -86,7 +90,7 @@ class MainActivityViewModel constructor(
         }
     }
 
-    private fun tokensAvailable(): Boolean {
+    private fun tokensAvailable(context: Context): Boolean {
         return context.getSharedPreferences(
             TOKENS_PREFERENCES_FILE,
             Context.MODE_PRIVATE
@@ -97,14 +101,5 @@ class MainActivityViewModel constructor(
         private const val AUTH_CODE_PARAMETER = "code"
         const val TOKENS_PREFERENCES_FILE = "tokens"
         const val TOKENS_PREFERENCES_KEY = "authTokens"
-
-        class Factory(
-            private val authCodeExchange: IAuthCodeExchange,
-            private val context: Context
-        ) : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MainActivityViewModel(authCodeExchange, context) as T
-            }
-        }
     }
 }
