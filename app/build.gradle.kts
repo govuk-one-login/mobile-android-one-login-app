@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
+    id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
 }
@@ -118,9 +119,9 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
-        libs.com.google.dagger.hilt.android.gradle.plugin,
         libs.components,
         libs.gson,
+        libs.hilt.android,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.navigation.compose,
@@ -128,6 +129,10 @@ dependencies {
         libs.slf4j.api,
         libs.theme
     ).forEach(::implementation)
+
+    listOf(
+        libs.hilt.android.compiler
+    ).forEach(::kapt)
 
     listOf(
         Testing.junit4,
