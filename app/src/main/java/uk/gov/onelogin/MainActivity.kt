@@ -6,13 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.network.auth.AuthCodeExchange
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
 import uk.gov.onelogin.network.http.HttpClient
 import uk.gov.onelogin.network.utils.OnlineChecker
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity @Inject constructor() : AppCompatActivity() {
     private lateinit var authCodeExchange: IAuthCodeExchange
     private lateinit var viewModel: MainActivityViewModel
 
