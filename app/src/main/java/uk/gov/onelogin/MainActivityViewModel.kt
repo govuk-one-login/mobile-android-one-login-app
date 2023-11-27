@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    val appRoutes: IAppRoutes,
     private val authCodeExchange: IAuthCodeExchange
 ) : ViewModel() {
     private val _next = MutableLiveData<String>()

@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.login.LoginRoutes
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,8 +38,9 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
             }
 
             GdsTheme {
-                AppRoutes(
-                    navController = navController
+                viewModel.appRoutes.routes(
+                    navController = navController,
+                    startDestination = LoginRoutes.ROOT
                 )
             }
         }

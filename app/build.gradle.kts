@@ -20,7 +20,9 @@ android {
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
     signingConfigs {
@@ -87,16 +89,31 @@ android {
             }
         }
     }
+
+    sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
+        sourceSet.kotlin.let { kotlin ->
+            kotlin.srcDir("src/e2eTestBuild/java")
+        }
+        sourceSet.java.let { java ->
+            java.srcDir("src/e2eTestBulid/java")
+        }
+    }
 }
 
 dependencies {
     listOf(
-        AndroidX.test.ext.junit,
-        AndroidX.test.espresso.core,
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
+        AndroidX.test.espresso.core,
         AndroidX.test.espresso.intents,
-        libs.hilt.android.testing
+        AndroidX.test.ext.junit,
+        libs.allure.kotlin.android,
+        libs.allure.kotlin.commons,
+        libs.allure.kotlin.junit4,
+        libs.allure.kotlin.model,
+        libs.core.ktx,
+        libs.hilt.android.testing,
+        libs.uiautomator
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -131,6 +148,10 @@ dependencies {
         libs.hilt.android.compiler,
         libs.hilt.compiler
     ).forEach(::kapt)
+
+    listOf(
+        libs.hilt.android.compiler
+    ).forEach(::kaptAndroidTest)
 
     listOf(
         Testing.junit.jupiter,

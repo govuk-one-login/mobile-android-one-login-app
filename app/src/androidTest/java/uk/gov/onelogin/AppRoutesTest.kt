@@ -10,9 +10,12 @@ import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.home.HomeTestRoutes
 import uk.gov.onelogin.login.LoginTestRoutes
+import javax.inject.Inject
 
 @HiltAndroidTest
-class AppRoutesTest {
+class AppRoutesTest @Inject constructor(
+    private val appRoutes: IAppRoutes
+) {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -22,7 +25,10 @@ class AppRoutesTest {
     @Test
     fun loadingFlowStartsByDefault() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->
-            AppRoutes(innerNavController)
+            appRoutes.routes(
+                navController = innerNavController,
+                startDestination = LoginTestRoutes.START
+            )
         }
 
         assertEquals(
@@ -36,7 +42,10 @@ class AppRoutesTest {
     @Ignore("We need to be able to inject stubs/mocks before this test can work")
     fun homeFlowIsDeclaredInTheAppRoutes() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->
-            AppRoutes(innerNavController, startDestination = HomeTestRoutes.ROOT)
+            appRoutes.routes(
+                navController = innerNavController,
+                startDestination = HomeTestRoutes.ROOT
+            )
         }
 
         assertEquals(

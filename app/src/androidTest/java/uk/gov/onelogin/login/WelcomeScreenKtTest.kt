@@ -2,7 +2,6 @@ package uk.gov.onelogin.login
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
@@ -10,7 +9,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
@@ -19,9 +17,6 @@ import java.util.UUID
 
 @HiltAndroidTest
 class WelcomeScreenKtTest : TestCase() {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
     private val state = UUID.randomUUID().toString()
     private val nonce = UUID.randomUUID().toString()
     private val baseUri = "https://oidc.staging.account.gov.uk/authorize"
