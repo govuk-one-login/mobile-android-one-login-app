@@ -1,8 +1,10 @@
 package uk.gov.onelogin.error
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
 import uk.gov.android.ui.components.ButtonParameters
 import uk.gov.android.ui.components.ButtonType
 import uk.gov.android.ui.components.HeadingSize
@@ -18,6 +20,7 @@ import uk.gov.onelogin.R
 
 @Composable
 fun GenericErrorScreen(
+    navController = NavHost(navController = true, graph = ),
 ) {
        ErrorPage(parameters = ErrorPageParameters(
            informationParameters = InformationParameters(
@@ -43,20 +46,10 @@ fun GenericErrorScreen(
            )
        )
        )
-}
 
-fun onBackPressed() = if (shouldAllowBack()) {
-    super.onBackPressed()
-} else {
-    doSomething()
-}
-
-fun doSomething() {
-    TODO("Not yet implemented")
-}
-
-fun shouldAllowBack(): Boolean {
-    TODO("Not yet implemented")
+    BackHandler(enabled = true, onBack = {
+        navController.popBackStack()
+    })
 }
 
 
