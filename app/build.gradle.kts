@@ -95,7 +95,8 @@ dependencies {
         AndroidX.test.espresso.core,
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
-        AndroidX.test.espresso.intents
+        AndroidX.test.espresso.intents,
+        libs.hilt.android.testing
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -132,11 +133,12 @@ dependencies {
     ).forEach(::kapt)
 
     listOf(
-        Testing.junit4,
         Testing.junit.jupiter,
+        Testing.junit4,
+        kotlin("test"),
+        libs.hilt.android.testing,
         libs.ktor.client.mock,
-        libs.mockito.kotlin,
-        kotlin("test")
+        libs.mockito.kotlin
     ).forEach(::testImplementation)
 }
 

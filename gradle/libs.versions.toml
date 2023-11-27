@@ -35,3 +35,4 @@ slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.9" }
 theme = "uk.gov.android:theme:3.1.0"
 viewbinding = { group = "androidx.databinding", name = "viewbinding", version.ref = "androidx-databinding" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version = "2.48.1" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version = "2.48.1" }
