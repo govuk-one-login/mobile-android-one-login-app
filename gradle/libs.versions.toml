@@ -8,7 +8,7 @@ org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = 
 
 [versions]
 
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 ##  ⬆ = "1.9.20-Beta"
 ##  ⬆ = "1.9.20-Beta2"
 ##  ⬆ = "1.9.20-RC"
