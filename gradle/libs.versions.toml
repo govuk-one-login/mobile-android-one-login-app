@@ -4,7 +4,7 @@
 
 com-android-application = { id = "com.android.application", version = "8.1.2" }
 
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.10" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.21" }
 
 [versions]
 
