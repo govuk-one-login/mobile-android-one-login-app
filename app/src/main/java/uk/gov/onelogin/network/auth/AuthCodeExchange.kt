@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -18,8 +19,10 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.network.auth.response.TokenResponse
 import uk.gov.onelogin.network.http.IHttpClient
 import uk.gov.onelogin.network.utils.IOnlineChecker
+import javax.inject.Inject
 
-class AuthCodeExchange constructor(
+class AuthCodeExchange @Inject constructor(
+    @ApplicationContext
     context: Context,
     private val httpClient: IHttpClient,
     private val onlineChecker: IOnlineChecker

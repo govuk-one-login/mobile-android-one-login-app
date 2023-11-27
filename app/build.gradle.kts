@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
+    id("com.google.dagger.hilt.android")
 
     kotlin("kapt")
 }
@@ -86,10 +87,6 @@ android {
             }
         }
     }
-
-    packaging {
-        resources.excludes.add("META-INF/*")
-    }
 }
 
 dependencies {
@@ -120,6 +117,7 @@ dependencies {
         Google.android.material,
         libs.components,
         libs.gson,
+        libs.hilt.android,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.navigation.compose,
@@ -127,6 +125,11 @@ dependencies {
         libs.slf4j.api,
         libs.theme
     ).forEach(::implementation)
+
+    listOf(
+        libs.hilt.android.compiler,
+        libs.hilt.compiler
+    ).forEach(::kapt)
 
     listOf(
         Testing.junit4,
