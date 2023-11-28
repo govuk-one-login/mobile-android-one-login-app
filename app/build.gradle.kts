@@ -85,7 +85,10 @@ android {
                     applicationIdSuffix = ".$environment"
                 }
 
+                val packageName = "${project.android.namespace}$suffix"
+
                 manifestPlaceholders["flavorSuffix"] = suffix
+                manifestPlaceholders["appAuthRedirectScheme"] = packageName
             }
         }
     }
@@ -99,7 +102,6 @@ android {
         }
     }
 }
-
 dependencies {
     listOf(
         AndroidX.compose.ui.testJunit4,
@@ -133,6 +135,7 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
+        libs.appauth,
         libs.components,
         libs.gson,
         libs.hilt.android,
@@ -141,7 +144,8 @@ dependencies {
         libs.navigation.compose,
         libs.pages,
         libs.slf4j.api,
-        libs.theme
+        libs.theme,
+        project(":authentication")
     ).forEach(::implementation)
 
     listOf(
