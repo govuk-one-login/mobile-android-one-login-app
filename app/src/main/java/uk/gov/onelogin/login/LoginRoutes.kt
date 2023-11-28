@@ -1,15 +1,13 @@
 package uk.gov.onelogin.login
 
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.onelogin.R
-import uk.gov.onelogin.login.nonce.INonceGenerator
+import uk.gov.android.authentication.ILoginSession
 import javax.inject.Inject
 
 class LoginRoutes @Inject constructor(
-    private val nonceGenerator: INonceGenerator
+    private val loginSession: ILoginSession
 ): ILoginRoutes {
     override fun loginFlowRoutes(
         navGraphBuilder: NavGraphBuilder,
@@ -23,28 +21,9 @@ class LoginRoutes @Inject constructor(
                 composable(
                     route = START
                 ) {
-                    val baseUri = stringResource(
-                        id = R.string.openIdConnectBaseUrl,
-                        stringResource(id = R.string.openIdConnectAuthorizeEndpoint)
+                    WelcomeScreen(
+                        loginSession = loginSession
                     )
-                    val redirectUri = stringResource(
-                        id = R.string.webBaseUrl,
-                        stringResource(id = R.string.webRedirectEndpoint)
-                    )
-                    val nonce = nonceGenerator.generate()
-                    val clientID = stringResource(id = R.string.openIdConnectClientId)
-
-                    UriBuilder(
-                        state = state,
-                        nonce = nonce,
-                        baseUri = baseUri,
-                        redirectUri = redirectUri,
-                        clientID = clientID
-                    ).apply {
-                        WelcomeScreen(
-                            builder = this
-                        )
-                    }
                 }
 
                 composable(

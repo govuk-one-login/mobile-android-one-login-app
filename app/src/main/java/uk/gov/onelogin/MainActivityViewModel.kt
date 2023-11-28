@@ -1,6 +1,7 @@
 package uk.gov.onelogin
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import uk.gov.android.authentication.ILoginSession
 import uk.gov.onelogin.home.HomeRoutes
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     val appRoutes: IAppRoutes,
-    private val authCodeExchange: IAuthCodeExchange
+    private val authCodeExchange: IAuthCodeExchange,
+    private val loginSession: ILoginSession
 ) : ViewModel() {
     private val _next = MutableLiveData<String>()
 
@@ -27,11 +30,13 @@ class MainActivityViewModel @Inject constructor(
     private val tag = this::class.java.simpleName
 
     fun handleIntent(
-        data: Uri?,
+        intent: Intent?,
         context: Context
     ) {
+        val data = intent?.data
         when {
-            data != null -> handleIntentData(data, context)
+            data != null -> loginSession.finalise(intent = intent)
+//            data != null -> handleIntentData(data, context)
             tokensAvailable(context) -> _next.value = HomeRoutes.START
             else -> _next.value = LoginRoutes.START
         }
@@ -96,6 +101,10 @@ class MainActivityViewModel @Inject constructor(
             TOKENS_PREFERENCES_FILE,
             Context.MODE_PRIVATE
         ).getString(TOKENS_PREFERENCES_KEY, null) != null
+    }
+
+    fun handleActivityResult(intent: Intent) {
+        loginSession.finalise(intent = intent)
     }
 
     companion object {
