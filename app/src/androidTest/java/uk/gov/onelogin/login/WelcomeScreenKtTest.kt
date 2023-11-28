@@ -10,6 +10,7 @@ import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import uk.gov.android.authentication.LoginSession
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
@@ -35,7 +36,7 @@ class WelcomeScreenKtTest : TestCase() {
     fun setupNavigation() {
         Intents.init()
         composeTestRule.setupComposeTestRule { _ ->
-            WelcomeScreen(builder = builder)
+            WelcomeScreen(loginSession = LoginSession())
         }
     }
 
