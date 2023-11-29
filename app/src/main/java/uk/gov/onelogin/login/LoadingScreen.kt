@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import uk.gov.android.ui.theme.m3.GdsTheme
 
-
 @Composable
 @Preview
 fun LoadingScreen() {

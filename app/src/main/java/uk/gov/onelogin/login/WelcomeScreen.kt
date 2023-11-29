@@ -15,7 +15,7 @@ import uk.gov.onelogin.R
 @Composable
 fun WelcomeScreen(
     context: Context = LocalContext.current,
-    loginSession: ILoginSession,
+    loginSession: ILoginSession
 ) {
     LandingPage(
         landingPageParameters = LandingPageParameters(
@@ -78,22 +78,22 @@ internal class WelcomeScreenParameters : PreviewParameterProvider<UriBuilder> {
     )
 }
 
-//@Preview(
+// @Preview(
 //    showBackground = true,
 //    uiMode = Configuration.UI_MODE_NIGHT_NO
-//)
-//@Preview(
+// )
+// @Preview(
 //    showBackground = true,
 //    uiMode = Configuration.UI_MODE_NIGHT_YES
-//)
-//@Composable
-//private fun Preview(
+// )
+// @Composable
+// private fun Preview(
 //    @PreviewParameter(WelcomeScreenParameters::class)
 //    builder: UriBuilder
-//) {
+// ) {
 //    GdsTheme {
 //        WelcomeScreen(
 //            builder = builder
 //        )
 //    }
-//}
+// }

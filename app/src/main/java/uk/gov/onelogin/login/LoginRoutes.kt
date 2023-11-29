@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class LoginRoutes @Inject constructor(
     private val loginSession: ILoginSession
-): ILoginRoutes {
+) : ILoginRoutes {
     override fun loginFlowRoutes(
         navGraphBuilder: NavGraphBuilder,
         state: String

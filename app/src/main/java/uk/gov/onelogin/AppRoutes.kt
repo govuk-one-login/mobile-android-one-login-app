@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AppRoutes @Inject constructor(
     private val loginRoutes: ILoginRoutes,
     private val stateGenerator: IStateGenerator
-): IAppRoutes {
+) : IAppRoutes {
     @Composable
     override fun routes(
         navController: NavHostController,
