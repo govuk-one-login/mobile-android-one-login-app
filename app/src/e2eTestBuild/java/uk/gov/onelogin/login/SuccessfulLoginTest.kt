@@ -1,23 +1,23 @@
 package uk.gov.onelogin.login
 
+import android.content.Intent
 import android.net.Uri
+import android.view.KeyEvent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.launchActivity
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Until
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.CoreMatchers
+import org.hamcrest.core.IsEqual
 import org.junit.After
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
@@ -27,6 +27,8 @@ import uk.gov.onelogin.login.nonce.NonceGeneratorStub
 import uk.gov.onelogin.login.state.IStateGenerator
 import uk.gov.onelogin.login.state.StateGeneratorModule
 import uk.gov.onelogin.login.state.StateGeneratorStub
+import uk.gov.onelogin.matchers.IsUUID
+import uk.gov.onelogin.matchers.MatchesUri
 import uk.gov.onelogin.test.settings.SettingsController
 import java.util.UUID
 
@@ -36,8 +38,6 @@ import java.util.UUID
     StateGeneratorModule::class
 )
 class SuccessfulLoginTest : TestCase() {
-    private var scenario: ActivityScenario<MainActivity>? = null
-
     private val nonce = UUID.randomUUID().toString()
 
     @BindValue
@@ -54,13 +54,22 @@ class SuccessfulLoginTest : TestCase() {
 
     @Before
     fun setup() {
+        initializeIntents()
         enableOpenByDefault()
         setupNavigation()
-        initializeIntents()
+    }
+
+    @After
+    fun tearDown() {
+        releaseIntents()
     }
 
     private fun initializeIntents() {
         Intents.init()
+    }
+
+    private fun releaseIntents() {
+        Intents.release()
     }
 
     private fun enableOpenByDefault() {
@@ -76,63 +85,125 @@ class SuccessfulLoginTest : TestCase() {
         }
     }
 
-    @After
-    fun tearDown() {
-        closeScenario()
-        releaseIntents()
-    }
-
-    private fun closeScenario() {
-        scenario?.close()
-    }
-
-    private fun releaseIntents() {
-        Intents.release()
-    }
-
     @Test
     fun logsIntoTheAppAndExchangesAuthCodeForTokens() {
-        scenario = launchActivity()
-        device.waitForIdle(1000)
-        composeTestRule.onNode(
-            hasText(
-                resources.getString(R.string.signInButton)
-            )
-        ).apply {
+        device.pressHome()
+        val intent = context.packageManager.getLaunchIntentForPackage(
+            context.packageName
+        )
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+        val signInSelector = hasText(
+            resources.getString(R.string.signInButton)
+        )
+        composeTestRule.onNode(signInSelector).apply {
             assertIsDisplayed()
             performClick()
         }
 
-        Intents.intended(
-            CoreMatchers.allOf(
-                IntentMatchers.hasData(loginIntentData())
+        device.apply {
+            val loginSelector = By.text("Login")
+            wait(
+                Until.findObject(loginSelector),
+                WAIT_FOR_OBJECT_TIMEOUT
+            )
+            pressKeyCode(KeyEvent.KEYCODE_TAB)
+            pressKeyCode(KeyEvent.KEYCODE_TAB)
+            pressKeyCode(KeyEvent.KEYCODE_TAB)
+            pressKeyCode(KeyEvent.KEYCODE_ENTER)
+            waitForIdle()
+            wait(
+                Until.findObject(
+                    By.text(
+                        resources.getString(R.string.signInButton)
+                    )
+                ),
+                WAIT_FOR_OBJECT_TIMEOUT
+            )
+        }
+
+        val authorizeUrl = Uri.parse(
+            resources.getString(
+                R.string.openIdConnectBaseUrl,
+                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+            )
+        )
+        val redirectUrl = Uri.parse(
+            resources.getString(
+                R.string.webBaseUrl,
+                resources.getString(R.string.webRedirectEndpoint)
             )
         )
 
+        Intents.intended(
+            MatchesUri(
+                host = authorizeUrl.host,
+                path = authorizeUrl.path,
+                parameters = mapOf(
+                    "client_id" to IsEqual(
+                        resources.getString(R.string.openIdConnectClientId)
+                    ),
+                    "nonce" to IsUUID(),
+                    "redirect_uri" to IsEqual(
+                        resources.getString(
+                            R.string.webBaseUrl,
+                            resources.getString(R.string.webRedirectEndpoint)
+                        )
+                    ),
+                    "response_type" to IsEqual("code"),
+                    "scope" to IsEqual("openid"),
+                    "ui_locales" to IsEqual("en"),
+                    "vtr" to IsEqual("[\"Cl.Cm.P0\"]")
+                )
+            )
+        )
+
+        device.wait(
+            Until.findObject(
+                By.text(
+                    resources.getString(R.string.homeScreenTitle)
+                )
+            ),
+            WAIT_FOR_OBJECT_TIMEOUT
+        )
+
+        Intents.intended(
+            MatchesUri(
+                host = redirectUrl.host,
+                path = redirectUrl.path,
+                parameters = mapOf(
+                    "code" to IsUUID()
+                )
+            )
+        )
         device.waitForIdle()
-        device.findObject(UiSelector().text("Login"))?.let {
-            it.click()
-        } ?: fail("Could not find login button of auth stub")
-        device.waitForIdle()
+        composeTestRule.onNode(hasText("Access Token")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasTestTag("homeScreen-accessToken")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasText("ID Token")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasTestTag("homeScreen-idToken")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasText("Refresh Token")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasTestTag("homeScreen-refreshToken")).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
     }
 
-    private fun loginIntentData(): Uri {
-        val baseUri = resources.getString(
-            R.string.openIdConnectBaseUrl,
-            resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-        )
-        val redirectUri = resources.getString(
-            R.string.webBaseUrl,
-            resources.getString(R.string.webRedirectEndpoint)
-        )
-        val clientID = resources.getString(R.string.openIdConnectClientId)
-
-        return UriBuilder(
-            state = state,
-            nonce = nonce,
-            baseUri = baseUri,
-            redirectUri = redirectUri,
-            clientID = clientID
-        ).url
+    companion object {
+        const val WAIT_FOR_OBJECT_TIMEOUT = 5000L
     }
 }

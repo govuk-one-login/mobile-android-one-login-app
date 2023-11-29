@@ -5,12 +5,13 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.onelogin.login.LoadingScreen
 import uk.gov.onelogin.login.LoginRoutes
 import javax.inject.Inject
 
@@ -18,45 +19,44 @@ import javax.inject.Inject
 class MainActivity @Inject constructor() : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
+    private var navController: NavHostController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        println("CSG - onCreate")
         super.onCreate(savedInstanceState)
-
-        installSplashScreen()
 
         val context = this
         val lifecycleOwner = this
 
-        setContent {
-            val navController = rememberNavController()
+        installSplashScreen()
 
-            viewModel.apply {
-                next.observe(lifecycleOwner) {
-                    navController.navigate(it)
-                }
-                handleIntent(
-                    context = context,
-                    intent = intent
-                )
-            }
+        setContent {
+            navController = rememberNavController()
 
             GdsTheme {
                 viewModel.appRoutes.routes(
-                    navController = navController,
+                    navController = navController!!,
                     startDestination = LoginRoutes.ROOT
                 )
+            }
+
+            LaunchedEffect(key1 = Unit) {
+                viewModel.apply {
+                    next.observe(lifecycleOwner) {
+                        navController?.navigate(it)
+                    }
+                    handleIntent(
+                        context = context,
+                        intent = intent
+                    )
+                }
             }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        println("CSG - onActivityResult")
+
         if (requestCode == LoginSession.REQUEST_CODE_AUTH) {
-            setContent {
-                LoadingScreen()
-            }
             viewModel.handleIntent(
                 context = this,
                 intent = data

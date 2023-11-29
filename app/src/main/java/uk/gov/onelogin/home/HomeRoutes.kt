@@ -1,13 +1,13 @@
 package uk.gov.onelogin.home
 
 import android.content.Context
+import androidx.compose.material3.Text
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.google.gson.Gson
+import net.openid.appauth.TokenResponse
 import uk.gov.onelogin.MainActivityViewModel
-import uk.gov.onelogin.network.auth.response.TokenResponse
 
 object HomeRoutes {
     const val ROOT: String = "/home"
@@ -28,10 +28,8 @@ object HomeRoutes {
 
                 ).getString(MainActivityViewModel.TOKENS_PREFERENCES_KEY, "")
 
-                val tokens = Gson().fromJson(
-                    tokenString,
-                    TokenResponse::class.java
-                )
+                val tokens = TokenResponse.jsonDeserialize(tokenString!!)
+
                 HomeScreen(
                     tokens = tokens
                 )

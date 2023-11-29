@@ -35,6 +35,10 @@ android {
 
 dependencies {
     listOf(
+        libs.appauth
+    ).forEach(::api)
+
+    listOf(
         libs.androidx.test.ext.junit,
         libs.espresso.core
     ).forEach(::androidTestImplementation)

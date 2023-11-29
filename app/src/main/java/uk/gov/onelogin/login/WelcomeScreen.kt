@@ -35,7 +35,7 @@ fun WelcomeScreen(
                 )
                 val tokenEndpoint = Uri.parse(
                     context.resources.getString(
-                        R.string.openIdConnectBaseUrl,
+                        R.string.apiBaseUrl,
                         context.resources.getString(R.string.tokenExchangeEndpoint)
                     )
                 )
