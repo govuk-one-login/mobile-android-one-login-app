@@ -21,7 +21,7 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version = "
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version = "2.48.1" }
 kotlin-parcelize-compiler = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-compiler", version.ref = "kotlin" }
 kotlin-parcelize-runtime = { group = "org.jetbrains.kotlin", name = "kotlin-parcelize-runtime", version.ref = "kotlin" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.1" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.2" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version = "2.3.6" }
 ##                                                                            ⬆ = "3.0.0-beta-1" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.3.6" }
