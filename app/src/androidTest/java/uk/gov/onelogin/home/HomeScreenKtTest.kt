@@ -7,7 +7,7 @@ import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
 
 @HiltAndroidTest
- class HomeScreenKtTest {
+class HomeScreenKtTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -17,4 +17,4 @@ import uk.gov.onelogin.ext.setupComposeTestRule
             HomeScreen()
         }
     }
- }
+}
