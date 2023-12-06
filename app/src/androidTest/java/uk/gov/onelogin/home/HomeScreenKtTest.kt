@@ -1,16 +1,12 @@
 package uk.gov.onelogin.home
 
-import androidx.compose.ui.test.junit4.createComposeRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Rule
 import org.junit.Test
+import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 
 @HiltAndroidTest
-class HomeScreenKtTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
+class HomeScreenKtTest : TestCase() {
     @Test
     fun initialisesHomeScreen() {
         composeTestRule.setupComposeTestRule { _ ->

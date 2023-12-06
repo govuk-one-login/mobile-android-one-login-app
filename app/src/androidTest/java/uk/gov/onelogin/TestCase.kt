@@ -11,11 +11,11 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Rule
 
 abstract class TestCase {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createComposeRule()
 
     var navController: TestNavHostController? = null
 
