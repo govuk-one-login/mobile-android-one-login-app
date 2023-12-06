@@ -1,6 +1,7 @@
 package uk.gov.onelogin.home
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -24,10 +25,14 @@ object HomeRoutes {
                 val tokenString = context.getSharedPreferences(
                     MainActivityViewModel.TOKENS_PREFERENCES_FILE,
                     Context.MODE_PRIVATE
-
                 ).getString(MainActivityViewModel.TOKENS_PREFERENCES_KEY, "")
 
-                val tokens = TokenResponse.jsonDeserialize(tokenString!!)
+                var tokens: TokenResponse? = null
+                try {
+                    tokens = TokenResponse.jsonDeserialize(tokenString!!)
+                } catch (e: IllegalArgumentException) {
+                    Log.e(this.javaClass.simpleName, "Failed to deserialize tokens", e)
+                }
 
                 HomeScreen(
                     tokens = tokens

@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.LoginSession
@@ -19,7 +18,6 @@ import javax.inject.Inject
 class MainActivity @Inject constructor() : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
-    private var navController: NavHostController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +28,11 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         installSplashScreen()
 
         setContent {
-            navController = rememberNavController()
+            val navController = rememberNavController()
 
             GdsTheme {
                 viewModel.appRoutes.routes(
-                    navController = navController!!,
+                    navController = navController,
                     startDestination = LoginRoutes.ROOT
                 )
             }
@@ -42,7 +40,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
             LaunchedEffect(key1 = Unit) {
                 viewModel.apply {
                     next.observe(lifecycleOwner) {
-                        navController?.navigate(it)
+                        navController.navigate(it)
                     }
                     handleIntent(
                         context = context,

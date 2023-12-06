@@ -1,22 +1,24 @@
 package uk.gov.onelogin.login
 
-import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.Preview
 import uk.gov.android.authentication.ILoginSession
+import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
 
 @Composable
 fun WelcomeScreen(
-    context: Context = LocalContext.current,
     loginSession: ILoginSession
 ) {
+    val context = LocalContext.current
     LandingPage(
         landingPageParameters = LandingPageParameters(
             content = listOf(
@@ -66,34 +68,19 @@ fun WelcomeScreen(
     )
 }
 
-internal class WelcomeScreenParameters : PreviewParameterProvider<UriBuilder> {
-    override val values: Sequence<UriBuilder> = sequenceOf(
-        UriBuilder(
-            baseUri = "",
-            clientID = "",
-            nonce = "",
-            redirectUri = "",
-            state = ""
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun Preview() {
+    GdsTheme {
+        WelcomeScreen(
+            loginSession = LoginSession()
         )
-    )
+    }
 }
-
-// @Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_NO
-// )
-// @Preview(
-//    showBackground = true,
-//    uiMode = Configuration.UI_MODE_NIGHT_YES
-// )
-// @Composable
-// private fun Preview(
-//    @PreviewParameter(WelcomeScreenParameters::class)
-//    builder: UriBuilder
-// ) {
-//    GdsTheme {
-//        WelcomeScreen(
-//            builder = builder
-//        )
-//    }
-// }

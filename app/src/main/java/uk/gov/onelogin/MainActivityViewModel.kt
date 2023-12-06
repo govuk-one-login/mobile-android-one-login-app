@@ -19,11 +19,10 @@ class MainActivityViewModel @Inject constructor(
     private val authCodeExchange: IAuthCodeExchange,
     private val loginSession: ILoginSession
 ) : ViewModel() {
-    private val _next = MutableLiveData<String>()
-
-    val next: LiveData<String> = _next
-
     private val tag = this::class.java.simpleName
+
+    private val _next = MutableLiveData<String>()
+    val next: LiveData<String> = _next
 
     fun handleIntent(
         intent: Intent?,
