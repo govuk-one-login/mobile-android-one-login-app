@@ -47,7 +47,6 @@ class AppRoutesTest {
         )
     }
 
-    //    @Ignore("We need to be able to inject stubs/mocks before this test can work")
     @Test
     fun homeFlowIsDeclaredInTheAppRoutes() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->

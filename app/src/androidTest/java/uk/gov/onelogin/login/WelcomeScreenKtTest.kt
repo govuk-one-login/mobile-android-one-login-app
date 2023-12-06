@@ -1,48 +1,33 @@
 package uk.gov.onelogin.login
 
+import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.hamcrest.CoreMatchers.allOf
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import uk.gov.android.authentication.LoginSession
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.kotlin.any
+import uk.gov.android.authentication.ILoginSession
+import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
-import java.util.UUID
 
 @HiltAndroidTest
 class WelcomeScreenKtTest : TestCase() {
-    private val state = UUID.randomUUID().toString()
-    private val nonce = UUID.randomUUID().toString()
-    private val baseUri = "https://oidc.staging.account.gov.uk/authorize"
-    private val redirectUri = "https://mobile-staging.account.gov.uk/redirect"
-    private val clientID = "CLIENT_ID"
-
-    private val builder = UriBuilder(
-        state = state,
-        nonce = nonce,
-        baseUri = baseUri,
-        redirectUri = redirectUri,
-        clientID = clientID
-    )
+    private val loginSession: ILoginSession = mock()
 
     @Before
     fun setupNavigation() {
-        Intents.init()
-        composeTestRule.setupComposeTestRule { _ ->
-            WelcomeScreen(loginSession = LoginSession())
-        }
-    }
+        `when`(loginSession.init(any())).thenReturn(loginSession)
 
-    @After
-    fun tearDown() {
-        Intents.release()
+        composeTestRule.setupComposeTestRule { _ ->
+            WelcomeScreen(loginSession = loginSession)
+        }
     }
 
     private val signInTitle = hasText(resources.getString(R.string.signInTitle))
@@ -59,11 +44,34 @@ class WelcomeScreenKtTest : TestCase() {
     @Test
     fun opensWebLoginViaCustomTab() {
         composeTestRule.onNode(signInButton).performClick()
-
-        Intents.intended(
-            allOf(
-                hasData(builder.url)
+        val authorizeEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.openIdConnectBaseUrl,
+                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
         )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.apiBaseUrl,
+                context.resources.getString(R.string.tokenExchangeEndpoint)
+            )
+        )
+        val redirectUri = Uri.parse(
+            context.resources.getString(
+                R.string.webBaseUrl,
+                context.resources.getString(R.string.webRedirectEndpoint)
+            )
+        )
+        val clientId = context.resources.getString(R.string.openIdConnectClientId)
+        val loginSessionConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeEndpoint,
+            clientId = clientId,
+            redirectUri = redirectUri,
+            scopes = "openid",
+            tokenEndpoint = tokenEndpoint
+        )
+
+        verify(loginSession).init(any())
+        verify(loginSession).present(loginSessionConfig)
     }
 }

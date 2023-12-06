@@ -113,7 +113,9 @@ dependencies {
         libs.allure.kotlin.model,
         libs.core.ktx,
         libs.hilt.android.testing,
-        libs.uiautomator
+        libs.uiautomator,
+        libs.mockito.kotlin,
+        libs.mockito.android
     ).forEach(::androidTestImplementation)
 
     listOf(
