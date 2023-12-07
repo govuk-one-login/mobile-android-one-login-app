@@ -12,8 +12,10 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.Until
 import kotlinx.coroutines.runBlocking
 import uk.gov.onelogin.R
+import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 
 class SettingsController constructor(
     private val context: Context,
@@ -110,6 +112,7 @@ class SettingsController constructor(
 
         try {
             device.findObject(By.text("Open supported links")).click()
+            device.wait(Until.findObject(By.text("Open in this app")), WAIT_FOR_OBJECT_TIMEOUT)
             device.findObject(By.text("Open in this app")).click()
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()

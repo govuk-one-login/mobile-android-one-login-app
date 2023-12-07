@@ -88,15 +88,18 @@ class SuccessfulLoginTest : TestCase() {
     @Test
     fun logsIntoTheAppAndExchangesAuthCodeForTokens() {
         device.pressHome()
+        println(context.packageName)
         val intent = context.packageManager.getLaunchIntentForPackage(
             context.packageName
         )
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
-        val signInSelector = hasText(
-            resources.getString(R.string.signInButton)
+
+        val signInSelector = resources.getString(R.string.signInButton)
+        device.wait(
+            Until.findObject(By.text(signInSelector)), WAIT_FOR_OBJECT_TIMEOUT
         )
-        composeTestRule.onNode(signInSelector).apply {
+        composeTestRule.onNode(hasText(signInSelector)).apply {
             assertIsDisplayed()
             performClick()
         }
