@@ -92,7 +92,7 @@ class SettingsController constructor(
         }
 
         try {
-            device.findObject(By.text("Open by default")).click()
+            device.findObject(By.text("Open by default"))?.click()
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }
