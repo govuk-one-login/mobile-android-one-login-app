@@ -133,6 +133,7 @@ class SettingsController constructor(
 
         try {
             device.findObject(By.text("Open supported links")).click()
+            device.wait(Until.findObject(By.text("Allow app to open supported links")), WAIT_FOR_OBJECT_TIMEOUT)
             device.findObject(By.text("Allow app to open supported links")).click()
             device.pressBack()
         } catch (e: UiObjectNotFoundException) {
