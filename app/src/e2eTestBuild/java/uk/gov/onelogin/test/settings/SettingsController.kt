@@ -36,6 +36,9 @@ class SettingsController constructor(
         ContextCompat.startActivity(context, intent, null)
 
         device.waitForIdle()
+        if (!device.hasObject(By.text("App info"))) {
+            throw Error("Not managed to open the settings page")
+        }
     }
 
     private fun selectOpenByDefault() {
