@@ -112,8 +112,7 @@ class SettingsController constructor(
 
         try {
             device.findObject(By.text("Open supported links")).click()
-            device.wait(Until.findObject(By.text("Open in this app")), WAIT_FOR_OBJECT_TIMEOUT)
-            device.findObject(By.text("Open in this app")).click()
+            device.wait(Until.findObject(By.text("Open in this app")), WAIT_FOR_OBJECT_TIMEOUT).click()
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }
@@ -133,8 +132,10 @@ class SettingsController constructor(
 
         try {
             device.findObject(By.text("Open supported links")).click()
-            device.wait(Until.findObject(By.text("Allow app to open supported links")), WAIT_FOR_OBJECT_TIMEOUT)
-            device.findObject(By.text("Allow app to open supported links")).click()
+            device.wait(
+                Until.findObject(By.text("Allow app to open supported links")),
+                WAIT_FOR_OBJECT_TIMEOUT
+            ).click()
             device.pressBack()
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
@@ -163,7 +164,7 @@ class SettingsController constructor(
                 val webBaseHost = context.resources.getString(R.string.webBaseHost)
                 val selector = By.text(webBaseHost)
                 var element = device.findObject(selector)
-                var count = 0;
+                var count = 0
                 while (element == null && count < 10) {
                     runBlocking {
                         Thread.sleep(100)
@@ -171,9 +172,7 @@ class SettingsController constructor(
                     element = device.findObject(selector)
                     count++
                 }
-                element?.let {
-                    it.click()
-                }?: throw Error("Couldn't find $webBaseHost in the links")
+                element?.click() ?: throw Error("Couldn't find $webBaseHost in the links")
                 device.findObject(By.text("Add")).click()
             }
         } catch (e: UiObjectNotFoundException) {
