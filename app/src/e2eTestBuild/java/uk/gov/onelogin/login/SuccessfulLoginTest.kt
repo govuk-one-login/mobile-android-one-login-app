@@ -88,7 +88,6 @@ class SuccessfulLoginTest : TestCase() {
     @Test
     fun logsIntoTheAppAndExchangesAuthCodeForTokens() {
         device.pressHome()
-        println(context.packageName)
         val intent = context.packageManager.getLaunchIntentForPackage(
             context.packageName
         )

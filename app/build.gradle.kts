@@ -92,12 +92,8 @@ android {
     }
 
     sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
-        sourceSet.kotlin.let { kotlin ->
-            kotlin.srcDir("src/e2eTestBuild/java")
-        }
-        sourceSet.java.let { java ->
-            java.srcDir("src/e2eTestBulid/java")
-        }
+        sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
+        sourceSet.java.srcDir("src/e2eTestBulid/java")
     }
 }
 dependencies {
@@ -193,4 +189,33 @@ fun getVersionName(): String {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+task<Exec>("pullScreenshotsFromDevice") {
+    mustRunAfter("connectedBuildDebugAndroidTest")
+
+    val saveLocation = "${project.buildDir}/screenshots/"
+
+    exec {
+        commandLine(
+            android.adbExecutable.toString(),
+            "exec-out",
+            "mkdir -p /sdcard/artefacts/"
+        )
+    }
+
+    exec {
+        commandLine(
+            android.adbExecutable.toString(),
+            "exec-out",
+            "run-as 'uk.gov.wallet.test' cp -r './files/'  '/sdcard/artefacts/'"
+        )
+    }
+
+    commandLine(
+        android.adbExecutable.toString(),
+        "pull",
+        "/sdcard/artefacts",
+        saveLocation
+    )
 }

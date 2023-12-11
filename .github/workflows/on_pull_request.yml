@@ -76,3 +76,16 @@ jobs:
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
+
+      - name: Bundle screenshots
+        run: |
+          zip -9 -r screenshots.zip **/build/screenshots
+
+      - name: Upload screenshots
+        id: uploadScreenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-screenshots
+          retention-days: 14
+          path: |
+            screenshots.zip

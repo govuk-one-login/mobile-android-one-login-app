@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
@@ -13,8 +14,10 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertTrue
 import uk.gov.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
+import java.io.File
 
 class SettingsController (
     private val context: Context,
@@ -35,6 +38,8 @@ class SettingsController (
         context.startActivity(intent)
 
         device.waitForIdle()
+        takeScreenshot("screenshot1.png")
+
         if (!device.hasObject(By.text("App info"))) {
             throw Error("Not managed to open the settings page for package: ${context.packageName}")
         }
@@ -93,6 +98,8 @@ class SettingsController (
             e.printStackTrace()
         }
 
+        takeScreenshot("screenshot2.png")
+
         try {
             device.findObject(By.text("Open by default"))?.click()
         } catch (e: UiObjectNotFoundException) {
@@ -131,6 +138,8 @@ class SettingsController (
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }
+
+        takeScreenshot("screenshot3.png")
 
         try {
             device.findObject(By.text("Open supported links")).click()
@@ -180,5 +189,26 @@ class SettingsController (
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    private fun takeScreenshot(fileName: String) {
+        val screenshotsFolder = StringBuilder(
+            "/screenshots"
+        )
+
+        val parentFolder = File(
+            InstrumentationRegistry.getInstrumentation().targetContext.filesDir,
+            screenshotsFolder.toString()
+        )
+
+        if (!parentFolder.exists()) {
+            parentFolder.mkdirs()
+        }
+
+        val screenshotFile = File(
+            parentFolder,
+            fileName
+        )
+        assertTrue(device.takeScreenshot(screenshotFile))
     }
 }
