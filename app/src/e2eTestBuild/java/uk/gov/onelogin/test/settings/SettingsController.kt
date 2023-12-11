@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.provider.Settings
-import androidx.core.content.ContextCompat
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
@@ -17,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import uk.gov.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 
-class SettingsController constructor(
+class SettingsController (
     private val context: Context,
     private val device: UiDevice
 ) {
@@ -25,19 +24,19 @@ class SettingsController constructor(
         openSettings()
         selectOpenByDefault()
         addLinks()
-        device.pressBack()
+        device.pressHome()
     }
 
     private fun openSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", context.applicationInfo.packageName, null)
+        val uri = Uri.fromParts("package", context.packageName, null)
         intent.data = uri
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        ContextCompat.startActivity(context, intent, null)
+        context.startActivity(intent)
 
         device.waitForIdle()
         if (!device.hasObject(By.text("App info"))) {
-            throw Error("Not managed to open the settings page")
+            throw Error("Not managed to open the settings page for package: ${context.packageName}")
         }
     }
 
