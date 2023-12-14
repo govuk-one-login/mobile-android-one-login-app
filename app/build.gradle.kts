@@ -196,17 +196,21 @@ task<Exec>("pullScreenshotsFromDevice") {
 
     val saveLocation = "${project.buildDir}/screenshots/"
 
-    commandLine(
-        android.adbExecutable,
-        "exec-out",
-        "mkdir -p /sdcard/artefacts/"
-    )
+    exec {
+        commandLine(
+            android.adbExecutable,
+            "exec-out",
+            "mkdir -p /sdcard/artefacts/"
+        )
+    }
 
-    commandLine(
-        android.adbExecutable,
-        "exec-out",
-        "run-as 'uk.gov.onelogin.test' cp -r './files/'  '/sdcard/artefacts/'"
-    )
+    exec {
+        commandLine(
+            android.adbExecutable,
+            "exec-out",
+            "run-as 'uk.gov.onelogin.test' cp -r './files/'  '/sdcard/artefacts/'"
+        )
+    }
 
     commandLine(
         android.adbExecutable,

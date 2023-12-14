@@ -18,13 +18,14 @@ import org.junit.Assert.assertTrue
 import uk.gov.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 import java.io.File
+import java.io.IOException
 
 class SettingsController (
     private val context: Context,
     private val device: UiDevice
 ) {
     fun enableOpenLinksByDefault() {
-        openSettings()
+        openSettings2()
         selectOpenByDefault()
         addLinks()
         device.pressHome()
@@ -43,6 +44,21 @@ class SettingsController (
         if (!device.hasObject(By.text("App info"))) {
             throw Error("Not managed to open the settings page for package: ${context.packageName}")
         }
+    }
+
+    private fun openSettings2() {
+        device.performActionAndWait({
+            try {
+                device.executeShellCommand("am start -a android.settings.SETTINGS")
+            } catch (e: IOException) {
+                throw RuntimeException(e)
+            }
+        }, Until.newWindow(), 1000)
+        // Check system settings has been opened.
+        assertTrue(device.hasObject(By.pkg("com.android.settings")))
+
+        device.findObject(By.text("Apps & notifications")).click()
+        device.findObject(By.text("OneLogin")).click()
     }
 
     private fun selectOpenByDefault() {
