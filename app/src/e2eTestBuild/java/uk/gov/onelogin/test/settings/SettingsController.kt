@@ -39,7 +39,7 @@ class SettingsController (
         context.startActivity(intent)
 
         device.waitForIdle()
-        takeScreenshot("screenshot1.png")
+//        takeScreenshot("screenshot1.png")
 
         if (!device.hasObject(By.text("App info"))) {
             throw Error("Not managed to open the settings page for package: ${context.packageName}")
@@ -114,7 +114,7 @@ class SettingsController (
             e.printStackTrace()
         }
 
-        takeScreenshot("screenshot2.png")
+//        takeScreenshot("screenshot2.png")
 
         try {
             device.findObject(By.text("Open by default"))?.click()
@@ -155,7 +155,7 @@ class SettingsController (
             e.printStackTrace()
         }
 
-        takeScreenshot("screenshot3.png")
+//        takeScreenshot("screenshot3.png")
 
         try {
             device.findObject(By.text("Open supported links")).click()
