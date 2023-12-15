@@ -55,10 +55,13 @@ class SettingsController (
             }
         }, Until.newWindow(), 1000)
         // Check system settings has been opened.
-        assertTrue(device.hasObject(By.pkg("com.android.settings")))
-
+        // assertTrue(device.hasObject(By.pkg("com.android.settings")))
+        device.waitForIdle()
+        if (!device.hasObject(By.text("Apps & notifications"))) {
+            throw Error("Not managed to open the settings, or can't find 'Apps and Notifications' title")
+        }
         device.findObject(By.text("Apps & notifications")).click()
-        device.findObject(By.text("OneLogin")).click()
+        device.wait(Until.findObject(By.text("OneLogin")), WAIT_FOR_OBJECT_TIMEOUT).click()
     }
 
     private fun selectOpenByDefault() {
