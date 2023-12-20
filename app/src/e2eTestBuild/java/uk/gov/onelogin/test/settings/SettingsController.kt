@@ -14,18 +14,20 @@ import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Assert.assertTrue
 import uk.gov.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 import java.io.File
 import java.io.IOException
 
+
 class SettingsController (
     private val context: Context,
     private val device: UiDevice
 ) {
     fun enableOpenLinksByDefault() {
-        openSettings2()
+        openSettings4()
         selectOpenByDefault()
         addLinks()
         device.pressHome()
@@ -47,6 +49,9 @@ class SettingsController (
     }
 
     private fun openSettings2() {
+        device.pressHome()
+        device.pressMenu()
+        device.wait(Until.hasObject(By.text("Settings")), WAIT_FOR_OBJECT_TIMEOUT)
         device.performActionAndWait({
             try {
                 device.executeShellCommand("am start -a android.settings.SETTINGS")
@@ -60,6 +65,41 @@ class SettingsController (
         if (!device.wait(Until.hasObject(By.text("Search settings")), WAIT_FOR_OBJECT_TIMEOUT)) {
             throw Error("Not managed to open the settings, or can't find search settings bar")
         }
+        device.findObject(By.text("Apps & notifications")).click()
+        device.wait(Until.findObject(By.text("All apps")), WAIT_FOR_OBJECT_TIMEOUT).click()
+        val settingsPage = UiScrollable(UiSelector().scrollable(true))
+        val advancedSelector = UiSelector().childSelector(
+            UiSelector().text("OneLogin")
+        )
+
+        try {
+            settingsPage.scrollIntoView(advancedSelector)
+        } catch (e: UiObjectNotFoundException) {
+            e.printStackTrace()
+        }
+        device.wait(Until.findObject(By.text("OneLogin")), WAIT_FOR_OBJECT_TIMEOUT).click()
+    }
+
+    private fun openSettings3() {
+        device.pressHome()
+        val drawerIcon = device.findObject(UiSelector().description("Apps"))
+        drawerIcon.clickAndWaitForNewWindow()
+        val appToTest =
+            device.findObject(UiSelector().description("Settings"))
+        appToTest.clickAndWaitForNewWindow()
+    }
+
+    private fun openSettings4() {
+        val intent = Intent(Settings.ACTION_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        println("Component: ${intent.component?.flattenToShortString()}")
+
+        Assert.assertNotNull("Failed to find launch intent", intent)
+
+        context.startActivity(intent)
+
         device.findObject(By.text("Apps & notifications")).click()
         device.wait(Until.findObject(By.text("OneLogin")), WAIT_FOR_OBJECT_TIMEOUT).click()
     }
