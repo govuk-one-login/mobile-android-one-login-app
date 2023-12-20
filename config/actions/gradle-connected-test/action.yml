@@ -48,5 +48,5 @@ runs:
         script: |
           adb kill-server
           adb start-server
-          ./gradlew connectedBuildDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace pullScreenshotsFromDevice
+          ./gradlew connectedBuildDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace
         target: playstore
