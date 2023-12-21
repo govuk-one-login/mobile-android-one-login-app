@@ -100,9 +100,7 @@ class SettingsController (
         Assert.assertNotNull("Failed to find launch intent", intent)
 
         context.startActivity(intent)
-        if (!device.wait(Until.hasObject(By.text("Search settings")), WAIT_FOR_OBJECT_TIMEOUT)) {
-            throw Error("Not managed to open the settings, or can't find search settings bar")
-        }
+        device.waitForIdle()
         device.findObject(By.text("Apps & notifications")).click()
         device.wait(Until.findObject(By.text(Pattern.compile("^See all [0-9]* apps$"))), WAIT_FOR_OBJECT_TIMEOUT).click()
         val appList = UiScrollable(UiSelector().scrollable(true))
