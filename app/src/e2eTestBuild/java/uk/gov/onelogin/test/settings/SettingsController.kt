@@ -100,8 +100,7 @@ class SettingsController (
         Assert.assertNotNull("Failed to find launch intent", intent)
 
         context.startActivity(intent)
-        device.waitForIdle()
-        device.findObject(By.text("Apps & notifications")).click()
+        device.wait(Until.findObject(By.text("Apps & notifications")),WAIT_FOR_OBJECT_TIMEOUT).click()
         device.wait(Until.findObject(By.text(Pattern.compile("^See all [0-9]* apps$"))), WAIT_FOR_OBJECT_TIMEOUT).click()
         val appList = UiScrollable(UiSelector().scrollable(true))
         val appSelector = UiSelector().childSelector(
