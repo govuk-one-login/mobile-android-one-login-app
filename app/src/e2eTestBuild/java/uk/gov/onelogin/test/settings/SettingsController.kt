@@ -20,6 +20,7 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 import java.io.File
 import java.io.IOException
+import java.util.regex.Pattern
 
 
 class SettingsController (
@@ -27,7 +28,7 @@ class SettingsController (
     private val device: UiDevice
 ) {
     fun enableOpenLinksByDefault() {
-        openSettings()
+        openSettings4()
         selectOpenByDefault()
         addLinks()
         device.pressHome()
@@ -103,7 +104,22 @@ class SettingsController (
             throw Error("Not managed to open the settings, or can't find search settings bar")
         }
         device.findObject(By.text("Apps & notifications")).click()
-        device.wait(Until.findObject(By.text("OneLogin")), WAIT_FOR_OBJECT_TIMEOUT).click()
+        device.wait(Until.findObject(By.text(Pattern.compile("^See all [0-9]* apps$"))), WAIT_FOR_OBJECT_TIMEOUT).click()
+        val appList = UiScrollable(UiSelector().scrollable(true))
+        val appSelector = UiSelector().childSelector(
+            UiSelector().text("OneLogin")
+        )
+
+        try {
+            appList.scrollIntoView(appSelector)
+        } catch (e: UiObjectNotFoundException) {
+            e.printStackTrace()
+        }
+        try {
+            device.findObject(By.text("OneLogin"))?.click()
+        } catch (e: UiObjectNotFoundException) {
+            e.printStackTrace()
+        }
     }
 
     private fun selectOpenByDefault() {
