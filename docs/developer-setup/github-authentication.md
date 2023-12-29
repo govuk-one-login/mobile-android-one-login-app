@@ -15,7 +15,9 @@ development:
 - `gpr.user`: The developer's Github account name. Associated with the `GITHUB_ACTOR` environment
   variable.
 - `gpr.token`: The developer's Personal Access Token (PAT), generated in the
-  [Github developer settings]. Associated with the `GITHUB_TOKEN` environment variable.
+  [Github developer settings]. Associated with the `GITHUB_TOKEN` environment variable. This token
+  must only have the `packages:read` permission, as the github workflow files handle uploading
+  artefacts.
 
 The proceeding command outputs the existing Personal Access Token, if the
 [Github Command-Line Interface (CLI) tool] is installed:

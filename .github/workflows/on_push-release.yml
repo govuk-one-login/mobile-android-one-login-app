@@ -16,6 +16,9 @@ jobs:
     runs-on: macos-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      packages: read
       id-token: write
       contents: write
     outputs:
@@ -97,10 +100,10 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          github-token: ${{ secrets.PACKAGES_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           flavors: 'staging'
 #          flavors: 'staging,production'
-          github-actor: ${{ secrets.PACKAGES_USER }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 

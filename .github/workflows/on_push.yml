@@ -18,6 +18,11 @@ jobs:
     name: Verify code base when pushed
     runs-on: macos-latest
 #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      packages: read
+    
     steps:
       - name: Run checkout github action
         uses: actions/checkout@v4
@@ -52,8 +57,8 @@ jobs:
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
-          github-token: ${{ secrets.PACKAGES_PAT }}
-          github-actor: ${{ secrets.PACKAGES_USER }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
 
