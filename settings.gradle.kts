@@ -24,7 +24,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(
             "https://maven.pkg.github.com/govuk-one-login/mobile-android-ui",
-            setupGithubCredentials(),
+            setupGithubCredentials()
         )
     }
 }
@@ -63,7 +63,7 @@ fun fetchGithubCredentials(): Pair<String, String> {
             "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
                 "location for instructions:\n\n" +
                 "${rootDir.path}/docs/developer-setup/github-authentication.md\n",
-            exception,
+            exception
         )
 
         System.getenv("GITHUB_ACTOR") to System.getenv("GITHUB_TOKEN")
