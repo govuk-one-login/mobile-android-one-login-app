@@ -16,6 +16,7 @@ jobs:
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      contents: read
       packages: read
     
 #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration

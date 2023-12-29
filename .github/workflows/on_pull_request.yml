@@ -25,6 +25,7 @@ jobs:
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      contents: read
       packages: read
 
     steps:

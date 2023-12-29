@@ -20,7 +20,7 @@ jobs:
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       packages: read
       id-token: write
-      contents: write
+      contents: read
     outputs:
       version: ${{ steps.version-number.outputs.version }}
     steps:
@@ -72,6 +72,9 @@ jobs:
     needs: prepareForRelease
     runs-on: macos-latest
     environment: release
+    permissions:
+      contents: write
+      packages: read
 
     steps:
       - name: Run checkout github action
