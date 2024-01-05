@@ -6,7 +6,7 @@ plugins {
     id("com.android.application") apply false
     id("org.jetbrains.kotlin.android") apply false
     id("org.jlleitschuh.gradle.ktlint") apply true
-    id("com.google.dagger.hilt.android") version "2.48.1" apply false
+    id("com.google.dagger.hilt.android") version "2.50" apply false
 }
 val localProperties = Properties()
 if (rootProject.file("local.properties").exists()) {
