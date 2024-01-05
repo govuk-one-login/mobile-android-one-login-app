@@ -3,7 +3,9 @@
 # Run checks
 # Linting is done on a per-environment basis, due to the differing values that exist.
 ./gradlew \
+  ktlintCheck \
   lint \
   test \
+  vale \
   --daemon \
   --stacktrace

@@ -20,7 +20,7 @@ android {
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
     signingConfigs {
@@ -83,19 +83,35 @@ android {
                     applicationIdSuffix = ".$environment"
                 }
 
+                val packageName = "${project.android.namespace}$suffix"
+
                 manifestPlaceholders["flavorSuffix"] = suffix
+                manifestPlaceholders["appAuthRedirectScheme"] = packageName
             }
         }
     }
-}
 
+    sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
+        sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
+        sourceSet.java.srcDir("src/e2eTestBulid/java")
+    }
+}
 dependencies {
     listOf(
-        AndroidX.test.ext.junit,
-        AndroidX.test.espresso.core,
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
-        AndroidX.test.espresso.intents
+        AndroidX.test.espresso.core,
+        AndroidX.test.espresso.intents,
+        AndroidX.test.ext.junit,
+        libs.allure.kotlin.android,
+        libs.allure.kotlin.commons,
+        libs.allure.kotlin.junit4,
+        libs.allure.kotlin.model,
+        libs.core.ktx,
+        libs.hilt.android.testing,
+        libs.uiautomator,
+        libs.mockito.kotlin,
+        libs.mockito.android
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -115,6 +131,7 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
+        libs.appauth,
         libs.components,
         libs.gson,
         libs.hilt.android,
@@ -123,7 +140,8 @@ dependencies {
         libs.navigation.compose,
         libs.pages,
         libs.slf4j.api,
-        libs.theme
+        libs.theme,
+        project(":authentication")
     ).forEach(::implementation)
 
     listOf(
@@ -132,11 +150,16 @@ dependencies {
     ).forEach(::kapt)
 
     listOf(
-        Testing.junit4,
+        libs.hilt.android.compiler
+    ).forEach(::kaptAndroidTest)
+
+    listOf(
         Testing.junit.jupiter,
+        Testing.junit4,
+        kotlin("test"),
+        libs.hilt.android.testing,
         libs.ktor.client.mock,
-        libs.mockito.kotlin,
-        kotlin("test")
+        libs.mockito.kotlin
     ).forEach(::testImplementation)
 }
 
@@ -166,4 +189,29 @@ fun getVersionName(): String {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+task<Exec>("pullScreenshotsFromDevice") {
+    mustRunAfter("connectedBuildDebugAndroidTest")
+
+    val saveLocation = "${project.buildDir}/screenshots/"
+
+    commandLine(
+        android.adbExecutable,
+        "exec-out",
+        "mkdir -p /sdcard/artefacts/"
+    )
+
+    commandLine(
+        android.adbExecutable,
+        "exec-out",
+        "run-as 'uk.gov.onelogin.test' cp -r './files/'  '/sdcard/artefacts/'"
+    )
+
+    commandLine(
+        android.adbExecutable,
+        "pull",
+        "/sdcard/artefacts",
+        saveLocation
+    )
 }

@@ -38,7 +38,7 @@ runs:
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
       with:
-        api-level: 29
+        api-level: 30
         arch: ${{ inputs.architecture }}
         avd-name: ${{ inputs.device-profile }}
         disable-animations: true
@@ -46,5 +46,7 @@ runs:
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -change-locale ${{ inputs.locale }}
         profile: ${{ inputs.device-profile }}
         script: |
+          adb kill-server
+          adb start-server
           ./gradlew connectedBuildDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace
         target: playstore

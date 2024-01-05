@@ -1,31 +1,16 @@
 package uk.gov.onelogin.home
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Rule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
-import org.junit.runner.RunWith
+import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.network.auth.response.TokenResponse
 
-@RunWith(AndroidJUnit4::class)
-class HomeScreenKtTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
+@HiltAndroidTest
+class HomeScreenKtTest : TestCase() {
     @Test
     fun initialisesHomeScreen() {
         composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen(
-                tokens = TokenResponse(
-                    access = "access_token",
-                    expires = 180,
-                    id = "id_token",
-                    refresh = "refresh_token",
-                    scope = "scope",
-                    type = "type"
-                )
-            )
+            HomeScreen()
         }
     }
 }

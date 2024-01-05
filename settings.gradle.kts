@@ -11,6 +11,8 @@ pluginManagement {
 
         kotlin("jvm") version "1.9.20"
         kotlin("plugin.serialization") version "1.9.21"
+        id("com.android.library")
+        id("org.jetbrains.kotlin.android")
     }
 
     includeBuild("buildLogic")
@@ -51,6 +53,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "OneLogin-Android"
 include(":app")
+include(":authentication")
 
 refreshVersions {
     enableBuildSrcLibs()
