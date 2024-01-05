@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html
+set -o errexit
+
+# Check if the Github CLI tool is installed: https://cli.github.com/
+which gh
+
+# Create the home directory's gradle.properties file if it doesn't exist
+touch ~/.gradle/gradle.properties
+
+# Get Github account name from User input
+read -rp 'Github Username: ' GITHUB_USER
+
+# Append account name property to gradle.properties
+echo "gpr.user=${GITHUB_USER}" >> ~/.gradle/gradle.properties
+
+# Append Personal Access Token (PAT) property to gradle.properties. Uses Github CLI in a sub-shell.
+echo "gpr.token=$(gh auth token)" >> ~/.gradle/gradle.properties
