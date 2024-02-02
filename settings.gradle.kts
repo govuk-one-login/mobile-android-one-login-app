@@ -61,8 +61,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "OneLogin-Android"
 include(":app")
+include(":features")
 
 refreshVersions {
     enableBuildSrcLibs()
 }
-include(":features")

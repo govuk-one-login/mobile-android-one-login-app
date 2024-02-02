@@ -9,15 +9,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
+import uk.gov.android.features.FeatureFlags
+import uk.gov.android.features.InMemoryFeatureFlags
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
+import uk.gov.onelogin.features.StsFeatureFlag
 
 @Composable
 fun WelcomeScreen(
-    loginSession: LoginSession
+    loginSession: LoginSession,
+    featureFlags: FeatureFlags
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -32,7 +36,11 @@ fun WelcomeScreen(
             onPrimary = {
                 val authorizeEndpoint = Uri.parse(
                     context.resources.getString(
-                        R.string.openIdConnectBaseUrl,
+                        if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                            R.string.stsUrl
+                        } else {
+                            R.string.openIdConnectBaseUrl
+                        },
                         context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
                     )
                 )
@@ -81,9 +89,8 @@ fun WelcomeScreen(
 private fun Preview() {
     GdsTheme {
         WelcomeScreen(
-            loginSession = AppAuthSession(
-                LocalContext.current
-            )
+            AppAuthSession(LocalContext.current),
+            InMemoryFeatureFlags(setOf())
         )
     }
 }

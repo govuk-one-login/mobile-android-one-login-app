@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
@@ -9,14 +9,10 @@ plugins {
 
 android {
     namespace = rootProject.ext["appId"] as String
-    compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
     defaultConfig {
-        applicationId = rootProject.ext["appId"] as String
         minSdk = rootProject.ext["minSdkVersion"] as Int
-        targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = rootProject.ext["versionCode"] as Int
-        versionName = rootProject.ext["versionName"] as String
+        compileSdk = rootProject.ext["compileSdkVersion"] as Int
     }
 
     buildTypes {
@@ -62,11 +58,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
 
     testOptions {
@@ -88,14 +84,13 @@ android {
 }
 
 dependencies {
-
     listOf(
         libs.appcompat,
         libs.androidx.core.core.ktx
     ).forEach(::implementation)
 
     listOf(
-        libs.junit
+        Testing.junit.jupiter
     ).forEach(::testImplementation)
 
     listOf(

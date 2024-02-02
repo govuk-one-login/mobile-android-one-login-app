@@ -141,8 +141,8 @@ dependencies {
         libs.pages,
         libs.slf4j.api,
         libs.theme,
-//        libs.appauth
-        libs.authentication
+        libs.authentication,
+        project(":features")
     ).forEach(::implementation)
 
     implementation(libs.authentication) { isTransitive = true }

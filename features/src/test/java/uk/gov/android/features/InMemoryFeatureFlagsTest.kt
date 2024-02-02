@@ -1,10 +1,10 @@
 package uk.gov.android.features
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class InMemoryFeatureFlagsTest {
 
@@ -31,19 +31,19 @@ class InMemoryFeatureFlagsTest {
     @Test
     fun `enabled features defined by existence within private Set`() {
         assertTrue(
-            "The API feature should be within the FeatureFlags object!",
-            FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.existingFeature]
+            FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.existingFeature],
+            "The API feature should be within the FeatureFlags object!"
         )
         assertFalse(
-            "The anonymous object should not have it's feature enabled!",
-            FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.unitTestFeature]
+            FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.unitTestFeature],
+            "The anonymous object should not have it's feature enabled!"
         )
         assertFalse(
-            "The and logic should have been false due to the disabled unitTestFeature!",
             FeatureFlagsTestData.originalFeatures[
                 FeatureFlagsTestData.existingFeature,
                 FeatureFlagsTestData.unitTestFeature
-            ]
+            ],
+            "The and logic should have been false due to the disabled unitTestFeature!"
         )
     }
 
@@ -52,19 +52,19 @@ class InMemoryFeatureFlagsTest {
         updateBySet: InMemoryFeatureFlags
     ) {
         assertNotEquals(
-            "originalFeatures should have created a different object via Flag!",
             FeatureFlagsTestData.originalFeatures,
-            updateByFlag
+            updateByFlag,
+            "originalFeatures should have created a different object via Flag!"
         )
         assertNotEquals(
-            "originalFeatures should have created a different object via Set!",
             FeatureFlagsTestData.originalFeatures,
-            updateBySet
+            updateBySet,
+            "originalFeatures should have created a different object via Set!"
         )
         assertEquals(
-            "updateByFlag should value-match updateBySet!",
             updateByFlag,
-            updateBySet
+            updateBySet,
+            "updateByFlag should value-match updateBySet!"
         )
     }
 }

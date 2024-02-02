@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="openIdConnectBaseUrl" translatable="false">https://oidc.account.gov.uk%1$s</string>
+    <string name="stsUrl" translatable="false">https://token.staging.account.gov.uk%1$s</string>
     <string name="openIdConnectClientId" translatable="false">CLIENT_ID</string>
     <string name="webBaseUrl" translatable="false">https://mobile.account.gov.uk%1$s</string>
     <string name="webBaseHost" translatable="false">mobile.account.gov.uk</string>
