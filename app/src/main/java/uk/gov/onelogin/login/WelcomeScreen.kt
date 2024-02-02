@@ -1,11 +1,12 @@
 package uk.gov.onelogin.login
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import uk.gov.android.authentication.ILoginSession
+import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.ui.components.content.GdsContentText
@@ -16,7 +17,7 @@ import uk.gov.onelogin.R
 
 @Composable
 fun WelcomeScreen(
-    loginSession: ILoginSession
+    loginSession: LoginSession
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -50,13 +51,13 @@ fun WelcomeScreen(
                 val clientId = context.resources.getString(R.string.openIdConnectClientId)
 
                 loginSession
-                    .init(context = context)
                     .present(
+                        context as Activity,
                         configuration = LoginSessionConfiguration(
                             authorizeEndpoint = authorizeEndpoint,
                             clientId = clientId,
                             redirectUri = redirectUri,
-                            scopes = "openid",
+                            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
                             tokenEndpoint = tokenEndpoint
                         )
                     )
@@ -80,7 +81,9 @@ fun WelcomeScreen(
 private fun Preview() {
     GdsTheme {
         WelcomeScreen(
-            loginSession = LoginSession()
+            loginSession = AppAuthSession(
+                LocalContext.current
+            )
         )
     }
 }

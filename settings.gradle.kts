@@ -23,22 +23,30 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-ui") {
-            if (file("${rootProject.projectDir.path}/github.properties").exists()) {
-                val propsFile = File("${rootProject.projectDir.path}/github.properties")
-                val props = java.util.Properties().also { it.load(java.io.FileInputStream(propsFile)) }
-                val ghUsername = props["ghUsername"] as String?
-                val ghToken = props["ghToken"] as String?
+            getCreds(this)
+        }
+        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication") {
+            getCreds(this)
+        }
+    }
+}
 
-                credentials {
-                    username = ghUsername
-                    password = ghToken
-                }
-            } else {
-                credentials {
-                    username = System.getenv("USERNAME")
-                    password = System.getenv("TOKEN")
-                }
-            }
+fun getCreds(repo: MavenArtifactRepository) {
+    if (file("${rootProject.projectDir.path}/github.properties").exists()) {
+        val propsFile = File("${rootProject.projectDir.path}/github.properties")
+        val props =
+            java.util.Properties().also { it.load(java.io.FileInputStream(propsFile)) }
+        val ghUsername = props["ghUsername"] as String?
+        val ghToken = props["ghToken"] as String?
+
+        repo.credentials {
+            username = ghUsername
+            password = ghToken
+        }
+    } else {
+        repo.credentials {
+            username = System.getenv("USERNAME")
+            password = System.getenv("TOKEN")
         }
     }
 }
@@ -53,8 +61,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "OneLogin-Android"
 include(":app")
-include(":authentication")
 
 refreshVersions {
     enableBuildSrcLibs()
 }
+include(":features")

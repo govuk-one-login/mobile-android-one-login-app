@@ -3,11 +3,11 @@ package uk.gov.onelogin.login
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.android.authentication.ILoginSession
+import uk.gov.android.authentication.LoginSession
 import javax.inject.Inject
 
 class LoginRoutes @Inject constructor(
-    private val loginSession: ILoginSession
+    private val loginSession: LoginSession
 ) : ILoginRoutes {
     override fun loginFlowRoutes(
         navGraphBuilder: NavGraphBuilder,

@@ -3,9 +3,9 @@ package uk.gov.onelogin
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import uk.gov.onelogin.home.HomeRoutes.homeFlowRoutes
 import uk.gov.onelogin.login.ILoginRoutes
 import uk.gov.onelogin.login.state.IStateGenerator
+import uk.gov.onelogin.ui.home.HomeRoutes.homeFlowRoutes
 import javax.inject.Inject
 
 class AppRoutes @Inject constructor(

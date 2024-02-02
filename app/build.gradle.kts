@@ -97,6 +97,7 @@ android {
     }
 }
 dependencies {
+//    implementation(files("/Users/abradbury/AndroidStudioProjects/mobileandroidauthentication/app/build/outputs/aar/app-release.aar"))
     listOf(
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
@@ -131,7 +132,6 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
-        libs.appauth,
         libs.components,
         libs.gson,
         libs.hilt.android,
@@ -141,8 +141,11 @@ dependencies {
         libs.pages,
         libs.slf4j.api,
         libs.theme,
-        project(":authentication")
+//        libs.appauth
+        libs.authentication
     ).forEach(::implementation)
+
+    implementation(libs.authentication) { isTransitive = true }
 
     listOf(
         libs.hilt.android.compiler,
