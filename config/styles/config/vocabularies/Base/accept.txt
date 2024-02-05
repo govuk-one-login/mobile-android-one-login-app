@@ -1,4 +1,4 @@
-Android
+(?i)Android
 APIs
 Composable
 Coroutine
@@ -15,8 +15,7 @@ JDK
 JIRA
 JRE
 Jacoco
-jetpack
-Jetpack
+(?i)Jetpack
 Jira
 LFS
 MAM
@@ -29,7 +28,6 @@ Snackbar
 VIZes
 Zsh
 alphagov
-android
 async
 avdmanager
 clazz
@@ -39,10 +37,9 @@ coroutines
 crashlytics
 enum
 gov
-iProov
+(?i)iProov
 mockito
-kotlin
-Kotlin
+(?i)Kotlin
 ktlint
 runBlocking
 vararg
