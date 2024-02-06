@@ -97,7 +97,6 @@ android {
     }
 }
 dependencies {
-//    implementation(files("/Users/abradbury/AndroidStudioProjects/mobileandroidauthentication/app/build/outputs/aar/app-release.aar"))
     listOf(
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
@@ -142,7 +141,7 @@ dependencies {
         libs.slf4j.api,
         libs.theme,
         libs.authentication,
-        project(":features")
+        projects.features
     ).forEach(::implementation)
 
     implementation(libs.authentication) { isTransitive = true }

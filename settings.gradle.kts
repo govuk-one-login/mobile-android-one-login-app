@@ -1,3 +1,5 @@
+import org.gradle.api.internal.provider.MissingValueException
+
 pluginManagement {
     repositories {
         google()
@@ -22,32 +24,40 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-ui") {
-            getCreds(this)
-        }
-        maven("https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication") {
-            getCreds(this)
-        }
+        maven(
+            "https://maven.pkg.github.com/govuk-one-login/mobile-android-ui",
+            setupGithubCredentials()
+        )
+        maven(
+            "https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication",
+            setupGithubCredentials()
+        )
     }
 }
 
-fun getCreds(repo: MavenArtifactRepository) {
-    if (file("${rootProject.projectDir.path}/github.properties").exists()) {
-        val propsFile = File("${rootProject.projectDir.path}/github.properties")
-        val props =
-            java.util.Properties().also { it.load(java.io.FileInputStream(propsFile)) }
-        val ghUsername = props["ghUsername"] as String?
-        val ghToken = props["ghToken"] as String?
+fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit = {
+    val (credUser, credToken) = fetchGithubCredentials()
+    credentials {
+        username = credUser
+        password = credToken
+    }
+}
 
-        repo.credentials {
-            username = ghUsername
-            password = ghToken
-        }
-    } else {
-        repo.credentials {
-            username = System.getenv("USERNAME")
-            password = System.getenv("TOKEN")
-        }
+fun fetchGithubCredentials(): Pair<String, String> {
+    val gprUser = providers.gradleProperty("gpr.user")
+    val gprToken = providers.gradleProperty("gpr.token")
+
+    return try {
+        gprUser.get() to gprToken.get()
+    } catch (exception: MissingValueException) {
+        logger.warn(
+            "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
+                "location for instructions:\n\n" +
+                "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
+            exception
+        )
+
+        System.getenv("USERNAME") to System.getenv("TOKEN")
     }
 }
 
