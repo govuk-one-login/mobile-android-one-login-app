@@ -6,18 +6,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import net.openid.appauth.TokenResponse
-import uk.gov.android.authentication.ILoginSession
-import uk.gov.onelogin.home.HomeRoutes
+import uk.gov.android.authentication.LoginSession
+import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.network.auth.IAuthCodeExchange
+import uk.gov.onelogin.ui.home.HomeRoutes
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     val appRoutes: IAppRoutes,
     private val authCodeExchange: IAuthCodeExchange,
-    private val loginSession: ILoginSession
+    private val loginSession: LoginSession
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 

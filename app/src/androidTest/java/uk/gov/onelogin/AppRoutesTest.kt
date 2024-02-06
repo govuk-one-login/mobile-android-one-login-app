@@ -5,8 +5,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.home.HomeTestRoutes
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.ui.home.HomeTestRoutes
 import javax.inject.Inject
 
 @HiltAndroidTest

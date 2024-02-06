@@ -131,7 +131,6 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
-        libs.appauth,
         libs.components,
         libs.gson,
         libs.hilt.android,
@@ -141,8 +140,11 @@ dependencies {
         libs.pages,
         libs.slf4j.api,
         libs.theme,
-        project(":authentication")
+        libs.authentication,
+        projects.features
     ).forEach(::implementation)
+
+    implementation(libs.authentication) { isTransitive = true }
 
     listOf(
         libs.hilt.android.compiler,

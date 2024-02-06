@@ -1,22 +1,27 @@
 package uk.gov.onelogin.login
 
+import android.app.Activity
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import uk.gov.android.authentication.ILoginSession
+import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
+import uk.gov.android.features.FeatureFlags
+import uk.gov.android.features.InMemoryFeatureFlags
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
+import uk.gov.onelogin.features.StsFeatureFlag
 
 @Composable
 fun WelcomeScreen(
-    loginSession: ILoginSession
+    loginSession: LoginSession,
+    featureFlags: FeatureFlags
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -31,7 +36,11 @@ fun WelcomeScreen(
             onPrimary = {
                 val authorizeEndpoint = Uri.parse(
                     context.resources.getString(
-                        R.string.openIdConnectBaseUrl,
+                        if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                            R.string.stsUrl
+                        } else {
+                            R.string.openIdConnectBaseUrl
+                        },
                         context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
                     )
                 )
@@ -50,13 +59,13 @@ fun WelcomeScreen(
                 val clientId = context.resources.getString(R.string.openIdConnectClientId)
 
                 loginSession
-                    .init(context = context)
                     .present(
+                        context as Activity,
                         configuration = LoginSessionConfiguration(
                             authorizeEndpoint = authorizeEndpoint,
                             clientId = clientId,
                             redirectUri = redirectUri,
-                            scopes = "openid",
+                            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
                             tokenEndpoint = tokenEndpoint
                         )
                     )
@@ -80,7 +89,8 @@ fun WelcomeScreen(
 private fun Preview() {
     GdsTheme {
         WelcomeScreen(
-            loginSession = LoginSession()
+            AppAuthSession(LocalContext.current),
+            InMemoryFeatureFlags(setOf())
         )
     }
 }

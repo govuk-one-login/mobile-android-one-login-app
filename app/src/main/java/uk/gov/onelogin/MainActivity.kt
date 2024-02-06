@@ -9,7 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import uk.gov.android.authentication.LoginSession
+import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.login.LoginRoutes
 import javax.inject.Inject
@@ -54,7 +54,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == LoginSession.REQUEST_CODE_AUTH) {
+        if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
             viewModel.handleIntent(
                 context = this,
                 intent = data
