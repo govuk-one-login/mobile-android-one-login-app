@@ -87,6 +87,6 @@ fun HomeScreen(
 
 @Composable
 @Preview
-fun Preview() {
+private fun Preview() {
     HomeScreen()
 }

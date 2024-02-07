@@ -1,6 +1,8 @@
 package uk.gov.onelogin
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,7 +24,6 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val context = this
         val lifecycleOwner = this
 
         installSplashScreen()
@@ -43,7 +44,7 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
                         navController.navigate(it)
                     }
                     handleIntent(
-                        context = context,
+                        sharedPrefs = getTokenSharedPrefs(),
                         intent = intent
                     )
                 }
@@ -51,14 +52,21 @@ class MainActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
             viewModel.handleIntent(
-                context = this,
+                sharedPrefs = getTokenSharedPrefs(),
                 intent = data
             )
         }
     }
+
+    private fun getTokenSharedPrefs(): SharedPreferences =
+        this.getSharedPreferences(
+            MainActivityViewModel.TOKENS_PREFERENCES_FILE,
+            Context.MODE_PRIVATE
+        )
 }
