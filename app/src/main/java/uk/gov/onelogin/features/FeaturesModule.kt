@@ -15,7 +15,5 @@ import javax.inject.Singleton
 object FeaturesModule {
     @Provides
     @Singleton
-    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
-        StsFeatureFlag.STS_ENDPOINT
-    )
+    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags()
 }
