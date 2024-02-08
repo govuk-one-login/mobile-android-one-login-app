@@ -144,8 +144,6 @@ dependencies {
         projects.features
     ).forEach(::implementation)
 
-    implementation(libs.authentication) { isTransitive = true }
-
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler
@@ -158,6 +156,7 @@ dependencies {
     listOf(
         Testing.junit.jupiter,
         Testing.junit4,
+        KotlinX.coroutines.test,
         kotlin("test"),
         libs.hilt.android.testing,
         libs.ktor.client.mock,

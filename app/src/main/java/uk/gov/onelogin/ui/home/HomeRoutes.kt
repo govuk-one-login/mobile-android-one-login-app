@@ -12,6 +12,7 @@ import uk.gov.onelogin.MainActivityViewModel
 object HomeRoutes {
     const val ROOT: String = "/home"
     const val START: String = "$ROOT/start"
+    const val PASSCODE_ERROR: String = "$ROOT/passcode_error"
 
     fun NavGraphBuilder.homeFlowRoutes() {
         navigation(
@@ -37,6 +38,11 @@ object HomeRoutes {
                 HomeScreen(
                     tokens = tokens
                 )
+            }
+            composable(
+                route = PASSCODE_ERROR
+            ) {
+                PasscodeEnabledErrorScreen()
             }
         }
     }

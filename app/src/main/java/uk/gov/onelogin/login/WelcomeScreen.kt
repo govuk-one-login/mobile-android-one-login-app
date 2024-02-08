@@ -56,7 +56,17 @@ fun WelcomeScreen(
                         context.resources.getString(R.string.webRedirectEndpoint)
                     )
                 )
-                val clientId = context.resources.getString(R.string.openIdConnectClientId)
+                val clientId = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                    context.resources.getString(R.string.stsClientId)
+                } else {
+                    context.resources.getString(R.string.openIdConnectClientId)
+                }
+
+                val scopes = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                    listOf(LoginSessionConfiguration.Scope.STS)
+                } else {
+                    listOf(LoginSessionConfiguration.Scope.OPENID)
+                }
 
                 loginSession
                     .present(
@@ -65,7 +75,7 @@ fun WelcomeScreen(
                             authorizeEndpoint = authorizeEndpoint,
                             clientId = clientId,
                             redirectUri = redirectUri,
-                            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                            scopes = scopes,
                             tokenEndpoint = tokenEndpoint
                         )
                     )
