@@ -37,8 +37,7 @@ class MainActivityViewModelTest {
         "testAccessToken",
         1L,
         "testIdToken",
-        "testRefreshToken",
-        "testScope"
+        "testRefreshToken"
     )
 
     private val viewModel = MainActivityViewModel(
