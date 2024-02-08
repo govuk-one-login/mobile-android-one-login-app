@@ -108,12 +108,12 @@ class WelcomeScreenKtTest : TestCase() {
                 context.resources.getString(R.string.webRedirectEndpoint)
             )
         )
-        val clientId = context.resources.getString(R.string.openIdConnectClientId)
+        val clientId = context.resources.getString(R.string.stsClientId)
         val loginSessionConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeEndpoint,
             clientId = clientId,
             redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            scopes = listOf(LoginSessionConfiguration.Scope.STS),
             tokenEndpoint = tokenEndpoint
         )
 

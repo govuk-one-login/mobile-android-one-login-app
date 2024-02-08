@@ -144,8 +144,6 @@ dependencies {
         projects.features
     ).forEach(::implementation)
 
-    implementation(libs.authentication) { isTransitive = true }
-
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler
