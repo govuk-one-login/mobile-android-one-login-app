@@ -56,10 +56,6 @@ material = "1.10.0"
 
 [libraries]
 
-allure-kotlin-android = { group = "io.qameta.allure", name = "allure-kotlin-android", version = "2.4.0" }
-allure-kotlin-commons = { group = "io.qameta.allure", name = "allure-kotlin-commons", version = "2.4.0" }
-allure-kotlin-junit4 = { group = "io.qameta.allure", name = "allure-kotlin-junit4", version = "2.4.0" }
-allure-kotlin-model = { group = "io.qameta.allure", name = "allure-kotlin-model", version = "2.4.0" }
 components = "uk.gov.android:components:3.1.0"
 core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
 ##                                                            ⬆ = "1.6.0-alpha01" }
