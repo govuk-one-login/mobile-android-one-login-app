@@ -1,5 +1,4 @@
 config/keystore.jks
-.allure
 
 # Created by https://www.toptal.com/developers/gitignore/api/java,gradle,kotlin,android,intellij+all,androidstudio,macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,gradle,kotlin,android,intellij+all,androidstudio,macos,windows
