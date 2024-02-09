@@ -6,11 +6,16 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,11 +28,9 @@ import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.StandardIntegrityManager
 import com.google.android.play.core.integrity.StandardIntegrityManager.StandardIntegrityTokenProvider
 import io.ktor.client.call.body
-import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
-import io.ktor.http.Parameters
 import io.ktor.http.Url
 import io.ktor.http.contentType
 import uk.gov.android.authentication.TokenResponse
@@ -36,10 +39,10 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.R
-import io.ktor.utils.io.charsets.Charset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import uk.gov.onelogin.network.http.IHttpClient
 import uk.gov.onelogin.ui.components.appbar.GdsTopAppBar
 import uk.gov.onelogin.ui.components.navigation.GdsNavigationBar
@@ -52,6 +55,8 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val responseText = remember { mutableStateOf("") }
+    val lastTokenUsedText = remember { mutableStateOf("") }
 
     GdsTheme {
         Column {
@@ -117,29 +122,56 @@ fun HomeScreen(
                 TextButton(
                     onClick = {
                         httpClient?.let {
-                            initialisePlayIntegrityApi(context) { integrityTokenProvider ->
+                            initialisePlayIntegrityApi(
+                                context,
+                                responseText
+                            ) { integrityTokenProvider ->
                                 Log.d("HomeScreen", "initialisePlayIntegrityApi: Success")
-                                retrieveIntegrityToken(integrityTokenProvider) { integrityToken ->
-
+                                retrieveIntegrityToken(
+                                    integrityTokenProvider,
+                                    responseText
+                                ) { integrityToken ->
                                     Log.d(
                                         "HomeScreen",
                                         "retrieveIntegrityToken: Success: token: ${integrityToken.token()}"
                                     )
+                                    lastTokenUsedText.value = integrityToken.token()
                                     makeSecureNetworkRequest(
                                         httpClient,
                                         coroutineScope,
-                                        integrityToken.token()
+                                        integrityToken.token(),
+                                        context,
+                                        responseText
                                     )
                                 }
                             }
                         }
-                        Toast.makeText(context, "Clicked on", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier
                         .padding(16.dp)
                 ) {
                     Text("Make Request")
                 }
+                Text(
+                    text = "Last Integrity Token:",
+                    fontWeight = FontWeight.Bold
+                )
+                val lastTokenUsed by lastTokenUsedText
+                SelectionContainer {
+                    Text(
+                        text = lastTokenUsed
+                    )
+                }
+                Text(
+                    text = "Response:",
+                    fontWeight = FontWeight.Bold
+                )
+                val response by responseText
+                Text(
+                    text = response,
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
             }
             /* DCMAW-7045: Configure bottom navigation bar: */
             GdsNavigationBar(items = listOf()).generate()
@@ -150,7 +182,9 @@ fun HomeScreen(
 fun makeSecureNetworkRequest(
     httpClient: IHttpClient,
     coroutineScope: CoroutineScope,
-    integrityToken: String
+    integrityToken: String,
+    context: Context,
+    responseText: MutableState<String>
 ) {
     val url = Url("https://sts-be-jamie-7564-4.token.dev.account.gov.uk/hello-world")
     coroutineScope.launch(Dispatchers.IO) {
@@ -159,13 +193,23 @@ fun makeSecureNetworkRequest(
             contentType(ContentType.Application.Json)
         }
         val stringBody: String = response.body()
-        Log.d("HomeScreen", "makeSecureNetworkRequest: response.status: ${response.status}")
-        Log.d("HomeScreen", "makeSecureNetworkRequest: response.body: ${stringBody}")
+
+        withContext(Dispatchers.Main) {
+            Log.d("HomeScreen", "makeSecureNetworkRequest: response.status: ${response.status}")
+            Log.d("HomeScreen", "makeSecureNetworkRequest: response.body: ${stringBody}")
+            val fullBodyString = "${response.status} - ${stringBody}"
+            Toast.makeText(context, fullBodyString, Toast.LENGTH_LONG).show()
+            responseText.value = fullBodyString
+
+        }
+
+
     }
 }
 
 private fun initialisePlayIntegrityApi(
     context: Context,
+    responseText: MutableState<String>,
     successListener: OnSuccessListener<in StandardIntegrityTokenProvider>
 ) {
     val standardIntegrityManager =
@@ -181,11 +225,13 @@ private fun initialisePlayIntegrityApi(
         .addOnSuccessListener(successListener)
         .addOnFailureListener {
             Log.e("HomeScreen", "initialisePlayIntegrityApi: Error: $it")
+            responseText.value = "initialisePlayIntegrityApi: Error: $it"
         }
 }
 
 private fun retrieveIntegrityToken(
     integrityTokenProvider: StandardIntegrityTokenProvider,
+    responseText: MutableState<String>,
     onSuccessListener: OnSuccessListener<in StandardIntegrityManager.StandardIntegrityToken>
 ) {
     val requestHash = "Jamie is awesome - this is an optional hash of the request"
@@ -201,6 +247,7 @@ private fun retrieveIntegrityToken(
                 "HomeScreen",
                 "retrieveIntegrityToken: error: $exception",
             )
+            responseText.value = "retrieveIntegrityToken: error: $exception"
         }
 
 }
