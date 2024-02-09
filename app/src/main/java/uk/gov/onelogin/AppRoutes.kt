@@ -12,7 +12,7 @@ import javax.inject.Inject
 class AppRoutes @Inject constructor(
     private val loginRoutes: ILoginRoutes,
     private val stateGenerator: IStateGenerator,
-    private val httpClient: IHttpClient,
+    private val httpClient: IHttpClient
 ) : IAppRoutes {
     @Composable
     override fun routes(
