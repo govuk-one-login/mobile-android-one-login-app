@@ -10,7 +10,7 @@ class HomeScreenKtTest : TestCase() {
     @Test
     fun initialisesHomeScreen() {
         composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen(httpClient = httpClient)
+            HomeScreen()
         }
     }
 }
