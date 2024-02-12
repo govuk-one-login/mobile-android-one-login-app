@@ -196,17 +196,13 @@ fun makeSecureNetworkRequest(
 
         withContext(Dispatchers.Main) {
             Log.d("HomeScreen", "makeSecureNetworkRequest: response.status: ${response.status}")
-            Log.d("HomeScreen", "makeSecureNetworkRequest: response.body: ${stringBody}")
-            val fullBodyString = "${response.status} - ${stringBody}"
+            Log.d("HomeScreen", "makeSecureNetworkRequest: response.body: $stringBody")
+            val fullBodyString = "${response.status} - $stringBody"
             Toast.makeText(context, fullBodyString, Toast.LENGTH_LONG).show()
             responseText.value = fullBodyString
-
         }
-
-
     }
 }
-
 private fun initialisePlayIntegrityApi(
     context: Context,
     responseText: MutableState<String>,
@@ -245,11 +241,10 @@ private fun retrieveIntegrityToken(
         .addOnFailureListener { exception: Exception? ->
             Log.e(
                 "HomeScreen",
-                "retrieveIntegrityToken: error: $exception",
+                "retrieveIntegrityToken: error: $exception"
             )
             responseText.value = "retrieveIntegrityToken: error: $exception"
         }
-
 }
 
 @Composable
