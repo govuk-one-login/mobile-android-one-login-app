@@ -101,7 +101,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor).apply()
-        assertEquals(HomeRoutes.PASSCODE_ERROR, viewModel.next.value)
+        assertEquals(LoginRoutes.PASSCODE_INFO, viewModel.next.value)
     }
 
     @Test

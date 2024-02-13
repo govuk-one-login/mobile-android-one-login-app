@@ -1,27 +1,19 @@
 package uk.gov.onelogin.login
 
-import android.app.Activity
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import uk.gov.android.authentication.AppAuthSession
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.features.FeatureFlags
-import uk.gov.android.features.InMemoryFeatureFlags
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
-import uk.gov.onelogin.features.StsFeatureFlag
 
 @Composable
 fun WelcomeScreen(
-    loginSession: LoginSession,
-    featureFlags: FeatureFlags
+    viewModel: WelcomeScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -34,51 +26,7 @@ fun WelcomeScreen(
                 )
             ),
             onPrimary = {
-                val authorizeEndpoint = Uri.parse(
-                    context.resources.getString(
-                        if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                            R.string.stsUrl
-                        } else {
-                            R.string.openIdConnectBaseUrl
-                        },
-                        context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-                    )
-                )
-                val tokenEndpoint = Uri.parse(
-                    context.resources.getString(
-                        R.string.apiBaseUrl,
-                        context.resources.getString(R.string.tokenExchangeEndpoint)
-                    )
-                )
-                val redirectUri = Uri.parse(
-                    context.resources.getString(
-                        R.string.webBaseUrl,
-                        context.resources.getString(R.string.webRedirectEndpoint)
-                    )
-                )
-                val clientId = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    context.resources.getString(R.string.stsClientId)
-                } else {
-                    context.resources.getString(R.string.openIdConnectClientId)
-                }
-
-                val scopes = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    listOf(LoginSessionConfiguration.Scope.STS)
-                } else {
-                    listOf(LoginSessionConfiguration.Scope.OPENID)
-                }
-
-                loginSession
-                    .present(
-                        context as Activity,
-                        configuration = LoginSessionConfiguration(
-                            authorizeEndpoint = authorizeEndpoint,
-                            clientId = clientId,
-                            redirectUri = redirectUri,
-                            scopes = scopes,
-                            tokenEndpoint = tokenEndpoint
-                        )
-                    )
+                viewModel.onPrimary(context)
             },
             primaryButtonText = R.string.signInButton,
             title = R.string.signInTitle,
@@ -98,9 +46,6 @@ fun WelcomeScreen(
 @Composable
 private fun Preview() {
     GdsTheme {
-        WelcomeScreen(
-            AppAuthSession(LocalContext.current),
-            InMemoryFeatureFlags(setOf())
-        )
+        WelcomeScreen()
     }
 }

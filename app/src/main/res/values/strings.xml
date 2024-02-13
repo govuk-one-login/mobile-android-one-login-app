@@ -7,11 +7,17 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="app_continue">Continue</string>
 
     <!-- Sign in -->
     <string name="signInTitle">GOV.UK One Login</string>
     <string name="signInSubTitle">Sign in with the same email address you use for your GOV.UK One Login.</string>
     <string name="signInButton">Sign in</string>
+
+    <!-- Passcode info -->
+    <string name="app_noPasscodePatternSetupTitle">It looks like this phone does not have a passcode or pattern</string>
+    <string name="app_noPasscodeSetupBody1">Setting a passcode on your phone adds further security. You can then sign into the app this way instead of with your email address and password.</string>
+    <string name="app_noPasscodeSetupBody2">You can set a passcode later by going to your phone settings.</string>
 
     <string name="homeScreenTitle">Home Screen</string>
 

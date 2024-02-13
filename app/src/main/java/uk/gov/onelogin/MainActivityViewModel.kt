@@ -63,7 +63,7 @@ class MainActivityViewModel @Inject constructor(
                 if (credChecker.isDeviceSecure()) {
                     _next.value = HomeRoutes.START
                 } else {
-                    _next.value = HomeRoutes.PASSCODE_ERROR
+                    _next.value = LoginRoutes.PASSCODE_INFO
                 }
             }
         } catch (e: Error) {

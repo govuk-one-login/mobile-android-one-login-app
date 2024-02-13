@@ -128,6 +128,7 @@ dependencies {
         AndroidX.constraintLayout,
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
+        AndroidX.hilt.navigationCompose,
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,

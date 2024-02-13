@@ -17,7 +17,6 @@ import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.WelcomeScreen
 
@@ -28,11 +27,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @Before
     fun setupNavigation() {
-        composeTestRule.setupComposeTestRule { _ ->
-            WelcomeScreen(
-                loginSession,
-                featureFlags
-            )
+        hiltRule.inject()
+        composeTestRule.setContent {
+            WelcomeScreen()
         }
     }
 
