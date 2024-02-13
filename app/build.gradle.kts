@@ -5,6 +5,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization").version("1.9.21")
 
     kotlin("kapt")
 }
@@ -103,10 +104,6 @@ dependencies {
         AndroidX.test.espresso.core,
         AndroidX.test.espresso.intents,
         AndroidX.test.ext.junit,
-        libs.allure.kotlin.android,
-        libs.allure.kotlin.commons,
-        libs.allure.kotlin.junit4,
-        libs.allure.kotlin.model,
         libs.core.ktx,
         libs.hilt.android.testing,
         libs.uiautomator,
@@ -134,9 +131,12 @@ dependencies {
         Google.android.material,
         libs.components,
         libs.gson,
+        libs.integrity,
         libs.hilt.android,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
+        libs.ktor.client.content.negotiation,
+        libs.ktor.client.serialization.json,
         libs.navigation.compose,
         libs.pages,
         libs.slf4j.api,

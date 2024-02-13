@@ -8,12 +8,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.MainActivityViewModel
+import uk.gov.onelogin.network.http.IHttpClient
 
 object HomeRoutes {
     const val ROOT: String = "/home"
     const val START: String = "$ROOT/start"
 
-    fun NavGraphBuilder.homeFlowRoutes() {
+    fun NavGraphBuilder.homeFlowRoutes(httpClient: IHttpClient) {
         navigation(
             route = ROOT,
             startDestination = START
@@ -35,7 +36,8 @@ object HomeRoutes {
                 }
 
                 HomeScreen(
-                    tokens = tokens
+                    tokens = tokens,
+                    httpClient = httpClient
                 )
             }
         }

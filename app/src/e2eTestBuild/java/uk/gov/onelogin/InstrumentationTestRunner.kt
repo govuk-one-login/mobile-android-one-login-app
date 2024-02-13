@@ -2,10 +2,10 @@ package uk.gov.onelogin
 
 import android.app.Application
 import android.content.Context
+import androidx.test.runner.AndroidJUnitRunner
 import dagger.hilt.android.testing.HiltTestApplication
-import io.qameta.allure.android.runners.AllureAndroidJUnitRunner
 
-open class InstrumentationTestRunner : AllureAndroidJUnitRunner() {
+open class InstrumentationTestRunner : AndroidJUnitRunner() {
 
     override fun newApplication(
         cl: ClassLoader?,
