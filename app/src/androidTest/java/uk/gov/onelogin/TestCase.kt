@@ -2,7 +2,7 @@ package uk.gov.onelogin
 
 import android.content.Context
 import android.content.res.Resources
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,7 +15,7 @@ abstract class TestCase {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 2)
-    val composeTestRule = createComposeRule()
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
     var navController: TestNavHostController? = null
 
@@ -23,7 +23,8 @@ abstract class TestCase {
 
     protected val resources: Resources = context.resources
 
-    protected val device: UiDevice = UiDevice.getInstance(
-        InstrumentationRegistry.getInstrumentation()
-    )
+    protected val device: UiDevice =
+        UiDevice.getInstance(
+            InstrumentationRegistry.getInstrumentation()
+        )
 }

@@ -120,33 +120,7 @@ fun HomeScreen(
                         .padding(16.dp)
                 )
                 TextButton(
-                    onClick = {
-                        httpClient?.let {
-                            initialisePlayIntegrityApi(
-                                context,
-                                responseText
-                            ) { integrityTokenProvider ->
-                                Log.d("HomeScreen", "initialisePlayIntegrityApi: Success")
-                                retrieveIntegrityToken(
-                                    integrityTokenProvider,
-                                    responseText
-                                ) { integrityToken ->
-                                    Log.d(
-                                        "HomeScreen",
-                                        "retrieveIntegrityToken: Success: token: ${integrityToken.token()}"
-                                    )
-                                    lastTokenUsedText.value = integrityToken.token()
-                                    makeSecureNetworkRequest(
-                                        httpClient,
-                                        coroutineScope,
-                                        integrityToken.token(),
-                                        context,
-                                        responseText
-                                    )
-                                }
-                            }
-                        }
-                    },
+                    onClick = {},
                     modifier = Modifier
                         .padding(16.dp)
                 ) {

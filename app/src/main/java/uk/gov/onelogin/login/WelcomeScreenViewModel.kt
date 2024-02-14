@@ -5,12 +5,12 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
-import javax.inject.Inject
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(

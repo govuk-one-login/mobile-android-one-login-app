@@ -12,15 +12,16 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
 
 @Composable
-fun WelcomeScreen(
-    viewModel: WelcomeScreenViewModel = hiltViewModel()
-) {
+fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     LandingPage(
-        landingPageParameters = LandingPageParameters(
-            content = listOf(
+        landingPageParameters =
+        LandingPageParameters(
+            content =
+            listOf(
                 GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
+                    text =
+                    intArrayOf(
                         R.string.signInSubTitle
                     )
                 )
