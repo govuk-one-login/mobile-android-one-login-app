@@ -21,7 +21,7 @@ class AppRoutes @Inject constructor(
             startDestination = startDestination
         ) {
             loginFlowRoutes(navController)
-            homeFlowRoutes(httpClient)
+            homeFlowRoutes()
         }
     }
 }

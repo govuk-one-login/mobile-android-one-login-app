@@ -6,8 +6,6 @@ plugins {
     id("uk.gov.onelogin.jvm-toolchains")
     id("com.google.dagger.hilt.android")
     id("io.gitlab.arturbosch.detekt")
-    kotlin("plugin.serialization").version("1.9.21")
-
     kotlin("kapt")
 }
 
@@ -153,12 +151,9 @@ dependencies {
         Google.android.material,
         libs.components,
         libs.gson,
-        libs.integrity,
         libs.hilt.android,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
-        libs.ktor.client.content.negotiation,
-        libs.ktor.client.serialization.json,
         libs.navigation.compose,
         libs.pages,
         libs.slf4j.api,
