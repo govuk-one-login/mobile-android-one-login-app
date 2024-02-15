@@ -96,6 +96,22 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.all {
+            it.testLogging {
+                events = setOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
+            }
+        }
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+    }
+
     sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
         sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
         sourceSet.java.srcDir("src/e2eTestBulid/java")
