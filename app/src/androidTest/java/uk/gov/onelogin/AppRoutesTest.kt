@@ -30,7 +30,7 @@ class AppRoutesTest : TestCase() {
 
         assertEquals(
             "The default destination for app routes should have been 'LoginRoutes.START'!",
-            LoginRoutes.LOADING,
+            LoginRoutes.START,
             navController?.currentDestination?.route
         )
     }
