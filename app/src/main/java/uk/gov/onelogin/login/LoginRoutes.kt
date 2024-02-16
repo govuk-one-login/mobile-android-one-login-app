@@ -34,6 +34,12 @@ class LoginRoutes @Inject constructor(
                 ) {
                     LoadingScreen()
                 }
+
+                composable(
+                    route = BIO_OPT_IN
+                ) {
+                    BiometricsOptInScreen()
+                }
             }
         }
     }
@@ -43,5 +49,6 @@ class LoginRoutes @Inject constructor(
 
         const val START: String = "$ROOT/start"
         const val LOADING: String = "$ROOT/loading"
+        const val BIO_OPT_IN: String = "$ROOT/bioOptIn"
     }
 }

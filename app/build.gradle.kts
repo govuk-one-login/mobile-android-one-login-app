@@ -118,6 +118,7 @@ dependencies {
     listOf(
         AndroidX.appCompat,
         AndroidX.browser,
+        AndroidX.biometric,
         AndroidX.compose.material,
         AndroidX.compose.material3,
         AndroidX.compose.ui.toolingPreview,

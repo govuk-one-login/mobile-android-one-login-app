@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
+import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.ui.home.HomeRoutes
@@ -61,7 +62,15 @@ class MainActivityViewModel @Inject constructor(
                 )
 
                 if (credChecker.isDeviceSecure()) {
-                    _next.value = HomeRoutes.START
+                    when (credChecker.biometricStatus()) {
+                        BiometricStatus.SUCCESS -> {
+                            _next.value = LoginRoutes.BIO_OPT_IN
+                        }
+
+                        else -> {
+                            _next.value = HomeRoutes.START
+                        }
+                    }
                 } else {
                     _next.value = HomeRoutes.PASSCODE_ERROR
                 }

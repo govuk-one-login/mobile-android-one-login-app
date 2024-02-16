@@ -17,6 +17,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
+import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
@@ -53,12 +54,13 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `handleIntent when data != null and device is secure`() {
+    fun `handleIntent when data != null and device is secure with no biometrics`() {
         val mockIntent: Intent = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
 
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
@@ -76,6 +78,33 @@ class MainActivityViewModelTest {
         )
         verify(mockEditor).apply()
         assertEquals(HomeRoutes.START, viewModel.next.value)
+    }
+
+    @Test
+    fun `handleIntent when data != null and device is secure with ok biometrics`() {
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+
+        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+            .thenAnswer {
+                (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+
+        viewModel.handleIntent(
+            mockIntent,
+            mockSharedPrefs
+        )
+
+        verify(mockEditor).putString(
+            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
+            tokenResponse.jsonSerializeString()
+        )
+        verify(mockEditor).apply()
+        assertEquals(LoginRoutes.BIO_OPT_IN, viewModel.next.value)
     }
 
     @Test
