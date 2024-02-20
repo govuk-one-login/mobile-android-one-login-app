@@ -65,13 +65,8 @@ class MainActivityViewModel @Inject constructor(
 
                 if (credChecker.isDeviceSecure()) {
                     when (credChecker.biometricStatus()) {
-                        BiometricStatus.SUCCESS -> {
-                            _next.value = LoginRoutes.BIO_OPT_IN
-                        }
-
-                        else -> {
-                            _next.value = HomeRoutes.START
-                        }
+                        BiometricStatus.SUCCESS -> _next.value = LoginRoutes.BIO_OPT_IN
+                        else -> _next.value = HomeRoutes.START
                     }
                 } else {
                     _next.value = LoginRoutes.PASSCODE_INFO
