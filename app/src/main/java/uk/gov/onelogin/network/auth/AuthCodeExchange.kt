@@ -15,11 +15,11 @@ import io.ktor.http.Parameters
 import io.ktor.http.Url
 import io.ktor.http.contentType
 import io.ktor.utils.io.charsets.Charset
+import javax.inject.Inject
 import uk.gov.onelogin.R
 import uk.gov.onelogin.network.auth.response.TokenResponse
 import uk.gov.onelogin.network.http.IHttpClient
 import uk.gov.onelogin.network.utils.IOnlineChecker
-import javax.inject.Inject
 
 class AuthCodeExchange @Inject constructor(
     @ApplicationContext
@@ -79,7 +79,7 @@ class AuthCodeExchange @Inject constructor(
             response.status != HttpStatusCode.OK ->
                 throw AuthCodeExchangeUnexpectedResponse(
                     "Unexpected response received - ${
-                    response.status
+                        response.status
                     } - ${response.bodyAsText()}"
                 )
             else -> Gson().fromJson(

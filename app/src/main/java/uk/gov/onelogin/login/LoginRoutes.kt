@@ -1,47 +1,43 @@
 package uk.gov.onelogin.login
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.features.FeatureFlags
-import javax.inject.Inject
+import uk.gov.onelogin.ui.home.HomeRoutes
 
-class LoginRoutes @Inject constructor(
-    private val loginSession: LoginSession,
-    private val featureFlags: FeatureFlags
-) : ILoginRoutes {
-    override fun loginFlowRoutes(
-        navGraphBuilder: NavGraphBuilder,
-        state: String
+object LoginRoutes {
+    fun NavGraphBuilder.loginFlowRoutes(
+        navController: NavController
     ) {
-        navGraphBuilder.apply {
-            navigation(
-                route = ROOT,
-                startDestination = LOADING
+        navigation(
+            route = ROOT,
+            startDestination = START
+        ) {
+            composable(
+                route = START
             ) {
-                composable(
-                    route = START
-                ) {
-                    WelcomeScreen(
-                        loginSession = loginSession,
-                        featureFlags = featureFlags
-                    )
-                }
+                WelcomeScreen()
+            }
 
-                composable(
-                    route = LOADING
-                ) {
-                    LoadingScreen()
+            composable(
+                route = LOADING
+            ) {
+                LoadingScreen()
+            }
+
+            composable(
+                route = PASSCODE_INFO
+            ) {
+                PasscodeInfoScreen {
+                    navController.navigate(HomeRoutes.START)
                 }
             }
         }
     }
 
-    companion object {
-        const val ROOT: String = "/login"
-
-        const val START: String = "$ROOT/start"
-        const val LOADING: String = "$ROOT/loading"
-    }
+    const val ROOT: String = "/login"
+    const val START: String = "$ROOT/start"
+    const val LOADING: String = "$ROOT/loading"
+    const val PASSCODE_INFO: String = "$ROOT/passcode_error"
 }

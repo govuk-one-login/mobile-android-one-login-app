@@ -10,6 +10,7 @@ pluginManagement {
     plugins {
         // See https://github.com/JLLeitschuh/ktlint-gradle
         id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+        id("io.gitlab.arturbosch.detekt") version "1.23.5"
 
         kotlin("jvm") version "1.9.20"
         kotlin("plugin.serialization") version "1.9.21"
@@ -35,13 +36,14 @@ dependencyResolutionManagement {
     }
 }
 
-fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit = {
-    val (credUser, credToken) = fetchGithubCredentials()
-    credentials {
-        username = credUser
-        password = credToken
+fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit =
+    {
+        val (credUser, credToken) = fetchGithubCredentials()
+        credentials {
+            username = credUser
+            password = credToken
+        }
     }
-}
 
 fun fetchGithubCredentials(): Pair<String, String> {
     val gprUser = providers.gradleProperty("gpr.user")
@@ -63,7 +65,7 @@ fun fetchGithubCredentials(): Pair<String, String> {
 
 plugins {
     // See https://jmfayard.github.io/refreshVersions
-    id("de.fayard.refreshVersions") version "0.60.3"
+    id("de.fayard.refreshVersions") version "0.60.5"
 }
 
 // https://docs.gradle.org/8.0/userguide/kotlin_dsl.html#type-safe-accessors

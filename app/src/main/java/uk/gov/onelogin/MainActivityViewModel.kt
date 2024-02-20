@@ -2,16 +2,17 @@ package uk.gov.onelogin
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.ui.home.HomeRoutes
-import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -52,6 +53,7 @@ class MainActivityViewModel @Inject constructor(
         return sharedPrefs.getString(TOKENS_PREFERENCES_KEY, null) != null
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun handleActivityResult(sharedPrefs: SharedPreferences, intent: Intent) {
         try {
             loginSession.finalise(intent = intent) { tokens ->
@@ -63,10 +65,11 @@ class MainActivityViewModel @Inject constructor(
                 if (credChecker.isDeviceSecure()) {
                     _next.value = HomeRoutes.START
                 } else {
-                    _next.value = HomeRoutes.PASSCODE_ERROR
+                    _next.value = LoginRoutes.PASSCODE_INFO
                 }
             }
         } catch (e: Error) {
+            Log.e(tag, e.message, e)
             _next.value = LoginRoutes.START
         }
     }

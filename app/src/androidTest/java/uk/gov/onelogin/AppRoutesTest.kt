@@ -1,13 +1,13 @@
 package uk.gov.onelogin
 
 import dagger.hilt.android.testing.HiltAndroidTest
+import javax.inject.Inject
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.ui.home.HomeTestRoutes
-import javax.inject.Inject
 
 @HiltAndroidTest
 class AppRoutesTest : TestCase() {
@@ -30,7 +30,7 @@ class AppRoutesTest : TestCase() {
 
         assertEquals(
             "The default destination for app routes should have been 'LoginRoutes.START'!",
-            LoginRoutes.LOADING,
+            LoginRoutes.START,
             navController?.currentDestination?.route
         )
     }

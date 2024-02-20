@@ -21,7 +21,9 @@ class HttpClientStub : IHttpClient {
             val responses = responses.get(it.url)
 
             if (responses.isNullOrEmpty()) {
-                throw AssertionFailedError("Expected a mock response for ${it.url} but none were left")
+                throw AssertionFailedError(
+                    "Expected a mock response for ${it.url} but none were left"
+                )
             }
 
             val response = responses.removeFirst()
