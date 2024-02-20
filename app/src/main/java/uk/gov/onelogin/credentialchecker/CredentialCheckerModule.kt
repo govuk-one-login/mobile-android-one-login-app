@@ -8,8 +8,12 @@ import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
 @InstallIn(ViewModelComponent::class)
-fun interface CredentialCheckerModule {
+interface CredentialCheckerModule {
     @Binds
     @ViewModelScoped
     fun bindCredentialChecker(checker: DeviceCredentialChecker): CredentialChecker
+
+    @Binds
+    @ViewModelScoped
+    fun bindBiometricManager(manager: BiometricManagerImpl): BiometricManager
 }
