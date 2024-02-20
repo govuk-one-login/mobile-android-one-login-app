@@ -5,9 +5,12 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("uk.gov.onelogin.jvm-toolchains")
     id("com.google.dagger.hilt.android")
-
+    id("io.gitlab.arturbosch.detekt")
     kotlin("kapt")
 }
+
+apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
+apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 
 android {
     namespace = rootProject.ext["appId"] as String
@@ -63,7 +66,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
 
     flavorDimensions += "env"
@@ -88,6 +91,22 @@ android {
                 manifestPlaceholders["flavorSuffix"] = suffix
                 manifestPlaceholders["appAuthRedirectScheme"] = packageName
             }
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            it.testLogging {
+                events = setOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
+            }
+        }
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
         }
     }
 
@@ -125,6 +144,9 @@ dependencies {
         AndroidX.constraintLayout,
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
+        AndroidX.hilt.navigationCompose,
+        AndroidX.lifecycle.viewModelCompose,
+        AndroidX.work.runtimeKtx,
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
@@ -166,21 +188,23 @@ kapt {
 }
 
 fun getVersionCode(): Int {
-    val code = if (rootProject.hasProperty("versionCode")) {
-        (rootProject.property("versionCode") as String).toInt()
-    } else {
-        1
-    }
+    val code =
+        if (rootProject.hasProperty("versionCode")) {
+            (rootProject.property("versionCode") as String).toInt()
+        } else {
+            1
+        }
     println("VersionCode is set to $code")
     return code
 }
 
 fun getVersionName(): String {
-    val name = if (rootProject.hasProperty("versionName")) {
-        rootProject.property("versionName") as String
-    } else {
-        "1.0"
-    }
+    val name =
+        if (rootProject.hasProperty("versionName")) {
+            rootProject.property("versionName") as String
+        } else {
+            "1.0"
+        }
     println("VersionName is set to $name")
     return name
 }

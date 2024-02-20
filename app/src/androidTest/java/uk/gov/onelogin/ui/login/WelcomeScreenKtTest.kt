@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -17,22 +19,29 @@ import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.ext.setupComposeTestRule
+import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.WelcomeScreen
+import uk.gov.onelogin.login.authentication.LoginSessionModule
 
 @HiltAndroidTest
+@UninstallModules(
+    LoginSessionModule::class,
+    FeaturesModule::class
+)
 class WelcomeScreenKtTest : TestCase() {
-    private val loginSession: LoginSession = mock()
-    private val featureFlags: FeatureFlags = mock()
+
+    @BindValue
+    val loginSession: LoginSession = mock()
+
+    @BindValue
+    val featureFlags: FeatureFlags = mock()
 
     @Before
     fun setupNavigation() {
-        composeTestRule.setupComposeTestRule { _ ->
-            WelcomeScreen(
-                loginSession,
-                featureFlags
-            )
+        hiltRule.inject()
+        composeTestRule.setContent {
+            WelcomeScreen()
         }
     }
 

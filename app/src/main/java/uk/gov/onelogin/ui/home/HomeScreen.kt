@@ -18,7 +18,7 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.R
-import uk.gov.onelogin.ui.components.appbar.GdsTopAppBar
+import uk.gov.onelogin.ui.components.appbar.GdsAppBar
 import uk.gov.onelogin.ui.components.navigation.GdsNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +29,7 @@ fun HomeScreen(
     GdsTheme {
         Column {
             /* DCMAW-7031: Configure top app bar: */
-            GdsTopAppBar(
+            GdsAppBar(
                 title = {
                     GdsHeading(
                         headingParameters = HeadingParameters(

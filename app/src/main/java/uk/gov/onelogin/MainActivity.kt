@@ -14,10 +14,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.login.LoginRoutes
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity @Inject constructor() : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()
 

@@ -2,6 +2,7 @@ package uk.gov.onelogin.credentialchecker
 
 import android.app.KeyguardManager
 import android.content.Context
+import java.util.stream.Stream
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -9,7 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import java.util.stream.Stream
 
 class DeviceCredentialCheckerTest {
     private val mockContext: Context = mock()

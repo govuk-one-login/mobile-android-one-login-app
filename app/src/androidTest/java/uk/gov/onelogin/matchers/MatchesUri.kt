@@ -16,9 +16,10 @@ class MatchesUri(
         description?.appendText("matches uri")
     }
 
+    @Suppress("ReturnCount")
     override fun matchesSafely(item: Intent?): Boolean {
         return item?.let {
-            item?.data?.let {
+            it.data?.let {
                 val data: Uri = item.data!!
 
                 if (data.host != host) {

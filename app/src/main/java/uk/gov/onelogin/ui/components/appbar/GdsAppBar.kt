@@ -22,8 +22,7 @@ import uk.gov.android.ui.theme.GdsTheme
  * - [Material 3 design](https://m3.material.io/components/top-app-bar/overview)
  */
 @OptIn(ExperimentalMaterial3Api::class)
-data class GdsTopAppBar
-constructor(
+data class GdsAppBar(
     private val title: @Composable () -> Unit,
     private val modifier: Modifier = Modifier,
     private val actions: @Composable RowScope.() -> Unit = {},
@@ -59,7 +58,7 @@ constructor(
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 fun GdsTopAppBarPreview(
     @PreviewParameter(GdsTopAppBarProvider::class)
-    parameters: GdsTopAppBar
+    parameters: GdsAppBar
 ) {
     GdsTheme {
         parameters.generate()

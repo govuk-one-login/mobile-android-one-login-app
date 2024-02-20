@@ -6,13 +6,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.ext.setupComposeTestRule
 
 @HiltAndroidTest
 class LoadingScreenTest : TestCase() {
     @Before
     fun setupNavigation() {
-        composeTestRule.setupComposeTestRule { _ ->
+        composeTestRule.setContent {
             LoadingScreen()
         }
     }

@@ -18,7 +18,9 @@ data class GdsNavigationItem(
     private val selected: Boolean,
     private val modifier: Modifier = Modifier,
     private val alwaysShowLabel: Boolean = true,
-    private val colors: @Composable () -> NavigationBarItemColors = { NavigationBarItemDefaults.colors() },
+    private val colors: @Composable () -> NavigationBarItemColors = {
+        NavigationBarItemDefaults.colors()
+    },
     private val enabled: Boolean = true,
     private val interactionSource: @Composable () -> MutableInteractionSource = {
         remember { MutableInteractionSource() }

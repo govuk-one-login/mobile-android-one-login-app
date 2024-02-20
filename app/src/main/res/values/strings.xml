@@ -1,23 +1,29 @@
 <resources>
-    <string name="app_name">OneLogin</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name" translatable="false">OneLogin</string>
+    <string name="action_settings" translatable="false">Settings</string>
 
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
+    <string name="app_continue">Continue</string>
 
     <!-- Sign in -->
-    <string name="signInTitle">GOV.UK One Login</string>
-    <string name="signInSubTitle">Sign in with the same email address you use for your GOV.UK One Login.</string>
-    <string name="signInButton">Sign in</string>
+    <string name="signInTitle" translatable="false">GOV.UK One Login</string>
+    <string name="signInSubTitle" translatable="false">Sign in with the same email address you use for your GOV.UK One Login.</string>
+    <string name="signInButton" translatable="false">Sign in</string>
 
-    <string name="homeScreenTitle">Home Screen</string>
+    <!-- Passcode info -->
+    <string name="app_noPasscodePatternSetupTitle">It looks like this phone does not have a passcode or pattern</string>
+    <string name="app_noPasscodeSetupBody1">Setting a passcode on your phone adds further security. You can then sign into the app this way instead of with your email address and password.</string>
+    <string name="app_noPasscodeSetupBody2">You can set a passcode later by going to your phone settings.</string>
 
-    <string name="StagingEnv">staging</string>
+    <string name="homeScreenTitle" translatable="false">Home Screen</string>
 
-    <string name="lorem_ipsum">
+    <string name="StagingEnv" translatable="false">staging</string>
+
+    <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
