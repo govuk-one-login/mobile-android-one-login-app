@@ -33,6 +33,12 @@ object LoginRoutes {
                     navController.navigate(HomeRoutes.START)
                 }
             }
+
+            composable(
+                route = BIO_OPT_IN
+            ) {
+                BiometricsOptInScreen()
+            }
         }
     }
 
@@ -40,4 +46,5 @@ object LoginRoutes {
     const val START: String = "$ROOT/start"
     const val LOADING: String = "$ROOT/loading"
     const val PASSCODE_INFO: String = "$ROOT/passcode_error"
+    const val BIO_OPT_IN: String = "$ROOT/bioOptIn"
 }
