@@ -8,21 +8,21 @@ import androidx.navigation.navigation
 
 object ErrorRoutes {
     const val ROOT: String = "/error"
-    const val START: String = "$ROOT/start"
+    const val GENERIC: String = "$ROOT/generic"
 
     fun NavGraphBuilder.genericErrorRoute(navController: NavHostController) {
         navigation(
-            startDestination = START,
+            startDestination = GENERIC,
             route = ROOT
         ) {
             composable(
-                route = START
+                route = GENERIC
             ) {
                 GenericErrorScreen { navController.popBackStack() }
             }
         }
     }
-    fun NavController.navigateSingleTopTo(route: String) =
+    fun NavHostController.navigateSingleTopTo(route: String) =
         this.navigate(route) { launchSingleTop = true }
-    fun NavController.navigateToGenericErrorScreen() = this.navigateSingleTopTo(ErrorRoutes.ROOT)
+    fun NavHostController.navigateToGenericErrorScreen() = this.navigateSingleTopTo(ROOT)
 }
