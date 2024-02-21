@@ -19,7 +19,7 @@ class AppRoutes @Inject constructor() : IAppRoutes {
             startDestination = startDestination
         ) {
             loginFlowRoutes(navController)
-            homeFlowRoutes(navController)
+            homeFlowRoutes()
             genericErrorRoute(navController)
         }
     }
