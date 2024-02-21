@@ -7,12 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.ui.error.ErrorRoutes
 import uk.gov.onelogin.ui.home.HomeRoutes
+import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
@@ -68,9 +69,9 @@ class MainActivityViewModel @Inject constructor(
                     _next.value = LoginRoutes.PASSCODE_INFO
                 }
             }
-        } catch (e: Error) {
+        } catch (e: Throwable) { // handle both Error and Exception types
             Log.e(tag, e.message, e)
-            _next.value = LoginRoutes.START
+            _next.value = ErrorRoutes.ROOT
         }
     }
 

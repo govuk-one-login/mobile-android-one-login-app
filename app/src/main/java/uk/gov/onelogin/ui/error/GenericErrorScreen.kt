@@ -13,24 +13,24 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.R
 
 @Composable
-fun GenericErrorScreen(
-) {
+fun GenericErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = {},
-                    text = uk.gov.android.ui.components.R.string.preview__GdsButton__primary
+                    onClick = onClick,
+                    text = R.string.app_close
                 ),
                 informationParameters = InformationParameters(
                     contentParameters = ContentParameters(
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
-                                subTitle = uk.gov.android.ui.components.R.string.preview__GdsHeading__subTitle1,
-                                text = arrayOf(uk.gov.android.ui.components.R.string.preview__GdsContent__oneLine_0).toIntArray()
+                                subTitle = R.string.app_errorGenericTitle,
+                                text = arrayOf(R.string.app_errorGenericSubTitle).toIntArray()
                             )
                         ),
                         headingSize = HeadingSize.H1()
