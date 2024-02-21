@@ -142,6 +142,7 @@ dependencies {
         AndroidX.compose.material3,
         AndroidX.compose.ui.toolingPreview,
         AndroidX.constraintLayout,
+        AndroidX.constraintLayout.compose,
         AndroidX.core.ktx,
         AndroidX.core.splashscreen,
         AndroidX.hilt.navigationCompose,
