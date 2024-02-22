@@ -9,7 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.login.PasscodeInfoScreen
+import uk.gov.onelogin.login.ui.PasscodeInfoScreen
 
 @HiltAndroidTest
 class PasscodeInfoScreenKtTest : TestCase() {

@@ -28,6 +28,7 @@ import uk.gov.onelogin.login.nonce.NonceGeneratorStub
 import uk.gov.onelogin.login.state.IStateGenerator
 import uk.gov.onelogin.login.state.StateGeneratorModule
 import uk.gov.onelogin.login.state.StateGeneratorStub
+import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.matchers.IsUUID
 import uk.gov.onelogin.matchers.MatchesUri
 import uk.gov.onelogin.test.settings.SettingsController

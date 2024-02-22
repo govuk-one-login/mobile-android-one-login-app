@@ -1,9 +1,14 @@
 package uk.gov.onelogin.login
 
+import androidx.activity.compose.BackHandler
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import uk.gov.onelogin.login.ui.BiometricsOptInScreen
+import uk.gov.onelogin.login.ui.LoadingScreen
+import uk.gov.onelogin.login.ui.PasscodeInfoScreen
+import uk.gov.onelogin.login.ui.WelcomeScreen
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 object LoginRoutes {
@@ -37,7 +42,13 @@ object LoginRoutes {
             composable(
                 route = BIO_OPT_IN
             ) {
-                BiometricsOptInScreen()
+                BackHandler(true) {
+                    // do nothing
+                }
+                BiometricsOptInScreen(
+                    onPrimary = {
+                    }
+                )
             }
         }
     }

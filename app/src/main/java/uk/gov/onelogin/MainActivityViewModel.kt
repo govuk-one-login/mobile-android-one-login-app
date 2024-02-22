@@ -13,6 +13,8 @@ import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.login.biooptin.BiometricPreference
+import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.ui.error.ErrorRoutes
 import uk.gov.onelogin.ui.home.HomeRoutes
 
@@ -20,7 +22,8 @@ import uk.gov.onelogin.ui.home.HomeRoutes
 class MainActivityViewModel @Inject constructor(
     val appRoutes: IAppRoutes,
     private val loginSession: LoginSession,
-    private val credChecker: CredentialChecker
+    private val credChecker: CredentialChecker,
+    private val bioPrefHandler: BiometricPreferenceHandler
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -70,6 +73,7 @@ class MainActivityViewModel @Inject constructor(
                         else -> _next.value = HomeRoutes.START
                     }
                 } else {
+                    bioPrefHandler.setBioPref(BiometricPreference.NONE)
                     _next.value = LoginRoutes.PASSCODE_INFO
                 }
             }

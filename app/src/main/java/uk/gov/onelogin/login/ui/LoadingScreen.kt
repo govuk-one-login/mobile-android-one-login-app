@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
