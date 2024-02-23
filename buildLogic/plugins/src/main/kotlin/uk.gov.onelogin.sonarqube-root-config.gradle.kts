@@ -13,8 +13,8 @@ val rootSonarProperties by rootProject.extra(
     mapOf(
         "sonar.host.url" to System.getProperty("uk.gov.onelogin.sonar.host.url"),
         "sonar.login" to System.getProperty("uk.gov.onelogin.sonar.login"),
-        "sonar.projectKey" to "di-mobile-android-one-login",
-        "sonar.projectName" to "di-mobile-android-one-login",
+        "sonar.projectKey" to "di-mobile-android-onelogin-app",
+        "sonar.projectName" to "di-mobile-android-onelogin-app",
         "sonar.projectVersion" to versionName,
         "sonar.organization" to "govuk-one-login",
         "sonar.sourceEncoding" to "UTF-8",
