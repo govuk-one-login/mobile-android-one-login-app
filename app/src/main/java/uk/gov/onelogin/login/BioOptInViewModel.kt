@@ -7,7 +7,7 @@ import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 
 @HiltViewModel
-class BioOptInScreenViewModel @Inject constructor(
+class BioOptInViewModel @Inject constructor(
     private val biometricPreferenceHandler: BiometricPreferenceHandler
 ) : ViewModel() {
     fun setBioPreference(pref: BiometricPreference) {

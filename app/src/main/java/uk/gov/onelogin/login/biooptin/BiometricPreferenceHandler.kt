@@ -1,6 +1,7 @@
 package uk.gov.onelogin.login.biooptin
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -33,7 +34,10 @@ class BiometricPreferenceHandlerImpl @Inject constructor(
     }
 
     companion object {
-        private const val SHARED_PREFS_ID = "bio_shared_prefs"
-        private const val BIO_PREF = "bio_pref"
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val SHARED_PREFS_ID = "bio_shared_prefs"
+
+        @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+        const val BIO_PREF = "bio_pref"
     }
 }

@@ -30,12 +30,12 @@ import uk.gov.android.ui.theme.hintTextGrey
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.R
-import uk.gov.onelogin.login.BioOptInScreenViewModel
+import uk.gov.onelogin.login.BioOptInViewModel
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 
 @Composable
 fun BiometricsOptInScreen(
-    viewModel: BioOptInScreenViewModel = hiltViewModel(),
+    viewModel: BioOptInViewModel = hiltViewModel(),
     onPrimary: () -> Unit = {},
     onSecondary: () -> Unit = {}
 ) {

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.login
+package uk.gov.onelogin.login
 
 /**
  * Duplicates [LoginRoutes] so that if production code changes, this also requires changing.
