@@ -2,6 +2,7 @@ package uk.gov.onelogin.login
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
@@ -18,6 +19,7 @@ class LoadingScreenTest : TestCase() {
 
     @Test
     fun verifyComponents() {
+        composeTestRule.onNodeWithText("hello world").assertIsDisplayed()
         composeTestRule.onNodeWithTag(LOADING_SCREEN_BOX).assertIsDisplayed()
         composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
     }
