@@ -33,6 +33,7 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.login.BioOptInViewModel
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 
+@Suppress("LongMethod")
 @Composable
 fun BiometricsOptInScreen(
     viewModel: BioOptInViewModel = hiltViewModel(),
@@ -72,7 +73,9 @@ fun BiometricsOptInScreen(
                     ContentParameters(
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
-                                intArrayOf(R.string.app_enableBiometricsBody1)
+                                intArrayOf(
+                                    R.string.app_enableBiometricsBody1
+                                )
                             )
                         )
                     )
