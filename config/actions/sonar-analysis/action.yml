@@ -34,6 +34,8 @@ runs:
         CI: true
         PROJECT_VERSION: ${{ inputs.project-version }}
         SONAR_TOKEN: ${{ inputs.sonar-token }}
+        TOKEN: ${{ inputs.access-token }}
+        USERNAME: ${{ inputs.username }}
 
     - name: Run Sonarqube Branch Analysis
       if: ${{ github.event_name != 'pull_request' }}
@@ -48,3 +50,5 @@ runs:
         CI: true
         PROJECT_VERSION: ${{ inputs.project-version }}
         SONAR_TOKEN: ${{ inputs.sonar-token }}
+        TOKEN: ${{ inputs.access-token }}
+        USERNAME: ${{ inputs.username }}
