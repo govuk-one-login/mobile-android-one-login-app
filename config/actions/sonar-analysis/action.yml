@@ -2,18 +2,11 @@ name: 'Run sonar analysis'
 description: 'Run sonar analysis on a PR or branch'
 
 inputs:
-  project-version:
-    description: "Version of the project to use. Passed in as the `-Dsonar.projectVersion` property"
-    required: false
-    default: "0.0.1"
   access-token:
     description: 'Service account access token that allows publishing packages'
     required: true
   username:
     description: 'Service account username that allows publishing packages'
-    required: true
-  sonar-token:
-    description: "Sonarqube access token"
     required: true
   version-code:
     description: 'Version code'
@@ -29,9 +22,6 @@ runs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         ./gradlew sonar \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.projectVersion=$PROJECT_VERSION \
           -Dsonar.pullrequest.base=develop \
           -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
           -Dsonar.pullrequest.key=${{ github.event.number }} \
@@ -40,8 +30,6 @@ runs:
       shell: bash
       env:
         CI: true
-        PROJECT_VERSION: ${{ inputs.project-version }}
-        SONAR_TOKEN: ${{ inputs.sonar-token }}
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
@@ -52,16 +40,11 @@ runs:
       run: |
         ./gradlew sonar \
           -Dsonar.branch.name=${{ github.head_ref || github.ref_name }} \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=$SONAR_TOKEN \
-          -Dsonar.projectVersion=$PROJECT_VERSION \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true
-        PROJECT_VERSION: ${{ inputs.project-version }}
-        SONAR_TOKEN: ${{ inputs.sonar-token }}
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
