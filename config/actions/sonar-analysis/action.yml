@@ -15,6 +15,12 @@ inputs:
   sonar-token:
     description: "Sonarqube access token"
     required: true
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
 
 runs:
   using: "composite"
@@ -29,8 +35,8 @@ runs:
           -Dsonar.pullrequest.base=develop \
           -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
           -Dsonar.pullrequest.key=${{ github.event.number }} \
-          -DTOKEN=$TOKEN \
-          -DUSERNAME=$USERNAME
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true
@@ -38,6 +44,8 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
 
     - name: Run Sonarqube Branch Analysis
       if: ${{ github.event_name != 'pull_request' }}
@@ -47,8 +55,8 @@ runs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=$SONAR_TOKEN \
           -Dsonar.projectVersion=$PROJECT_VERSION \
-          -DTOKEN=$TOKEN \
-          -DUSERNAME=$USERNAME
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true
@@ -56,3 +64,5 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         TOKEN: ${{ inputs.access-token }}
         USERNAME: ${{ inputs.username }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}

@@ -81,6 +81,8 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           access-token: ${{ secrets.PACKAGES_PAT }}
           username: ${{ secrets.PACKAGES_USER }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
