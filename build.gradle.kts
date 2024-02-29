@@ -8,6 +8,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") apply true
     id("io.gitlab.arturbosch.detekt") apply false
     id("com.google.dagger.hilt.android") version "2.48.1" apply false
+    id("org.sonarqube") version "4.3.0.3225" apply false
+    id("uk.gov.onelogin.sonarqube-root-config") apply false
 }
 val localProperties = Properties()
 if (rootProject.file("local.properties").exists()) {

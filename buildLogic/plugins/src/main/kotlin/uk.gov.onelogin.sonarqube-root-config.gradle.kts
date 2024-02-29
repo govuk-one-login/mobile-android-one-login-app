@@ -7,22 +7,22 @@ plugins {
 /**
  * Defined within the git repository's `build.gradle.kts` file
  */
-val packageVersion: String by rootProject.extra
+val versionName: String by rootProject.extra
 
 val rootSonarProperties by rootProject.extra(
     mapOf(
         "sonar.host.url" to System.getProperty("uk.gov.onelogin.sonar.host.url"),
-        "sonar.login" to System.getProperty("uk.gov.onelogin.sonar.login"),
-        "sonar.projectKey" to "di-mobile-android-ui",
-        "sonar.projectName" to "di-mobile-android-ui",
-        "sonar.projectVersion" to packageVersion,
+        "sonar.token" to System.getProperty("uk.gov.onelogin.sonar.login"),
+        "sonar.projectKey" to "di-mobile-android-onelogin-app",
+        "sonar.projectName" to "di-mobile-android-onelogin-app",
+        "sonar.projectVersion" to versionName,
         "sonar.organization" to "govuk-one-login",
         "sonar.sourceEncoding" to "UTF-8",
     ),
 )
 
 configure<SonarExtension> {
-    this.setAndroidVariant("debug")
+    this.setAndroidVariant("buildDebug")
 
     properties {
         rootSonarProperties.forEach { (key, value) ->
