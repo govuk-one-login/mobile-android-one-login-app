@@ -77,6 +77,8 @@ jobs:
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
         with:
+          project-version: ${{ steps.version-name.outputs.version-name }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
           access-token: ${{ secrets.PACKAGES_PAT }}
           username: ${{ secrets.PACKAGES_USER }}
           version-code: ${{ steps.version-code.outputs.version-code }}
