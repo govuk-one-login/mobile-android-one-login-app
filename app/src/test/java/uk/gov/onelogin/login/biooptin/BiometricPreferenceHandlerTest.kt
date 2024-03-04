@@ -22,13 +22,14 @@ class BiometricPreferenceHandlerTest {
     private val mockSharedPreferences: SharedPreferences = mock()
     private val mockEditor: SharedPreferences.Editor = mock()
 
-    private val bioPrefHandler = BiometricPreferenceHandlerImpl(mockContext)
+    private lateinit var bioPrefHandler: BiometricPreferenceHandlerImpl
 
     @BeforeEach
     fun setUp() {
         whenever(mockContext.getSharedPreferences(eq(SHARED_PREFS_ID), eq(Context.MODE_PRIVATE)))
             .thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
+        bioPrefHandler = BiometricPreferenceHandlerImpl(mockContext)
     }
 
     @Test
