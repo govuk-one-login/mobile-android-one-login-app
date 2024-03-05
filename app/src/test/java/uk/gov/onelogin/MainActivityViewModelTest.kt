@@ -21,6 +21,8 @@ import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.login.biooptin.BiometricPreference
+import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 @ExtendWith(InstantExecutorExtension::class)
@@ -29,6 +31,7 @@ class MainActivityViewModelTest {
     private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockSharedPrefs: SharedPreferences = mock()
+    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockEditor: Editor = mock()
 
     private val observer: Observer<String> = mock()
@@ -44,7 +47,8 @@ class MainActivityViewModelTest {
     private val viewModel = MainActivityViewModel(
         mockAppRoutes,
         mockLoginSession,
-        mockCredChecker
+        mockCredChecker,
+        mockBioPrefHandler
     )
 
     @BeforeEach
@@ -77,6 +81,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor).apply()
+        verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(HomeRoutes.START, viewModel.next.value)
     }
 
@@ -104,6 +109,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor).apply()
+        verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(LoginRoutes.BIO_OPT_IN, viewModel.next.value)
     }
 
@@ -130,6 +136,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor).apply()
+        verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
         assertEquals(LoginRoutes.PASSCODE_INFO, viewModel.next.value)
     }
 
@@ -156,6 +163,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor, times(0)).apply()
+        verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(HomeRoutes.START, viewModel.next.value)
     }
 
@@ -182,6 +190,7 @@ class MainActivityViewModelTest {
             tokenResponse.jsonSerializeString()
         )
         verify(mockEditor, times(0)).apply()
+        verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(LoginRoutes.START, viewModel.next.value)
     }
 }

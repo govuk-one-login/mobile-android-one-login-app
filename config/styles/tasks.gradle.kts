@@ -4,8 +4,8 @@ rootProject.tasks.register<Exec>("vale") {
     executable = "vale"
     args = listOf(
         "--no-wrap",
-        rootProject.projectDir.toString(),
-        "--config ./.vale.ini ."
+        "--config=${rootProject.projectDir}/.vale.ini",
+        rootProject.projectDir.toString()
     )
 }
 

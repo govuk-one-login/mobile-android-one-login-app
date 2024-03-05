@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview

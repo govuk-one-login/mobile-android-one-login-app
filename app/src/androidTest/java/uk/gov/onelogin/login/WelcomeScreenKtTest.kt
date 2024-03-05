@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.login
+package uk.gov.onelogin.login
 
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
@@ -21,8 +21,8 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
-import uk.gov.onelogin.login.WelcomeScreen
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.login.ui.WelcomeScreen
 
 @HiltAndroidTest
 @UninstallModules(

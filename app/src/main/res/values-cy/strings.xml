@@ -7,4 +7,11 @@
     <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
     <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
 
+    <!-- Biometric Opt-In -->
+    <string name="app_enableBiometricsTitle">Defnyddiwch biometreg i fewngofnodi</string>
+    <string name="app_enableBiometricsBody1">Ychwanegwch haen o ddiogelwch a mewngofnodi gyda\'ch wyneb neu olion bysedd yn hytrach na\'ch cyfeiriad e-bost a chyfrinair. Nid yw eich biometreg yn cael ei rannu â GOV.UK One Login.</string>
+    <string name="app_enableBiometricsBody2">Os nad ydych am ddefnyddio biometreg, gallwch fewngofnodi gyda\'ch cod mynediad neu batrwm ffôn yn lle hynny.</string>
+    <string name="app_enableBiometricsFootnote">Os ydych yn defnyddio biometreg, bydd unrhyw un sydd â biometreg wedi\'i arbed ar eich ffôn yn gallu mewngofnodi i\'r ap hwn.</string>
+    <string name="app_enableBiometricsButton">Defnyddio biometreg</string>
+    <string name="app_enablePasscodeOrPatternButton">Defnyddio god mynediad neu batrwm</string>
 </resources>
