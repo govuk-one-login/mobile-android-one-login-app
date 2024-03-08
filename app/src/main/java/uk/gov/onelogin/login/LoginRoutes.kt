@@ -47,6 +47,10 @@ object LoginRoutes {
                 }
                 BiometricsOptInScreen(
                     onPrimary = {
+                        navController.navigate(HomeRoutes.START)
+                    },
+                    onSecondary = {
+                        navController.navigate(HomeRoutes.START)
                     }
                 )
             }
