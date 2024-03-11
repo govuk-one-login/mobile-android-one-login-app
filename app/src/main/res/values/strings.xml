@@ -26,7 +26,7 @@
 
     <!-- Biometric Opt-In -->
     <string name="app_enableBiometricsTitle">Use biometrics to sign in</string>
-    <string name="app_enableBiometricsBody1">Add a layer of security and sign in with your face or fingerprint instead of your email address and password. Your biometrics are not shared with GOV.UK One Login.</string>
+    <string name="app_enableBiometricsBody1">Sign in with your face or fingerprint instead of your email address and password. Your biometrics are not shared with GOV.UK One Login.</string>
     <string name="app_enableBiometricsBody2">If you do not want to use biometrics, you can sign in with your phone passcode or pattern instead.</string>
     <string name="app_enableBiometricsFootnote">If you use biometrics, anyone with biometrics saved to your phone will be able to sign in to this app.</string>
     <string name="app_enableBiometricsButton">Use biometrics</string>
