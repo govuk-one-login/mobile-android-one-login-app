@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
@@ -13,7 +14,10 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.login.WelcomeScreenViewModel
 
 @Composable
-fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel()) {
+fun WelcomeScreen(
+    viewModel: WelcomeScreenViewModel = hiltViewModel(),
+    navController: NavHostController? = null
+) {
     val context = LocalContext.current
     LandingPage(
         landingPageParameters =
@@ -28,7 +32,7 @@ fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel()) {
                 )
             ),
             onPrimary = {
-                viewModel.onPrimary(context)
+                viewModel.onPrimary(context, navController)
             },
             primaryButtonText = R.string.signInButton,
             title = R.string.signInTitle,

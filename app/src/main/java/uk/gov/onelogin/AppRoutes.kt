@@ -16,7 +16,7 @@ class AppRoutes @Inject constructor() : IAppRoutes {
     ) {
         NavHost(
             navController = navController,
-            startDestination = startDestination
+            startDestination = startDestination,
         ) {
             loginFlowRoutes(navController)
             homeFlowRoutes()

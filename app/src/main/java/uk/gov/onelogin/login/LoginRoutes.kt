@@ -3,6 +3,7 @@ package uk.gov.onelogin.login
 import androidx.activity.compose.BackHandler
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.login.ui.BiometricsOptInScreen
@@ -13,7 +14,7 @@ import uk.gov.onelogin.ui.home.HomeRoutes
 
 object LoginRoutes {
     fun NavGraphBuilder.loginFlowRoutes(
-        navController: NavController
+        navController: NavHostController
     ) {
         navigation(
             route = ROOT,
@@ -22,7 +23,7 @@ object LoginRoutes {
             composable(
                 route = START
             ) {
-                WelcomeScreen()
+                WelcomeScreen(navController = navController)
             }
 
             composable(
