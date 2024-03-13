@@ -50,7 +50,6 @@ fun WelcomeScreen(
                 viewModel.onPrimary(context, navController)
             }
         }
-
     }
 }
 

@@ -21,9 +21,9 @@ class WelcomeScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val onlineChecker: OnlineChecker
 ) : ViewModel() {
-    fun onPrimary(context: Context, navController: NavHostController?) {
+    fun onPrimary(context: Context, navController: NavHostController) {
         if (!onlineChecker.isOnline()) {
-            navController?.navigateToOfflineErrorScreen()
+            navController.navigateToOfflineErrorScreen()
             return
         }
         val authorizeEndpoint = Uri.parse(
