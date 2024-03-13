@@ -23,7 +23,7 @@ object ErrorRoutes {
             composable(
                 route = OFFLINE
             ) {
-                OfflineErrorScreen { navController.popBackStack() }
+                OfflineErrorScreen(navController)
             }
         }
     }

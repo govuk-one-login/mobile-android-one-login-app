@@ -3,6 +3,8 @@ package uk.gov.onelogin.ui.error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.buttons.ButtonParameters
 import uk.gov.android.ui.components.buttons.ButtonType
@@ -16,13 +18,19 @@ import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.R
 
 @Composable
-fun OfflineErrorScreen(onClick: () -> Unit = { }) {
+fun OfflineErrorScreen(navController: NavHostController) {
     GdsTheme {
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = onClick,
+                    onClick = {
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            OFFLINE_ERROR_TRY_AGAIN_KEY,
+                            true
+                        )
+                        navController.popBackStack()
+                    },
                     text = R.string.app_tryAgainButton
                 ),
                 informationParameters = InformationParameters(
@@ -45,8 +53,10 @@ fun OfflineErrorScreen(onClick: () -> Unit = { }) {
     }
 }
 
+val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
+
 @Composable
 @Preview
 private fun Preview() {
-    OfflineErrorScreen()
+    OfflineErrorScreen(rememberNavController())
 }
