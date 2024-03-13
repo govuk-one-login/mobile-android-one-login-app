@@ -8,6 +8,7 @@
     <string name="next" translatable="false">Next</string>
     <string name="previous" translatable="false">Previous</string>
     <string name="app_continue">Continue</string>
+    <string name="app_tryAgainButton">Try again</string>
     <string name="app_close" translatable="false">Close</string>
 
     <!-- Sign in -->
@@ -15,9 +16,14 @@
     <string name="signInSubTitle" translatable="false">Sign in with the same email address you use for your GOV.UK One Login.</string>
     <string name="signInButton" translatable="false">Sign in</string>
 
+    <!-- Errors-->
     <!-- Errors Generic-->
     <string name="app_errorGenericTitle" translatable="false">Something went wrong</string>
     <string name="app_errorGenericSubTitle" translatable="false">Try again later.</string>
+
+    <!-- Errors Offline-->
+    <string name="app_networkErrorTitle">You appear to be offline</string>
+    <string name="app_networkErrorBody">GOV.UK One Login is not available offline. Reconnect to the internet and try again</string>
 
     <!-- Passcode info -->
     <string name="app_noPasscodePatternSetupTitle">It looks like this phone does not have a passcode or pattern</string>
