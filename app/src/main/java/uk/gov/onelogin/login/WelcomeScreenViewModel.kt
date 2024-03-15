@@ -12,14 +12,14 @@ import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
-import uk.gov.onelogin.network.utils.OnlineChecker
+import uk.gov.onelogin.network.utils.IOnlineChecker
 import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(
     private val loginSession: LoginSession,
     private val featureFlags: FeatureFlags,
-    private val onlineChecker: OnlineChecker
+    private val onlineChecker: IOnlineChecker
 ) : ViewModel() {
     fun onPrimary(context: Context, navController: NavHostController) {
         if (!onlineChecker.isOnline()) {
