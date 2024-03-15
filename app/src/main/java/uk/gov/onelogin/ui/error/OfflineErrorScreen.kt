@@ -53,7 +53,7 @@ fun OfflineErrorScreen(navController: NavHostController) {
     }
 }
 
-val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
+const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
 
 @Composable
 @Preview
