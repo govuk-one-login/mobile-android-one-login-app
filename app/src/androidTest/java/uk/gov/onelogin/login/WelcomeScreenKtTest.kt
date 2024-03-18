@@ -61,7 +61,6 @@ class WelcomeScreenKtTest : TestCase() {
     private val signInTitle = hasText(resources.getString(R.string.signInTitle))
     private val signInSubTitle = hasText(resources.getString(R.string.signInSubTitle))
     private val signInButton = hasText(resources.getString(R.string.signInButton))
-    private val offlineErrorTitle = hasText(resources.getString(R.string.app_networkErrorTitle))
 
     @Test
     fun verifyStrings() {
