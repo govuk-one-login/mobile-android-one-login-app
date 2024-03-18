@@ -9,6 +9,8 @@ import uk.gov.onelogin.login.ui.BiometricsOptInScreen
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.PasscodeInfoScreen
 import uk.gov.onelogin.login.ui.WelcomeScreen
+import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 object LoginRoutes {
@@ -22,7 +24,17 @@ object LoginRoutes {
             composable(
                 route = START
             ) {
-                WelcomeScreen(navController = navController)
+                WelcomeScreen(
+                    navigateToOfflineErrorScreen = {
+                        navController.navigateToOfflineErrorScreen()
+                    },
+                    shouldTryAgain = {
+                        return@WelcomeScreen navController.currentBackStackEntry?.savedStateHandle.let {
+                            val tryAgain = it?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
+                            it?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
+                            tryAgain
+                        }
+                    })
             }
 
             composable(

@@ -3,22 +3,16 @@ package uk.gov.onelogin.ui.error
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.NavHostController
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 
 @HiltAndroidTest
 class OfflineErrorScreenKtTest : TestCase() {
 
-    @BindValue
-    val navHostController: NavHostController = Mockito.mock()
+    private var retryClicked = false
 
     private val errorTitle = hasText(resources.getString(R.string.app_networkErrorTitle))
     private val errorBody = hasText(resources.getString(R.string.app_networkErrorBody))
@@ -26,8 +20,9 @@ class OfflineErrorScreenKtTest : TestCase() {
 
     @Before
     fun setUp() {
+        retryClicked = false
         composeTestRule.setContent {
-            OfflineErrorScreen(navController = navHostController)
+            OfflineErrorScreen(onRetryClick = { retryClicked = true })
         }
     }
 
@@ -48,11 +43,5 @@ class OfflineErrorScreenKtTest : TestCase() {
         composeTestRule.onNode(tryAgainButton).performClick()
     }
 
-    private fun itPopsBackWithRetryRequest() {
-        verify(navHostController).previousBackStackEntry?.savedStateHandle?.set(
-            eq(OFFLINE_ERROR_TRY_AGAIN_KEY),
-            eq(true)
-        )
-        verify(navHostController).popBackStack()
-    }
+    private fun itPopsBackWithRetryRequest() = assert(retryClicked)
 }

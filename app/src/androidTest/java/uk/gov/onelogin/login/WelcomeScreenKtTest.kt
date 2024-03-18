@@ -4,9 +4,7 @@ import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.NavHostController
-import androidx.navigation.navOptions
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -16,7 +14,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.isNull
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
@@ -50,11 +47,23 @@ class WelcomeScreenKtTest : TestCase() {
     @BindValue
     val onlineChecker: IOnlineChecker = mock()
 
+    private var navigateToOfflineErrorScreenCalled = false
+    private var shouldTryAgainCalled = false
+
     @Before
     fun setupNavigation() {
         hiltRule.inject()
+
+        navigateToOfflineErrorScreenCalled = false
+        shouldTryAgainCalled = false
+
         composeTestRule.setContent {
-            WelcomeScreen(navController = navHostController)
+            WelcomeScreen(navigateToOfflineErrorScreen = {
+                navigateToOfflineErrorScreenCalled = true
+            }, shouldTryAgain = {
+                shouldTryAgainCalled = true
+                return@WelcomeScreen true
+            })
         }
     }
 
@@ -163,13 +172,5 @@ class WelcomeScreenKtTest : TestCase() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
     }
 
-    private fun itOpensErrorScreen() {
-//        val errorScreenDeeplink = NavDeepLinkRequest.Builder.fromUri(
-//            NavDestination.createRoute(ErrorRoutes.OFFLINE).toUri()
-//        ).build()
-        val navOptions = navOptions {
-            launchSingleTop = true
-        }
-        verify(navHostController).navigate(any<NavDeepLinkRequest>(), eq(navOptions), isNull())
-    }
+    private fun itOpensErrorScreen() = assert(navigateToOfflineErrorScreenCalled)
 }

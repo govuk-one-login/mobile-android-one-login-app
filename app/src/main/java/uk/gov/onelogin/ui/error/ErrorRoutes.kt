@@ -9,6 +9,7 @@ object ErrorRoutes {
     const val ROOT: String = "/error"
     const val GENERIC: String = "$ROOT/generic"
     const val OFFLINE: String = "$ROOT/offline"
+    const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
 
     fun NavGraphBuilder.genericErrorRoute(navController: NavHostController) {
         navigation(
@@ -23,7 +24,15 @@ object ErrorRoutes {
             composable(
                 route = OFFLINE
             ) {
-                OfflineErrorScreen(navController)
+                OfflineErrorScreen {
+                    navController.apply {
+                        previousBackStackEntry?.savedStateHandle?.set(
+                            OFFLINE_ERROR_TRY_AGAIN_KEY,
+                            true
+                        )
+                        popBackStack()
+                    }
+                }
             }
         }
     }

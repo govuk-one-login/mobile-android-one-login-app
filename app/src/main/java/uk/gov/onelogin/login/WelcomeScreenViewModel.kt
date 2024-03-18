@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavHostController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
@@ -13,19 +12,14 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.network.utils.IOnlineChecker
-import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(
     private val loginSession: LoginSession,
     private val featureFlags: FeatureFlags,
-    private val onlineChecker: IOnlineChecker
+    val onlineChecker: IOnlineChecker
 ) : ViewModel() {
-    fun onPrimary(context: Context, navController: NavHostController) {
-        if (!onlineChecker.isOnline()) {
-            navController.navigateToOfflineErrorScreen()
-            return
-        }
+    fun onPrimary(context: Context) {
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {

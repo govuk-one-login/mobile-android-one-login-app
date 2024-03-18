@@ -6,20 +6,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
 import uk.gov.onelogin.login.WelcomeScreenViewModel
-import uk.gov.onelogin.ui.error.OFFLINE_ERROR_TRY_AGAIN_KEY
 
 @Composable
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
-    navController: NavHostController
+    navigateToOfflineErrorScreen: () -> Unit = { },
+    shouldTryAgain: () -> Boolean = { false }
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -35,7 +33,11 @@ fun WelcomeScreen(
                 )
             ),
             onPrimary = {
-                viewModel.onPrimary(context, navController)
+                if (viewModel.onlineChecker.isOnline()) {
+                    viewModel.onPrimary(context)
+                } else {
+                    navigateToOfflineErrorScreen()
+                }
             },
             primaryButtonText = R.string.signInButton,
             title = R.string.signInTitle,
@@ -43,12 +45,12 @@ fun WelcomeScreen(
         )
     )
     LaunchedEffect(key1 = Unit) {
-        navController.currentBackStackEntry?.savedStateHandle?.apply {
-            val tryAgain = get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
-            if (tryAgain) {
-                remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
-                viewModel.onPrimary(context, navController)
-            }
+        if (!shouldTryAgain()) return@LaunchedEffect
+
+        if (viewModel.onlineChecker.isOnline()) {
+            viewModel.onPrimary(context)
+        } else {
+            navigateToOfflineErrorScreen()
         }
     }
 }
@@ -64,6 +66,6 @@ fun WelcomeScreen(
 @Composable
 private fun Preview() {
     GdsTheme {
-        WelcomeScreen(navController = rememberNavController())
+        WelcomeScreen()
     }
 }
