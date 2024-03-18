@@ -4,6 +4,9 @@ import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavHostController
+import androidx.navigation.navOptions
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -13,22 +16,25 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.login.ui.WelcomeScreen
+import uk.gov.onelogin.network.utils.IOnlineChecker
+import uk.gov.onelogin.network.utils.OnlineCheckerModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    FeaturesModule::class
+    FeaturesModule::class,
+    OnlineCheckerModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -38,18 +44,24 @@ class WelcomeScreenKtTest : TestCase() {
     @BindValue
     val featureFlags: FeatureFlags = mock()
 
+    @BindValue
+    val navHostController: NavHostController = mock()
+
+    @BindValue
+    val onlineChecker: IOnlineChecker = mock()
+
     @Before
     fun setupNavigation() {
         hiltRule.inject()
-
-        navController = composeTestRule.setupComposeTestRule { innerNavController ->
-            WelcomeScreen(navController = innerNavController)
+        composeTestRule.setContent {
+            WelcomeScreen(navController = navHostController)
         }
     }
 
     private val signInTitle = hasText(resources.getString(R.string.signInTitle))
     private val signInSubTitle = hasText(resources.getString(R.string.signInSubTitle))
     private val signInButton = hasText(resources.getString(R.string.signInButton))
+    private val offlineErrorTitle = hasText(resources.getString(R.string.app_networkErrorTitle))
 
     @Test
     fun verifyStrings() {
@@ -60,9 +72,10 @@ class WelcomeScreenKtTest : TestCase() {
 
     @Test
     fun opensWebLoginViaCustomTab() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
 
-        composeTestRule.onNode(signInButton).performClick()
+        whenWeClickSignIn()
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 R.string.openIdConnectBaseUrl,
@@ -98,9 +111,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @Test
     fun opensWebLoginViaCustomTab_StsFlagOn() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
-
-        composeTestRule.onNode(signInButton).performClick()
+        whenWeClickSignIn()
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 R.string.stsUrl,
@@ -132,5 +145,32 @@ class WelcomeScreenKtTest : TestCase() {
             any(),
             eq(loginSessionConfig)
         )
+    }
+
+    @Test
+    fun opensNetworkErrorScreen() {
+        givenWeAreOffline()
+
+        whenWeClickSignIn()
+
+        itOpensErrorScreen()
+    }
+
+    private fun whenWeClickSignIn() {
+        composeTestRule.onNode(signInButton).performClick()
+    }
+
+    private fun givenWeAreOffline() {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+    }
+
+    private fun itOpensErrorScreen() {
+//        val errorScreenDeeplink = NavDeepLinkRequest.Builder.fromUri(
+//            NavDestination.createRoute(ErrorRoutes.OFFLINE).toUri()
+//        ).build()
+        val navOptions = navOptions {
+            launchSingleTop = true
+        }
+        verify(navHostController).navigate(any<NavDeepLinkRequest>(), eq(navOptions), isNull())
     }
 }
