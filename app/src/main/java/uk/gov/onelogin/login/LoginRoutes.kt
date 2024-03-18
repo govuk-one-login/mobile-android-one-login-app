@@ -29,12 +29,12 @@ object LoginRoutes {
                         navController.navigateToOfflineErrorScreen()
                     },
                     shouldTryAgain = {
-                        return@WelcomeScreen navController.currentBackStackEntry?.savedStateHandle.let {
-                            val tryAgain = it?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
-                            it?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
-                            tryAgain
-                        }
-                    })
+                        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+                        val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
+                        savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
+                        tryAgain
+                    }
+                )
             }
 
             composable(
@@ -57,14 +57,11 @@ object LoginRoutes {
                 BackHandler(true) {
                     // do nothing
                 }
-                BiometricsOptInScreen(
-                    onPrimary = {
-                        navController.navigate(HomeRoutes.START)
-                    },
-                    onSecondary = {
-                        navController.navigate(HomeRoutes.START)
-                    }
-                )
+                BiometricsOptInScreen(onPrimary = {
+                    navController.navigate(HomeRoutes.START)
+                }, onSecondary = {
+                    navController.navigate(HomeRoutes.START)
+                })
             }
         }
     }
