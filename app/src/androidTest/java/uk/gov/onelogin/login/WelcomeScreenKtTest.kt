@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.NavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -40,9 +39,6 @@ class WelcomeScreenKtTest : TestCase() {
 
     @BindValue
     val featureFlags: FeatureFlags = mock()
-
-    @BindValue
-    val navHostController: NavHostController = mock()
 
     @BindValue
     val onlineChecker: IOnlineChecker = mock()
