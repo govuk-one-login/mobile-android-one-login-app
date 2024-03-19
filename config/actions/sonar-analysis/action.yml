@@ -35,9 +35,8 @@ runs:
           -Dsonar.pullrequest.base=develop \
           -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
           -Dsonar.pullrequest.key=${{ github.event.number }} \
-          -Dsonar.qualitygate.wait=true \
           -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME 
+          -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true

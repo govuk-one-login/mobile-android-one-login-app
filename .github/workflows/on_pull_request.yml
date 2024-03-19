@@ -83,7 +83,6 @@ jobs:
           username: ${{ secrets.PACKAGES_USER }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
-        timeout-minutes: 10
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
