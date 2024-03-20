@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_continue">Parhau</string>
+    <string name="app_tryAgainButton">Rhowch gynnig arall</string>
 
     <!-- Passcode info -->
     <string name="app_noPasscodePatternSetupTitle">Mae\'n edrych fel nad oes gan y ffôn hwn god neu batrwm mynediad</string>
     <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
     <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
+
+    <!-- Errors-->
+    <!-- Errors Offline-->
+    <string name="app_networkErrorTitle">Mae\'n ymddangos nad ydych ar-lein</string>
+    <string name="app_networkErrorBody">Nid yw GOV.UK One Login ar gael os nad ydych ar-lein. Ailgysylltwch â\'r rhyngrwyd a rhoi cynnig arall</string>
 
     <!-- Biometric Opt-In -->
     <string name="app_enableBiometricsTitle">Defnyddiwch biometreg i fewngofnodi</string>

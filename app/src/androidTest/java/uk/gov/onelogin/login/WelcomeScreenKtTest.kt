@@ -23,11 +23,14 @@ import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.login.ui.WelcomeScreen
+import uk.gov.onelogin.network.utils.IOnlineChecker
+import uk.gov.onelogin.network.utils.OnlineCheckerModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    FeaturesModule::class
+    FeaturesModule::class,
+    OnlineCheckerModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -37,11 +40,26 @@ class WelcomeScreenKtTest : TestCase() {
     @BindValue
     val featureFlags: FeatureFlags = mock()
 
+    @BindValue
+    val onlineChecker: IOnlineChecker = mock()
+
+    private var navigateToOfflineErrorScreenCalled = false
+    private var shouldTryAgainCalled = false
+
     @Before
     fun setupNavigation() {
         hiltRule.inject()
+
+        navigateToOfflineErrorScreenCalled = false
+        shouldTryAgainCalled = false
+
         composeTestRule.setContent {
-            WelcomeScreen()
+            WelcomeScreen(navigateToOfflineErrorScreen = {
+                navigateToOfflineErrorScreenCalled = true
+            }, shouldTryAgain = {
+                shouldTryAgainCalled = true
+                return@WelcomeScreen true
+            })
         }
     }
 
@@ -58,9 +76,10 @@ class WelcomeScreenKtTest : TestCase() {
 
     @Test
     fun opensWebLoginViaCustomTab() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
 
-        composeTestRule.onNode(signInButton).performClick()
+        whenWeClickSignIn()
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 R.string.openIdConnectBaseUrl,
@@ -96,9 +115,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @Test
     fun opensWebLoginViaCustomTab_StsFlagOn() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
-
-        composeTestRule.onNode(signInButton).performClick()
+        whenWeClickSignIn()
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 R.string.stsUrl,
@@ -131,4 +150,23 @@ class WelcomeScreenKtTest : TestCase() {
             eq(loginSessionConfig)
         )
     }
+
+    @Test
+    fun opensNetworkErrorScreen() {
+        givenWeAreOffline()
+
+        whenWeClickSignIn()
+
+        itOpensErrorScreen()
+    }
+
+    private fun whenWeClickSignIn() {
+        composeTestRule.onNode(signInButton).performClick()
+    }
+
+    private fun givenWeAreOffline() {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+    }
+
+    private fun itOpensErrorScreen() = assert(navigateToOfflineErrorScreenCalled)
 }

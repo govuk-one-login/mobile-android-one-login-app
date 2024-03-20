@@ -1,19 +1,21 @@
 package uk.gov.onelogin.login
 
 import androidx.activity.compose.BackHandler
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.login.ui.BiometricsOptInScreen
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.PasscodeInfoScreen
 import uk.gov.onelogin.login.ui.WelcomeScreen
+import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 object LoginRoutes {
     fun NavGraphBuilder.loginFlowRoutes(
-        navController: NavController
+        navController: NavHostController
     ) {
         navigation(
             route = ROOT,
@@ -22,7 +24,17 @@ object LoginRoutes {
             composable(
                 route = START
             ) {
-                WelcomeScreen()
+                WelcomeScreen(
+                    navigateToOfflineErrorScreen = {
+                        navController.navigateToOfflineErrorScreen()
+                    },
+                    shouldTryAgain = {
+                        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+                        val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
+                        savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
+                        tryAgain
+                    }
+                )
             }
 
             composable(
@@ -45,14 +57,11 @@ object LoginRoutes {
                 BackHandler(true) {
                     // do nothing
                 }
-                BiometricsOptInScreen(
-                    onPrimary = {
-                        navController.navigate(HomeRoutes.START)
-                    },
-                    onSecondary = {
-                        navController.navigate(HomeRoutes.START)
-                    }
-                )
+                BiometricsOptInScreen(onPrimary = {
+                    navController.navigate(HomeRoutes.START)
+                }, onSecondary = {
+                    navController.navigate(HomeRoutes.START)
+                })
             }
         }
     }

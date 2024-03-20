@@ -2,6 +2,7 @@ package uk.gov.onelogin.login.ui
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,7 +14,11 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.login.WelcomeScreenViewModel
 
 @Composable
-fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel()) {
+fun WelcomeScreen(
+    viewModel: WelcomeScreenViewModel = hiltViewModel(),
+    navigateToOfflineErrorScreen: () -> Unit = { },
+    shouldTryAgain: () -> Boolean = { false }
+) {
     val context = LocalContext.current
     LandingPage(
         landingPageParameters =
@@ -28,13 +33,26 @@ fun WelcomeScreen(viewModel: WelcomeScreenViewModel = hiltViewModel()) {
                 )
             ),
             onPrimary = {
-                viewModel.onPrimary(context)
+                if (viewModel.onlineChecker.isOnline()) {
+                    viewModel.onPrimary(context)
+                } else {
+                    navigateToOfflineErrorScreen()
+                }
             },
             primaryButtonText = R.string.signInButton,
             title = R.string.signInTitle,
             topIcon = R.drawable.app_icon
         )
     )
+    LaunchedEffect(key1 = Unit) {
+        if (!shouldTryAgain()) return@LaunchedEffect
+
+        if (viewModel.onlineChecker.isOnline()) {
+            viewModel.onPrimary(context)
+        } else {
+            navigateToOfflineErrorScreen()
+        }
+    }
 }
 
 @Preview(
