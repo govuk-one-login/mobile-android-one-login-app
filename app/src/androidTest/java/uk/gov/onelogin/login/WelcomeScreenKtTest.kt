@@ -16,6 +16,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
+import uk.gov.android.authentication.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
@@ -83,6 +84,7 @@ class WelcomeScreenKtTest : TestCase() {
         val loginSessionConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeEndpoint,
             clientId = clientId,
+            locale = Locale.EN,
             redirectUri = redirectUri,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint
@@ -121,6 +123,7 @@ class WelcomeScreenKtTest : TestCase() {
         val loginSessionConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeEndpoint,
             clientId = clientId,
+            locale = Locale.EN,
             redirectUri = redirectUri,
             scopes = listOf(LoginSessionConfiguration.Scope.STS),
             tokenEndpoint = tokenEndpoint
