@@ -1,7 +1,6 @@
 package uk.gov.onelogin
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,12 +8,12 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.ui.error.ErrorRoutes
 import uk.gov.onelogin.ui.home.HomeRoutes
 
@@ -23,7 +22,8 @@ class MainActivityViewModel @Inject constructor(
     val appRoutes: IAppRoutes,
     private val loginSession: LoginSession,
     private val credChecker: CredentialChecker,
-    private val bioPrefHandler: BiometricPreferenceHandler
+    private val bioPrefHandler: BiometricPreferenceHandler,
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -31,41 +31,25 @@ class MainActivityViewModel @Inject constructor(
     val next: LiveData<String> = _next
 
     fun handleIntent(
-        intent: Intent?,
-        sharedPrefs: SharedPreferences
+        intent: Intent?
     ) {
         val data = intent?.data
         when {
-            data != null -> handleActivityResult(sharedPrefs, intent)
-            tokensAvailable(sharedPrefs) -> _next.value = HomeRoutes.START
+            data != null -> handleActivityResult(intent)
+            tokensAvailable() -> _next.value = HomeRoutes.START
             else -> _next.value = LoginRoutes.START
         }
     }
 
-    private fun storeTokens(
-        sharedPrefs: SharedPreferences,
-        tokens: TokenResponse
-    ) {
-        with(
-            sharedPrefs.edit()
-        ) {
-            putString(TOKENS_PREFERENCES_KEY, tokens.jsonSerializeString())
-            apply()
-        }
-    }
-
-    private fun tokensAvailable(sharedPrefs: SharedPreferences): Boolean {
-        return sharedPrefs.getString(TOKENS_PREFERENCES_KEY, null) != null
+    private fun tokensAvailable(): Boolean {
+        return tokenRepository.getTokenResponse() != null
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun handleActivityResult(sharedPrefs: SharedPreferences, intent: Intent) {
+    private fun handleActivityResult(intent: Intent) {
         try {
             loginSession.finalise(intent = intent) { tokens ->
-                storeTokens(
-                    sharedPrefs = sharedPrefs,
-                    tokens = tokens
-                )
+                tokenRepository.setTokenResponse(tokens)
 
                 if (credChecker.isDeviceSecure()) {
                     when (credChecker.biometricStatus()) {
