@@ -66,9 +66,4 @@ class MainActivityViewModel @Inject constructor(
             _next.value = ErrorRoutes.ROOT
         }
     }
-
-    companion object {
-        const val TOKENS_PREFERENCES_FILE = "tokens"
-        const val TOKENS_PREFERENCES_KEY = "authTokens"
-    }
 }

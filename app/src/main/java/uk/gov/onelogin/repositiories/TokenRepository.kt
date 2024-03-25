@@ -22,7 +22,7 @@ interface TokenRepository {
     fun getTokenResponse(): TokenResponse?
 }
 
-class TokenResponseImpl @Inject constructor() : TokenRepository {
+class TokenRepositoryImpl @Inject constructor() : TokenRepository {
     private var tokenResponse: TokenResponse? = null
     override fun setTokenResponse(tokens: TokenResponse) {
         tokenResponse = tokens

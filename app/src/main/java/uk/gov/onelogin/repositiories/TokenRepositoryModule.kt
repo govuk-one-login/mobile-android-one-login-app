@@ -12,6 +12,6 @@ fun interface TokenRepositoryModule {
     @Binds
     @Singleton
     fun bindTokenRepository(
-        repo: TokenResponseImpl
+        repo: TokenRepositoryImpl
     ): TokenRepository
 }
