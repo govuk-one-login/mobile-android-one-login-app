@@ -1,7 +1,7 @@
 package uk.gov.onelogin
 
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HiltTestActivity : ComponentActivity()
+class HiltTestActivity : FragmentActivity()

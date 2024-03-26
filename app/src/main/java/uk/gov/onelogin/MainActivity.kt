@@ -1,8 +1,6 @@
 package uk.gov.onelogin
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -43,7 +41,6 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(it)
                     }
                     handleIntent(
-                        sharedPrefs = getTokenSharedPrefs(),
                         intent = intent
                     )
                 }
@@ -57,15 +54,8 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
             viewModel.handleIntent(
-                sharedPrefs = getTokenSharedPrefs(),
                 intent = data
             )
         }
     }
-
-    private fun getTokenSharedPrefs(): SharedPreferences =
-        this.getSharedPreferences(
-            MainActivityViewModel.TOKENS_PREFERENCES_FILE,
-            Context.MODE_PRIVATE
-        )
 }

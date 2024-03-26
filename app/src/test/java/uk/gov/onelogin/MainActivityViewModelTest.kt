@@ -1,8 +1,6 @@
 package uk.gov.onelogin
 
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.SharedPreferences.Editor
 import android.net.Uri
 import androidx.lifecycle.Observer
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -23,6 +21,7 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 @ExtendWith(InstantExecutorExtension::class)
@@ -30,9 +29,8 @@ class MainActivityViewModelTest {
     private val mockAppRoutes: IAppRoutes = mock()
     private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
-    private val mockSharedPrefs: SharedPreferences = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
-    private val mockEditor: Editor = mock()
+    private val mockTokenRepository: TokenRepository = mock()
 
     private val observer: Observer<String> = mock()
 
@@ -48,12 +46,12 @@ class MainActivityViewModelTest {
         mockAppRoutes,
         mockLoginSession,
         mockCredChecker,
-        mockBioPrefHandler
+        mockBioPrefHandler,
+        mockTokenRepository
     )
 
     @BeforeEach
     fun setup() {
-        whenever(mockSharedPrefs.edit()).thenReturn(mockEditor)
         viewModel.next.observeForever(observer)
     }
 
@@ -72,15 +70,10 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent,
-            mockSharedPrefs
+            mockIntent
         )
 
-        verify(mockEditor).putString(
-            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
-            tokenResponse.jsonSerializeString()
-        )
-        verify(mockEditor).apply()
+        verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(HomeRoutes.START, viewModel.next.value)
     }
@@ -100,15 +93,10 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent,
-            mockSharedPrefs
+            mockIntent
         )
 
-        verify(mockEditor).putString(
-            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
-            tokenResponse.jsonSerializeString()
-        )
-        verify(mockEditor).apply()
+        verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(LoginRoutes.BIO_OPT_IN, viewModel.next.value)
     }
@@ -127,15 +115,10 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent,
-            mockSharedPrefs
+            mockIntent
         )
 
-        verify(mockEditor).putString(
-            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
-            tokenResponse.jsonSerializeString()
-        )
-        verify(mockEditor).apply()
+        verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
         assertEquals(LoginRoutes.PASSCODE_INFO, viewModel.next.value)
     }
@@ -147,22 +130,13 @@ class MainActivityViewModelTest {
         whenever(mockIntent.data).thenReturn(null)
 
         whenever(
-            mockSharedPrefs.getString(
-                eq(MainActivityViewModel.TOKENS_PREFERENCES_KEY),
-                eq(null)
-            )
-        ).thenReturn("test")
+            mockTokenRepository.getTokenResponse()
+        ).thenReturn(tokenResponse)
 
         viewModel.handleIntent(
-            mockIntent,
-            mockSharedPrefs
+            mockIntent
         )
 
-        verify(mockEditor, times(0)).putString(
-            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
-            tokenResponse.jsonSerializeString()
-        )
-        verify(mockEditor, times(0)).apply()
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(HomeRoutes.START, viewModel.next.value)
     }
@@ -173,23 +147,12 @@ class MainActivityViewModelTest {
 
         whenever(mockIntent.data).thenReturn(null)
 
-        whenever(
-            mockSharedPrefs.getString(
-                eq(MainActivityViewModel.TOKENS_PREFERENCES_KEY),
-                eq(null)
-            )
-        ).thenReturn(null)
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
 
         viewModel.handleIntent(
-            mockIntent,
-            mockSharedPrefs
+            mockIntent
         )
 
-        verify(mockEditor, times(0)).putString(
-            MainActivityViewModel.TOKENS_PREFERENCES_KEY,
-            tokenResponse.jsonSerializeString()
-        )
-        verify(mockEditor, times(0)).apply()
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(LoginRoutes.START, viewModel.next.value)
     }
