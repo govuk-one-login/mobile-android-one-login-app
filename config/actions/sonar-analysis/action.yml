@@ -29,6 +29,11 @@ runs:
           -Dsonar.pullrequest.base=develop \
           -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
           -Dsonar.pullrequest.key=${{ github.event.number }} \
+          -Dsonar.androidLint.reportPaths="**/reports/lint-results-*.xml" \
+          -Dsonar.coverage.jacoco.xmlReportPaths="**/reports/coverage/**/*.xml","**/reports/jacoco/**/*.xml" \
+          -Dsonar.kotlin.detekt.reportPaths="**/reports/detekt/*.xml" \
+          -Dsonar.kotlin.ktlint.reportPaths="**/reports/ktlint/**/*.xml" \
+          -Dsonar.junit.reportPaths="**/outputs/androidTest-results/connected/flavors/*/","**/test-results" \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME
       shell: bash
@@ -47,6 +52,11 @@ runs:
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.projectVersion=$PROJECT_VERSION \
+          -Dsonar.androidLint.reportPaths="**/reports/lint-results-*.xml" \
+          -Dsonar.coverage.jacoco.xmlReportPaths="**/reports/coverage/**/*.xml","**/reports/jacoco/**/*.xml" \
+          -Dsonar.kotlin.detekt.reportPaths="**/reports/detekt/*.xml" \
+          -Dsonar.kotlin.ktlint.reportPaths="**/reports/ktlint/**/*.xml" \
+          -Dsonar.junit.reportPaths="**/outputs/androidTest-results/connected/flavors/*/","**/test-results" \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME
       shell: bash
