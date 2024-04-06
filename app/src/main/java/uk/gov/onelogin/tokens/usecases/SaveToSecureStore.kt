@@ -34,14 +34,12 @@ class SaveToSecureStoreImpl @Inject constructor(
     override suspend fun invoke(context: FragmentActivity, key: String, value: String) {
         biometricPreferenceHandler.getBioPref()?.let { bioPref ->
             if (bioPref == BiometricPreference.NONE) return
-
-            val secureStore: SecureStore = SharedPrefsStore(
-                context,
-                configuration = SecureStorageConfiguration(
-                    Keys.SECURE_STORE_ID,
-                    Mapper.mapAccessControlLevel(bioPref)
-                )
+            val configuration = SecureStorageConfiguration(
+                Keys.SECURE_STORE_ID,
+                Mapper.mapAccessControlLevel(bioPref)
             )
+            val secureStore: SecureStore = SharedPrefsStore()
+            secureStore.init(context, configuration)
             try {
                 secureStore.upsert(
                     context = context,
