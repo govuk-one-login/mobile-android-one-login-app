@@ -23,7 +23,11 @@ class MainActivity : AppCompatActivity() {
 
         val lifecycleOwner = this
 
-        installSplashScreen()
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                return@setKeepOnScreenCondition viewModel.keepSplashScreenOn
+            }
+        }
 
         setContent {
             val navController = rememberNavController()
@@ -41,7 +45,8 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(it)
                     }
                     handleIntent(
-                        intent = intent
+                        intent = intent,
+                        fragmentActivity = this@MainActivity
                     )
                 }
             }
@@ -54,7 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
             viewModel.handleIntent(
-                intent = data
+                intent = data,
+                fragmentActivity = this@MainActivity
             )
         }
     }

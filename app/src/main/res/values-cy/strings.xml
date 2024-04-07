@@ -20,4 +20,6 @@
     <string name="app_enableBiometricsFootnote">Os ydych yn defnyddio biometreg, bydd unrhyw un sydd â biometreg wedi\'i arbed ar eich ffôn yn gallu mewngofnodi i\'r ap hwn.</string>
     <string name="app_enableBiometricsButton">Defnyddio biometreg</string>
     <string name="app_enablePasscodeOrPatternButton">Defnyddio god mynediad neu batrwm</string>
+
+    <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
 </resources>
