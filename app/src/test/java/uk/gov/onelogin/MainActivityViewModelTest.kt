@@ -2,6 +2,7 @@ package uk.gov.onelogin
 
 import android.content.Intent
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -22,6 +23,8 @@ import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
+import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 @ExtendWith(InstantExecutorExtension::class)
@@ -30,6 +33,8 @@ class MainActivityViewModelTest {
     private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val mockGetTokenExpiry: GetTokenExpiry = mock()
+    private val mockGetFromSecureStore: GetFromSecureStore = mock()
     private val mockTokenRepository: TokenRepository = mock()
 
     private val observer: Observer<String> = mock()
@@ -47,6 +52,8 @@ class MainActivityViewModelTest {
         mockLoginSession,
         mockCredChecker,
         mockBioPrefHandler,
+        mockGetTokenExpiry,
+        mockGetFromSecureStore,
         mockTokenRepository
     )
 
@@ -58,6 +65,7 @@ class MainActivityViewModelTest {
     @Test
     fun `handleIntent when data != null and device is secure with no biometrics`() {
         val mockIntent: Intent = mock()
+        val mockFragmentActivity: FragmentActivity = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
@@ -70,7 +78,9 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent
+            mockIntent,
+            mockFragmentActivity
+
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -81,6 +91,7 @@ class MainActivityViewModelTest {
     @Test
     fun `handleIntent when data != null and device is secure with ok biometrics`() {
         val mockIntent: Intent = mock()
+        val mockFragmentActivity: FragmentActivity = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
@@ -93,7 +104,8 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent
+            mockIntent,
+            mockFragmentActivity
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -104,6 +116,7 @@ class MainActivityViewModelTest {
     @Test
     fun `handleIntent when data != null and device is not secure`() {
         val mockIntent: Intent = mock()
+        val mockFragmentActivity: FragmentActivity = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
@@ -115,7 +128,8 @@ class MainActivityViewModelTest {
             }
 
         viewModel.handleIntent(
-            mockIntent
+            mockIntent,
+            mockFragmentActivity
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -126,6 +140,7 @@ class MainActivityViewModelTest {
     @Test
     fun `handleIntent when data == null and tokens available`() {
         val mockIntent: Intent = mock()
+        val mockFragmentActivity: FragmentActivity = mock()
 
         whenever(mockIntent.data).thenReturn(null)
 
@@ -134,7 +149,8 @@ class MainActivityViewModelTest {
         ).thenReturn(tokenResponse)
 
         viewModel.handleIntent(
-            mockIntent
+            mockIntent,
+            mockFragmentActivity
         )
 
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
@@ -144,13 +160,15 @@ class MainActivityViewModelTest {
     @Test
     fun `handleIntent when data == null and tokens not available`() {
         val mockIntent: Intent = mock()
+        val mockFragmentActivity: FragmentActivity = mock()
 
         whenever(mockIntent.data).thenReturn(null)
 
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
 
         viewModel.handleIntent(
-            mockIntent
+            mockIntent,
+            mockFragmentActivity
         )
 
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
