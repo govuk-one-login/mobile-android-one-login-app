@@ -22,6 +22,10 @@ class GetTokenExpiryImpl @Inject constructor(
     private val sharedPrefs = context.getSharedPreferences(TOKEN_SHARED_PREFS, Context.MODE_PRIVATE)
     override fun invoke(): Long? {
         val expiryTimestamp = sharedPrefs.getLong(TOKEN_EXPIRY_KEY, 0)
-        return if (expiryTimestamp == 0L) null else expiryTimestamp
+        return if (expiryTimestamp == 0L) {
+            null
+        } else {
+            expiryTimestamp
+        }
     }
 }
