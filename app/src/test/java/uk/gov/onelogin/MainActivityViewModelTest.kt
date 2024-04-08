@@ -26,6 +26,7 @@ import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
+import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.ui.home.HomeRoutes
@@ -39,6 +40,7 @@ class MainActivityViewModelTest {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockGetFromSecureStore: GetFromSecureStore = mock()
     private val mockTokenRepository: TokenRepository = mock()
+    private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
 
     private val observer: Observer<String> = mock()
     private val testAccessToken = "testAccessToken"
@@ -57,12 +59,18 @@ class MainActivityViewModelTest {
         mockBioPrefHandler,
         mockGetTokenExpiry,
         mockGetFromSecureStore,
-        mockTokenRepository
+        mockTokenRepository,
+        mockAutoInitialiseSecureStore
     )
 
     @BeforeEach
     fun setup() {
         viewModel.next.observeForever(observer)
+    }
+
+    @Test
+    fun `secure store auto initialised`() {
+        verify(mockAutoInitialiseSecureStore).invoke()
     }
 
     @Test
@@ -159,7 +167,6 @@ class MainActivityViewModelTest {
 
             verify(mockBioPrefHandler, times(0)).setBioPref(any())
             assertEquals(HomeRoutes.START, viewModel.next.value)
-
         }
 
     @Test

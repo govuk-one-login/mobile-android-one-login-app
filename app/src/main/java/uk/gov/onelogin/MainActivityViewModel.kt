@@ -19,6 +19,7 @@ import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
+import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.ui.error.ErrorRoutes
@@ -32,13 +33,18 @@ class MainActivityViewModel @Inject constructor(
     private val bioPrefHandler: BiometricPreferenceHandler,
     private val getTokenExpiry: GetTokenExpiry,
     private val getFromSecureStore: GetFromSecureStore,
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
     private val _next = MutableLiveData<String>()
     val next: LiveData<String> = _next
     var keepSplashScreenOn = true
+
+    init {
+        autoInitialiseSecureStore()
+    }
 
     fun handleIntent(
         intent: Intent?,
