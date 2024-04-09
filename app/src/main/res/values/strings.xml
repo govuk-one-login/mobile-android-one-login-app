@@ -38,6 +38,8 @@
     <string name="app_enableBiometricsButton">Use biometrics</string>
     <string name="app_enablePasscodeOrPatternButton">Use passcode or pattern</string>
 
+    <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
+
     <string name="homeScreenTitle" translatable="false">Home Screen</string>
 
     <string name="StagingEnv" translatable="false">staging</string>

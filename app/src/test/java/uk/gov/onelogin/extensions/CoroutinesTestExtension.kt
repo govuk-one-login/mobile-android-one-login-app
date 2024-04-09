@@ -3,9 +3,8 @@ package uk.gov.onelogin.extensions
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.createTestCoroutineScope
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -15,12 +14,9 @@ import org.junit.jupiter.api.extension.ExtensionContext
 @ExperimentalCoroutinesApi
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 class CoroutinesTestExtension(
-    private val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
+    private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : BeforeEachCallback,
-    AfterEachCallback,
-    TestCoroutineScope by createTestCoroutineScope(
-        dispatcher
-    ) {
+    AfterEachCallback {
 
     /**
      * Set TestCoroutine dispatcher as main
