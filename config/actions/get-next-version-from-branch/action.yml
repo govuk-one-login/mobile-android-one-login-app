@@ -16,7 +16,7 @@ runs:
       id: get-latest-tag
       run: |
         IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX <<< "${GITHUB_REF#refs/heads/}"
-        
+
         if [[ "$BRANCH_SUFFIX" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
         then
           NEXT_VERSION="${BASH_REMATCH[0]}"
@@ -24,12 +24,12 @@ runs:
           echo "Invalid version in branch name ($GITHUB_REF)"
           exit 1
         fi
-        
+
         echo "NEXT_VERSION = $NEXT_VERSION"
-        
+
         echo "next-version=$NEXT_VERSION" >> $GITHUB_OUTPUT
-        
+
         IFS=. read -r MAJOR MINOR PATCH <<< $NEXT_VERSION
-        
+
         echo "next-version-pattern=v${MAJOR}.${MINOR}.*" >> $GITHUB_OUTPUT
       shell: bash

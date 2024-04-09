@@ -33,27 +33,27 @@ runs:
         echo "Flavors = ${INPUT_FLAVORS}"
         echo "Version code = ${INPUT_VERSION_CODE}"
         echo "Version name = ${INPUT_VERSION_NAME}"
-        
+
         ./gradlew \
           assembleRelease \
           bundleRelease \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME
-        
+
         FLAVORS=($(echo $INPUT_FLAVORS | tr "," "\n"))
         OUTPUT=""
-        
+
         for FLAVOR in "${FLAVORS[@]}"
         do
           OUTPUT+="$FLAVOR:app/build/outputs/bundle/${FLAVOR}Release/app-${FLAVOR}-release.aab;"
         done
-        
+
         echo "aab paths = ${OUTPUT}"
         echo "aab-paths=${OUTPUT}" >> $GITHUB_OUTPUT
       shell: bash
       env:
         CI: true
-        INPUT_FLAVORS:  ${{ inputs.flavors }}
+        INPUT_FLAVORS: ${{ inputs.flavors }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         READID_API_KEY: ${{ env.READID_API_KEY }}
