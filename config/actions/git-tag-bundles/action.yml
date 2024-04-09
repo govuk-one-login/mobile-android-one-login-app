@@ -27,17 +27,17 @@ runs:
     - name: Git tag bundles
       run: |
         BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
-
+        
         for BUNDLE in ${BUNDLES[@]}
         do
           echo "Bundle = $BUNDLE"
           IFS=: VER=(${BUNDLE})
-
+        
           FLAVOR=${VER[0]}
           AAB_PATH=${VER[1]}
           echo "Flavor = $FLAVOR"
           echo "AAB path = $AAB_PATH"
-
+        
           case $FLAVOR in
             production*)
               git tag -a "${INPUT_VERSION_NAME}-${INPUT_VERSION_CODE}" -m "Publish ${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE} - uk.gov.documentchecking - internal"
