@@ -23,6 +23,7 @@ runs:
         secret-ids: |
           ,di-mobile-android-onelogin-app/github-actions-env-v2
           ,di-ipv-dca-mob-android/google-play-service-account-json-v2
+        parse-json-secrets: true
 
     - name: Decode Keystore
       env:
