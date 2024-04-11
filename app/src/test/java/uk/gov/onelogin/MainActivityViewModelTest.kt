@@ -149,13 +149,14 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `handleIntent when data == null and access token available in secure store`() =
+    fun `access token not expired and tokens exist`() =
         runTest {
             val mockIntent: Intent = mock()
             val mockFragmentActivity: FragmentActivity = mock()
             whenever(mockIntent.data).thenReturn(null)
             whenever(mockBioPrefHandler.getBioPref()).thenReturn(null)
-            whenever(mockGetTokenExpiry.invoke()).thenReturn(System.currentTimeMillis() + 10_000)
+            whenever(mockGetTokenExpiry.invoke())
+                .thenReturn(System.currentTimeMillis() + 10_000)
             whenever(
                 mockGetFromSecureStore.invoke(mockFragmentActivity, Keys.ACCESS_TOKENS_KEY)
             ).thenReturn(testAccessToken)
@@ -170,13 +171,15 @@ class MainActivityViewModelTest {
         }
 
     @Test
-    fun `handleIntent when data == null and tokens not available`() {
+    fun `access token expired and tokens exist`() = runTest {
         val mockIntent: Intent = mock()
         val mockFragmentActivity: FragmentActivity = mock()
 
         whenever(mockIntent.data).thenReturn(null)
-
-        whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
+        val expiredTokenTimestamp = 100L
+        whenever(mockGetTokenExpiry.invoke()).thenReturn(expiredTokenTimestamp)
+        whenever(mockGetFromSecureStore.invoke(mockFragmentActivity, Keys.ACCESS_TOKENS_KEY))
+            .thenReturn(testAccessToken)
 
         viewModel.handleIntent(
             mockIntent,
@@ -186,4 +189,29 @@ class MainActivityViewModelTest {
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertEquals(LoginRoutes.START, viewModel.next.value)
     }
+
+    @Test
+    fun `access token not expired and tokens don't exist`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockFragmentActivity: FragmentActivity = mock()
+
+            whenever(mockIntent.data).thenReturn(null)
+            whenever(mockGetTokenExpiry.invoke())
+                .thenReturn(System.currentTimeMillis() + 10_000)
+            whenever(
+                mockGetFromSecureStore.invoke(
+                    mockFragmentActivity,
+                    Keys.ACCESS_TOKENS_KEY
+                )
+            ).thenReturn(null)
+
+            viewModel.handleIntent(
+                mockIntent,
+                mockFragmentActivity
+            )
+
+            verify(mockBioPrefHandler, times(0)).setBioPref(any())
+            assertEquals(LoginRoutes.START, viewModel.next.value)
+        }
 }
