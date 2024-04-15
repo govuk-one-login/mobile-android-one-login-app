@@ -10,8 +10,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.securestore.SecureStorageError
 import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 
 @ExtendWith(CoroutinesTestExtension::class)

@@ -12,6 +12,7 @@ import uk.gov.onelogin.login.ui.WelcomeScreen
 import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
 import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 import uk.gov.onelogin.ui.home.HomeRoutes
+import uk.gov.onelogin.ui.splash.SplashScreen
 
 object LoginRoutes {
     fun NavGraphBuilder.loginFlowRoutes(
@@ -23,6 +24,18 @@ object LoginRoutes {
         ) {
             composable(
                 route = START
+            ) {
+                SplashScreen {
+                    navController.navigate(it) {
+                        popUpTo(START) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+
+            composable(
+                route = WELCOME
             ) {
                 WelcomeScreen(
                     navigateToOfflineErrorScreen = {
@@ -68,6 +81,7 @@ object LoginRoutes {
 
     const val ROOT: String = "/login"
     const val START: String = "$ROOT/start"
+    const val WELCOME: String = "$ROOT/welcome"
     const val LOADING: String = "$ROOT/loading"
     const val PASSCODE_INFO: String = "$ROOT/passcode_error"
     const val BIO_OPT_IN: String = "$ROOT/bioOptIn"

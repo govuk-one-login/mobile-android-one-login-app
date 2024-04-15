@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.AppAuthSession
@@ -23,12 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         val lifecycleOwner = this
 
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                return@setKeepOnScreenCondition viewModel.keepSplashScreenOn
-            }
-        }
-
         setContent {
             val navController = rememberNavController()
 
@@ -44,10 +37,9 @@ class MainActivity : AppCompatActivity() {
                     next.observe(lifecycleOwner) {
                         navController.navigate(it)
                     }
-                    handleIntent(
-                        intent = intent,
-                        fragmentActivity = this@MainActivity
-                    )
+                    if (intent?.data != null) {
+                        handleActivityResult(intent = intent)
+                    }
                 }
             }
         }
@@ -58,10 +50,11 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
-            viewModel.handleIntent(
-                intent = data,
-                fragmentActivity = this@MainActivity
-            )
+            if (data != null) {
+                viewModel.handleActivityResult(
+                    intent = data
+                )
+            }
         }
     }
 }

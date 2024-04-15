@@ -1,4 +1,4 @@
-package uk.gov.onelogin
+package uk.gov.onelogin.ui.home
 
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -8,6 +8,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
+import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore

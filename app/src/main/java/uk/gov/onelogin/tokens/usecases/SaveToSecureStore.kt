@@ -3,8 +3,8 @@ package uk.gov.onelogin.tokens.usecases
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
-import uk.gov.android.securestore.SecureStorageError
 import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.error.SecureStorageError
 
 fun interface SaveToSecureStore {
     /**

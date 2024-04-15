@@ -1,4 +1,4 @@
-package uk.gov.onelogin
+package uk.gov.onelogin.ui.home
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
