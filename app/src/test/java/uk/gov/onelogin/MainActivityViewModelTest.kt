@@ -26,8 +26,6 @@ import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
-import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
-import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.ui.home.HomeRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -37,8 +35,6 @@ class MainActivityViewModelTest {
     private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
-    private val mockGetTokenExpiry: GetTokenExpiry = mock()
-    private val mockGetFromSecureStore: GetFromSecureStore = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
 
