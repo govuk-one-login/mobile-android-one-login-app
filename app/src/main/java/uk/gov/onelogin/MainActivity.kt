@@ -37,9 +37,7 @@ class MainActivity : AppCompatActivity() {
                     next.observe(lifecycleOwner) {
                         navController.navigate(it)
                     }
-                    if (intent?.data != null) {
-                        handleActivityResult(intent = intent)
-                    }
+                    handleActivityResult(intent = intent)
                 }
             }
         }

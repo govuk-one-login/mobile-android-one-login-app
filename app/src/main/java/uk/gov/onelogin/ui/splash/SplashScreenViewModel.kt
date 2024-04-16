@@ -40,6 +40,8 @@ class SplashScreenViewModel @Inject constructor(
                 Log.e(this::class.simpleName, e.message, e)
                 if (e.type == SecureStoreErrorType.USER_CANCELED_BIO_PROMPT) {
                     _showUnlock.value = true
+                } else {
+                    _next.value = LoginRoutes.WELCOME
                 }
             }
         }

@@ -8,7 +8,7 @@ import uk.gov.onelogin.ext.setupComposeTestRule
 @HiltAndroidTest
 class SplashScreenTest : TestCase() {
     @Test
-    fun initialisesHomeScreen() {
+    fun initialisesSplashScreen() {
         composeTestRule.setupComposeTestRule { _ ->
             SplashScreen()
         }

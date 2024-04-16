@@ -5,7 +5,7 @@ import android.os.Looper
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -39,64 +39,56 @@ class SplashScreenViewModelTest : TestCase() {
     }
 
     @Test
-    fun loginFails() {
-        runBlocking {
-            whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-                .thenReturn(
-                    false
-                )
-            viewModel.login(composeTestRule.activity as FragmentActivity)
+    fun loginFails() = runTest {
+        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
+            .thenReturn(
+                false
+            )
+        viewModel.login(composeTestRule.activity as FragmentActivity)
 
-            Handler(Looper.getMainLooper()).post {
-                assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
-            }
+        Handler(Looper.getMainLooper()).post {
+            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
         }
     }
 
     @Test
-    fun loginSuccess() {
-        runBlocking {
-            whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-                .thenReturn(
-                    true
-                )
-            viewModel.login(composeTestRule.activity as FragmentActivity)
+    fun loginSuccess() = runTest {
+        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
+            .thenReturn(
+                true
+            )
+        viewModel.login(composeTestRule.activity as FragmentActivity)
 
-            Handler(Looper.getMainLooper()).post {
-                assertEquals(HomeRoutes.START, viewModel.next.value)
-            }
+        Handler(Looper.getMainLooper()).post {
+            assertEquals(HomeRoutes.START, viewModel.next.value)
         }
     }
 
     @Test
-    fun loginThrowsGeneral() {
-        runBlocking {
-            whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-                .thenThrow(
-                    SecureStorageError(Exception(), SecureStoreErrorType.GENERAL)
-                )
-            viewModel.login(composeTestRule.activity as FragmentActivity)
+    fun loginThrowsGeneral() = runTest {
+        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
+            .thenThrow(
+                SecureStorageError(Exception(), SecureStoreErrorType.GENERAL)
+            )
+        viewModel.login(composeTestRule.activity as FragmentActivity)
 
-            Handler(Looper.getMainLooper()).post {
-                assertNull(viewModel.next.value)
-                assertFalse(viewModel.showUnlock.value)
-            }
+        Handler(Looper.getMainLooper()).post {
+            assertFalse(viewModel.showUnlock.value)
+            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
         }
     }
 
     @Test
-    fun loginThrowsUserCancelled() {
-        runBlocking {
-            whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-                .thenThrow(
-                    SecureStorageError(Exception(), SecureStoreErrorType.USER_CANCELED_BIO_PROMPT)
-                )
-            viewModel.login(composeTestRule.activity as FragmentActivity)
+    fun loginThrowsUserCancelled() = runTest {
+        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
+            .thenThrow(
+                SecureStorageError(Exception(), SecureStoreErrorType.USER_CANCELED_BIO_PROMPT)
+            )
+        viewModel.login(composeTestRule.activity as FragmentActivity)
 
-            Handler(Looper.getMainLooper()).post {
-                assertNull(viewModel.next.value)
-                assertTrue(viewModel.showUnlock.value)
-            }
+        Handler(Looper.getMainLooper()).post {
+            assertNull(viewModel.next.value)
+            assertTrue(viewModel.showUnlock.value)
         }
     }
 }
