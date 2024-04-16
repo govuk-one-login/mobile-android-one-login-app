@@ -3,7 +3,6 @@ package uk.gov.onelogin
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
@@ -29,13 +28,7 @@ class AppRoutesTest : TestCase() {
             )
         }
 
-        // Race condition as the splash screen moves onto login welcome screen
-        val startScreenPresent = navController?.backStack?.any {
-            it.destination.route == LoginRoutes.START
-        }
-        startScreenPresent?.let {
-            assertTrue(startScreenPresent)
-        } ?: assertEquals(LoginRoutes.WELCOME, navController?.currentDestination?.route)
+        assertEquals(LoginRoutes.WELCOME, navController?.currentDestination?.route)
     }
 
     @Test
