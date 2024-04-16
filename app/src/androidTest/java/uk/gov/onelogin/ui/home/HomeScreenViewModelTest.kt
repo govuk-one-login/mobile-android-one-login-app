@@ -34,17 +34,17 @@ class HomeScreenViewModelTest : TestCase() {
             accessTokenExpirationTime = 1L
         )
 
-        whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
-
         runBlocking {
+            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+
             viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
 
-            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
             verify(saveToSecureStore).invoke(
                 composeTestRule.activity as FragmentActivity,
                 Keys.ACCESS_TOKENS_KEY,
                 testResponse.accessToken
             )
+            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
     }
 }
