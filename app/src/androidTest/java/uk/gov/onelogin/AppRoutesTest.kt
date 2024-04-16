@@ -3,6 +3,7 @@ package uk.gov.onelogin
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
@@ -28,11 +29,11 @@ class AppRoutesTest : TestCase() {
             )
         }
 
-        assertEquals(
-            "The default destination for app routes should have been 'LoginRoutes.START'!",
-            LoginRoutes.START,
-            navController?.currentDestination?.route
-        )
+        // Race condition as the splash screen moves onto login welcome screen
+        val startScreenPresent = navController?.backStack?.any {
+            it.destination.route == LoginRoutes.START
+        }
+        assertTrue(startScreenPresent == true)
     }
 
     @Test
