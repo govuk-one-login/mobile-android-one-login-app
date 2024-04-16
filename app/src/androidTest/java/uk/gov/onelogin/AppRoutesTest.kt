@@ -3,6 +3,7 @@ package uk.gov.onelogin
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
