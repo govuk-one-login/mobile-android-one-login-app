@@ -33,7 +33,9 @@ class AppRoutesTest : TestCase() {
         val startScreenPresent = navController?.backStack?.any {
             it.destination.route == LoginRoutes.START
         }
-        assertTrue(startScreenPresent == true)
+        startScreenPresent?.let {
+            assertTrue(startScreenPresent)
+        } ?: assertEquals(LoginRoutes.WELCOME, navController?.currentDestination?.route)
     }
 
     @Test
