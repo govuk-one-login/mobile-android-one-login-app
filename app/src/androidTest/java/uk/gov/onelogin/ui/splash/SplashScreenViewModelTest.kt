@@ -74,7 +74,7 @@ class SplashScreenViewModelTest : TestCase() {
 
         Handler(Looper.getMainLooper()).post {
             assertFalse(viewModel.showUnlock.value)
-            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
+            assertNull(viewModel.next.value)
         }
     }
 
