@@ -25,9 +25,6 @@ import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.login.nonce.INonceGenerator
 import uk.gov.onelogin.login.nonce.NonceGeneratorModule
 import uk.gov.onelogin.login.nonce.NonceGeneratorStub
-import uk.gov.onelogin.login.state.IStateGenerator
-import uk.gov.onelogin.login.state.StateGeneratorModule
-import uk.gov.onelogin.login.state.StateGeneratorStub
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.matchers.IsUUID
 import uk.gov.onelogin.matchers.MatchesUri
@@ -36,8 +33,7 @@ import java.util.UUID
 
 @HiltAndroidTest
 @UninstallModules(
-    NonceGeneratorModule::class,
-    StateGeneratorModule::class
+    NonceGeneratorModule::class
 )
 class SuccessfulLoginTest : TestCase() {
     private val nonce = UUID.randomUUID().toString()
@@ -48,11 +44,6 @@ class SuccessfulLoginTest : TestCase() {
     )
 
     private val state = UUID.randomUUID().toString()
-
-    @BindValue
-    val stateGenerator: IStateGenerator = StateGeneratorStub(
-        state = state
-    )
 
     @Before
     fun setup() {

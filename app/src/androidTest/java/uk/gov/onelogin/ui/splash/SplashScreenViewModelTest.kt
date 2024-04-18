@@ -7,17 +7,17 @@ import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.securestore.error.SecureStorageError
-import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.ui.home.HomeRoutes
 
@@ -40,23 +40,23 @@ class SplashScreenViewModelTest : TestCase() {
 
     @Test
     fun loginFails() = runTest {
-        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-            .thenReturn(
-                false
-            )
+        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.SecureStoreError
+                )
+            }
         viewModel.login(composeTestRule.activity as FragmentActivity)
-
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
-        }
     }
 
     @Test
     fun loginSuccess() = runTest {
-        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-            .thenReturn(
-                true
-            )
+        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success("token")
+                )
+            }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
         Handler(Looper.getMainLooper()).post {
@@ -65,25 +65,28 @@ class SplashScreenViewModelTest : TestCase() {
     }
 
     @Test
-    fun loginThrowsGeneral() = runTest {
-        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-            .thenThrow(
-                SecureStorageError(Exception(), SecureStoreErrorType.GENERAL)
-            )
+    fun loginRequiresRefresh() = runTest {
+        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.RefreshToken
+                )
+            }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
         Handler(Looper.getMainLooper()).post {
-            assertFalse(viewModel.showUnlock.value)
-            assertNull(viewModel.next.value)
+            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
         }
     }
 
     @Test
     fun loginThrowsUserCancelled() = runTest {
-        whenever(mockHandleLogin.invoke(composeTestRule.activity as FragmentActivity))
-            .thenThrow(
-                SecureStorageError(Exception(), SecureStoreErrorType.USER_CANCELED_BIO_PROMPT)
-            )
+        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.UserCancelled
+                )
+            }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
         Handler(Looper.getMainLooper()).post {

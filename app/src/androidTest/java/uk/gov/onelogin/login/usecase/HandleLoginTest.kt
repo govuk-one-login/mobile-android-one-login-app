@@ -3,15 +3,16 @@ package uk.gov.onelogin.login.usecase
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
@@ -34,9 +35,11 @@ class HandleLoginTest : TestCase() {
         whenever(mockGetTokenExpiry()).thenReturn(expiredTime)
 
         runBlocking {
-            val loginSuccess = useCase(composeTestRule.activity as FragmentActivity)
-
-            assertFalse(loginSuccess)
+            useCase(
+                composeTestRule.activity as FragmentActivity
+            ) {
+                assertEquals(LocalAuthStatus.RefreshToken, it)
+            }
         }
     }
 
@@ -45,22 +48,26 @@ class HandleLoginTest : TestCase() {
         whenever(mockGetTokenExpiry()).thenReturn(null)
 
         runBlocking {
-            val loginSuccess = useCase(composeTestRule.activity as FragmentActivity)
-
-            assertFalse(loginSuccess)
+            useCase(composeTestRule.activity as FragmentActivity) {
+                assertEquals(LocalAuthStatus.RefreshToken, it)
+            }
         }
     }
 
     @Test
-    fun accessTokenNull() {
+    fun nonSuccessResponseFromGetFromSecureStore() {
         val unexpiredTime = System.currentTimeMillis() + 100000L
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
         runBlocking {
-            whenever(mockGetFromSecureStore(any(), any())).thenReturn(null)
+            whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.RefreshToken)
+            }
 
-            val loginSuccess = useCase(composeTestRule.activity as FragmentActivity)
+            useCase(composeTestRule.activity as FragmentActivity) {
+                assertEquals(LocalAuthStatus.RefreshToken, it)
+            }
 
-            assertFalse(loginSuccess)
+            verify(mockTokenRepository, times(0)).setTokenResponse(any())
         }
     }
 
@@ -70,9 +77,15 @@ class HandleLoginTest : TestCase() {
         val unexpiredTime = System.currentTimeMillis() + 100000L
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
         runBlocking {
-            whenever(mockGetFromSecureStore(any(), any())).thenReturn(token)
+            whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(token)
+                )
+            }
 
-            val loginSuccess = useCase(composeTestRule.activity as FragmentActivity)
+            useCase(composeTestRule.activity as FragmentActivity) {
+                assertEquals(LocalAuthStatus.Success(token), it)
+            }
 
             verify(mockTokenRepository).setTokenResponse(
                 TokenResponse(
@@ -81,7 +94,6 @@ class HandleLoginTest : TestCase() {
                     accessTokenExpirationTime = unexpiredTime
                 )
             )
-            assertTrue(loginSuccess)
         }
     }
 }
