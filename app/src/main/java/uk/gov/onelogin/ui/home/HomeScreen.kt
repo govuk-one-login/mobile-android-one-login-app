@@ -19,7 +19,6 @@ import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.onelogin.HomeScreenViewModel
 import uk.gov.onelogin.R
 import uk.gov.onelogin.ui.components.appbar.GdsAppBar
 import uk.gov.onelogin.ui.components.navigation.GdsNavigationBar

@@ -15,6 +15,7 @@
     <string name="signInTitle" translatable="false">GOV.UK One Login</string>
     <string name="signInSubTitle" translatable="false">Sign in with the same email address you use for your GOV.UK One Login.</string>
     <string name="signInButton" translatable="false">Sign in</string>
+    <string name="app_unlockButton">Unlock</string>
 
     <!-- Errors-->
     <!-- Errors Generic-->

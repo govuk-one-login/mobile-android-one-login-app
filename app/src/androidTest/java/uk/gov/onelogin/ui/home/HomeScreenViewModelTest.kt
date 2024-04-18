@@ -1,4 +1,4 @@
-package uk.gov.onelogin
+package uk.gov.onelogin.ui.home
 
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -8,6 +8,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
+import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
@@ -33,17 +34,17 @@ class HomeScreenViewModelTest : TestCase() {
             accessTokenExpirationTime = 1L
         )
 
-        whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
-
-        viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
-
         runBlocking {
-            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
+            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+
+            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+
             verify(saveToSecureStore).invoke(
-                composeTestRule.activity,
+                composeTestRule.activity as FragmentActivity,
                 Keys.ACCESS_TOKENS_KEY,
                 testResponse.accessToken
             )
+            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
     }
 }

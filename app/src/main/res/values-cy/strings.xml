@@ -8,6 +8,9 @@
     <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
     <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
 
+    <!--  Sign In  -->
+    <string name="app_unlockButton">Datgloi</string>
+
     <!-- Errors-->
     <!-- Errors Offline-->
     <string name="app_networkErrorTitle">Mae\'n ymddangos nad ydych ar-lein</string>
