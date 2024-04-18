@@ -32,15 +32,15 @@ class SplashScreenViewModel @Inject constructor(
                 fragmentActivity,
                 callback = {
                     when (it) {
-                        LocalAuthStatus.RefreshToken -> {
+                        LocalAuthStatus.RefreshToken ->
                             _next.value = LoginRoutes.WELCOME
-                        }
-                        is LocalAuthStatus.Success -> {
+
+                        is LocalAuthStatus.Success ->
                             _next.value = HomeRoutes.START
-                        }
-                        LocalAuthStatus.UserCancelled -> {
+
+                        LocalAuthStatus.UserCancelled ->
                             _showUnlock.value = true
-                        }
+
                         LocalAuthStatus.SecureStoreError,
                         LocalAuthStatus.BioCheckFailed -> {
                             // Allow user to make multiple fails... do nothing for now

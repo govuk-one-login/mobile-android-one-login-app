@@ -42,23 +42,16 @@ class GetFromSecureStoreImpl @Inject constructor(
             context = context
         ).collect { event ->
             when (event) {
-                is RetrievalEvent.Success -> {
-                    callback(LocalAuthStatus.Success(event.value))
-                }
+                is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(event.value))
 
                 is RetrievalEvent.Failed -> {
                     val localAuthStatus = when (event.type) {
-                        SecureStoreErrorType.GENERAL -> {
-                            LocalAuthStatus.SecureStoreError
-                        }
+                        SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
 
-                        SecureStoreErrorType.USER_CANCELED_BIO_PROMPT -> {
+                        SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
                             LocalAuthStatus.UserCancelled
-                        }
 
-                        SecureStoreErrorType.FAILED_BIO_PROMPT -> {
-                            LocalAuthStatus.BioCheckFailed
-                        }
+                        SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
                     }
                     callback(localAuthStatus)
                 }
