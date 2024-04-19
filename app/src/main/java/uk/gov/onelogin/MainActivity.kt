@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val lifecycleOwner = this
+        lifecycle.addObserver(viewModel)
 
         setContent {
             val navController = rememberNavController()

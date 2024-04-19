@@ -12,10 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
@@ -28,9 +32,11 @@ import uk.gov.onelogin.R
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
+    fromLockScreen: Boolean = false,
     nextScreen: (String) -> Unit = {}
 ) {
     val context = LocalContext.current as FragmentActivity
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
     Column(
         modifier = Modifier
@@ -56,7 +62,7 @@ fun SplashScreen(
                     backgroundColor = colorResource(id = R.color.govuk_blue),
                     modifier = Modifier
                         .clickable {
-                            viewModel.login(context)
+                            viewModel.login(context, false)
                         }
                         .padding(bottom = mediumPadding)
                 )
@@ -66,12 +72,15 @@ fun SplashScreen(
 
     LaunchedEffect(key1 = Unit) {
         viewModel.apply {
+            lifecycleOwner.lifecycle.addObserver(viewModel)
             viewModel.next.observe(context) {
                 nextScreen(it)
             }
-            if (!viewModel.showUnlock.value) {
-                login(context)
-            }
+        }
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (!viewModel.showUnlock.value) {
+            viewModel.login(context, fromLockScreen)
         }
     }
 }

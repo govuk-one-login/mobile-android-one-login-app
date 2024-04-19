@@ -152,6 +152,7 @@ dependencies {
         AndroidX.navigation.fragmentKtx,
         AndroidX.navigation.uiKtx,
         Google.android.material,
+        libs.androidx.lifecycle.runtime.compose,
         libs.components,
         libs.gson,
         libs.hilt.android,
