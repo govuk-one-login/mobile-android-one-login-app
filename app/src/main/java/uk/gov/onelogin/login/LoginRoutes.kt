@@ -29,18 +29,10 @@ object LoginRoutes {
                 BackHandler(enabled = comingFromLockScreen) {
                     // do nothing if coming from Lock Screen
                 }
-                SplashScreen(fromLockScreen = comingFromLockScreen) {
-                    val authSuccessful = it == HomeRoutes.START
-                    if (comingFromLockScreen && authSuccessful) {
-                        navController.popBackStack()
-                    } else {
-                        navController.navigate(it) {
-                            popUpTo(START) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                }
+                SplashScreen(
+                    fromLockScreen = comingFromLockScreen,
+                    nextScreen = splashScreenNavHandler(navController)
+                )
             }
 
             composable(
@@ -84,6 +76,22 @@ object LoginRoutes {
                 }, onSecondary = {
                     navController.navigate(HomeRoutes.START)
                 })
+            }
+        }
+    }
+
+    private fun splashScreenNavHandler(
+        navController: NavHostController
+    ): (String) -> Unit = {
+        val comingFromLockScreen = navController.hasPreviousBackStack()
+        val authSuccessful = it == HomeRoutes.START
+        if (comingFromLockScreen && authSuccessful) {
+            navController.popBackStack()
+        } else {
+            navController.navigate(it) {
+                popUpTo(START) {
+                    inclusive = true
+                }
             }
         }
     }

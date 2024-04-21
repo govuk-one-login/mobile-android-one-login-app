@@ -20,7 +20,7 @@ import uk.gov.onelogin.ui.home.HomeRoutes
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
-    private val handleLogin: HandleLogin,
+    private val handleLogin: HandleLogin
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val timesResumed: AtomicInteger = AtomicInteger(0)
