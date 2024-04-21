@@ -58,7 +58,6 @@ class SplashScreenViewModel @Inject constructor(
 
     override fun onResume(owner: LifecycleOwner) {
         timesResumed.addAndGet(1)
-        Log.d("SplashScreenViewModel", "onResume: ${timesResumed.get()}")
         super.onResume(owner)
     }
 }
