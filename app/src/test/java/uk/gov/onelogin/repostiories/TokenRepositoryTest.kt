@@ -35,7 +35,7 @@ class TokenRepositoryTest {
 
     @Test
     fun `test clearTokenResponse`() {
-        // given we have a token saved
+        // given a token is saved in the repository
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "test",
@@ -43,10 +43,10 @@ class TokenRepositoryTest {
         )
         repo.setTokenResponse(testResponse)
 
-        // when we clear the repo
+        // when clearTokenResponse called
         repo.clearTokenResponse()
 
-        // repo is cleared
+        // repository is cleared
         assertNull(repo.getTokenResponse())
     }
 }
