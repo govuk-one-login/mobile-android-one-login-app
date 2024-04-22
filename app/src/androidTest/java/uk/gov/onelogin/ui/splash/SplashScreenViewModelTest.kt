@@ -105,7 +105,7 @@ class SplashScreenViewModelTest : TestCase() {
         // GIVEN the call was made from the lock screen
         val fromLockScreen = true
 
-        // AND onResume called only once
+        // AND on resume called only once
         viewModel.onResume(mockLifeCycleOwner)
 
         // WHEN we call login
@@ -120,7 +120,7 @@ class SplashScreenViewModelTest : TestCase() {
         // GIVEN the call was made from the lock screen
         val fromLockScreen = true
 
-        // AND onResume called more than once
+        // AND on resume called more than once
         viewModel.onResume(mockLifeCycleOwner)
         viewModel.onResume(mockLifeCycleOwner)
 
