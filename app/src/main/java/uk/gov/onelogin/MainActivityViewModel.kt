@@ -26,7 +26,7 @@ class MainActivityViewModel @Inject constructor(
     private val credChecker: CredentialChecker,
     private val bioPrefHandler: BiometricPreferenceHandler,
     private val tokenRepository: TokenRepository,
-    autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
 
@@ -50,6 +50,8 @@ class MainActivityViewModel @Inject constructor(
                 } else if (shouldSeeBiometricOptIn()) {
                     _next.value = LoginRoutes.BIO_OPT_IN
                 } else {
+                    bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+                    autoInitialiseSecureStore()
                     _next.value = HomeRoutes.START
                 }
             }
