@@ -32,4 +32,21 @@ class TokenRepositoryTest {
     fun `check null on retrieve`() {
         assertNull(repo.getTokenResponse())
     }
+
+    @Test
+    fun `test clearTokenResponse`() {
+        // given we have a token saved
+        val testResponse = TokenResponse(
+            tokenType = "test",
+            accessToken = "test",
+            accessTokenExpirationTime = 1L
+        )
+        repo.setTokenResponse(testResponse)
+
+        // when we clear the repo
+        repo.clearTokenResponse()
+
+        // repo is cleared
+        assertNull(repo.getTokenResponse())
+    }
 }
