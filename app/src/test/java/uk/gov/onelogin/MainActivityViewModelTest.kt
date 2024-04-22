@@ -88,7 +88,8 @@ class MainActivityViewModelTest {
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
-        verify(mockBioPrefHandler, times(0)).setBioPref(any())
+        verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
+        verify(mockAutoInitialiseSecureStore, times(2)).invoke()
         assertEquals(HomeRoutes.START, viewModel.next.value)
     }
 
