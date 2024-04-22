@@ -2,6 +2,7 @@ package uk.gov.onelogin
 
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -37,6 +38,7 @@ class MainActivityViewModelTest {
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
+    private val mockLifecycleOwner: LifecycleOwner = mock()
 
     private val observer: Observer<String> = mock()
     private val testAccessToken = "testAccessToken"
@@ -148,5 +150,21 @@ class MainActivityViewModelTest {
         verify(mockTokenRepository, times(0)).setTokenResponse(any())
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         assertNull(viewModel.next.value)
+    }
+
+    @Test
+    fun `lock screen activates when app backgrounds`() {
+        // GIVEN we are logged in
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        // AND user Biometric enabled
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+
+        // WHEN app goes in the background
+        viewModel.onPause(owner = mockLifecycleOwner)
+
+        // THEN token is removed from runtime memory
+        verify(mockTokenRepository).clearTokenResponse()
+        // AND user navigates to the lock screen (splash screen)
+        verify(observer).onChanged(LoginRoutes.START)
     }
 }

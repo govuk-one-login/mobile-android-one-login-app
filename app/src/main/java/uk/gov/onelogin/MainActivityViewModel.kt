@@ -2,6 +2,8 @@ package uk.gov.onelogin
 
 import android.content.Intent
 import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,7 +29,7 @@ class MainActivityViewModel @Inject constructor(
     private val bioPrefHandler: BiometricPreferenceHandler,
     private val tokenRepository: TokenRepository,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
     private val tag = this::class.java.simpleName
 
     private val _next = MutableLiveData<String>()
@@ -63,4 +65,13 @@ class MainActivityViewModel @Inject constructor(
 
     private fun shouldSeeBiometricOptIn() =
         credChecker.biometricStatus() == SUCCESS && bioPrefHandler.getBioPref() == null
+
+    override fun onPause(owner: LifecycleOwner) {
+        if (bioPrefHandler.getBioPref() != BiometricPreference.NONE &&
+            tokenRepository.getTokenResponse() != null
+        ) {
+            tokenRepository.clearTokenResponse()
+            _next.value = LoginRoutes.START
+        }
+    }
 }

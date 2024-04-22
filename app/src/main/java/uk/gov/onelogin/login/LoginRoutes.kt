@@ -25,13 +25,14 @@ object LoginRoutes {
             composable(
                 route = START
             ) {
-                SplashScreen {
-                    navController.navigate(it) {
-                        popUpTo(START) {
-                            inclusive = true
-                        }
-                    }
+                val comingFromLockScreen = navController.hasPreviousBackStack()
+                BackHandler(enabled = comingFromLockScreen) {
+                    // do nothing if coming from Lock Screen
                 }
+                SplashScreen(
+                    fromLockScreen = comingFromLockScreen,
+                    nextScreen = splashScreenNavHandler(navController)
+                )
             }
 
             composable(
@@ -78,6 +79,24 @@ object LoginRoutes {
             }
         }
     }
+
+    private fun splashScreenNavHandler(
+        navController: NavHostController
+    ): (String) -> Unit = {
+        val comingFromLockScreen = navController.hasPreviousBackStack()
+        val authSuccessful = it == HomeRoutes.START
+        if (comingFromLockScreen && authSuccessful) {
+            navController.popBackStack()
+        } else {
+            navController.navigate(it) {
+                popUpTo(START) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+
+    private fun NavHostController.hasPreviousBackStack() = this.previousBackStackEntry != null
 
     const val ROOT: String = "/login"
     const val START: String = "$ROOT/start"

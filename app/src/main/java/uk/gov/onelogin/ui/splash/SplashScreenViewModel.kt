@@ -3,11 +3,14 @@ package uk.gov.onelogin.ui.splash
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.login.LoginRoutes
@@ -18,15 +21,17 @@ import uk.gov.onelogin.ui.home.HomeRoutes
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val handleLogin: HandleLogin
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
 
+    private val timesResumed: AtomicInteger = AtomicInteger(0)
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: MutableState<Boolean> = _showUnlock
 
     private val _next = MutableLiveData<String>()
     val next: LiveData<String> = _next
 
-    fun login(fragmentActivity: FragmentActivity) {
+    fun login(fragmentActivity: FragmentActivity, fromLockScreen: Boolean = false) {
+        if (fromLockScreen && timesResumed.get() == 1) return
         viewModelScope.launch {
             handleLogin(
                 fragmentActivity,
@@ -49,5 +54,10 @@ class SplashScreenViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    override fun onResume(owner: LifecycleOwner) {
+        timesResumed.addAndGet(1)
+        super.onResume(owner)
     }
 }

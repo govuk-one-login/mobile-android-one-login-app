@@ -20,6 +20,12 @@ interface TokenRepository {
      * @return [TokenResponse]
      */
     fun getTokenResponse(): TokenResponse?
+
+    /**
+     * Clear the value of the [TokenResponse] currently held in the repository
+     *
+     */
+    fun clearTokenResponse()
 }
 
 class TokenRepositoryImpl @Inject constructor() : TokenRepository {
@@ -30,5 +36,9 @@ class TokenRepositoryImpl @Inject constructor() : TokenRepository {
 
     override fun getTokenResponse(): TokenResponse? {
         return tokenResponse
+    }
+
+    override fun clearTokenResponse() {
+        tokenResponse = null
     }
 }

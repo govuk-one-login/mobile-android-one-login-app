@@ -3,6 +3,7 @@ package uk.gov.onelogin.ui.splash
 import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -14,6 +15,9 @@ import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
@@ -24,6 +28,7 @@ import uk.gov.onelogin.ui.home.HomeRoutes
 @HiltAndroidTest
 class SplashScreenViewModelTest : TestCase() {
     private val mockHandleLogin: HandleLogin = mock()
+    private val mockLifeCycleOwner: LifecycleOwner = mock()
 
     private val stringObserver: Observer<String> = mock()
 
@@ -93,5 +98,36 @@ class SplashScreenViewModelTest : TestCase() {
             assertNull(viewModel.next.value)
             assertTrue(viewModel.showUnlock.value)
         }
+    }
+
+    @Test
+    fun ignoreFirstLoginCallFromLockScreen() = runTest {
+        // GIVEN the call was made from the lock screen
+        val fromLockScreen = true
+
+        // AND on resume called only once
+        viewModel.onResume(mockLifeCycleOwner)
+
+        // WHEN we call login
+        viewModel.login(composeTestRule.activity as FragmentActivity, fromLockScreen)
+
+        // THEN do NOT login (as the app will be going to background shortly)
+        verify(mockHandleLogin, never()).invoke(any(), any())
+    }
+
+    @Test
+    fun allowsSubsequentLoginCallsFromLockScreen() = runTest {
+        // GIVEN the call was made from the lock screen
+        val fromLockScreen = true
+
+        // AND on resume called more than once
+        viewModel.onResume(mockLifeCycleOwner)
+        viewModel.onResume(mockLifeCycleOwner)
+
+        // WHEN we call login
+        viewModel.login(composeTestRule.activity as FragmentActivity, fromLockScreen)
+
+        // THEN do NOT login (as the app will be going to background)
+        verify(mockHandleLogin, times(1)).invoke(any(), any())
     }
 }

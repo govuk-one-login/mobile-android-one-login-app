@@ -33,6 +33,7 @@ appcompat = "1.6.1"
 ##     ⬆ = "1.7.0-alpha03"
 material = "1.10.0"
 integrity = "1.3.0"
+lifecycle-runtime-compose = "2.7.0"
 
 [libraries]
 
@@ -89,3 +90,4 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 secure-store = { group = "uk.gov.android", name = "securestore", version = "0.5.0" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-compose" }
