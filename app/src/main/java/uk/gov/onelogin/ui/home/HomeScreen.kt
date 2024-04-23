@@ -21,7 +21,6 @@ import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.R
 import uk.gov.onelogin.ui.components.appbar.GdsAppBar
-import uk.gov.onelogin.ui.components.navigation.GdsNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,8 +82,6 @@ fun HomeScreen(
                         .testTag("homeScreen-refreshToken")
                 )
             }
-            /* DCMAW-7045: Configure bottom navigation bar: */
-            GdsNavigationBar(items = listOf()).generate()
         }
     }
 }

@@ -72,9 +72,17 @@ object LoginRoutes {
                     // do nothing
                 }
                 BiometricsOptInScreen(onPrimary = {
-                    navController.navigate(HomeRoutes.START)
+                    navController.navigate(HomeRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 }, onSecondary = {
-                    navController.navigate(HomeRoutes.START)
+                    navController.navigate(HomeRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 })
             }
         }
