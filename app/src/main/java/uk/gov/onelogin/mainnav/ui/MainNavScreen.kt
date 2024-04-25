@@ -30,6 +30,7 @@ import uk.gov.onelogin.ui.home.HomeScreen
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
 
+@Suppress("LongMethod")
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController()

@@ -9,7 +9,7 @@ object MainNavRoutes {
     const val ROOT: String = "/home"
     const val START: String = "$ROOT/start"
 
-    fun NavGraphBuilder.mainNavRoutes() {
+    fun NavGraphBuilder.mainNavRoutesFlow() {
         navigation(
             route = ROOT,
             startDestination = START

@@ -15,6 +15,7 @@ import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
 import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 
 object LoginRoutes {
+    @Suppress("LongMethod")
     fun NavGraphBuilder.loginFlowRoutes(
         navController: NavHostController
     ) {
