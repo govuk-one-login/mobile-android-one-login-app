@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("io.gitlab.arturbosch.detekt")
     id("uk.gov.onelogin.sonarqube-root-config")
+    id("uk.gov.onelogin.emulator-config")
     kotlin("kapt")
 }
 
