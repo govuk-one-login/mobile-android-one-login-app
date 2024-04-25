@@ -5,6 +5,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.ui.biooptin.BioOptInViewModel
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 
 class BioOptInViewModelTest {

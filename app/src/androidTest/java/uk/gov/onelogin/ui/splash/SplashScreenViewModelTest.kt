@@ -22,8 +22,9 @@ import org.mockito.kotlin.whenever
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
+import uk.gov.onelogin.login.ui.splash.SplashScreenViewModel
 import uk.gov.onelogin.login.usecase.HandleLogin
-import uk.gov.onelogin.ui.home.HomeRoutes
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 
 @HiltAndroidTest
 class SplashScreenViewModelTest : TestCase() {
@@ -65,7 +66,7 @@ class SplashScreenViewModelTest : TestCase() {
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
         Handler(Looper.getMainLooper()).post {
-            assertEquals(HomeRoutes.START, viewModel.next.value)
+            assertEquals(MainNavRoutes.START, viewModel.next.value)
         }
     }
 

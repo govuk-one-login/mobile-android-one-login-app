@@ -12,6 +12,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.biooptin.BiometricPreference
+import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
@@ -22,17 +24,20 @@ class HandleLoginTest : TestCase() {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockGetFromSecureStore: GetFromSecureStore = mock()
+    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
 
     private val useCase = HandleLoginImpl(
         mockGetTokenExpiry,
         mockTokenRepository,
-        mockGetFromSecureStore
+        mockGetFromSecureStore,
+        mockBioPrefHandler
     )
 
     @Test
-    fun tokenExpired() {
+    fun tokenExpired_refreshLogin() {
         val expiredTime = System.currentTimeMillis() - 1L
         whenever(mockGetTokenExpiry()).thenReturn(expiredTime)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
             useCase(
@@ -44,8 +49,22 @@ class HandleLoginTest : TestCase() {
     }
 
     @Test
-    fun tokenNull() {
+    fun tokenNull_refreshLogin() {
         whenever(mockGetTokenExpiry()).thenReturn(null)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+
+        runBlocking {
+            useCase(composeTestRule.activity as FragmentActivity) {
+                assertEquals(LocalAuthStatus.RefreshToken, it)
+            }
+        }
+    }
+
+    @Test
+    fun bioPrefNone_refreshLogin() {
+        val unexpiredTime = System.currentTimeMillis() + 100000L
+        whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
 
         runBlocking {
             useCase(composeTestRule.activity as FragmentActivity) {
@@ -58,6 +77,8 @@ class HandleLoginTest : TestCase() {
     fun nonSuccessResponseFromGetFromSecureStore() {
         val unexpiredTime = System.currentTimeMillis() + 100000L
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+
         runBlocking {
             whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.RefreshToken)
@@ -76,6 +97,8 @@ class HandleLoginTest : TestCase() {
         val token = "Token"
         val unexpiredTime = System.currentTimeMillis() + 100000L
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+
         runBlocking {
             whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(

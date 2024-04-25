@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.ui
+package uk.gov.onelogin.login.ui.welcome
 
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
@@ -11,7 +11,6 @@ import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.R
-import uk.gov.onelogin.login.WelcomeScreenViewModel
 
 @Composable
 fun WelcomeScreen(

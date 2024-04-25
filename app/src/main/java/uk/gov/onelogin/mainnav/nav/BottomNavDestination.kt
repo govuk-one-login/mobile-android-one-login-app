@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.main
+package uk.gov.onelogin.mainnav.nav
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

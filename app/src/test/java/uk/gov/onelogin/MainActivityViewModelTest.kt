@@ -25,9 +25,9 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
-import uk.gov.onelogin.ui.home.HomeRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -90,7 +90,7 @@ class MainActivityViewModelTest {
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
         verify(mockAutoInitialiseSecureStore, times(2)).invoke()
-        assertEquals(HomeRoutes.START, viewModel.next.value)
+        assertEquals(MainNavRoutes.START, viewModel.next.value)
     }
 
     @Test

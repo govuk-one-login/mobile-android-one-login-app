@@ -36,7 +36,11 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(key1 = Unit) {
                 viewModel.apply {
                     next.observe(lifecycleOwner) {
-                        navController.navigate(it)
+                        navController.navigate(it) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                        }
                     }
                     handleActivityResult(intent = intent)
                 }

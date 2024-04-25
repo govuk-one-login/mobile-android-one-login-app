@@ -5,8 +5,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import javax.inject.Inject
 import uk.gov.onelogin.login.LoginRoutes.loginFlowRoutes
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes.mainNavRoutes
 import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
-import uk.gov.onelogin.ui.home.HomeRoutes.homeFlowRoutes
 
 class AppRoutes @Inject constructor() : IAppRoutes {
     @Composable
@@ -19,7 +19,7 @@ class AppRoutes @Inject constructor() : IAppRoutes {
             startDestination = startDestination
         ) {
             loginFlowRoutes(navController)
-            homeFlowRoutes()
+            mainNavRoutes()
             genericErrorRoute(navController)
         }
     }

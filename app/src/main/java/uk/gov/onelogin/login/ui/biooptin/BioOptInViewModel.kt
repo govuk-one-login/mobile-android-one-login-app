@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui.biooptin
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -15,10 +15,10 @@ import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.ui.error.ErrorRoutes
-import uk.gov.onelogin.ui.home.HomeRoutes
 
 @HiltViewModel
 @Suppress("LongParameterList")
@@ -54,7 +54,7 @@ class MainActivityViewModel @Inject constructor(
                 } else {
                     bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
                     autoInitialiseSecureStore()
-                    _next.value = HomeRoutes.START
+                    _next.value = MainNavRoutes.START
                 }
             }
         } catch (e: Throwable) { // handle both Error and Exception types

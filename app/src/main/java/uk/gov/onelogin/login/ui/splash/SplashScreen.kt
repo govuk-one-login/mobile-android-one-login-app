@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.splash
+package uk.gov.onelogin.login.ui.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
