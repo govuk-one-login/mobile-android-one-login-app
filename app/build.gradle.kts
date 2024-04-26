@@ -186,6 +186,12 @@ dependencies {
         libs.ktor.client.mock,
         libs.mockito.kotlin
     ).forEach(::testImplementation)
+
+    listOf(
+        AndroidX.test.orchestrator
+    ).forEach{
+        androidTestUtil(it)
+    }
 }
 
 kapt {

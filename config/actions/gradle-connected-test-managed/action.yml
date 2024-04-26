@@ -41,7 +41,7 @@ runs:
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
       run: |
         ./gradlew \
-        googleApisPlaystorePixel5Api30Setup \
+        googleAtdPixel5Api30Setup \
         --continue \
         --max-workers=1 \
         --stacktrace \
@@ -57,7 +57,7 @@ runs:
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
       run: |
         ./gradlew \
-        :app:googleApisPlaystorePixel5Api30BuildDebugAndroidTest \
+        :app:googleAtdPixel5Api30BuildDebugAndroidTest \
         --continue \
         --max-workers=1 \
         --stacktrace \
