@@ -189,7 +189,7 @@ dependencies {
 
     listOf(
         AndroidX.test.orchestrator
-    ).forEach{
+    ).forEach {
         androidTestUtil(it)
     }
 }

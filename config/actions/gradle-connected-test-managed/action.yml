@@ -5,14 +5,6 @@ inputs:
   github-token:
     description: 'Service account access token that allows publishing packages'
     required: true
-  architecture:
-    description: 'AVD architecture to use'
-    required: false
-    default: 'x86_64'
-  device-profile:
-    description: 'AVD device profile to use'
-    required: false
-    default: 'pixel_5'
   locale:
     description: 'Locale used within the emulator'
     required: false
