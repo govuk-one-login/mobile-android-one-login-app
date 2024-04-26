@@ -5,16 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.onelogin.login.ui.BiometricsOptInScreen
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.PasscodeInfoScreen
-import uk.gov.onelogin.login.ui.WelcomeScreen
+import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
+import uk.gov.onelogin.login.ui.splash.SplashScreen
+import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
 import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
-import uk.gov.onelogin.ui.home.HomeRoutes
-import uk.gov.onelogin.ui.splash.SplashScreen
 
 object LoginRoutes {
+    @Suppress("LongMethod")
     fun NavGraphBuilder.loginFlowRoutes(
         navController: NavHostController
     ) {
@@ -61,7 +62,7 @@ object LoginRoutes {
                 route = PASSCODE_INFO
             ) {
                 PasscodeInfoScreen {
-                    navController.navigate(HomeRoutes.START)
+                    navController.navigate(MainNavRoutes.START)
                 }
             }
 
@@ -72,9 +73,17 @@ object LoginRoutes {
                     // do nothing
                 }
                 BiometricsOptInScreen(onPrimary = {
-                    navController.navigate(HomeRoutes.START)
+                    navController.navigate(MainNavRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 }, onSecondary = {
-                    navController.navigate(HomeRoutes.START)
+                    navController.navigate(MainNavRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
                 })
             }
         }
@@ -84,12 +93,12 @@ object LoginRoutes {
         navController: NavHostController
     ): (String) -> Unit = {
         val comingFromLockScreen = navController.hasPreviousBackStack()
-        val authSuccessful = it == HomeRoutes.START
+        val authSuccessful = it == MainNavRoutes.START
         if (comingFromLockScreen && authSuccessful) {
             navController.popBackStack()
         } else {
             navController.navigate(it) {
-                popUpTo(START) {
+                popUpTo(navController.graph.id) {
                     inclusive = true
                 }
             }

@@ -10,6 +10,9 @@
     <string name="app_continue">Continue</string>
     <string name="app_tryAgainButton">Try again</string>
     <string name="app_close" translatable="false">Close</string>
+    <string name="app_home" translatable="false">Home</string>
+    <string name="app_wallet" translatable="false">Wallet</string>
+    <string name="app_profile" translatable="false">Profile</string>
 
     <!-- Sign in -->
     <string name="signInTitle" translatable="false">GOV.UK One Login</string>

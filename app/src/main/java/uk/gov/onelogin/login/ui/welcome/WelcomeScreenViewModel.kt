@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui.welcome
 
 import android.app.Activity
 import android.content.Context

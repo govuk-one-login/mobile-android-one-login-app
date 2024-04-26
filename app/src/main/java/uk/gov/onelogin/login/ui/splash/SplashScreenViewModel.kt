@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.splash
+package uk.gov.onelogin.login.ui.splash
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
-import uk.gov.onelogin.ui.home.HomeRoutes
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
@@ -41,7 +41,7 @@ class SplashScreenViewModel @Inject constructor(
                             _next.value = LoginRoutes.WELCOME
 
                         is LocalAuthStatus.Success ->
-                            _next.value = HomeRoutes.START
+                            _next.value = MainNavRoutes.START
 
                         LocalAuthStatus.UserCancelled ->
                             _showUnlock.value = true

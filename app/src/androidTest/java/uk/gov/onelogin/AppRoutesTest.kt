@@ -7,7 +7,8 @@ import org.junit.Before
 import org.junit.Test
 import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.login.LoginRoutes
-import uk.gov.onelogin.ui.home.HomeTestRoutes
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltAndroidTest
 class AppRoutesTest : TestCase() {
@@ -32,18 +33,30 @@ class AppRoutesTest : TestCase() {
     }
 
     @Test
-    fun homeFlowIsDeclaredInTheAppRoutes() {
+    fun mainNavIsDeclaredInTheAppRoutes() {
         navController = composeTestRule.setupComposeTestRule { innerNavController ->
             appRoutes.routes(
                 navController = innerNavController,
-                startDestination = HomeTestRoutes.ROOT
+                startDestination = MainNavRoutes.ROOT
             )
         }
 
         assertEquals(
-            "The home flow's landing screen should be available via 'HomeRoutes.START'!",
-            HomeTestRoutes.START,
+            "The home flow's landing screen should be available via 'MainNavRoutes.START'!",
+            MainNavRoutes.START,
             navController?.currentDestination?.route
         )
+    }
+
+    @Test
+    fun errorRoutesStartsByDefault() {
+        navController = composeTestRule.setupComposeTestRule { innerNavController ->
+            appRoutes.routes(
+                navController = innerNavController,
+                startDestination = ErrorRoutes.ROOT
+            )
+        }
+
+        assertEquals(ErrorRoutes.GENERIC, navController?.currentDestination?.route)
     }
 }

@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("io.gitlab.arturbosch.detekt")
     id("uk.gov.onelogin.sonarqube-root-config")
+    id("uk.gov.onelogin.emulator-config")
     kotlin("kapt")
 }
 
@@ -185,6 +186,12 @@ dependencies {
         libs.ktor.client.mock,
         libs.mockito.kotlin
     ).forEach(::testImplementation)
+
+    listOf(
+        AndroidX.test.orchestrator
+    ).forEach {
+        androidTestUtil(it)
+    }
 }
 
 kapt {

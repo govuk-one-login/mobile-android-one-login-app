@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.ui
+package uk.gov.onelogin.login.ui.biooptin
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import uk.gov.android.ui.theme.hintTextGrey
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.R
-import uk.gov.onelogin.login.BioOptInViewModel
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 
 @Suppress("LongMethod")

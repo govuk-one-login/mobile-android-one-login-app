@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui.welcome
 
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
@@ -23,7 +23,6 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
-import uk.gov.onelogin.login.ui.WelcomeScreen
 import uk.gov.onelogin.network.utils.IOnlineChecker
 import uk.gov.onelogin.network.utils.OnlineCheckerModule
 

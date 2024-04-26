@@ -78,3 +78,5 @@ include(":features")
 refreshVersions {
     enableBuildSrcLibs()
 }
+
+gradle.startParameter.excludedTaskNames.addAll(listOf(":buildLogic:plugins:testClasses"))

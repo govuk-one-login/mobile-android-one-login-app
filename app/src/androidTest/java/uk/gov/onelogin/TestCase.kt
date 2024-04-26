@@ -17,7 +17,7 @@ abstract class TestCase {
     @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
 
-    var navController: TestNavHostController? = null
+    lateinit var navController: TestNavHostController
 
     protected val context: Context = ApplicationProvider.getApplicationContext()
 
