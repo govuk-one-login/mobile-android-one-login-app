@@ -47,6 +47,8 @@ runs:
         INPUT_SHARD_COUNT: ${{ inputs.shard-count }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}
       run: |
         ./gradlew \
         :app:googleAtdPixel5Api30BuildDebugAndroidTest \
