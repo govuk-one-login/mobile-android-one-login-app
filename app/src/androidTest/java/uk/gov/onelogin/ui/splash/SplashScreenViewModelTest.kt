@@ -45,7 +45,7 @@ class SplashScreenViewModelTest : TestCase() {
     }
 
     @Test
-    fun loginFails() = runTest {
+    fun loginFailsWithSecureStoreError() = runTest {
         whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
@@ -53,6 +53,25 @@ class SplashScreenViewModelTest : TestCase() {
                 )
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
+
+        Handler(Looper.getMainLooper()).post {
+            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
+        }
+    }
+
+    @Test
+    fun loginFailsWithBioCheckFailed() = runTest {
+        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.BioCheckFailed
+                )
+            }
+        viewModel.login(composeTestRule.activity as FragmentActivity)
+
+        Handler(Looper.getMainLooper()).post {
+            assertEquals(null, viewModel.next.value)
+        }
     }
 
     @Test
@@ -86,7 +105,7 @@ class SplashScreenViewModelTest : TestCase() {
     }
 
     @Test
-    fun loginThrowsUserCancelled() = runTest {
+    fun loginReturnsUserCancelled() = runTest {
         whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
