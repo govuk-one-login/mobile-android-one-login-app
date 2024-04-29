@@ -16,7 +16,8 @@ import uk.gov.onelogin.R
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     navigateToOfflineErrorScreen: () -> Unit = { },
-    shouldTryAgain: () -> Boolean = { false }
+    shouldTryAgain: () -> Boolean = { false },
+    openDeveloperPanel: () -> Unit = { }
 ) {
     val context = LocalContext.current
     LandingPage(
@@ -38,6 +39,7 @@ fun WelcomeScreen(
                     navigateToOfflineErrorScreen()
                 }
             },
+            onTopIconClick = { openDeveloperPanel() },
             primaryButtonText = R.string.signInButton,
             title = R.string.signInTitle,
             topIcon = R.drawable.app_icon

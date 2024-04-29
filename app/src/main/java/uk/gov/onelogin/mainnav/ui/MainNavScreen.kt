@@ -33,7 +33,8 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 @Suppress("LongMethod")
 @Composable
 fun MainNavScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    openDeveloperPanel: () -> Unit = { }
 ) {
     val navItems = listOf(
         BottomNavDestination.Home,
@@ -88,7 +89,7 @@ fun MainNavScreen(
             modifier = androidx.compose.ui.Modifier.padding(paddingValues)
         ) {
             composable(BottomNavDestination.Home.key) {
-                HomeScreen()
+                HomeScreen(openDeveloperPanel = openDeveloperPanel)
             }
             composable(BottomNavDestination.Wallet.key) {
                 SimpleTextPage(text = R.string.app_wallet)

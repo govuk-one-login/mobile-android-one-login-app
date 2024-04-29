@@ -27,13 +27,15 @@ import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.R
+import uk.gov.onelogin.developer.DeveloperTools
 
 @Preview
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     fromLockScreen: Boolean = false,
-    nextScreen: (String) -> Unit = {}
+    nextScreen: (String) -> Unit = {},
+    openDeveloperPanel: () -> Unit = { }
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
@@ -50,7 +52,11 @@ fun SplashScreen(
                 image = R.drawable.tudor_crown_with_gov_uk,
                 backGroundColor = colorResource(id = R.color.govuk_blue),
                 foreGroundColor = Color.White,
-                modifier = Modifier.weight(1F)
+                modifier = Modifier
+                    .weight(1F)
+                    .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
+                        openDeveloperPanel()
+                    },
             )
         )
         if (viewModel.showUnlock.value) {
