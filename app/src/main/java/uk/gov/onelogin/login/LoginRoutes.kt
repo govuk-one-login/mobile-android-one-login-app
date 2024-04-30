@@ -34,7 +34,7 @@ object LoginRoutes {
                 SplashScreen(
                     fromLockScreen = comingFromLockScreen,
                     nextScreen = splashScreenNavHandler(navController),
-                    openDeveloperPanel = { navController.navigateToDeveloperPanel()}
+                    openDeveloperPanel = { navController.navigateToDeveloperPanel() }
                 )
             }
 

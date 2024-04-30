@@ -24,6 +24,7 @@ import uk.gov.onelogin.R
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.appbar.GdsAppBar
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -86,7 +87,8 @@ fun HomeScreen(
                 )
                 if (DeveloperTools.isDeveloperPanelEnabled()) {
                     TextButton(
-                        onClick = { openDeveloperPanel() }) {
+                        onClick = { openDeveloperPanel() }
+                    ) {
                         Text("Developer Panel")
                     }
                 }

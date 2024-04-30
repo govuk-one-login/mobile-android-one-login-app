@@ -56,7 +56,7 @@ fun SplashScreen(
                     .weight(1F)
                     .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
                         openDeveloperPanel()
-                    },
+                    }
             )
         )
         if (viewModel.showUnlock.value) {
