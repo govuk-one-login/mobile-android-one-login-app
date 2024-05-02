@@ -48,6 +48,13 @@
 
     <string name="StagingEnv" translatable="false">staging</string>
 
+    <!--    Developer Panel -->
+    <string name="app_developer_panel" translatable="false">Developer Portal</string>
+    <string name="app_developer_tab_app" translatable="false">App</string>
+    <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
+    <string name="app_developer_tab_auth" translatable="false">Auth</string>
+    <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
+
     <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus

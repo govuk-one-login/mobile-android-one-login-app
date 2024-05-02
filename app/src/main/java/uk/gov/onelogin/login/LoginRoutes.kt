@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.PasscodeInfoScreen
 import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
@@ -32,7 +33,8 @@ object LoginRoutes {
                 }
                 SplashScreen(
                     fromLockScreen = comingFromLockScreen,
-                    nextScreen = splashScreenNavHandler(navController)
+                    nextScreen = splashScreenNavHandler(navController),
+                    openDeveloperPanel = { navController.navigateToDeveloperPanel() }
                 )
             }
 
@@ -48,6 +50,9 @@ object LoginRoutes {
                         val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
                         savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
                         tryAgain
+                    },
+                    openDeveloperPanel = {
+                        navController.navigateToDeveloperPanel()
                     }
                 )
             }

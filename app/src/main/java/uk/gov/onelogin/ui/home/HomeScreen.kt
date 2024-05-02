@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -20,12 +21,15 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.R
+import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.appbar.GdsAppBar
 
+@Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    openDeveloperPanel: () -> Unit = { }
 ) {
     viewModel.saveTokens(LocalContext.current as FragmentActivity)
     val tokens = viewModel.getTokens()
@@ -81,6 +85,13 @@ fun HomeScreen(
                         )
                         .testTag("homeScreen-refreshToken")
                 )
+                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                    TextButton(
+                        onClick = { openDeveloperPanel() }
+                    ) {
+                        Text("Developer Panel")
+                    }
+                }
             }
         }
     }
