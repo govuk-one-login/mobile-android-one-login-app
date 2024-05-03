@@ -7,5 +7,5 @@ sealed class LocalAuthStatus {
     object UserCancelled : LocalAuthStatus()
     object BioCheckFailed : LocalAuthStatus()
     object SecureStoreError : LocalAuthStatus()
-    object RefreshToken : LocalAuthStatus()
+    object ManualSignIn : LocalAuthStatus()
 }
