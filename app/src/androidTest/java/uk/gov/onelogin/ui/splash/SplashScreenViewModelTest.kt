@@ -94,7 +94,7 @@ class SplashScreenViewModelTest : TestCase() {
         whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.RefreshToken
+                    LocalAuthStatus.ManualSignIn
                 )
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)

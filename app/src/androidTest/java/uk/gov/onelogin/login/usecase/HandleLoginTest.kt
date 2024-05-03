@@ -43,7 +43,7 @@ class HandleLoginTest : TestCase() {
             useCase(
                 composeTestRule.activity as FragmentActivity
             ) {
-                assertEquals(LocalAuthStatus.RefreshToken, it)
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
             }
         }
     }
@@ -55,7 +55,7 @@ class HandleLoginTest : TestCase() {
 
         runBlocking {
             useCase(composeTestRule.activity as FragmentActivity) {
-                assertEquals(LocalAuthStatus.RefreshToken, it)
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
             }
         }
     }
@@ -68,7 +68,7 @@ class HandleLoginTest : TestCase() {
 
         runBlocking {
             useCase(composeTestRule.activity as FragmentActivity) {
-                assertEquals(LocalAuthStatus.RefreshToken, it)
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
             }
         }
     }
@@ -81,11 +81,11 @@ class HandleLoginTest : TestCase() {
 
         runBlocking {
             whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.RefreshToken)
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
             }
 
             useCase(composeTestRule.activity as FragmentActivity) {
-                assertEquals(LocalAuthStatus.RefreshToken, it)
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
             }
 
             verify(mockTokenRepository, times(0)).setTokenResponse(any())

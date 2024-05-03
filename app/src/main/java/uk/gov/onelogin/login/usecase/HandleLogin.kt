@@ -42,7 +42,7 @@ class HandleLoginImpl @Inject constructor(
                 callback(it)
             }
         } else {
-            callback(LocalAuthStatus.RefreshToken)
+            callback(LocalAuthStatus.ManualSignIn)
         }
     }
 
