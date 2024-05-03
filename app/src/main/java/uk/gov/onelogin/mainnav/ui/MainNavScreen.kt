@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import uk.gov.android.wallet.sdk.WalletApp
 import uk.gov.onelogin.R
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.components.SimpleTextPage
@@ -92,7 +93,7 @@ fun MainNavScreen(
                 HomeScreen(openDeveloperPanel = openDeveloperPanel)
             }
             composable(BottomNavDestination.Wallet.key) {
-                SimpleTextPage(text = R.string.app_wallet)
+                WalletApp()
             }
             composable(BottomNavDestination.Profile.key) {
                 SimpleTextPage(text = R.string.app_profile)

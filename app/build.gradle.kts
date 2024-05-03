@@ -166,8 +166,10 @@ dependencies {
         libs.theme,
         libs.secure.store,
         libs.authentication,
-        projects.features
+        projects.features,
     ).forEach(::implementation)
+
+    api(libs.wallet)
 
     listOf(
         libs.hilt.android.compiler,
