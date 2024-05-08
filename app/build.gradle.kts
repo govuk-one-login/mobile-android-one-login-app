@@ -9,6 +9,7 @@ plugins {
     id("uk.gov.onelogin.sonarqube-root-config")
     id("uk.gov.onelogin.emulator-config")
     kotlin("kapt")
+    kotlin("plugin.serialization")
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")

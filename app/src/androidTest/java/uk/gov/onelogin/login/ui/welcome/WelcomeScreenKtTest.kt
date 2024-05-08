@@ -21,10 +21,10 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.di.NetworkModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.network.di.NetworkModule
 
 @HiltAndroidTest
 @UninstallModules(
