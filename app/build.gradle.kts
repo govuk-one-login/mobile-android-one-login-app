@@ -165,6 +165,7 @@ dependencies {
         libs.slf4j.api,
         libs.theme,
         libs.secure.store,
+        libs.network,
         libs.authentication,
         projects.features
     ).forEach(::implementation)
