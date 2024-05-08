@@ -23,7 +23,6 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 @HiltViewModel
 @Suppress("LongParameterList")
 class MainActivityViewModel @Inject constructor(
-    val appRoutes: IAppRoutes,
     private val loginSession: LoginSession,
     private val credChecker: CredentialChecker,
     private val bioPrefHandler: BiometricPreferenceHandler,

@@ -32,7 +32,6 @@ import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class MainActivityViewModelTest {
-    private val mockAppRoutes: IAppRoutes = mock()
     private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
@@ -51,7 +50,6 @@ class MainActivityViewModelTest {
     )
 
     private val viewModel = MainActivityViewModel(
-        mockAppRoutes,
         mockLoginSession,
         mockCredChecker,
         mockBioPrefHandler,
