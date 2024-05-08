@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.GdsVectorImage
 import uk.gov.android.ui.components.HeadingParameters
@@ -29,7 +30,6 @@ import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.hintTextGrey
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.R
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 
 @Suppress("LongMethod")

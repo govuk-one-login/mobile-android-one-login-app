@@ -11,39 +11,22 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.core.IsEqual
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.login.nonce.INonceGenerator
-import uk.gov.onelogin.login.nonce.NonceGeneratorModule
-import uk.gov.onelogin.login.nonce.NonceGeneratorStub
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.matchers.IsUUID
 import uk.gov.onelogin.matchers.MatchesUri
 import uk.gov.onelogin.test.settings.SettingsController
-import java.util.UUID
 
 @HiltAndroidTest
-@UninstallModules(
-    NonceGeneratorModule::class
-)
 class SuccessfulLoginTest : TestCase() {
-    private val nonce = UUID.randomUUID().toString()
-
-    @BindValue
-    val nonceGenerator: INonceGenerator = NonceGeneratorStub(
-        nonce = nonce
-    )
-
-    private val state = UUID.randomUUID().toString()
 
     @Before
     fun setup() {

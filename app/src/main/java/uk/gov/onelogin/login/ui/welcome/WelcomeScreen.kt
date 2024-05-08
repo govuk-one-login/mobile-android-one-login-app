@@ -6,11 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.onelogin.R
 
 @Composable
 fun WelcomeScreen(

@@ -4,8 +4,8 @@ sealed class LocalAuthStatus {
     data class Success(
         val accessToken: String
     ) : LocalAuthStatus()
-    object UserCancelled : LocalAuthStatus()
-    object BioCheckFailed : LocalAuthStatus()
-    object SecureStoreError : LocalAuthStatus()
-    object ManualSignIn : LocalAuthStatus()
+    data object UserCancelled : LocalAuthStatus()
+    data object BioCheckFailed : LocalAuthStatus()
+    data object SecureStoreError : LocalAuthStatus()
+    data object ManualSignIn : LocalAuthStatus()
 }

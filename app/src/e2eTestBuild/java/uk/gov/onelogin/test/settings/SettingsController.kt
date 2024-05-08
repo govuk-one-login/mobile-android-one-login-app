@@ -16,7 +16,7 @@ import androidx.test.uiautomator.Until
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Assert.assertTrue
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 import java.io.File
 import java.io.IOException

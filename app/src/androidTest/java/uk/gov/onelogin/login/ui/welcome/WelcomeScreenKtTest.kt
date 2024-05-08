@@ -18,19 +18,19 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
-import uk.gov.onelogin.R
+import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.di.NetworkModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
-import uk.gov.onelogin.network.utils.IOnlineChecker
-import uk.gov.onelogin.network.utils.OnlineCheckerModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
     FeaturesModule::class,
-    OnlineCheckerModule::class
+    NetworkModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -41,7 +41,7 @@ class WelcomeScreenKtTest : TestCase() {
     val featureFlags: FeatureFlags = mock()
 
     @BindValue
-    val onlineChecker: IOnlineChecker = mock()
+    val onlineChecker: OnlineChecker = mock()
 
     private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false

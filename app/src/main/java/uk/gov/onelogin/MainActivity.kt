@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.login.LoginRoutes.loginFlowRoutes
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes.mainNavRoutesFlow
+import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -27,10 +32,15 @@ class MainActivity : AppCompatActivity() {
             val navController = rememberNavController()
 
             GdsTheme {
-                viewModel.appRoutes.routes(
+                NavHost(
                     navController = navController,
                     startDestination = LoginRoutes.ROOT
-                )
+                ) {
+                    loginFlowRoutes(navController)
+                    mainNavRoutesFlow(navController)
+                    genericErrorRoute(navController)
+                    developerFlowRoutes(navController)
+                }
             }
 
             LaunchedEffect(key1 = Unit) {
