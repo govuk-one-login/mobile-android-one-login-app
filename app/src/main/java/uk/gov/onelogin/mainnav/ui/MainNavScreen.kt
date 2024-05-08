@@ -23,7 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.components.SimpleTextPage
 import uk.gov.onelogin.ui.home.HomeScreen

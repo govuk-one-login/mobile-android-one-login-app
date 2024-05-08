@@ -7,7 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 
 @HiltAndroidTest

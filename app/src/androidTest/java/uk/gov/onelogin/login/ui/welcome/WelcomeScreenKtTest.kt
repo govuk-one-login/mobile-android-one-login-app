@@ -19,7 +19,7 @@ import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.di.NetworkModule
 import uk.gov.onelogin.features.FeaturesModule

@@ -2,11 +2,11 @@ package uk.gov.onelogin.tokens.usecases
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
+import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguration
 import uk.gov.android.securestore.error.SecureStoreErrorType
-import uk.gov.onelogin.R
 import uk.gov.onelogin.login.state.LocalAuthStatus
 
 fun interface GetFromSecureStore {

@@ -16,11 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.onelogin.R
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.appbar.GdsAppBar
 

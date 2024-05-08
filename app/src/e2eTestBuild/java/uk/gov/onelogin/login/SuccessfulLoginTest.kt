@@ -19,7 +19,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.login.nonce.INonceGenerator

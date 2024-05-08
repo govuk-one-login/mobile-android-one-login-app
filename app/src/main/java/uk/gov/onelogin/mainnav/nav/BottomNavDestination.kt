@@ -2,7 +2,7 @@ package uk.gov.onelogin.mainnav.nav
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 
 sealed class BottomNavDestination(
     val key: String,
