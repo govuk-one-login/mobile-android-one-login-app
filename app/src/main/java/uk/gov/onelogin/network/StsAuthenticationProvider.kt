@@ -1,6 +1,5 @@
 package uk.gov.onelogin.network
 
-import android.content.Context
 import android.util.Log
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
@@ -10,11 +9,10 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.android.onelogin.R
 import uk.gov.onelogin.repositiories.TokenRepository
 
 class StsAuthenticationProvider(
-    private val context: Context,
+    private val stsUrl: String,
     private val tokenRepository: TokenRepository,
     private val httpClient: GenericHttpClient
 ) : AuthenticationProvider {
@@ -23,7 +21,7 @@ class StsAuthenticationProvider(
 
         accessToken?.let { accessToken ->
             val request = ApiRequest.Post(
-                url = context.getString(R.string.stsUrl),
+                url = stsUrl,
                 body = FormDataContent(
                     Parameters.build {
                         append(GRANT_TYPE, "urn:ietf:params:oauth:grant-type:token-exchange")
@@ -41,8 +39,10 @@ class StsAuthenticationProvider(
             if (response is ApiResponse.Success<*>) {
                 try {
                     val tokenResponseString = (response as ApiResponse.Success<String>).response
-                    val tokenResponse: TokenResponse = Json.decodeFromString(tokenResponseString)
-                    return AuthenticationResponse.Success(tokenResponse.token)
+                    val tokenApiResponse: TokenApiResponse = Json.decodeFromString(
+                        tokenResponseString
+                    )
+                    return AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
                     Log.e(this::class.java.simpleName, e.message, e)
                     return AuthenticationResponse.Failure(e)

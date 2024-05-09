@@ -13,6 +13,7 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.online.OnlineCheckerImpl
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.network.StsAuthenticationProvider
 import uk.gov.onelogin.repositiories.TokenRepository
 
@@ -37,8 +38,9 @@ object NetworkModule {
     ): GenericHttpClient {
         val userAgentGenerator: UserAgentGenerator = UserAgentGeneratorImpl()
         val client = KtorHttpClient(userAgentGenerator)
+        val url = context.getString(R.string.stsUrl)
         val authProvider = StsAuthenticationProvider(
-            context,
+            url,
             tokenRepository,
             client
         )

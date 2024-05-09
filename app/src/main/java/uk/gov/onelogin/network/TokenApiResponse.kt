@@ -6,7 +6,7 @@ import kotlinx.serialization.json.JsonNames
 
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
-data class TokenResponse(
+data class TokenApiResponse(
     @JsonNames("access_token")
     val token: String,
     @JsonNames("token_type")
