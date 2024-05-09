@@ -16,10 +16,11 @@ class StsAuthenticationProvider(
     private val tokenRepository: TokenRepository,
     private val httpClient: GenericHttpClient
 ) : AuthenticationProvider {
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
         val accessToken = tokenRepository.getTokenResponse()?.accessToken
 
-        accessToken?.let { accessToken ->
+        return accessToken?.let {
             val request = ApiRequest.Post(
                 url = stsUrl,
                 body = FormDataContent(
@@ -42,15 +43,15 @@ class StsAuthenticationProvider(
                     val tokenApiResponse: TokenApiResponse = Json.decodeFromString(
                         tokenResponseString
                     )
-                    return AuthenticationResponse.Success(tokenApiResponse.token)
+                    AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
                     Log.e(this::class.java.simpleName, e.message, e)
-                    return AuthenticationResponse.Failure(e)
+                    AuthenticationResponse.Failure(e)
                 }
             } else {
-                return AuthenticationResponse.Failure(Exception("Failed to fetch service token"))
+                AuthenticationResponse.Failure(Exception("Failed to fetch service token"))
             }
-        } ?: return AuthenticationResponse.Failure(Exception("No access token"))
+        } ?: AuthenticationResponse.Failure(Exception("No access token"))
     }
 
     companion object {
