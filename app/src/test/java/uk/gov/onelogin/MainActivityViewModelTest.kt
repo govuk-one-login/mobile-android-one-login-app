@@ -16,6 +16,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.authentication.AuthenticationError
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.credentialchecker.BiometricStatus
@@ -164,5 +165,20 @@ class MainActivityViewModelTest {
         verify(mockTokenRepository).clearTokenResponse()
         // AND user navigates to the lock screen (splash screen)
         verify(observer).onChanged(LoginRoutes.START)
+    }
+
+    @Test
+    fun `When sign fails with AuthenticationError - it displays sign in error screen`() {
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+            .thenThrow(AuthenticationError("Sign in error", AuthenticationError.ErrorType.OAUTH))
+        viewModel.handleActivityResult(
+            mockIntent
+        )
+
+        assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
     }
 }

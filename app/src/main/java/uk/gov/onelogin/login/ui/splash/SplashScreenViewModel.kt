@@ -37,7 +37,7 @@ class SplashScreenViewModel @Inject constructor(
                 fragmentActivity,
                 callback = {
                     when (it) {
-                        LocalAuthStatus.SecureStoreError,
+                        LocalAuthStatus.SecureStoreError -> _next.value = LoginRoutes.SIGN_IN_ERROR
                         LocalAuthStatus.ManualSignIn ->
                             _next.value = LoginRoutes.WELCOME
 

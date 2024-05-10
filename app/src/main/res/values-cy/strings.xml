@@ -10,6 +10,8 @@
 
     <!--  Sign In  -->
     <string name="app_unlockButton">Datgloi</string>
+    <string name="app_signInErrorTitle">Roedd problem wrth eich mewngofnodi</string>
+    <string name="app_signInErrorBody">Gallwch geisio mewngofnodi eto. Os na fydd hyn yn gweithio, efallai y bydd angen i chi roi cynnig arall yn nes ymlaen.</string>
 
     <!-- Errors-->
     <!-- Errors Offline-->
