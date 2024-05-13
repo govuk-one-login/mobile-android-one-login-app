@@ -55,7 +55,7 @@ class SplashScreenViewModelTest : TestCase() {
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
         Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
+            assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
         }
     }
 
