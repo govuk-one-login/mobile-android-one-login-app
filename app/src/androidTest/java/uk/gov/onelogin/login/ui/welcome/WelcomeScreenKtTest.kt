@@ -18,7 +18,9 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
+import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
@@ -42,6 +44,12 @@ class WelcomeScreenKtTest : TestCase() {
 
     @BindValue
     val onlineChecker: OnlineChecker = mock()
+
+    @BindValue
+    val userAgentGenerator: UserAgentGenerator = mock()
+
+    @BindValue
+    val httpClient: GenericHttpClient = mock()
 
     private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false
@@ -104,7 +112,7 @@ class WelcomeScreenKtTest : TestCase() {
             clientId = clientId,
             locale = Locale.EN,
             redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            scopes = listOf(LoginSessionConfiguration.Scope.STS),
             tokenEndpoint = tokenEndpoint
         )
 
@@ -127,7 +135,7 @@ class WelcomeScreenKtTest : TestCase() {
         )
         val tokenEndpoint = Uri.parse(
             context.resources.getString(
-                R.string.apiBaseUrl,
+                R.string.stsUrl,
                 context.resources.getString(R.string.tokenExchangeEndpoint)
             )
         )
@@ -143,7 +151,7 @@ class WelcomeScreenKtTest : TestCase() {
             clientId = clientId,
             locale = Locale.EN,
             redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.STS),
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint
         )
 
