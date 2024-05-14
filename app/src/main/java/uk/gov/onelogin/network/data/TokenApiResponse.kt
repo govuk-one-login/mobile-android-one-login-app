@@ -1,4 +1,4 @@
-package uk.gov.onelogin.network
+package uk.gov.onelogin.network.data
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
