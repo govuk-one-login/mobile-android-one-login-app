@@ -33,7 +33,11 @@ class WelcomeScreenViewModel @Inject constructor(
         )
         val tokenEndpoint = Uri.parse(
             context.resources.getString(
-                R.string.apiBaseUrl,
+                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                    R.string.stsUrl
+                } else {
+                    R.string.apiBaseUrl
+                },
                 context.resources.getString(R.string.tokenExchangeEndpoint)
             )
         )
@@ -50,9 +54,9 @@ class WelcomeScreenViewModel @Inject constructor(
         }
 
         val scopes = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            listOf(LoginSessionConfiguration.Scope.STS)
-        } else {
             listOf(LoginSessionConfiguration.Scope.OPENID)
+        } else {
+            listOf(LoginSessionConfiguration.Scope.STS)
         }
         val locale = getLocaleFrom(context)
         loginSession

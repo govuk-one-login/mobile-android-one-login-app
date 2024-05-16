@@ -25,7 +25,6 @@ android {
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
-
         testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
@@ -166,8 +165,8 @@ dependencies {
         libs.slf4j.api,
         libs.theme,
         libs.secure.store,
-        libs.network,
         libs.authentication,
+        libs.network,
         projects.features
     ).forEach(::implementation)
 
