@@ -23,14 +23,16 @@ fun GenericErrorScreen(onClick: () -> Unit = { }) {
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = onClick,
-                    text = R.string.app_close
+                    text = R.string.app_closeButton
                 ),
                 informationParameters = InformationParameters(
                     contentParameters = ContentParameters(
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_errorGenericTitle,
-                                text = arrayOf(R.string.app_errorGenericSubTitle).toIntArray()
+                                subTitle = R.string.app_somethingWentWrongErrorTitle,
+                                text = arrayOf(
+                                    R.string.app_somethingWentWrongErrorBody
+                                ).toIntArray()
                             )
                         ),
                         headingSize = HeadingSize.H1()

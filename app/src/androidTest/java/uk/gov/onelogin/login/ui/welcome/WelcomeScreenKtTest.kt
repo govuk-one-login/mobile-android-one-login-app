@@ -71,9 +71,9 @@ class WelcomeScreenKtTest : TestCase() {
         }
     }
 
-    private val signInTitle = hasText(resources.getString(R.string.signInTitle))
-    private val signInSubTitle = hasText(resources.getString(R.string.signInSubTitle))
-    private val signInButton = hasText(resources.getString(R.string.signInButton))
+    private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
+    private val signInSubTitle = hasText(resources.getString(R.string.app_signInBody))
+    private val signInButton = hasText(resources.getString(R.string.app_signInButton))
 
     @Test
     fun verifyStrings() {
