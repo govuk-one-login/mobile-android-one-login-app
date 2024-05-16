@@ -33,6 +33,7 @@ dependencyResolutionManagement {
             "https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication",
             setupGithubCredentials()
         )
+        maven("https://jitpack.io")
     }
 }
 

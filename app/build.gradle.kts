@@ -165,8 +165,11 @@ dependencies {
         libs.slf4j.api,
         libs.theme,
         libs.secure.store,
+        projects.features,
         libs.authentication,
-        projects.features
+        libs.wallet.sdk,
+        libs.wallet.core,
+        libs.wallet.openid
     ).forEach(::implementation)
 
     listOf(

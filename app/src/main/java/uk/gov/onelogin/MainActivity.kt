@@ -9,7 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import uk.gov.android.authentication.AppAuthSession
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.login.LoginRoutes
 
 @AndroidEntryPoint
@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val navController = rememberNavController()
-
+//          I've changed this to GdsTheme to Material3 - if the Material one will be used, the primary
+//          colors for Wallet will be different (purple)
             GdsTheme {
                 viewModel.appRoutes.routes(
                     navController = navController,
