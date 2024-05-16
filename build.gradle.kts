@@ -23,7 +23,6 @@ setProperty("minSdkVersion", 29)
 setProperty("targetSdkVersion", 34)
 setProperty("versionCode", getVersionCode())
 setProperty("versionName", getVersionName())
-setProperty("versionKtor", "2.3.7")
 
 fun getVersionCode(): Int {
     val code: Int =

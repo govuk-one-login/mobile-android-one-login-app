@@ -41,11 +41,11 @@ object NetworkModule {
             UserAgent(
                 appName = appName,
                 versionName = BuildConfig.VERSION_NAME,
-                clientName = KTOR_CLIENT,
+                clientName = BuildConfig.APPLICATION_ID,
                 manufacturer = Build.MANUFACTURER,
                 model = Build.MODEL,
                 sdkVersion = Build.VERSION.SDK_INT,
-                clientVersion = BuildConfig.KTOR_VERSION
+                clientVersion = BuildConfig.VERSION_NAME
             )
         )
         return userAgentGenerator
