@@ -69,6 +69,4 @@ object NetworkModule {
         client.setAuthenticationProvider(authProvider)
         return client
     }
-
-    private const val KTOR_CLIENT = "Ktor"
 }
