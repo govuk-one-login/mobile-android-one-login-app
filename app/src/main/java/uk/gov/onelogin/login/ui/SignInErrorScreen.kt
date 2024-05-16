@@ -23,7 +23,7 @@ fun SignInErrorScreen(onClick: () -> Unit = { }) {
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = onClick,
-                    text = R.string.app_close
+                    text = R.string.app_closeButton
                 ),
                 informationParameters = InformationParameters(
                     contentParameters = ContentParameters(

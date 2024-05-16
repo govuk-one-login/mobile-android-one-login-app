@@ -28,7 +28,7 @@ fun WelcomeScreen(
                 GdsContentText.GdsContentTextString(
                     text =
                     intArrayOf(
-                        R.string.signInSubTitle
+                        R.string.app_signInBody
                     )
                 )
             ),
@@ -40,8 +40,8 @@ fun WelcomeScreen(
                 }
             },
             onTopIconClick = { openDeveloperPanel() },
-            primaryButtonText = R.string.signInButton,
-            title = R.string.signInTitle,
+            primaryButtonText = R.string.app_signInButton,
+            title = R.string.app_signInTitle,
             topIcon = R.drawable.app_icon
         )
     )

@@ -9,15 +9,15 @@
     <string name="previous" translatable="false">Previous</string>
     <string name="app_continue">Continue</string>
     <string name="app_tryAgainButton">Try again</string>
-    <string name="app_close" translatable="false">Close</string>
+    <string name="app_closeButton">Close</string>
     <string name="app_home" translatable="false">Home</string>
     <string name="app_wallet" translatable="false">Wallet</string>
     <string name="app_profile" translatable="false">Profile</string>
 
     <!-- Sign in -->
-    <string name="signInTitle" translatable="false">GOV.UK One Login</string>
-    <string name="signInSubTitle" translatable="false">Sign in with the same email address you use for your GOV.UK One Login.</string>
-    <string name="signInButton" translatable="false">Sign in</string>
+    <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
+    <string name="app_signInBody">Sign in with the same email address you use for your GOV.UK One Login.</string>
+    <string name="app_signInButton">Sign in</string>
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
@@ -25,8 +25,8 @@
 
     <!-- Errors-->
     <!-- Errors Generic-->
-    <string name="app_errorGenericTitle" translatable="false">Something went wrong</string>
-    <string name="app_errorGenericSubTitle" translatable="false">Try again later.</string>
+    <string name="app_somethingWentWrongErrorTitle">Something went wrong</string>
+    <string name="app_somethingWentWrongErrorBody">Try again later.</string>
 
     <!-- Errors Offline-->
     <string name="app_networkErrorTitle">You appear to be offline</string>

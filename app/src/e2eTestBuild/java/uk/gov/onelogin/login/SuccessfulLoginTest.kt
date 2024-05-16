@@ -71,7 +71,7 @@ class SuccessfulLoginTest : TestCase() {
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
-        val signInSelector = resources.getString(R.string.signInButton)
+        val signInSelector = resources.getString(R.string.app_signInButton)
         device.wait(
             Until.findObject(By.text(signInSelector)), WAIT_FOR_OBJECT_TIMEOUT
         )
@@ -104,7 +104,7 @@ class SuccessfulLoginTest : TestCase() {
             wait(
                 Until.findObject(
                     By.text(
-                        resources.getString(R.string.signInButton)
+                        resources.getString(R.string.app_signInButton)
                     )
                 ),
                 WAIT_FOR_OBJECT_TIMEOUT
