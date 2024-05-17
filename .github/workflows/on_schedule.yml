@@ -13,7 +13,13 @@ jobs:
   onScheduleJob:
     name: Verify code base when pushed
     runs-on: macos-latest
-    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      contents: read
+      packages: read
+
+#    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     steps:
       - name: Run checkout github action
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # pin@v4
@@ -48,8 +54,8 @@ jobs:
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
-          access-token: ${{ secrets.PACKAGES_PAT }}
-          username: ${{ secrets.PACKAGES_USER }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
 
@@ -60,17 +66,17 @@ jobs:
           device-profile: 'pixel_xl'
         if: ${{ steps.detect-arch.outputs.arch-in-use }} == 'arm64'
         env:
-          access-token: ${{ secrets.PACKAGES_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           architecture: ${{ steps.detect-arch.outputs.arch-in-use }}
-          username: ${{ secrets.PACKAGES_USER }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
 
       - name: Run gradle instrumentation tests - en
         uses: ./config/actions/gradle-connected-test
         if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
         env:
-          access-token: ${{ secrets.PACKAGES_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           architecture: ${{ steps.detect-arch.outputs.arch-in-use }}
-          username: ${{ secrets.PACKAGES_USER }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
@@ -88,9 +94,9 @@ jobs:
       - name: Run gradle instrumentation tests - cy
         uses: ./config/actions/gradle-connected-test
         with:
-          access-token: ${{ secrets.PACKAGES_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           locale: cy-GB
-          username: ${{ secrets.PACKAGES_USER }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.version-name.outputs.version-name }}
         if: ${{ steps.detect-arch.outputs.arch-in-use }} != 'arm64'
