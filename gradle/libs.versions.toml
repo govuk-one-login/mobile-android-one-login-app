@@ -35,7 +35,7 @@ lifecycle-runtime-compose = "2.7.0"
 
 [libraries]
 
-components = "uk.gov.android:components:3.5.2"
+components = "uk.gov.android:components:4.1.0"
 core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
 ##                                                            ⬆ = "1.6.0-alpha01" }
 ##                                                            ⬆ = "1.6.0-alpha02" }
@@ -65,11 +65,11 @@ navigation-compose = { group = "androidx.navigation", name = "navigation-compose
 ##                                                                                      ⬆ = "2.8.0-alpha02" }
 org-jacoco-agent = "org.jacoco:org.jacoco.agent:0.8.11"
 org-jacoco-ant = "org.jacoco:org.jacoco.ant:0.8.11"
-pages = "uk.gov.android:pages:3.5.2"
+pages = "uk.gov.android:pages:4.1.0"
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.12" }
 ##                                                          ⬆ = "2.1.0-alpha0" }
 ##                                                          ⬆ = "2.1.0-alpha1" }
-theme = "uk.gov.android:theme:3.5.2"
+theme = "uk.gov.android:theme:4.1.0"
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.2.0" }
 ##                                                                              ⬆ = "2.3.0-alpha01" }
 ##                                                                              ⬆ = "2.3.0-alpha02" }

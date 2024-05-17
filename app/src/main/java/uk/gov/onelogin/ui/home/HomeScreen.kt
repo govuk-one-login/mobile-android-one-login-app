@@ -2,17 +2,13 @@ package uk.gov.onelogin.ui.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
@@ -21,6 +17,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.ui.components.EmailHeader
 
 @Suppress("LongMethod")
 @Composable
@@ -34,19 +31,7 @@ fun HomeScreen(
         parameters = TitledPageParameters(
             R.string.app_homeTitle
         ) {
-            HorizontalDivider()
-            Text(
-                modifier = Modifier.padding(16.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                text = buildAnnotatedString {
-                    append(LocalContext.current.getText(R.string.app_displayEmail))
-                    appendLine()
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("someEmail@gmail.com")
-                    }
-                }
-            )
-            HorizontalDivider()
+            EmailHeader("someEmail@mail.com")
             Text(
                 text = "Access Token",
                 fontWeight = FontWeight.Bold,
