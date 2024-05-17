@@ -31,7 +31,7 @@ class MainNavScreenTest : TestCase() {
 
     @Test
     fun checkBottomOptionsDisplayed() {
-        composeTestRule.onNode(homeTab).isDisplayed()
+        composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(profileTab).isDisplayed()
 
