@@ -33,31 +33,34 @@ dependencyResolutionManagement {
             "https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication",
             setupGithubCredentials()
         )
-        fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit =
-            {
-                val (credUser, credToken) = fetchGithubCredentials()
-                credentials {
-                    username = credUser
-                    password = credToken
-                }
-            }
+    }
+}
 
-        fun fetchGithubCredentials(): Pair<String, String> {
-            val gprUser = providers.gradleProperty("gpr.user")
-            val gprToken = providers.gradleProperty("gpr.token")
+fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit =
+    {
+        val (credUser, credToken) = fetchGithubCredentials()
+        credentials {
+            username = credUser
+            password = credToken
+        }
+    }
 
-            return try {
-                gprUser.get() to gprToken.get()
-            } catch (exception: MissingValueException) {
-                logger.warn(
-                    "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
-                            "location for instructions:\n\n" +
-                            "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
-                    exception
-                )
+fun fetchGithubCredentials(): Pair<String, String> {
+    val gprUser = providers.gradleProperty("gpr.user")
+    val gprToken = providers.gradleProperty("gpr.token")
 
-                System.getenv("USERNAME") to System.getenv("TOKEN")
-            }
+    return try {
+        gprUser.get() to gprToken.get()
+    } catch (exception: MissingValueException) {
+        logger.warn(
+            "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
+                "location for instructions:\n\n" +
+                "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
+            exception
+        )
+
+        System.getenv("USERNAME") to System.getenv("TOKEN")
+    }
 }
 
 plugins {
