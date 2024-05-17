@@ -47,7 +47,10 @@
 
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
-    <string name="homeScreenTitle" translatable="false">Home Screen</string>
+    <string name="app_homeTitle">Home</string>
+    <string name="app_displayEmail">You’re signed in as</string>
+
+    <string name="app_walletTitle" translatable="false">GOV.UK Wallet</string>
 
     <string name="StagingEnv" translatable="false">staging</string>
 

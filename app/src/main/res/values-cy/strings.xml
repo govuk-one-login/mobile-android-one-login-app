@@ -33,4 +33,6 @@
     <string name="app_enablePasscodeOrPatternButton">Defnyddio god mynediad neu batrwm</string>
 
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
+    <string name="app_homeTitle">Hafan</string>
+    <string name="app_displayEmail">Rydych wedi mewngofnodi fel</string>
 </resources>

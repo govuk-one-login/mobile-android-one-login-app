@@ -1,10 +1,7 @@
 package uk.gov.onelogin.ui.home
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -17,15 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
-import uk.gov.android.ui.components.GdsHeading
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.pages.TitledPage
+import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.onelogin.developer.DeveloperTools
-import uk.gov.onelogin.ui.components.appbar.GdsAppBar
+import uk.gov.onelogin.ui.components.EmailHeader
 
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
@@ -33,68 +27,61 @@ fun HomeScreen(
 ) {
     viewModel.saveTokens(LocalContext.current as FragmentActivity)
     val tokens = viewModel.getTokens()
-    GdsTheme {
-        Column {
-            /* DCMAW-7031: Configure top app bar: */
-            GdsAppBar(
-                title = {
-                    GdsHeading(
-                        headingParameters = HeadingParameters(
-                            size = HeadingSize.H1(),
-                            text = R.string.homeScreenTitle
-                        )
-                    )
-                }
-            ).generate()
-
-            Column(
+    TitledPage(
+        parameters = TitledPageParameters(
+            R.string.app_homeTitle
+        ) {
+            EmailHeader("someEmail@mail.com")
+            Text(
+                text = "Access Token",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
+            )
+            HorizontalDivider(Modifier.padding(start = 16.dp))
+            Text(
+                tokens?.accessToken ?: "No access token set!",
                 modifier = Modifier
-                    .weight(1f)
                     .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = "Access Token",
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    tokens?.accessToken ?: "No access token set!",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .testTag("homeScreen-accessToken")
-                )
-                Text(
-                    text = "ID Token",
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = tokens?.idToken ?: "No id token set!",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .testTag("homeScreen-idToken")
-                )
-                Text(
-                    text = "Refresh Token",
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = tokens?.refreshToken ?: "No refresh token set!",
-                    modifier = Modifier
-                        .padding(
-                            all = 16.dp
-                        )
-                        .testTag("homeScreen-refreshToken")
-                )
-                if (DeveloperTools.isDeveloperPanelEnabled()) {
-                    TextButton(
-                        onClick = { openDeveloperPanel() }
-                    ) {
-                        Text("Developer Panel")
-                    }
+                    .testTag("homeScreen-accessToken")
+            )
+            HorizontalDivider()
+            Text(
+                text = "ID Token",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
+            )
+            HorizontalDivider(Modifier.padding(start = 16.dp))
+            Text(
+                text = tokens?.idToken ?: "No id token set!",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("homeScreen-idToken")
+            )
+            HorizontalDivider()
+            Text(
+                text = "Refresh Token",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp)
+            )
+            HorizontalDivider(Modifier.padding(start = 16.dp))
+            Text(
+                text = tokens?.refreshToken ?: "No refresh token set!",
+                modifier = Modifier
+                    .padding(
+                        all = 16.dp
+                    )
+                    .testTag("homeScreen-refreshToken")
+            )
+            HorizontalDivider()
+            if (DeveloperTools.isDeveloperPanelEnabled()) {
+                TextButton(
+                    onClick = { openDeveloperPanel() }
+                ) {
+                    Text("Developer Panel")
                 }
             }
         }
-    }
+    )
 }
 
 @Composable

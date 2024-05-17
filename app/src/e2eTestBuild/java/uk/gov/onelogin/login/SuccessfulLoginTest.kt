@@ -150,7 +150,7 @@ class SuccessfulLoginTest : TestCase() {
         device.wait(
             Until.findObject(
                 By.text(
-                    resources.getString(R.string.homeScreenTitle)
+                    resources.getString(R.string.app_homeTitle)
                 )
             ),
             WAIT_FOR_OBJECT_TIMEOUT
