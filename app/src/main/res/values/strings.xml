@@ -57,6 +57,7 @@
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
+    <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
     <string name="app_helloworld_sad_button" translatable="false">Failing Hello World Call</string>

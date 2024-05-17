@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.developer.tabs.AppTabScreen
 import uk.gov.onelogin.developer.tabs.auth.AuthTabScreen
+import uk.gov.onelogin.developer.tabs.features.FeaturesScreen
 import uk.gov.onelogin.ui.components.SimpleTextPage
 
 @Suppress("LongMethod")
@@ -51,7 +52,9 @@ fun TabView(goBack: () -> Unit) {
         TabItem(
             R.string.app_developer_tab_feature_flags,
             Icons.Filled.Settings
-        ) { SimpleTextPage(R.string.app_developer_tab_feature_flags) },
+        ) {
+            FeaturesScreen()
+        },
         TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
             AuthTabScreen()
         },
