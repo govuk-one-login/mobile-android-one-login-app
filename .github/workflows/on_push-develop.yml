@@ -26,7 +26,7 @@ jobs:
       packages: read
     steps:
       - name: Run checkout github action
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # pin@v4
         with:
           lfs: 'true'
           fetch-depth: 0
@@ -59,6 +59,16 @@ jobs:
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
+      - name: Run sonar analysis
+        uses: ./config/actions/sonar-analysis
+        with:
+          project-version: ${{ steps.version-name.outputs.version-name }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          access-token: ${{ secrets.PACKAGES_PAT }}
+          username: ${{ secrets.PACKAGES_USER }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.version-name.outputs.version-name }}
 
       - name: Bundle release
         id: bundle-release

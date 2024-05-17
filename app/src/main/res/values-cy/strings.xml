@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_continue">Parhau</string>
+    <string name="app_tryAgainButton">Rhowch gynnig arall</string>
+    <string name="app_closeButton">Cau</string>
+
+    <!-- Passcode info -->
+    <string name="app_noPasscodePatternSetupTitle">Mae\'n edrych fel nad oes gan y ffôn hwn god neu batrwm mynediad</string>
+    <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
+    <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
+
+    <!--  Sign In  -->
+    <string name="app_signInBody">Mewngofnodwch gyda\'r cyfeiriad e-bost rydych yn ei ddefnyddio ar gyfer eich GOV.UK One Login</string>
+    <string name="app_signInButton">Mewngofnodi</string>
+    <string name="app_unlockButton">Datgloi</string>
+    <string name="app_signInErrorTitle">Roedd problem wrth eich mewngofnodi</string>
+    <string name="app_signInErrorBody">Gallwch geisio mewngofnodi eto. Os na fydd hyn yn gweithio, efallai y bydd angen i chi roi cynnig arall yn nes ymlaen.</string>
+
+    <!-- Errors-->
+    <!-- Errors Generic-->
+    <string name="app_somethingWentWrongErrorTitle">Aeth rhywbeth o\'i le</string>
+    <string name="app_somethingWentWrongErrorBody">Rhowch gynnig arall yn nes ymlaen.</string>
+    <!-- Errors Offline-->
+    <string name="app_networkErrorTitle">Mae\'n ymddangos nad ydych ar-lein</string>
+    <string name="app_networkErrorBody">Nid yw GOV.UK One Login ar gael os nad ydych ar-lein. Ailgysylltwch â\'r rhyngrwyd a rhoi cynnig arall</string>
+
+    <!-- Biometric Opt-In -->
+    <string name="app_enableBiometricsTitle">Defnyddiwch biometreg i fewngofnodi</string>
+    <string name="app_enableBiometricsBody1">Mewngofnodi gyda\'ch wyneb neu olion bysedd yn hytrach na\'ch cyfeiriad e-bost a chyfrinair. Nid yw eich biometreg yn cael ei rannu â GOV.UK One Login.</string>
+    <string name="app_enableBiometricsBody2">Os nad ydych am ddefnyddio biometreg, gallwch fewngofnodi gyda\'ch cod mynediad neu batrwm ffôn yn lle hynny.</string>
+    <string name="app_enableBiometricsFootnote">Os ydych yn defnyddio biometreg, bydd unrhyw un sydd â biometreg wedi\'i arbed ar eich ffôn yn gallu mewngofnodi i\'r ap hwn.</string>
+    <string name="app_enableBiometricsButton">Defnyddio biometreg</string>
+    <string name="app_enablePasscodeOrPatternButton">Defnyddio god mynediad neu batrwm</string>
+
+    <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
+</resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="openIdConnectAuthorizeEndpoint">/authorize</string>
+    <string name="openIdConnectAuthorizeEndpoint" translatable="false">/authorize</string>
 
-    <string name="webRedirectEndpoint">/redirect</string>
-    <string name="tokenExchangeEndpoint">/token</string>
+    <string name="webRedirectEndpoint" translatable="false">/redirect</string>
+    <string name="helloWorldEndpoint" translatable="false">/hello-world</string>
+    <string name="tokenExchangeEndpoint" translatable="false">/token</string>
 </resources>

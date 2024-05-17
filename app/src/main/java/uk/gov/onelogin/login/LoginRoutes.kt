@@ -1,85 +1,142 @@
 package uk.gov.onelogin.login
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.activity.compose.BackHandler
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.onelogin.R
-import java.util.UUID
+import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
+import uk.gov.onelogin.login.ui.LoadingScreen
+import uk.gov.onelogin.login.ui.PasscodeInfoScreen
+import uk.gov.onelogin.login.ui.SignInErrorScreen
+import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
+import uk.gov.onelogin.login.ui.splash.SplashScreen
+import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
+import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 
 object LoginRoutes {
-    const val ROOT: String = "/login"
-
-    const val START: String = "$ROOT/start"
-    const val LOADING: String = "$ROOT/loading"
-
-    fun NavGraphBuilder.loginFlowRoutes(state: String) {
+    @Suppress("LongMethod")
+    fun NavGraphBuilder.loginFlowRoutes(
+        navController: NavHostController
+    ) {
         navigation(
             route = ROOT,
-            startDestination = LOADING
+            startDestination = START
         ) {
             composable(
                 route = START
             ) {
-                val baseUri = stringResource(
-                    id = R.string.openIdConnectBaseUrl,
-                    stringResource(id = R.string.openIdConnectAuthorizeEndpoint)
-                )
-                val redirectUri = stringResource(
-                    id = R.string.webBaseUrl,
-                    stringResource(id = R.string.webRedirectEndpoint)
-                )
-                val nonce = UUID.randomUUID().toString()
-                val clientID = stringResource(id = R.string.openIdConnectClientId)
-
-                UriBuilder(
-                    state = state,
-                    nonce = nonce,
-                    baseUri = baseUri,
-                    redirectUri = redirectUri,
-                    clientID = clientID
-                ).apply {
-                    WelcomeScreen(
-                        builder = this
-                    )
+                val comingFromLockScreen = navController.hasPreviousBackStack()
+                BackHandler(enabled = comingFromLockScreen) {
+                    // do nothing if coming from Lock Screen
                 }
+                SplashScreen(
+                    fromLockScreen = comingFromLockScreen,
+                    nextScreen = splashScreenNavHandler(navController),
+                    openDeveloperPanel = { navController.navigateToDeveloperPanel() }
+                )
+            }
+
+            composable(
+                route = WELCOME
+            ) {
+                WelcomeScreen(
+                    navigateToOfflineErrorScreen = {
+                        navController.navigateToOfflineErrorScreen()
+                    },
+                    shouldTryAgain = {
+                        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+                        val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
+                        savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
+                        tryAgain
+                    },
+                    openDeveloperPanel = {
+                        navController.navigateToDeveloperPanel()
+                    }
+                )
             }
 
             composable(
                 route = LOADING
             ) {
-                Loading()
+                LoadingScreen()
+            }
+
+            composable(
+                route = PASSCODE_INFO
+            ) {
+                PasscodeInfoScreen {
+                    navController.navigate(MainNavRoutes.START)
+                }
+            }
+
+            composable(
+                route = BIO_OPT_IN
+            ) {
+                BackHandler(true) {
+                    // do nothing
+                }
+                BiometricsOptInScreen(onPrimary = {
+                    navController.navigate(MainNavRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }, onSecondary = {
+                    navController.navigate(MainNavRoutes.START) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                })
+            }
+
+            composable(
+                route = SIGN_IN_ERROR
+            ) {
+                BackHandler(true) {
+                    navController.navigate(WELCOME) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+                SignInErrorScreen {
+                    navController.navigate(WELCOME) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
             }
         }
     }
-}
 
-@Composable
-@Preview
-fun Loading() {
-    GdsTheme {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .width(64.dp)
-                    .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.secondary
-            )
+    private fun splashScreenNavHandler(
+        navController: NavHostController
+    ): (String) -> Unit = {
+        val comingFromLockScreen = navController.hasPreviousBackStack()
+        val authSuccessful = it == MainNavRoutes.START
+        if (comingFromLockScreen && authSuccessful) {
+            navController.popBackStack()
+        } else {
+            navController.navigate(it) {
+                popUpTo(navController.graph.id) {
+                    inclusive = true
+                }
+            }
         }
     }
+
+    private fun NavHostController.hasPreviousBackStack() = this.previousBackStackEntry != null
+
+    const val ROOT: String = "/login"
+    const val START: String = "$ROOT/start"
+    const val WELCOME: String = "$ROOT/welcome"
+    const val LOADING: String = "$ROOT/loading"
+    const val PASSCODE_INFO: String = "$ROOT/passcode_error"
+    const val BIO_OPT_IN: String = "$ROOT/bioOptIn"
+    const val SIGN_IN_ERROR: String = "$ROOT/sign_in_error"
 }

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".OneLoginApplication"
+        android:name="uk.gov.onelogin.OneLoginApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,24 +15,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.OneLogin.Starting"
+        android:theme="@style/Theme.OneLogin"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:name="uk.gov.onelogin.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+        </activity>
+        <activity
+            android:launchMode="singleTop"
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true"
+            tools:node="replace">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:host="mobile${flavorSuffix}.account.gov.uk"
+                    android:path="/redirect"
                     android:scheme="https" />
             </intent-filter>
         </activity>
