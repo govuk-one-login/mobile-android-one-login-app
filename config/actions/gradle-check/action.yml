@@ -31,4 +31,4 @@ runs:
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         TOKEN: ${{ inputs.github-token }}
-        ACTOR: ${{ inputs.github-actor }}
+        USERNAME: ${{ inputs.github-actor }}
