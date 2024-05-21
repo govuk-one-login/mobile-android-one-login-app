@@ -112,7 +112,7 @@ class WelcomeScreenKtTest : TestCase() {
             clientId = clientId,
             locale = Locale.EN,
             redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.STS),
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint
         )
 
