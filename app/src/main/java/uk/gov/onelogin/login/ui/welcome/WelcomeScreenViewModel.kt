@@ -53,11 +53,8 @@ class WelcomeScreenViewModel @Inject constructor(
             context.resources.getString(R.string.openIdConnectClientId)
         }
 
-        val scopes = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            listOf(LoginSessionConfiguration.Scope.OPENID)
-        } else {
-            listOf(LoginSessionConfiguration.Scope.STS)
-        }
+        val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
+
         val locale = getLocaleFrom(context)
         loginSession
             .present(
