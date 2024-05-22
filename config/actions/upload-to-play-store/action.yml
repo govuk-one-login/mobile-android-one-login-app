@@ -22,12 +22,6 @@ runs:
         export GEM_PATH=$HOME/.gem
         eval "$(rbenv init - bash)"
         
-        gem install bundler:2.4.7
-        
-        bundle install
-        
-        bundle update fastlane
-        
         BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
         
         for BUNDLE in ${BUNDLES[@]}

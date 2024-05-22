@@ -34,6 +34,27 @@ runs:
       shell: bash
       if: runner.os == 'Linux'
 
+    - name: Install Linux Dependencies
+      run: |
+        sudo apt-get install \
+          rbenv \
+          ruby-build \
+          rbenv-bundler
+      shell: bash
+      if: runner.os == 'Linux'
+
+    - name: Install Gemfile dependencies
+      run: |
+        export LC_ALL=en_GB.UTF-8
+        export LANG=en_GB.UTF-8
+        export GEM_HOME=$HOME/.gem
+        export GEM_PATH=$HOME/.gem
+        eval "$(rbenv init - bash)"
+
+        rbenv install --skip-existing
+        bundle install
+      shell: bash
+
     - name: Install brew dependencies
       run: |
         brew install vale rbenv ruby-build
