@@ -11,4 +11,3 @@ brew "ruby-build" unless system "ruby-build", "--version"
 brew "vale" unless system "vale", "--version"
 
 # casks (binary apps, such as from installers)
-cask "homebrew/cask-versions/oracle-jdk17" unless system "/usr/libexec/java_home", "-v", "17", "--failfast"
