@@ -27,13 +27,21 @@ runs:
       run: |
         echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
-    - name: Download homebrew dependencies
+    - name: Install homebrew
       run: |
         if ! which brew; then
           bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          sudo apt-get install build-essential
         fi
+      shell: bash
+      if: runner.os == 'Linux'
+
+    - name: Download homebrew dependencies
+      run: |
         brew bundle --no-lock
       shell: bash
+      if: runner.os == 'Linux'
 
     - name: Install Gemfile dependencies
       run: |
