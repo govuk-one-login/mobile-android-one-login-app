@@ -29,6 +29,9 @@ runs:
       shell: bash
     - name: Download homebrew dependencies
       run: |
+        if ! which brew; then
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        fi
         brew bundle --no-lock
       shell: bash
 
