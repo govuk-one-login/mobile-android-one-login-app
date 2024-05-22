@@ -36,7 +36,6 @@ runs:
 
     - name: Install Linux Dependencies
       run: |
-        git -C ~/.rbenv/plugins/ruby-build pull
         sudo apt-get install \
           rbenv \
           ruby-build
