@@ -38,8 +38,7 @@ runs:
       run: |
         sudo apt-get install \
           rbenv \
-          ruby-build \
-          rbenv-bundler
+          ruby-build
       shell: bash
       if: runner.os == 'Linux'
 
