@@ -42,7 +42,7 @@ runs:
 
     - name: Download homebrew dependencies
       run: |
-        brew bundle --no-lock
+        /home/linuxbrew/.linuxbrew/bin/brew bundle --no-lock
       shell: bash
       if: runner.os == 'Linux'
 
