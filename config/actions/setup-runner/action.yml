@@ -27,20 +27,10 @@ runs:
       run: |
         echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
-
-    - name: Install snap dependencies
+    - name: Download homebrew dependencies
       run: |
-        sudo snap install vale --edge
+        brew bundle --no-lock
       shell: bash
-      if: runner.os == 'Linux'
-
-    - name: Install Linux Dependencies
-      run: |
-        sudo apt-get install \
-          rbenv \
-          ruby-build
-      shell: bash
-      if: runner.os == 'Linux'
 
     - name: Install Gemfile dependencies
       run: |
