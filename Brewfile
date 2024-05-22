@@ -2,7 +2,7 @@
 # `brew bundle --no-lock` in the root directory of the repository.
 
 # Taps (data sources)
-tap "homebrew/cask-versions" # Access alternative versions for homebrew casks
+tap "homebrew/homebrew-core" # Access alternative versions for homebrew casks
 
 # terminal programs
 brew "rbenv" unless system "rbenv", "--version"
