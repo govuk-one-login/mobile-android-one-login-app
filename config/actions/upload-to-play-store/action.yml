@@ -16,8 +16,6 @@ runs:
   steps:
     - name: Update fastlane and upload to play store
       run: |
-#         install fastlane independently from APT
-    
         export LC_ALL=en_GB.UTF-8
         export LANG=en_GB.UTF-8
         export GEM_HOME=$HOME/.gem
