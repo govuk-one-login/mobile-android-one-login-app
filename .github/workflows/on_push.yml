@@ -21,8 +21,7 @@ jobs:
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      id-token: write
-      contents: write
+      contents: read
       packages: read
     steps:
       - name: Run checkout github action
@@ -37,12 +36,6 @@ jobs:
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
-#[TBR
-      - name: Retrieve secrets
-        uses: ./config/actions/retrieve-secrets
-        with:
-          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
-# TBR]
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
