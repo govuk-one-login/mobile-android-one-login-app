@@ -16,7 +16,6 @@ runs:
   steps:
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.3' # Not needed with a .ruby-version file
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Update fastlane and upload to play store
       run: |
