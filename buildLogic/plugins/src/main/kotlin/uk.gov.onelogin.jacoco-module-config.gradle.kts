@@ -23,11 +23,11 @@ project.configure<JacocoPluginExtension> {
     project.debugLog("Applied jacoco tool version to jacoco plugin")
 }
 
-project.configure<LibraryExtension> {
-    decorateLibraryExtensionWithJacoco(jacocoVersion).also {
-        project.debugLog("Applied jacoco properties to Library")
-    }
-}
+//project.configure<LibraryExtension> {
+//    decorateLibraryExtensionWithJacoco(jacocoVersion).also {
+//        project.debugLog("Applied jacoco properties to Library")
+//    }
+//}
 
 project.configure<DslLibraryExtension> {
     decorateDslLibraryExtensionWithJacoco(jacocoVersion).also {

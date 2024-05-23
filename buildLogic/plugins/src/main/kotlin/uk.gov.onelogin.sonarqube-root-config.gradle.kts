@@ -7,7 +7,8 @@ plugins {
 /**
  * Defined within the git repository's `build.gradle.kts` file
  */
-val versionName: String by rootProject.extra
+//val versionName = rootProject.ext["versionName"] as String
+val versionName = "1.0.0"
 
 val rootSonarProperties by rootProject.extra(
     mapOf(
@@ -26,7 +27,9 @@ configure<SonarExtension> {
 
     properties {
         rootSonarProperties.forEach { (key, value) ->
-            property(key, value)
+            if (value != null) {
+                property(key, value)
+            }
         }
     }
 }

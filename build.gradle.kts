@@ -4,25 +4,19 @@ import java.util.Properties
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id("com.android.application") apply false
+    id("com.android.library") apply false
     id("org.jetbrains.kotlin.android") apply false
     id("org.jlleitschuh.gradle.ktlint") apply true
     id("io.gitlab.arturbosch.detekt") apply false
     id("com.google.dagger.hilt.android") version "2.48.1" apply false
     id("org.sonarqube") version "4.3.0.3225" apply false
-    id("uk.gov.onelogin.sonarqube-root-config") apply false
+    id("uk.gov.onelogin.sonarqube-root-config")
 }
+
 val localProperties = Properties()
 if (rootProject.file("local.properties").exists()) {
     localProperties.load(FileInputStream(rootProject.file("local.properties")))
 }
-
-setProperty("appId", "uk.gov.onelogin")
-setProperty("compileSdkVersion", 34)
-setProperty("configDir", "${rootProject.rootDir}/config")
-setProperty("minSdkVersion", 29)
-setProperty("targetSdkVersion", 34)
-setProperty("versionCode", getVersionCode())
-setProperty("versionName", getVersionName())
 
 fun getVersionCode(): Int {
     val code: Int =
@@ -63,9 +57,18 @@ fun setProperty(
     rootProject.ext[key] = value
 }
 
-val composeVersion by project.extra("1.5.3")
-val intentsVersion by project.extra("3.4.0")
-val navigationVersion by project.extra("2.6.0")
+val composeVersion by rootProject.extra("1.5.3")
+val intentsVersion by rootProject.extra("3.4.0")
+val navigationVersion by rootProject.extra("2.6.0")
+
+setProperty("appId", "uk.gov.onelogin")
+setProperty("compileSdkVersion", 34)
+setProperty("configDir", "${rootProject.rootDir}/config")
+setProperty("minSdkVersion", 29)
+setProperty("targetSdkVersion", 34)
+setProperty("jacocoVersion", "0.8.8")
+setProperty("versionCode", getVersionCode())
+setProperty("versionName", getVersionName())
 
 apply(plugin = "lifecycle-base")
 apply(from = file(rootProject.ext["configDir"] as String + "/styles/tasks.gradle.kts"))

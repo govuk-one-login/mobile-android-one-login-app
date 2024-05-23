@@ -6,7 +6,8 @@ plugins {
     id("uk.gov.onelogin.jvm-toolchains")
     id("com.google.dagger.hilt.android")
     id("io.gitlab.arturbosch.detekt")
-    id("uk.gov.onelogin.sonarqube-root-config")
+    id("uk.gov.onelogin.sonarqube-module-config")
+    id("uk.gov.onelogin.jacoco-module-config")
     id("uk.gov.onelogin.emulator-config")
     kotlin("kapt")
     kotlin("plugin.serialization")
@@ -119,6 +120,7 @@ android {
     }
 }
 dependencies {
+
     listOf(
         AndroidX.compose.ui.testJunit4,
         AndroidX.navigation.testing,
