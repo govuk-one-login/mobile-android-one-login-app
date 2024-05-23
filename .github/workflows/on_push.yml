@@ -64,7 +64,7 @@ jobs:
       - name: Upload to play store
         uses: ./config/actions/upload-to-play-store
         with:
-          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+          aab-paths: "staging:home/path"
 #to be removed up to here
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
