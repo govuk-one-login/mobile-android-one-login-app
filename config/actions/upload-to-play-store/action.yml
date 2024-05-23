@@ -14,18 +14,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3' # Not needed with a .ruby-version file
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Update fastlane and upload to play store
       run: |
-        export LC_ALL=en_GB.UTF-8
-        export LANG=en_GB.UTF-8
-        export GEM_HOME=$HOME/.gem
-        export GEM_PATH=$HOME/.gem
-        eval "$(rbenv init - bash)"
-        
-        gem install bundler:2.4.7
-        
-        bundle install
-        
         bundle update fastlane
         
         BUNDLES=($(echo $INPUT_AAB_PATHS | tr ";" "\n"))
@@ -52,5 +46,7 @@ runs:
         done
       shell: bash
       env:
+        LC_ALL: en_GB.UTF-8
+        LANG: en_GB.UTF-8
         INPUT_AAB_PATHS: ${{ inputs.aab-paths }}
         INPUT_PACKAGE_NAME: ${{ inputs.package-name }}
