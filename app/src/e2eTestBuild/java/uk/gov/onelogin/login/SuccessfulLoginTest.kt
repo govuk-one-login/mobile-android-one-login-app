@@ -73,7 +73,8 @@ class SuccessfulLoginTest : TestCase() {
 
         val signInSelector = resources.getString(R.string.app_signInButton)
         device.wait(
-            Until.findObject(By.text(signInSelector)), WAIT_FOR_OBJECT_TIMEOUT
+            Until.findObject(By.text(signInSelector)),
+            WAIT_FOR_OBJECT_TIMEOUT
         )
         composeTestRule.onNode(hasText(signInSelector)).apply {
             assertIsDisplayed()
@@ -82,14 +83,15 @@ class SuccessfulLoginTest : TestCase() {
 
         device.apply {
             device.wait(
-                Until.findObject(By.text("Accept & continue")), WAIT_FOR_OBJECT_TIMEOUT
+                Until.findObject(By.text("Accept & continue")),
+                WAIT_FOR_OBJECT_TIMEOUT
             )?.let {
                 it.click()
                 device.wait(
-                    Until.findObject(By.text("No thanks")), WAIT_FOR_OBJECT_TIMEOUT
+                    Until.findObject(By.text("No thanks")),
+                    WAIT_FOR_OBJECT_TIMEOUT
                 )?.click()
             }
-
 
             val loginSelector = By.text("Login")
             wait(

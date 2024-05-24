@@ -3,11 +3,12 @@ import java.util.Properties
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") apply false
-    id("org.jetbrains.kotlin.android") apply false
-    id("org.jlleitschuh.gradle.ktlint") apply true
-    id("io.gitlab.arturbosch.detekt") apply false
-    id("com.google.dagger.hilt.android") version "2.48.1" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.hilt) apply false
     id("org.sonarqube") version "4.3.0.3225" apply false
     id("uk.gov.onelogin.sonarqube-root-config") apply false
 }

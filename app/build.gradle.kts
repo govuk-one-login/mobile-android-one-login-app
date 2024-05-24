@@ -1,15 +1,15 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
+    kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
-    id("com.google.dagger.hilt.android")
-    id("io.gitlab.arturbosch.detekt")
     id("uk.gov.onelogin.sonarqube-root-config")
     id("uk.gov.onelogin.emulator-config")
-    kotlin("kapt")
-    kotlin("plugin.serialization")
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
@@ -67,11 +67,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
-    }
-
     flavorDimensions += "env"
     productFlavors {
         listOf(
@@ -96,9 +91,9 @@ android {
             }
         }
     }
-
     testOptions {
         unitTests.all {
+            it.useJUnitPlatform()
             it.testLogging {
                 events = setOf(
                     org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
@@ -111,6 +106,7 @@ android {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
         }
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
@@ -120,12 +116,12 @@ android {
 }
 dependencies {
     listOf(
-        AndroidX.compose.ui.testJunit4,
-        AndroidX.navigation.testing,
-        AndroidX.test.espresso.core,
-        AndroidX.test.espresso.intents,
-        AndroidX.test.ext.junit,
-        libs.core.ktx,
+        libs.androidx.compose.ui.junit4,
+        libs.androidx.navigation.testing,
+        libs.androidx.espresso.intents,
+        libs.androidx.espresso.core,
+        libs.androidx.test.ext.junit,
+        libs.test.core.ktx,
         libs.hilt.android.testing,
         libs.uiautomator,
         libs.mockito.kotlin,
@@ -133,27 +129,21 @@ dependencies {
     ).forEach(::androidTestImplementation)
 
     listOf(
-        AndroidX.compose.ui.testManifest,
-        AndroidX.compose.ui.tooling
+        libs.androidx.compose.ui.tooling,
+        libs.androidx.compose.ui.test.manifest
     ).forEach(::debugImplementation)
 
     listOf(
-        AndroidX.appCompat,
-        AndroidX.browser,
-        AndroidX.biometric,
-        AndroidX.compose.material,
-        AndroidX.compose.material3,
-        AndroidX.compose.ui.toolingPreview,
-        AndroidX.constraintLayout,
-        AndroidX.constraintLayout.compose,
-        AndroidX.core.ktx,
-        AndroidX.core.splashscreen,
-        AndroidX.hilt.navigationCompose,
-        AndroidX.lifecycle.viewModelCompose,
-        AndroidX.work.runtimeKtx,
-        AndroidX.navigation.fragmentKtx,
-        AndroidX.navigation.uiKtx,
-        Google.android.material,
+        libs.androidx.appcompat,
+        libs.androidx.browser,
+        libs.androidx.biometric,
+        libs.androidx.compose.material,
+        libs.androidx.compose.material3,
+        libs.androidx.compose.ui.tooling.preview,
+        libs.androidx.constraintlayout,
+        libs.androidx.core.ktx,
+        libs.androidx.hilt.navigation.compose,
+        libs.androidx.lifecycle.viewmodel.compose,
         libs.androidx.lifecycle.runtime.compose,
         libs.components,
         libs.gson,
@@ -180,17 +170,19 @@ dependencies {
     ).forEach(::kaptAndroidTest)
 
     listOf(
-        Testing.junit.jupiter,
-        Testing.junit4,
-        KotlinX.coroutines.test,
         kotlin("test"),
         libs.hilt.android.testing,
         libs.ktor.client.mock,
-        libs.mockito.kotlin
+        libs.mockito.kotlin,
+        libs.junit.jupiter,
+        libs.junit.jupiter.params,
+        libs.junit.jupiter.engine,
+        platform(libs.junit.bom),
+        libs.kotlinx.coroutines.test
     ).forEach(::testImplementation)
 
     listOf(
-        AndroidX.test.orchestrator
+        libs.androidx.test.orchestrator
     ).forEach {
         androidTestUtil(it)
     }
@@ -220,33 +212,4 @@ fun getVersionName(): String {
         }
     println("VersionName is set to $name")
     return name
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-task<Exec>("pullScreenshotsFromDevice") {
-    mustRunAfter("connectedBuildDebugAndroidTest")
-
-    val saveLocation = "${project.buildDir}/screenshots/"
-
-    commandLine(
-        android.adbExecutable,
-        "exec-out",
-        "mkdir -p /sdcard/artefacts/"
-    )
-
-    commandLine(
-        android.adbExecutable,
-        "exec-out",
-        "run-as 'uk.gov.onelogin.test' cp -r './files/'  '/sdcard/artefacts/'"
-    )
-
-    commandLine(
-        android.adbExecutable,
-        "pull",
-        "/sdcard/artefacts",
-        saveLocation
-    )
 }
