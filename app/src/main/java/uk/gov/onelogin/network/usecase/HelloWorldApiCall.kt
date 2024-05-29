@@ -25,7 +25,7 @@ class HelloWorldApiCallImpl @Inject constructor(
         )
         val response = httpClient.makeAuthorisedRequest(request, "sts-test.hello-world.read")
         return if (response is ApiResponse.Success<*>) {
-            (response as ApiResponse.Success<String>).response
+            response.response.toString()
         } else {
             (response as ApiResponse.Failure).error.message ?: "Error"
         }

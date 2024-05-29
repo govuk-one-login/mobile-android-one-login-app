@@ -40,7 +40,7 @@ class StsAuthenticationProvider(
             val response = httpClient.makeRequest(request)
             if (response is ApiResponse.Success<*>) {
                 try {
-                    val tokenResponseString = (response as ApiResponse.Success<String>).response
+                    val tokenResponseString: String = response.response.toString()
                     val tokenApiResponse: TokenApiResponse = Json.decodeFromString(
                         tokenResponseString
                     )
