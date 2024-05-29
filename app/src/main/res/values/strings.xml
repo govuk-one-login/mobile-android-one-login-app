@@ -63,7 +63,8 @@
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
-    <string name="app_helloworld_sad_button" translatable="false">Failing Hello World Call</string>
+    <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
+    <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
 
     <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

@@ -36,8 +36,10 @@ fun AuthTabScreen(
     ) {
         val happyApiResponse by viewModel.happyHelloWorldResponse
         val happyCallLoading by viewModel.happyCallLoading
-        val sadApiResponse by viewModel.sadHelloWorldResponse
-        val sadCallLoading by viewModel.sadCallLoading
+        val authFailingApiResponse by viewModel.authFailingHelloWorldResponse
+        val authFailingCallLoading by viewModel.authFailingCallLoading
+        val serviceFailingApiResponse by viewModel.serviceFailingHelloWorldResponse
+        val serviceFailingCallLoading by viewModel.serviceFailingCallLoading
         buttonRow(
             buttonText = R.string.app_helloworld_happy_button,
             buttonLoading = happyCallLoading,
@@ -46,11 +48,18 @@ fun AuthTabScreen(
             viewModel.makeHappyHelloWorldCall()
         }
         buttonRow(
-            buttonText = R.string.app_helloworld_sad_button,
-            buttonLoading = sadCallLoading,
-            apiResponse = sadApiResponse
+            buttonText = R.string.app_helloworld_auth_failing_button,
+            buttonLoading = authFailingCallLoading,
+            apiResponse = authFailingApiResponse
         ) {
-            viewModel.makeSadHelloWorldCall()
+            viewModel.makeAuthFailingHelloWorldCall()
+        }
+        buttonRow(
+            buttonText = R.string.app_helloworld_service_failing_button,
+            buttonLoading = serviceFailingCallLoading,
+            apiResponse = serviceFailingApiResponse
+        ) {
+            viewModel.makeServiceFailingHelloWorldCall()
         }
     }
 }

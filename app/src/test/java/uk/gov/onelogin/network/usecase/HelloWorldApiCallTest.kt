@@ -15,7 +15,7 @@ import uk.gov.android.onelogin.R
 class HelloWorldApiCallTest {
     private val mockContext: Context = mock()
     private lateinit var stubHttpClient: GenericHttpClient
-    private lateinit var usecase: HelloWorldApiCall
+    private lateinit var helloWorldService: HelloWorldApiCall
 
     @BeforeEach
     fun setup() {
@@ -27,14 +27,21 @@ class HelloWorldApiCallTest {
 
     @Test
     fun `successful call returns hello world text`() = runTest {
-        setupUsecase(ApiResponse.Success("Hello World!"))
-        val response = usecase()
+        setupHelloWorldService(ApiResponse.Success("Hello World!"))
+        val response = helloWorldService.happyPath()
 
         assertEquals("Hello World!", response)
     }
 
-    private fun setupUsecase(httpResponse: ApiResponse) {
+    @Test
+    fun `error call returns error message`() = runTest {
+        setupHelloWorldService(ApiResponse.Failure(status = 400, Exception("Bad")))
+        val response = helloWorldService.happyPath()
+        assertEquals("Bad", response)
+    }
+
+    private fun setupHelloWorldService(httpResponse: ApiResponse) {
         stubHttpClient = StubHttpClient(httpResponse)
-        usecase = HelloWorldApiCallImpl(mockContext, stubHttpClient)
+        helloWorldService = HelloWorldApiCallImpl(mockContext, stubHttpClient)
     }
 }
