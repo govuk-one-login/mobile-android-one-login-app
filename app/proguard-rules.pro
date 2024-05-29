@@ -20,4 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-dontwarn kotlinx.parcelize.Parcelize
 -dontwarn javax.servlet.ServletContainerInitializer
