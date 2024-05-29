@@ -1,11 +1,15 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
     id("uk.gov.onelogin.jvm-toolchains")
 }
+
+apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
+apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 
 android {
     namespace = rootProject.ext["appId"] as String
@@ -85,16 +89,18 @@ android {
 
 dependencies {
     listOf(
-        libs.appcompat,
-        libs.androidx.core.core.ktx
+        libs.androidx.appcompat,
+        libs.androidx.core.ktx
     ).forEach(::implementation)
 
     listOf(
-        Testing.junit.jupiter
+        libs.junit.jupiter,
+        libs.junit.jupiter.params,
+        libs.junit.jupiter.engine
     ).forEach(::testImplementation)
 
     listOf(
         libs.androidx.test.ext.junit,
-        libs.espresso.core
+        libs.androidx.espresso.core
     ).forEach(::androidTestImplementation)
 }
