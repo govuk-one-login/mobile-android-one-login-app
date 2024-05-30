@@ -39,6 +39,17 @@ class VerifyIdTokenTest {
     }
 
     @Test
+    fun `verifier throws exception`() = runTest {
+        setupHttpStub(ApiResponse.Success("test"))
+        stubVerifier = JwtVerifier.throwable(Exception("fail"))
+        buildVerifyToken()
+
+        val result = verifyIdToken("testToken")
+
+        assertFalse(result)
+    }
+
+    @Test
     fun `id_token successfully verified`() = runTest {
         setupHttpStub(ApiResponse.Success("test"))
         stubVerifier = JwtVerifier.stub(true)

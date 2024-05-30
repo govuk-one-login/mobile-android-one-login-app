@@ -1,5 +1,6 @@
 package uk.gov.onelogin.login.usecase
 
+import android.util.Log
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
@@ -14,6 +15,7 @@ class VerifyIdTokenImpl(
     private val httpClient: GenericHttpClient,
     private val verifier: JwtVerifier
 ) : VerifyIdToken {
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun invoke(idToken: String): Boolean {
         var verified = false
         val response = httpClient.makeRequest(
@@ -21,10 +23,14 @@ class VerifyIdTokenImpl(
         )
 
         if (response is ApiResponse.Success<*>) {
-            verified = verifier.verify(
-                idToken,
-                response.response.toString()
-            )
+            try {
+                verified = verifier.verify(
+                    idToken,
+                    response.response.toString()
+                )
+            } catch (e: Exception) {
+                Log.e(this::class.simpleName, e.message, e)
+            }
         }
 
         return verified
