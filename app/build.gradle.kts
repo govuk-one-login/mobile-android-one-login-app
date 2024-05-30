@@ -157,6 +157,7 @@ dependencies {
         libs.secure.store,
         libs.authentication,
         libs.network,
+        libs.jose4j,
         projects.features
     ).forEach(::implementation)
 
