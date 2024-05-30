@@ -35,4 +35,14 @@
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>
     <string name="app_displayEmail">Rydych wedi mewngofnodi fel</string>
+    <string name="app_profileSubtitle1">Eich manylion</string>
+    <string name="app_profileSubtitle2">Cyfreithiol</string>
+    <string name="app_profileSubtitle3">Help ac adborth</string>
+    <string name="app_manageSignInDetailsFootnote">Rheoli eich manylion mewngofnodi gyda\'r gwasanaeth gwe GOV.UK One Login. Bydd angen i chi fewngofnodi eto.</string>
+    <string name="app_privacyNoticeLink2">Rhybudd Preifatrwydd GOV.UK One Login</string>
+    <string name="app_OpenSourceLicences">Trwyddedau ffynhonnell agored</string>
+    <string name="app_reportAProblemGiveFeedbackLink">Rhoi gwybod am broblem neu roi adborth</string>
+    <string name="app_appGuidanceLink">Canllawiau ar ddefnyddio\'r ap</string>
+    <string name="app_signOutButton">Allgofnodi</string>
+    <string name="app_signInDetails">Manylion mewngofnodi</string>
 </resources>
