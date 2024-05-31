@@ -1,10 +1,10 @@
 package uk.gov.onelogin.ui.profile
 
-import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.os.ConfigurationCompat
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
@@ -37,6 +36,7 @@ import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.ui.LocaleUtils.getLocale
 import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
 
@@ -44,7 +44,7 @@ import uk.gov.onelogin.ui.components.LightRed
 fun ProfileScreen() {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    val lang = remember { getLocaleFrom(context) }
+    val lang = remember { getLocale(context) }
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_profile
@@ -99,48 +99,42 @@ private fun ExternalLinkRow(
     description: String? = null,
     onClick: () -> Unit = { }
 ) {
-    Row(modifier = Modifier.clickable(onClick = onClick)) {
+    Box(
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .fillMaxWidth()
+    ) {
         Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Text(
                 modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            ) {
-                Text(
-                    modifier = Modifier.padding(all = smallPadding),
-                    style = MaterialTheme.typography.bodyMedium,
-                    text = stringResource(title)
-                )
-                Icon(
-                    painter = painterResource(id = icon),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .padding(end = smallPadding)
-                        .size(24.dp)
-                )
-            }
+                    .padding(horizontal = smallPadding)
+                    .padding(top = smallPadding)
+                    .padding(bottom = if (description == null) smallPadding else 4.dp),
+                style = MaterialTheme.typography.bodyMedium,
+                text = stringResource(title)
+            )
             description?.let {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(
+                        .padding(
                             start = smallPadding,
                             bottom = smallPadding,
                             end = 64.dp
                         ),
-                        style = MaterialTheme.typography.bodySmall,
-                        text = it
-                    )
-                }
+                    style = MaterialTheme.typography.bodySmall,
+                    text = it
+                )
             }
         }
+        Icon(
+            painter = painterResource(id = icon),
+            contentDescription = "",
+            modifier = Modifier
+                .padding(end = smallPadding, top = smallPadding)
+                .size(24.dp)
+                .align(alignment = Alignment.TopEnd)
+        )
     }
 }
 
@@ -157,21 +151,12 @@ private fun SignOutRow() {
             }
     ) {
         Text(
-            modifier = Modifier.padding(all = smallPadding),
+            modifier = Modifier.padding(all = smallPadding).height(24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = LightRed
         )
     }
-}
-
-private fun getLocaleFrom(context: Context): String {
-    val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
-    val locale = when (currentLocale?.language) {
-        "cy" -> "cy"
-        else -> "en"
-    }
-    return locale
 }
 
 @Composable
