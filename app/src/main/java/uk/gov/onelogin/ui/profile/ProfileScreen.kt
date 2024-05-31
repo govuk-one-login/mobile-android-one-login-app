@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,8 +35,10 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
+import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.ui.components.EmailHeader
+import uk.gov.onelogin.ui.components.LightRed
 
 @Composable
 fun ProfileScreen() {
@@ -70,6 +73,8 @@ fun ProfileScreen() {
             )
             HorizontalDivider()
             ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
+            Spacer(modifier = Modifier.height(mediumPadding))
+            SignOutRow()
         }
     )
 }
@@ -136,6 +141,27 @@ private fun ExternalLinkRow(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SignOutRow() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .clickable {
+            }
+    ) {
+        Text(
+            modifier = Modifier.padding(all = smallPadding),
+            style = MaterialTheme.typography.bodyMedium,
+            text = stringResource(R.string.app_signOutButton),
+            color = LightRed
+        )
     }
 }
 
