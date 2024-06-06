@@ -2,6 +2,7 @@ package uk.gov.onelogin.tokens.verifier
 
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
+import javax.inject.Inject
 import org.jose4j.jwa.AlgorithmConstraints
 import org.jose4j.jwk.JsonWebKey
 import org.jose4j.jws.AlgorithmIdentifiers
@@ -10,7 +11,7 @@ import org.jose4j.jws.JsonWebSignature
 /**
  * Validate a signed JSON Web Token (JWT) using jose4j library
  */
-class Jose4jJwtVerifier : JwtVerifier {
+class Jose4jJwtVerifier @Inject constructor() : JwtVerifier {
     /**
      * Validate a signed JWT
      *
