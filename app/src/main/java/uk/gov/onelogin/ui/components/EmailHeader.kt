@@ -12,13 +12,13 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import uk.gov.android.onelogin.R
-import uk.gov.android.ui.theme.mediumPadding
+import uk.gov.android.ui.theme.smallPadding
 
 @Composable
 fun EmailHeader(email: String) {
     HorizontalDivider()
     Text(
-        modifier = Modifier.padding(mediumPadding),
+        modifier = Modifier.padding(smallPadding),
         style = MaterialTheme.typography.bodyMedium,
         text = buildAnnotatedString {
             append(LocalContext.current.getText(R.string.app_displayEmail))

@@ -3,7 +3,6 @@ package uk.gov.onelogin.login.ui.welcome
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -13,6 +12,7 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
+import uk.gov.onelogin.ui.LocaleUtils
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(
@@ -55,7 +55,7 @@ class WelcomeScreenViewModel @Inject constructor(
 
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
 
-        val locale = getLocaleFrom(context)
+        val locale = LocaleUtils.getLocaleAsSessionConfig(context)
         loginSession
             .present(
                 context as Activity,
@@ -68,14 +68,5 @@ class WelcomeScreenViewModel @Inject constructor(
                     tokenEndpoint = tokenEndpoint
                 )
             )
-    }
-
-    private fun getLocaleFrom(context: Context): LoginSessionConfiguration.Locale {
-        val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
-        val locale = when (currentLocale?.language) {
-            "cy" -> LoginSessionConfiguration.Locale.CY
-            else -> LoginSessionConfiguration.Locale.EN
-        }
-        return locale
     }
 }
