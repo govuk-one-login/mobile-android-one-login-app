@@ -1,19 +1,14 @@
 package uk.gov.onelogin.login.usecase
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
-import uk.gov.onelogin.extensions.MainDispatcherExtension
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
-@OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(MainDispatcherExtension::class)
 class VerifyIdTokenTest {
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var stubVerifier: JwtVerifier
@@ -51,9 +46,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.stub(false)
         buildVerifyToken()
 
-        verifyIdToken(idToken, "testUrl") {
-            assertFalse(it)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
     }
 
     @Test
@@ -62,9 +56,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.stub(false)
         buildVerifyToken()
 
-        verifyIdToken(idToken, "testUrl") {
-            assertFalse(it)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
     }
 
     @Test
@@ -73,9 +66,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.throwable(Exception("fail"))
         buildVerifyToken()
 
-        verifyIdToken(idToken, "testUrl") {
-            assertFalse(it)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
     }
 
     @Test
@@ -84,9 +76,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.stub(true)
         buildVerifyToken()
 
-        verifyIdToken("not an id token", "testUrl") {
-            assertFalse(it)
-        }
+        val result = verifyIdToken("not an id token", "testUrl")
+        assertFalse(result)
     }
 
     @Test
@@ -95,9 +86,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.stub(true)
         buildVerifyToken()
 
-        verifyIdToken(idToken, "testUrl") {
-            assertFalse(it)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
     }
 
     @Test
@@ -106,9 +96,8 @@ class VerifyIdTokenTest {
         stubVerifier = JwtVerifier.stub(true)
         buildVerifyToken()
 
-        verifyIdToken(idToken, "testUrl") {
-            assertTrue(it)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertTrue(result)
     }
 
     private fun setupHttpStub(response: ApiResponse) {

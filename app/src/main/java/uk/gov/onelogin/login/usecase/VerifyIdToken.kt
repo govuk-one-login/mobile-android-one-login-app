@@ -4,8 +4,6 @@ import android.util.Log
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -15,11 +13,10 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
 interface VerifyIdToken {
-    operator fun invoke(
+    suspend operator fun invoke(
         idToken: String,
-        jwksUrl: String,
-        callback: (Boolean) -> Unit
-    )
+        jwksUrl: String
+    ): Boolean
 }
 
 @Suppress("TooGenericExceptionCaught")
@@ -27,34 +24,36 @@ class VerifyIdTokenImpl @Inject constructor(
     private val httpClient: GenericHttpClient,
     private val verifier: JwtVerifier
 ) : VerifyIdToken {
-    override fun invoke(
+    override suspend fun invoke(
         idToken: String,
-        jwksUrl: String,
-        callback: (Boolean) -> Unit
-    ) {
-        MainScope().launch {
-            var verified = false
-            val response = httpClient.makeRequest(
-                ApiRequest.Get(jwksUrl)
-            )
+        jwksUrl: String
+    ): Boolean {
+        var verified = false
+        val response = httpClient.makeRequest(
+            ApiRequest.Get(jwksUrl)
+        )
 
-            if (response is ApiResponse.Success<*>) {
-                try {
-                    getKeyId(idToken)?.let { keyId ->
-                        getKey(keyId, response.response.toString())?.let { key ->
-                            verified = verifier.verify(
-                                idToken,
-                                key
-                            )
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.e(this::class.simpleName, e.message, e)
-                }
+        if (response is ApiResponse.Success<*>) {
+            try {
+                verified = useJwksResponseToVerify(response.response.toString(), idToken)
+            } catch (e: Exception) {
+                Log.e(this::class.simpleName, e.message, e)
             }
-
-            callback(verified)
         }
+
+        return verified
+    }
+
+    private fun useJwksResponseToVerify(response: String, idToken: String): Boolean {
+        getKeyId(idToken)?.let { keyId ->
+            getKey(keyId, response)?.let { key ->
+                return verifier.verify(
+                    idToken,
+                    key
+                )
+            }
+        }
+        return false
     }
 
     private fun getKey(keyId: String, jwksResponse: String): String? {

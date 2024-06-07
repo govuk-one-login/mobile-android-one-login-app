@@ -80,31 +80,30 @@ class MainActivityViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `handleIntent when data != null, device secure, no biometrics, verify id token success`() {
-        val mockIntent: Intent = mock()
-        val mockUri: Uri = mock()
+    fun `handleIntent when data != null, device secure, no biometrics, verify id token success`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
 
-        whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
-            .thenAnswer {
-                (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-            }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl"), any()))
-            .thenAnswer {
-                (it.arguments[2] as (verified: Boolean) -> Unit).invoke(true)
-            }
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
 
-        viewModel.handleActivityResult(
-            mockIntent
-        )
+            viewModel.handleActivityResult(
+                mockIntent
+            )
 
-        verify(mockTokenRepository).setTokenResponse(tokenResponse)
-        verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
-        verify(mockAutoInitialiseSecureStore, times(2)).invoke()
-        assertEquals(MainNavRoutes.START, viewModel.next.value)
-    }
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
+            verify(mockAutoInitialiseSecureStore, times(2)).invoke()
+            assertEquals(MainNavRoutes.START, viewModel.next.value)
+        }
 
     @Suppress("UNCHECKED_CAST")
     @Test
@@ -138,7 +137,7 @@ class MainActivityViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `handleIntent when data != null and device is secure with ok biometrics`() {
+    fun `handleIntent when data != null and device is secure with ok biometrics`() = runTest {
         val mockIntent: Intent = mock()
         val mockUri: Uri = mock()
 
@@ -149,10 +148,8 @@ class MainActivityViewModelTest {
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl"), any()))
-            .thenAnswer {
-                (it.arguments[2] as (verified: Boolean) -> Unit).invoke(true)
-            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
 
         viewModel.handleActivityResult(
             mockIntent
@@ -165,7 +162,7 @@ class MainActivityViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `handleIntent when data != null and device is not secure`() {
+    fun `handleIntent when data != null and device is not secure`() = runTest {
         val mockIntent: Intent = mock()
         val mockUri: Uri = mock()
 
@@ -175,10 +172,8 @@ class MainActivityViewModelTest {
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl"), any()))
-            .thenAnswer {
-                (it.arguments[2] as (verified: Boolean) -> Unit).invoke(true)
-            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
 
         viewModel.handleActivityResult(
             mockIntent
@@ -247,10 +242,8 @@ class MainActivityViewModelTest {
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl"), any()))
-            .thenAnswer {
-                (it.arguments[2] as (verified: Boolean) -> Unit).invoke(false)
-            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(false)
 
         viewModel.handleActivityResult(
             mockIntent

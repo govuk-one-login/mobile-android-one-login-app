@@ -8,9 +8,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.android.onelogin.R
@@ -66,15 +68,15 @@ class MainActivityViewModel @Inject constructor(
             context.getString(R.string.jwksEndpoint)
         )
 
-        tokens.idToken?.let { idToken ->
-            verifyIdToken(idToken, jwksUrl) { verified ->
-                if (!verified) {
+        viewModelScope.launch {
+            tokens.idToken?.let { idToken ->
+                if (!verifyIdToken(idToken, jwksUrl)) {
                     _next.value = LoginRoutes.SIGN_IN_ERROR
                 } else {
                     checkLocalAuthRoute(tokens)
                 }
-            }
-        } ?: checkLocalAuthRoute(tokens)
+            } ?: checkLocalAuthRoute(tokens)
+        }
     }
 
     private fun checkLocalAuthRoute(tokens: TokenResponse) {
