@@ -18,12 +18,10 @@ import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
-import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltViewModel
 @Suppress("LongParameterList")
 class MainActivityViewModel @Inject constructor(
-    val appRoutes: IAppRoutes,
     private val loginSession: LoginSession,
     private val credChecker: CredentialChecker,
     private val bioPrefHandler: BiometricPreferenceHandler,
@@ -57,9 +55,10 @@ class MainActivityViewModel @Inject constructor(
                     _next.value = MainNavRoutes.START
                 }
             }
-        } catch (e: Throwable) { // handle both Error and Exception types
+        } catch (e: Throwable) { // handle both Error and Exception types.
+            // Includes AuthenticationError
             Log.e(tag, e.message, e)
-            _next.value = ErrorRoutes.ROOT
+            _next.value = LoginRoutes.SIGN_IN_ERROR
         }
     }
 

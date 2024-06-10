@@ -3,6 +3,7 @@ package uk.gov.onelogin.ui.error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.buttons.ButtonParameters
 import uk.gov.android.ui.components.buttons.ButtonType
@@ -13,7 +14,6 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.onelogin.R
 
 @Composable
 fun OfflineErrorScreen(onRetryClick: () -> Unit = { }) {

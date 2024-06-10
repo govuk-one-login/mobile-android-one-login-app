@@ -42,6 +42,7 @@ runs:
 
     - name: Install KVM hardware acceleration Dependencies
       run: |
+        sudo apt-get update
         sudo apt-get install \
           bridge-utils \
           cpu-checker \
@@ -90,3 +91,14 @@ runs:
       run: |
         sdkmanager --update
       shell: bash
+
+    - name: git
+      run: |
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git status
+        git tag
+        git describe
+      shell: bash
+      if: runner.os == 'Linux'

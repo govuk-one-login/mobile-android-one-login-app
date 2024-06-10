@@ -3,5 +3,6 @@
     <string name="openIdConnectAuthorizeEndpoint" translatable="false">/authorize</string>
 
     <string name="webRedirectEndpoint" translatable="false">/redirect</string>
+    <string name="helloWorldEndpoint" translatable="false">/hello-world</string>
     <string name="tokenExchangeEndpoint" translatable="false">/token</string>
 </resources>

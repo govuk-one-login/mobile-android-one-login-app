@@ -7,5 +7,6 @@
   lint \
   test \
   vale \
+  detekt \
   --daemon \
   --stacktrace

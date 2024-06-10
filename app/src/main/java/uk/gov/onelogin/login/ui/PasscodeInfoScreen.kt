@@ -2,11 +2,11 @@ package uk.gov.onelogin.login.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.onelogin.R
 
 @Composable
 fun PasscodeInfoScreen(

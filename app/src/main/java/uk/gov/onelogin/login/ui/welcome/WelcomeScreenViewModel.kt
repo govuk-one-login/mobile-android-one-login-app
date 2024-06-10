@@ -3,22 +3,22 @@ package uk.gov.onelogin.login.ui.welcome
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
-import uk.gov.onelogin.R
+import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
-import uk.gov.onelogin.network.utils.IOnlineChecker
+import uk.gov.onelogin.ui.LocaleUtils
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(
     private val loginSession: LoginSession,
     private val featureFlags: FeatureFlags,
-    val onlineChecker: IOnlineChecker
+    val onlineChecker: OnlineChecker
 ) : ViewModel() {
     fun onPrimary(context: Context) {
         val authorizeEndpoint = Uri.parse(
@@ -33,7 +33,11 @@ class WelcomeScreenViewModel @Inject constructor(
         )
         val tokenEndpoint = Uri.parse(
             context.resources.getString(
-                R.string.apiBaseUrl,
+                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
+                    R.string.stsUrl
+                } else {
+                    R.string.apiBaseUrl
+                },
                 context.resources.getString(R.string.tokenExchangeEndpoint)
             )
         )
@@ -49,12 +53,9 @@ class WelcomeScreenViewModel @Inject constructor(
             context.resources.getString(R.string.openIdConnectClientId)
         }
 
-        val scopes = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            listOf(LoginSessionConfiguration.Scope.STS)
-        } else {
-            listOf(LoginSessionConfiguration.Scope.OPENID)
-        }
-        val locale = getLocaleFrom(context)
+        val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
+
+        val locale = LocaleUtils.getLocaleAsSessionConfig(context)
         loginSession
             .present(
                 context as Activity,
@@ -67,14 +68,5 @@ class WelcomeScreenViewModel @Inject constructor(
                     tokenEndpoint = tokenEndpoint
                 )
             )
-    }
-
-    private fun getLocaleFrom(context: Context): LoginSessionConfiguration.Locale {
-        val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
-        val locale = when (currentLocale?.language) {
-            "cy" -> LoginSessionConfiguration.Locale.CY
-            else -> LoginSessionConfiguration.Locale.EN
-        }
-        return locale
     }
 }

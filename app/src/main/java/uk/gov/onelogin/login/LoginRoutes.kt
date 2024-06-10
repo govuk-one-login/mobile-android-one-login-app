@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.PasscodeInfoScreen
+import uk.gov.onelogin.login.ui.SignInErrorScreen
 import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
 import uk.gov.onelogin.login.ui.splash.SplashScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
@@ -91,6 +92,25 @@ object LoginRoutes {
                     }
                 })
             }
+
+            composable(
+                route = SIGN_IN_ERROR
+            ) {
+                BackHandler(true) {
+                    navController.navigate(WELCOME) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+                SignInErrorScreen {
+                    navController.navigate(WELCOME) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -118,4 +138,5 @@ object LoginRoutes {
     const val LOADING: String = "$ROOT/loading"
     const val PASSCODE_INFO: String = "$ROOT/passcode_error"
     const val BIO_OPT_IN: String = "$ROOT/bioOptIn"
+    const val SIGN_IN_ERROR: String = "$ROOT/sign_in_error"
 }

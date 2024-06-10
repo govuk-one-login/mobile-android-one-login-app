@@ -15,5 +15,7 @@ import uk.gov.android.features.InMemoryFeatureFlags
 object FeaturesModule {
     @Provides
     @Singleton
-    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags()
+    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
+        setOf(StsFeatureFlag.STS_ENDPOINT)
+    )
 }

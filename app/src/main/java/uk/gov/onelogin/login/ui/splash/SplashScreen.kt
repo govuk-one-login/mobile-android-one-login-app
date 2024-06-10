@@ -20,13 +20,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LifecycleEventEffect
+import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.mediumPadding
-import uk.gov.onelogin.R
 import uk.gov.onelogin.developer.DeveloperTools
 
 @Preview

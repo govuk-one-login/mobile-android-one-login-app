@@ -18,19 +18,21 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
-import uk.gov.onelogin.R
+import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.network.useragent.UserAgentGenerator
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
-import uk.gov.onelogin.network.utils.IOnlineChecker
-import uk.gov.onelogin.network.utils.OnlineCheckerModule
+import uk.gov.onelogin.network.di.NetworkModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
     FeaturesModule::class,
-    OnlineCheckerModule::class
+    NetworkModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -41,7 +43,13 @@ class WelcomeScreenKtTest : TestCase() {
     val featureFlags: FeatureFlags = mock()
 
     @BindValue
-    val onlineChecker: IOnlineChecker = mock()
+    val onlineChecker: OnlineChecker = mock()
+
+    @BindValue
+    val userAgentGenerator: UserAgentGenerator = mock()
+
+    @BindValue
+    val httpClient: GenericHttpClient = mock()
 
     private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false
@@ -63,9 +71,9 @@ class WelcomeScreenKtTest : TestCase() {
         }
     }
 
-    private val signInTitle = hasText(resources.getString(R.string.signInTitle))
-    private val signInSubTitle = hasText(resources.getString(R.string.signInSubTitle))
-    private val signInButton = hasText(resources.getString(R.string.signInButton))
+    private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
+    private val signInSubTitle = hasText(resources.getString(R.string.app_signInBody))
+    private val signInButton = hasText(resources.getString(R.string.app_signInButton))
 
     @Test
     fun verifyStrings() {
@@ -127,7 +135,7 @@ class WelcomeScreenKtTest : TestCase() {
         )
         val tokenEndpoint = Uri.parse(
             context.resources.getString(
-                R.string.apiBaseUrl,
+                R.string.stsUrl,
                 context.resources.getString(R.string.tokenExchangeEndpoint)
             )
         )
@@ -143,7 +151,7 @@ class WelcomeScreenKtTest : TestCase() {
             clientId = clientId,
             locale = Locale.EN,
             redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.STS),
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint
         )
 

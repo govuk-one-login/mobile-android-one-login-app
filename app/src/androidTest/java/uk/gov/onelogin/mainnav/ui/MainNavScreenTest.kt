@@ -10,7 +10,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 
@@ -31,7 +31,7 @@ class MainNavScreenTest : TestCase() {
 
     @Test
     fun checkBottomOptionsDisplayed() {
-        composeTestRule.onNode(homeTab).isDisplayed()
+        composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(profileTab).isDisplayed()
 

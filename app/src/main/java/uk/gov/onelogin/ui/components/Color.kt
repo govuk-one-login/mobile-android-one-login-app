@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val GovGreen = Color(0xFF00703C)
 val IconBackground = Color(0xFF1D70B8)
 val IconForeground = Color.White
+val LightRed = Color(0xFFD4351C)
 
 val md_theme_light_background = Color(0xFFFBFDF8)
 val md_theme_light_error = Color(0xFFBA1A1A)

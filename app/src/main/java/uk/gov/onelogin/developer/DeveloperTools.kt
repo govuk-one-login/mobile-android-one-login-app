@@ -1,6 +1,6 @@
 package uk.gov.onelogin.developer
 
-import uk.gov.onelogin.BuildConfig
+import uk.gov.android.onelogin.BuildConfig
 
 @Suppress("KotlinConstantConditions")
 object DeveloperTools {

@@ -13,17 +13,16 @@ import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.runBlocking
-import org.junit.Assert
-import org.junit.Assert.assertTrue
-import uk.gov.onelogin.R
-import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 import java.io.File
 import java.io.IOException
 import java.util.regex.Pattern
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
+import org.junit.Assert.assertTrue
+import uk.gov.android.onelogin.R
+import uk.gov.onelogin.login.SuccessfulLoginTest.Companion.WAIT_FOR_OBJECT_TIMEOUT
 
-
-class SettingsController (
+class SettingsController(
     private val context: Context,
     private val device: UiDevice
 ) {
@@ -100,7 +99,12 @@ class SettingsController (
         Assert.assertNotNull("Failed to find launch intent", intent)
 
         context.startActivity(intent)
-        device.wait(Until.findObject(By.text("Apps & notifications")),WAIT_FOR_OBJECT_TIMEOUT).click()
+        device.wait(
+            Until.findObject(
+                By.text("Apps & notifications")
+            ),
+            WAIT_FOR_OBJECT_TIMEOUT
+        ).click()
         device.wait(
             Until.findObject(By.text(Pattern.compile("^See all [0-9]* apps$"))),
             WAIT_FOR_OBJECT_TIMEOUT
@@ -198,7 +202,14 @@ class SettingsController (
 
         try {
             device.findObject(By.text("Open supported links")).click()
-            device.wait(Until.findObject(By.text("Open in this app")), WAIT_FOR_OBJECT_TIMEOUT).click()
+            device.wait(
+                Until.findObject(
+                    By.text(
+                        "Open in this app"
+                    )
+                ),
+                WAIT_FOR_OBJECT_TIMEOUT
+            ).click()
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }

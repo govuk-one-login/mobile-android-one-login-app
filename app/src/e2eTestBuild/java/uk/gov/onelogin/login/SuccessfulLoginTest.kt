@@ -11,39 +11,22 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.intent.Intents
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.core.IsEqual
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import uk.gov.onelogin.R
+import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.login.nonce.INonceGenerator
-import uk.gov.onelogin.login.nonce.NonceGeneratorModule
-import uk.gov.onelogin.login.nonce.NonceGeneratorStub
 import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.matchers.IsUUID
 import uk.gov.onelogin.matchers.MatchesUri
 import uk.gov.onelogin.test.settings.SettingsController
-import java.util.UUID
 
 @HiltAndroidTest
-@UninstallModules(
-    NonceGeneratorModule::class
-)
 class SuccessfulLoginTest : TestCase() {
-    private val nonce = UUID.randomUUID().toString()
-
-    @BindValue
-    val nonceGenerator: INonceGenerator = NonceGeneratorStub(
-        nonce = nonce
-    )
-
-    private val state = UUID.randomUUID().toString()
 
     @Before
     fun setup() {
@@ -88,9 +71,10 @@ class SuccessfulLoginTest : TestCase() {
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         context.startActivity(intent)
 
-        val signInSelector = resources.getString(R.string.signInButton)
+        val signInSelector = resources.getString(R.string.app_signInButton)
         device.wait(
-            Until.findObject(By.text(signInSelector)), WAIT_FOR_OBJECT_TIMEOUT
+            Until.findObject(By.text(signInSelector)),
+            WAIT_FOR_OBJECT_TIMEOUT
         )
         composeTestRule.onNode(hasText(signInSelector)).apply {
             assertIsDisplayed()
@@ -99,14 +83,15 @@ class SuccessfulLoginTest : TestCase() {
 
         device.apply {
             device.wait(
-                Until.findObject(By.text("Accept & continue")), WAIT_FOR_OBJECT_TIMEOUT
+                Until.findObject(By.text("Accept & continue")),
+                WAIT_FOR_OBJECT_TIMEOUT
             )?.let {
                 it.click()
                 device.wait(
-                    Until.findObject(By.text("No thanks")), WAIT_FOR_OBJECT_TIMEOUT
+                    Until.findObject(By.text("No thanks")),
+                    WAIT_FOR_OBJECT_TIMEOUT
                 )?.click()
             }
-
 
             val loginSelector = By.text("Login")
             wait(
@@ -121,7 +106,7 @@ class SuccessfulLoginTest : TestCase() {
             wait(
                 Until.findObject(
                     By.text(
-                        resources.getString(R.string.signInButton)
+                        resources.getString(R.string.app_signInButton)
                     )
                 ),
                 WAIT_FOR_OBJECT_TIMEOUT
@@ -167,7 +152,7 @@ class SuccessfulLoginTest : TestCase() {
         device.wait(
             Until.findObject(
                 By.text(
-                    resources.getString(R.string.homeScreenTitle)
+                    resources.getString(R.string.app_homeTitle)
                 )
             ),
             WAIT_FOR_OBJECT_TIMEOUT
