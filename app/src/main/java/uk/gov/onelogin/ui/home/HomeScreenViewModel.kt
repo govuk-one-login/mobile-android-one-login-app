@@ -21,13 +21,20 @@ class HomeScreenViewModel @Inject constructor(
     fun saveTokens(context: FragmentActivity) {
         val tokens = tokenRepository.getTokenResponse()
         viewModelScope.launch {
-            tokens?.let {
-                saveTokenExpiry(it.accessTokenExpirationTime)
+            tokens?.let { tokenResponse ->
+                saveTokenExpiry(tokenResponse.accessTokenExpirationTime)
                 saveToSecureStore(
                     context = context,
-                    key = Keys.ACCESS_TOKENS_KEY,
-                    value = it.accessToken
+                    key = Keys.ACCESS_TOKEN_KEY,
+                    value = tokenResponse.accessToken
                 )
+                tokenResponse.idToken?.let {
+                    saveToSecureStore(
+                        context = context,
+                        key = Keys.ID_TOKEN_KEY,
+                        value = it
+                    )
+                }
             }
         }
     }

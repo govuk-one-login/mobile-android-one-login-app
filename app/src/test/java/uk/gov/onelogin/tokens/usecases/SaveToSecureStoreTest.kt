@@ -1,6 +1,7 @@
 package uk.gov.onelogin.tokens.usecases
 
 import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,6 +15,7 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
 class SaveToSecureStoreTest {
     private lateinit var useCase: SaveToSecureStore

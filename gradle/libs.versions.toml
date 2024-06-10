@@ -13,6 +13,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [versions]
+jose4j = "0.9.4"
 kotlin = "2.0.0"
 agp = "8.4.1"
 core-ktx = "1.12.0"
@@ -41,6 +42,7 @@ kapt = "2.0.0"
 junit = "5.10.1"
 
 [libraries]
+jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 components = "uk.gov.android:components:4.1.0"
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.10.1" }

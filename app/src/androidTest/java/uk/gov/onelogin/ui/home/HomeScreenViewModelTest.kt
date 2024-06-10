@@ -4,7 +4,10 @@ import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
@@ -31,6 +34,34 @@ class HomeScreenViewModelTest : TestCase() {
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "test",
+            accessTokenExpirationTime = 1L,
+            idToken = "id"
+        )
+
+        runBlocking {
+            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+
+            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+
+            verify(saveToSecureStore).invoke(
+                composeTestRule.activity as FragmentActivity,
+                Keys.ACCESS_TOKEN_KEY,
+                "test"
+            )
+            verify(saveToSecureStore).invoke(
+                composeTestRule.activity as FragmentActivity,
+                Keys.ID_TOKEN_KEY,
+                "id"
+            )
+            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
+        }
+    }
+
+    @Test
+    fun saveTokenWhenTokensNotNullIdTokenIsNull() {
+        val testResponse = TokenResponse(
+            tokenType = "test",
+            accessToken = "test",
             accessTokenExpirationTime = 1L
         )
 
@@ -41,9 +72,10 @@ class HomeScreenViewModelTest : TestCase() {
 
             verify(saveToSecureStore).invoke(
                 composeTestRule.activity as FragmentActivity,
-                Keys.ACCESS_TOKENS_KEY,
-                testResponse.accessToken
+                Keys.ACCESS_TOKEN_KEY,
+                "test"
             )
+            verify(saveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY), any())
             verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
     }
