@@ -40,9 +40,14 @@ runs:
       shell: bash
       if: runner.os == 'macOS'
 
+    - name: Update
+      run: |
+        sudo apt-get update
+      shell: bash
+      if: runner.os == 'Linux'
+
     - name: Install KVM hardware acceleration Dependencies
       run: |
-          sudo apt-get update \
           sudo apt-get install --fix-missing \
           bridge-utils \
           cpu-checker \
