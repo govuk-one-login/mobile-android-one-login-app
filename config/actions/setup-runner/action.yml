@@ -42,7 +42,7 @@ runs:
 
     - name: Install KVM hardware acceleration Dependencies
       run: |
-        sudo apt-get install \
+        sudo apt-get install --fix-missing \
           bridge-utils \
           cpu-checker \
           libvirt-clients \
