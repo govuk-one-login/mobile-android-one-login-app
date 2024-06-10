@@ -4,7 +4,8 @@
     <application>
         <activity
             android:name="uk.gov.onelogin.HiltTestActivity"
-            android:exported="true">
+            android:exported="true"
+            android:permission="">
         </activity>
     </application>
 </manifest>
