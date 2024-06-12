@@ -103,10 +103,12 @@ jobs:
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
-          token: ${{ secrets.LEAD_ENGINEER_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          lead-engineer-token: ${{ secrets.LEAD_ENGINEER_TOKEN }}
           flavors: 'staging'
 #          flavors: 'staging,production'
-          username: ${{ secrets.USERNAME }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          lead-engineer-username: ${{ secrets.USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 
