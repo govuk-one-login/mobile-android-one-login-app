@@ -12,7 +12,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
-interface VerifyIdToken {
+fun interface VerifyIdToken {
     suspend operator fun invoke(
         idToken: String,
         jwksUrl: String

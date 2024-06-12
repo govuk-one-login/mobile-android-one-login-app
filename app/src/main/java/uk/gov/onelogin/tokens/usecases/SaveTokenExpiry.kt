@@ -6,7 +6,7 @@ import javax.inject.Inject
 import uk.gov.onelogin.tokens.Keys.TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.tokens.Keys.TOKEN_SHARED_PREFS
 
-interface SaveTokenExpiry {
+fun interface SaveTokenExpiry {
     /**
      * Use case to save the expiry time of the token in open shared preferences
      *

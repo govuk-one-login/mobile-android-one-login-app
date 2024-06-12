@@ -11,7 +11,7 @@ import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 
-interface HandleLogin {
+fun interface HandleLogin {
     suspend operator fun invoke(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit

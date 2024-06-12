@@ -1,5 +1,5 @@
 package uk.gov.onelogin.credentialchecker
 
-interface BiometricManager {
+fun interface BiometricManager {
     fun canAuthenticate(): BiometricStatus
 }
