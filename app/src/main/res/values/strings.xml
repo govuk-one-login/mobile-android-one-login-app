@@ -12,7 +12,7 @@
     <string name="app_closeButton">Close</string>
     <string name="app_home" translatable="false">Home</string>
     <string name="app_wallet" translatable="false">Wallet</string>
-    <string name="app_profile" translatable="false">Profile</string>
+    <string name="app_profile">Profile</string>
 
     <!--    Profile -->
     <string name="app_profileSubtitle1">Your details</string>

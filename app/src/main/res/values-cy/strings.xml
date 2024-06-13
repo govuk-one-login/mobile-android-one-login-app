@@ -35,6 +35,7 @@
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>
     <string name="app_displayEmail">Rydych wedi mewngofnodi fel</string>
+    <string name="app_profile">Proffil</string>
     <string name="app_profileSubtitle1">Eich manylion</string>
     <string name="app_profileSubtitle2">Cyfreithiol</string>
     <string name="app_profileSubtitle3">Help ac adborth</string>
