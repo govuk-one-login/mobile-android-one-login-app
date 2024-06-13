@@ -4,6 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.usecases.GetEmail
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
@@ -32,6 +34,11 @@ interface TokenModule {
     fun bindGetTokenExpiry(
         getTokenExpiry: GetTokenExpiryImpl
     ): GetTokenExpiry
+
+    @Binds
+    fun bindGetEmail(
+        tokenRepository: TokenRepository
+    ): GetEmail
 
     @Binds
     fun bindSaveTokenExpiry(
