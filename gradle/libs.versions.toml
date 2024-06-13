@@ -47,7 +47,7 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltPlugin" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltPlugin" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltPlugin" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.6.2" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.0" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version = "2.3.8" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.3.8" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.2.1" }
