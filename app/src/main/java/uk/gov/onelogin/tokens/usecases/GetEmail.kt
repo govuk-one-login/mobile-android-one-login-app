@@ -10,13 +10,14 @@ import uk.gov.onelogin.repositiories.TokenRepository
 
 fun interface GetEmail {
     /**
-     * Use case to get the email from the idToken
+     * Use case to get the email from the id token
      *
      * @return email as a string or null if it failed to be retrieved
      */
     operator fun invoke(): String?
 }
 
+@Suppress("TooGenericExceptionCaught")
 class GetEmailImpl @Inject constructor(
     val tokenRepository: TokenRepository
 ) : GetEmail {
