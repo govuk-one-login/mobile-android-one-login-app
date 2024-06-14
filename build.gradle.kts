@@ -69,4 +69,4 @@ val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
 
 apply(plugin = "lifecycle-base")
-apply(from = file(rootProject.ext["configDir"] as String + "/styles/tasks.gradle.kts"))
+apply(plugin = "uk.gov.vale-config")
