@@ -104,11 +104,11 @@ jobs:
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          lead-engineer-token: ${{ secrets.LEAD_ENGINEER_TOKEN }}
+          module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           flavors: 'staging'
 #          flavors: 'staging,production'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
-          lead-engineer-username: ${{ secrets.USERNAME }}
+          module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 
