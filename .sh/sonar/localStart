@@ -10,4 +10,4 @@ SONAR_SCRIPTS=$(dirname "$0")
 
 # Start local sonar instance
 # Piped to true so that the command never provides an exit state
-sonar start | true
+sonar start || true

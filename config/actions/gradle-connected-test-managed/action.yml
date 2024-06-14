@@ -50,12 +50,5 @@ runs:
         TOKEN: ${{ inputs.github-token }}
         USERNAME: ${{ inputs.github-actor }}
       run: |
-        ./gradlew \
-        :app:googleAtdPixel5Api30BuildDebugAndroidTest \
-        --continue \
-        --max-workers=1 \
-        --stacktrace \
-        -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect \
-        -PversionCode=${INPUT_VERSION_CODE} \
-        -PversionName=${INPUT_VERSION_NAME} \
+        ./.sh/tests/runInstrumentationChecks
       shell: bash

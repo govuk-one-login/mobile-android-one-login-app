@@ -21,7 +21,7 @@ runs:
     - name: Run Gradle Check
       shell: bash
       run: |
-        ./.sh/runFullTestSuite
+        ./.sh/tests/runUnitChecks
       env:
         CI: 'true'
         INPUT_VERSION_CODE: ${{ inputs.version-code }}

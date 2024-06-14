@@ -18,7 +18,7 @@ echo "Starting the local sonar server..."
 "${SONAR_SCRIPTS}"/localStart
 
 echo "Running the full test suite..."
-"${SONAR_SCRIPTS}"/../runFullTestSuite
+"${SONAR_SCRIPTS}"/../tests/runAllChecks
 
 echo "Sending report to local sonar server..."
 "${SONAR_SCRIPTS}"/scan "LOCAL"

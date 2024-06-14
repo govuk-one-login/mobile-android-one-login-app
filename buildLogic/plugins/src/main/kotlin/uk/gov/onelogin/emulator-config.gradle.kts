@@ -37,7 +37,14 @@ configure<BaseExtension> {
      */
     val minAndroidVersion: Int by project.extra(29)
     val targetAndroidVersion: Int by project.extra(34)
-    val managedApiLevels: IntRange by project.extra((minAndroidVersion..targetAndroidVersion))
+
+    /**
+     * Android versions to use with the gradle managed devices. Due to how the
+     * `createManagedDevice${variant}AndroidTestCoverageReport` task generates within google, it
+     * depends on all managed device test tasks, instead of creating a coverage report task per
+     * device ID. Therefore, this should be an [IntRange] with a single entry until fixed.
+     */
+    val managedApiLevels: IntRange by project.extra((30..30))
     val hardwareProfileFilter: (String) -> Boolean by project.extra(_hardwareProfileFilter)
     val systemImageSources: List<SystemImageSource> by project.extra(_systemImageSources)
 
