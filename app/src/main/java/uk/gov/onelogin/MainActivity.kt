@@ -62,12 +62,10 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == AppAuthSession.REQUEST_CODE_AUTH) {
-            if (data != null) {
-                viewModel.handleActivityResult(
-                    intent = data
-                )
-            }
+        if (requestCode == AppAuthSession.REQUEST_CODE_AUTH && data != null) {
+            viewModel.handleActivityResult(
+                intent = data
+            )
         }
     }
 }
