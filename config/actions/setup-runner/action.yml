@@ -34,8 +34,14 @@ runs:
 #      shell: bash
 #      if: runner.os == 'Linux'
 
+    - name: Install homebrew if necessary
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      shell: bash
+
     - name: Install brew dependencies
       run: |
+        source ./config/shell/brewPath
         brew bundle --no-lock
       shell: bash
 
