@@ -28,17 +28,16 @@ runs:
         echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
 
-    - name: Install snap dependencies
-      run: |
-        sudo snap install vale --edge
-      shell: bash
-      if: runner.os == 'Linux'
+#    - name: Install snap dependencies
+#      run: |
+#        sudo snap install vale --edge
+#      shell: bash
+#      if: runner.os == 'Linux'
 
     - name: Install brew dependencies
       run: |
-        brew install vale rbenv ruby-build
+        brew bundle --no-lock
       shell: bash
-      if: runner.os == 'macOS'
 
     - name: Update
       run: |
@@ -46,16 +45,9 @@ runs:
       shell: bash
       if: runner.os == 'Linux'
 
-    - name: Install KVM hardware acceleration Dependencies
+    - name: Install Linux Dependencies
       run: |
-          sudo apt-get install \
-          bridge-utils \
-          cpu-checker \
-          libvirt-clients \
-          libvirt-daemon-system \
-          qemu-kvm \
-          rbenv \
-          ruby-build
+        sudo apt-get install $(grep -o '^[^#]*' ./Aptfile)
       shell: bash
       if: runner.os == 'Linux'
 
