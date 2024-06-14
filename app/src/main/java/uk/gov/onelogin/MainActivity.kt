@@ -20,7 +20,7 @@ import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModelGeoff: MainActivityViewModel by viewModels()
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             LaunchedEffect(key1 = Unit) {
-                viewModelGeoff.apply {
+                viewModel.apply {
                     next.observe(lifecycleOwner) {
                         navController.navigate(it) {
                             popUpTo(navController.graph.id) {
