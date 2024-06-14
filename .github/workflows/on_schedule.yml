@@ -67,5 +67,13 @@ jobs:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
 
+      - name: Run sonar analysis
+        uses: ./config/actions/sonar-analysis
+        with:
+          project-version: ${{ steps.version-name.outputs.version-name }}
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
