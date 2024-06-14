@@ -1,9 +1,6 @@
 # Using this file:
 # `brew bundle --no-lock` in the root directory of the repository.
 
-# Taps (data sources)
-tap "homebrew/cask-versions" # Access alternative versions for homebrew casks
-
 # terminal programs
 brew "awscli" unless system "aws", "--version"
 brew "cocogitto" unless system "cog", "--version"
