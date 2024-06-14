@@ -8,8 +8,8 @@ import org.gradle.kotlin.dsl.configure
 import uk.gov.onelogin.emulator.SystemImageSource
 import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_ATD
 import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_PLAYSTORE
-import uk.gov.onelogin.ext.BaseExtensions.generateDeviceConfigurations
-import uk.gov.onelogin.ext.BaseExtensions.generateGetHardwareProfilesTask
+import uk.gov.extensions.BaseExtensions.generateDeviceConfigurations
+import uk.gov.extensions.BaseExtensions.generateGetHardwareProfilesTask
 
 plugins {
     id("kotlin-android")

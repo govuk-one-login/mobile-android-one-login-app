@@ -1,13 +1,11 @@
-package uk.gov.onelogin.jacoco.tasks
+package uk.gov.jacoco.tasks
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.TaskProvider
 import org.gradle.configurationcache.extensions.capitalized
-import org.gradle.testing.jacoco.tasks.JacocoReport
 import uk.gov.onelogin.Filters
 import uk.gov.onelogin.filetree.fetcher.FileTreeFetcher
-import uk.gov.onelogin.jacoco.config.JacocoCombinedTestConfig
-import uk.gov.onelogin.jacoco.config.JacocoCustomConfig
+import uk.gov.jacoco.config.JacocoCombinedTestConfig
+import uk.gov.jacoco.config.JacocoCustomConfig
 
 /**
  * A [JacocoTaskGenerator] implementation for combining the provided [JacocoTaskGenerator]
@@ -29,25 +27,26 @@ class JacocoCombinedTestTaskGenerator(
     private val classDirectoriesFetcher: FileTreeFetcher,
     variant: String,
     private val reportDirectoryPrefix: String = "${project.buildDir}/reports/jacoco",
-    private val configurations: Iterable<JacocoTaskGenerator>,
+    private val configurations: Iterable<JacocoCustomConfig>
 ) : JacocoTaskGenerator {
 
     private val capitalisedVariantName = variant.capitalized()
 
-    override val configuration = JacocoCombinedTestConfig(
+    private val name: String = "jacoco${capitalisedVariantName}CombinedTestReport"
+
+    private val configuration = JacocoCombinedTestConfig(
         project,
         classDirectoriesFetcher,
-        configurations.map { it.configuration },
+        name = name,
+        configurations
     )
 
-    override val name: String = "jacoco${capitalisedVariantName}CombinedTestReport"
-
-    override fun customTask(): TaskProvider<JacocoReport> =
+    override fun generate() {
         configuration.generateCustomJacocoReport(
-            excludes = uk.gov.onelogin.Filters.androidUnitTests,
-            dependencies = configurations.map { it.name },
+            excludes = Filters.androidUnitTests,
+            dependencies = configurations.map { it.testTaskName },
             description = "Create coverage report from the '$capitalisedVariantName' test reports.",
-            name = name,
-            reportOutputDir = "$reportDirectoryPrefix/combined",
+            reportOutputDir = "$reportDirectoryPrefix/combined"
         )
+    }
 }

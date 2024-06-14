@@ -1,13 +1,13 @@
+package uk.gov.sonar
+
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.extra
 import org.sonarqube.gradle.SonarExtension
+import uk.gov.extensions.ProjectExtensions.versionName
 
 plugins {
     id("org.sonarqube")
 }
-
-/**
- * Defined within the git repository's `build.gradle.kts` file
- */
-val versionName: String by rootProject.extra
 
 val rootSonarProperties by rootProject.extra(
     mapOf(

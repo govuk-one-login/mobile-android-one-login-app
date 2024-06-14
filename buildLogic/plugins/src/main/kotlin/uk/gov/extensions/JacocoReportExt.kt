@@ -1,5 +1,6 @@
-package uk.gov.onelogin.ext
+package uk.gov.extensions
 
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.testing.jacoco.tasks.JacocoReport
 
@@ -16,8 +17,10 @@ object JacocoReportExt {
      */
     fun JacocoReport.setupReportDirectories(
         project: Project,
-        reportsOutputDir: String,
+        reportsOutputDir: String
     ) {
+        this.outputs.dir(File(reportsOutputDir))
+
         this.reports {
             this.csv.apply {
                 required.set(true)

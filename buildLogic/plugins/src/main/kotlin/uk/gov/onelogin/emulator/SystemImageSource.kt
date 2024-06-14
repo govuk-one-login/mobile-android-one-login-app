@@ -1,8 +1,8 @@
 package uk.gov.onelogin.emulator
 
 import com.android.build.api.dsl.ManagedVirtualDevice
-import uk.gov.onelogin.ext.StringExtensions.kebabToLowerCamelCase
-import uk.gov.onelogin.ext.StringExtensions.snakeToLowerCamelCase
+import uk.gov.extensions.StringExtensions.kebabToLowerCamelCase
+import uk.gov.extensions.StringExtensions.snakeToLowerCamelCase
 
 /**
  * Collection to hold applicable values for the [ManagedVirtualDevice.systemImageSource]. Look at

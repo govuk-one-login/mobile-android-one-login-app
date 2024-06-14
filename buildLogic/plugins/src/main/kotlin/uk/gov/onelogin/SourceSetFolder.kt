@@ -1,57 +1,43 @@
 package uk.gov.onelogin
 
-import org.gradle.api.Project
-import org.gradle.api.file.ConfigurableFileCollection
 import java.io.File
-import uk.gov.onelogin.ext.ProjectExt.debugLog
+import org.gradle.api.Project
 
 /**
  * Handles the logic for obtaining source set folders.
  *
  * @param project The Gradle [Project] that contain source set folders within `./src`.
  */
-class SourceSetFolder(private val project: Project) {
+class SourceSetFolder(val src: File) {
 
-    /**
-     * The expected location of a Gradle module's source code folder.
-     */
-    private val src: File = File("${project.projectDir}/src")
+    constructor(project: Project) : this(
+        project.layout.projectDirectory.file("src").asFile
+    )
+
+    val sourceFolders: List<String>
+        get() = src.listFiles(Filters.sourceFilenameFilter)
+            ?.filterNotNull()
+            ?.map { it.absolutePath }
+            ?: listOf()
 
     /**
      * The production code source set folders, provided as a comma-delimited string.
      */
-    val sourceFolders: String
+    val commaSeparatedSourceFolders: String
         get() = (
-            src.listFiles(uk.gov.onelogin.Filters.sourceFilenameFilter)
-                ?.filterNotNull()
-                ?.joinToString(separator = ",") { it.absolutePath }
-                ?: ""
-            ).also {
-                project.debugLog("SourceSetFolder: Source folders: $it")
-        }
-
-    /**
-     * The production code source set folders, provided as a File collection.
-     */
-    val sourceFiles: ConfigurableFileCollection get() = project.files(sourceFolders)
-
-    /**
-     * The test code source set folders, provided as a File collection.
-     */
-    val testFiles: ConfigurableFileCollection get() = project.files(testFolders)
+            sourceFolders.joinToString(separator = ",")
+        )
 
     /**
      * The test code source set folders, provided as a comma-delimited string.
      */
     val testFolders: String
         get() = (
-            src.listFiles(uk.gov.onelogin.Filters.testFilenameFilter)
-                ?.filterNotNull()
-                ?.joinToString(separator = ",") { it.absolutePath }
-                ?: ""
-            ).also {
-                project.debugLog("SourceSetFolder: Test folders: $it")
-        }
+                src.listFiles(Filters.testFilenameFilter)
+                    ?.filterNotNull()
+                    ?.joinToString(separator = ",") { it.absolutePath }
+                    ?: ""
+                )
 
     /**
      * Checks to see whether the [source][src] folder exists within the [project].

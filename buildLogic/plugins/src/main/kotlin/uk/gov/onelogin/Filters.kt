@@ -17,7 +17,7 @@ object Filters {
         "**/*AndroidCamera*",
         "**/*AndroidBiometrics*",
         "**/*ContactsProvider*",
-        "**/*IntentProvider*",
+        "**/*IntentProvider*"
     )
 
     private val dataBindingFilters = listOf(
@@ -26,7 +26,7 @@ object Filters {
         "**/android/databinding/*",
         "**/androidx/databinding/*",
         "**/databinding/*",
-        "**/BR.*",
+        "**/BR.*"
     )
 
     val kotlin = listOf(
@@ -46,7 +46,7 @@ object Filters {
         "**/*Extensions*.*",
         "**/*Extension*.*",
         "**/*\$Result.*",
-        "**/*\$Result$*.*",
+        "**/*\$Result$*.*"
     )
 
     val userInterfaces = listOf(
@@ -59,35 +59,60 @@ object Filters {
         "**/*ItemDecoration*",
         "**/*LayoutManager*",
         "**/*Service*",
-        "**/*ViewHolder*",
+        "**/*ViewHolder*"
     )
 
     val sonar = listOf(
         "*.json",
         "**/.gradle/**",
-        "**/*.gradle*",
+        "**/*.gradle*"
+    )
+
+    // Dagger
+    val dependencyInjectionFilter = listOf(
+        "**/*_MembersInjector.class",
+        "**/Dagger*Component.class",
+        "**/Dagger*Component\$Builder.class",
+        "**/Dagger*Subcomponent*.class",
+        "**/*Subcomponent\$Builder.class",
+        "**/*Module_*Factory.class",
+        "**/dagger/hilt/internal/**/*.*",
+        "**/di/module/*",
+        "**/*_Factory*.*",
+        "**/*Module*.*",
+        "**/*Dagger*.*",
+        "**/*Hilt*.*",
+        "**/*DependenciesProvider*",
+        "**/*_GeneratedInjector.*"
+    )
+
+    val navigationPluginFilter = listOf(
+        "**/*Args.class",
+        "**/*Directions.*"
     )
 
     val androidInstrumentationTests = listOf(
-        uk.gov.onelogin.Filters.dataBindingFilters,
-        uk.gov.onelogin.Filters.android,
-        uk.gov.onelogin.Filters.kotlin,
+        android,
+        dataBindingFilters,
+        dependencyInjectionFilter,
+        navigationPluginFilter,
+        kotlin
     ).flatten()
 
     val androidUnitTests = listOf(
-        uk.gov.onelogin.Filters.androidInstrumentationTests,
-        uk.gov.onelogin.Filters.userInterfaces,
+        androidInstrumentationTests,
+        userInterfaces
     ).flatten()
 
     val testSourceSets = listOf(
         "**/src/test/java/\$",
         "**/src/test*/java/\$",
         "**/src/androidTest*/java/\$",
-        "**/src/androidTest/java/\$",
+        "**/src/androidTest/java/\$"
     )
 
     /**
-     * [FilenameFilter] for filtering out any source set folders that contain 'test', such as
+     * [FilenameFilter] for filtering out any source set folders that contain "test", such as
      * `main`.
      */
     val sourceFilenameFilter = FilenameFilter { parentFile, fileName ->
@@ -97,7 +122,7 @@ object Filters {
     }
 
     /**
-     * [FilenameFilter] for obtaining all source set folders that contain 'test', such as
+     * [FilenameFilter] for obtaining all source set folders that contain "test", such as
      * `androidTest`.
      */
     val testFilenameFilter = FilenameFilter { parentFile, fileName ->

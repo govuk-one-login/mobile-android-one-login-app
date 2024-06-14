@@ -1,4 +1,4 @@
-package uk.gov.onelogin.jacoco.config
+package uk.gov.jacoco.config
 
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
@@ -19,20 +19,24 @@ import uk.gov.onelogin.filetree.fetcher.FileTreeFetcher
 class JacocoCombinedTestConfig(
     project: Project,
     classDirectoriesFetcher: FileTreeFetcher,
-    private val configurations: Iterable<JacocoCustomConfig>,
+    name: String,
+    private val configurations: Iterable<JacocoCustomConfig>
 ) : JacocoCustomConfig(
     project,
     classDirectoriesFetcher,
+    name
 ) {
 
     constructor(
         project: Project,
         classDirectoriesFetcher: FileTreeFetcher,
-        vararg config: JacocoCustomConfig,
+        name: String,
+        vararg config: JacocoCustomConfig
     ) : this(
         project,
         classDirectoriesFetcher,
-        config.toList(),
+        name,
+        config.toList()
     )
 
     override fun getExecutionData(): FileTree = configurations.map {

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ext
+package uk.gov.extensions
 
 import com.android.build.api.dsl.ManagedVirtualDevice
 import com.android.build.gradle.BaseExtension
@@ -12,8 +12,8 @@ import org.gradle.kotlin.dsl.extra
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.maybeCreate
 import org.gradle.kotlin.dsl.register
+import uk.gov.extensions.StringExtensions.proseToUpperCamelCase
 import uk.gov.onelogin.emulator.SystemImageSource
-import uk.gov.onelogin.ext.StringExtensions.proseToUpperCamelCase
 
 object BaseExtensions {
     private val filter = Regex("[/\\\\:<>\"?*| ()]")

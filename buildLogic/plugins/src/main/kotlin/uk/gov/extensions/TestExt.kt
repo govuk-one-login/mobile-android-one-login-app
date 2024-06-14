@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ext
+package uk.gov.extensions
 
 import org.gradle.api.tasks.testing.Test
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
