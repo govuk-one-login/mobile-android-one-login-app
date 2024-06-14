@@ -37,7 +37,6 @@ else
   ./gradlew \
     :app:googleAtdPixel5Api30BuildDebugAndroidTest \
     --continue \
-    --max-workers="${WORKER_COUNT}" \
     --stacktrace \
     -Pandroid.experimental.androidTest.numManagedDeviceShards="${WORKER_COUNT}" \
     -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect \
