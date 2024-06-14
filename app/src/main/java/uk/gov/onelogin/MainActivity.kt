@@ -21,7 +21,6 @@ import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
 class MainActivity : AppCompatActivity() {
 
     private val viewModelGeoff: MainActivityViewModel by viewModels()
-    private val viewModel2: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
