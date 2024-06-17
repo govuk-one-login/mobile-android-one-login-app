@@ -39,7 +39,7 @@ serialization = "1.9.10"
 junit = "5.10.1"
 
 # Dependencies' versions to enable use of Wallet SDK (13/05/24) - might need to be updated accordingly
-wallet = "1.7.2"
+wallet = "1.8.1"
 firebaseBom = "32.7.3"
 govNetwork = "0.2.0"
 sqlcipherAndroid = "4.5.6"
