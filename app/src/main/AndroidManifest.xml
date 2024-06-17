@@ -25,17 +25,31 @@
         <activity
             android:launchMode="singleTop"
             android:name="uk.gov.onelogin.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:permission="">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="https"
+                    android:host="@string/backendHost"
+                    android:pathPrefix="/wallet"/>
+                <data
+                    android:scheme="https"
+                    android:host="@string/backendHost"
+                    android:pathPrefix="/wallet-test"/>
             </intent-filter>
         </activity>
         <activity
             android:launchMode="singleTop"
             android:name="net.openid.appauth.RedirectUriReceiverActivity"
             android:exported="true"
+            android:permission=""
             tools:node="replace">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

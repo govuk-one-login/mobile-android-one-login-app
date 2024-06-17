@@ -11,7 +11,7 @@ import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 
-interface HandleLogin {
+fun interface HandleLogin {
     suspend operator fun invoke(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit
@@ -29,11 +29,11 @@ class HandleLoginImpl @Inject constructor(
         callback: (LocalAuthStatus) -> Unit
     ) {
         if (!isTokenExpiredOrMissing() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
-            getFromSecureStore(fragmentActivity, Keys.ACCESS_TOKENS_KEY) {
+            getFromSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY) {
                 if (it is LocalAuthStatus.Success) {
                     tokenRepository.setTokenResponse(
                         TokenResponse(
-                            accessToken = it.accessToken,
+                            accessToken = it.payload,
                             tokenType = "",
                             accessTokenExpirationTime = getTokenExpiry() ?: 0
                         )

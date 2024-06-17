@@ -12,6 +12,8 @@ import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiryImpl
+import uk.gov.onelogin.tokens.verifier.Jose4jJwtVerifier
+import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -35,4 +37,7 @@ interface TokenModule {
     fun bindSaveTokenExpiry(
         saveTokenExpiry: SaveTokenExpiryImpl
     ): SaveTokenExpiry
+
+    @Binds
+    fun bindJwtVerifier(verifier: Jose4jJwtVerifier): JwtVerifier
 }

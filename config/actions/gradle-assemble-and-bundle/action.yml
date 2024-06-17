@@ -4,6 +4,8 @@ description: 'Run the "assembleRelease" and "bundleRelease" commands for a Gradl
 inputs:
   github-token:
     description: 'Service account access token that allows publishing packages'
+  module-fetch-token:
+    description: 'GitHub PAT that allows reading packages from other repositories'
     required: true
   flavors:
     description: 'App flavors to return paths for, comma separated'
@@ -11,6 +13,8 @@ inputs:
     default: 'production'
   github-actor:
     description: 'Service account name that allows publishing packages'
+  module-fetch-token-username:
+    description: 'GitHub username that generated the PAT token that allows reading packages'
     required: true
   version-code:
     description: 'Version code'
@@ -62,3 +66,5 @@ runs:
         SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         GITHUB_ACTOR: ${{ inputs.github-actor }}
+        TOKEN: ${{ inputs.module-fetch-token }}
+        USERNAME: ${{ inputs.module-fetch-token-username }}

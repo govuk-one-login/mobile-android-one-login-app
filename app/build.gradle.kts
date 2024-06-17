@@ -161,7 +161,8 @@ dependencies {
         libs.wallet.sdk,
         libs.wallet.core,
         libs.wallet.openid,
-        libs.sqlcipher.android
+        libs.sqlcipher.android,
+        libs.jose4j,
     ).forEach(::implementation)
 
     listOf(

@@ -7,7 +7,10 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @InstallIn(ViewModelComponent::class)
 @Module
-fun interface UseCaseModule {
+interface UseCaseModule {
     @Binds
     fun bindHandleLogin(useCase: HandleLoginImpl): HandleLogin
+
+    @Binds
+    fun bindVerifyIdToken(usecase: VerifyIdTokenImpl): VerifyIdToken
 }
