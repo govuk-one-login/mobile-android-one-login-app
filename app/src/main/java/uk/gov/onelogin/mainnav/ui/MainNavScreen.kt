@@ -24,11 +24,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.R
+import uk.gov.android.wallet.core.ui.theme.WalletTheme
 import uk.gov.android.wallet.sdk.WalletApp
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.home.HomeScreen
 import uk.gov.onelogin.ui.profile.ProfileScreen
-import uk.gov.onelogin.ui.wallet.WalletScreen
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
 
@@ -94,7 +94,9 @@ fun MainNavScreen(
                 HomeScreen(openDeveloperPanel = openDeveloperPanel)
             }
             composable(BottomNavDestination.Wallet.key) {
-                WalletApp()
+                WalletTheme {
+                    WalletApp()
+                }
             }
             composable(BottomNavDestination.Profile.key) {
                 ProfileScreen()

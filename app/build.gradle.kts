@@ -160,7 +160,8 @@ dependencies {
         projects.features,
         libs.wallet.sdk,
         libs.wallet.core,
-        libs.wallet.openid
+        libs.wallet.openid,
+        libs.sqlcipher.android
     ).forEach(::implementation)
 
     listOf(

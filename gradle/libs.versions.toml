@@ -41,7 +41,7 @@ kapt = "2.0.0"
 junit = "5.10.1"
 
 # Dependencies' versions to enable use of Wallet SDK (13/05/24) - might need to be updated accordingly
-wallet = "1.0.2"
+wallet = "1.7.2"
 firebaseBom = "32.7.3"
 govNetwork = "0.2.0"
 sqlcipherAndroid = "4.5.6"
@@ -101,6 +101,7 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipherAndroid" }
 
 # Dependencies needed for Wallet SDK to be integrated
 wallet-sdk = { module = "uk.gov.wallet:sdk", version.ref = "wallet" }
