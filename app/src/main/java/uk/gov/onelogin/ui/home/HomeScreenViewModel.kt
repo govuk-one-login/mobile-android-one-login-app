@@ -18,8 +18,9 @@ class HomeScreenViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveToSecureStore: SaveToSecureStore,
     private val saveTokenExpiry: SaveTokenExpiry,
-    val getEmail: GetEmail
+    getEmail: GetEmail
 ) : ViewModel() {
+    val email = getEmail() ?: ""
     fun saveTokens(context: FragmentActivity) {
         val tokens = tokenRepository.getTokenResponse()
         viewModelScope.launch {

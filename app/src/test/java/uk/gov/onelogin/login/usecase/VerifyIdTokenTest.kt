@@ -14,10 +14,15 @@ class VerifyIdTokenTest {
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
 
-    // just the header of a web token which contains a 'kid' for one of the keys below
+    // the header of the web token contains a 'kid' for one of the keys below
     private val idToken =
         "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI" +
-            "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhd"
+            "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9" +
+            ".eyJlbWFpbCI6ImVtYWlsQG1haWwuY29tIn0"
+    private val idTokenMissingEmail =
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI" +
+            "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9" +
+            ".eyJhd"
     private val jwksResponse = "{\n" +
         "  \"keys\": [\n" +
         "    {\n" +
@@ -98,6 +103,16 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertTrue(result)
+    }
+
+    @Test
+    fun `verify fails - email missing`() = runTest {
+        setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+        stubVerifier = JwtVerifier.stub(true)
+        buildVerifyToken()
+
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
     }
 
     private fun setupHttpStub(response: ApiResponse) {

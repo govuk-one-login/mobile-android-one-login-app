@@ -27,7 +27,7 @@ fun HomeScreen(
 ) {
     viewModel.saveTokens(LocalContext.current as FragmentActivity)
     val tokens = viewModel.getTokens()
-    val email = viewModel.getEmail() ?: ""
+    val email = viewModel.email
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_homeTitle
