@@ -27,11 +27,12 @@ fun HomeScreen(
 ) {
     viewModel.saveTokens(LocalContext.current as FragmentActivity)
     val tokens = viewModel.getTokens()
+    val email = viewModel.email
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_homeTitle
         ) {
-            EmailHeader("someEmail@mail.com")
+            EmailHeader(email)
             Text(
                 text = "Access Token",
                 fontWeight = FontWeight.Bold,

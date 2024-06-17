@@ -28,7 +28,16 @@ class VerifyIdTokenImpl @Inject constructor(
         idToken: String,
         jwksUrl: String
     ): Boolean {
+        val verified = isEmailValid(idToken) && isIdTokenValid(jwksUrl, idToken)
+        return verified
+    }
+
+    private fun isEmailValid(idToken: String): Boolean =
+        idToken.extractEmailFromIdToken() != null
+
+    private suspend fun isIdTokenValid(jwksUrl: String, idToken: String): Boolean {
         var verified = false
+
         val response = httpClient.makeRequest(
             ApiRequest.Get(jwksUrl)
         )
@@ -40,7 +49,6 @@ class VerifyIdTokenImpl @Inject constructor(
                 Log.e(this::class.simpleName, e.message, e)
             }
         }
-
         return verified
     }
 
@@ -76,10 +84,27 @@ class VerifyIdTokenImpl @Inject constructor(
             val headerEncoded = idToken.split(".")[0]
             val header = String(Base64.decode(headerEncoded))
             val data = Json.parseToJsonElement(header)
+            // the kid returned here will be surrounded by double quotes
             return data.jsonObject["kid"].toString()
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.message, e)
             return null
         }
+    }
+}
+
+@OptIn(ExperimentalEncodingApi::class)
+@Suppress("TooGenericExceptionCaught")
+fun String.extractEmailFromIdToken(): String? {
+    try {
+        val bodyEncoded = this.split(".")[1]
+        val body = String(Base64.decode(bodyEncoded))
+        val data = Json.parseToJsonElement(body)
+        val email = data.jsonObject["email"]
+        val stripEmail = email?.toString()?.removeSurrounding("\"")
+        return stripEmail
+    } catch (e: Exception) {
+        Log.e(this::class.simpleName, e.message, e)
+        return null
     }
 }

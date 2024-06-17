@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
+import uk.gov.onelogin.tokens.usecases.GetEmail
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
@@ -16,8 +17,10 @@ import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 class HomeScreenViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveToSecureStore: SaveToSecureStore,
-    private val saveTokenExpiry: SaveTokenExpiry
+    private val saveTokenExpiry: SaveTokenExpiry,
+    getEmail: GetEmail
 ) : ViewModel() {
+    val email = getEmail() ?: ""
     fun saveTokens(context: FragmentActivity) {
         val tokens = tokenRepository.getTokenResponse()
         viewModelScope.launch {

@@ -14,6 +14,7 @@ import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
+import uk.gov.onelogin.tokens.usecases.GetEmail
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
@@ -22,11 +23,13 @@ class HomeScreenViewModelTest : TestCase() {
     private val tokenRepository: TokenRepository = mock()
     private val saveToSecureStore: SaveToSecureStore = mock()
     private val saveTokenExpiry: SaveTokenExpiry = mock()
+    private val getEmail: GetEmail = mock()
 
     private val viewModel = HomeScreenViewModel(
         tokenRepository,
         saveToSecureStore,
-        saveTokenExpiry
+        saveTokenExpiry,
+        getEmail
     )
 
     @Test
