@@ -11,9 +11,12 @@ import uk.gov.onelogin.repositiories.TokenRepository
 class GetEmailImplTest {
 
     private val expectedEmail = "email@mail.com"
-    private val idToken = "eyJhbGciOiJIUzI1NiJ9" +
+    private val idTokenWithEmail = "eyJhbGciOiJIUzI1NiJ9" +
         ".eyJlbWFpbCI6ImVtYWlsQG1haWwuY29tIn0" + // payload contains "email": "email@mail.com"
         ".mHuqqrjGNsVpzm-8jiZ8VnlWuAVSlexyjDsOX7YDB6Q"
+    private val idTokenWithoutEmail = "eyJhbGciOiJIUzI1NiJ9" +
+        ".e30." + // no email in the payload
+        "ZRrHA1JJJW8opsbCGfG_HACGpVUMN_a9IV7pAx_Zmeo"
     private val tokenResponse: TokenResponse = mock()
     private val tokenRepository: TokenRepository = mock()
 
@@ -21,13 +24,36 @@ class GetEmailImplTest {
 
     @BeforeEach
     fun setUp() {
-        whenever(tokenResponse.idToken).thenReturn(idToken)
+        whenever(tokenResponse.idToken).thenReturn(idTokenWithEmail)
         whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
     }
 
     @Test
-    operator fun invoke() {
+    fun successScenario() {
+        // Given id token contains email
+        whenever(tokenResponse.idToken).thenReturn(idTokenWithEmail)
+        whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+
         val emailResponse = sut.invoke()
         assertEquals(expectedEmail, emailResponse)
+    }
+
+    @Test
+    fun missingEmailScenario() {
+        // Given id token is missing the email
+        whenever(tokenResponse.idToken).thenReturn(idTokenWithoutEmail)
+        whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+
+        val emailResponse = sut.invoke()
+        assertEquals(null, emailResponse)
+    }
+
+    @Test
+    fun missingIdTokenScenario() {
+        // Given id token is null
+        whenever(tokenRepository.getTokenResponse()).thenReturn(null)
+
+        val emailResponse = sut.invoke()
+        assertEquals(null, emailResponse)
     }
 }

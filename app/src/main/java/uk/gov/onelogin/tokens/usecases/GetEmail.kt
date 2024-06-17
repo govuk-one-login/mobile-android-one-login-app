@@ -33,8 +33,8 @@ class GetEmailImpl @Inject constructor(
             val bodyEncoded = idToken.split(".")[1]
             val body = String(Base64.decode(bodyEncoded))
             val data = Json.parseToJsonElement(body)
-            val email = data.jsonObject["email"].toString()
-            val stripEmail = email.removeSurrounding("\"")
+            val email = data.jsonObject["email"]
+            val stripEmail = email?.toString()?.removeSurrounding("\"")
             return stripEmail
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.message, e)
