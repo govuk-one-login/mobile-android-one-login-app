@@ -76,6 +76,7 @@ class VerifyIdTokenImpl @Inject constructor(
             val headerEncoded = idToken.split(".")[0]
             val header = String(Base64.decode(headerEncoded))
             val data = Json.parseToJsonElement(header)
+            // the kid returned here will be surrounded by double quotes
             return data.jsonObject["kid"].toString()
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.message, e)

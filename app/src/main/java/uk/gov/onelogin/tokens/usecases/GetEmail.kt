@@ -12,7 +12,7 @@ fun interface GetEmail {
     /**
      * Use case to get the email from the id token
      *
-     * @return email as a string or null if it failed to be retrieved
+     * @return email as a string or null if it fails to retrieve it
      */
     operator fun invoke(): String?
 }
@@ -33,7 +33,9 @@ class GetEmailImpl @Inject constructor(
             val bodyEncoded = idToken.split(".")[1]
             val body = String(Base64.decode(bodyEncoded))
             val data = Json.parseToJsonElement(body)
-            return data.jsonObject["email"].toString()
+            val email = data.jsonObject["email"].toString()
+            val stripEmail = email.removeSurrounding("\"")
+            return stripEmail
         } catch (e: Exception) {
             Log.e(this::class.simpleName, e.message, e)
             return null
