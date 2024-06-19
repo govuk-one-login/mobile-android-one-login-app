@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
@@ -41,15 +42,16 @@ import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: ProfileScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val lang = remember { getLocale(context) }
+    val email = viewModel.email
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_profile
         ) {
-            EmailHeader("someEmail@mail.com")
+            EmailHeader(email)
             HeadingRow(R.string.app_profileSubtitle1)
             ExternalLinkRow(
                 R.string.app_signInDetails,
@@ -151,7 +153,9 @@ private fun SignOutRow() {
             }
     ) {
         Text(
-            modifier = Modifier.padding(all = smallPadding).height(24.dp),
+            modifier = Modifier
+                .padding(all = smallPadding)
+                .height(24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = LightRed
