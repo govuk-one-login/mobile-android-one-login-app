@@ -4,7 +4,8 @@
 
 This guide shows you how to setup an Android Virtual Device (AVD) and run the application from Android Studio.
 
-_Note:_ It is assumed that you have already cloned the git repo to a suitable working directory.
+_Note:_ It is assumed that you have already cloned the git repository to a suitable working
+directory.
 
 ## Creating the AVD
 
@@ -53,7 +54,7 @@ Click `Next` on the system image modal:
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot of Android Studio's system image modal after installing the Q relese](assets/running-the-code/runningTheCode_avdCreate-systemImageInstalled.png)
+![Screenshot of Android Studio's system image modal after installing the Q release](assets/running-the-code/runningTheCode_avdCreate-systemImageInstalled.png)
 
 </div>
 

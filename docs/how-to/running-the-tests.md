@@ -26,7 +26,7 @@ And finally the `src` directory:
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot showing the src directory selected in Android Studio](assets/running-the-tests/runningTheTests_openSrc.png)
+![Screenshot showing the source directory selected in Android Studio](assets/running-the-tests/runningTheTests_openSrc.png)
 
 </div>
 
@@ -76,7 +76,7 @@ Click the `Run 'All Tests'` option and the test execution will begin:
 
 </div>
 
-While the tests are running you will see the AVDs screen launching and relaunching the app and flicking through pages as each view or journey is tested.
+While the tests are running you will see the Android Virtual Devices (AVD)s screen launching and relaunching the app and flicking through pages as each view or journey is tested.
 
 Once complete the test results are displayed:
 

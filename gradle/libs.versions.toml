@@ -9,6 +9,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+org-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube-gradle" }
 
 [versions]
 jose4j = "0.9.4"
@@ -37,6 +38,8 @@ compose-material = "1.6.7"
 compose-material3 = "1.2.1"
 serialization = "1.9.10"
 junit = "5.10.1"
+jacoco = "0.8.12" # https://www.jacoco.org/jacoco/trunk/doc/changes.html
+sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-gradle/releases
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -47,6 +50,10 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltPlugin" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltPlugin" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hiltPlugin" }
+jacoco-agent = { module = "org.jacoco:org.jacoco.agent", version.ref = "jacoco" }
+jacoco-ant = { module = "org.jacoco:org.jacoco.ant", version.ref = "jacoco" }
+jacoco-core = { module = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
+jacoco-report = { module = "org.jacoco:org.jacoco.report", version.ref = "jacoco" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.0" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version = "2.3.8" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.3.8" }

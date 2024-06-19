@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.FileTree
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.compile.JavaCompile
-import uk.gov.onelogin.ext.ProjectExt.debugLog
+import uk.gov.extensions.ProjectExtensions.debugLog
 
 /**
  * [FileTreeFetcher] implementation designed to obtain the output files from compiling intermediary

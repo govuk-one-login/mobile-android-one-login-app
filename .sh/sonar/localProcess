@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+# Requires setting the `SONAR_TOKEN` environment variable due to `.sh/sonar/localScan`
+# For example: `SONAR_TOKEN=sqa_asdf1234 ./.sh/sonar/localProcess`
+
+SONAR_SCRIPTS=$(dirname "$0")
+
+echo "Ensuring that 'sonar' is in the PATH variable..."
+"${SONAR_SCRIPTS}"/verifyPath
+
+echo "Cleaning the gradle project..."
+./gradlew clean
+
+echo "Starting the local sonar server..."
+"${SONAR_SCRIPTS}"/localStart
+
+echo "Running the full test suite..."
+"${SONAR_SCRIPTS}"/../tests/runAllChecks
+
+echo "Sending report to local sonar server..."
+"${SONAR_SCRIPTS}"/scan "LOCAL"

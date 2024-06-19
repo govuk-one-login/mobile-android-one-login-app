@@ -1,5 +1,61 @@
-import java.io.FileInputStream
 import java.util.Properties
+
+buildscript {
+    dependencies {
+        listOf(
+            libs.jacoco.agent,
+            libs.jacoco.ant,
+            libs.jacoco.core,
+            libs.jacoco.report,
+        ).forEach {
+            classpath(it)
+        }
+    }
+
+    val localProperties = java.util.Properties()
+    if (rootProject.file("local.properties").exists()) {
+        localProperties.load(java.io.FileInputStream(rootProject.file("local.properties")))
+    }
+
+    val getVersionCode: () -> Int = {
+        val code: Int =
+            if (rootProject.hasProperty("versionCode")) {
+                rootProject.property("versionCode").toString().toInt()
+            } else if (localProperties.getProperty("versionCode") != null) {
+                localProperties.getProperty("versionCode").toString().toInt()
+            } else {
+                throw Error(
+                    "Version code was not found as a command line parameter or a local property",
+                )
+            }
+
+        println("VersionCode is set to $code")
+        code
+    }
+
+    val getVersionName: () -> String = {
+        val name: String =
+            if (rootProject.hasProperty("versionName")) {
+                rootProject.property("versionName") as String
+            } else if (localProperties.getProperty("versionName") != null) {
+                localProperties.getProperty("versionName") as String
+            } else {
+                throw Error(
+                    "Version name was not found as a command line parameter or a local property",
+                )
+            }
+
+        println("VersionName is set to $name")
+        name
+    }
+
+    val versionCode: Int by rootProject.extra(
+        getVersionCode()
+    )
+    val versionName: String by rootProject.extra(
+        getVersionName()
+    )
+}
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -9,12 +65,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.hilt) apply false
-    id("org.sonarqube") version "4.3.0.3225" apply false
-    id("uk.gov.onelogin.sonarqube-root-config") apply false
-}
-val localProperties = Properties()
-if (rootProject.file("local.properties").exists()) {
-    localProperties.load(FileInputStream(rootProject.file("local.properties")))
+    id("uk.gov.sonar.root-config")
 }
 
 setProperty("appId", "uk.gov.onelogin")
@@ -22,44 +73,14 @@ setProperty("compileSdkVersion", 34)
 setProperty("configDir", "${rootProject.rootDir}/config")
 setProperty("minSdkVersion", 29)
 setProperty("targetSdkVersion", 34)
-setProperty("versionCode", getVersionCode())
-setProperty("versionName", getVersionName())
 
-fun getVersionCode(): Int {
-    val code: Int =
-        if (rootProject.hasProperty("versionCode")) {
-            rootProject.property("versionCode").toString().toInt()
-        } else if (localProperties.getProperty("versionCode") != null) {
-            localProperties.getProperty("versionCode").toString().toInt()
-        } else {
-            throw Error(
-                "Version code was not found as a command line parameter or a local property"
-            )
-        }
-
-    println("VersionCode is set to $code")
-    return code
-}
-
-fun getVersionName(): String {
-    val name: String =
-        if (rootProject.hasProperty("versionName")) {
-            rootProject.property("versionName") as String
-        } else if (localProperties.getProperty("versionName") != null) {
-            localProperties.getProperty("versionName") as String
-        } else {
-            throw Error(
-                "Version name was not found as a command line parameter or a local property"
-            )
-        }
-
-    println("VersionName is set to $name")
-    return name
-}
+val jacocoVersion: String by rootProject.extra(
+    libs.versions.jacoco.get(),
+)
 
 fun setProperty(
     key: String,
-    value: Any
+    value: Any,
 ) {
     rootProject.ext[key] = value
 }
@@ -69,4 +90,4 @@ val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
 
 apply(plugin = "lifecycle-base")
-apply(from = file(rootProject.ext["configDir"] as String + "/styles/tasks.gradle.kts"))
+apply(plugin = "uk.gov.vale-config")

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+# Start sonar server
+echo "- Ensuring that all commands are available on the PATH..."
+if ! which "sonar"; then
+  echo "  - Cannot find ${TERMINAL_COMMAND} on the PATH! Have you performed 'brew bundle --no-lock'?"
+  exit 11
+fi

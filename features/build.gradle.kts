@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     id("uk.gov.onelogin.jvm-toolchains")
+    id("uk.gov.jacoco.library-config")
+    id("uk.gov.sonar.module-config")
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")

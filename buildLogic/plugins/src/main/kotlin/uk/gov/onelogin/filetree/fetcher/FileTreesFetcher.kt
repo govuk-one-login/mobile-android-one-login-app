@@ -3,7 +3,7 @@ package uk.gov.onelogin.filetree.fetcher
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
 import org.gradle.api.provider.Provider
-import uk.gov.onelogin.ext.ProjectExt.debugLog
+import uk.gov.extensions.ProjectExtensions.debugLog
 
 /**
  * Decorator class for containing multiple [FileTreeFetcher] objects.

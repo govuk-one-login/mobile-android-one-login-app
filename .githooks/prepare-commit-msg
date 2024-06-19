@@ -4,14 +4,14 @@
 COMMIT_MSG_FILE=$1
 
 # Get the current local branch name. eg: 'feature/DCMAW-1234-do-things'
-BRANCH=`git rev-parse --abbrev-ref HEAD`
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # If the branch name contains 'DCMAW-' followed by at least 4 digits
-if [[ "$BRANCH" =~ DCMAW-[0-9]{4,} ]]
+if [[ "${BRANCH}" =~ DCMAW-[0-9]{4,} ]]
 then
     # Extract the ticket number from the branch name. eg: 'DCMAW-1234'
-    TICKET=`echo $BRANCH | sed -rn 's/.*(DCMAW-[[:digit:]]+).*/\1/p'`
+    TICKET=$(echo "${BRANCH}" | sed -rn 's/.*(DCMAW-[[:digit:]]+).*/\1/p')
 
     # Replace '# Resolves: DCMAW-000...' with 'Resolves: DCMAW-1234'
-    sed -i.bak "s/# Resolves: DCMAW-000, DCMAW-000/Resolves: $TICKET/g" "$COMMIT_MSG_FILE"
+    sed -i.bak "s/# Resolves: DCMAW-000, DCMAW-000/Resolves: ${TICKET}/g" "${COMMIT_MSG_FILE}"
 fi

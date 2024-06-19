@@ -1,0 +1,9 @@
+# Add linux dependencies, one per line.
+# Usage: `sudo apt-get install $(grep -o '^[^#]*' ./Aptfile)`
+
+## KVM hardware acceleration
+bridge-utils
+cpu-checker
+libvirt-clients
+libvirt-daemon-system
+qemu-kvm

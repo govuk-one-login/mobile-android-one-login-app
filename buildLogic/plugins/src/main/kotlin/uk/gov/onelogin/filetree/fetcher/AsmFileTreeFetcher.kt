@@ -4,7 +4,7 @@ import com.android.build.gradle.tasks.TransformClassesWithAsmTask
 import org.gradle.api.Project
 import org.gradle.api.file.FileTree
 import org.gradle.api.provider.Provider
-import uk.gov.onelogin.ext.ProjectExt.debugLog
+import uk.gov.extensions.ProjectExtensions.debugLog
 
 /**
  * [FileTreeFetcher] implementation designed to obtain the output files from the

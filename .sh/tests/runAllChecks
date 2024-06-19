@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+# Optionally provide the INPUT_VERSION_CODE or INPUT_VERSION_NAME environment variables for being
+# able to defer them to the gradle commands.
+#
+# For example:
+# - Terminal usage: `INPUT_VERSION_CODE="100" INPUT_VERSION_NAME="1.2.3" ./.sh/runUnitChecks`
+# See `config/gradle-check/action.yml` for workflow usage deferring to the `env` configuration.
+
+# INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
+
+TEST_SCRIPTS="$(dirname "${0}")"
+
+"${TEST_SCRIPTS}"/runUnitChecks
+"${TEST_SCRIPTS}"/runInstrumentationChecks

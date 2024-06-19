@@ -85,7 +85,7 @@ The download of components will start
 
 </div>
 
-Once the download is complete click `Finish` and you're done!
+Clicking the `Finish` button is the last task of the process.
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 

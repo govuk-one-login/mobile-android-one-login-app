@@ -8,7 +8,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
-    id("uk.gov.onelogin.sonarqube-root-config")
+    id("uk.gov.jacoco.app-config")
+    id("uk.gov.sonar.module-config")
     id("uk.gov.onelogin.emulator-config")
 }
 
