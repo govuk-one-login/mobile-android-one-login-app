@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1099188154796",
+    "project_id": "one-login-build",
+    "storage_bucket": "one-login-build.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1099188154796:android:01a036e73d54593ec7ca09",
+        "android_client_info": {
+          "package_name": "uk.gov.onelogin.build"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEu5JTZegSsLY4hHrsaAGNKOOQr-NTPIA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
