@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "533083083023",
+    "project_id": "one-login-staging",
+    "storage_bucket": "one-login-staging.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533083083023:android:a145df231dcde4b70eae7a",
+        "android_client_info": {
+          "package_name": "uk.gov.onelogin.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZqed1vrmP0nrUID5gOziK-OYV_3AZh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:533083083023:android:d4c0c66608a02e190eae7a",
+        "android_client_info": {
+          "package_name": "uk.gov.walletdemo.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZqed1vrmP0nrUID5gOziK-OYV_3AZh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

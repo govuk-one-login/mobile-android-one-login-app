@@ -1,5 +1,3 @@
-import java.util.Properties
-
 buildscript {
     dependencies {
         listOf(
@@ -65,6 +63,7 @@ plugins {
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.google.services) apply false
     id("uk.gov.sonar.root-config")
 }
 

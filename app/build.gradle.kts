@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.app-config")
@@ -159,7 +162,8 @@ dependencies {
         libs.authentication,
         libs.network,
         libs.jose4j,
-        projects.features
+        projects.features,
+        platform(libs.firebase.bom)
     ).forEach(::implementation)
 
     listOf(
@@ -214,4 +218,27 @@ fun getVersionName(): String {
         }
     println("VersionName is set to $name")
     return name
+}
+
+project.afterEvaluate {
+    this.android.applicationVariants.forEach { applicationVariant ->
+        val applicationVariantCapitalised = applicationVariant.name.replaceFirstChar {
+            if (it.isLowerCase()) {
+                it.titlecase(Locale.getDefault())
+            } else {
+                it.toString()
+            }
+        }
+        val flavorName = applicationVariant.flavorName
+
+        if (flavorName.equals("production")) {
+            val taskToDisable =
+                tasks.findByName("process${applicationVariantCapitalised}GoogleServices")
+
+            if (taskToDisable != null) {
+                project.logger.lifecycle("Disabling ${taskToDisable.name}")
+                taskToDisable.enabled = false
+            }
+        }
+    }
 }

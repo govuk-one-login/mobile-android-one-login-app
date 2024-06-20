@@ -9,6 +9,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 org-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube-gradle" }
 
 [versions]
@@ -40,6 +41,8 @@ serialization = "1.9.10"
 junit = "5.10.1"
 jacoco = "0.8.12" # https://www.jacoco.org/jacoco/trunk/doc/changes.html
 sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-gradle/releases
+googleServices = "4.4.2"
+firebaseBom = "32.7.2"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -91,3 +94,4 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}
