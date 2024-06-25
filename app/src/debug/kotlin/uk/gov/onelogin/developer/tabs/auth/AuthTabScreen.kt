@@ -40,21 +40,21 @@ fun AuthTabScreen(
         val authFailingCallLoading by viewModel.authFailingCallLoading
         val serviceFailingApiResponse by viewModel.serviceFailingHelloWorldResponse
         val serviceFailingCallLoading by viewModel.serviceFailingCallLoading
-        buttonRow(
+        ButtonRow(
             buttonText = R.string.app_helloworld_happy_button,
             buttonLoading = happyCallLoading,
             apiResponse = happyApiResponse
         ) {
             viewModel.makeHappyHelloWorldCall()
         }
-        buttonRow(
+        ButtonRow(
             buttonText = R.string.app_helloworld_auth_failing_button,
             buttonLoading = authFailingCallLoading,
             apiResponse = authFailingApiResponse
         ) {
             viewModel.makeAuthFailingHelloWorldCall()
         }
-        buttonRow(
+        ButtonRow(
             buttonText = R.string.app_helloworld_service_failing_button,
             buttonLoading = serviceFailingCallLoading,
             apiResponse = serviceFailingApiResponse
@@ -65,7 +65,7 @@ fun AuthTabScreen(
 }
 
 @Composable
-private fun buttonRow(
+private fun ButtonRow(
     @StringRes
     buttonText: Int,
     buttonLoading: Boolean,
