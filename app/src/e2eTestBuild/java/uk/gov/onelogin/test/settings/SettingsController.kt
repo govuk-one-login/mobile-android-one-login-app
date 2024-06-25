@@ -27,7 +27,7 @@ class SettingsController(
     private val device: UiDevice
 ) {
     fun enableOpenLinksByDefault() {
-        openSettings()
+        openSettings2()
         selectOpenByDefault()
         addLinks()
         device.pressHome()
