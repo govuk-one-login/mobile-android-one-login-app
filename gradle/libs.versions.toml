@@ -43,6 +43,7 @@ jacoco = "0.8.12" # https://www.jacoco.org/jacoco/trunk/doc/changes.html
 sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-gradle/releases
 googleServices = "4.4.2"
 firebaseBom = "32.7.2"
+classgraph = "4.8.174"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -95,3 +96,5 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}
+classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
+
