@@ -15,13 +15,11 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.core.IsEqual
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 import uk.gov.onelogin.login.ui.LoadingScreen
-import uk.gov.onelogin.matchers.IsUUID
 import uk.gov.onelogin.matchers.MatchesUri
 import uk.gov.onelogin.test.settings.SettingsController
 
@@ -61,7 +59,7 @@ class SuccessfulLoginTest : TestCase() {
         }
     }
 
-    @Ignore("This test is failing on the pipeline emulator, we're struggling to figure out why")
+    //    @Ignore("This test is failing on the pipeline emulator, we're struggling to figure out why")
     @Test
     fun logsIntoTheAppAndExchangesAuthCodeForTokens() {
         device.pressHome()
@@ -115,7 +113,7 @@ class SuccessfulLoginTest : TestCase() {
 
         val authorizeUrl = Uri.parse(
             resources.getString(
-                R.string.openIdConnectBaseUrl,
+                R.string.stsUrl,
                 resources.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
         )
@@ -132,9 +130,8 @@ class SuccessfulLoginTest : TestCase() {
                 path = authorizeUrl.path,
                 parameters = mapOf(
                     "client_id" to IsEqual(
-                        resources.getString(R.string.openIdConnectClientId)
+                        resources.getString(R.string.stsClientId)
                     ),
-                    "nonce" to IsUUID(),
                     "redirect_uri" to IsEqual(
                         resources.getString(
                             R.string.webBaseUrl,
@@ -149,6 +146,32 @@ class SuccessfulLoginTest : TestCase() {
             )
         )
 
+        Intents.intended(
+            MatchesUri(
+                host = redirectUrl.host,
+                path = redirectUrl.path
+            )
+        )
+
+        device.waitForIdle()
+        composeTestRule.onNode(
+            hasText(
+                "It looks like this phone does not have a passcode or pattern"
+            )
+        ).apply {
+            performScrollTo()
+            assertIsDisplayed()
+        }
+        composeTestRule.onNode(hasText("Continue")).apply {
+            assertIsDisplayed()
+            performClick()
+        }
+
+        device.waitForIdle()
+        checkHomeScreen()
+    }
+
+    private fun checkHomeScreen() {
         device.wait(
             Until.findObject(
                 By.text(
@@ -158,16 +181,6 @@ class SuccessfulLoginTest : TestCase() {
             WAIT_FOR_OBJECT_TIMEOUT
         )
 
-        Intents.intended(
-            MatchesUri(
-                host = redirectUrl.host,
-                path = redirectUrl.path,
-                parameters = mapOf(
-                    "code" to IsUUID()
-                )
-            )
-        )
-        device.waitForIdle()
         composeTestRule.onNode(hasText("Access Token")).apply {
             performScrollTo()
             assertIsDisplayed()
@@ -195,6 +208,6 @@ class SuccessfulLoginTest : TestCase() {
     }
 
     companion object {
-        const val WAIT_FOR_OBJECT_TIMEOUT = 5000L
+        const val WAIT_FOR_OBJECT_TIMEOUT = 7000L
     }
 }

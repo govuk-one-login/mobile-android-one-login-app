@@ -27,7 +27,7 @@ class SettingsController(
     private val device: UiDevice
 ) {
     fun enableOpenLinksByDefault() {
-        openSettings4()
+        openSettings()
         selectOpenByDefault()
         addLinks()
         device.pressHome()
@@ -41,7 +41,6 @@ class SettingsController(
         context.startActivity(intent)
 
         device.waitForIdle()
-//        takeScreenshot("screenshot1.png")
 
         if (!device.hasObject(By.text("OneLogin"))) {
             throw Error("Not managed to open the settings page for package: ${context.packageName}")
@@ -178,8 +177,6 @@ class SettingsController(
         } catch (e: UiObjectNotFoundException) {
             e.printStackTrace()
         }
-
-//        takeScreenshot("screenshot2.png")
 
         try {
             device.findObject(By.text("Open by default"))?.click()
