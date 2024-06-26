@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,7 +37,7 @@ fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     fromLockScreen: Boolean = false,
     nextScreen: (String) -> Unit = {},
-    openDeveloperPanel: () -> Unit = { }
+    openDeveloperPanel: () -> Unit = {}
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
@@ -57,6 +59,7 @@ fun SplashScreen(
                     .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
                         openDeveloperPanel()
                     }
+                    .testTag(stringResource(id = R.string.splashIconTestTag))
             )
         )
         if (viewModel.showUnlock.value) {

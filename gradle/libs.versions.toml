@@ -44,6 +44,7 @@ sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-g
 googleServices = "4.4.2"
 firebaseBom = "32.7.2"
 classgraph = "4.8.174"
+govuk-ui = "4.4.1"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -64,9 +65,9 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.2.1" }
 mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.10.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
-pages = "uk.gov.android:pages:4.1.0"
+pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.12" }
-theme = "uk.gov.android:theme:4.1.0"
+theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.2.0" }
 authentication = "uk.gov.android:authentication:0.5.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -97,4 +98,3 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom"}
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
-
