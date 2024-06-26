@@ -33,6 +33,7 @@
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
+    <string name="app_signInIconDescription" translatable="false">Gov Uk Icon</string>
 
 
     <!-- Errors-->
