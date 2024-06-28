@@ -25,7 +25,7 @@ class MainNavScreenTest : TestCase() {
         composeTestRule.setContent {
             navController = TestNavHostController(LocalContext.current)
             navController.navigatorProvider.addNavigator(ComposeNavigator())
-            MainNavScreen(navController)
+            MainNavScreen(navController, { })
         }
     }
 
