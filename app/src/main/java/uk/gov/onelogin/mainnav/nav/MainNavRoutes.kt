@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 import uk.gov.onelogin.mainnav.ui.MainNavScreen
+import uk.gov.onelogin.signOut.SignOutRoutes
 
 object MainNavRoutes {
     const val ROOT: String = "/home"
@@ -19,9 +20,13 @@ object MainNavRoutes {
             composable(
                 route = START
             ) {
-                MainNavScreen(openDeveloperPanel = {
-                    navController.navigateToDeveloperPanel()
-                })
+                MainNavScreen(
+                    openSignOutScreen = {
+                        navController.navigate(SignOutRoutes.ROOT)
+                    },
+                    openDeveloperPanel = {
+                        navController.navigateToDeveloperPanel()
+                    })
             }
         }
     }
