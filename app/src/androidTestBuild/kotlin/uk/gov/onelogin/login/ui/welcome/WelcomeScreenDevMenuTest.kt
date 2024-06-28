@@ -30,6 +30,6 @@ class WelcomeScreenDevMenuTest : TestCase() {
 
         composeTestRule.onNode(signInIcon).performClick()
 
-        assertEquals(0, devMenuCLicked)
+        assertEquals(1, devMenuCLicked)
     }
 }

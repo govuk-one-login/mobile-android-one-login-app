@@ -111,6 +111,11 @@ object Filters {
         "**/src/androidTest/java/\$"
     )
 
+    val developer = listOf(
+        "**/src/*/java/**/developer/**",
+        "**/src/*/kotlin/**/developer/**"
+    )
+
     /**
      * [FilenameFilter] for filtering out any source set folders that contain "test", such as
      * `main`.

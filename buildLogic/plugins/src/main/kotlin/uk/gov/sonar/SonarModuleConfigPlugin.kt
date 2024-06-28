@@ -75,7 +75,8 @@ class SonarModuleConfigPlugin : Plugin<Project> {
         listOf(
             Filters.androidInstrumentationTests,
             Filters.sonar,
-            Filters.testSourceSets
+            Filters.testSourceSets,
+            Filters.developer
         ).flatten().joinToString(separator = ",")
 
     private fun sourceFolders(
