@@ -12,5 +12,4 @@ import uk.gov.onelogin.signOut.domain.SignOutUseCaseImpl
 interface SignOutModule {
     @Binds
     fun bindSignOut(useCase: SignOutUseCaseImpl): SignOutUseCase
-
 }

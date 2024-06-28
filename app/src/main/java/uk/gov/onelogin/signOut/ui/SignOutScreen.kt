@@ -22,27 +22,29 @@ fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
-    AlertPage(alertPageParameters = AlertPageParameters(
-        title = R.string.app_signOutConfirmationTitle,
-        annotatedContent = buildAnnotatedString {
-            append(stringResource(id = R.string.app_signOutConfirmationBody1))
-            appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet1))
-            appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet2))
-            appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet3))
-            appendLine()
-            appendBoldLine(stringResource(id = R.string.app_signOutConfirmationBody2))
-            appendLine()
-            append(stringResource(id = R.string.app_signOutConfirmationBody3))
-        },
-        ctaText = R.string.app_signOutAndDeleteAppDataButton,
-        onClose = {
-            goBack()
-        },
-        onPrimary = {
-            viewModel.signOut(context)
-            goToSignIn()
-        }
-    ))
+    AlertPage(
+        alertPageParameters = AlertPageParameters(
+            title = R.string.app_signOutConfirmationTitle,
+            annotatedContent = buildAnnotatedString {
+                append(stringResource(id = R.string.app_signOutConfirmationBody1))
+                appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet1))
+                appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet2))
+                appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet3))
+                appendLine()
+                appendBoldLine(stringResource(id = R.string.app_signOutConfirmationBody2))
+                appendLine()
+                append(stringResource(id = R.string.app_signOutConfirmationBody3))
+            },
+            ctaText = R.string.app_signOutAndDeleteAppDataButton,
+            onClose = {
+                goBack()
+            },
+            onPrimary = {
+                viewModel.signOut(context)
+                goToSignIn()
+            }
+        )
+    )
 }
 
 private fun AnnotatedString.Builder.appendBulletLine(string: String) {

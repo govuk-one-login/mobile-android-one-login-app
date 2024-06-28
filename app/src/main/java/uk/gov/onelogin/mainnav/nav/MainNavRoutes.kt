@@ -26,7 +26,8 @@ object MainNavRoutes {
                     },
                     openDeveloperPanel = {
                         navController.navigateToDeveloperPanel()
-                    })
+                    }
+                )
             }
         }
     }

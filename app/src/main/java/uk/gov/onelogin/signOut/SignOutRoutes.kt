@@ -19,12 +19,14 @@ object SignOutRoutes {
             composable(
                 route = START
             ) {
-                SignOutScreen(goBack = {
-                    navController.popBackStack()
-                },
+                SignOutScreen(
+                    goBack = {
+                        navController.popBackStack()
+                    },
                     goToSignIn = {
                         navController.navigate(LoginRoutes.ROOT)
-                    })
+                    }
+                )
             }
         }
     }

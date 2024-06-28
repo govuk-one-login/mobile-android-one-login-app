@@ -13,7 +13,7 @@ fun interface SignOutUseCase {
 class SignOutUseCaseImpl @Inject constructor(
     private val removeAllSecureStoreData: RemoveAllSecureStoreData,
     private val removeTokenExpiry: RemoveTokenExpiry,
-    private val bioPrefHandler: BiometricPreferenceHandler,
+    private val bioPrefHandler: BiometricPreferenceHandler
 ) : SignOutUseCase {
     override fun invoke(context: FragmentActivity) {
         removeTokenExpiry()
