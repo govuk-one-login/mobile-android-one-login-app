@@ -3,12 +3,15 @@ package uk.gov.onelogin.tokens.usecases
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.tokens.Keys
 
@@ -36,5 +39,22 @@ class RemoveAllSecureStoreDataTest {
             Keys.ID_TOKEN_KEY,
             mockFragmentActivity
         )
+    }
+
+    @Test
+    @Suppress("SwallowedException")
+    fun `removes access token and id token - no exception`() = runTest {
+        whenever(
+            mockSecureStore.delete(
+                Keys.ACCESS_TOKEN_KEY,
+                mockFragmentActivity
+            )
+        ).thenThrow(SecureStorageError(Exception("something went wrong")))
+
+        try {
+            useCase.invoke(mockFragmentActivity)
+        } catch (e: SecureStorageError) {
+            Assertions.fail("No exception should be thrown")
+        }
     }
 }

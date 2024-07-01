@@ -1,6 +1,7 @@
 package uk.gov.onelogin.signOut.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
@@ -23,15 +24,18 @@ class SignOutScreenKtTest : TestCase() {
 
     @BindValue
     val signOutUseCase: SignOutUseCase = mock()
+    private val goBack: () -> Unit = mock()
+    private val signIn: () -> Unit = mock()
 
     private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
-    private val button = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
+    private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
+    private val goBackButton = hasContentDescription("Close")
 
     @Before
     fun setupNavigation() {
         hiltRule.inject()
         composeTestRule.setContent {
-            SignOutScreen()
+            SignOutScreen(goBack, signIn)
         }
     }
 
@@ -42,7 +46,14 @@ class SignOutScreenKtTest : TestCase() {
 
     @Test
     fun verifySignOutButton() {
-        composeTestRule.onNode(button).performClick()
+        composeTestRule.onNode(ctaButton).performClick()
         verify(signOutUseCase).invoke(composeTestRule.activity)
+        verify(signIn).invoke()
+    }
+
+    @Test
+    fun verifyGoBackButton() {
+        composeTestRule.onNode(goBackButton).performClick()
+        verify(goBack).invoke()
     }
 }
