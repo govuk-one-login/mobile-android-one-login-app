@@ -9,6 +9,8 @@ interface BiometricPreferenceHandler {
     fun setBioPref(pref: BiometricPreference)
 
     fun getBioPref(): BiometricPreference?
+
+    fun clear()
 }
 
 class BiometricPreferenceHandlerImpl @Inject constructor(
@@ -30,6 +32,13 @@ class BiometricPreferenceHandlerImpl @Inject constructor(
             BiometricPreference.PASSCODE.name -> BiometricPreference.PASSCODE
             BiometricPreference.NONE.name -> BiometricPreference.NONE
             else -> null
+        }
+    }
+
+    override fun clear() {
+        with(sharedPrefs.edit()) {
+            clear()
+            apply()
         }
     }
 

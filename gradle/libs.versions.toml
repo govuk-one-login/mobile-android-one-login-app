@@ -46,7 +46,7 @@ firebaseBom = "32.7.2"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
-components = "uk.gov.android:components:4.1.0"
+components = "uk.gov.android:components:4.4.1"
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.11.0" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltPlugin" }
@@ -63,9 +63,9 @@ ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "2.
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.2.1" }
 mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.10.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
-pages = "uk.gov.android:pages:4.1.0"
+pages = "uk.gov.android:pages:4.4.1"
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.12" }
-theme = "uk.gov.android:theme:4.1.0"
+theme = "uk.gov.android:theme:4.4.1"
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.2.0" }
 authentication = "uk.gov.android:authentication:0.5.0"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
