@@ -42,6 +42,7 @@ import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
 
 @Composable
+@Preview
 fun ProfileScreen(
     openSignOutScreen: () -> Unit = { },
     viewModel: ProfileScreenViewModel = hiltViewModel()
@@ -165,10 +166,4 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
             color = LightRed
         )
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    ProfileScreen()
 }

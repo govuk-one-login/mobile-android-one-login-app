@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.splash
+package uk.gov.onelogin.login.ui.splash
 
 import android.os.Handler
 import android.os.Looper
@@ -22,7 +22,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.login.ui.splash.SplashScreenViewModel
 import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.mainnav.nav.MainNavRoutes
 

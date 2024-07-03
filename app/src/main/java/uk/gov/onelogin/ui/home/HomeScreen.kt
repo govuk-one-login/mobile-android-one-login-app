@@ -21,6 +21,7 @@ import uk.gov.onelogin.ui.components.EmailHeader
 
 @Suppress("LongMethod")
 @Composable
+@Preview
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     openDeveloperPanel: () -> Unit = { }
@@ -83,10 +84,4 @@ fun HomeScreen(
             }
         }
     )
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    HomeScreen()
 }

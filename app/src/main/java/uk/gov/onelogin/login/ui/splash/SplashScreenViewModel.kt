@@ -1,6 +1,6 @@
 package uk.gov.onelogin.login.ui.splash
 
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -25,7 +25,7 @@ class SplashScreenViewModel @Inject constructor(
 
     private val timesResumed: AtomicInteger = AtomicInteger(0)
     private val _showUnlock = mutableStateOf(false)
-    val showUnlock: MutableState<Boolean> = _showUnlock
+    val showUnlock: State<Boolean> = _showUnlock
 
     private val _next = MutableLiveData<String>()
     val next: LiveData<String> = _next

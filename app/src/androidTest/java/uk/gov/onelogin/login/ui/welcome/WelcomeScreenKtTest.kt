@@ -2,11 +2,13 @@ package uk.gov.onelogin.login.ui.welcome
 
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -60,32 +62,34 @@ class WelcomeScreenKtTest : TestCase() {
 
         navigateToOfflineErrorScreenCalled = false
         shouldTryAgainCalled = false
-
-        composeTestRule.setContent {
-            WelcomeScreen(navigateToOfflineErrorScreen = {
-                navigateToOfflineErrorScreenCalled = true
-            }, shouldTryAgain = {
-                shouldTryAgainCalled = true
-                return@WelcomeScreen true
-            })
-        }
     }
 
     private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
     private val signInSubTitle = hasText(resources.getString(R.string.app_signInBody))
     private val signInButton = hasText(resources.getString(R.string.app_signInButton))
+    private val signInIcon =
+        hasContentDescription(resources.getString(R.string.app_signInIconDescription))
 
     @Test
-    fun verifyStrings() {
+    fun verifyComponents() {
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+
         composeTestRule.onNode(signInTitle).assertIsDisplayed()
         composeTestRule.onNode(signInSubTitle).assertIsDisplayed()
         composeTestRule.onNode(signInButton).assertIsDisplayed()
+        composeTestRule.onNode(signInIcon).assertIsDisplayed()
     }
 
     @Test
     fun opensWebLoginViaCustomTab() {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
+
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
 
         whenWeClickSignIn()
         val authorizeEndpoint = Uri.parse(
@@ -126,7 +130,71 @@ class WelcomeScreenKtTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn() {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+
         whenWeClickSignIn()
+
+        val authorizeEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+            )
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.tokenExchangeEndpoint)
+            )
+        )
+        val redirectUri = Uri.parse(
+            context.resources.getString(
+                R.string.webBaseUrl,
+                context.resources.getString(R.string.webRedirectEndpoint)
+            )
+        )
+        val clientId = context.resources.getString(R.string.stsClientId)
+        val loginSessionConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeEndpoint,
+            clientId = clientId,
+            locale = Locale.EN,
+            redirectUri = redirectUri,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint
+        )
+
+        verify(loginSession).present(
+            any(),
+            eq(loginSessionConfig)
+        )
+    }
+
+    @Test
+    fun shouldTryAgainCalledOnPageLoad() {
+        composeTestRule.setContent {
+            WelcomeScreen(
+                shouldTryAgain = {
+                    shouldTryAgainCalled = true
+                    false
+                }
+            )
+        }
+        assertTrue(shouldTryAgainCalled)
+    }
+
+    @Test
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        composeTestRule.setContent {
+            WelcomeScreen(
+                shouldTryAgain = {
+                    true
+                }
+            )
+        }
+
         val authorizeEndpoint = Uri.parse(
             context.resources.getString(
                 R.string.stsUrl,
@@ -176,6 +244,13 @@ class WelcomeScreenKtTest : TestCase() {
 
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
+        composeTestRule.setContent {
+            WelcomeScreen(
+                navigateToOfflineErrorScreen = {
+                    navigateToOfflineErrorScreenCalled = true
+                }
+            )
+        }
     }
 
     private fun itOpensErrorScreen() = assert(navigateToOfflineErrorScreenCalled)

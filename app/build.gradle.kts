@@ -184,7 +184,8 @@ dependencies {
         libs.junit.jupiter.params,
         libs.junit.jupiter.engine,
         platform(libs.junit.bom),
-        libs.kotlinx.coroutines.test
+        libs.kotlinx.coroutines.test,
+        libs.classgraph
     ).forEach(::testImplementation)
 
     listOf(

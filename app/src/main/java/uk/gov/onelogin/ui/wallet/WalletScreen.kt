@@ -7,12 +7,7 @@ import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
 
 @Composable
+@Preview
 fun WalletScreen() {
     TitledPage(parameters = TitledPageParameters(R.string.app_walletTitle))
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    WalletScreen()
 }
