@@ -35,6 +35,7 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
+    openSignOutScreen: () -> Unit,
     openDeveloperPanel: () -> Unit = { }
 ) {
     val navItems = listOf(
@@ -96,7 +97,7 @@ fun MainNavScreen(
                 WalletScreen()
             }
             composable(BottomNavDestination.Profile.key) {
-                ProfileScreen()
+                ProfileScreen(openSignOutScreen = openSignOutScreen)
             }
         }
     }

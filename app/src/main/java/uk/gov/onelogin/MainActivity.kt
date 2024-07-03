@@ -15,6 +15,7 @@ import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.LoginRoutes.loginFlowRoutes
 import uk.gov.onelogin.mainnav.nav.MainNavRoutes.mainNavRoutesFlow
+import uk.gov.onelogin.signOut.SignOutRoutes.signOutRoute
 import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
 
 @AndroidEntryPoint
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
                     loginFlowRoutes(navController)
                     mainNavRoutesFlow(navController)
                     genericErrorRoute(navController)
+                    signOutRoute(navController)
                     developerFlowRoutes(navController)
                 }
             }

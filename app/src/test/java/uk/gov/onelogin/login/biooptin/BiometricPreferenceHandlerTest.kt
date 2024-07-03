@@ -51,6 +51,14 @@ class BiometricPreferenceHandlerTest {
         assertEquals(sharedPrefReturn, bioPref)
     }
 
+    @Test
+    fun `check clear preference`() {
+        bioPrefHandler.clear()
+
+        verify(mockEditor).clear()
+        verify(mockEditor).apply()
+    }
+
     companion object {
         @JvmStatic
         fun getBioPrefArgs(): Stream<Arguments> = Stream.of(
