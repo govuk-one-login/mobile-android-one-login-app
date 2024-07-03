@@ -26,12 +26,14 @@ class HomeScreenViewModelTest : TestCase() {
     private val saveTokenExpiry: SaveTokenExpiry = mock()
     private val getEmail: GetEmail = mock()
 
-    private val viewModel = HomeScreenViewModel(
-        tokenRepository,
-        saveToSecureStore,
-        saveTokenExpiry,
-        getEmail
-    )
+    private val viewModel by lazy {
+        HomeScreenViewModel(
+            tokenRepository,
+            saveToSecureStore,
+            saveTokenExpiry,
+            getEmail
+        )
+    }
 
     @Test
     fun saveTokenWhenTokensNotNull() {
