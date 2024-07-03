@@ -9,6 +9,7 @@ import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
+@Preview
 fun PasscodeInfoScreen(
     onPrimary: () -> Unit = {}
 ) {
@@ -30,10 +31,4 @@ fun PasscodeInfoScreen(
             )
         )
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    PasscodeInfoScreen()
 }

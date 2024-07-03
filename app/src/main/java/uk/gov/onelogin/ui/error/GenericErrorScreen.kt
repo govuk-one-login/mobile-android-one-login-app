@@ -16,6 +16,7 @@ import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
+@Preview
 fun GenericErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         ErrorPage(
@@ -45,10 +46,4 @@ fun GenericErrorScreen(onClick: () -> Unit = { }) {
             )
         )
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    GenericErrorScreen()
 }

@@ -3,6 +3,7 @@ package uk.gov.onelogin.features
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfoList
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
@@ -48,6 +49,37 @@ class AvailableFeaturesTest {
             "There are available feature flags that weren't found by the classgraph library!: " +
                 distinctAvailableFeatures
         }
+    }
+
+    @Test
+    fun `available features contains included feature`() {
+        val featureFlagList = getFeatureFlagImplementations()
+
+        assertTrue(availableFeatures.contains(StsFeatureFlag.STS_ENDPOINT))
+    }
+
+    @Test
+    fun `adding feature flag`() {
+        var availableFeatures = AvailableFeatures(mutableSetOf())
+        assertFalse(availableFeatures.contains(StsFeatureFlag.STS_ENDPOINT))
+
+        availableFeatures = availableFeatures.plus(listOf(StsFeatureFlag.STS_ENDPOINT))
+        assertTrue(availableFeatures.contains(StsFeatureFlag.STS_ENDPOINT))
+    }
+
+    @Test
+    fun `to String`() {
+        assertEquals("AvailableFeatures[STS_ENDPOINT]", availableFeatures.toString())
+    }
+
+    @Test
+    fun equals() {
+        val currentAvailableFeatures = AvailableFeatures()
+        val emptyAvailableFeatures = AvailableFeatures(mutableSetOf())
+
+        assertTrue(availableFeatures.equals(currentAvailableFeatures))
+        assertFalse(availableFeatures.equals(emptyAvailableFeatures))
+        assertFalse(availableFeatures.equals("not an AvailableFeatures object"))
     }
 
     private fun getFeatureFlagImplementations(): ClassInfoList {

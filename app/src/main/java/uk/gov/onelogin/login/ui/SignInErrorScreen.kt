@@ -16,6 +16,7 @@ import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
+@Preview
 fun SignInErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         ErrorPage(

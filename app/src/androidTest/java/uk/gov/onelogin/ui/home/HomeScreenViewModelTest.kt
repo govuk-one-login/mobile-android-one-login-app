@@ -3,6 +3,7 @@ package uk.gov.onelogin.ui.home
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -81,5 +82,32 @@ class HomeScreenViewModelTest : TestCase() {
             verify(saveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY), any())
             verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
+    }
+
+    @Test
+    fun noSaveTokenWhenTokensIsNull() {
+        runBlocking {
+            whenever(tokenRepository.getTokenResponse()).thenReturn(null)
+
+            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+
+            verify(saveToSecureStore, times(0)).invoke(any(), any(), any())
+            verify(saveToSecureStore, times(0)).invoke(any(), any(), any())
+            verify(saveTokenExpiry, times(0)).invoke(any())
+        }
+    }
+
+    @Test
+    fun emailIsReturned() {
+        whenever(getEmail()).thenReturn("test")
+
+        assertEquals("test", viewModel.email)
+    }
+
+    @Test
+    fun emailIsEmptyWhenNoEmailReturned() {
+        whenever(getEmail()).thenReturn(null)
+
+        assertEquals("", viewModel.email)
     }
 }

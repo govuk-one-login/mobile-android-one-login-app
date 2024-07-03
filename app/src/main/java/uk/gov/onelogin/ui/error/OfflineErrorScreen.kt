@@ -16,6 +16,7 @@ import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
+@Preview
 fun OfflineErrorScreen(onRetryClick: () -> Unit = { }) {
     GdsTheme {
         ErrorPage(
@@ -43,10 +44,4 @@ fun OfflineErrorScreen(onRetryClick: () -> Unit = { }) {
             )
         )
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    OfflineErrorScreen()
 }
