@@ -23,6 +23,7 @@ import androidx.test.uiautomator.Until
 import java.io.File
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.MainActivity
 
@@ -352,6 +353,18 @@ class PhoneController(
         )
 
         return element != null && element.isEnabled
+    }
+
+    fun assertElementExists(
+        actionTimeoutOverride: Long = phoneActionTimeout,
+        selector: BySelector
+    ) {
+        val element = device.wait(
+            Until.findObject(selector),
+            actionTimeoutOverride
+        )
+
+        assertTrue(element != null && element.isEnabled)
     }
 
     fun pressKeyCode(keyCode: Int) {

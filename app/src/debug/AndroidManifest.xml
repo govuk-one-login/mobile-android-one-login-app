@@ -7,5 +7,10 @@
             android:exported="true"
             android:permission="">
         </activity>
+        <activity
+            android:name="uk.gov.onelogin.TestActivityForResult"
+            android:exported="false"
+            android:permission="">
+        </activity>
     </application>
 </manifest>
