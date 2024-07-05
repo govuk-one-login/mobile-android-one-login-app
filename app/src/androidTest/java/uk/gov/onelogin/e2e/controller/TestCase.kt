@@ -24,7 +24,7 @@ open class TestCase {
     protected val resources: Resources = context.resources
 
     @Before
-    fun setScreenshotname() {
+    fun setScreenshotName() {
         screenshotName = "${testNameRule.methodName}_${resources.configuration.locales.get(0)}"
     }
 }
