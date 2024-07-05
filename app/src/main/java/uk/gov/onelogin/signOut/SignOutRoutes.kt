@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.signOut.ui.SignOutScreen
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 object SignOutRoutes {
     const val ROOT: String = "/signOut"
@@ -25,6 +26,9 @@ object SignOutRoutes {
                     },
                     goToSignIn = {
                         navController.navigate(LoginRoutes.ROOT)
+                    },
+                    goToSignOutError = {
+                        navController.navigate(ErrorRoutes.SIGN_OUT)
                     }
                 )
             }

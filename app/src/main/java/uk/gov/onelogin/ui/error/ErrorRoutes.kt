@@ -10,6 +10,7 @@ object ErrorRoutes {
     const val GENERIC: String = "$ROOT/generic"
     const val OFFLINE: String = "$ROOT/offline"
     const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
+    const val SIGN_OUT: String = "$ROOT/signOut"
 
     fun NavGraphBuilder.genericErrorRoute(navController: NavHostController) {
         navigation(
@@ -20,6 +21,11 @@ object ErrorRoutes {
                 route = GENERIC
             ) {
                 GenericErrorScreen { navController.popBackStack() }
+            }
+            composable(
+                route = SIGN_OUT
+            ) {
+                SignOutErrorScreen()
             }
             composable(
                 route = OFFLINE

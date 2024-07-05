@@ -14,11 +14,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
 import uk.gov.android.ui.pages.AlertPageParameters
+import uk.gov.onelogin.signOut.domain.SignOutError
 
 @Composable
 fun SignOutScreen(
     goBack: () -> Unit = { },
     goToSignIn: () -> Unit = { },
+    goToSignOutError: () -> Unit = { },
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
@@ -40,8 +42,12 @@ fun SignOutScreen(
                 goBack()
             },
             onPrimary = {
-                viewModel.signOut(context)
-                goToSignIn()
+                try {
+                    viewModel.signOut(context)
+                    goToSignIn()
+                } catch (e: SignOutError) {
+                    goToSignOutError()
+                }
             }
         )
     )

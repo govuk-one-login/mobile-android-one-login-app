@@ -15,9 +15,16 @@ class SignOutUseCaseImpl @Inject constructor(
     private val removeTokenExpiry: RemoveTokenExpiry,
     private val bioPrefHandler: BiometricPreferenceHandler
 ) : SignOutUseCase {
+    @Throws(SignOutError::class)
     override fun invoke(context: FragmentActivity) {
-        removeTokenExpiry()
-        removeAllSecureStoreData(context)
-        bioPrefHandler.clear()
+        try {
+            removeTokenExpiry()
+            removeAllSecureStoreData(context)
+            bioPrefHandler.clear()
+        } catch (e: Exception) {
+            throw SignOutError(e)
+        }
     }
 }
+
+data class SignOutError(val error: Exception) : Error()
