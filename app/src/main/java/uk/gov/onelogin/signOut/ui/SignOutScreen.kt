@@ -17,6 +17,7 @@ import uk.gov.android.ui.pages.AlertPageParameters
 import uk.gov.onelogin.signOut.domain.SignOutError
 
 @Composable
+@Suppress("SwallowedException")
 fun SignOutScreen(
     goBack: () -> Unit = { },
     goToSignIn: () -> Unit = { },

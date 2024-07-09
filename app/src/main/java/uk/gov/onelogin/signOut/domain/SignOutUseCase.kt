@@ -10,6 +10,7 @@ fun interface SignOutUseCase {
     operator fun invoke(context: FragmentActivity)
 }
 
+@Suppress("TooGenericExceptionCaught")
 class SignOutUseCaseImpl @Inject constructor(
     private val removeAllSecureStoreData: RemoveAllSecureStoreData,
     private val removeTokenExpiry: RemoveTokenExpiry,
@@ -21,10 +22,10 @@ class SignOutUseCaseImpl @Inject constructor(
             removeTokenExpiry()
             removeAllSecureStoreData(context)
             bioPrefHandler.clear()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             throw SignOutError(e)
         }
     }
 }
 
-data class SignOutError(val error: Exception) : Error()
+data class SignOutError(val error: Throwable) : Error()

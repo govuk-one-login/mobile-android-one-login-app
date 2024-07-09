@@ -19,7 +19,7 @@ import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
 @Preview
-fun SignOutErrorScreen(closeApp: () -> Unit = { }) {
+fun SignOutErrorScreen() {
     val context = LocalContext.current as FragmentActivity
     GdsTheme {
         ErrorPage(
@@ -52,4 +52,3 @@ fun SignOutErrorScreen(closeApp: () -> Unit = { }) {
         )
     }
 }
-
