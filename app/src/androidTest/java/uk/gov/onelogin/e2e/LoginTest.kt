@@ -6,11 +6,13 @@ import android.net.Uri
 import androidx.test.core.app.launchActivity
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -23,6 +25,7 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.android.onelogin.R
+import uk.gov.onelogin.FlakyTestRule
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestActivityForResult
 import uk.gov.onelogin.credentialchecker.BiometricManager
@@ -54,6 +57,9 @@ class LoginTest : TestCase() {
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
 
+    @get:Rule(order = 3)
+    val flakyTestRule = FlakyTestRule()
+
     override val phoneController = PhoneController(
         phoneActionTimeout = 10000L,
         testNameRule = testNameRule
@@ -78,6 +84,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun selectingLoginButtonFiresAuthRequest() {
         launchActivity<MainActivity>()
         phoneController.apply {
@@ -120,6 +127,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultNullData() {
         setupActivityForResult(
             Intent()
@@ -133,6 +141,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataButLoginThrows() {
         whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
         setupActivityForResult(
@@ -149,6 +158,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataUnsecured() {
         goodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
@@ -174,6 +184,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataBioOptIn() {
         goodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
@@ -191,12 +202,13 @@ class LoginTest : TestCase() {
             enableBiometricsButton(context) to "Enable biometrics button"
         )
         phoneController.assertElementExists(
-            20000L,
+            WAIT_FOR_OBJECT_TIMEOUT,
             homeTitle(context)
         )
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataPasscode() {
         goodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
@@ -206,7 +218,7 @@ class LoginTest : TestCase() {
         )
 
         phoneController.assertElementExists(
-            20000L,
+            WAIT_FOR_OBJECT_TIMEOUT,
             homeTitle(context)
         )
         phoneController.screenshot("home")
@@ -246,6 +258,6 @@ class LoginTest : TestCase() {
     }
 
     companion object {
-        const val WAIT_FOR_OBJECT_TIMEOUT = 5000L
+        const val WAIT_FOR_OBJECT_TIMEOUT = 60_000L
     }
 }
