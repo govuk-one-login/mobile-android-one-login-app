@@ -4,9 +4,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 
@@ -16,14 +17,12 @@ class SignInErrorScreenTest : TestCase() {
     private val body = hasText(resources.getString(R.string.app_signInErrorBody))
     private val button = hasText(resources.getString(R.string.app_closeButton))
 
-    private var buttonClick = 0
+    private val onClick: () -> Unit = mock()
 
     @Before
     fun setupNavigation() {
         composeTestRule.setContent {
-            SignInErrorScreen(
-                onClick = { buttonClick++ }
-            )
+            SignInErrorScreen(onClick)
         }
     }
 
@@ -37,7 +36,6 @@ class SignInErrorScreenTest : TestCase() {
     @Test
     fun checkButtonClick() {
         composeTestRule.onNode(button).performClick()
-
-        assertEquals(1, buttonClick)
+        verify(onClick).invoke()
     }
 }
