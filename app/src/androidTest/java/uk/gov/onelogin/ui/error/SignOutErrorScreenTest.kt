@@ -7,10 +7,9 @@ import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.login.ui.SignInErrorScreen
 
 @HiltAndroidTest
-class SignInErrorScreenTest : TestCase() {
+class SignOutErrorScreenTest : TestCase() {
 
     private val errorTitle = hasText(resources.getString(R.string.app_signOutErrorTitle))
     private val errorBody = hasText(resources.getString(R.string.app_signOutErrorBody))
@@ -19,12 +18,12 @@ class SignInErrorScreenTest : TestCase() {
     @Before
     fun setUp() {
         composeTestRule.setContent {
-            SignInErrorScreen()
+            SignOutErrorScreen()
         }
     }
 
     @Test
-    fun signInErrorScreen() {
+    fun signOutErrorScreen() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).assertIsDisplayed()
