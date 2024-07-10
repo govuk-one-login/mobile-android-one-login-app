@@ -45,9 +45,3 @@ fun SignInErrorScreen(onClick: () -> Unit = { }) {
         )
     }
 }
-
-@Composable
-@Preview
-private fun Preview() {
-    SignInErrorScreen()
-}

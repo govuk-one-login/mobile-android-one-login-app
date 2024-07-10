@@ -1,9 +1,11 @@
 package uk.gov.onelogin.tokens.usecases
 
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -12,6 +14,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.tokens.Keys
 
@@ -42,8 +45,7 @@ class RemoveAllSecureStoreDataTest {
     }
 
     @Test
-    @Suppress("SwallowedException")
-    fun `removes access token and id token - no exception`() = runTest {
+    fun `secure store exception is propagated up`() = runTest {
         whenever(
             mockSecureStore.delete(
                 Keys.ACCESS_TOKEN_KEY,
@@ -51,10 +53,10 @@ class RemoveAllSecureStoreDataTest {
             )
         ).thenThrow(SecureStorageError(Exception("something went wrong")))
 
-        try {
+        val exception: SecureStorageError = assertThrows(SecureStorageError::class.java) {
             useCase.invoke(mockFragmentActivity)
-        } catch (e: SecureStorageError) {
-            Assertions.fail("No exception should be thrown")
         }
+        assertEquals(SecureStoreErrorType.GENERAL, exception.type)
+        assertTrue(exception.message!!.contains("something went wrong"))
     }
 }

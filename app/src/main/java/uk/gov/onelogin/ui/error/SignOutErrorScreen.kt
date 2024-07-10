@@ -2,9 +2,7 @@ package uk.gov.onelogin.ui.error
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.fragment.app.FragmentActivity
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.buttons.ButtonParameters
@@ -19,16 +17,13 @@ import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
 @Preview
-fun SignOutErrorScreen() {
-    val context = LocalContext.current as FragmentActivity
+fun SignOutErrorScreen(onExitAppClicked: () -> Unit = { }) {
     GdsTheme {
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        context.finishAndRemoveTask()
-                    },
+                    onClick = onExitAppClicked,
                     text = R.string.app_exitButton
                 ),
                 informationParameters = InformationParameters(

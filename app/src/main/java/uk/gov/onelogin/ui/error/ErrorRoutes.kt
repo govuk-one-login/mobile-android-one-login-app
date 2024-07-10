@@ -1,5 +1,7 @@
 package uk.gov.onelogin.ui.error
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -25,7 +27,10 @@ object ErrorRoutes {
             composable(
                 route = SIGN_OUT
             ) {
-                SignOutErrorScreen()
+                val context = LocalContext.current as FragmentActivity
+                SignOutErrorScreen {
+                    context.finishAndRemoveTask()
+                }
             }
             composable(
                 route = OFFLINE

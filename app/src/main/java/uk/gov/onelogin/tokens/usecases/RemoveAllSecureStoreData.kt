@@ -33,6 +33,7 @@ class RemoveAllSecureStoreDataImpl @Inject constructor(
             )
         } catch (e: SecureStorageError) {
             Log.e(this::class.simpleName, e.message, e)
+            throw e
         }
     }
 }

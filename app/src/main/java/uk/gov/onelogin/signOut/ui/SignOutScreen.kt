@@ -8,7 +8,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
@@ -68,10 +67,4 @@ private fun AnnotatedString.Builder.appendBoldLine(string: String) {
         append(string)
         appendLine()
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    SignOutScreen()
 }
