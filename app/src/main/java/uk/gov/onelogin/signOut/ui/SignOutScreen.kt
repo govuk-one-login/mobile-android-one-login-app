@@ -18,9 +18,9 @@ import uk.gov.onelogin.signOut.domain.SignOutError
 @Composable
 @Suppress("SwallowedException")
 fun SignOutScreen(
-    goBack: () -> Unit = { },
-    goToSignIn: () -> Unit = { },
-    goToSignOutError: () -> Unit = { },
+    goBack: () -> Unit,
+    goToSignIn: () -> Unit,
+    goToSignOutError: () -> Unit,
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
