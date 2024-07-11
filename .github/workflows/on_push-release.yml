@@ -13,7 +13,7 @@ concurrency:
 jobs:
   prepareForRelease:
     name: Verify code base when pushed
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
