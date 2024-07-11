@@ -1,5 +1,6 @@
 package uk.gov.onelogin.signOut.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -16,7 +17,6 @@ import uk.gov.android.ui.pages.AlertPageParameters
 import uk.gov.onelogin.signOut.domain.SignOutError
 
 @Composable
-@Suppress("SwallowedException")
 fun SignOutScreen(
     goBack: () -> Unit,
     goToSignIn: () -> Unit,
@@ -46,6 +46,7 @@ fun SignOutScreen(
                     viewModel.signOut(context)
                     goToSignIn()
                 } catch (e: SignOutError) {
+                    Log.e("SignOutScreen", e.message, e)
                     goToSignOutError()
                 }
             }
