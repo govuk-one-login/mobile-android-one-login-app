@@ -49,9 +49,18 @@ class GetEmailImplTest {
     }
 
     @Test
+    fun missingTokenScenario() {
+        // Given token is null
+        whenever(tokenRepository.getTokenResponse()).thenReturn(null)
+
+        val emailResponse = sut.invoke()
+        assertEquals(null, emailResponse)
+    }
+
+    @Test
     fun missingIdTokenScenario() {
         // Given id token is null
-        whenever(tokenRepository.getTokenResponse()).thenReturn(null)
+        whenever(tokenResponse.idToken).thenReturn(null)
 
         val emailResponse = sut.invoke()
         assertEquals(null, emailResponse)

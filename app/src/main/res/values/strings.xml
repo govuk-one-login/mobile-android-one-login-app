@@ -55,6 +55,11 @@
     <string name="app_networkErrorTitle">You appear to be offline</string>
     <string name="app_networkErrorBody">GOV.UK One Login is not available offline. Reconnect to the internet and try again</string>
 
+    <!-- Errors Sign Out-->
+    <string name="app_signOutErrorTitle">There was a problem signing you out</string>
+    <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
+    <string name="app_exitButton">Exit</string>
+
     <!-- Passcode info -->
     <string name="app_noPasscodePatternSetupTitle">It looks like this phone does not have a passcode or pattern</string>
     <string name="app_noPasscodeSetupBody1">Setting a passcode on your phone adds further security. You can then sign into the app this way instead of with your email address and password.</string>

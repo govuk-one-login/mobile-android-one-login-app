@@ -1,5 +1,6 @@
 package uk.gov.onelogin.signOut.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -8,17 +9,18 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
 import uk.gov.android.ui.pages.AlertPageParameters
+import uk.gov.onelogin.signOut.domain.SignOutError
 
 @Composable
 fun SignOutScreen(
-    goBack: () -> Unit = { },
-    goToSignIn: () -> Unit = { },
+    goBack: () -> Unit,
+    goToSignIn: () -> Unit,
+    goToSignOutError: () -> Unit,
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
@@ -40,8 +42,13 @@ fun SignOutScreen(
                 goBack()
             },
             onPrimary = {
-                viewModel.signOut(context)
-                goToSignIn()
+                try {
+                    viewModel.signOut(context)
+                    goToSignIn()
+                } catch (e: SignOutError) {
+                    Log.e("SignOutScreen", e.message, e)
+                    goToSignOutError()
+                }
             }
         )
     )
@@ -61,10 +68,4 @@ private fun AnnotatedString.Builder.appendBoldLine(string: String) {
         append(string)
         appendLine()
     }
-}
-
-@Composable
-@Preview
-private fun Preview() {
-    SignOutScreen()
 }

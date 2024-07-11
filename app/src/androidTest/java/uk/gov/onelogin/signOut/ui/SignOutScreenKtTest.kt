@@ -10,10 +10,13 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.signOut.SignOutModule
+import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 
 @HiltAndroidTest
@@ -26,6 +29,7 @@ class SignOutScreenKtTest : TestCase() {
     val signOutUseCase: SignOutUseCase = mock()
     private val goBack: () -> Unit = mock()
     private val signIn: () -> Unit = mock()
+    private val goToSignOutError: () -> Unit = mock()
 
     private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
     private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
@@ -35,7 +39,7 @@ class SignOutScreenKtTest : TestCase() {
     fun setupNavigation() {
         hiltRule.inject()
         composeTestRule.setContent {
-            SignOutScreen(goBack, signIn)
+            SignOutScreen(goBack, signIn, goToSignOutError)
         }
     }
 
@@ -45,10 +49,20 @@ class SignOutScreenKtTest : TestCase() {
     }
 
     @Test
-    fun verifySignOutButton() {
+    fun verifySignOutButtonSucceeds() {
         composeTestRule.onNode(ctaButton).performClick()
         verify(signOutUseCase).invoke(composeTestRule.activity)
         verify(signIn).invoke()
+    }
+
+    @Test
+    fun verifySignOutButtonFails() {
+        whenever(signOutUseCase.invoke(composeTestRule.activity))
+            .thenThrow(SignOutError(Exception("something went wrong")))
+        composeTestRule.onNode(ctaButton).performClick()
+        verify(signOutUseCase).invoke(composeTestRule.activity)
+        verify(signIn, never()).invoke()
+        verify(goToSignOutError).invoke()
     }
 
     @Test

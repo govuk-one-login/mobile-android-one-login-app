@@ -1,8 +1,7 @@
-package uk.gov.onelogin.login.ui
+package uk.gov.onelogin.ui.error
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.buttons.ButtonParameters
@@ -16,22 +15,23 @@ import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
-@Preview
-fun SignInErrorScreen(onClick: () -> Unit = { }) {
+fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
     GdsTheme {
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = onClick,
-                    text = R.string.app_closeButton
+                    onClick = onExitAppClicked,
+                    text = R.string.app_exitButton
                 ),
                 informationParameters = InformationParameters(
                     contentParameters = ContentParameters(
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_signInErrorTitle,
-                                text = arrayOf(R.string.app_signInErrorBody).toIntArray()
+                                subTitle = R.string.app_signOutErrorTitle,
+                                text = arrayOf(
+                                    R.string.app_signOutErrorBody
+                                ).toIntArray()
                             )
                         ),
                         headingSize = HeadingSize.H1()
