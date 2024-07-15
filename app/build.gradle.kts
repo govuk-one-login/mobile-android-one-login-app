@@ -152,7 +152,6 @@ dependencies {
         libs.components,
         libs.gson,
         libs.hilt.android,
-        libs.integrity,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.navigation.compose,
