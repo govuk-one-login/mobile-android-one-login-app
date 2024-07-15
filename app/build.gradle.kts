@@ -163,7 +163,8 @@ dependencies {
         libs.network,
         libs.jose4j,
         projects.features,
-        platform(libs.firebase.bom)
+        platform(libs.firebase.bom),
+        libs.firebase.appcheck
     ).forEach(::implementation)
 
     listOf(
