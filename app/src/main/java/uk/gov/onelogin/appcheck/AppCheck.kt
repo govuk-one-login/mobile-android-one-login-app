@@ -1,10 +1,12 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
+import com.google.firebase.appcheck.AppCheckProviderFactory
 
 interface AppCheck {
     fun init(
-        context: Context
+        context: Context,
+        appCheckFactory: AppCheckProviderFactory
     )
 
     fun getAppCheckToken(

@@ -1,6 +1,7 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
+import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +16,9 @@ object AppCheckModule {
         @ApplicationContext
         context: Context
     ): AppCheck = FirebaseAppCheck().also {
-        it.init(context)
+        it.init(
+            context,
+            DebugAppCheckProviderFactory.getInstance()
+        )
     }
 }
