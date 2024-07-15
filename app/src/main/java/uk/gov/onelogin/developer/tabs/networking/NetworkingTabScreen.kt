@@ -47,7 +47,18 @@ fun NetworkingTabScreen(
             }
         }
         Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.appCheckToken.value)
+            Text(text = viewModel.tokenResponse.value)
+        }
+        Row {
+            Button(modifier = Modifier.padding(start = smallPadding),
+                onClick = {
+                    viewModel.makeNetworkCall()
+                }) {
+                Text(text = "Make Network Call")
+            }
+        }
+        Row(modifier = Modifier.padding(all = smallPadding)) {
+            Text(text = viewModel.networkResponse.value)
         }
     }
 }

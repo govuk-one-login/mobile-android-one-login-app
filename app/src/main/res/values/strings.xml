@@ -95,6 +95,6 @@
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
     <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
 
-    <string name="assertionUrl" translatable="false">https://app-integrity-spike.mobile.build.account.gov.uk%1$s</string>
+    <string name="assertionUrl" translatable="false">https://app-integrity-spike.mobile.dev.account.gov.uk%1$s</string>
 
 </resources>

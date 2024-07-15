@@ -3,23 +3,34 @@ package uk.gov.onelogin.developer.tabs.networking
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 import uk.gov.onelogin.appcheck.AppCheck
+import uk.gov.onelogin.appcheck.usecase.AssertionApiCall
 
 @HiltViewModel
 class NetworkingViewModel @Inject constructor(
-    val appCheck: AppCheck
+    val appCheck: AppCheck,
+    val assertionApiCall: AssertionApiCall
 ) : ViewModel() {
-    val appCheckToken: MutableState<String> = mutableStateOf("")
+    val tokenResponse: MutableState<String> = mutableStateOf("")
+    val networkResponse: MutableState<String> = mutableStateOf("")
     fun getToken() {
         appCheck.getAppCheckToken(
             onSuccess = { token ->
-                appCheckToken.value = token
+                this.tokenResponse.value = token
             },
             onFailure = { error ->
-                appCheckToken.value = "error: " + error.localizedMessage
+                tokenResponse.value = "error: " + error.localizedMessage
             }
         )
+    }
+
+    fun makeNetworkCall() {
+        viewModelScope.launch {
+            networkResponse.value = assertionApiCall(tokenResponse.value)
+        }
     }
 }
