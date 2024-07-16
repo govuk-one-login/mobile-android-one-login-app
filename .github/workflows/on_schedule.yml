@@ -12,7 +12,7 @@ concurrency:
 jobs:
   onScheduleJob:
     name: Verify code base when pushed
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
