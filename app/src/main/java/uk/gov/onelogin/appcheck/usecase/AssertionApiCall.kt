@@ -20,7 +20,7 @@ class AssertionApiCallImpl @Inject constructor(
     override suspend fun invoke(firebaseToken: String): String {
         val endpoint = context.getString(R.string.assertionEndpoint)
         val request = ApiRequest.Get(
-            url = context.getString(R.string.assertionUrl, endpoint),
+            url = context.getString(R.string.assertionUrl, endpoint) + "?device=android",
             headers = listOf(
                 "X-Firebase-Token" to firebaseToken
             )

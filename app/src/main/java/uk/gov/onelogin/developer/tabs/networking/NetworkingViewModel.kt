@@ -12,14 +12,17 @@ import uk.gov.onelogin.appcheck.usecase.AssertionApiCall
 
 @HiltViewModel
 class NetworkingViewModel @Inject constructor(
-    val appCheck: AppCheck,
-    val assertionApiCall: AssertionApiCall
+    private val appCheck: AppCheck,
+    private val assertionApiCall: AssertionApiCall
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")
     val networkResponse: MutableState<String> = mutableStateOf("")
+
     fun getToken() {
+        tokenResponse.value = "Loading..."
         appCheck.getAppCheckToken(
             onSuccess = { token ->
+                println(token)
                 this.tokenResponse.value = token
             },
             onFailure = { error ->
@@ -30,6 +33,7 @@ class NetworkingViewModel @Inject constructor(
 
     fun makeNetworkCall() {
         viewModelScope.launch {
+            networkResponse.value = "Loading..."
             networkResponse.value = assertionApiCall(tokenResponse.value)
         }
     }

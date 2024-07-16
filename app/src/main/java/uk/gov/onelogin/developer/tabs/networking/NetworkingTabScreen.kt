@@ -30,19 +30,25 @@ fun NetworkingTabScreen(
         verticalArrangement = Arrangement.Top
     ) {
         Row {
-            Text(text = buildAnnotatedString {
-                appendBold("App Check")
-            })
+            Text(
+                text = buildAnnotatedString {
+                    appendBold("App Check")
+                }
+            )
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = buildAnnotatedString {
-                appendBold("Token: ")
-            })
-            Button(modifier = Modifier.padding(start = smallPadding),
+            Text(
+                text = buildAnnotatedString {
+                    appendBold("Token: ")
+                }
+            )
+            Button(
+                modifier = Modifier.padding(start = smallPadding),
                 onClick = {
                     viewModel.getToken()
-                }) {
+                }
+            ) {
                 Text(text = "Get Token")
             }
         }
@@ -50,10 +56,12 @@ fun NetworkingTabScreen(
             Text(text = viewModel.tokenResponse.value)
         }
         Row {
-            Button(modifier = Modifier.padding(start = smallPadding),
+            Button(
+                modifier = Modifier.padding(start = smallPadding),
                 onClick = {
                     viewModel.makeNetworkCall()
-                }) {
+                }
+            ) {
                 Text(text = "Make Network Call")
             }
         }
