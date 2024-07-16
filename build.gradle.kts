@@ -53,6 +53,9 @@ buildscript {
     val versionName: String by rootProject.extra(
         getVersionName()
     )
+    val debugAppCheckToken: String by rootProject.extra(
+        localProperties.getProperty("firebaseAppCheckDebugSecret") ?: ""
+    )
 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.

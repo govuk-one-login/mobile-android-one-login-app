@@ -1,3 +1,4 @@
+import com.android.build.api.variant.BuildConfigField
 import java.util.Locale
 
 plugins {
@@ -118,6 +119,20 @@ android {
         sourceSet.java.srcDir("src/e2eTestBulid/java")
     }
 }
+
+androidComponents {
+    onVariants {
+        it.buildConfigFields.put(
+            "AppCheckDebugSecret",
+            BuildConfigField(
+                "String",
+                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
+                "debug token"
+            )
+        )
+    }
+}
+
 dependencies {
     listOf(
         libs.androidx.compose.ui.junit4,
@@ -163,7 +178,9 @@ dependencies {
         libs.network,
         libs.jose4j,
         projects.features,
-        platform(libs.firebase.bom)
+        platform(libs.firebase.bom),
+        libs.firebase.appcheck,
+        libs.firebase.appcheck.debug
     ).forEach(::implementation)
 
     listOf(

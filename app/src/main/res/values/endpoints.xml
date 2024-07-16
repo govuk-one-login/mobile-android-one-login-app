@@ -6,4 +6,5 @@
     <string name="helloWorldEndpoint" translatable="false">/hello-world</string>
     <string name="tokenExchangeEndpoint" translatable="false">/token</string>
     <string name="jwksEndpoint" translatable="false">/.well-known/jwks.json</string>
+    <string name="assertionEndpoint" translatable="false">/assertion</string>
 </resources>
