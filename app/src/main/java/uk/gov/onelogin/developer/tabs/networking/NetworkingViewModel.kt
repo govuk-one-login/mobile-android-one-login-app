@@ -22,7 +22,6 @@ class NetworkingViewModel @Inject constructor(
         tokenResponse.value = "Loading..."
         appCheck.getAppCheckToken(
             onSuccess = { token ->
-                println(token)
                 this.tokenResponse.value = token
             },
             onFailure = { error ->
