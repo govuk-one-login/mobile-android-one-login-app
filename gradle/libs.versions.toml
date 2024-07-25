@@ -11,6 +11,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 org-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube-gradle" }
+firebase-crashalytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashalytics" }
 
 [versions]
 jose4j = "0.9.6"
@@ -45,6 +46,8 @@ googleServices = "4.4.2"
 firebaseBom = "33.1.2"
 classgraph = "4.8.174"
 govuk-ui = "4.4.1"
+wallet = "1.15.0"
+firebaseCrashalytics = "3.0.2"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -100,3 +103,5 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 firebase-appcheck = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+
+wallet-sdk = { group = "uk.gov.android.wallet", name = "wallet_sdk", version.ref = "wallet" }

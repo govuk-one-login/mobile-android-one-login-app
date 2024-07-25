@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashalytics)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.app-config")
@@ -180,7 +181,8 @@ dependencies {
         projects.features,
         platform(libs.firebase.bom),
         libs.firebase.appcheck,
-        libs.firebase.appcheck.debug
+        libs.firebase.appcheck.debug,
+        libs.wallet.sdk
     ).forEach(::implementation)
 
     listOf(

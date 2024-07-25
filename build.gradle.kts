@@ -67,6 +67,7 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashalytics) apply false
     id("uk.gov.sonar.root-config")
 }
 
