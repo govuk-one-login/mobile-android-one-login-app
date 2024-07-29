@@ -59,6 +59,17 @@ jobs:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
 
+      - name: Verify module token can speak with SDK packages registry
+        id: verify-lead-sdk-connection
+        env:
+          CREDENTIAL_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+        run: |
+          wget \
+              --header="Authorization: token ${CREDENTIAL_TOKEN}" \
+              --method="HEAD" \
+              "https://maven.pkg.github.com/govuk-one-login/*/uk/gov/android/wallet/wallet_sdk/1.16.0/wallet_sdk-1.16.0.pom"
+        shell: bash
+
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
