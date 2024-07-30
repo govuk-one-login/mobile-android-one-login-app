@@ -46,7 +46,7 @@ googleServices = "4.4.2"
 firebaseBom = "33.1.2"
 classgraph = "4.8.174"
 govuk-ui = "4.4.1"
-wallet = "1.15.0"
+wallet = "1.17.2"
 firebaseCrashalytics = "3.0.2"
 
 [libraries]
