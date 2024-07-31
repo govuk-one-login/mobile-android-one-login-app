@@ -15,6 +15,8 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetEmail
+import uk.gov.onelogin.tokens.usecases.GetPersistentId
+import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
@@ -22,14 +24,18 @@ import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 class HomeScreenViewModelTest : TestCase() {
     private val tokenRepository: TokenRepository = mock()
     private val saveToSecureStore: SaveToSecureStore = mock()
+    private val saveToOpenSecureStore: SaveToOpenSecureStore = mock()
     private val saveTokenExpiry: SaveTokenExpiry = mock()
     private val getEmail: GetEmail = mock()
+    private val getPersistentId: GetPersistentId = mock()
 
     private val viewModel by lazy {
         HomeScreenViewModel(
             tokenRepository,
             saveToSecureStore,
+            saveToOpenSecureStore,
             saveTokenExpiry,
+            getPersistentId,
             getEmail
         )
     }
@@ -38,25 +44,30 @@ class HomeScreenViewModelTest : TestCase() {
     fun saveTokenWhenTokensNotNull() {
         val testResponse = TokenResponse(
             tokenType = "test",
-            accessToken = "test",
+            accessToken = "access",
             accessTokenExpirationTime = 1L,
             idToken = "id"
         )
 
         runBlocking {
             whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
             viewModel.saveTokens()
 
             verify(saveToSecureStore).invoke(
                 Keys.ACCESS_TOKEN_KEY,
-                "test"
+                "access"
             )
             verify(saveToSecureStore).invoke(
                 Keys.ID_TOKEN_KEY,
                 "id"
             )
             verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
+            verify(saveToOpenSecureStore).invoke(
+                Keys.PERSISTENT_ID_KEY,
+                "persistentId"
+            )
         }
     }
 
@@ -78,6 +89,7 @@ class HomeScreenViewModelTest : TestCase() {
                 "test"
             )
             verify(saveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY))
+            verify(saveToOpenSecureStore, times(0)).invoke(any(), any())
             verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
     }
@@ -91,6 +103,7 @@ class HomeScreenViewModelTest : TestCase() {
 
             verify(saveToSecureStore, times(0)).invoke(any(), any())
             verify(saveToSecureStore, times(0)).invoke(any(), any())
+            verify(saveToOpenSecureStore, times(0)).invoke(any(), any())
             verify(saveTokenExpiry, times(0)).invoke(any())
         }
     }

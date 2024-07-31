@@ -9,6 +9,8 @@ import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetEmail
+import uk.gov.onelogin.tokens.usecases.GetPersistentId
+import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
@@ -16,7 +18,9 @@ import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 class HomeScreenViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveToSecureStore: SaveToSecureStore,
+    private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val saveTokenExpiry: SaveTokenExpiry,
+    private val getPersistentId: GetPersistentId,
     getEmail: GetEmail
 ) : ViewModel() {
     val email = getEmail() ?: ""
@@ -31,6 +35,10 @@ class HomeScreenViewModel @Inject constructor(
                     value = tokenResponse.accessToken
                 )
                 tokenResponse.idToken?.let {
+                    saveToOpenSecureStore(
+                        key = Keys.PERSISTENT_ID_KEY,
+                        value = getPersistentId() ?: ""
+                    )
                     saveToSecureStore(
                         key = Keys.ID_TOKEN_KEY,
                         value = it

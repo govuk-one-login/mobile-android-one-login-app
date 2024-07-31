@@ -242,15 +242,14 @@ class LoginTest : TestCase() {
             tokenType = "test",
             accessToken = "test",
             accessTokenExpirationTime = 1L,
-            idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3L" +
-                "TU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6" +
-                "SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJpc3MiOiJodHRwczovL3Rva2VuLmJ" +
-                "1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiMmU5YzdlMTYtZmQ4NS00Yz" +
-                "A5LThkM2EtZDA2MzljMTUzMzc4IiwiaWF0IjoxNzE3NTc4NzY4LCJleHAiOj" +
-                "E3MTc1Nzg5NDgsIm5vbmNlIjoidGVzdF9ub25jZSIsImVtYWlsIjoibW9ja0" +
-                "BlbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZX0.j1xQsDeX37Z8Bn" +
-                "B-Aq4ovVfGq1ADa9cycYJHtlcSfZwSh_0c_FowQPN7MJjRHBdAE1pnjqtnbi" +
-                "c14VFnJuMCoA"
+            idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
+                "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
+                "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
+                "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
+                "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
+                "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
+                "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
+                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
         )
         whenever(mockLoginSession.finalise(any(), any())).thenAnswer {
             (it.arguments[1] as (TokenResponse) -> Unit).invoke(tokenResponse)

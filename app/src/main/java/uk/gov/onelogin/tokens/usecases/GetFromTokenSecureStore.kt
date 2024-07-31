@@ -10,7 +10,7 @@ import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguratio
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.login.state.LocalAuthStatus
 
-fun interface GetFromSecureStore {
+fun interface GetFromTokenSecureStore {
     /**
      * Use case for getting data from a secure store instance.
      *
@@ -25,10 +25,10 @@ fun interface GetFromSecureStore {
     )
 }
 
-class GetFromSecureStoreImpl @Inject constructor(
+class GetFromTokenSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore
-) : GetFromSecureStore {
+) : GetFromTokenSecureStore {
     override suspend fun invoke(
         context: FragmentActivity,
         key: String,

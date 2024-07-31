@@ -116,8 +116,8 @@ fun String.extractPersistentIdFromIdToken(): String? {
         val bodyEncoded = this.split(".")[1]
         val body = String(Base64.decode(bodyEncoded))
         val data = Json.parseToJsonElement(body)
-        val email = data.jsonObject["persistent_id"]
-        val stripEmail = email?.toString()?.removeSurrounding("\"")
+        val id = data.jsonObject["persistent_id"]
+        val stripEmail = id?.toString()?.removeSurrounding("\"")
         return stripEmail
     } catch (e: Exception) {
         Log.e(this::class.simpleName, e.message, e)

@@ -17,15 +17,15 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.state.LocalAuthStatus
 
 @HiltAndroidTest
-class GetFromSecureStoreTest : TestCase() {
-    private lateinit var useCase: GetFromSecureStore
+class GetFromTokenSecureStoreTest : TestCase() {
+    private lateinit var useCase: GetFromTokenSecureStore
     private val mockSecureStore: SecureStore = mock()
 
     private val expectedStoreKey: String = "key"
 
     @Before
     fun setUp() {
-        useCase = GetFromSecureStoreImpl(mockSecureStore)
+        useCase = GetFromTokenSecureStoreImpl(mockSecureStore)
     }
 
     @Test
