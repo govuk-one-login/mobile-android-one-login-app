@@ -1,10 +1,15 @@
 package uk.gov.onelogin.tokens
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
+import uk.gov.android.securestore.AccessControlLevel
+import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.SharedPrefsStore
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
@@ -16,7 +21,22 @@ object SecureStoreModule {
 
     @Provides
     @Singleton
-    fun providesSecureStore(): SecureStore = SharedPrefsStore()
+    @Named("Token")
+    fun providesTokenSecureStore(): SecureStore = SharedPrefsStore()
+
+    @Provides
+    @Singleton
+    @Named("Open")
+    fun providesOpenSecureStore(
+        @ApplicationContext
+        context: Context
+    ): SecureStore = SharedPrefsStore().also {
+        val configuration = SecureStorageConfiguration(
+            Keys.OPEN_SECURE_STORE_ID,
+            AccessControlLevel.OPEN
+        )
+        it.init(context, configuration)
+    }
 
     @Provides
     @Singleton

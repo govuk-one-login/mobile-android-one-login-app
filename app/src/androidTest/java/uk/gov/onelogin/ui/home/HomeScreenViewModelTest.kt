@@ -1,6 +1,5 @@
 package uk.gov.onelogin.ui.home
 
-import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -47,15 +46,13 @@ class HomeScreenViewModelTest : TestCase() {
         runBlocking {
             whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+            viewModel.saveTokens()
 
             verify(saveToSecureStore).invoke(
-                composeTestRule.activity as FragmentActivity,
                 Keys.ACCESS_TOKEN_KEY,
                 "test"
             )
             verify(saveToSecureStore).invoke(
-                composeTestRule.activity as FragmentActivity,
                 Keys.ID_TOKEN_KEY,
                 "id"
             )
@@ -74,14 +71,13 @@ class HomeScreenViewModelTest : TestCase() {
         runBlocking {
             whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+            viewModel.saveTokens()
 
             verify(saveToSecureStore).invoke(
-                composeTestRule.activity as FragmentActivity,
                 Keys.ACCESS_TOKEN_KEY,
                 "test"
             )
-            verify(saveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY), any())
+            verify(saveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY))
             verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
         }
     }
@@ -91,10 +87,10 @@ class HomeScreenViewModelTest : TestCase() {
         runBlocking {
             whenever(tokenRepository.getTokenResponse()).thenReturn(null)
 
-            viewModel.saveTokens(composeTestRule.activity as FragmentActivity)
+            viewModel.saveTokens()
 
-            verify(saveToSecureStore, times(0)).invoke(any(), any(), any())
-            verify(saveToSecureStore, times(0)).invoke(any(), any(), any())
+            verify(saveToSecureStore, times(0)).invoke(any(), any())
+            verify(saveToSecureStore, times(0)).invoke(any(), any())
             verify(saveTokenExpiry, times(0)).invoke(any())
         }
     }

@@ -6,9 +6,9 @@ import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 
-fun interface SaveToSecureStore {
+fun interface SaveToOpenSecureStore {
     /**
-     * Use case for saving data into a secure store instance
+     * Use case for saving data into an open secure store instance
      *
      * @param key [String] value of key value pair to save
      * @param value [String] value of value in key value pair to save
@@ -19,10 +19,10 @@ fun interface SaveToSecureStore {
     )
 }
 
-class SaveToSecureStoreImpl @Inject constructor(
-    @Named("Token")
+class SaveToOpenSecureStoreImpl @Inject constructor(
+    @Named("Open")
     private val secureStore: SecureStore
-) : SaveToSecureStore {
+) : SaveToOpenSecureStore {
     override suspend fun invoke(key: String, value: String) {
         try {
             secureStore.upsert(

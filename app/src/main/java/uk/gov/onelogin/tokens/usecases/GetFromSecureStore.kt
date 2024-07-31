@@ -2,6 +2,7 @@ package uk.gov.onelogin.tokens.usecases
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
+import javax.inject.Named
 import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
@@ -25,6 +26,7 @@ fun interface GetFromSecureStore {
 }
 
 class GetFromSecureStoreImpl @Inject constructor(
+    @Named("Token")
     private val secureStore: SecureStore
 ) : GetFromSecureStore {
     override suspend fun invoke(

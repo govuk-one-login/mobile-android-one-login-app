@@ -1,6 +1,5 @@
 package uk.gov.onelogin.tokens.usecases
 
-import androidx.fragment.app.FragmentActivity
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -22,7 +21,6 @@ import uk.gov.onelogin.tokens.Keys
 @ExtendWith(CoroutinesTestExtension::class)
 class RemoveAllSecureStoreDataTest {
     private lateinit var useCase: RemoveAllSecureStoreData
-    private val mockFragmentActivity: FragmentActivity = mock()
     private val mockSecureStore: SecureStore = mock()
 
     @BeforeEach
@@ -32,15 +30,13 @@ class RemoveAllSecureStoreDataTest {
 
     @Test
     fun `removes access token and id token`() = runTest {
-        useCase.invoke(mockFragmentActivity)
+        useCase.invoke()
 
         verify(mockSecureStore).delete(
-            Keys.ACCESS_TOKEN_KEY,
-            mockFragmentActivity
+            Keys.ACCESS_TOKEN_KEY
         )
         verify(mockSecureStore).delete(
-            Keys.ID_TOKEN_KEY,
-            mockFragmentActivity
+            Keys.ID_TOKEN_KEY
         )
     }
 
@@ -48,13 +44,12 @@ class RemoveAllSecureStoreDataTest {
     fun `secure store exception is propagated up`() = runTest {
         whenever(
             mockSecureStore.delete(
-                Keys.ACCESS_TOKEN_KEY,
-                mockFragmentActivity
+                Keys.ACCESS_TOKEN_KEY
             )
         ).thenThrow(SecureStorageError(Exception("something went wrong")))
 
         val exception: SecureStorageError = assertThrows(SecureStorageError::class.java) {
-            useCase.invoke(mockFragmentActivity)
+            useCase.invoke()
         }
         assertEquals(SecureStoreErrorType.GENERAL, exception.type)
         assertTrue(exception.message!!.contains("something went wrong"))

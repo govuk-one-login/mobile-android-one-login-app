@@ -16,9 +16,14 @@ class VerifyIdTokenTest {
 
     // the header of the web token contains a 'kid' for one of the keys below
     private val idToken =
-        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI" +
-            "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9" +
-            ".eyJlbWFpbCI6ImVtYWlsQG1haWwuY29tIn0"
+        "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZ" +
+            "WJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJpc3MiOiJodHRwcz" +
+            "ovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZGUtMmZkNy00MjdiLWE2" +
+            "ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlLWI2YmQtNDQ0ZC05YmI0LW" +
+            "RlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIxOTk4MzU4LCJub25jZSI6InRl" +
+            "c3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWV9.G" +
+            "1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W48oE1karDBA-pKWpADdBpHeUC-eCj" +
+            "jfBObjOg"
     private val idTokenMissingEmail =
         "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI" +
             "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9" +

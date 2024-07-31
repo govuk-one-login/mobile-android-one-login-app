@@ -108,3 +108,19 @@ fun String.extractEmailFromIdToken(): String? {
         return null
     }
 }
+
+@OptIn(ExperimentalEncodingApi::class)
+@Suppress("TooGenericExceptionCaught")
+fun String.extractPersistentIdFromIdToken(): String? {
+    try {
+        val bodyEncoded = this.split(".")[1]
+        val body = String(Base64.decode(bodyEncoded))
+        val data = Json.parseToJsonElement(body)
+        val email = data.jsonObject["persistent_id"]
+        val stripEmail = email?.toString()?.removeSurrounding("\"")
+        return stripEmail
+    } catch (e: Exception) {
+        Log.e(this::class.simpleName, e.message, e)
+        return null
+    }
+}

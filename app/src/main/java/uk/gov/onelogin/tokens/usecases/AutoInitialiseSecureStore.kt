@@ -3,6 +3,7 @@ package uk.gov.onelogin.tokens.usecases
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Named
 import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.login.biooptin.BiometricPreference
@@ -12,7 +13,7 @@ import uk.gov.onelogin.tokens.Mapper
 
 fun interface AutoInitialiseSecureStore {
     /**
-     * Initialise the secure store using id [Keys.SECURE_STORE_ID].
+     * Initialise the secure store using id [Keys.TOKEN_SECURE_STORE_ID].
      * The initialisation of the secure store only happens if [BiometricPreference] set
      */
     operator fun invoke()
@@ -20,6 +21,7 @@ fun interface AutoInitialiseSecureStore {
 
 class AutoInitialiseSecureStoreImpl @Inject constructor(
     private val biometricPreferenceHandler: BiometricPreferenceHandler,
+    @Named("Token")
     private val secureStore: SecureStore,
     @ApplicationContext
     private val context: Context
@@ -28,7 +30,7 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
         val bioPref = biometricPreferenceHandler.getBioPref()
         if (bioPref == null || bioPref == BiometricPreference.NONE) return
         val configuration = SecureStorageConfiguration(
-            Keys.SECURE_STORE_ID,
+            Keys.TOKEN_SECURE_STORE_ID,
             Mapper.mapAccessControlLevel(bioPref)
         )
         secureStore.init(context, configuration)

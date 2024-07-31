@@ -54,7 +54,7 @@ class AutoInitialiseSecureStoreTest {
         useCase.invoke()
 
         val expectedConfiguration = SecureStorageConfiguration(
-            Keys.SECURE_STORE_ID,
+            Keys.TOKEN_SECURE_STORE_ID,
             AccessControlLevel.PASSCODE
         )
         verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
@@ -67,7 +67,7 @@ class AutoInitialiseSecureStoreTest {
         useCase.invoke()
 
         val expectedConfiguration = SecureStorageConfiguration(
-            Keys.SECURE_STORE_ID,
+            Keys.TOKEN_SECURE_STORE_ID,
             AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
         )
         verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)

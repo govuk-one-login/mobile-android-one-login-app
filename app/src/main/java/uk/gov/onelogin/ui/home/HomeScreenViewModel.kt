@@ -1,6 +1,5 @@
 package uk.gov.onelogin.ui.home
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,19 +21,17 @@ class HomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
     val email = getEmail() ?: ""
 
-    fun saveTokens(context: FragmentActivity) {
+    fun saveTokens() {
         val tokens = tokenRepository.getTokenResponse()
         viewModelScope.launch {
             tokens?.let { tokenResponse ->
                 saveTokenExpiry(tokenResponse.accessTokenExpirationTime)
                 saveToSecureStore(
-                    context = context,
                     key = Keys.ACCESS_TOKEN_KEY,
                     value = tokenResponse.accessToken
                 )
                 tokenResponse.idToken?.let {
                     saveToSecureStore(
-                        context = context,
                         key = Keys.ID_TOKEN_KEY,
                         value = it
                     )

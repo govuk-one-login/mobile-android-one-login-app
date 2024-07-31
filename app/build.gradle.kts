@@ -134,6 +134,7 @@ androidComponents {
 }
 
 dependencies {
+//    implementation(files("/Users/abradbury/AndroidStudioProjects/mobileandroidsecurestore/app/build/outputs/aar/app-release.aar"))
     listOf(
         libs.androidx.compose.ui.junit4,
         libs.androidx.navigation.testing,
