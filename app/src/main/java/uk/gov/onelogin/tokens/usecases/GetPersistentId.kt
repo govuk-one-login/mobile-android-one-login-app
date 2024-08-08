@@ -18,7 +18,6 @@ class GetPersistentIdImpl @Inject constructor(
 ) : GetPersistentId {
     override fun invoke(): String? {
         val idToken: String = tokenRepository.getTokenResponse()?.idToken ?: return null
-        val id = idToken.extractPersistentIdFromIdToken()
-        return id
+        return idToken.extractPersistentIdFromIdToken()
     }
 }

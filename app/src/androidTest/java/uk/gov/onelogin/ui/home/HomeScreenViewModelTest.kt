@@ -72,6 +72,37 @@ class HomeScreenViewModelTest : TestCase() {
     }
 
     @Test
+    fun saveTokenWhenTokensNotNullMissingPersistentId() {
+        val testResponse = TokenResponse(
+            tokenType = "test",
+            accessToken = "access",
+            accessTokenExpirationTime = 1L,
+            idToken = "id"
+        )
+
+        runBlocking {
+            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(getPersistentId.invoke()).thenReturn(null)
+
+            viewModel.saveTokens()
+
+            verify(saveToSecureStore).invoke(
+                Keys.ACCESS_TOKEN_KEY,
+                "access"
+            )
+            verify(saveToSecureStore).invoke(
+                Keys.ID_TOKEN_KEY,
+                "id"
+            )
+            verify(saveTokenExpiry).invoke(testResponse.accessTokenExpirationTime)
+            verify(saveToOpenSecureStore, times(0)).invoke(
+                Keys.PERSISTENT_ID_KEY,
+                "persistentId"
+            )
+        }
+    }
+
+    @Test
     fun saveTokenWhenTokensNotNullIdTokenIsNull() {
         val testResponse = TokenResponse(
             tokenType = "test",

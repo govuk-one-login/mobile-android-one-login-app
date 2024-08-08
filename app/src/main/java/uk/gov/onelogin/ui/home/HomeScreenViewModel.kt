@@ -35,10 +35,12 @@ class HomeScreenViewModel @Inject constructor(
                     value = tokenResponse.accessToken
                 )
                 tokenResponse.idToken?.let {
-                    saveToOpenSecureStore(
-                        key = Keys.PERSISTENT_ID_KEY,
-                        value = getPersistentId() ?: ""
-                    )
+                    getPersistentId()?.let { id ->
+                        saveToOpenSecureStore(
+                            key = Keys.PERSISTENT_ID_KEY,
+                            value = id
+                        )
+                    }
                     saveToSecureStore(
                         key = Keys.ID_TOKEN_KEY,
                         value = it
