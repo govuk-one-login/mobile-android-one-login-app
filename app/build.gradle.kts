@@ -197,6 +197,7 @@ dependencies {
         libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin,
+        libs.pact.junit5,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.junit.jupiter.engine,
