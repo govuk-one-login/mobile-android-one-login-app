@@ -16,6 +16,7 @@ runs:
       shell: bash
       run: |
         echo "Uploading file to pact server"
+        cat pact-file-path
       env:
         CI: 'true'
         PACT_FILE_PATH: ${{ inputs.pact-file-path }}
