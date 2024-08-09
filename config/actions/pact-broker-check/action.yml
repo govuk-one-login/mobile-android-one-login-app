@@ -14,12 +14,17 @@ runs:
   steps:
     - uses: docker://pactfoundation/pact-cli:latest
     - name: Pact file upload
-      shell: bash
+      shell: sh
       run: |
         echo "Uploading file to pact server"
         cat ${{ inputs.pact-file-path }}
-        pact-cli publish $PACT_FILE_PATH --consumer-app-version $INPUT_VERSION_NAME
+        pact-broker help
+        pact-broker publish $PACT_FILE_PATH --consumer-app-version $INPUT_VERSION_NAME
       env:
         CI: 'true'
         PACT_FILE_PATH: ${{ inputs.pact-file-path }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME_NP }}
+        PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD_NP }}
+        PACT_BROKER_SOURCE_SECRET: ${{ secrets.PACT_BROKER_SOURCE_SECRET_NP }}
+        PACT_BROKER_BASE_URL: "http://pactbroker-onelogin.staging.account.gov.uk"
