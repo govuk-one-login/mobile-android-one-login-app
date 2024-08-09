@@ -71,6 +71,9 @@ jobs:
         uses: ./config/actions/pact-broker-check
         with:
           pact-file-path: "**/build/pacts/Mobile.MobilePlatform.OneLoginAppAndroid-Mobile.MobilePlatform.StsBackendApi.json"
+          pact-broker-username: ${{ secrets.PACT_BROKER_USERNAME_NP }}
+          pact-broker-password: ${{ secrets.PACT_BROKER_PASSWORD_NP }}
+          pact-broker-secret: ${{ secrets.PACT_BROKER_SOURCE_SECRET_NP }}
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
 
       - name: Run gradle instrumentation tests

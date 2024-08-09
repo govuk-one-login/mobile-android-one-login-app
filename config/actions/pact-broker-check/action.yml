@@ -8,6 +8,15 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  pact-broker-username:
+      description: 'pact username'
+      required: true
+  pact-broker-password:
+      description: 'pact password'
+      required: true
+  pact-broker-secret:
+      description: 'pact secret'
+      required: true
 
 runs:
   using: "composite"
@@ -24,7 +33,7 @@ runs:
         CI: 'true'
         PACT_FILE_PATH: ${{ inputs.pact-file-path }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
-        PACT_BROKER_USERNAME: ${{ secrets.PACT_BROKER_USERNAME_NP }}
-        PACT_BROKER_PASSWORD: ${{ secrets.PACT_BROKER_PASSWORD_NP }}
-        PACT_BROKER_SOURCE_SECRET: ${{ secrets.PACT_BROKER_SOURCE_SECRET_NP }}
+        PACT_BROKER_USERNAME: ${{ inputs.pact-broker-username }}
+        PACT_BROKER_PASSWORD: ${{ inputs.pact-broker-password }}
+        PACT_BROKER_SOURCE_SECRET: ${{ inputs.pact-broker-secret }}
         PACT_BROKER_BASE_URL: "http://pactbroker-onelogin.staging.account.gov.uk"
