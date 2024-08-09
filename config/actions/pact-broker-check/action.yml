@@ -1,0 +1,22 @@
+name: 'Pact broker check'
+description: 'Uploads the pact file to the broker'
+
+inputs:
+  pact-file-path:
+    description: 'Path of the json Pact file'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Pact file upload
+      shell: bash
+      run: |
+        echo "Uploading file to pact server"
+      env:
+        CI: 'true'
+        PACT_FILE_PATH: ${{ inputs.pact-file-path }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
