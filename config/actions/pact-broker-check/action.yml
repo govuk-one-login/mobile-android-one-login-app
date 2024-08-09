@@ -12,11 +12,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: docker://pactfoundation/pact-cli:latest
     - name: Pact file upload
       shell: bash
       run: |
         echo "Uploading file to pact server"
-        cat pact-file-path
+        cat ${{ inputs.pact-file-path }}
+        pact-cli publish $PACT_FILE_PATH --consumer-app-version $INPUT_VERSION_NAME
       env:
         CI: 'true'
         PACT_FILE_PATH: ${{ inputs.pact-file-path }}
