@@ -19,3 +19,10 @@ runs:
         if-no-files-found: error
         path: |
           reports.zip
+
+    - name: Archive Pact file
+      uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # pin@v3
+      with:
+          name: pact-file
+          path: "**/build/pacts/Mobile.MobilePlatform.OneLoginAppAndroid-Mobile.MobilePlatform.StsBackendApi.json"
+          if-no-files-found: error
