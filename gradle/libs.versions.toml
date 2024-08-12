@@ -66,7 +66,7 @@ mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", versio
 mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.10.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
-slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.12" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.16" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.2.0" }
 authentication = "uk.gov.android:authentication:0.5.0"
