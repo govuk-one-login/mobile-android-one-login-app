@@ -1,9 +1,9 @@
 package uk.gov.onelogin.ui.home
 
-import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -11,7 +11,8 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
-import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetEmail
@@ -20,8 +21,8 @@ import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
-@HiltAndroidTest
-class HomeScreenViewModelTest : TestCase() {
+@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
+class HomeScreenViewModelTest {
     private val tokenRepository: TokenRepository = mock()
     private val saveToSecureStore: SaveToSecureStore = mock()
     private val saveToOpenSecureStore: SaveToOpenSecureStore = mock()
@@ -49,12 +50,12 @@ class HomeScreenViewModelTest : TestCase() {
             idToken = "id"
         )
 
+        whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+        whenever(getPersistentId.invoke()).thenReturn("persistentId")
+
+        viewModel.saveTokens()
+
         runBlocking {
-            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
-            whenever(getPersistentId.invoke()).thenReturn("persistentId")
-
-            viewModel.saveTokens()
-
             verify(saveToSecureStore).invoke(
                 Keys.ACCESS_TOKEN_KEY,
                 "access"
@@ -80,12 +81,11 @@ class HomeScreenViewModelTest : TestCase() {
             idToken = "id"
         )
 
+        whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
+        whenever(getPersistentId.invoke()).thenReturn(null)
+
+        viewModel.saveTokens()
         runBlocking {
-            whenever(tokenRepository.getTokenResponse()).thenReturn(testResponse)
-            whenever(getPersistentId.invoke()).thenReturn(null)
-
-            viewModel.saveTokens()
-
             verify(saveToSecureStore).invoke(
                 Keys.ACCESS_TOKEN_KEY,
                 "access"
