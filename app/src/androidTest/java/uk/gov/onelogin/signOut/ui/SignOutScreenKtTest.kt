@@ -51,16 +51,16 @@ class SignOutScreenKtTest : TestCase() {
     @Test
     fun verifySignOutButtonSucceeds() {
         composeTestRule.onNode(ctaButton).performClick()
-        verify(signOutUseCase).invoke(composeTestRule.activity)
+        verify(signOutUseCase).invoke()
         verify(signIn).invoke()
     }
 
     @Test
     fun verifySignOutButtonFails() {
-        whenever(signOutUseCase.invoke(composeTestRule.activity))
+        whenever(signOutUseCase.invoke())
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(ctaButton).performClick()
-        verify(signOutUseCase).invoke(composeTestRule.activity)
+        verify(signOutUseCase).invoke()
         verify(signIn, never()).invoke()
         verify(goToSignOutError).invoke()
     }

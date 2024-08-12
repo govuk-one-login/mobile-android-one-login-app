@@ -1,13 +1,12 @@
 package uk.gov.onelogin.signOut.domain
 
-import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreData
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 
 fun interface SignOutUseCase {
-    operator fun invoke(context: FragmentActivity)
+    operator fun invoke()
 }
 
 @Suppress("TooGenericExceptionCaught")
@@ -17,10 +16,10 @@ class SignOutUseCaseImpl @Inject constructor(
     private val bioPrefHandler: BiometricPreferenceHandler
 ) : SignOutUseCase {
     @Throws(SignOutError::class)
-    override fun invoke(context: FragmentActivity) {
+    override fun invoke() {
         try {
             removeTokenExpiry()
-            removeAllSecureStoreData(context)
+            removeAllSecureStoreData()
             bioPrefHandler.clear()
         } catch (e: Throwable) {
             throw SignOutError(e)

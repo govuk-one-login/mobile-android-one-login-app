@@ -1,6 +1,5 @@
 package uk.gov.onelogin.tokens.usecases
 
-import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +18,6 @@ import uk.gov.onelogin.extensions.CoroutinesTestExtension
 @ExtendWith(CoroutinesTestExtension::class)
 class SaveToSecureStoreTest {
     private lateinit var useCase: SaveToSecureStore
-    private val mockFragmentActivity: FragmentActivity = mock()
     private val mockSecureStore: SecureStore = mock()
 
     private val expectedStoreKey: String = "key"
@@ -32,23 +30,22 @@ class SaveToSecureStoreTest {
 
     @Test
     fun `does not throw - when SecureStorageError thrown`() = runTest {
-        whenever(mockSecureStore.upsert(any(), any(), any())).thenThrow(
+        whenever(mockSecureStore.upsert(any(), any())).thenThrow(
             SecureStorageError(Exception("Some error"))
         )
 
         assertDoesNotThrow {
-            useCase.invoke(mockFragmentActivity, expectedStoreKey, expectedStoreValue)
+            useCase.invoke(expectedStoreKey, expectedStoreValue)
         }
     }
 
     @Test
     fun `saves value successfully`() = runTest {
-        useCase.invoke(mockFragmentActivity, expectedStoreKey, expectedStoreValue)
+        useCase.invoke(expectedStoreKey, expectedStoreValue)
 
         verify(mockSecureStore).upsert(
             expectedStoreKey,
-            expectedStoreValue,
-            mockFragmentActivity
+            expectedStoreValue
         )
     }
 }

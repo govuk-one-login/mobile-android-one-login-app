@@ -16,20 +16,20 @@ import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
+import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 
 @HiltAndroidTest
 class HandleLoginTest : TestCase() {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockTokenRepository: TokenRepository = mock()
-    private val mockGetFromSecureStore: GetFromSecureStore = mock()
+    private val mockGetFromTokenSecureStore: GetFromTokenSecureStore = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
 
     private val useCase = HandleLoginImpl(
         mockGetTokenExpiry,
         mockTokenRepository,
-        mockGetFromSecureStore,
+        mockGetFromTokenSecureStore,
         mockBioPrefHandler
     )
 
@@ -80,7 +80,7 @@ class HandleLoginTest : TestCase() {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
-            whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
+            whenever(mockGetFromTokenSecureStore(any(), any(), any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
             }
 
@@ -100,7 +100,7 @@ class HandleLoginTest : TestCase() {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
-            whenever(mockGetFromSecureStore(any(), any(), any())).thenAnswer {
+            whenever(mockGetFromTokenSecureStore(any(), any(), any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.Success(token)
                 )

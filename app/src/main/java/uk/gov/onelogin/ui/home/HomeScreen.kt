@@ -6,12 +6,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.TitledPage
@@ -26,7 +24,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     openDeveloperPanel: () -> Unit = { }
 ) {
-    viewModel.saveTokens(LocalContext.current as FragmentActivity)
+    viewModel.saveTokens()
     val tokens = viewModel.getTokens()
     val email = viewModel.email
     TitledPage(

@@ -8,7 +8,7 @@ import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
-import uk.gov.onelogin.tokens.usecases.GetFromSecureStore
+import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 
 fun interface HandleLogin {
@@ -21,7 +21,7 @@ fun interface HandleLogin {
 class HandleLoginImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
-    private val getFromSecureStore: GetFromSecureStore,
+    private val getFromTokenSecureStore: GetFromTokenSecureStore,
     private val bioPrefHandler: BiometricPreferenceHandler
 ) : HandleLogin {
     override suspend fun invoke(
@@ -29,7 +29,7 @@ class HandleLoginImpl @Inject constructor(
         callback: (LocalAuthStatus) -> Unit
     ) {
         if (!isTokenExpiredOrMissing() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
-            getFromSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY) {
+            getFromTokenSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY) {
                 if (it is LocalAuthStatus.Success) {
                     tokenRepository.setTokenResponse(
                         TokenResponse(

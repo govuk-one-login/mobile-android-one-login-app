@@ -2,6 +2,7 @@ package uk.gov.onelogin.tokens.usecases
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
+import javax.inject.Named
 import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
@@ -9,7 +10,7 @@ import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguratio
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.login.state.LocalAuthStatus
 
-fun interface GetFromSecureStore {
+fun interface GetFromTokenSecureStore {
     /**
      * Use case for getting data from a secure store instance.
      *
@@ -24,9 +25,10 @@ fun interface GetFromSecureStore {
     )
 }
 
-class GetFromSecureStoreImpl @Inject constructor(
+class GetFromTokenSecureStoreImpl @Inject constructor(
+    @Named("Token")
     private val secureStore: SecureStore
-) : GetFromSecureStore {
+) : GetFromTokenSecureStore {
     override suspend fun invoke(
         context: FragmentActivity,
         key: String,
