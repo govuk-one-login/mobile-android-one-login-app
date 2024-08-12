@@ -26,9 +26,9 @@ runs:
       shell: sh
       run: |
         echo "Uploading file to pact server"
-        cat ${{ inputs.pact-file-path }}
-        pact-broker help
-        pact-broker publish $PACT_FILE_PATH --consumer-app-version $INPUT_VERSION_NAME
+        cat $PACT_FILE_PATH
+#        pact-broker help
+#        pact-broker publish $PACT_FILE_PATH --consumer-app-version $INPUT_VERSION_NAME
       env:
         CI: 'true'
         PACT_FILE_PATH: ${{ inputs.pact-file-path }}
