@@ -32,6 +32,7 @@ androidxNavigation = "2.7.7"
 androidxTest = "1.4.2"
 constraintlayout = "1.0.1"
 compose-ui-junit4 = "1.6.7"
+pact = "4.4.0"
 junitJupiter = "5.10.1"
 kotlinxCoroutines = "1.7.3"
 lifecycleRuntimeKtx = "2.7.0"
@@ -91,6 +92,7 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidxNavigation" }
 androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", version.ref = "androidxTest" }
+pact-junit5 = { module = "au.com.dius.pact.consumer:junit5", version.ref = "pact" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
