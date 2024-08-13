@@ -12,12 +12,14 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.features.StsFeatureFlag
+import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
 
 @HiltViewModel
 class WelcomeScreenViewModel @Inject constructor(
     private val loginSession: LoginSession,
     private val featureFlags: FeatureFlags,
+    private val getPersistentId: GetPersistentId,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     fun onPrimary(context: Context) {
@@ -65,7 +67,8 @@ class WelcomeScreenViewModel @Inject constructor(
                     locale = locale,
                     redirectUri = redirectUri,
                     scopes = scopes,
-                    tokenEndpoint = tokenEndpoint
+                    tokenEndpoint = tokenEndpoint,
+                    persistentSessionId = getPersistentId()
                 )
             )
     }

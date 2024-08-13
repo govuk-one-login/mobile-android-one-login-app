@@ -10,6 +10,7 @@ import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,6 +44,7 @@ import uk.gov.onelogin.e2e.selectors.BySelectors.loginErrorTitle
 import uk.gov.onelogin.e2e.selectors.BySelectors.loginTitle
 import uk.gov.onelogin.e2e.selectors.BySelectors.passcodeInfoTitle
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.ui.LocaleUtils
 
 @HiltAndroidTest
@@ -57,8 +59,25 @@ class LoginTest : TestCase() {
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
 
+    @Inject
+    lateinit var tokenRepository: TokenRepository
+
     @get:Rule(order = 3)
     val flakyTestRule = FlakyTestRule()
+
+    private val tokenResponse = TokenResponse(
+        tokenType = "test",
+        accessToken = "test",
+        accessTokenExpirationTime = 1L,
+        idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
+            "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
+            "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
+            "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
+            "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
+            "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
+            "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
+            "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
+    )
 
     override val phoneController = PhoneController(
         phoneActionTimeout = 10000L,
@@ -67,6 +86,7 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        hiltRule.inject()
         initializeIntents()
     }
 
@@ -85,7 +105,16 @@ class LoginTest : TestCase() {
 
     @Test
     @FlakyTest
-    fun selectingLoginButtonFiresAuthRequest() {
+    fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
+        tokenRepository.setTokenResponse(
+            TokenResponse(
+                tokenType = "type",
+                accessToken = "access",
+                accessTokenExpirationTime = 1L,
+                idToken = ""
+            )
+        )
+
         launchActivity<MainActivity>()
         phoneController.apply {
             click(
@@ -119,7 +148,54 @@ class LoginTest : TestCase() {
                 locale = LocaleUtils.getLocaleAsSessionConfig(context),
                 redirectUri = redirectUrl,
                 scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-                tokenEndpoint = tokenEndpoint
+                tokenEndpoint = tokenEndpoint,
+                persistentSessionId = null
+            )
+
+            verify(mockLoginSession).present(any(), eq(loginConfig))
+        }
+    }
+
+    @Test
+    @FlakyTest
+    fun selectingLoginButtonFiresAuthRequestWithPersistentId() {
+        tokenRepository.setTokenResponse(tokenResponse)
+
+        launchActivity<MainActivity>()
+        phoneController.apply {
+            click(
+                WAIT_FOR_OBJECT_TIMEOUT,
+                loginButton(context) to "Press login button"
+            )
+
+            val authorizeUrl = Uri.parse(
+                resources.getString(
+                    R.string.stsUrl,
+                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+                )
+            )
+            val redirectUrl = Uri.parse(
+                resources.getString(
+                    R.string.webBaseUrl,
+                    resources.getString(R.string.webRedirectEndpoint)
+                )
+            )
+            val tokenEndpoint = Uri.parse(
+                context.resources.getString(
+                    R.string.stsUrl,
+                    context.resources.getString(
+                        R.string.tokenExchangeEndpoint
+                    )
+                )
+            )
+            val loginConfig = LoginSessionConfiguration(
+                authorizeEndpoint = authorizeUrl,
+                clientId = resources.getString(R.string.stsClientId),
+                locale = LocaleUtils.getLocaleAsSessionConfig(context),
+                redirectUri = redirectUrl,
+                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                tokenEndpoint = tokenEndpoint,
+                persistentSessionId = null
             )
 
             verify(mockLoginSession).present(any(), eq(loginConfig))
@@ -238,19 +314,6 @@ class LoginTest : TestCase() {
     }
 
     private fun goodLogin() {
-        val tokenResponse = TokenResponse(
-            tokenType = "test",
-            accessToken = "test",
-            accessTokenExpirationTime = 1L,
-            idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
-                "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
-                "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
-                "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
-                "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
-                "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
-                "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
-        )
         whenever(mockLoginSession.finalise(any(), any())).thenAnswer {
             (it.arguments[1] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
