@@ -1,12 +1,17 @@
 package uk.gov.onelogin.tokens.usecases
 
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.Keys
 
 class GetPersistentIdImplTest {
 
@@ -25,8 +30,9 @@ class GetPersistentIdImplTest {
         "ZRrHA1JJJW8opsbCGfG_HACGpVUMN_a9IV7pAx_Zmeo"
     private val tokenResponse: TokenResponse = mock()
     private val tokenRepository: TokenRepository = mock()
+    private val mockGetFromOpenSecureStore: GetFromOpenSecureStore = mock()
 
-    val sut = GetPersistentIdImpl(tokenRepository)
+    private val sut = GetPersistentIdImpl(tokenRepository, mockGetFromOpenSecureStore)
 
     @BeforeEach
     fun setUp() {
@@ -35,17 +41,18 @@ class GetPersistentIdImplTest {
     }
 
     @Test
-    fun successScenario() {
+    fun successScenario() = runTest {
         // Given id token contains id
         whenever(tokenResponse.idToken).thenReturn(idTokenWithId)
         whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
 
         val idResponse = sut.invoke()
         assertEquals(expectedPersitentId, idResponse)
+        verify(mockGetFromOpenSecureStore, times(0)).invoke(any())
     }
 
     @Test
-    fun missingIdScenario() {
+    fun missingIdScenarioAndNoSS() = runTest {
         // Given id token is missing the id
         whenever(tokenResponse.idToken).thenReturn(idTokenWithoutId)
         whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
@@ -55,7 +62,7 @@ class GetPersistentIdImplTest {
     }
 
     @Test
-    fun missingTokenScenario() {
+    fun missingTokenScenarioAndNoSS() = runTest {
         // Given token is null
         whenever(tokenRepository.getTokenResponse()).thenReturn(null)
 
@@ -64,11 +71,23 @@ class GetPersistentIdImplTest {
     }
 
     @Test
-    fun missingIdTokenScenario() {
+    fun missingIdTokenScenarioAndNoSS() = runTest {
         // Given id token is null
         whenever(tokenResponse.idToken).thenReturn(null)
 
         val idResponse = sut.invoke()
         assertEquals(null, idResponse)
+    }
+
+    @Test
+    fun missingTokenScenarioAndPresentSS() = runTest {
+        // Given token is null
+        whenever(tokenRepository.getTokenResponse()).thenReturn(null)
+        whenever(mockGetFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)).thenReturn(
+            expectedPersitentId
+        )
+
+        val idResponse = sut.invoke()
+        assertEquals(expectedPersitentId, idResponse)
     }
 }

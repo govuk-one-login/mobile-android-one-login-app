@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.features.FeatureFlags
@@ -58,18 +60,21 @@ class WelcomeScreenViewModel @Inject constructor(
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
 
         val locale = LocaleUtils.getLocaleAsSessionConfig(context)
-        loginSession
-            .present(
-                context as Activity,
-                configuration = LoginSessionConfiguration(
-                    authorizeEndpoint = authorizeEndpoint,
-                    clientId = clientId,
-                    locale = locale,
-                    redirectUri = redirectUri,
-                    scopes = scopes,
-                    tokenEndpoint = tokenEndpoint,
-                    persistentSessionId = getPersistentId()
+
+        viewModelScope.launch {
+            loginSession
+                .present(
+                    context as Activity,
+                    configuration = LoginSessionConfiguration(
+                        authorizeEndpoint = authorizeEndpoint,
+                        clientId = clientId,
+                        locale = locale,
+                        redirectUri = redirectUri,
+                        scopes = scopes,
+                        tokenEndpoint = tokenEndpoint,
+                        persistentSessionId = getPersistentId()
+                    )
                 )
-            )
+        }
     }
 }

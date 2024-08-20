@@ -11,6 +11,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
+import javax.inject.Named
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -26,6 +28,7 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.android.onelogin.R
+import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.FlakyTestRule
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestActivityForResult
@@ -45,6 +48,7 @@ import uk.gov.onelogin.e2e.selectors.BySelectors.loginTitle
 import uk.gov.onelogin.e2e.selectors.BySelectors.passcodeInfoTitle
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.LocaleUtils
 
 @HiltAndroidTest
@@ -62,9 +66,14 @@ class LoginTest : TestCase() {
     @Inject
     lateinit var tokenRepository: TokenRepository
 
+    @Inject
+    @Named("Open")
+    lateinit var secureStore: SecureStore
+
     @get:Rule(order = 3)
     val flakyTestRule = FlakyTestRule()
 
+    private val persistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
     private val tokenResponse = TokenResponse(
         tokenType = "test",
         accessToken = "test",
@@ -86,8 +95,8 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
-        hiltRule.inject()
         initializeIntents()
+        hiltRule.inject()
     }
 
     @After
@@ -195,7 +204,53 @@ class LoginTest : TestCase() {
                 redirectUri = redirectUrl,
                 scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
                 tokenEndpoint = tokenEndpoint,
-                persistentSessionId = null
+                persistentSessionId = persistentId
+            )
+
+            verify(mockLoginSession).present(any(), eq(loginConfig))
+        }
+    }
+
+    @Test
+    @FlakyTest
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
+        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+
+        launchActivity<MainActivity>()
+        phoneController.apply {
+            click(
+                WAIT_FOR_OBJECT_TIMEOUT,
+                loginButton(context) to "Press login button"
+            )
+
+            val authorizeUrl = Uri.parse(
+                resources.getString(
+                    R.string.stsUrl,
+                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+                )
+            )
+            val redirectUrl = Uri.parse(
+                resources.getString(
+                    R.string.webBaseUrl,
+                    resources.getString(R.string.webRedirectEndpoint)
+                )
+            )
+            val tokenEndpoint = Uri.parse(
+                context.resources.getString(
+                    R.string.stsUrl,
+                    context.resources.getString(
+                        R.string.tokenExchangeEndpoint
+                    )
+                )
+            )
+            val loginConfig = LoginSessionConfiguration(
+                authorizeEndpoint = authorizeUrl,
+                clientId = resources.getString(R.string.stsClientId),
+                locale = LocaleUtils.getLocaleAsSessionConfig(context),
+                redirectUri = redirectUrl,
+                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                tokenEndpoint = tokenEndpoint,
+                persistentSessionId = persistentId
             )
 
             verify(mockLoginSession).present(any(), eq(loginConfig))

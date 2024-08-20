@@ -1,6 +1,7 @@
 package uk.gov.onelogin.ui.home
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -42,7 +43,7 @@ class HomeScreenViewModelTest {
     }
 
     @Test
-    fun saveTokenWhenTokensNotNull() {
+    fun saveTokenWhenTokensNotNull() = runTest {
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "access",
@@ -73,7 +74,7 @@ class HomeScreenViewModelTest {
     }
 
     @Test
-    fun saveTokenWhenTokensNotNullMissingPersistentId() {
+    fun saveTokenWhenTokensNotNullMissingPersistentId() = runTest {
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "access",
