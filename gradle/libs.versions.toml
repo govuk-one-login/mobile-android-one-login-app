@@ -18,7 +18,7 @@ kotlin = "2.0.0"
 agp = "8.4.2"
 core-ktx = "1.13.1"
 androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
+espresso-core = "3.6.1"
 appcompat = "1.6.1"
 lifecycle-runtime-compose = "2.7.0"
 ktlint = "12.1.1"
@@ -68,9 +68,9 @@ mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", versio
 mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.10.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version = "2.7.7" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
-slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.12" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.16" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.2.0" }
+uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.3.0" }
 authentication = "uk.gov.android.authentication:app:0.6.2"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
