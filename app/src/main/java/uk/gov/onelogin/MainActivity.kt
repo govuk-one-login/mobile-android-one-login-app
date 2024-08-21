@@ -1,6 +1,5 @@
 package uk.gov.onelogin
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,7 +8,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import uk.gov.android.authentication.AppAuthSession
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.login.LoginRoutes
@@ -46,28 +44,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             LaunchedEffect(key1 = Unit) {
-                viewModel.apply {
-                    next.observe(lifecycleOwner) {
-                        navController.navigate(it) {
-                            popUpTo(navController.graph.id) {
-                                inclusive = true
-                            }
+                viewModel.next.observe(lifecycleOwner) {
+                    navController.navigate(it) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
                         }
                     }
-                    handleActivityResult(intent = intent)
                 }
             }
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == AppAuthSession.REQUEST_CODE_AUTH && data != null) {
-            viewModel.handleActivityResult(
-                intent = data
-            )
         }
     }
 }
