@@ -12,7 +12,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.coroutines.resume
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.TokenResponse
@@ -108,50 +110,53 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    fun handleActivityResult(intent: Intent) {
-        if (intent.data == null) return
+    @Suppress("TooGenericExceptionCaught", "ReturnCount")
+    suspend fun handleActivityResult(intent: Intent): String? {
+        if (intent.data == null) return null
 
         try {
-            loginSession.finalise(intent = intent) { tokens ->
-                handleTokens(tokens)
+            return suspendCancellableCoroutine<String> { continuation ->
+                loginSession.finalise(intent = intent) { tokens ->
+                    viewModelScope.launch {
+                        continuation.resume(handleTokens(tokens))
+                    }
+                }
             }
         } catch (e: Throwable) { // handle both Error and Exception types.
             // Includes AuthenticationError
             Log.e(tag, e.message, e)
-            _next.value = LoginRoutes.SIGN_IN_ERROR
+            return LoginRoutes.SIGN_IN_ERROR
         }
     }
 
-    private fun handleTokens(tokens: TokenResponse) {
+    private suspend fun handleTokens(tokens: TokenResponse): String {
         val jwksUrl = context.getString(
             R.string.stsUrl,
             context.getString(R.string.jwksEndpoint)
         )
 
-        viewModelScope.launch {
-            tokens.idToken?.let { idToken ->
-                if (!verifyIdToken(idToken, jwksUrl)) {
-                    _next.value = LoginRoutes.SIGN_IN_ERROR
-                } else {
-                    checkLocalAuthRoute(tokens)
-                }
-            } ?: checkLocalAuthRoute(tokens)
-        }
+        return tokens.idToken?.let { idToken ->
+            if (!verifyIdToken(idToken, jwksUrl)) {
+                LoginRoutes.SIGN_IN_ERROR
+            } else {
+                checkLocalAuthRoute(tokens)
+            }
+        } ?: checkLocalAuthRoute(tokens)
     }
 
-    private fun checkLocalAuthRoute(tokens: TokenResponse) {
+    @Suppress("ReturnCount")
+    private fun checkLocalAuthRoute(tokens: TokenResponse): String {
         tokenRepository.setTokenResponse(tokens)
 
         if (!credChecker.isDeviceSecure()) {
             bioPrefHandler.setBioPref(BiometricPreference.NONE)
-            _next.value = LoginRoutes.PASSCODE_INFO
+            return LoginRoutes.PASSCODE_INFO
         } else if (shouldSeeBiometricOptIn()) {
-            _next.value = LoginRoutes.BIO_OPT_IN
+            return LoginRoutes.BIO_OPT_IN
         } else {
             bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
             autoInitialiseSecureStore()
-            _next.value = MainNavRoutes.START
+            return MainNavRoutes.START
         }
     }
 

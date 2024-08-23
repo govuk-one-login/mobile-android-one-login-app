@@ -98,45 +98,46 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            val result = viewModel.handleActivityResult(
                 mockIntent
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-            assertEquals(MainNavRoutes.START, viewModel.next.value)
+            assertEquals(MainNavRoutes.START, result)
         }
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `handleIntent when data != null and device secure, no biometrics, id token is null`() {
-        val mockIntent: Intent = mock()
-        val mockUri: Uri = mock()
-        val nullIdTokenResponse = TokenResponse(
-            tokenType = "testType",
-            accessToken = testAccessToken,
-            accessTokenExpirationTime = 1L,
-            refreshToken = "testRefreshToken"
-        )
+    fun `handleIntent when data != null and device secure, no biometrics, id token is null`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+            val nullIdTokenResponse = TokenResponse(
+                tokenType = "testType",
+                accessToken = testAccessToken,
+                accessTokenExpirationTime = 1L,
+                refreshToken = "testRefreshToken"
+            )
 
-        whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
-            .thenAnswer {
-                (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(nullIdTokenResponse)
-            }
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(nullIdTokenResponse)
+                }
 
-        viewModel.handleActivityResult(
-            mockIntent
-        )
+            val result = viewModel.handleActivityResult(
+                mockIntent
+            )
 
-        verify(mockTokenRepository).setTokenResponse(nullIdTokenResponse)
-        verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
-        verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-        assertEquals(MainNavRoutes.START, viewModel.next.value)
-    }
+            verify(mockTokenRepository).setTokenResponse(nullIdTokenResponse)
+            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
+            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
+            assertEquals(MainNavRoutes.START, result)
+        }
 
     @Suppress("UNCHECKED_CAST")
     @Test
@@ -154,13 +155,13 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(true)
 
-        viewModel.handleActivityResult(
+        val result = viewModel.handleActivityResult(
             mockIntent
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.BIO_OPT_IN, viewModel.next.value)
+        assertEquals(LoginRoutes.BIO_OPT_IN, result)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -178,44 +179,44 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(true)
 
-        viewModel.handleActivityResult(
+        val result = viewModel.handleActivityResult(
             mockIntent
         )
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
-        assertEquals(LoginRoutes.PASSCODE_INFO, viewModel.next.value)
+        assertEquals(LoginRoutes.PASSCODE_INFO, result)
     }
 
     @Test
-    fun `handleIntent when data == null`() {
+    fun `handleIntent when data == null`() = runTest {
         val mockIntent: Intent = mock()
         whenever(mockIntent.data).thenReturn(null)
 
-        viewModel.handleActivityResult(
+        val result = viewModel.handleActivityResult(
             mockIntent
         )
 
         verify(mockTokenRepository, times(0)).setTokenResponse(any())
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertNull(viewModel.next.value)
+        assertNull(result)
     }
 
     @Test
-    fun `When sign fails with AuthenticationError - it displays sign in error screen`() {
+    fun `When sign fails with AuthenticationError - it displays sign in error screen`() = runTest {
         val mockIntent: Intent = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenThrow(AuthenticationError("Sign in error", AuthenticationError.ErrorType.OAUTH))
-        viewModel.handleActivityResult(
+        val result = viewModel.handleActivityResult(
             mockIntent
         )
 
         verify(mockTokenRepository, times(0)).setTokenResponse(any())
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
+        assertEquals(LoginRoutes.SIGN_IN_ERROR, result)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -232,12 +233,12 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(false)
 
-        viewModel.handleActivityResult(
+        val result = viewModel.handleActivityResult(
             mockIntent
         )
 
         verify(mockTokenRepository, times(0)).setTokenResponse(any())
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
+        assertEquals(LoginRoutes.SIGN_IN_ERROR, result)
     }
 }

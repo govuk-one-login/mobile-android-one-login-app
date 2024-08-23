@@ -55,8 +55,8 @@ object LoginRoutes {
                     openDeveloperPanel = {
                         navController.navigateToDeveloperPanel()
                     },
-                    navigatePostLogin = {
-                        navController.navigate(it) {
+                    navigatePostLogin = { destination ->
+                        navController.navigate(destination) {
                             popUpTo(navController.graph.id) {
                                 inclusive = true
                             }
