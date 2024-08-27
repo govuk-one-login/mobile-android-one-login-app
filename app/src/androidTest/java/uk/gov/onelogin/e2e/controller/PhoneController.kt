@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.Surface
 import androidx.core.content.ContextCompat
-import androidx.test.annotation.ExperimentalTestApi
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.graphics.writeToTestStorage
 import androidx.test.espresso.matcher.ViewMatchers
@@ -304,7 +303,6 @@ class PhoneController(
      * @see uk.gov.documentchecking.utils.screenshots.takeScreenshot
      * @see uk.gov.documentchecking.utils.screenshots.screenshot
      */
-    @ExperimentalTestApi
     fun screenshot(suffix: String) {
         val screenshotsFolder = StringBuilder(
             "/screenshots"
