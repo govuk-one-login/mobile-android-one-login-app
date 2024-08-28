@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -40,17 +41,23 @@ class MainActivityViewModelTest {
         "testRefreshToken"
     )
 
-    private val viewModel = MainActivityViewModel(
-        mockBioPrefHandler,
-        mockTokenRepository,
-        mockAutoInitialiseSecureStore
-    )
+    private lateinit var viewModel: MainActivityViewModel
 
     @BeforeEach
     fun setup() {
+        viewModel = MainActivityViewModel(
+            mockBioPrefHandler,
+            mockTokenRepository,
+            mockAutoInitialiseSecureStore
+        )
         viewModel.next.observeForever(observer)
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
+    }
+
+    @AfterEach
+    fun tearDown() {
+        viewModel.next.removeObserver(observer)
     }
 
     @Test

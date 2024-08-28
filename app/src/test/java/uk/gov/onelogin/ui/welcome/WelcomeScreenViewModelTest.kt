@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
@@ -79,6 +80,11 @@ class WelcomeScreenViewModelTest {
         viewModel.next.observeForever(observer)
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
+    }
+
+    @AfterEach
+    fun tearDown() {
+        viewModel.next.removeObserver(observer)
     }
 
     @Suppress("UNCHECKED_CAST")
