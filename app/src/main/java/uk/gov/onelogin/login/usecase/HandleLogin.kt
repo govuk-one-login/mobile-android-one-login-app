@@ -46,9 +46,8 @@ class HandleLoginImpl @Inject constructor(
         }
     }
 
-    private fun isTokenExpiredOrMissing(): Boolean {
-        return getTokenExpiry()?.let { isTimestampExpired(it) } ?: true
-    }
+    private fun isTokenExpiredOrMissing() =
+        getTokenExpiry()?.let { isTimestampExpired(it) } ?: true
 
     private fun isTimestampExpired(expiryTimestamp: Long) =
         expiryTimestamp < System.currentTimeMillis()

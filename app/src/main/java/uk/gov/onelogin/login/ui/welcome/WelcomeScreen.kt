@@ -1,9 +1,16 @@
 package uk.gov.onelogin.login.ui.welcome
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
@@ -15,9 +22,25 @@ fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     navigateToOfflineErrorScreen: () -> Unit = { },
     shouldTryAgain: () -> Boolean = { false },
-    openDeveloperPanel: () -> Unit = { }
+    openDeveloperPanel: () -> Unit = { },
+    navigatePostLogin: (String) -> Unit = { }
 ) {
-    val context = LocalContext.current
+    val context = LocalContext.current as FragmentActivity
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { intent ->
+                context.lifecycleScope.launch {
+                    viewModel.handleActivityResult(intent = intent)?.let {
+                        navigatePostLogin(it)
+                    }
+                }
+            }
+        }
+    }
+
     LandingPage(
         landingPageParameters =
         LandingPageParameters(
@@ -32,7 +55,7 @@ fun WelcomeScreen(
             ),
             onPrimary = {
                 if (viewModel.onlineChecker.isOnline()) {
-                    viewModel.onPrimary(context)
+                    viewModel.onPrimary(launcher)
                 } else {
                     navigateToOfflineErrorScreen()
                 }
@@ -52,7 +75,7 @@ fun WelcomeScreen(
         if (!shouldTryAgain()) return@LaunchedEffect
 
         if (viewModel.onlineChecker.isOnline()) {
-            viewModel.onPrimary(context)
+            viewModel.onPrimary(launcher)
         } else {
             navigateToOfflineErrorScreen()
         }

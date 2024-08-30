@@ -9,7 +9,7 @@ import org.junit.Rule
 
 open class TestCase {
     @get:Rule(order = 1)
-    val hiltRule = HiltAndroidRule(this)
+    val hiltRule by lazy { HiltAndroidRule(this) }
 
     @get:Rule(order = 2)
     var testNameRule: TestCaseNameWatcher = TestCaseNameWatcher()

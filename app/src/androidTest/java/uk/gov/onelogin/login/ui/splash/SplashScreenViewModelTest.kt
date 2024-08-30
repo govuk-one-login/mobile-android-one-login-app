@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -40,6 +41,13 @@ class SplashScreenViewModelTest : TestCase() {
     fun setup() {
         Handler(Looper.getMainLooper()).post {
             viewModel.next.observeForever(stringObserver)
+        }
+    }
+
+    @After
+    fun tearDown() {
+        Handler(Looper.getMainLooper()).post {
+            viewModel.next.removeObserver(stringObserver)
         }
     }
 

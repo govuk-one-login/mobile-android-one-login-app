@@ -80,11 +80,9 @@ fun SplashScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.apply {
-            lifecycleOwner.lifecycle.addObserver(viewModel)
-            viewModel.next.observe(context) {
-                nextScreen(it)
-            }
+        lifecycleOwner.lifecycle.addObserver(viewModel)
+        viewModel.next.observe(context) {
+            nextScreen(it)
         }
     }
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {

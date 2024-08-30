@@ -54,6 +54,13 @@ object LoginRoutes {
                     },
                     openDeveloperPanel = {
                         navController.navigateToDeveloperPanel()
+                    },
+                    navigatePostLogin = { destination ->
+                        navController.navigate(destination) {
+                            popUpTo(navController.graph.id) {
+                                inclusive = true
+                            }
+                        }
                     }
                 )
             }
@@ -116,13 +123,13 @@ object LoginRoutes {
 
     private fun splashScreenNavHandler(
         navController: NavHostController
-    ): (String) -> Unit = {
+    ): (String) -> Unit = { destination ->
         val comingFromLockScreen = navController.hasPreviousBackStack()
-        val authSuccessful = it == MainNavRoutes.START
+        val authSuccessful = destination == MainNavRoutes.START
         if (comingFromLockScreen && authSuccessful) {
             navController.popBackStack()
         } else {
-            navController.navigate(it) {
+            navController.navigate(destination) {
                 popUpTo(navController.graph.id) {
                     inclusive = true
                 }

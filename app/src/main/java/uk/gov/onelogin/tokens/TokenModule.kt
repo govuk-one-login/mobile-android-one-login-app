@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.gov.onelogin.tokens.usecases.GetEmail
 import uk.gov.onelogin.tokens.usecases.GetEmailImpl
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
@@ -27,11 +29,17 @@ import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
 @Module
 @InstallIn(ViewModelComponent::class)
+@Suppress("TooManyFunctions")
 interface TokenModule {
     @Binds
-    fun bindGetFromSecureStore(
+    fun bindGetFromTokenSecureStore(
         getFromSecureStore: GetFromTokenSecureStoreImpl
     ): GetFromTokenSecureStore
+
+    @Binds
+    fun bindGetFromOpenSecureStore(
+        getFromOpenSecureStore: GetFromOpenSecureStoreImpl
+    ): GetFromOpenSecureStore
 
     @Binds
     fun bindSaveToSecureStore(
