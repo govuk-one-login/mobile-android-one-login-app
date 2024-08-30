@@ -113,6 +113,10 @@ class PhoneController(
         Thread.sleep(postActionDelay)
     }
 
+    fun resetDevice() {
+        device.executeShellCommand("adb shell pm clear uk.gov.onelogin.build")
+    }
+
     /**
      * Taps the 'Allow' button that's shown on the Device.
      *

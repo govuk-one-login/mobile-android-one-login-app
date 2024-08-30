@@ -10,13 +10,14 @@ import uk.gov.onelogin.emulator.SystemImageSource
 import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_ATD
 import uk.gov.extensions.BaseExtensions.generateDeviceConfigurations
 import uk.gov.extensions.BaseExtensions.generateGetHardwareProfilesTask
+import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_PLAYSTORE
 
 plugins {
     id("kotlin-android")
 }
 
 private val _systemImageSources = listOf(
-    GOOGLE_ATD
+    GOOGLE_PLAYSTORE
 )
 val managedDeviceHardwareProfiles: Provider<List<String>> by rootProject.extra(
     rootProject.provider {
