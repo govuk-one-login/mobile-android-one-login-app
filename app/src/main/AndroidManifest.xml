@@ -38,10 +38,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="mobile${flavorSuffix}.account.gov.uk"
-                    android:path="/redirect"
-                    android:scheme="https" />
+                <data android:scheme="https"/>
+                <data android:host="mobile${flavorSuffix}.account.gov.uk"/>
+                <data android:path="/redirect"/>
             </intent-filter>
         </activity>
     </application>

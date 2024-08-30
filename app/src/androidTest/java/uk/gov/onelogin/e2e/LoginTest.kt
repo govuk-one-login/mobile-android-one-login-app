@@ -9,16 +9,18 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -38,17 +40,7 @@ import uk.gov.onelogin.credentialchecker.BiometricManager
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.credentialchecker.CredentialCheckerModule
-import uk.gov.onelogin.e2e.controller.BySelectorEntry
-import uk.gov.onelogin.e2e.controller.PhoneController
 import uk.gov.onelogin.e2e.controller.TestCase
-import uk.gov.onelogin.e2e.selectors.BySelectors.bioOptInTitle
-import uk.gov.onelogin.e2e.selectors.BySelectors.continueButton
-import uk.gov.onelogin.e2e.selectors.BySelectors.enableBiometricsButton
-import uk.gov.onelogin.e2e.selectors.BySelectors.homeTitle
-import uk.gov.onelogin.e2e.selectors.BySelectors.loginButton
-import uk.gov.onelogin.e2e.selectors.BySelectors.loginErrorTitle
-import uk.gov.onelogin.e2e.selectors.BySelectors.loginTitle
-import uk.gov.onelogin.e2e.selectors.BySelectors.passcodeInfoTitle
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
@@ -73,10 +65,7 @@ class LoginTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
-//    @get:Rule(order = 3)
-//    val flakyTestRule = FlakyTestRule()
-
-    @get:Rule(order = 4)
+    @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()
 
     private val persistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
@@ -94,18 +83,12 @@ class LoginTest : TestCase() {
             "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
     )
 
-    override val phoneController = PhoneController(
-        phoneActionTimeout = 10000L,
-        testNameRule = testNameRule
-    )
-
     @Before
     fun setup() {
         hiltRule.inject()
         secureStore.delete(Keys.PERSISTENT_ID_KEY)
     }
 
-    //    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         tokenRepository.setTokenResponse(
@@ -118,158 +101,138 @@ class LoginTest : TestCase() {
         )
 
         startApp()
-        phoneController.apply {
-            click(
-                WAIT_FOR_OBJECT_TIMEOUT,
-                loginButton(context) to "Press login button"
-            )
+        clickLogin()
 
-            val authorizeUrl = Uri.parse(
-                resources.getString(
-                    R.string.stsUrl,
-                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-                )
+        val authorizeUrl = Uri.parse(
+            resources.getString(
+                R.string.stsUrl,
+                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
-            val redirectUrl = Uri.parse(
-                resources.getString(
-                    R.string.webBaseUrl,
-                    resources.getString(R.string.webRedirectEndpoint)
-                )
+        )
+        val redirectUrl = Uri.parse(
+            resources.getString(
+                R.string.webBaseUrl,
+                resources.getString(R.string.webRedirectEndpoint)
             )
-            val tokenEndpoint = Uri.parse(
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
                 context.resources.getString(
-                    R.string.stsUrl,
-                    context.resources.getString(
-                        R.string.tokenExchangeEndpoint
-                    )
+                    R.string.tokenExchangeEndpoint
                 )
             )
-            val loginConfig = LoginSessionConfiguration(
-                authorizeEndpoint = authorizeUrl,
-                clientId = resources.getString(R.string.stsClientId),
-                locale = LocaleUtils.getLocaleAsSessionConfig(context),
-                redirectUri = redirectUrl,
-                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-                tokenEndpoint = tokenEndpoint,
-                persistentSessionId = null
-            )
+        )
+        val loginConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeUrl,
+            clientId = resources.getString(R.string.stsClientId),
+            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            redirectUri = redirectUrl,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = null
+        )
 
-            verify(mockLoginSession).present(any(), eq(loginConfig))
-        }
+        verify(mockLoginSession).present(any(), eq(loginConfig))
     }
 
-    //    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestWithPersistentId() {
         tokenRepository.setTokenResponse(tokenResponse)
 
         startApp()
+        clickLogin()
 
-        phoneController.apply {
-            click(
-                WAIT_FOR_OBJECT_TIMEOUT,
-                loginButton(context) to "Press login button"
+        val authorizeUrl = Uri.parse(
+            resources.getString(
+                R.string.stsUrl,
+                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
-
-            val authorizeUrl = Uri.parse(
-                resources.getString(
-                    R.string.stsUrl,
-                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-                )
+        )
+        val redirectUrl = Uri.parse(
+            resources.getString(
+                R.string.webBaseUrl,
+                resources.getString(R.string.webRedirectEndpoint)
             )
-            val redirectUrl = Uri.parse(
-                resources.getString(
-                    R.string.webBaseUrl,
-                    resources.getString(R.string.webRedirectEndpoint)
-                )
-            )
-            val tokenEndpoint = Uri.parse(
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
                 context.resources.getString(
-                    R.string.stsUrl,
-                    context.resources.getString(
-                        R.string.tokenExchangeEndpoint
-                    )
+                    R.string.tokenExchangeEndpoint
                 )
             )
-            val loginConfig = LoginSessionConfiguration(
-                authorizeEndpoint = authorizeUrl,
-                clientId = resources.getString(R.string.stsClientId),
-                locale = LocaleUtils.getLocaleAsSessionConfig(context),
-                redirectUri = redirectUrl,
-                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-                tokenEndpoint = tokenEndpoint,
-                persistentSessionId = persistentId
-            )
+        )
+        val loginConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeUrl,
+            clientId = resources.getString(R.string.stsClientId),
+            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            redirectUri = redirectUrl,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
+        )
 
-            verify(mockLoginSession).present(any(), eq(loginConfig))
-        }
+        verify(mockLoginSession).present(any(), eq(loginConfig))
     }
 
-    //    @FlakyTest
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
-        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
+        runBlocking {
+            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+        }
 
         startApp()
 
-        phoneController.apply {
-            click(
-                WAIT_FOR_OBJECT_TIMEOUT,
-                loginButton(context) to "Press login button"
-            )
+        clickLogin()
 
-            val authorizeUrl = Uri.parse(
-                resources.getString(
-                    R.string.stsUrl,
-                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-                )
+        val authorizeUrl = Uri.parse(
+            resources.getString(
+                R.string.stsUrl,
+                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
-            val redirectUrl = Uri.parse(
-                resources.getString(
-                    R.string.webBaseUrl,
-                    resources.getString(R.string.webRedirectEndpoint)
-                )
+        )
+        val redirectUrl = Uri.parse(
+            resources.getString(
+                R.string.webBaseUrl,
+                resources.getString(R.string.webRedirectEndpoint)
             )
-            val tokenEndpoint = Uri.parse(
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
                 context.resources.getString(
-                    R.string.stsUrl,
-                    context.resources.getString(
-                        R.string.tokenExchangeEndpoint
-                    )
+                    R.string.tokenExchangeEndpoint
                 )
             )
-            val loginConfig = LoginSessionConfiguration(
-                authorizeEndpoint = authorizeUrl,
-                clientId = resources.getString(R.string.stsClientId),
-                locale = LocaleUtils.getLocaleAsSessionConfig(context),
-                redirectUri = redirectUrl,
-                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-                tokenEndpoint = tokenEndpoint,
-                persistentSessionId = persistentId
-            )
+        )
+        val loginConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeUrl,
+            clientId = resources.getString(R.string.stsClientId),
+            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            redirectUri = redirectUrl,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
+        )
 
-            verify(mockLoginSession).present(any(), eq(loginConfig))
-        }
+        verify(mockLoginSession).present(any(), eq(loginConfig))
     }
 
+    // App remains on sign in page when not data is returned in intent from login
     @Test
-//    @FlakyTest
-    @Ignore("Currently UI navigation is not working")
     fun handleActivityResultNullData() {
         setupActivityForResult(
             Intent()
         )
 
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            loginTitle(context)
-        )
+        clickLogin()
+
+        nodeWithTextExists(resources.getString(R.string.app_signInTitle))
         verify(mockLoginSession, times(0)).finalise(any(), any())
     }
 
     @Test
-//    @FlakyTest
-    @Ignore("Currently UI navigation is not working")
     fun handleActivityResultWithDataButLoginThrows() {
         whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
         setupActivityForResult(
@@ -279,20 +242,11 @@ class LoginTest : TestCase() {
             )
         )
 
-        phoneController.click(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            BySelectorEntry(loginButton(context), "login click")
-        )
-
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            loginErrorTitle(context)
-        )
+        composeRule.onNodeWithText("Sign in").performClick()
+        nodeWithTextExists("There was a problem signing you in")
     }
 
     @Test
-//    @FlakyTest
-    @Ignore("Currently UI navigation is not working")
     fun handleActivityResultWithDataUnsecured() {
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
@@ -303,53 +257,28 @@ class LoginTest : TestCase() {
             )
         )
 
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            passcodeInfoTitle(context)
-        )
-        phoneController.click(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            continueButton(context) to "Continue button"
-        )
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            homeTitle(context)
-        )
+        clickLogin()
+        nodeWithTextExists(resources.getString(R.string.app_noPasscodePatternSetupTitle))
+        composeRule.onNodeWithText(resources.getString(R.string.app_continue))
+        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @Test
-//    @FlakyTest
-    @Ignore("Currently UI navigation is not working")
-    fun handleActivityResultWithDataBioOptIn() = runTest {
+    fun handleActivityResultWithDataBioOptIn() {
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
-        phoneController.click(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            BySelectorEntry(loginButton(context), "login click")
-        )
+        clickLogin()
 
-        phoneController.waitUntilIdle(10000L)
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            bioOptInTitle(context)
-        )
-        phoneController.click(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            enableBiometricsButton(context) to "Enable biometrics button"
-        )
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            homeTitle(context)
-        )
+        nodeWithTextExists(resources.getString(R.string.app_enableBiometricsTitle))
+        composeRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsButton))
+        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @Test
-//    @FlakyTest
-    @Ignore("Currently UI navigation is not working")
     fun handleActivityResultWithDataPasscode() {
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
@@ -358,11 +287,9 @@ class LoginTest : TestCase() {
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
 
-        phoneController.assertElementExists(
-            WAIT_FOR_OBJECT_TIMEOUT,
-            homeTitle(context)
-        )
-        phoneController.screenshot("home")
+        clickLogin()
+
+        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     private fun setupActivityForResult(returnedIntent: Intent) {
@@ -393,6 +320,16 @@ class LoginTest : TestCase() {
         composeRule.setContent {
             OneLoginApp()
         }
+    }
+
+    private fun clickLogin() {
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
+    }
+
+    private fun nodeWithTextExists(text: String) {
+        composeRule.waitForIdle()
+        composeRule.onNodeWithText(text).isDisplayed()
     }
 
     private fun mockGoodLogin() {
