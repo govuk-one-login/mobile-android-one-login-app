@@ -39,12 +39,16 @@ class SplashScreenViewModelTest : TestCase() {
 
     @Before
     fun setup() {
-        viewModel.next.observeForever(stringObserver)
+        Handler(Looper.getMainLooper()).post {
+            viewModel.next.observeForever(stringObserver)
+        }
     }
 
     @After
     fun tearDown() {
-        viewModel.next.removeObserver(stringObserver)
+        Handler(Looper.getMainLooper()).post {
+            viewModel.next.removeObserver(stringObserver)
+        }
     }
 
     @Test
