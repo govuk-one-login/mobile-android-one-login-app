@@ -24,7 +24,6 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     openDeveloperPanel: () -> Unit = { }
 ) {
-    viewModel.saveTokens()
     val tokens = viewModel.getTokens()
     val email = viewModel.email
     TitledPage(

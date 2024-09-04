@@ -2,7 +2,7 @@ package uk.gov.onelogin.login.state
 
 sealed class LocalAuthStatus {
     data class Success(
-        val payload: String
+        val payload: Map<String, String?>
     ) : LocalAuthStatus()
     data object UserCancelled : LocalAuthStatus()
     data object BioCheckFailed : LocalAuthStatus()

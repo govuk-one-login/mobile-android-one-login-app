@@ -15,8 +15,8 @@ fun interface GetFromOpenSecureStore {
      * in which case, null is returned
      */
     suspend operator fun invoke(
-        key: String
-    ): String?
+        vararg key: String
+    ): Map<String, String?>
 }
 
 class GetFromOpenSecureStoreImpl @Inject constructor(
@@ -24,8 +24,8 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
     private val secureStore: SecureStore
 ) : GetFromOpenSecureStore {
     override suspend fun invoke(
-        key: String
-    ): String? {
+        vararg key: String
+    ): Map<String, String?> {
         val retrievalEvent = secureStore.retrieve(
             key = key
         )
@@ -33,9 +33,9 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
         return when (retrievalEvent) {
             is RetrievalEvent.Failed -> {
                 Log.e(this::class.simpleName, "Reason: ${retrievalEvent.reason}")
-                null
+                mapOf()
             }
-            is RetrievalEvent.Success -> retrievalEvent.value
+            is RetrievalEvent.Success -> retrievalEvent.values
         }
     }
 }

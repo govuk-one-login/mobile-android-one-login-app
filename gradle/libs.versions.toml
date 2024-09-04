@@ -46,8 +46,12 @@ firebaseBom = "33.1.2"
 classgraph = "4.8.174"
 govuk-ui = "4.4.1"
 compose-runtime = "1.6.8"
+security-crypto = "1.0.0"
 
 [libraries]
+appauth = { group = "net.openid", name = "appauth", version = "0.11.1" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
+
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 components = "uk.gov.android:components:4.4.1"

@@ -23,7 +23,7 @@ class GetPersistentIdImpl @Inject constructor(
         var persistentId = tokenRepository.getTokenResponse()
             ?.idToken?.extractPersistentIdFromIdToken()
         if (persistentId == null) {
-            persistentId = getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)
+            persistentId = getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)[Keys.PERSISTENT_ID_KEY]
         }
         return persistentId
     }

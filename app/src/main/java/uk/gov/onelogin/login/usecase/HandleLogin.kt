@@ -29,17 +29,26 @@ class HandleLoginImpl @Inject constructor(
         callback: (LocalAuthStatus) -> Unit
     ) {
         if (!isTokenExpiredOrMissing() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
-            getFromTokenSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY) {
+            getFromTokenSecureStore(
+                fragmentActivity,
+                Keys.ACCESS_TOKEN_KEY,
+                Keys.ID_TOKEN_KEY
+            ) {
                 if (it is LocalAuthStatus.Success) {
-                    tokenRepository.setTokenResponse(
-                        TokenResponse(
-                            accessToken = it.payload,
-                            tokenType = "",
-                            accessTokenExpirationTime = getTokenExpiry() ?: 0
+                    it.payload[Keys.ACCESS_TOKEN_KEY]?.let { accessToken ->
+                        tokenRepository.setTokenResponse(
+                            TokenResponse(
+                                accessToken = accessToken,
+                                tokenType = "",
+                                accessTokenExpirationTime = getTokenExpiry() ?: 0,
+                                idToken = it.payload[Keys.ID_TOKEN_KEY]
+                            )
                         )
-                    )
+                        callback(it)
+                    } ?: callback(LocalAuthStatus.SecureStoreError)
+                } else {
+                    callback(it)
                 }
-                callback(it)
             }
         } else {
             callback(LocalAuthStatus.ManualSignIn)

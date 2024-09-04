@@ -25,6 +25,10 @@ class HomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
     val email = getEmail() ?: ""
 
+    init {
+        saveTokens()
+    }
+
     fun saveTokens() {
         val tokens = tokenRepository.getTokenResponse()
         viewModelScope.launch {

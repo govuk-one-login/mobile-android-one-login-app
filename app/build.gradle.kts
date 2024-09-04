@@ -134,6 +134,16 @@ androidComponents {
 }
 
 dependencies {
+    implementation(
+        files(
+            "/Users/abradbury/AndroidStudioProjects/mobileandroidsecurestore/app/build/outputs/aar/app-release.aar"
+        )
+    )
+    implementation(
+        files(
+            "/Users/abradbury/AndroidStudioProjects/mobileandroidauthentication/app/build/outputs/aar/app-release.aar"
+        )
+    )
     listOf(
         libs.androidx.compose.ui.junit4,
         libs.androidx.navigation.testing,
@@ -173,10 +183,13 @@ dependencies {
         libs.pages,
         libs.slf4j.api,
         libs.theme,
-        libs.secure.store,
-        libs.authentication,
+//        libs.secure.store,
+//        libs.authentication,
+        libs.appauth,
+        libs.security.crypto,
         libs.network,
         libs.jose4j,
+        libs.runtime.livedata,
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
