@@ -21,6 +21,9 @@ import androidx.compose.ui.unit.dp
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.theme.disabled_button
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.ui.buttonElevation
+import uk.gov.onelogin.ui.buttonPaddingHorizontal
+import uk.gov.onelogin.ui.buttonPaddingVertical
 
 
 @Composable
@@ -34,8 +37,11 @@ internal fun DefaultPrimaryButton(
         modifier = modifier.then(
             Modifier.fillMaxWidth()
         ),
-        contentPadding = PaddingValues(vertical = 13.dp, horizontal = 16.dp), // TODO extract resource
-        elevation = ButtonDefaults.buttonElevation(0.dp),
+        contentPadding = PaddingValues(
+            vertical = buttonPaddingVertical,
+            horizontal = buttonPaddingHorizontal
+        ),
+        elevation = ButtonDefaults.buttonElevation(buttonElevation),
         enabled = isEnabled,
         shape = RectangleShape,
         colors = primaryButtonColors(),
@@ -61,8 +67,11 @@ internal fun DefaultTextButton(
         modifier = modifier.then(
             Modifier.fillMaxWidth()
         ),
-        contentPadding = PaddingValues(vertical = 13.dp, horizontal = 16.dp), // TODO extract resource
-        elevation = ButtonDefaults.buttonElevation(0.dp),
+        contentPadding = PaddingValues(
+            vertical = buttonPaddingVertical,
+            horizontal = buttonPaddingHorizontal
+        ),
+        elevation = ButtonDefaults.buttonElevation(buttonElevation),
         enabled = isEnabled,
         shape = RectangleShape,
         colors = textButtonColors(),
