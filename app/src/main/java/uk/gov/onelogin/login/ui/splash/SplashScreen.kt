@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -28,10 +29,10 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
+import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.developer.DeveloperTools
 
-@Preview
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
@@ -42,6 +43,31 @@ fun SplashScreen(
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 
+    SplashBody(
+       isUnlock =  viewModel.showUnlock.value,
+        onLogin = { viewModel.login(context, false) },
+        onOpenDeveloperPortal = openDeveloperPanel
+    )
+
+    LaunchedEffect(key1 = Unit) {
+        lifecycleOwner.lifecycle.addObserver(viewModel)
+        viewModel.next.observe(context) {
+            nextScreen(it)
+        }
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        if (!viewModel.showUnlock.value) {
+            viewModel.login(context, fromLockScreen)
+        }
+    }
+}
+
+@Composable
+internal fun SplashBody(
+    isUnlock: Boolean,
+    onLogin: () -> Unit,
+    onOpenDeveloperPortal: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,12 +83,12 @@ fun SplashScreen(
                 modifier = Modifier
                     .weight(1F)
                     .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
-                        openDeveloperPanel()
+                        onOpenDeveloperPortal()
                     }
                     .testTag(stringResource(id = R.string.splashIconTestTag))
             )
         )
-        if (viewModel.showUnlock.value) {
+        if (isUnlock) {
             GdsHeading(
                 headingParameters = HeadingParameters(
                     size = HeadingSize.H3(),
@@ -71,23 +97,35 @@ fun SplashScreen(
                     backgroundColor = colorResource(id = R.color.govuk_blue),
                     modifier = Modifier
                         .clickable {
-                            viewModel.login(context, false)
+                            onLogin()
                         }
                         .padding(bottom = mediumPadding)
                 )
             )
         }
     }
+}
 
-    LaunchedEffect(key1 = Unit) {
-        lifecycleOwner.lifecycle.addObserver(viewModel)
-        viewModel.next.observe(context) {
-            nextScreen(it)
-        }
+@PreviewScreenSizes
+@Composable
+internal fun SplashScreenPreview() {
+    GdsTheme {
+        SplashBody(
+            isUnlock = false,
+            onLogin = {},
+            onOpenDeveloperPortal = {},
+        )
     }
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        if (!viewModel.showUnlock.value) {
-            viewModel.login(context, fromLockScreen)
-        }
+}
+
+@Preview
+@Composable
+internal fun UnlockScreenPreview() {
+    GdsTheme {
+        SplashBody(
+            isUnlock = true,
+            onLogin = {},
+            onOpenDeveloperPortal = {},
+        )
     }
 }
