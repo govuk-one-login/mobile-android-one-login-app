@@ -13,6 +13,7 @@ import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
 import uk.gov.onelogin.login.ui.splash.SplashScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
 import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.optin.ui.OptInScreen
 import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
 import uk.gov.onelogin.ui.error.ErrorRoutes.navigateToOfflineErrorScreen
 
@@ -35,7 +36,8 @@ object LoginRoutes {
                 SplashScreen(
                     fromLockScreen = comingFromLockScreen,
                     nextScreen = splashScreenNavHandler(navController),
-                    openDeveloperPanel = { navController.navigateToDeveloperPanel() }
+                    openDeveloperPanel = { navController.navigateToDeveloperPanel() },
+                    onAnalyticsOptIn = { navController.navigate(ANALYTICS_OPT_IN) }
                 )
             }
 
@@ -118,6 +120,21 @@ object LoginRoutes {
                     }
                 }
             }
+
+            composable(
+                route = ANALYTICS_OPT_IN
+            ) {
+                BackHandler(true) {
+                    // do nothing
+                }
+                OptInScreen {
+                    navController.navigate(WELCOME) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -146,4 +163,5 @@ object LoginRoutes {
     const val PASSCODE_INFO: String = "$ROOT/passcode_error"
     const val BIO_OPT_IN: String = "$ROOT/bioOptIn"
     const val SIGN_IN_ERROR: String = "$ROOT/sign_in_error"
+    const val ANALYTICS_OPT_IN: String = "$ROOT/analyticsOptIn"
 }

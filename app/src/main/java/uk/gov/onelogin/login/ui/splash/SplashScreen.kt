@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,9 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LifecycleEventEffect
+import kotlinx.coroutines.flow.collectLatest
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
@@ -32,32 +32,41 @@ import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     fromLockScreen: Boolean = false,
     nextScreen: (String) -> Unit = {},
-    openDeveloperPanel: () -> Unit = {}
+    openDeveloperPanel: () -> Unit = {},
+    onAnalyticsOptIn: () -> Unit = {},
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
 
     SplashBody(
-       isUnlock =  viewModel.showUnlock.value,
+        isUnlock =  viewModel.showUnlock.value,
         onLogin = { viewModel.login(context, false) },
         onOpenDeveloperPortal = openDeveloperPanel
     )
 
-    LaunchedEffect(key1 = Unit) {
+    DisposableEffect(key1 = lifecycleOwner) {
         lifecycleOwner.lifecycle.addObserver(viewModel)
         viewModel.next.observe(context) {
             nextScreen(it)
         }
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(viewModel)
+        }
     }
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        if (!viewModel.showUnlock.value) {
-            viewModel.login(context, fromLockScreen)
+    LaunchedEffect(key1 = Unit) {
+        optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
+            when {
+                isRequired -> onAnalyticsOptIn()
+                !viewModel.showUnlock.value -> viewModel.login(context, fromLockScreen)
+            }
         }
     }
 }
