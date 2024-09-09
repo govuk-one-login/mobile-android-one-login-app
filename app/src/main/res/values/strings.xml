@@ -97,4 +97,11 @@
 
     <string name="assertionUrl" translatable="false">https://app-integrity-spike.mobile.dev.account.gov.uk%1$s</string>
 
+    <!-- Analytics Opt In   -->
+    <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
+    <string name="app_analyticsPermissionBody">You can help the One Login team make improvements by sharing analytics about how you use the app.\n\nThese analytics are anonymous. They show us what is and is not working, and help make the app better.\n\nYou can stop sharing these analytics any time. Go to ‘Apps’ in  your phone’s settings, and select the GOV.UK One Login app to see or change your app settings.</string>
+    <string name="app_privacyNoticeLink">Read more about this in the GOV.UK One Login privacy notice</string>
+    <string name="app_shareAnalyticsButton">Share analytics</string>
+    <string name="app_doNotShareAnalytics">Do not share analytics</string>
+    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice</string>
 </resources>
