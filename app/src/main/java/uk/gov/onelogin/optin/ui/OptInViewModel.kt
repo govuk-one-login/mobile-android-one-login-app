@@ -33,7 +33,7 @@ class OptInViewModel @Inject constructor(
     fun optOut() {
         choice.choose {
             viewModelScope.launch {
-                repository.optIn()
+                repository.optOut()
             }
         }
     }
