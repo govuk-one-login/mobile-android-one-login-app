@@ -34,7 +34,7 @@ class OptInViewModelTest {
     @Test
     fun `initial UI state is PreChoice`() = runTest {
         // Given a new OptInViewModel
-        // Then the uiState is OptInUIState.PreChoice
+        // Then the `uiState` is OptInUIState.PreChoice
         val state = viewModel.uiState.first()
         assertEquals(expected = OptInUIState.PreChoice, state)
     }
@@ -44,7 +44,7 @@ class OptInViewModelTest {
         // Given a new OptInViewModel
         // When calling optIn()
         viewModel.optIn()
-        // Then the uiState is OptInUIState.PostChoice
+        // Then the `uiState` is OptInUIState.PostChoice
         val state = viewModel.uiState.first()
         assertEquals(expected = OptInUIState.PostChoice, state)
     }
@@ -54,7 +54,7 @@ class OptInViewModelTest {
         // Given a new OptInViewModel
         // When calling optOut()
         viewModel.optOut()
-        // Then the uiState is OptInUIState.PostChoice
+        // Then the `uiState` is OptInUIState.PostChoice
         val state = viewModel.uiState.first()
         assertEquals(expected = OptInUIState.PostChoice, state)
     }

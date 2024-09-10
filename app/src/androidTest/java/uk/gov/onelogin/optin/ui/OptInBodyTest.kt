@@ -43,33 +43,33 @@ class OptInBodyTest {
 
     @Test
     fun buttonsAreEnabledPreChoice() {
-        // Given the OptInBody composable in the OptInUIState.PreChoice state
+        // Given the OptInBody Composable in the OptInUIState.PreChoice state
         composeTestRule.setContent {
             OptInBody(OptInUIState.PreChoice, {}, {}, {})
         }
-        // Then the primaryButton and textButton are enabled
+        // Then enable the `primaryButton` and `textButton`
         composeTestRule.onNode(primaryButton).assertIsEnabled()
         composeTestRule.onNode(textButton).assertIsEnabled()
     }
 
     @Test
     fun buttonsAreDisabledPostChoice() {
-        // Given the OptInBody composable in the OptInUIState.PostChoice state
+        // Given the OptInBody Composable in the OptInUIState.PostChoice state
         composeTestRule.setContent {
             OptInBody(OptInUIState.PostChoice, {}, {}, {})
         }
-        // Then the primaryButton and textButton are disabled
+        // Then disable the `primaryButton` and `textButton`
         composeTestRule.onNode(primaryButton).assertIsNotEnabled()
         composeTestRule.onNode(textButton).assertIsNotEnabled()
     }
 
     @Test
     fun verifyStrings() {
-        // Given the OptInBody composable
+        // Given the OptInBody Composable
         composeTestRule.setContent {
             OptInBody(OptInUIState.PreChoice, {}, {}, {})
         }
-        // Then
+        // Then the UI elements are visible
         composeTestRule.onNode(header).assertIsDisplayed()
         composeTestRule.onNode(content).assertIsDisplayed()
         composeTestRule.onNode(privacyNotice).assertIsDisplayed()
@@ -79,7 +79,7 @@ class OptInBodyTest {
 
     @Test
     fun onShare() {
-        // Given the OptInBody composable
+        // Given the OptInBody Composable
         var actual = false
         composeTestRule.setContent {
             OptInBody(
@@ -89,15 +89,15 @@ class OptInBodyTest {
                 onDoNotShare = {}
             )
         }
-        // When clicking the primaryButton
+        // When clicking the `primaryButton`
         composeTestRule.onNode(primaryButton).performClick()
-        // Then onShare is called and the variable is changed to true
+        // Then onShare() is called and the variable is true
         assertEquals(true, actual)
     }
 
     @Test
     fun onDoNotShare() {
-        // Given the OptInBody composable
+        // Given the OptInBody Composable
         var actual = false
         composeTestRule.setContent {
             OptInBody(
@@ -107,15 +107,15 @@ class OptInBodyTest {
                 onDoNotShare = { actual = true }
             )
         }
-        // When clicking the textButton
+        // When clicking the `textButton`
         composeTestRule.onNode(textButton).performClick()
-        // Then onDoNotShare is called and the variable is changed to true
+        // Then onDoNotShare() is called and the variable is true
         assertEquals(true, actual)
     }
 
     @Test
     fun onPrivacyNotice() {
-        // Given the OptInBody composable
+        // Given the OptInBody Composable
         var actual = false
         composeTestRule.setContent {
             OptInBody(
@@ -126,9 +126,9 @@ class OptInBodyTest {
             )
         }
         composeTestRule.onRoot().printToLog("Tommy")
-        // When clicking the privacyNotice
+        // When clicking the `privacyNotice`
         composeTestRule.onNode(privacyNotice).performClick()
-        // Then onPrivacyNotice is called and the variable is changed to true
+        // Then onPrivacyNotice() is called and the variable is changed to true
         assertEquals(true, actual)
     }
 }

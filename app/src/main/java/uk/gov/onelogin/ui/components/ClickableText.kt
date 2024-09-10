@@ -14,9 +14,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 
 /**
- * Adds inlineContent Map to ClickableText
+ * Adds `inlineContent` Map to ClickableText
  * identical otherwise to the Android provided ClickableText
- * inlineContent Map is how the Text Composable does inline content
+ * `inlineContent` Map is how the Text Composable does inline content
  */
 @SuppressWarnings("kotlin:S107") // Suppressing due to matching Android
 @Composable

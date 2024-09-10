@@ -14,7 +14,7 @@ import kotlinx.coroutines.test.setMain
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 
 /*
-* I am deliberately testing the public API provided by interface OptInRepository separately
+* Deliberately testing the public API provided by interface OptInRepository separately
 * from the concrete implementation, AnalyticsOptInRepository
 *  */
 @ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class OptInRepositoryTest {
         // Given an unset opt in preference
         // When accessing the first value of isOptInPreferenceRequired
         val actual = repository.isOptInPreferenceRequired().first()
-        // Then the expected boolean value is true
+        // Then the expected `boolean` value is true
         assertEquals(expected = true, actual)
     }
 
@@ -47,7 +47,7 @@ class OptInRepositoryTest {
         // Given an unset opt in preference
         // When accessing the first value of hasAnalyticsOptIn
         val actual = repository.hasAnalyticsOptIn().first()
-        // Then the expected boolean value is false
+        // Then the expected `boolean` value is false
         assertEquals(expected = false, actual)
     }
 

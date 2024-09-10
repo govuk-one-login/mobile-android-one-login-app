@@ -15,7 +15,7 @@ class PrivacyNoticeTest {
 
     @Test
     fun canBeClicked() {
-        // Given a PrivacyNotice composable
+        // Given a PrivacyNotice Composable
         var actual = false
         composeTestRule.setContent {
             PrivacyNotice(modifier = Modifier, "Test Link") {
@@ -26,13 +26,13 @@ class PrivacyNoticeTest {
         // When clicking on the text
         composeTestRule.onNode(clickableText).isDisplayed()
         composeTestRule.onNode(clickableText).performClick()
-        // Then the onPrivacyNotice code block is called
+        // Then the onPrivacyNotice() code block is called
         assertEquals(true, actual)
     }
 
     @Test
     fun hasIcon() {
-        // Given a PrivacyNotice composable
+        // Given a PrivacyNotice Composable
         composeTestRule.setContent {
             PrivacyNotice(modifier = Modifier, "Test Link") {}
         }

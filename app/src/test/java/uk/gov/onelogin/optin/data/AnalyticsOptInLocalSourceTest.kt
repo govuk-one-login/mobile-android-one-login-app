@@ -44,9 +44,9 @@ class AnalyticsOptInLocalSourceTest {
         // When calling update with None
         whenever(preferences.getInt(OPT_IN_KEY, DEFAULT_ORDINAL))
             .thenReturn(AnalyticsOptInState.None.ordinal)
-        // When calling getState
+        // When calling getState()
         val actual = source.getState()
-        // Then call getInt
+        // Then call getInt()
         verify(preferences).getInt(OPT_IN_KEY, DEFAULT_ORDINAL)
         assertEquals(expected = AnalyticsOptInState.None, actual)
     }

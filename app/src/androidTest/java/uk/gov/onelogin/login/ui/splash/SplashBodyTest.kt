@@ -36,7 +36,7 @@ class SplashBodyTest {
 
     @Test
     fun verifyUnlock() {
-        // Given the SplashBody composable with isUnlock set to true
+        // Given the SplashBody Composable with `isUnlock` set to true
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = true,
@@ -44,14 +44,14 @@ class SplashBodyTest {
                 onOpenDeveloperPortal = {}
             )
         }
-        // Then both splashIcon and unlockButton are displayed
+        // Then both `splashIcon` and `unlockButton` are displayed
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsDisplayed()
     }
 
     @Test
     fun verifyLock() {
-        // Given the SplashBody composable with isUnlock set to false
+        // Given the SplashBody Composable with `isUnlock` set to false
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = false,
@@ -59,14 +59,14 @@ class SplashBodyTest {
                 onOpenDeveloperPortal = {}
             )
         }
-        // Then only splashIcon is displayed and unlockButton is not
+        // Then only `splashIcon` is displayed and `unlockButton` is not
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsNotDisplayed()
     }
 
     @Test
     fun onLogin() {
-        // Given the SplashBody composable
+        // Given the SplashBody Composable
         var actual = false
         composeTestRule.setContent {
             SplashBody(
@@ -75,15 +75,15 @@ class SplashBodyTest {
                 onOpenDeveloperPortal = {}
             )
         }
-        // When clicking the unlockButton
+        // When clicking the `unlockButton`
         composeTestRule.onNode(unlockButton).performClick()
-        // Then onLogin is called and the variable is changed to true
+        // Then onLogin() is called and the variable is changed to true
         assertEquals(true, actual)
     }
 
     @Test
     fun onOpenDeveloperPortal() {
-        // Given the SplashBody composable
+        // Given the SplashBody Composable
         var actual = false
         composeTestRule.setContent {
             SplashBody(
@@ -92,9 +92,9 @@ class SplashBodyTest {
                 onOpenDeveloperPortal = { actual = true }
             )
         }
-        // When clicking the splashIcon
+        // When clicking the `splashIcon`
         composeTestRule.onNode(splashIcon).performClick()
-        // Then onOpenDeveloperPortal is called and the variable is changed to true
+        // Then onOpenDeveloperPortal() is called and the variable is changed to true
         assertEquals(true, actual)
     }
 }
