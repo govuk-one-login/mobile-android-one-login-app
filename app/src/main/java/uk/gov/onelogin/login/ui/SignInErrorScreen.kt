@@ -31,7 +31,7 @@ fun SignInErrorScreen(onClick: () -> Unit = { }) {
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_signInErrorTitle,
-                                text = arrayOf(R.string.app_signInErrorBody).toIntArray()
+                                text = intArrayOf(R.string.app_signInErrorBody)
                             )
                         ),
                         headingSize = HeadingSize.H1()

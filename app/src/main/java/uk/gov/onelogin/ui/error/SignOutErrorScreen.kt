@@ -29,9 +29,9 @@ fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_signOutErrorTitle,
-                                text = arrayOf(
+                                text = intArrayOf(
                                     R.string.app_signOutErrorBody
-                                ).toIntArray()
+                                )
                             )
                         ),
                         headingSize = HeadingSize.H1()

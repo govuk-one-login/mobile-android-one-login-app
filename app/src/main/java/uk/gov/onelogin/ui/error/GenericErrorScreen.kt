@@ -31,9 +31,9 @@ fun GenericErrorScreen(onClick: () -> Unit = { }) {
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_somethingWentWrongErrorTitle,
-                                text = arrayOf(
+                                text = intArrayOf(
                                     R.string.app_somethingWentWrongErrorBody
-                                ).toIntArray()
+                                )
                             )
                         ),
                         headingSize = HeadingSize.H1()
