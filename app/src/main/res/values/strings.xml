@@ -103,5 +103,5 @@
     <string name="app_privacyNoticeLink">Read more about this in the GOV.UK One Login privacy notice</string>
     <string name="app_shareAnalyticsButton">Share analytics</string>
     <string name="app_doNotShareAnalytics">Do not share analytics</string>
-    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice</string>
+    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=en</string>
 </resources>

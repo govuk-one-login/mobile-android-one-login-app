@@ -66,5 +66,5 @@
     <string name="app_privacyNoticeLink">Darllenwch fwy am hyn yn hysbysiad preifatrwydd GOV.UK One Login</string>
     <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
     <string name="app_doNotShareAnalytics">Peidiwch â rhannu dadansoddeg</string>
-    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice</string>
+    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
 </resources>
