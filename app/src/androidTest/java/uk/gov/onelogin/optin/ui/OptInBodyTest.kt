@@ -9,9 +9,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.printToLog
 import androidx.test.core.app.ApplicationProvider
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
@@ -125,7 +123,6 @@ class OptInBodyTest {
                 onDoNotShare = {}
             )
         }
-        composeTestRule.onRoot().printToLog("Tommy")
         // When clicking the `privacyNotice`
         composeTestRule.onNode(privacyNotice).performClick()
         // Then onPrivacyNotice() is called and the variable is changed to true
