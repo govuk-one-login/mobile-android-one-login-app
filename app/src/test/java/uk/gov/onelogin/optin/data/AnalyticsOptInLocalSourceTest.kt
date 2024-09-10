@@ -1,4 +1,4 @@
-package uk.gov.onelogin.optin.io
+package uk.gov.onelogin.optin.data
 
 import android.content.SharedPreferences
 import kotlinx.coroutines.Dispatchers
@@ -10,10 +10,10 @@ import kotlinx.coroutines.test.setMain
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.onelogin.optin.data.AnalyticsOptInLocalSource.Companion.DEFAULT_ORDINAL
+import uk.gov.onelogin.optin.data.AnalyticsOptInLocalSource.Companion.OPT_IN_KEY
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
-import uk.gov.onelogin.optin.io.AnalyticsOptInLocalSource.Companion.DEFAULT_ORDINAL
-import uk.gov.onelogin.optin.io.AnalyticsOptInLocalSource.Companion.OPT_IN_KEY
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

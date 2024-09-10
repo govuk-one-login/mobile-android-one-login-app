@@ -1,4 +1,4 @@
-package uk.gov.onelogin.optin.io
+package uk.gov.onelogin.optin.data
 
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.CoroutineDispatcher

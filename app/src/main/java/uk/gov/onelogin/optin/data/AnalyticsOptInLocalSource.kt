@@ -1,4 +1,4 @@
-package uk.gov.onelogin.optin.io
+package uk.gov.onelogin.optin.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

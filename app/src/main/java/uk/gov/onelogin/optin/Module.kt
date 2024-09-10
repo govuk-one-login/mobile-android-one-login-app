@@ -11,12 +11,12 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import uk.gov.onelogin.optin.data.AnalyticsOptInLocalSource
+import uk.gov.onelogin.optin.data.FirebaseAnalyticsOptInSource
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepository
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
-import uk.gov.onelogin.optin.io.AnalyticsOptInLocalSource
-import uk.gov.onelogin.optin.io.FirebaseAnalyticsOptInSource
 
 @Module
 @InstallIn(ViewModelComponent::class)
