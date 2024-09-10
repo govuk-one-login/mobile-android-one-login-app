@@ -17,6 +17,7 @@ import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.android.onelogin.R
+import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.network.StsAuthenticationProvider
 import uk.gov.onelogin.repositiories.TokenRepository
 
@@ -67,6 +68,20 @@ object NetworkModule {
             client
         )
         client.setAuthenticationProvider(authProvider)
+        return client
+    }
+
+    @Provides
+    fun provideWalletSdk(
+        genericHttpClient: GenericHttpClient,
+        @ApplicationContext
+        context: Context
+    ): WalletSdk {
+        val config = WalletSdk.Configuration(
+            clientId = context.resources.getString(R.string.stsClientId),
+            authNetworkClient = genericHttpClient
+        )
+        val client = WalletSdk.initialise(config)
         return client
     }
 }

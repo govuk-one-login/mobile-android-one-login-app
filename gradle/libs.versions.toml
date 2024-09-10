@@ -25,6 +25,7 @@ ktlint = "12.1.1"
 hiltPlugin = "2.52"
 detekt = "1.23.6"
 parcelize = "2.0.0"
+accompanist = "0.33.2-alpha"
 andoridxBrowser = "1.8.0"
 androidxBiometric = "1.1.0"
 androidxHilt = "1.2.0"
@@ -46,8 +47,11 @@ firebaseBom = "33.2.0"
 classgraph = "4.8.174"
 govuk-ui = "4.4.1"
 compose-runtime = "1.6.8"
+wallet = "1.23.3"
 
 [libraries]
+wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
+accompanist = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 components = "uk.gov.android:components:4.4.1"

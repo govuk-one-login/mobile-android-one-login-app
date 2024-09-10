@@ -153,6 +153,7 @@ dependencies {
     ).forEach(::debugImplementation)
 
     listOf(
+        libs.accompanist,
         libs.androidx.appcompat,
         libs.androidx.browser,
         libs.androidx.biometric,
@@ -180,7 +181,8 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.bundles.firebase
+        libs.bundles.firebase,
+        libs.wallet.sdk
     ).forEach(::implementation)
 
     listOf(

@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,7 +28,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.home.HomeScreen
 import uk.gov.onelogin.ui.profile.ProfileScreen
-import uk.gov.onelogin.ui.wallet.WalletScreen
+import uk.gov.onelogin.ui.wallet.WalletScreenViewModel
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
 
@@ -36,7 +37,8 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
     openSignOutScreen: () -> Unit,
-    openDeveloperPanel: () -> Unit = { }
+    openDeveloperPanel: () -> Unit = { },
+    walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
     val navItems = listOf(
         BottomNavDestination.Home,
@@ -94,7 +96,7 @@ fun MainNavScreen(
                 HomeScreen(openDeveloperPanel = openDeveloperPanel)
             }
             composable(BottomNavDestination.Wallet.key) {
-                WalletScreen()
+                walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = true)
             }
             composable(BottomNavDestination.Profile.key) {
                 ProfileScreen(openSignOutScreen = openSignOutScreen)
