@@ -84,7 +84,7 @@ private fun LinkOut() {
         modifier = Modifier
             .fillMaxSize()
             .testTag(ICON_TAG),
-        contentDescription = null,
+        contentDescription = null
     )
 }
 
@@ -99,4 +99,3 @@ internal fun PrivacyNoticePreview() {
         ) {}
     }
 }
-

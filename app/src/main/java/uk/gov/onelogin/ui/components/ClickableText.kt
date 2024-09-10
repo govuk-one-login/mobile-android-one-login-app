@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
  * identical otherwise to the Android provided ClickableText
  * inlineContent Map is how the Text Composable does inline content
  */
-@SuppressWarnings("squid:S107") // Suppressing due to matching Android
+@SuppressWarnings("kotlin:S107") // Suppressing due to matching Android
 @Composable
 fun ClickableText(
     text: AnnotatedString,
@@ -51,6 +51,6 @@ fun ClickableText(
             layoutResult.value = it
             onTextLayout(it)
         },
-        inlineContent = inlineContent,
+        inlineContent = inlineContent
     )
 }

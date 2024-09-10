@@ -27,11 +27,10 @@ import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.xsmallPadding
 
-
 @Composable
 fun OptInScreen(
     viewModel: OptInViewModel = hiltViewModel<OptInViewModel>(),
-    onComplete: () -> Unit,
+    onComplete: () -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
@@ -48,7 +47,7 @@ fun OptInScreen(
             onDoNotShare = {
                 viewModel.optOut()
                 onComplete()
-            },
+            }
         )
     }
 }
@@ -58,14 +57,14 @@ internal fun OptInBody(
     uiState: OptInUIState,
     onPrivacyNotice: (Uri) -> Unit,
     onShare: () -> Unit,
-    onDoNotShare: () -> Unit,
+    onDoNotShare: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val url = stringResource(id = R.string.privacy_notice_url)
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState),
+            .verticalScroll(scrollState)
     ) {
         Text(
             modifier = Modifier
@@ -82,7 +81,7 @@ internal fun OptInBody(
                 .padding(all = smallPadding),
             color = MaterialTheme.colorScheme.onBackground,
             style = MaterialTheme.typography.bodyLarge,
-            text = stringResource(id = R.string.app_analyticsPermissionBody),
+            text = stringResource(id = R.string.app_analyticsPermissionBody)
         )
         PrivacyNotice(
             modifier = Modifier
@@ -90,9 +89,7 @@ internal fun OptInBody(
             privacyNoticeString = stringResource(id = R.string.app_privacyNoticeLink),
             onPrivacyNotice = { onPrivacyNotice(Uri.parse(url)) }
         )
-        Spacer(
-            modifier = Modifier.weight(1f),
-        )
+        Spacer(modifier = Modifier.weight(1f))
         DefaultPrimaryButton(
             modifier = Modifier
                 .padding(horizontal = smallPadding),

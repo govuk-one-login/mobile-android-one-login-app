@@ -2,7 +2,7 @@ package uk.gov.onelogin.optin.domain.source
 
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 
-class FakeOptInLocalSource: OptInLocalSource {
+class FakeOptInLocalSource : OptInLocalSource {
     var currentState = AnalyticsOptInState.None
 
     override suspend fun getState(): AnalyticsOptInState {

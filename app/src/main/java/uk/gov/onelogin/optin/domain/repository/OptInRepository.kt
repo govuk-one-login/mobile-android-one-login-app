@@ -1,5 +1,6 @@
 package uk.gov.onelogin.optin.domain.repository
 
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,6 @@ import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
-import javax.inject.Inject
 
 interface OptInRepository {
     fun isOptInPreferenceRequired(): Flow<Boolean>

@@ -3,6 +3,7 @@ package uk.gov.onelogin.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
@@ -12,7 +13,6 @@ import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(

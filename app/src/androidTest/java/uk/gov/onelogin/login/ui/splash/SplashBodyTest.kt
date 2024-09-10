@@ -41,7 +41,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = true,
                 onLogin = {},
-                onOpenDeveloperPortal = {},
+                onOpenDeveloperPortal = {}
             )
         }
         // Then both splashIcon and unlockButton are displayed
@@ -56,7 +56,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = false,
                 onLogin = {},
-                onOpenDeveloperPortal = {},
+                onOpenDeveloperPortal = {}
             )
         }
         // Then only splashIcon is displayed and unlockButton is not
@@ -72,7 +72,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = true,
                 onLogin = { actual = true },
-                onOpenDeveloperPortal = {},
+                onOpenDeveloperPortal = {}
             )
         }
         // When clicking the unlockButton
@@ -89,7 +89,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = false,
                 onLogin = {},
-                onOpenDeveloperPortal = { actual = true },
+                onOpenDeveloperPortal = { actual = true }
             )
         }
         // When clicking the splashIcon

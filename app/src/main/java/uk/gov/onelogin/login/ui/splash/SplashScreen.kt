@@ -40,14 +40,14 @@ fun SplashScreen(
     fromLockScreen: Boolean = false,
     nextScreen: (String) -> Unit = {},
     openDeveloperPanel: () -> Unit = {},
-    onAnalyticsOptIn: () -> Unit = {},
+    onAnalyticsOptIn: () -> Unit = {}
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
 
     SplashBody(
-        isUnlock =  viewModel.showUnlock.value,
+        isUnlock = viewModel.showUnlock.value,
         onLogin = { viewModel.login(context, false) },
         onOpenDeveloperPortal = openDeveloperPanel
     )
@@ -75,7 +75,7 @@ fun SplashScreen(
 internal fun SplashBody(
     isUnlock: Boolean,
     onLogin: () -> Unit,
-    onOpenDeveloperPortal: () -> Unit,
+    onOpenDeveloperPortal: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -122,7 +122,7 @@ internal fun SplashScreenPreview() {
         SplashBody(
             isUnlock = false,
             onLogin = {},
-            onOpenDeveloperPortal = {},
+            onOpenDeveloperPortal = {}
         )
     }
 }
@@ -134,7 +134,7 @@ internal fun UnlockScreenPreview() {
         SplashBody(
             isUnlock = true,
             onLogin = {},
-            onOpenDeveloperPortal = {},
+            onOpenDeveloperPortal = {}
         )
     }
 }

@@ -1,8 +1,8 @@
 package uk.gov.onelogin.optin.domain
 
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.concurrent.atomic.AtomicBoolean
 
 /*
  * Needs to be moved to a common area

@@ -2,16 +2,16 @@ package uk.gov.onelogin.optin.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
-import javax.inject.Inject
 
 class AnalyticsOptInLocalSource @Inject constructor(
     private val preferences: SharedPreferences,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OptInLocalSource {
 
     override suspend fun getState(): AnalyticsOptInState = withContext(dispatcher) {

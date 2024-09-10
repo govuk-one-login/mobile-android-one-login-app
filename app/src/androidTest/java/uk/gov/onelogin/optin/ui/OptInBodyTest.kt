@@ -19,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 import uk.gov.android.onelogin.R
 
-
 class OptInBodyTest {
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -46,10 +45,7 @@ class OptInBodyTest {
     fun buttonsAreEnabledPreChoice() {
         // Given the OptInBody composable in the OptInUIState.PreChoice state
         composeTestRule.setContent {
-            OptInBody(
-                OptInUIState.PreChoice,
-                {}, {}, {}
-            )
+            OptInBody(OptInUIState.PreChoice, {}, {}, {})
         }
         // Then the primaryButton and textButton are enabled
         composeTestRule.onNode(primaryButton).assertIsEnabled()
@@ -60,10 +56,7 @@ class OptInBodyTest {
     fun buttonsAreDisabledPostChoice() {
         // Given the OptInBody composable in the OptInUIState.PostChoice state
         composeTestRule.setContent {
-            OptInBody(
-                OptInUIState.PostChoice,
-                {}, {}, {}
-            )
+            OptInBody(OptInUIState.PostChoice, {}, {}, {})
         }
         // Then the primaryButton and textButton are disabled
         composeTestRule.onNode(primaryButton).assertIsNotEnabled()
@@ -74,10 +67,7 @@ class OptInBodyTest {
     fun verifyStrings() {
         // Given the OptInBody composable
         composeTestRule.setContent {
-            OptInBody(
-                OptInUIState.PreChoice,
-                {}, {}, {}
-            )
+            OptInBody(OptInUIState.PreChoice, {}, {}, {})
         }
         // Then
         composeTestRule.onNode(header).assertIsDisplayed()
@@ -96,7 +86,7 @@ class OptInBodyTest {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = {},
                 onShare = { actual = true },
-                onDoNotShare = {},
+                onDoNotShare = {}
             )
         }
         // When clicking the primaryButton
@@ -114,7 +104,7 @@ class OptInBodyTest {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = {},
                 onShare = {},
-                onDoNotShare = { actual = true },
+                onDoNotShare = { actual = true }
             )
         }
         // When clicking the textButton
@@ -132,7 +122,7 @@ class OptInBodyTest {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = { actual = true },
                 onShare = {},
-                onDoNotShare = {},
+                onDoNotShare = {}
             )
         }
         composeTestRule.onRoot().printToLog("Tommy")

@@ -25,7 +25,6 @@ import uk.gov.onelogin.ui.buttonElevation
 import uk.gov.onelogin.ui.buttonPaddingHorizontal
 import uk.gov.onelogin.ui.buttonPaddingVertical
 
-
 @Composable
 internal fun DefaultPrimaryButton(
     modifier: Modifier = Modifier,
@@ -51,7 +50,7 @@ internal fun DefaultPrimaryButton(
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelMedium,
             text = buttonText,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -81,7 +80,7 @@ internal fun DefaultTextButton(
             fontWeight = FontWeight.Light,
             style = MaterialTheme.typography.labelMedium,
             text = buttonText,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -91,7 +90,7 @@ private fun primaryButtonColors() = ButtonDefaults.buttonColors(
     containerColor = MaterialTheme.colorScheme.primary,
     contentColor = MaterialTheme.colorScheme.onPrimary,
     disabledContainerColor = disabled_button,
-    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+    disabledContentColor = MaterialTheme.colorScheme.onPrimary
 )
 
 @Composable // TODO verify colour values
@@ -99,7 +98,7 @@ private fun textButtonColors() = ButtonDefaults.textButtonColors(
     containerColor = MaterialTheme.colorScheme.secondary,
     contentColor = MaterialTheme.colorScheme.primary,
     disabledContainerColor = disabled_button,
-    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+    disabledContentColor = MaterialTheme.colorScheme.onPrimary
 )
 
 @PreviewFontScale
@@ -107,9 +106,7 @@ private fun textButtonColors() = ButtonDefaults.textButtonColors(
 @Composable
 internal fun DefaultPrimaryButtonPreview() {
     GdsTheme {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             DefaultPrimaryButton(
                 modifier = Modifier.padding(bottom = 8.dp),
                 isEnabled = true,

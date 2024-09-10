@@ -1,5 +1,9 @@
 package uk.gov.onelogin.optin.domain.repository
 
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,10 +16,6 @@ import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.FakeOptInLocalSource
 import uk.gov.onelogin.optin.domain.source.FakeOptInRemoteSource
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 /*
 * I am deliberately testing the internal functionality of AnalyticsOptInRepository independently
