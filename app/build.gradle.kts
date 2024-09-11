@@ -153,7 +153,6 @@ dependencies {
     ).forEach(::debugImplementation)
 
     listOf(
-        libs.accompanist,
         libs.androidx.appcompat,
         libs.androidx.browser,
         libs.androidx.biometric,
