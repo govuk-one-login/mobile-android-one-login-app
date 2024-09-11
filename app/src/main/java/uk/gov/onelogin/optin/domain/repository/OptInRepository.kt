@@ -35,6 +35,7 @@ class AnalyticsOptInRepository @Inject constructor(
         emit(state == AnalyticsOptInState.Yes)
     }
 
+    @SuppressWarnings("kotlin:S6311") // investigating the warning
     suspend fun fetchOptInState(): AnalyticsOptInState =
         withContext(dispatcher) {
             localSource.getState()

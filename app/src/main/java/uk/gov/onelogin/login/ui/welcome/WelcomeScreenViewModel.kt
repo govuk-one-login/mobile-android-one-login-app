@@ -148,16 +148,19 @@ class WelcomeScreenViewModel @Inject constructor(
     private fun checkLocalAuthRoute(tokens: TokenResponse): String {
         tokenRepository.setTokenResponse(tokens)
 
-        if (!credChecker.isDeviceSecure()) {
-            bioPrefHandler.setBioPref(BiometricPreference.NONE)
-            return LoginRoutes.PASSCODE_INFO
-        } else if (shouldSeeBiometricOptIn()) {
-            return LoginRoutes.BIO_OPT_IN
-        } else {
-            bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
-            autoInitialiseSecureStore()
-            return MainNavRoutes.START
+        val result = when {
+            !credChecker.isDeviceSecure() -> {
+                bioPrefHandler.setBioPref(BiometricPreference.NONE)
+                LoginRoutes.PASSCODE_INFO
+            }
+            shouldSeeBiometricOptIn() -> LoginRoutes.BIO_OPT_IN
+            else -> {
+                bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+                autoInitialiseSecureStore()
+                MainNavRoutes.START
+            }
         }
+        return result
     }
 
     private fun shouldSeeBiometricOptIn() =
