@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
+import uk.gov.android.ui.components.m3.buttons.ButtonParameters
+import uk.gov.android.ui.components.m3.buttons.ButtonType
+import uk.gov.android.ui.components.m3.buttons.GdsButton
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -90,19 +94,30 @@ internal fun OptInBody(
             onPrivacyNotice = { onPrivacyNotice(Uri.parse(url)) }
         )
         Spacer(modifier = Modifier.weight(1f))
-        DefaultPrimaryButton(
-            modifier = Modifier
-                .padding(horizontal = smallPadding),
-            isEnabled = uiState.hasButtonsOn,
-            buttonText = stringResource(id = R.string.app_shareAnalyticsButton),
-            onClick = onShare
+        GdsButton(
+            buttonParameters = ButtonParameters(
+                modifier = Modifier
+                    .padding(horizontal = smallPadding)
+                    .padding(top = xsmallPadding)
+                    .fillMaxWidth(),
+                text = R.string.app_shareAnalyticsButton,
+                buttonType = ButtonType.PRIMARY(),
+                textStyle = MaterialTheme.typography.labelMedium,
+                onClick = onShare,
+                enabled = uiState.hasButtonsOn
+            )
         )
-        DefaultTextButton(
-            modifier = Modifier
-                .padding(horizontal = smallPadding, vertical = xsmallPadding),
-            buttonText = stringResource(id = R.string.app_doNotShareAnalytics),
-            isEnabled = uiState.hasButtonsOn,
-            onClick = onDoNotShare
+        GdsButton(
+            buttonParameters = ButtonParameters(
+                modifier = Modifier
+                    .padding(horizontal = smallPadding, vertical = xsmallPadding)
+                    .fillMaxWidth(),
+                text = R.string.app_doNotShareAnalytics,
+                buttonType = ButtonType.SECONDARY(),
+                textStyle = MaterialTheme.typography.labelMedium,
+                onClick = onDoNotShare,
+                enabled = uiState.hasButtonsOn
+            )
         )
     }
 }
