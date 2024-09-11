@@ -24,17 +24,20 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
+import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.wallet.WalletModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
     FeaturesModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    WalletModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -52,6 +55,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @BindValue
     val httpClient: GenericHttpClient = mock()
+
+    @BindValue
+    val walletSdk: WalletSdk = mock()
 
     private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false
