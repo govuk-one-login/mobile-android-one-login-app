@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,8 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
@@ -51,21 +54,24 @@ fun SplashScreen(
         onLogin = { viewModel.login(context, false) },
         onOpenDeveloperPortal = openDeveloperPanel
     )
-
     DisposableEffect(key1 = lifecycleOwner) {
-        lifecycleOwner.lifecycle.addObserver(viewModel)
-        viewModel.next.observe(context) {
-            nextScreen(it)
-        }
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(viewModel)
-        }
-    }
-    LaunchedEffect(key1 = Unit) {
-        optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
-            when {
-                isRequired -> onAnalyticsOptIn()
-                !viewModel.showUnlock.value -> viewModel.login(context, fromLockScreen)
+        with(lifecycleOwner) {
+            lifecycle.addObserver(viewModel)
+            viewModel.next.observe(context) {
+                nextScreen(it)
+            }
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
+                        when {
+                            isRequired -> onAnalyticsOptIn()
+                            !viewModel.showUnlock.value -> viewModel.login(context, fromLockScreen)
+                        }
+                    }
+                }
+            }
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(viewModel)
             }
         }
     }
