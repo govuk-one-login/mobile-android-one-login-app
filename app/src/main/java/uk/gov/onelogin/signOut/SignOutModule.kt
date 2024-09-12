@@ -7,6 +7,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.signOut.domain.SignOutUseCaseImpl
 
+@SuppressWarnings("kotlin:S6517")
 @InstallIn(ViewModelComponent::class)
 @Module
 interface SignOutModule {

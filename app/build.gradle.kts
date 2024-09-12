@@ -180,8 +180,7 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.firebase.appcheck,
-        libs.firebase.appcheck.debug
+        libs.bundles.firebase
     ).forEach(::implementation)
 
     listOf(

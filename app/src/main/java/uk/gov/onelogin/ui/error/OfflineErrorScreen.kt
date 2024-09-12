@@ -31,7 +31,7 @@ fun OfflineErrorScreen(onRetryClick: () -> Unit = { }) {
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_networkErrorTitle,
-                                text = arrayOf(R.string.app_networkErrorBody).toIntArray()
+                                text = intArrayOf(R.string.app_networkErrorBody)
                             )
                         ),
                         headingSize = HeadingSize.H1()

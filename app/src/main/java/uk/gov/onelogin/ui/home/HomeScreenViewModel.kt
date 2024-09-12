@@ -23,7 +23,7 @@ class HomeScreenViewModel @Inject constructor(
     private val getPersistentId: GetPersistentId,
     getEmail: GetEmail
 ) : ViewModel() {
-    val email = getEmail() ?: ""
+    val email = getEmail().orEmpty()
 
     fun saveTokens() {
         val tokens = tokenRepository.getTokenResponse()

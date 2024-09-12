@@ -9,5 +9,5 @@ import uk.gov.onelogin.tokens.usecases.GetEmail
 class ProfileScreenViewModel @Inject constructor(
     getEmail: GetEmail
 ) : ViewModel() {
-    val email = getEmail() ?: ""
+    val email = getEmail().orEmpty()
 }
