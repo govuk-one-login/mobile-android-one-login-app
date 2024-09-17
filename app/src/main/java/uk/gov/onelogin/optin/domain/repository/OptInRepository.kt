@@ -10,6 +10,7 @@ import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
+import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
 interface OptInRepository {
     fun isOptInPreferenceRequired(): Flow<Boolean>
@@ -22,6 +23,7 @@ interface OptInRepository {
 class AnalyticsOptInRepository @Inject constructor(
     private val localSource: OptInLocalSource,
     private val remoteSource: OptInRemoteSource,
+    @IODispatcherQualifier
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OptInRepository {
 

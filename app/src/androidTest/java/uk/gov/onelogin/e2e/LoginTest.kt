@@ -211,6 +211,7 @@ class LoginTest : TestCase() {
             Intent()
         )
 
+        clickOptOut()
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))

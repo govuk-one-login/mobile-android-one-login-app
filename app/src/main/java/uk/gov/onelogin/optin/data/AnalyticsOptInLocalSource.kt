@@ -8,9 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
+import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
 class AnalyticsOptInLocalSource @Inject constructor(
     private val preferences: SharedPreferences,
+    @IODispatcherQualifier
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OptInLocalSource {
 

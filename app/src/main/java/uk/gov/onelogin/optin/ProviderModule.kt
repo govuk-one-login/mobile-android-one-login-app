@@ -10,6 +10,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -21,6 +22,7 @@ internal object ProviderModule {
         @ApplicationContext context: Context
     ): SharedPreferences = context.getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE)
 
+    @IODispatcherQualifier
     @Provides
     @Suppress("InjectDispatcher") // this is the injection
     fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
