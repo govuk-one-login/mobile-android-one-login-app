@@ -5,8 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,19 +14,19 @@ import kotlinx.coroutines.launch
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
-import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.NavRoute
+import uk.gov.onelogin.navigation.Navigator
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val handleLogin: HandleLogin
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val timesResumed: AtomicInteger = AtomicInteger(0)
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: State<Boolean> = _showUnlock
-
-    private val _next = MutableLiveData<String>()
-    val next: LiveData<String> = _next
 
     fun login(fragmentActivity: FragmentActivity, fromLockScreen: Boolean = false) {
         if (fromLockScreen && timesResumed.get() == 1) return
@@ -37,12 +35,14 @@ class SplashScreenViewModel @Inject constructor(
                 fragmentActivity,
                 callback = {
                     when (it) {
-                        LocalAuthStatus.SecureStoreError -> _next.value = LoginRoutes.SIGN_IN_ERROR
+                        LocalAuthStatus.SecureStoreError ->
+                            nextScreen(LoginRoutes.SignInError)
+
                         LocalAuthStatus.ManualSignIn ->
-                            _next.value = LoginRoutes.WELCOME
+                            nextScreen(LoginRoutes.Welcome)
 
                         is LocalAuthStatus.Success ->
-                            _next.value = MainNavRoutes.START
+                            nextScreen(MainNavRoutes.Start)
 
                         LocalAuthStatus.UserCancelled ->
                             _showUnlock.value = true
@@ -53,6 +53,20 @@ class SplashScreenViewModel @Inject constructor(
                     }
                 }
             )
+        }
+    }
+
+    fun navigateToDevPanel() {
+        navigator.openDeveloperPanel()
+    }
+
+    private fun nextScreen(route: NavRoute) {
+        val comingFromLockScreen = navigator.hasBackStack()
+        val authSuccessful = route == MainNavRoutes.Start
+        if (comingFromLockScreen && authSuccessful) {
+            navigator.goBack()
+        } else {
+            navigator.navigate(route, true)
         }
     }
 

@@ -4,14 +4,9 @@ import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -19,37 +14,25 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
-import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.Navigator
 
 @HiltAndroidTest
 class SplashScreenViewModelTest : TestCase() {
     private val mockHandleLogin: HandleLogin = mock()
+    private val mockNavigator: Navigator = mock()
     private val mockLifeCycleOwner: LifecycleOwner = mock()
 
-    private val stringObserver: Observer<String> = mock()
-
     private val viewModel = SplashScreenViewModel(
+        mockNavigator,
         mockHandleLogin
     )
-
-    @Before
-    fun setup() {
-        Handler(Looper.getMainLooper()).post {
-            viewModel.next.observeForever(stringObserver)
-        }
-    }
-
-    @After
-    fun tearDown() {
-        Handler(Looper.getMainLooper()).post {
-            viewModel.next.removeObserver(stringObserver)
-        }
-    }
 
     @Test
     fun loginFailsWithSecureStoreError() = runTest {
@@ -61,9 +44,7 @@ class SplashScreenViewModelTest : TestCase() {
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
     }
 
     @Test
@@ -76,9 +57,7 @@ class SplashScreenViewModelTest : TestCase() {
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(null, viewModel.next.value)
-        }
+        verifyNoInteractions(mockNavigator)
     }
 
     @Test
@@ -91,9 +70,7 @@ class SplashScreenViewModelTest : TestCase() {
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(MainNavRoutes.START, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
 
     @Test
@@ -106,9 +83,7 @@ class SplashScreenViewModelTest : TestCase() {
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 
     @Test
@@ -121,8 +96,8 @@ class SplashScreenViewModelTest : TestCase() {
             }
         viewModel.login(composeTestRule.activity as FragmentActivity)
 
+        verifyNoInteractions(mockNavigator)
         Handler(Looper.getMainLooper()).post {
-            assertNull(viewModel.next.value)
             assertTrue(viewModel.showUnlock.value)
         }
     }

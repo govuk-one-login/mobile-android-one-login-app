@@ -62,6 +62,9 @@ class LoginTest : TestCase() {
     lateinit var tokenRepository: TokenRepository
 
     @Inject
+    lateinit var localeUtils: LocaleUtils
+
+    @Inject
     @Named("Open")
     lateinit var secureStore: SecureStore
 
@@ -126,7 +129,7 @@ class LoginTest : TestCase() {
         val loginConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeUrl,
             clientId = resources.getString(R.string.stsClientId),
-            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            locale = localeUtils.getLocaleAsSessionConfig(),
             redirectUri = redirectUrl,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint,
@@ -166,7 +169,7 @@ class LoginTest : TestCase() {
         val loginConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeUrl,
             clientId = resources.getString(R.string.stsClientId),
-            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            locale = localeUtils.getLocaleAsSessionConfig(),
             redirectUri = redirectUrl,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint,
@@ -209,7 +212,7 @@ class LoginTest : TestCase() {
         val loginConfig = LoginSessionConfiguration(
             authorizeEndpoint = authorizeUrl,
             clientId = resources.getString(R.string.stsClientId),
-            locale = LocaleUtils.getLocaleAsSessionConfig(context),
+            locale = localeUtils.getLocaleAsSessionConfig(),
             redirectUri = redirectUrl,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint,

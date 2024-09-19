@@ -1,0 +1,99 @@
+package uk.gov.onelogin.login
+
+import androidx.activity.compose.BackHandler
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import uk.gov.onelogin.login.ui.LoadingScreen
+import uk.gov.onelogin.login.ui.PasscodeInfoScreen
+import uk.gov.onelogin.login.ui.SignInErrorScreen
+import uk.gov.onelogin.login.ui.biooptin.BiometricsOptInScreen
+import uk.gov.onelogin.login.ui.splash.SplashScreen
+import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.hasPreviousBackStack
+import uk.gov.onelogin.navigation.navigateToOfflineErrorScreen
+import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
+
+object LoginGraphObject {
+    @Suppress("LongMethod")
+    fun NavGraphBuilder.loginGraph(
+        navController: NavHostController
+    ) {
+        navigation(
+            route = LoginRoutes.Root.getRoute(),
+            startDestination = LoginRoutes.Start.getRoute()
+        ) {
+            composable(
+                route = LoginRoutes.Start.getRoute()
+            ) {
+                val comingFromLockScreen = navController.hasPreviousBackStack()
+                BackHandler(enabled = comingFromLockScreen) {
+                    // do nothing if coming from Lock Screen
+                }
+                SplashScreen(
+                    fromLockScreen = comingFromLockScreen
+                )
+            }
+
+            composable(
+                route = LoginRoutes.Welcome.getRoute()
+            ) {
+                WelcomeScreen(
+                    navigateToOfflineErrorScreen = {
+                        navController.navigateToOfflineErrorScreen()
+                    },
+                    shouldTryAgain = {
+                        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+                        val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
+                        savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
+                        tryAgain
+                    }
+                )
+            }
+
+            composable(
+                route = LoginRoutes.Loading.getRoute()
+            ) {
+                LoadingScreen()
+            }
+
+            composable(
+                route = LoginRoutes.PasscodeInfo.getRoute()
+            ) {
+                PasscodeInfoScreen {
+                    navController.navigate(MainNavRoutes.Start.getRoute())
+                }
+            }
+
+            composable(
+                route = LoginRoutes.BioOptIn.getRoute()
+            ) {
+                BackHandler(true) {
+                    // do nothing
+                }
+                BiometricsOptInScreen()
+            }
+
+            composable(
+                route = LoginRoutes.SignInError.getRoute()
+            ) {
+                BackHandler(true) {
+                    navController.navigate(LoginRoutes.Welcome.getRoute()) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+                SignInErrorScreen {
+                    navController.navigate(LoginRoutes.Welcome.getRoute()) {
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

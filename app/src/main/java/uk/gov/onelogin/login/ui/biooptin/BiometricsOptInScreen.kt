@@ -30,14 +30,11 @@ import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.hintTextGrey
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.login.biooptin.BiometricPreference
 
 @Suppress("LongMethod")
 @Composable
 fun BiometricsOptInScreen(
-    viewModel: BioOptInViewModel = hiltViewModel(),
-    onPrimary: () -> Unit = {},
-    onSecondary: () -> Unit = {}
+    viewModel: BioOptInViewModel = hiltViewModel()
 ) {
     GdsTheme {
         Column(
@@ -109,8 +106,7 @@ fun BiometricsOptInScreen(
                         buttonType = ButtonType.PRIMARY(),
                         text = R.string.app_enableBiometricsButton,
                         onClick = {
-                            viewModel.setBioPreference(BiometricPreference.BIOMETRICS)
-                            onPrimary()
+                            viewModel.useBiometrics()
                         }
                     )
                 )
@@ -120,8 +116,7 @@ fun BiometricsOptInScreen(
                         buttonType = ButtonType.SECONDARY(),
                         text = R.string.app_enablePasscodeOrPatternButton,
                         onClick = {
-                            viewModel.setBioPreference(BiometricPreference.PASSCODE)
-                            onSecondary()
+                            viewModel.doNotUseBiometrics()
                         }
                     )
                 )

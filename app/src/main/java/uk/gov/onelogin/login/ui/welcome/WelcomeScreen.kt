@@ -6,11 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
@@ -21,22 +17,14 @@ import uk.gov.onelogin.developer.DeveloperTools
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     navigateToOfflineErrorScreen: () -> Unit = { },
-    shouldTryAgain: () -> Boolean = { false },
-    openDeveloperPanel: () -> Unit = { },
-    navigatePostLogin: (String) -> Unit = { }
+    shouldTryAgain: () -> Boolean = { false }
 ) {
-    val context = LocalContext.current as FragmentActivity
-
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let { intent ->
-                context.lifecycleScope.launch {
-                    viewModel.handleActivityResult(intent = intent)?.let {
-                        navigatePostLogin(it)
-                    }
-                }
+                viewModel.handleActivityResult(intent = intent)
             }
         }
     }
@@ -62,7 +50,7 @@ fun WelcomeScreen(
             },
             onTopIconClick = {
                 if (DeveloperTools.isDeveloperPanelEnabled()) {
-                    openDeveloperPanel()
+                    viewModel.navigateToDevPanel()
                 }
             },
             primaryButtonText = R.string.app_signInButton,

@@ -25,7 +25,7 @@ object SignOutRoutes {
                         navController.popBackStack()
                     },
                     goToSignIn = {
-                        navController.navigate(LoginRoutes.ROOT)
+                        navController.navigate(LoginRoutes.Root.getRoute())
                     },
                     goToSignOutError = {
                         navController.navigate(ErrorRoutes.SIGN_OUT)

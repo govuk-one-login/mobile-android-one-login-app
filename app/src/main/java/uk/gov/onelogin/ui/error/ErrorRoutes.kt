@@ -47,10 +47,4 @@ object ErrorRoutes {
             }
         }
     }
-
-    fun NavHostController.navigateSingleTopTo(route: String) =
-        this.navigate(route) { launchSingleTop = true }
-
-    fun NavHostController.navigateToGenericErrorScreen() = this.navigateSingleTopTo(ROOT)
-    fun NavHostController.navigateToOfflineErrorScreen() = this.navigateSingleTopTo(OFFLINE)
 }

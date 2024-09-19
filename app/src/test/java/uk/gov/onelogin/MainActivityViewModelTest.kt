@@ -2,9 +2,7 @@ package uk.gov.onelogin
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,6 +16,7 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 
@@ -29,8 +28,8 @@ class MainActivityViewModelTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
+    private val mockNavigator: Navigator = mock()
 
-    private val observer: Observer<String> = mock()
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String? = "testIdToken"
     private val tokenResponse = TokenResponse(
@@ -48,16 +47,11 @@ class MainActivityViewModelTest {
         viewModel = MainActivityViewModel(
             mockBioPrefHandler,
             mockTokenRepository,
+            mockNavigator,
             mockAutoInitialiseSecureStore
         )
-        viewModel.next.observeForever(observer)
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
-    }
-
-    @AfterEach
-    fun tearDown() {
-        viewModel.next.removeObserver(observer)
     }
 
     @Test
@@ -78,6 +72,6 @@ class MainActivityViewModelTest {
         // THEN token is removed from runtime memory
         verify(mockTokenRepository).clearTokenResponse()
         // AND user navigates to the lock screen (splash screen)
-        verify(observer).onChanged(LoginRoutes.START)
+        verify(mockNavigator).navigate(LoginRoutes.Start)
     }
 }
