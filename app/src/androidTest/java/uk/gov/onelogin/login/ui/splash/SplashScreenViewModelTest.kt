@@ -152,7 +152,7 @@ class SplashScreenViewModelTest : TestCase() {
         viewModel.onResume(mockLifeCycleOwner)
 
         // WHEN we call login
-        viewModel.login(composeTestRule.activity as FragmentActivity, fromLockScreen)
+        viewModel.login(composeTestRule.activity, fromLockScreen)
 
         // THEN do NOT login (as the app will be going to background)
         verify(mockHandleLogin, times(1)).invoke(any(), any())

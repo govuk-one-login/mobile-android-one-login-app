@@ -2,12 +2,14 @@ package uk.gov.onelogin.signOut.ui
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
@@ -21,6 +23,8 @@ fun SignOutScreen(
     goToSignOutError: () -> Unit,
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
+    // Needed for deleteWalletData
+    val fragmentActivity = LocalContext.current as FragmentActivity
     AlertPage(
         alertPageParameters = AlertPageParameters(
             title = R.string.app_signOutConfirmationTitle,
@@ -40,7 +44,7 @@ fun SignOutScreen(
             },
             onPrimary = {
                 try {
-                    viewModel.signOut()
+                    viewModel.signOut(fragmentActivity)
                     goToSignIn()
                 } catch (e: SignOutError) {
                     Log.e("SignOutScreen", e.message, e)

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +31,7 @@ import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.WalletModule
 
 @HiltAndroidTest
@@ -58,6 +60,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @BindValue
     val walletSdk: WalletSdk = mock()
+
+    @BindValue
+    val deleteWalletDataUseCase: DeleteWalletDataUseCase = mock()
 
     private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false
@@ -89,7 +94,7 @@ class WelcomeScreenKtTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() {
+    fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
 
@@ -133,7 +138,7 @@ class WelcomeScreenKtTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn() {
+    fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         composeTestRule.setContent {
@@ -190,7 +195,7 @@ class WelcomeScreenKtTest : TestCase() {
     }
 
     @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() {
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         composeTestRule.setContent {
