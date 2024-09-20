@@ -8,7 +8,7 @@ import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 
 fun interface SignOutUseCase {
-    suspend operator fun invoke(activityFragment: FragmentActivity)
+    suspend fun invoke(activityFragment: FragmentActivity)
 }
 
 @Suppress("TooGenericExceptionCaught")

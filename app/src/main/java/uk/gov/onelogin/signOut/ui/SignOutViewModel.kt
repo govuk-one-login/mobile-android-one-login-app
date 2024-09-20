@@ -14,7 +14,7 @@ class SignOutViewModel @Inject constructor(
 ) : ViewModel() {
     fun signOut(activityFragment: FragmentActivity) {
         viewModelScope.launch {
-            signOutUseCase(activityFragment)
+            signOutUseCase.invoke(activityFragment)
         }
     }
 }
