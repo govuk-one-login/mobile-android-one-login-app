@@ -1,7 +1,6 @@
 package uk.gov.onelogin.wallet
 
 import androidx.fragment.app.FragmentActivity
-import io.ktor.util.reflect.instanceOf
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -29,22 +28,23 @@ class DeleteWalletDataUseCaseTest {
     @Test
     fun `delete wallet data error`() = runBlocking {
         whenever(walletSdk.deleteWalletData(any())).thenReturn(false)
-        val result = Assertions.assertThrows(Exception::class.java) {
+        val result = Assertions.assertThrows(
+            DeleteWalletDataUseCaseImpl.DeleteWalletDataError::class.java
+        ) {
             runBlocking { sut.invoke(activityFragment) }
         }
-        assertTrue(result.message!!.contains(DELETE_WALLET_DATA_ERROR))
+        assertTrue(result.message.contains(DELETE_WALLET_DATA_ERROR))
     }
 
     @Test
-    fun `walled sdk init error`() = runBlocking {
+    fun `walled sdk init error`(): Unit = runBlocking {
         whenever(walletSdk.deleteWalletData(any())).then {
             throw WalletSdk.WalletSdkError.SdkNotInitialised
         }
-        val result = Assertions.assertThrows(
+        Assertions.assertThrows(
             WalletSdk.WalletSdkError.SdkNotInitialised::class.java
         ) {
             runBlocking { sut.invoke(activityFragment) }
         }
-        assertTrue(result.instanceOf(WalletSdk.WalletSdkError.SdkNotInitialised::class))
     }
 }

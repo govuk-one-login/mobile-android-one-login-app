@@ -1,5 +1,3 @@
-@file:Suppress("TooGenericExceptionThrown")
-
 package uk.gov.onelogin.signOut.domain
 
 import androidx.fragment.app.FragmentActivity
@@ -14,6 +12,7 @@ import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreData
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
+import uk.gov.onelogin.wallet.DeleteWalletDataUseCaseImpl
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
 class SignOutUseCaseTest {
@@ -57,7 +56,7 @@ class SignOutUseCaseTest {
     @Test
     fun `sign out delete wallet data error`() = runBlocking {
         whenever(deleteWalletData.invoke(activityFragment)).then {
-            throw Exception(DELETE_WALLET_DATA_ERROR)
+            throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
         }
         val exception: SignOutError = Assertions.assertThrows(SignOutError::class.java) {
             runBlocking { sut.invoke(activityFragment) }
