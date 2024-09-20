@@ -30,7 +30,7 @@ import uk.gov.onelogin.wallet.WalletModule
     SignOutModule::class,
     WalletModule::class
 )
-class SignOutScreenKtTest : TestCase() {
+class SignOutScreenTest : TestCase() {
 
     @BindValue
     val signOutUseCase: SignOutUseCase = mock()
