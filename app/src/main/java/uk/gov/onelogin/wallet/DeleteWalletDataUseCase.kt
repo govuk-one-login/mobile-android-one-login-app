@@ -5,25 +5,20 @@ import javax.inject.Inject
 import uk.gov.android.wallet.sdk.WalletSdk
 
 fun interface DeleteWalletDataUseCase {
-    suspend operator fun invoke(activityFragment: FragmentActivity)
+    suspend fun invoke(activityFragment: FragmentActivity)
 }
 
-@Suppress(
-    "TooGenericExceptionCaught",
-    "RethrowCaughtException",
-    "TooGenericExceptionThrown"
-)
 class DeleteWalletDataUseCaseImpl @Inject constructor(
     private val walletSdk: WalletSdk
 ) : DeleteWalletDataUseCase {
-    override suspend operator fun invoke(activityFragment: FragmentActivity) {
-        try {
-            val deleteResult = walletSdk.deleteWalletData(activityFragment)
-            if (!deleteResult) throw Exception(DELETE_WALLET_DATA_ERROR)
-        } catch (e: Throwable) {
-            throw e
-        }
+    override suspend fun invoke(activityFragment: FragmentActivity) {
+        val deleteResult = walletSdk.deleteWalletData(activityFragment)
+        if (!deleteResult) throw DeleteWalletDataError()
     }
+
+    data class DeleteWalletDataError(
+        override val message: String = DELETE_WALLET_DATA_ERROR
+    ) : Exception()
 
     companion object {
         const val DELETE_WALLET_DATA_ERROR = "Failed deleting wallet data."

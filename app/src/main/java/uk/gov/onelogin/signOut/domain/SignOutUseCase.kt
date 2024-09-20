@@ -24,7 +24,7 @@ class SignOutUseCaseImpl @Inject constructor(
             removeTokenExpiry()
             removeAllSecureStoreData()
             bioPrefHandler.clear()
-            deleteWalletData(activityFragment)
+            deleteWalletData.invoke(activityFragment)
         } catch (e: Throwable) {
             throw SignOutError(e)
         }

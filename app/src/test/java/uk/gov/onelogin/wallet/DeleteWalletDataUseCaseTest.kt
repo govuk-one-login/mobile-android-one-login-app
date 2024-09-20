@@ -22,7 +22,7 @@ class DeleteWalletDataUseCaseTest {
     @Test
     fun `delete wallet data success`() = runBlocking {
         whenever(walletSdk.deleteWalletData(any())).thenReturn(true)
-        val result = sut(activityFragment)
+        val result = sut.invoke(activityFragment)
         assertEquals(Unit, result)
     }
 
