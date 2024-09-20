@@ -9,27 +9,30 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.kotlin.never
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.signOut.SignOutModule
 import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltAndroidTest
 @UninstallModules(
-    SignOutModule::class
+    SignOutModule::class,
+    NavigatorModule::class
 )
 class SignOutScreenKtTest : TestCase() {
+    @BindValue
+    val mockNavigator: Navigator = mock()
 
     @BindValue
     val signOutUseCase: SignOutUseCase = mock()
-    private val goBack: () -> Unit = mock()
-    private val signIn: () -> Unit = mock()
-    private val goToSignOutError: () -> Unit = mock()
 
     private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
     private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
@@ -52,7 +55,7 @@ class SignOutScreenKtTest : TestCase() {
     fun verifySignOutButtonSucceeds() {
         composeTestRule.onNode(ctaButton).performClick()
         verify(signOutUseCase).invoke()
-        verify(signIn).invoke()
+        verify(mockNavigator).navigate(LoginRoutes.Root, true)
     }
 
     @Test
@@ -61,13 +64,12 @@ class SignOutScreenKtTest : TestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(ctaButton).performClick()
         verify(signOutUseCase).invoke()
-        verify(signIn, never()).invoke()
-        verify(goToSignOutError).invoke()
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut)
     }
 
     @Test
     fun verifyGoBackButton() {
         composeTestRule.onNode(goBackButton).performClick()
-        verify(goBack).invoke()
+        verify(mockNavigator).goBack()
     }
 }

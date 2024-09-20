@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.welcome
+package uk.gov.onelogin.login.ui.welcome
 
 import android.content.Context
 import android.content.Intent
@@ -27,7 +27,6 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator

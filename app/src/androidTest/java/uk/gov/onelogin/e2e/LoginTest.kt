@@ -305,6 +305,7 @@ class LoginTest : TestCase() {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
         }
+
         composeRule.setContent {
             val registryOwner = object : ActivityResultRegistryOwner {
                 override val activityResultRegistry: ActivityResultRegistry
@@ -320,7 +321,17 @@ class LoginTest : TestCase() {
                     }
             }
             CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
-                OneLoginApp()
+                val navController = rememberNavController()
+
+                DisposableEffect(key1 = navController) {
+                    navigator.setController(navController)
+
+                    onDispose {
+                        navigator.reset()
+                    }
+                }
+
+                OneLoginApp(navController = navController)
             }
         }
     }
@@ -337,7 +348,7 @@ class LoginTest : TestCase() {
                 }
             }
 
-            OneLoginApp()
+            OneLoginApp(navController = navController)
         }
     }
 

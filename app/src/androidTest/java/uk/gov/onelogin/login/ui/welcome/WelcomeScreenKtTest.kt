@@ -11,10 +11,10 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
@@ -28,13 +28,17 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
     FeaturesModule::class,
-    NetworkModule::class
+    NetworkModule::class,
+    NavigatorModule::class
 )
 class WelcomeScreenKtTest : TestCase() {
 
@@ -53,14 +57,14 @@ class WelcomeScreenKtTest : TestCase() {
     @BindValue
     val httpClient: GenericHttpClient = mock()
 
-    private var navigateToOfflineErrorScreenCalled = false
+    @BindValue
+    val mockNavigator: Navigator = mock()
+
     private var shouldTryAgainCalled = false
 
     @Before
     fun setupNavigation() {
         hiltRule.inject()
-
-        navigateToOfflineErrorScreenCalled = false
         shouldTryAgainCalled = false
     }
 
@@ -249,5 +253,7 @@ class WelcomeScreenKtTest : TestCase() {
         }
     }
 
-    private fun itOpensErrorScreen() = assert(navigateToOfflineErrorScreenCalled)
+    private fun itOpensErrorScreen() {
+        verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
 }

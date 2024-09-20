@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.gov.onelogin.ui.error.ErrorRoutes.navigateSingleTopTo
+import uk.gov.onelogin.navigation.navigateSingleTopTo
 
 object DeveloperRoutes {
     const val ROOT: String = "/developer"

@@ -2,23 +2,28 @@ package uk.gov.onelogin.login.ui.splash
 
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 
 @HiltAndroidTest
+@UninstallModules(NavigatorModule::class)
 class SplashScreenDevMenuTest : TestCase() {
+    @BindValue
+    val mockNavigator: Navigator = mock()
 
     private val splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
-    private var openDeveloperPanel: Int = 0
 
     @Before
     fun setup() {
-        openDeveloperPanel = 0
-
         hiltRule.inject()
         composeTestRule.setContent {
             SplashScreen()
@@ -29,6 +34,6 @@ class SplashScreenDevMenuTest : TestCase() {
     fun testDevMenuButton() {
         composeTestRule.onNode(splashIcon).performClick()
 
-        assertEquals(1, openDeveloperPanel)
+        verify(mockNavigator).openDeveloperPanel()
     }
 }

@@ -3,16 +3,24 @@ package uk.gov.onelogin.ui.profile
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
+import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltAndroidTest
+@UninstallModules(NavigatorModule::class)
 class ProfileScreenKtTest : TestCase() {
+    @BindValue
+    val mockNavigator: Navigator = mock()
 
     private val yourDetailsHeader = hasText(resources.getString(R.string.app_profileSubtitle1))
     private val yourDetailsTitle = hasText(resources.getString(R.string.app_signInDetails))
@@ -23,8 +31,6 @@ class ProfileScreenKtTest : TestCase() {
     private val legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
     private val legalLink2 = hasText(resources.getString(R.string.app_OpenSourceLicences))
     private val signOutButton = hasText(resources.getString(R.string.app_signOutButton))
-
-    private val openSignOutScreen: () -> Unit = mock()
 
     @Before
     fun initialisesHomeScreenProfileScreen() {
@@ -50,6 +56,6 @@ class ProfileScreenKtTest : TestCase() {
     @Test
     fun signOutCta() {
         composeTestRule.onNode(signOutButton).performClick()
-        verify(openSignOutScreen).invoke()
+        verify(mockNavigator).navigate(SignOutRoutes.Start)
     }
 }
