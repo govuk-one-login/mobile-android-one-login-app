@@ -23,9 +23,7 @@ class WelcomeScreenDevMenuTest : TestCase() {
     @Test
     fun verifyDevMenuClick() {
         composeTestRule.setContent {
-            WelcomeScreen(
-                openDeveloperPanel = { devMenuCLicked++ }
-            )
+            WelcomeScreen()
         }
 
         composeTestRule.onNode(signInIcon).performClick()

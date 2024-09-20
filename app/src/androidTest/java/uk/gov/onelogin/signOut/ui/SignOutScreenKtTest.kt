@@ -39,7 +39,7 @@ class SignOutScreenKtTest : TestCase() {
     fun setupNavigation() {
         hiltRule.inject()
         composeTestRule.setContent {
-            SignOutScreen(goBack, signIn, goToSignOutError)
+            SignOutScreen()
         }
     }
 

@@ -9,11 +9,13 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -42,6 +44,7 @@ import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.credentialchecker.CredentialCheckerModule
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.LocaleUtils
@@ -63,6 +66,9 @@ class LoginTest : TestCase() {
 
     @Inject
     lateinit var localeUtils: LocaleUtils
+
+    @Inject
+    lateinit var navigator: Navigator
 
     @Inject
     @Named("Open")
@@ -321,6 +327,16 @@ class LoginTest : TestCase() {
 
     private fun startApp() {
         composeRule.setContent {
+            val navController = rememberNavController()
+
+            DisposableEffect(key1 = navController) {
+                navigator.setController(navController)
+
+                onDispose {
+                    navigator.reset()
+                }
+            }
+
             OneLoginApp()
         }
     }

@@ -8,21 +8,24 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 
 @HiltAndroidTest
-@UninstallModules(UseCaseModule::class)
+@UninstallModules(UseCaseModule::class, NavigatorModule::class)
 class SplashScreenTest : TestCase() {
     @BindValue
     val verifyIdToken: VerifyIdToken = mock()
@@ -30,30 +33,28 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val handleLogin: HandleLogin = mock()
 
+    @BindValue
+    val mockNavigator: Navigator = mock()
+
     private val splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
     private val unlockButton = hasText(resources.getString(R.string.app_unlockButton))
 
-    private var nextScreen: Int = 0
-
     @Before
     fun setup() = runTest {
-        nextScreen = 0
-
         hiltRule.inject()
         whenever(handleLogin.invoke(any(), any())).thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
         }
 
         composeTestRule.setContent {
-            SplashScreen(
-                nextScreen = { nextScreen++ }
-            )
+            SplashScreen()
         }
     }
 
     @Test
     fun verifySplashScreen() {
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
     }
 
     @Test
@@ -64,6 +65,6 @@ class SplashScreenTest : TestCase() {
         }
         composeTestRule.onNode(unlockButton).performClick()
 
-        assertEquals(1, nextScreen)
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 }

@@ -21,8 +21,7 @@ import uk.gov.onelogin.ui.components.EmailHeader
 @Composable
 @Preview
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel(),
-    openDeveloperPanel: () -> Unit = { }
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     viewModel.saveTokens()
     val tokens = viewModel.getTokens()
@@ -75,7 +74,7 @@ fun HomeScreen(
             HorizontalDivider()
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
-                    onClick = { openDeveloperPanel() }
+                    onClick = { viewModel.openDevPanel() }
                 ) {
                     Text("Developer Panel")
                 }

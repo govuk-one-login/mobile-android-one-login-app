@@ -35,6 +35,7 @@ import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -231,5 +232,19 @@ class WelcomeScreenViewModelTest {
         verifyNoInteractions(mockTokenRepository)
         verifyNoInteractions(mockBioPrefHandler)
         verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+    }
+
+    @Test
+    fun `check nav to dev panel calls navigator correctly`() {
+        viewModel.navigateToDevPanel()
+
+        verify(mockNavigator).openDeveloperPanel()
+    }
+
+    @Test
+    fun `check nav to offline error calls navigator correctly`() {
+        viewModel.navigateToOfflineError()
+
+        verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
     }
 }

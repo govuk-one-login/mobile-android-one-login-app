@@ -245,11 +245,7 @@ class WelcomeScreenKtTest : TestCase() {
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
         composeTestRule.setContent {
-            WelcomeScreen(
-                navigateToOfflineErrorScreen = {
-                    navigateToOfflineErrorScreenCalled = true
-                }
-            )
+            WelcomeScreen()
         }
     }
 

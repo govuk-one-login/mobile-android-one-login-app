@@ -29,7 +29,7 @@ class ProfileScreenKtTest : TestCase() {
     @Before
     fun initialisesHomeScreenProfileScreen() {
         composeTestRule.setContent {
-            ProfileScreen(openSignOutScreen)
+            ProfileScreen()
         }
     }
 

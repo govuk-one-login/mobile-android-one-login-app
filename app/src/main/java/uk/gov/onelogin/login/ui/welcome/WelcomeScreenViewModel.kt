@@ -30,6 +30,7 @@ import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltViewModel
 @Suppress("LongParameterList")
@@ -106,7 +107,7 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "ReturnCount")
+    @Suppress("TooGenericExceptionCaught")
     fun handleActivityResult(intent: Intent) {
         if (intent.data == null) return
 
@@ -127,6 +128,10 @@ class WelcomeScreenViewModel @Inject constructor(
 
     fun navigateToDevPanel() {
         navigator.openDeveloperPanel()
+    }
+
+    fun navigateToOfflineError() {
+        navigator.navigate(ErrorRoutes.Offline)
     }
 
     private suspend fun handleTokens(tokens: TokenResponse) {

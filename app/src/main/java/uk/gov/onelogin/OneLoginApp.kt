@@ -12,8 +12,8 @@ import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.login.LoginGraphObject.loginGraph
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.mainnav.nav.MainNavGraph.mainNavRoutesFlow
-import uk.gov.onelogin.signOut.SignOutRoutes.signOutRoute
-import uk.gov.onelogin.ui.error.ErrorRoutes.genericErrorRoute
+import uk.gov.onelogin.signOut.SignOutGraphObject.signOutGraph
+import uk.gov.onelogin.ui.error.ErrorGraphObject.errorGraph
 
 @Composable
 fun OneLoginApp(
@@ -28,9 +28,9 @@ fun OneLoginApp(
             startDestination = LoginRoutes.Root.getRoute()
         ) {
             loginGraph(navController)
-            mainNavRoutesFlow(navController)
-            genericErrorRoute(navController)
-            signOutRoute(navController)
+            mainNavRoutesFlow()
+            errorGraph(navController)
+            signOutGraph()
             developerFlowRoutes(navController)
         }
     }

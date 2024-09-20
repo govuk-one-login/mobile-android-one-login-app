@@ -16,7 +16,6 @@ import uk.gov.onelogin.developer.DeveloperTools
 @Composable
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
-    navigateToOfflineErrorScreen: () -> Unit = { },
     shouldTryAgain: () -> Boolean = { false }
 ) {
     val launcher = rememberLauncherForActivityResult(
@@ -45,7 +44,7 @@ fun WelcomeScreen(
                 if (viewModel.onlineChecker.isOnline()) {
                     viewModel.onPrimary(launcher)
                 } else {
-                    navigateToOfflineErrorScreen()
+                    viewModel.navigateToOfflineError()
                 }
             },
             onTopIconClick = {
@@ -65,7 +64,7 @@ fun WelcomeScreen(
         if (viewModel.onlineChecker.isOnline()) {
             viewModel.onPrimary(launcher)
         } else {
-            navigateToOfflineErrorScreen()
+            viewModel.navigateToOfflineError()
         }
     }
 }

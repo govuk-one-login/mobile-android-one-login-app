@@ -42,7 +42,6 @@ import uk.gov.onelogin.ui.components.LightRed
 @Composable
 @Preview
 fun ProfileScreen(
-    openSignOutScreen: () -> Unit = { },
     viewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
     val uriHandler = LocalUriHandler.current
@@ -77,7 +76,7 @@ fun ProfileScreen(
             HorizontalDivider()
             ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
             Spacer(modifier = Modifier.height(mediumPadding))
-            SignOutRow(openSignOutScreen)
+            SignOutRow { viewModel.goToSignOut() }
         }
     )
 }

@@ -21,9 +21,7 @@ class SplashScreenDevMenuTest : TestCase() {
 
         hiltRule.inject()
         composeTestRule.setContent {
-            SplashScreen(
-                openDeveloperPanel = { openDeveloperPanel++ }
-            )
+            SplashScreen()
         }
     }
 

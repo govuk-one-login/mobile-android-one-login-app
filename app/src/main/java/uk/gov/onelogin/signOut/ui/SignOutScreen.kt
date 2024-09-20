@@ -1,6 +1,5 @@
 package uk.gov.onelogin.signOut.ui
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -12,13 +11,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
 import uk.gov.android.ui.pages.AlertPageParameters
-import uk.gov.onelogin.signOut.domain.SignOutError
 
 @Composable
 fun SignOutScreen(
-    goBack: () -> Unit,
-    goToSignIn: () -> Unit,
-    goToSignOutError: () -> Unit,
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
     AlertPage(
@@ -36,16 +31,10 @@ fun SignOutScreen(
             },
             ctaText = R.string.app_signOutAndDeleteAppDataButton,
             onClose = {
-                goBack()
+                viewModel.goBack()
             },
             onPrimary = {
-                try {
-                    viewModel.signOut()
-                    goToSignIn()
-                } catch (e: SignOutError) {
-                    Log.e("SignOutScreen", e.message, e)
-                    goToSignOutError()
-                }
+                viewModel.signOut()
             }
         )
     )

@@ -13,8 +13,7 @@ import uk.gov.onelogin.login.ui.splash.SplashScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.hasPreviousBackStack
-import uk.gov.onelogin.navigation.navigateToOfflineErrorScreen
-import uk.gov.onelogin.ui.error.ErrorRoutes.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.error.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
 
 object LoginGraphObject {
     @Suppress("LongMethod")
@@ -41,9 +40,6 @@ object LoginGraphObject {
                 route = LoginRoutes.Welcome.getRoute()
             ) {
                 WelcomeScreen(
-                    navigateToOfflineErrorScreen = {
-                        navController.navigateToOfflineErrorScreen()
-                    },
                     shouldTryAgain = {
                         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
                         val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
