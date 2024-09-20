@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login
+package uk.gov.onelogin.login.ui.biooptin
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -10,7 +10,6 @@ import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.ui.biooptin.BioOptInViewModel
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
