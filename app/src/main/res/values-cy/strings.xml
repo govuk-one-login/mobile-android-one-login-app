@@ -67,4 +67,8 @@
     <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
     <string name="app_doNotShareAnalytics">Peidiwch â rhannu dadansoddeg</string>
     <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
+    <string name="app_youveBeenSignedOutTitle">Rydych wedi cael eich allgofnodi</string>
+    <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
+    <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
+    <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 </resources>
