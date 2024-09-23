@@ -95,7 +95,7 @@ fun MainNavScreen(
                 HomeScreen()
             }
             composable(BottomNavDestination.Wallet.key) {
-                walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = true)
+                walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
             }
             composable(BottomNavDestination.Profile.key) {
                 ProfileScreen()

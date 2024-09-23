@@ -8,6 +8,7 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -33,6 +34,7 @@ import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
 import uk.gov.onelogin.ui.error.ErrorRoutes
+import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.WalletModule
 
 @HiltAndroidTest
@@ -66,6 +68,9 @@ class WelcomeScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
+    @BindValue
+    val deleteWalletDataUseCase: DeleteWalletDataUseCase = mock()
+
     private var shouldTryAgainCalled = false
 
     @Before
@@ -93,7 +98,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() {
+    fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
 
@@ -137,7 +142,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn() {
+    fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         composeTestRule.setContent {
@@ -194,7 +199,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() {
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         composeTestRule.setContent {
