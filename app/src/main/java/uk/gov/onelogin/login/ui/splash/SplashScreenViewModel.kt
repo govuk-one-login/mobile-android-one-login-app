@@ -60,6 +60,10 @@ class SplashScreenViewModel @Inject constructor(
         navigator.openDeveloperPanel()
     }
 
+    fun navigateToAnalyticsOptIn() {
+        navigator.navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
     private fun nextScreen(route: NavRoute) {
         val comingFromLockScreen = navigator.hasBackStack()
         val authSuccessful = route == MainNavRoutes.Start

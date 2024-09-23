@@ -24,6 +24,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
+import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
@@ -32,15 +33,17 @@ import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
 import uk.gov.onelogin.ui.error.ErrorRoutes
+import uk.gov.onelogin.wallet.WalletModule
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
     FeaturesModule::class,
     NetworkModule::class,
-    NavigatorModule::class
+    NavigatorModule::class,
+    WalletModule::class
 )
-class WelcomeScreenKtTest : TestCase() {
+class WelcomeScreenTest : TestCase() {
 
     @BindValue
     val loginSession: LoginSession = mock()
@@ -56,6 +59,9 @@ class WelcomeScreenKtTest : TestCase() {
 
     @BindValue
     val httpClient: GenericHttpClient = mock()
+
+    @BindValue
+    val walletSdk: WalletSdk = mock()
 
     @BindValue
     val mockNavigator: Navigator = mock()

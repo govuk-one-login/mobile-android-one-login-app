@@ -1,8 +1,10 @@
 package uk.gov.onelogin.mainnav.ui
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
@@ -11,6 +13,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.R
+import uk.gov.android.wallet.core.R as walletR
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 
@@ -49,6 +52,10 @@ class MainNavScreenTest : TestCase() {
             BottomNavDestination.Wallet.key,
             navController.currentDestination?.route
         )
+
+        composeTestRule.onNodeWithText(
+            resources.getString(walletR.string.introCardTitle)
+        ).assertIsDisplayed()
     }
 
     @Test

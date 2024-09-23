@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        tools:replace="android:theme"
         android:name="uk.gov.onelogin.OneLoginApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -43,6 +44,7 @@
                 <data android:path="/redirect"/>
             </intent-filter>
         </activity>
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
     </application>
 
     <queries>

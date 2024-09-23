@@ -1,19 +1,20 @@
 package uk.gov.onelogin.login.ui.splash
 
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
@@ -23,6 +24,7 @@ import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
+import uk.gov.onelogin.optin.ui.NOTICE_TAG
 
 @HiltAndroidTest
 @UninstallModules(UseCaseModule::class, NavigatorModule::class)
@@ -36,35 +38,48 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
-    private val splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
-    private val unlockButton = hasText(resources.getString(R.string.app_unlockButton))
+    private lateinit var splashIcon: SemanticsMatcher
+    private lateinit var unlockButton: SemanticsMatcher
+    private lateinit var privacyNotice: SemanticsMatcher
 
     @Before
-    fun setup() = runTest {
+    fun setUp() {
         hiltRule.inject()
-        whenever(handleLogin.invoke(any(), any())).thenAnswer {
+
+        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
         }
 
-        composeTestRule.setContent {
-            SplashScreen()
-        }
+        splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
+        unlockButton = hasText(resources.getString(R.string.app_unlockButton))
+        privacyNotice = hasTestTag(NOTICE_TAG)
     }
 
     @Test
     fun verifySplashScreen() {
+        // Given
+        composeTestRule.setContent {
+            SplashScreen()
+        }
+        // Then
+        composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
-        composeTestRule.onNode(unlockButton).assertIsDisplayed()
     }
 
     @Test
-    fun testUnlockButton() = runTest {
-        composeTestRule.onNode(unlockButton).assertIsDisplayed()
-        whenever(handleLogin.invoke(any(), any())).thenAnswer {
+    fun testUnlockButton() {
+        // Given
+        composeTestRule.setContent {
+            SplashScreen()
+        }
+        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
+        // When
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).performClick()
 
+        // Then
         verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 }

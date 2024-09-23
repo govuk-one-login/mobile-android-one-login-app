@@ -13,6 +13,7 @@ import uk.gov.onelogin.login.ui.splash.SplashScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.hasPreviousBackStack
+import uk.gov.onelogin.optin.ui.OptInScreen
 import uk.gov.onelogin.ui.error.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
 
 object LoginGraphObject {
@@ -89,6 +90,15 @@ object LoginGraphObject {
                         }
                     }
                 }
+            }
+
+            composable(
+                route = LoginRoutes.AnalyticsOptIn.getRoute()
+            ) {
+                BackHandler(true) {
+                    // do nothing
+                }
+                OptInScreen()
             }
         }
     }

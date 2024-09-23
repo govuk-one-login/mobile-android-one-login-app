@@ -14,7 +14,7 @@ class ProfileScreenViewModel @Inject constructor(
     localeUtils: LocaleUtils,
     getEmail: GetEmail
 ) : ViewModel() {
-    val email = getEmail() ?: ""
+    val email = getEmail().orEmpty()
     val locale = localeUtils.getLocale()
 
     fun goToSignOut() {

@@ -59,4 +59,12 @@
     <string name="app_signOutErrorTitle">Roedd problem wrth eich allgofnodi</string>
     <string name="app_signOutErrorBody">Gallwch orfodi allgofnodi trwy ddileu\'r ap o\'ch dyfais.</string>
     <string name="app_exitButton">Gadael</string>
+
+    <!-- Analytics Opt In   -->
+    <string name="app_analyticsPermissionTitle">Helpu i wella\'r ap drwy rannu dadansoddi</string>
+    <string name="app_analyticsPermissionBody">Gallwch helpu\'r tîm GOV.UK One Login i wneud gwelliannau drwy rannu dadansoddeg am sut rydych yn defnyddio\'r ap.\n\n Mae\'r dadansoddeg yn ddi-enw. Maent yn dangos i ni beth sydd yn a beth sydd ddim yn gweithio, ac yn helpu i wneud yr ap yn well.\n\n Gallwch stopio rhannu\'r dadansoddeg hyn ar unrhyw amser. Ewch i \'Apps\' yn gosodiadau eich ffôn, a dewiswch ap GOV.UK One Login i weld neu newid eich gosodiadau ap.</string>
+    <string name="app_privacyNoticeLink">Darllenwch fwy am hyn yn hysbysiad preifatrwydd GOV.UK One Login</string>
+    <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
+    <string name="app_doNotShareAnalytics">Peidiwch â rhannu dadansoddeg</string>
+    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
 </resources>

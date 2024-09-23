@@ -46,8 +46,10 @@ firebaseBom = "33.2.0"
 classgraph = "4.8.174"
 govuk-ui = "4.4.1"
 compose-runtime = "1.6.8"
+wallet = "1.28.0"
 
 [libraries]
+wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 components = "uk.gov.android:components:4.4.1"
@@ -98,7 +100,11 @@ junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", vers
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-appcheck = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+
+[bundles]
+firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics"]

@@ -16,30 +16,67 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
+import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 
-@Preview
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     fromLockScreen: Boolean = false
 ) {
     val context = LocalContext.current as FragmentActivity
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
 
+    SplashBody(
+        isUnlock = viewModel.showUnlock.value,
+        onLogin = { viewModel.login(context, false) },
+        onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
+    )
+    DisposableEffect(key1 = lifecycleOwner) {
+        with(lifecycleOwner) {
+            lifecycle.addObserver(viewModel)
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
+                        when {
+                            isRequired -> viewModel.navigateToAnalyticsOptIn()
+                            !viewModel.showUnlock.value ->
+                                viewModel.login(context, fromLockScreen)
+                        }
+                    }
+                }
+            }
+            onDispose {
+                lifecycleOwner.lifecycle.removeObserver(viewModel)
+            }
+        }
+    }
+}
+
+@Composable
+internal fun SplashBody(
+    isUnlock: Boolean,
+    onLogin: () -> Unit,
+    onOpenDeveloperPortal: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,12 +92,12 @@ fun SplashScreen(
                 modifier = Modifier
                     .weight(1F)
                     .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
-                        viewModel.navigateToDevPanel()
+                        onOpenDeveloperPortal()
                     }
                     .testTag(stringResource(id = R.string.splashIconTestTag))
             )
         )
-        if (viewModel.showUnlock.value) {
+        if (isUnlock) {
             GdsHeading(
                 headingParameters = HeadingParameters(
                     size = HeadingSize.H3(),
@@ -69,25 +106,35 @@ fun SplashScreen(
                     backgroundColor = colorResource(id = R.color.govuk_blue),
                     modifier = Modifier
                         .clickable {
-                            viewModel.login(context, false)
+                            onLogin()
                         }
                         .padding(bottom = mediumPadding)
                 )
             )
         }
     }
+}
 
-    DisposableEffect(key1 = Unit) {
-        lifecycleOwner.lifecycle.addObserver(viewModel)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(viewModel)
-        }
+@PreviewScreenSizes
+@Composable
+internal fun SplashScreenPreview() {
+    GdsTheme {
+        SplashBody(
+            isUnlock = false,
+            onLogin = {},
+            onOpenDeveloperPortal = {}
+        )
     }
+}
 
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        if (!viewModel.showUnlock.value) {
-            viewModel.login(context, fromLockScreen)
-        }
+@Preview
+@Composable
+internal fun UnlockScreenPreview() {
+    GdsTheme {
+        SplashBody(
+            isUnlock = true,
+            onLogin = {},
+            onOpenDeveloperPortal = {}
+        )
     }
 }

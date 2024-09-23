@@ -77,21 +77,6 @@ class LoginTest : TestCase() {
     @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()
 
-    private val persistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
-    private val tokenResponse = TokenResponse(
-        tokenType = "test",
-        accessToken = "test",
-        accessTokenExpirationTime = 1L,
-        idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
-            "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
-            "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
-            "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
-            "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
-            "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
-            "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-            "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
-    )
-
     @Before
     fun setup() {
         hiltRule.inject()
@@ -108,8 +93,8 @@ class LoginTest : TestCase() {
                 idToken = ""
             )
         )
-
         startApp()
+        clickOptOut()
         clickLogin()
 
         val authorizeUrl = Uri.parse(
@@ -150,6 +135,7 @@ class LoginTest : TestCase() {
         tokenRepository.setTokenResponse(tokenResponse)
 
         startApp()
+        clickOptOut()
         clickLogin()
 
         val authorizeUrl = Uri.parse(
@@ -190,9 +176,8 @@ class LoginTest : TestCase() {
         runBlocking {
             secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
         }
-
         startApp()
-
+        clickOptOut()
         clickLogin()
 
         val authorizeUrl = Uri.parse(
@@ -235,6 +220,7 @@ class LoginTest : TestCase() {
             Intent()
         )
 
+        clickOptOut()
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
@@ -250,7 +236,7 @@ class LoginTest : TestCase() {
                 Uri.EMPTY
             )
         )
-
+        clickOptOut()
         composeRule.onNodeWithText("Sign in").performClick()
         nodeWithTextExists("There was a problem signing you in")
     }
@@ -266,6 +252,7 @@ class LoginTest : TestCase() {
             )
         )
 
+        clickOptOut()
         clickLogin()
         nodeWithTextExists(resources.getString(R.string.app_noPasscodePatternSetupTitle))
         composeRule.onNodeWithText(resources.getString(R.string.app_continue))
@@ -280,6 +267,7 @@ class LoginTest : TestCase() {
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
+        clickOptOut()
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_enableBiometricsTitle))
@@ -296,6 +284,7 @@ class LoginTest : TestCase() {
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
 
+        clickOptOut()
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
@@ -303,6 +292,7 @@ class LoginTest : TestCase() {
 
     private fun setupActivityForResult(returnedIntent: Intent) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
         }
 
@@ -352,6 +342,17 @@ class LoginTest : TestCase() {
         }
     }
 
+    private fun clickOptOut() {
+        composeRule.waitForIdle()
+        val doNotShare = composeRule.onNodeWithText(
+            resources.getString(R.string.app_doNotShareAnalytics)
+        )
+        val isOnOptInScreen = doNotShare.isDisplayed()
+        if (isOnOptInScreen) {
+            doNotShare.performClick()
+        }
+    }
+
     private fun clickLogin() {
         composeRule.waitForIdle()
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
@@ -364,11 +365,25 @@ class LoginTest : TestCase() {
 
     private fun mockGoodLogin() {
         whenever(mockLoginSession.finalise(any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
             (it.arguments[1] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
     }
 
     companion object {
-        const val WAIT_FOR_OBJECT_TIMEOUT = 20_000L
+        private const val persistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
+        private val tokenResponse = TokenResponse(
+            tokenType = "test",
+            accessToken = "test",
+            accessTokenExpirationTime = 1L,
+            idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
+                "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
+                "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
+                "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
+                "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
+                "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
+                "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
+                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
+        )
     }
 }
