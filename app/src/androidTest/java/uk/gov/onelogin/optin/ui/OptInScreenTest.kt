@@ -50,7 +50,7 @@ class OptInScreenTest : TestCase() {
         composeTestRule.onNode(primaryButton).performClick()
         composeTestRule.waitForIdle()
         // Then call optIn()
-        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn, false)
+        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn, true)
         verifyBlocking(repository) { optIn() }
     }
 
@@ -65,7 +65,7 @@ class OptInScreenTest : TestCase() {
         composeTestRule.onNode(textButton).performClick()
         composeTestRule.waitForIdle()
         // Then call optOut()
-        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn, false)
+        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn, true)
         verifyBlocking(repository) { optOut() }
     }
 }
