@@ -71,4 +71,8 @@
     <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
     <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
+    <string name="app_updateApp_Title">Mae angen i chi ddiweddaru eich ap</string>
+    <string name="app_updateAppBody1">Rydych yn defnyddio hen fersiwn o\'r ap GOV.UK One Login.</string>
+    <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
+    <string name="app_updateAppButton">Diweddaru Ap GOV.UK One Login</string>
 </resources>
