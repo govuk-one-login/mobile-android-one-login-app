@@ -114,4 +114,5 @@
     <string name="app_updateAppBody1">You’re using an old version of the GOV.UK One Login app.</string>
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
+    <string name="app_updateApp_ContentDescription" translatable="false">Update App Required icon content description</string>
 </resources>

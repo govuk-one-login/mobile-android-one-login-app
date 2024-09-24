@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appcheck.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import uk.gov.android.onelogin.R
@@ -16,6 +17,7 @@ fun UpdateRequiredScreen(
     LandingPage(
         landingPageParameters = LandingPageParameters(
             topIcon = UiR.drawable.ic_error,
+            contentDescription = R.string.app_updateApp_ContentDescription,
             iconColor = MaterialTheme.colorScheme.onBackground,
             title = R.string.app_updateApp_Title,
             titleBottomPadding = smallPadding,
@@ -27,6 +29,7 @@ fun UpdateRequiredScreen(
                     intArrayOf(R.string.app_updateAppBody2)
                 )
             ),
+            contentInternalPadding = PaddingValues(bottom = smallPadding),
             primaryButtonText = R.string.app_updateAppButton,
             onPrimary = updateApp
         )
