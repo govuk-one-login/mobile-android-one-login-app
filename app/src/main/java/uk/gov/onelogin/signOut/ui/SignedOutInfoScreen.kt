@@ -1,5 +1,6 @@
 package uk.gov.onelogin.signOut.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
@@ -23,6 +24,7 @@ fun SignedOutInfoScreen(
                     intArrayOf(R.string.app_youveBeenSignedOutBody2)
                 )
             ),
+            contentInternalPadding = PaddingValues(bottom = smallPadding),
             primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
             onPrimary = signIn
         )
