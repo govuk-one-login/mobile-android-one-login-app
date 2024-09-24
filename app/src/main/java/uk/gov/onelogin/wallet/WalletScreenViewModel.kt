@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.wallet
+package uk.gov.onelogin.wallet
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
