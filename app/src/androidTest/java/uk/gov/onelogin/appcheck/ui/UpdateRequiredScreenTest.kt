@@ -1,6 +1,7 @@
 package uk.gov.onelogin.appcheck.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -26,6 +27,10 @@ class UpdateRequiredScreenTest : TestCase() {
     @Test
     fun verifyScreenDisplayed() {
         composeTestRule.apply {
+            onNodeWithContentDescription(
+                resources.getString(R.string.app_updateApp_ContentDescription)
+            ).assertIsDisplayed()
+
             onNodeWithText(
                 resources.getString(R.string.app_updateApp_Title)
             ).assertIsDisplayed()
