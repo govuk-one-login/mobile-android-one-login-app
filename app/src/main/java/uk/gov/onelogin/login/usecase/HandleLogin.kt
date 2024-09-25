@@ -10,6 +10,7 @@ import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
+import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
 fun interface HandleLogin {
     suspend operator fun invoke(
@@ -21,6 +22,7 @@ fun interface HandleLogin {
 class HandleLoginImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
+    private val isAccessTokenExpired: IsAccessTokenExpired,
     private val getFromTokenSecureStore: GetFromTokenSecureStore,
     private val bioPrefHandler: BiometricPreferenceHandler
 ) : HandleLogin {
@@ -28,7 +30,7 @@ class HandleLoginImpl @Inject constructor(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit
     ) {
-        if (!isTokenExpiredOrMissing() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
+        if (!isAccessTokenExpired() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
             getFromTokenSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY) {
                 if (it is LocalAuthStatus.Success) {
                     tokenRepository.setTokenResponse(
@@ -45,10 +47,4 @@ class HandleLoginImpl @Inject constructor(
             callback(LocalAuthStatus.ManualSignIn)
         }
     }
-
-    private fun isTokenExpiredOrMissing() =
-        getTokenExpiry()?.let { isTimestampExpired(it) } ?: true
-
-    private fun isTimestampExpired(expiryTimestamp: Long) =
-        expiryTimestamp < System.currentTimeMillis()
 }

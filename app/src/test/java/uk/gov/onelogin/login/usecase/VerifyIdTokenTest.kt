@@ -4,6 +4,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
@@ -52,7 +53,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `non 200 response from jwks endpoint`() = runTest {
-        setupHttpStub(ApiResponse.Failure(400, Exception()))
+        setupHttpStub(ApiResponse.Failure(ApiFailureReason.General,400, Exception()))
         stubVerifier = JwtVerifier.stub(false)
         buildVerifyToken()
 
