@@ -1,7 +1,6 @@
 package uk.gov.onelogin.developer
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,10 +43,11 @@ import uk.gov.onelogin.developer.tabs.AppTabScreen
 import uk.gov.onelogin.developer.tabs.auth.AuthTabScreen
 import uk.gov.onelogin.developer.tabs.features.FeaturesScreen
 import uk.gov.onelogin.developer.tabs.networking.NetworkingTabScreen
+import uk.gov.onelogin.developer.tabs.tokens.TokenTabScreen
 import uk.gov.onelogin.ui.components.SimpleTextPage
 
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabView(goBack: () -> Unit) {
     val tabs = listOf(
@@ -66,7 +67,10 @@ fun TabView(goBack: () -> Unit) {
         TabItem(
             R.string.app_developer_tab_secure_store,
             Icons.Filled.Lock
-        ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
+        ) { SimpleTextPage(R.string.app_developer_tab_secure_store) },
+        TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
+            TokenTabScreen()
+        }
     )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()

@@ -11,23 +11,27 @@ import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.network.data.TokenApiResponse
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
 class StsAuthenticationProvider(
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
+    private val isAccessTokenExpired: IsAccessTokenExpired,
     private val httpClient: GenericHttpClient
 ) : AuthenticationProvider {
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
-        val accessToken = tokenRepository.getTokenResponse()?.accessToken
+        if (isAccessTokenExpired()) {
+            return AuthenticationResponse.AccessTokenExpired
+        }
 
-        return accessToken?.let {
+        return tokenRepository.getTokenResponse()?.accessToken?.let {
             val request = ApiRequest.Post(
                 url = stsUrl,
                 body = FormDataContent(
                     Parameters.build {
                         append(GRANT_TYPE, "urn:ietf:params:oauth:grant-type:token-exchange")
-                        append(SUBJECT_TOKEN, accessToken)
+                        append(SUBJECT_TOKEN, it)
                         append(SUBJECT_TOKEN_TYPE, "urn:ietf:params:oauth:token-type:access_token")
                         append(SCOPE, scope)
                     }

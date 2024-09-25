@@ -7,13 +7,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.network.data.AuthApiResponse
 import uk.gov.onelogin.network.usecase.HelloWorldApiCall
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltViewModel
 class AuthTabScreenViewModel @Inject constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    private val navigator: Navigator
 ) : ViewModel() {
     private val _happyHelloWorldResponse = mutableStateOf("")
     val happyHelloWorldResponse: State<String>
@@ -38,10 +42,11 @@ class AuthTabScreenViewModel @Inject constructor(
     private val _serviceFailingCallLoading = mutableStateOf(false)
     val serviceFailingCallLoading: State<Boolean>
         get() = _serviceFailingCallLoading
+
     fun makeHappyHelloWorldCall() {
         _happyCallLoading.value = true
         viewModelScope.launch {
-            _happyHelloWorldResponse.value = helloWorldApiCall.happyPath()
+            handleApiResponse(helloWorldApiCall.happyPath())
             _happyCallLoading.value = false
         }
     }
@@ -51,7 +56,7 @@ class AuthTabScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val currentToken = tokenRepository.getTokenResponse()
             tokenRepository.clearTokenResponse()
-            _authFailingHelloWorldResponse.value = helloWorldApiCall.happyPath()
+            handleApiResponse(helloWorldApiCall.happyPath())
             _authFailingCallLoading.value = false
             if (currentToken != null) {
                 tokenRepository.setTokenResponse(currentToken)
@@ -62,8 +67,25 @@ class AuthTabScreenViewModel @Inject constructor(
     fun makeServiceFailingHelloWorldCall() {
         _serviceFailingCallLoading.value = true
         viewModelScope.launch {
-            _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
+            handleApiResponse(helloWorldApiCall.errorPath())
             _serviceFailingCallLoading.value = false
+        }
+    }
+
+    private fun handleApiResponse(response: AuthApiResponse) {
+        when (response) {
+            AuthApiResponse.AuthExpired ->
+                navigator.navigate(SignOutRoutes.Info)
+
+            is AuthApiResponse.Failure -> {
+                _happyHelloWorldResponse.value = response.e.message ?: "Error"
+                _happyCallLoading.value = false
+            }
+
+            is AuthApiResponse.Success<*> -> {
+                _happyHelloWorldResponse.value = response.response.toString()
+                _happyCallLoading.value = false
+            }
         }
     }
 }

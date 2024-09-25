@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.signOut.ui.SignOutScreen
+import uk.gov.onelogin.signOut.ui.SignedOutInfoScreen
 
 object SignOutGraphObject {
     fun NavGraphBuilder.signOutGraph() {
@@ -15,6 +16,11 @@ object SignOutGraphObject {
                 route = SignOutRoutes.Start.getRoute()
             ) {
                 SignOutScreen()
+            }
+            composable(
+                route = SignOutRoutes.Info.getRoute()
+            ) {
+                SignedOutInfoScreen()
             }
         }
     }

@@ -12,8 +12,6 @@ import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.GetPersistentIdImpl
-import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
-import uk.gov.onelogin.tokens.usecases.GetTokenExpiryImpl
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreData
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreDataImpl
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
@@ -60,11 +58,6 @@ interface TokenModule {
     fun bindRemoveTokenExpiry(
         removeTokenExpiry: RemoveTokenExpiryImpl
     ): RemoveTokenExpiry
-
-    @Binds
-    fun bindGetTokenExpiry(
-        getTokenExpiry: GetTokenExpiryImpl
-    ): GetTokenExpiry
 
     @Binds
     fun bindGetEmail(
