@@ -71,7 +71,7 @@ class SignOutScreenTest : TestCase() {
         verify(mockNavigator).navigate(LoginRoutes.Root, true)
     }
 
-    @Test(expected = Throwable::class)
+    @Test()
     fun verifySignOutButtonFails() = runTest {
         whenever(signOutUseCase.invoke(any()))
             .thenThrow(SignOutError(Exception("something went wrong")))
