@@ -82,7 +82,10 @@ class StsAuthenticationProviderTest {
 
         val response = provider.fetchBearerToken("scope")
 
-        assertThat("response is AccessTokenExpired", response is AuthenticationResponse.AccessTokenExpired)
+        assertThat(
+            "response is AccessTokenExpired",
+            response is AuthenticationResponse.AccessTokenExpired
+        )
     }
 
     @Test
@@ -90,10 +93,10 @@ class StsAuthenticationProviderTest {
         setupProvider(
             ApiResponse.Success(
                 "{\n" +
-                        "    \"access_token\": \"token\",\n" +
-                        "    \"token_type\": \"Bearer\",\n" +
-                        "    \"expires_in\": 180\n" +
-                        "}"
+                    "    \"access_token\": \"token\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 180\n" +
+                    "}"
             )
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(
