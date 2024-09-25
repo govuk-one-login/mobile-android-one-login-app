@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -36,8 +37,6 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
-    openSignOutScreen: () -> Unit,
-    openDeveloperPanel: () -> Unit = { },
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
     val navItems = listOf(
@@ -90,16 +89,16 @@ fun MainNavScreen(
         NavHost(
             navController = navController,
             startDestination = BottomNavDestination.Home.key,
-            modifier = androidx.compose.ui.Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues)
         ) {
             composable(BottomNavDestination.Home.key) {
-                HomeScreen(openDeveloperPanel = openDeveloperPanel)
+                HomeScreen()
             }
             composable(BottomNavDestination.Wallet.key) {
                 walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
             }
             composable(BottomNavDestination.Profile.key) {
-                ProfileScreen(openSignOutScreen = openSignOutScreen)
+                ProfileScreen()
             }
         }
     }

@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.TokenResponse
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetEmail
@@ -15,7 +16,9 @@ import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
 @HiltViewModel
+@Suppress("LongParameterList")
 class HomeScreenViewModel @Inject constructor(
+    private val navigator: Navigator,
     private val tokenRepository: TokenRepository,
     private val saveToSecureStore: SaveToSecureStore,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
@@ -52,5 +55,9 @@ class HomeScreenViewModel @Inject constructor(
 
     fun getTokens(): TokenResponse? {
         return tokenRepository.getTokenResponse()
+    }
+
+    fun openDevPanel() {
+        navigator.openDeveloperPanel()
     }
 }

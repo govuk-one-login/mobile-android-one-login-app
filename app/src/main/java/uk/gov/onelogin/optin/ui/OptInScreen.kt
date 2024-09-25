@@ -33,8 +33,7 @@ import uk.gov.android.ui.theme.xsmallPadding
 
 @Composable
 fun OptInScreen(
-    viewModel: OptInViewModel = hiltViewModel<OptInViewModel>(),
-    onComplete: () -> Unit
+    viewModel: OptInViewModel = hiltViewModel()
 ) {
     val uriHandler = LocalUriHandler.current
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
@@ -46,11 +45,11 @@ fun OptInScreen(
             },
             onShare = {
                 viewModel.optIn()
-                onComplete()
+                viewModel.goToSignIn()
             },
             onDoNotShare = {
                 viewModel.optOut()
-                onComplete()
+                viewModel.goToSignIn()
             }
         )
     }

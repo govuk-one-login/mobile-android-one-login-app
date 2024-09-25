@@ -3,29 +3,30 @@ package uk.gov.onelogin.login.ui.biooptin
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 
 @HiltAndroidTest
+@UninstallModules(NavigatorModule::class)
 class BioOptInScreenKtTest : TestCase() {
-    private var primaryClicked: Int = 0
-    private var secondaryClicked: Int = 0
+    @BindValue
+    var mockNavigator: Navigator = mock()
 
     @Before
     fun setupNavigation() {
-        primaryClicked = 0
-        secondaryClicked = 0
-
         hiltRule.inject()
         composeTestRule.setContent {
-            BiometricsOptInScreen(
-                onPrimary = { primaryClicked++ },
-                onSecondary = { secondaryClicked++ }
-            )
+            BiometricsOptInScreen()
         }
     }
 
@@ -51,13 +52,13 @@ class BioOptInScreenKtTest : TestCase() {
     fun testPrimaryButton() {
         composeTestRule.onNode(primaryButton).performClick()
 
-        assertEquals(1, primaryClicked)
+        verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
 
     @Test
     fun testSecondaryButton() {
         composeTestRule.onNode(secondaryButton).performClick()
 
-        assertEquals(1, secondaryClicked)
+        verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
 }

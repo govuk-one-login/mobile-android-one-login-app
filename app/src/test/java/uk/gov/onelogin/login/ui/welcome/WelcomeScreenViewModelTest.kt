@@ -1,14 +1,10 @@
-package uk.gov.onelogin.ui.welcome
+package uk.gov.onelogin.login.ui.welcome
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -17,6 +13,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.AuthenticationError
 import uk.gov.android.authentication.LoginSession
@@ -30,12 +27,14 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.login.usecase.VerifyIdToken
-import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
+import uk.gov.onelogin.ui.LocaleUtils
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -49,9 +48,10 @@ class WelcomeScreenViewModelTest {
     private val mockVerifyIdToken: VerifyIdToken = mock()
     private val mockFeatureFlags: FeatureFlags = mock()
     private val mockGetPersistentId: GetPersistentId = mock()
+    private val mockNavigator: Navigator = mock()
     private val mockOnlineChecker: OnlineChecker = mock()
+    private val mockLocaleUtils: LocaleUtils = mock()
 
-    private val observer: Observer<String> = mock()
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String? = "testIdToken"
     private val tokenResponse = TokenResponse(
@@ -72,19 +72,15 @@ class WelcomeScreenViewModelTest {
         mockVerifyIdToken,
         mockFeatureFlags,
         mockGetPersistentId,
+        mockNavigator,
+        mockLocaleUtils,
         mockOnlineChecker
     )
 
     @BeforeEach
     fun setup() {
-        viewModel.next.observeForever(observer)
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
-    }
-
-    @AfterEach
-    fun tearDown() {
-        viewModel.next.removeObserver(observer)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -104,14 +100,14 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            val result = viewModel.handleActivityResult(
+            viewModel.handleActivityResult(
                 mockIntent
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-            assertEquals(MainNavRoutes.START, result)
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
     @Suppress("UNCHECKED_CAST")
@@ -135,14 +131,12 @@ class WelcomeScreenViewModelTest {
                     (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(nullIdTokenResponse)
                 }
 
-            val result = viewModel.handleActivityResult(
-                mockIntent
-            )
+            viewModel.handleActivityResult(mockIntent)
 
             verify(mockTokenRepository).setTokenResponse(nullIdTokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-            assertEquals(MainNavRoutes.START, result)
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
     @Suppress("UNCHECKED_CAST")
@@ -161,13 +155,11 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(true)
 
-        val result = viewModel.handleActivityResult(
-            mockIntent
-        )
+        viewModel.handleActivityResult(mockIntent)
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.BIO_OPT_IN, result)
+        verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -185,13 +177,11 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(true)
 
-        val result = viewModel.handleActivityResult(
-            mockIntent
-        )
+        viewModel.handleActivityResult(mockIntent)
 
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
-        assertEquals(LoginRoutes.PASSCODE_INFO, result)
+        verify(mockNavigator).navigate(LoginRoutes.PasscodeInfo, true)
     }
 
     @Test
@@ -199,13 +189,11 @@ class WelcomeScreenViewModelTest {
         val mockIntent: Intent = mock()
         whenever(mockIntent.data).thenReturn(null)
 
-        val result = viewModel.handleActivityResult(
-            mockIntent
-        )
+        viewModel.handleActivityResult(mockIntent)
 
-        verify(mockTokenRepository, times(0)).setTokenResponse(any())
-        verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertNull(result)
+        verifyNoInteractions(mockTokenRepository)
+        verifyNoInteractions(mockBioPrefHandler)
+        verifyNoInteractions(mockNavigator)
     }
 
     @Test
@@ -216,13 +204,12 @@ class WelcomeScreenViewModelTest {
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenThrow(AuthenticationError("Sign in error", AuthenticationError.ErrorType.OAUTH))
-        val result = viewModel.handleActivityResult(
-            mockIntent
-        )
 
-        verify(mockTokenRepository, times(0)).setTokenResponse(any())
-        verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.SIGN_IN_ERROR, result)
+        viewModel.handleActivityResult(mockIntent)
+
+        verifyNoInteractions(mockTokenRepository)
+        verifyNoInteractions(mockBioPrefHandler)
+        verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -239,12 +226,24 @@ class WelcomeScreenViewModelTest {
         whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
             .thenReturn(false)
 
-        val result = viewModel.handleActivityResult(
-            mockIntent
-        )
+        viewModel.handleActivityResult(mockIntent)
 
-        verify(mockTokenRepository, times(0)).setTokenResponse(any())
-        verify(mockBioPrefHandler, times(0)).setBioPref(any())
-        assertEquals(LoginRoutes.SIGN_IN_ERROR, result)
+        verifyNoInteractions(mockTokenRepository)
+        verifyNoInteractions(mockBioPrefHandler)
+        verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+    }
+
+    @Test
+    fun `check nav to dev panel calls navigator correctly`() {
+        viewModel.navigateToDevPanel()
+
+        verify(mockNavigator).openDeveloperPanel()
+    }
+
+    @Test
+    fun `check nav to offline error calls navigator correctly`() {
+        viewModel.navigateToOfflineError()
+
+        verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -21,7 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.collectLatest
@@ -40,32 +39,27 @@ import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
-    fromLockScreen: Boolean = false,
-    nextScreen: (String) -> Unit = {},
-    openDeveloperPanel: () -> Unit = {},
-    onAnalyticsOptIn: () -> Unit = {}
+    fromLockScreen: Boolean = false
 ) {
     val context = LocalContext.current as FragmentActivity
-    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
         onLogin = { viewModel.login(context, false) },
-        onOpenDeveloperPortal = openDeveloperPanel
+        onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
     DisposableEffect(key1 = lifecycleOwner) {
         with(lifecycleOwner) {
             lifecycle.addObserver(viewModel)
-            viewModel.next.observe(context) {
-                nextScreen(it)
-            }
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
-                            isRequired -> onAnalyticsOptIn()
-                            !viewModel.showUnlock.value -> viewModel.login(context, fromLockScreen)
+                            isRequired -> viewModel.navigateToAnalyticsOptIn()
+                            !viewModel.showUnlock.value ->
+                                viewModel.login(context, fromLockScreen)
                         }
                     }
                 }

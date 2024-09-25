@@ -1,5 +1,6 @@
 package uk.gov.onelogin.ui.home
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,6 +15,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetEmail
@@ -22,8 +24,10 @@ import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class HomeScreenViewModelTest {
+    private val mockNavigator: Navigator = mock()
     private val tokenRepository: TokenRepository = mock()
     private val saveToSecureStore: SaveToSecureStore = mock()
     private val saveToOpenSecureStore: SaveToOpenSecureStore = mock()
@@ -33,6 +37,7 @@ class HomeScreenViewModelTest {
 
     private val viewModel by lazy {
         HomeScreenViewModel(
+            mockNavigator,
             tokenRepository,
             saveToSecureStore,
             saveToOpenSecureStore,
@@ -152,5 +157,12 @@ class HomeScreenViewModelTest {
         whenever(getEmail()).thenReturn(null)
 
         assertEquals("", viewModel.email)
+    }
+
+    @Test
+    fun openDevPanel() {
+        viewModel.openDevPanel()
+
+        verify(mockNavigator).openDeveloperPanel()
     }
 }

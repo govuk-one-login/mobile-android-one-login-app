@@ -12,10 +12,10 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
@@ -30,7 +30,10 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.ui.error.ErrorRoutes
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.WalletModule
 
@@ -39,9 +42,10 @@ import uk.gov.onelogin.wallet.WalletModule
     LoginSessionModule::class,
     FeaturesModule::class,
     NetworkModule::class,
+    NavigatorModule::class,
     WalletModule::class
 )
-class WelcomeScreenKtTest : TestCase() {
+class WelcomeScreenTest : TestCase() {
 
     @BindValue
     val loginSession: LoginSession = mock()
@@ -62,16 +66,16 @@ class WelcomeScreenKtTest : TestCase() {
     val walletSdk: WalletSdk = mock()
 
     @BindValue
+    val mockNavigator: Navigator = mock()
+
+    @BindValue
     val deleteWalletDataUseCase: DeleteWalletDataUseCase = mock()
 
-    private var navigateToOfflineErrorScreenCalled = false
     private var shouldTryAgainCalled = false
 
     @Before
     fun setupNavigation() {
         hiltRule.inject()
-
-        navigateToOfflineErrorScreenCalled = false
         shouldTryAgainCalled = false
     }
 
@@ -256,13 +260,11 @@ class WelcomeScreenKtTest : TestCase() {
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
         composeTestRule.setContent {
-            WelcomeScreen(
-                navigateToOfflineErrorScreen = {
-                    navigateToOfflineErrorScreenCalled = true
-                }
-            )
+            WelcomeScreen()
         }
     }
 
-    private fun itOpensErrorScreen() = assert(navigateToOfflineErrorScreenCalled)
+    private fun itOpensErrorScreen() {
+        verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
 }

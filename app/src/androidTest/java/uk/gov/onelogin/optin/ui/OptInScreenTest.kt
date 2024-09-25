@@ -5,14 +5,16 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
 
 @HiltAndroidTest
@@ -21,6 +23,7 @@ class OptInScreenTest : TestCase() {
     private lateinit var primaryButton: SemanticsMatcher
     private lateinit var textButton: SemanticsMatcher
     private val repository: OptInRepository = mock()
+    private val mockNavigator: Navigator = mock()
     private lateinit var viewModel: OptInViewModel
 
     @Before
@@ -30,38 +33,39 @@ class OptInScreenTest : TestCase() {
         textButton = hasText(resources.getString(R.string.app_doNotShareAnalytics))
         wheneverBlocking { repository.optIn() }.thenAnswer { }
         wheneverBlocking { repository.optOut() }.thenAnswer { }
-        viewModel = OptInViewModel(repository)
+        viewModel = OptInViewModel(
+            repository,
+            mockNavigator
+        )
     }
 
     @Test
     fun shareAnalytics() {
         // Given the OptInScreen Composable
-        var actual = false
         composeTestRule.setContent {
-            OptInScreen(viewModel) { actual = true }
+            OptInScreen(viewModel)
         }
         // When clicking on the "Share analytics" `primaryButton`
         composeTestRule.waitForIdle()
         composeTestRule.onNode(primaryButton).performClick()
         composeTestRule.waitForIdle()
         // Then call optIn()
-        assertEquals(true, actual)
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
         verifyBlocking(repository) { optIn() }
     }
 
     @Test
     fun doNotShareAnalytics() {
         // Given the OptOutScreen Composable
-        var actual = false
         composeTestRule.setContent {
-            OptInScreen(viewModel) { actual = true }
+            OptInScreen(viewModel)
         }
         // When clicking on the "Do not share analytics" `textButton`
         composeTestRule.waitForIdle()
         composeTestRule.onNode(textButton).performClick()
         composeTestRule.waitForIdle()
         // Then call optOut()
-        assertEquals(true, actual)
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
         verifyBlocking(repository) { optOut() }
     }
 }

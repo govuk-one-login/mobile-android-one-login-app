@@ -5,16 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlin.coroutines.resume
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.TokenResponse
@@ -28,11 +24,13 @@ import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.usecase.VerifyIdToken
-import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltViewModel
 @Suppress("LongParameterList")
@@ -47,51 +45,50 @@ class WelcomeScreenViewModel @Inject constructor(
     private val verifyIdToken: VerifyIdToken,
     private val featureFlags: FeatureFlags,
     private val getPersistentId: GetPersistentId,
+    private val navigator: Navigator,
+    private val localeUtils: LocaleUtils,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
-
-    private val _next = MutableLiveData<String>()
-    val next: LiveData<String> = _next
 
     fun onPrimary(
         launcher: ActivityResultLauncher<Intent>
     ) {
         val authorizeEndpoint = Uri.parse(
-            context.resources.getString(
+            context.getString(
                 if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
                     R.string.stsUrl
                 } else {
                     R.string.openIdConnectBaseUrl
                 },
-                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+                context.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
         )
         val tokenEndpoint = Uri.parse(
-            context.resources.getString(
+            context.getString(
                 if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
                     R.string.stsUrl
                 } else {
                     R.string.apiBaseUrl
                 },
-                context.resources.getString(R.string.tokenExchangeEndpoint)
+                context.getString(R.string.tokenExchangeEndpoint)
             )
         )
         val redirectUri = Uri.parse(
-            context.resources.getString(
+            context.getString(
                 R.string.webBaseUrl,
-                context.resources.getString(R.string.webRedirectEndpoint)
+                context.getString(R.string.webRedirectEndpoint)
             )
         )
         val clientId = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            context.resources.getString(R.string.stsClientId)
+            context.getString(R.string.stsClientId)
         } else {
-            context.resources.getString(R.string.openIdConnectClientId)
+            context.getString(R.string.openIdConnectClientId)
         }
 
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
 
-        val locale = LocaleUtils.getLocaleAsSessionConfig(context)
+        val locale = localeUtils.getLocaleAsSessionConfig()
 
         viewModelScope.launch {
             loginSession
@@ -110,26 +107,34 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught", "ReturnCount")
-    suspend fun handleActivityResult(intent: Intent): String? {
-        if (intent.data == null) return null
+    @Suppress("TooGenericExceptionCaught")
+    fun handleActivityResult(intent: Intent) {
+        if (intent.data == null) return
 
-        try {
-            return suspendCancellableCoroutine<String> { continuation ->
+        viewModelScope.launch {
+            try {
                 loginSession.finalise(intent = intent) { tokens ->
                     viewModelScope.launch {
-                        continuation.resume(handleTokens(tokens))
+                        handleTokens(tokens)
                     }
                 }
+            } catch (e: Throwable) { // handle both Error and Exception types.
+                // Includes AuthenticationError
+                Log.e(tag, e.message, e)
+                navigator.navigate(LoginRoutes.SignInError, true)
             }
-        } catch (e: Throwable) { // handle both Error and Exception types.
-            // Includes AuthenticationError
-            Log.e(tag, e.message, e)
-            return LoginRoutes.SIGN_IN_ERROR
         }
     }
 
-    private suspend fun handleTokens(tokens: TokenResponse): String {
+    fun navigateToDevPanel() {
+        navigator.openDeveloperPanel()
+    }
+
+    fun navigateToOfflineError() {
+        navigator.navigate(ErrorRoutes.Offline)
+    }
+
+    private suspend fun handleTokens(tokens: TokenResponse) {
         val jwksUrl = context.getString(
             R.string.stsUrl,
             context.getString(R.string.jwksEndpoint)
@@ -137,7 +142,7 @@ class WelcomeScreenViewModel @Inject constructor(
 
         return tokens.idToken?.let { idToken ->
             if (!verifyIdToken(idToken, jwksUrl)) {
-                LoginRoutes.SIGN_IN_ERROR
+                navigator.navigate(LoginRoutes.SignInError, true)
             } else {
                 checkLocalAuthRoute(tokens)
             }
@@ -145,22 +150,19 @@ class WelcomeScreenViewModel @Inject constructor(
     }
 
     @Suppress("ReturnCount")
-    private fun checkLocalAuthRoute(tokens: TokenResponse): String {
+    private fun checkLocalAuthRoute(tokens: TokenResponse) {
         tokenRepository.setTokenResponse(tokens)
 
-        val result = when {
-            !credChecker.isDeviceSecure() -> {
-                bioPrefHandler.setBioPref(BiometricPreference.NONE)
-                LoginRoutes.PASSCODE_INFO
-            }
-            shouldSeeBiometricOptIn() -> LoginRoutes.BIO_OPT_IN
-            else -> {
-                bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
-                autoInitialiseSecureStore()
-                MainNavRoutes.START
-            }
+        if (!credChecker.isDeviceSecure()) {
+            bioPrefHandler.setBioPref(BiometricPreference.NONE)
+            navigator.navigate(LoginRoutes.PasscodeInfo, true)
+        } else if (shouldSeeBiometricOptIn()) {
+            navigator.navigate(LoginRoutes.BioOptIn, true)
+        } else {
+            bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+            autoInitialiseSecureStore()
+            navigator.navigate(MainNavRoutes.Start, true)
         }
-        return result
     }
 
     private fun shouldSeeBiometricOptIn() =

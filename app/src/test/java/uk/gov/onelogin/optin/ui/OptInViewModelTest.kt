@@ -11,17 +11,23 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 
 @ExperimentalCoroutinesApi
 class OptInViewModelTest {
     private val dispatcher = StandardTestDispatcher()
+    private val mockNavigator: Navigator = mock()
     private lateinit var viewModel: OptInViewModel
 
     @BeforeTest
     fun setUp() {
         viewModel = OptInViewModel(
-            repository = createTestAnalyticsOptInRepository(dispatcher)
+            repository = createTestAnalyticsOptInRepository(dispatcher),
+            navigator = mockNavigator
         )
         Dispatchers.setMain(dispatcher)
     }
@@ -57,5 +63,12 @@ class OptInViewModelTest {
         // Then the `uiState` is OptInUIState.PostChoice
         val state = viewModel.uiState.first()
         assertEquals(expected = OptInUIState.PostChoice, state)
+    }
+
+    @Test
+    fun `navigate to sign`() {
+        viewModel.goToSignIn()
+
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 }

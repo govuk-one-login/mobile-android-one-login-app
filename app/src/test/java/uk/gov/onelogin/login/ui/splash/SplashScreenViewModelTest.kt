@@ -4,125 +4,103 @@ import android.os.Handler
 import android.os.Looper
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
-import uk.gov.onelogin.mainnav.nav.MainNavRoutes
+import uk.gov.onelogin.mainnav.MainNavRoutes
+import uk.gov.onelogin.navigation.Navigator
 
-@HiltAndroidTest
-class SplashScreenViewModelTest : TestCase() {
+@OptIn(ExperimentalCoroutinesApi::class)
+@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
+class SplashScreenViewModelTest {
     private val mockHandleLogin: HandleLogin = mock()
+    private val mockNavigator: Navigator = mock()
     private val mockLifeCycleOwner: LifecycleOwner = mock()
-
-    private val stringObserver: Observer<String> = mock()
+    private val mockActivity: FragmentActivity = mock()
 
     private val viewModel = SplashScreenViewModel(
+        mockNavigator,
         mockHandleLogin
     )
 
-    @Before
-    fun setup() {
-        Handler(Looper.getMainLooper()).post {
-            viewModel.next.observeForever(stringObserver)
-        }
-    }
-
-    @After
-    fun tearDown() {
-        Handler(Looper.getMainLooper()).post {
-            viewModel.next.removeObserver(stringObserver)
-        }
-    }
-
     @Test
     fun loginFailsWithSecureStoreError() = runTest {
-        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+        whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.SecureStoreError
                 )
             }
-        viewModel.login(composeTestRule.activity as FragmentActivity)
+        viewModel.login(mockActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.SIGN_IN_ERROR, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
     }
 
     @Test
     fun loginFailsWithBioCheckFailed() = runTest {
-        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+        whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.BioCheckFailed
                 )
             }
-        viewModel.login(composeTestRule.activity as FragmentActivity)
+        viewModel.login(mockActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(null, viewModel.next.value)
-        }
+        verifyNoInteractions(mockNavigator)
     }
 
     @Test
     fun loginSuccess() = runTest {
-        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+        whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.Success("token")
                 )
             }
-        viewModel.login(composeTestRule.activity as FragmentActivity)
+        viewModel.login(mockActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(MainNavRoutes.START, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
 
     @Test
     fun loginRequiresRefresh() = runTest {
-        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+        whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.ManualSignIn
                 )
             }
-        viewModel.login(composeTestRule.activity as FragmentActivity)
+        viewModel.login(mockActivity)
 
-        Handler(Looper.getMainLooper()).post {
-            assertEquals(LoginRoutes.WELCOME, viewModel.next.value)
-        }
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 
     @Test
     fun loginReturnsUserCancelled() = runTest {
-        whenever(mockHandleLogin.invoke(eq(composeTestRule.activity as FragmentActivity), any()))
+        whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.UserCancelled
                 )
             }
-        viewModel.login(composeTestRule.activity as FragmentActivity)
+        viewModel.login(mockActivity)
 
+        verifyNoInteractions(mockNavigator)
         Handler(Looper.getMainLooper()).post {
-            assertNull(viewModel.next.value)
             assertTrue(viewModel.showUnlock.value)
         }
     }
@@ -136,7 +114,7 @@ class SplashScreenViewModelTest : TestCase() {
         viewModel.onResume(mockLifeCycleOwner)
 
         // WHEN we call login
-        viewModel.login(composeTestRule.activity as FragmentActivity, fromLockScreen)
+        viewModel.login(mockActivity, fromLockScreen)
 
         // THEN do NOT login (as the app will be going to background shortly)
         verify(mockHandleLogin, never()).invoke(any(), any())
@@ -152,7 +130,7 @@ class SplashScreenViewModelTest : TestCase() {
         viewModel.onResume(mockLifeCycleOwner)
 
         // WHEN we call login
-        viewModel.login(composeTestRule.activity, fromLockScreen)
+        viewModel.login(mockActivity, fromLockScreen)
 
         // THEN do NOT login (as the app will be going to background)
         verify(mockHandleLogin, times(1)).invoke(any(), any())

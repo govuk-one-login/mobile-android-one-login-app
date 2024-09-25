@@ -9,22 +9,25 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
+import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.optin.ui.NOTICE_TAG
 
 @HiltAndroidTest
-@UninstallModules(UseCaseModule::class)
+@UninstallModules(UseCaseModule::class, NavigatorModule::class)
 class SplashScreenTest : TestCase() {
     @BindValue
     val verifyIdToken: VerifyIdToken = mock()
@@ -32,15 +35,16 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val handleLogin: HandleLogin = mock()
 
+    @BindValue
+    val mockNavigator: Navigator = mock()
+
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
-    private var nextScreen: Int = 0
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        nextScreen = 0
 
         wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
@@ -55,10 +59,7 @@ class SplashScreenTest : TestCase() {
     fun verifySplashScreen() {
         // Given
         composeTestRule.setContent {
-            SplashScreen(
-                nextScreen = { nextScreen++ },
-                onAnalyticsOptIn = {}
-            )
+            SplashScreen()
         }
         // Then
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
@@ -69,10 +70,7 @@ class SplashScreenTest : TestCase() {
     fun testUnlockButton() {
         // Given
         composeTestRule.setContent {
-            SplashScreen(
-                nextScreen = { nextScreen++ },
-                onAnalyticsOptIn = {}
-            )
+            SplashScreen()
         }
         wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
@@ -80,7 +78,8 @@ class SplashScreenTest : TestCase() {
         // When
         composeTestRule.onNode(unlockButton).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).performClick()
+
         // Then
-        assertEquals(1, nextScreen)
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 }

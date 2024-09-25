@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,19 +36,16 @@ import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.ui.LocaleUtils.getLocale
 import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
 
 @Composable
 @Preview
 fun ProfileScreen(
-    openSignOutScreen: () -> Unit = { },
     viewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-    val lang = remember { getLocale(context) }
+    val lang = remember { viewModel.locale }
     val email = viewModel.email
     TitledPage(
         parameters = TitledPageParameters(
@@ -80,7 +76,7 @@ fun ProfileScreen(
             HorizontalDivider()
             ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
             Spacer(modifier = Modifier.height(mediumPadding))
-            SignOutRow(openSignOutScreen)
+            SignOutRow { viewModel.goToSignOut() }
         }
     )
 }
