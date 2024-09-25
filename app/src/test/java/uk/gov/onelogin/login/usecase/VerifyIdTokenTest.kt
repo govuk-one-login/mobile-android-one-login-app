@@ -53,7 +53,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `non 200 response from jwks endpoint`() = runTest {
-        setupHttpStub(ApiResponse.Failure(ApiFailureReason.General,400, Exception()))
+        setupHttpStub(ApiResponse.Failure(ApiFailureReason.General, 400, Exception()))
         stubVerifier = JwtVerifier.stub(false)
         buildVerifyToken()
 

@@ -43,7 +43,9 @@ class HelloWorldApiCallTest {
     fun `happy path error call returns error message`() = runTest {
         setupHelloWorldService(
             ApiResponse.Failure(
-                ApiFailureReason.General, 400, Exception("Bad")
+                ApiFailureReason.General,
+                400,
+                Exception("Bad")
             )
         )
         val response = helloWorldService.happyPath()

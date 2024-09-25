@@ -35,6 +35,10 @@
     <string name="app_signOutConfirmationBody2">This is to keep your information secure.</string>
     <string name="app_signOutConfirmationBody3">Any deleted documents will still be available online for you to add to your GOV.UK Wallet again.</string>
     <string name="app_signOutAndDeleteAppDataButton">Sign out and delete app data</string>
+    <string name="app_youveBeenSignedOutTitle">You’ve been signed out</string>
+    <string name="app_youveBeenSignedOutBody1">This is to keep the information in your GOV.UK One Login app secure.</string>
+    <string name="app_youveBeenSignedOutBody2">You need to sign in again to continue.</string>
+    <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
