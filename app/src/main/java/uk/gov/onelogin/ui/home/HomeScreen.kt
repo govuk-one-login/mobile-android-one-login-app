@@ -23,7 +23,6 @@ import uk.gov.onelogin.ui.components.EmailHeader
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    viewModel.saveTokens()
     val tokens = viewModel.getTokens()
     val email = viewModel.email
     TitledPage(

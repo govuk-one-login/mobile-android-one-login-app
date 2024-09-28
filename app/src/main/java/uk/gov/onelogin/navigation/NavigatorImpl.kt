@@ -17,11 +17,16 @@ class NavigatorImpl @Inject constructor() : Navigator {
     }
 
     override fun navigate(route: NavRoute, popUpToInclusive: Boolean) {
+        Log.d("Navigator", "Navigating to: ${route.getRoute()}")
         navController?.let { controller ->
-            controller.navigate(route.getRoute()) {
-                popUpTo(controller.graph.id) {
-                    inclusive = popUpToInclusive
+            if (popUpToInclusive) {
+                controller.navigate(route.getRoute()) {
+                    popUpTo(controller.graph.id) {
+                        inclusive = true
+                    }
                 }
+            } else {
+                controller.navigate(route.getRoute())
             }
         }
     }

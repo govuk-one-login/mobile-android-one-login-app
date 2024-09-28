@@ -4,11 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.login.LoginRoutes
@@ -24,12 +22,10 @@ class SplashScreenViewModel @Inject constructor(
     private val handleLogin: HandleLogin
 ) : ViewModel(), DefaultLifecycleObserver {
 
-    private val timesResumed: AtomicInteger = AtomicInteger(0)
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: State<Boolean> = _showUnlock
 
-    fun login(fragmentActivity: FragmentActivity, fromLockScreen: Boolean = false) {
-        if (fromLockScreen && timesResumed.get() == 1) return
+    fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
             handleLogin(
                 fragmentActivity,
@@ -72,10 +68,5 @@ class SplashScreenViewModel @Inject constructor(
         } else {
             navigator.navigate(route, true)
         }
-    }
-
-    override fun onResume(owner: LifecycleOwner) {
-        timesResumed.addAndGet(1)
-        super.onResume(owner)
     }
 }

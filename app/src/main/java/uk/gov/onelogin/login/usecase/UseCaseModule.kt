@@ -13,4 +13,7 @@ interface UseCaseModule {
 
     @Binds
     fun bindVerifyIdToken(usecase: VerifyIdTokenImpl): VerifyIdToken
+
+    @Binds
+    fun bindSaveTokens(saveTokens: SaveTokensImpl): SaveTokens
 }

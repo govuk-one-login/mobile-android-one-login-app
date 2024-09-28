@@ -27,15 +27,18 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
+import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
+@Suppress("max-line-length")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
@@ -51,6 +54,8 @@ class WelcomeScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val mockOnlineChecker: OnlineChecker = mock()
     private val mockLocaleUtils: LocaleUtils = mock()
+    private val mockSaveTokens: SaveTokens = mock()
+    private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String? = "testIdToken"
@@ -74,6 +79,8 @@ class WelcomeScreenViewModelTest {
         mockGetPersistentId,
         mockNavigator,
         mockLocaleUtils,
+        mockSaveTokens,
+        mockSaveTokenExpiry,
         mockOnlineChecker
     )
 
@@ -104,7 +111,9 @@ class WelcomeScreenViewModelTest {
                 mockIntent
             )
 
+            verify(mockSaveTokens).invoke()
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
@@ -112,7 +121,37 @@ class WelcomeScreenViewModelTest {
 
     @Suppress("UNCHECKED_CAST")
     @Test
-    fun `handleIntent when data != null and device secure, no biometrics, id token is null`() =
+    fun `when data != null, device secure, verify id token success, bio pref set to biometrics`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+            whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+            whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent
+            )
+
+            verify(mockSaveTokens).invoke()
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockBioPrefHandler, times(0)).setBioPref(any())
+            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `handleIntent when data != null, device secure, no biometrics, id token is null`() =
         runTest {
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
@@ -133,6 +172,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(mockIntent)
 
+            verify(mockSaveTokens).invoke()
+            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(nullIdTokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
@@ -157,10 +198,37 @@ class WelcomeScreenViewModelTest {
 
         viewModel.handleActivityResult(mockIntent)
 
+        verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler, times(0)).setBioPref(any())
         verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
     }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `when data != null and device is secure with ok biometrics and pref set to none`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+            whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+
+            viewModel.handleActivityResult(mockIntent)
+
+            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockBioPrefHandler, times(0)).setBioPref(any())
+            verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
+        }
 
     @Suppress("UNCHECKED_CAST")
     @Test
@@ -179,6 +247,8 @@ class WelcomeScreenViewModelTest {
 
         viewModel.handleActivityResult(mockIntent)
 
+        verifyNoInteractions(mockSaveTokens)
+        verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
         verify(mockNavigator).navigate(LoginRoutes.PasscodeInfo, true)
@@ -191,6 +261,8 @@ class WelcomeScreenViewModelTest {
 
         viewModel.handleActivityResult(mockIntent)
 
+        verifyNoInteractions(mockSaveTokens)
+        verifyNoInteractions(mockSaveTokenExpiry)
         verifyNoInteractions(mockTokenRepository)
         verifyNoInteractions(mockBioPrefHandler)
         verifyNoInteractions(mockNavigator)
@@ -207,6 +279,8 @@ class WelcomeScreenViewModelTest {
 
         viewModel.handleActivityResult(mockIntent)
 
+        verifyNoInteractions(mockSaveTokens)
+        verifyNoInteractions(mockSaveTokenExpiry)
         verifyNoInteractions(mockTokenRepository)
         verifyNoInteractions(mockBioPrefHandler)
         verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
@@ -228,6 +302,8 @@ class WelcomeScreenViewModelTest {
 
         viewModel.handleActivityResult(mockIntent)
 
+        verifyNoInteractions(mockSaveTokens)
+        verifyNoInteractions(mockSaveTokenExpiry)
         verifyNoInteractions(mockTokenRepository)
         verifyNoInteractions(mockBioPrefHandler)
         verify(mockNavigator).navigate(LoginRoutes.SignInError, true)

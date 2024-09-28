@@ -6,12 +6,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
@@ -106,31 +105,13 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun ignoreFirstLoginCallFromLockScreen() = runTest {
-        // GIVEN the call was made from the lock screen
-        val fromLockScreen = true
-
-        // AND on resume called only once
-        viewModel.onResume(mockLifeCycleOwner)
-
-        // WHEN we call login
-        viewModel.login(mockActivity, fromLockScreen)
-
-        // THEN do NOT login (as the app will be going to background shortly)
-        verify(mockHandleLogin, never()).invoke(any(), any())
-    }
-
-    @Test
     fun allowsSubsequentLoginCallsFromLockScreen() = runTest {
-        // GIVEN the call was made from the lock screen
-        val fromLockScreen = true
-
         // AND on resume called more than once
         viewModel.onResume(mockLifeCycleOwner)
         viewModel.onResume(mockLifeCycleOwner)
 
         // WHEN we call login
-        viewModel.login(mockActivity, fromLockScreen)
+        viewModel.login(mockActivity)
 
         // THEN do NOT login (as the app will be going to background)
         verify(mockHandleLogin, times(1)).invoke(any(), any())

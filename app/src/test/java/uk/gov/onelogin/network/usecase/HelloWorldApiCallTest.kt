@@ -3,19 +3,16 @@ package uk.gov.onelogin.network.usecase
 import android.content.Context
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
 import uk.gov.android.onelogin.R
-import uk.gov.onelogin.network.data.AuthApiResponse
 
 class HelloWorldApiCallTest {
     private val mockContext: Context = mock()
@@ -35,64 +32,43 @@ class HelloWorldApiCallTest {
         setupHelloWorldService(ApiResponse.Success("Hello World!"))
         val response = helloWorldService.happyPath()
 
-        assertThat("response is success", response is AuthApiResponse.Success<*>)
-        assertEquals("Hello World!", (response as AuthApiResponse.Success<*>).response)
+        assertEquals("Hello World!", response)
     }
 
     @Test
     fun `happy path error call returns error message`() = runTest {
-        setupHelloWorldService(
-            ApiResponse.Failure(
-                ApiFailureReason.General,
-                400,
-                Exception("Bad")
-            )
-        )
+        setupHelloWorldService(ApiResponse.Failure(status = 400, Exception("Bad")))
         val response = helloWorldService.happyPath()
-        assertThat("response is failure", response is AuthApiResponse.Failure)
-        assertEquals("Bad", (response as AuthApiResponse.Failure).e.message)
+        assertEquals("Bad", response)
     }
 
     @Test
     fun `happy path error call returns error with no message`() = runTest {
-        setupHelloWorldService(
-            ApiResponse.Failure(
-                ApiFailureReason.Non200Response,
-                400,
-                Exception()
-            )
-        )
+        setupHelloWorldService(ApiResponse.Failure(status = 400, Exception()))
         val response = helloWorldService.happyPath()
-        assertThat("response is success", response is AuthApiResponse.Failure)
-        assertEquals("Error", (response as AuthApiResponse.Failure).e.message)
+        assertEquals("Error", response)
     }
 
     @Test
-    fun `access token expired call returns Auth expired`() = runTest {
-        setupHelloWorldService(
-            ApiResponse.Failure(
-                ApiFailureReason.AccessTokenExpired,
-                0,
-                Exception()
-            )
-        )
+    fun `error path successful call returns hello world text`() = runTest {
+        setupHelloWorldService(ApiResponse.Success("Hello World!"))
         val response = helloWorldService.errorPath()
 
-        assertThat("response is auth expired", response is AuthApiResponse.AuthExpired)
+        assertEquals("Hello World!", response)
     }
 
     @Test
     fun `error path error call returns error message`() = runTest {
-        setupHelloWorldService(
-            ApiResponse.Failure(
-                ApiFailureReason.AuthFailed,
-                400,
-                Exception("Bad")
-            )
-        )
+        setupHelloWorldService(ApiResponse.Failure(status = 400, Exception("Bad")))
         val response = helloWorldService.errorPath()
-        assertThat("response is failure", response is AuthApiResponse.Failure)
-        assertEquals("Bad", (response as AuthApiResponse.Failure).e.message)
+        assertEquals("Bad", response)
+    }
+
+    @Test
+    fun `error path error call returns error with no message`() = runTest {
+        setupHelloWorldService(ApiResponse.Failure(status = 400, Exception()))
+        val response = helloWorldService.errorPath()
+        assertEquals("Error", response)
     }
 
     private fun setupHelloWorldService(httpResponse: ApiResponse) {

@@ -180,9 +180,13 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.bundles.firebase,
-        libs.wallet.sdk
+        libs.bundles.firebase
+//        libs.wallet.sdk
     ).forEach(::implementation)
+
+    implementation(libs.wallet.sdk) {
+        exclude(group = "uk.gov.android", module = "network")
+    }
 
     listOf(
         libs.hilt.android.compiler,

@@ -6,23 +6,28 @@ import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.api.ApiResponseException
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.network.data.TokenApiResponse
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
 class StsAuthenticationProvider(
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,
-    private val httpClient: GenericHttpClient
+    private val httpClient: GenericHttpClient,
+    private val navigator: Navigator
 ) : AuthenticationProvider {
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
         if (isAccessTokenExpired()) {
-            return AuthenticationResponse.AccessTokenExpired
+            navigator.navigate(SignOutRoutes.Info)
+            return AuthenticationResponse.Failure(ApiResponseException("Access token expired"))
         }
 
         return tokenRepository.getTokenResponse()?.accessToken?.let {

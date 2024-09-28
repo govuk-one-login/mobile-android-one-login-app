@@ -32,9 +32,7 @@ object LoginGraphObject {
                 BackHandler(enabled = comingFromLockScreen) {
                     // do nothing if coming from Lock Screen
                 }
-                SplashScreen(
-                    fromLockScreen = comingFromLockScreen
-                )
+                SplashScreen()
             }
 
             composable(

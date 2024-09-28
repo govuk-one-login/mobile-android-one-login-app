@@ -5,20 +5,23 @@ import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
-import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
+import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
 class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
+    private val mockNavigator: Navigator = mock()
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var provider: AuthenticationProvider
 
@@ -35,7 +38,7 @@ class StsAuthenticationProviderTest {
 
     @Test
     fun `api response is not success, failure returned`() = runTest {
-        setupProvider(ApiResponse.Failure(ApiFailureReason.Non200Response, 500, Exception("error")))
+        setupProvider(ApiResponse.Failure(500, Exception("error")))
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(
             TokenResponse(
                 tokenType = "type",
@@ -84,8 +87,13 @@ class StsAuthenticationProviderTest {
 
         assertThat(
             "response is AccessTokenExpired",
-            response is AuthenticationResponse.AccessTokenExpired
+            response is AuthenticationResponse.Failure
         )
+        assertEquals(
+            "Access token expired",
+            (response as AuthenticationResponse.Failure).error.message
+        )
+        verify(mockNavigator).navigate(SignOutRoutes.Info)
     }
 
     @Test
@@ -123,7 +131,8 @@ class StsAuthenticationProviderTest {
             "url",
             mockTokenRepository,
             mockIsAccessTokenExpired,
-            stubHttpClient
+            stubHttpClient,
+            mockNavigator
         )
     }
 }

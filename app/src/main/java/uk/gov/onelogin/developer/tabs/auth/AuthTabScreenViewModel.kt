@@ -7,17 +7,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.navigation.Navigator
-import uk.gov.onelogin.network.data.AuthApiResponse
 import uk.gov.onelogin.network.usecase.HelloWorldApiCall
 import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltViewModel
 class AuthTabScreenViewModel @Inject constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
-    private val tokenRepository: TokenRepository,
-    private val navigator: Navigator
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
     private val _happyHelloWorldResponse = mutableStateOf("")
     val happyHelloWorldResponse: State<String>
@@ -46,7 +42,7 @@ class AuthTabScreenViewModel @Inject constructor(
     fun makeHappyHelloWorldCall() {
         _happyCallLoading.value = true
         viewModelScope.launch {
-            handleApiResponse(helloWorldApiCall.happyPath())
+            _happyHelloWorldResponse.value = helloWorldApiCall.happyPath()
             _happyCallLoading.value = false
         }
     }
@@ -56,7 +52,7 @@ class AuthTabScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val currentToken = tokenRepository.getTokenResponse()
             tokenRepository.clearTokenResponse()
-            handleApiResponse(helloWorldApiCall.happyPath())
+            _authFailingHelloWorldResponse.value = helloWorldApiCall.happyPath()
             _authFailingCallLoading.value = false
             if (currentToken != null) {
                 tokenRepository.setTokenResponse(currentToken)
@@ -67,25 +63,8 @@ class AuthTabScreenViewModel @Inject constructor(
     fun makeServiceFailingHelloWorldCall() {
         _serviceFailingCallLoading.value = true
         viewModelScope.launch {
-            handleApiResponse(helloWorldApiCall.errorPath())
+            _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
             _serviceFailingCallLoading.value = false
-        }
-    }
-
-    private fun handleApiResponse(response: AuthApiResponse) {
-        when (response) {
-            AuthApiResponse.AuthExpired ->
-                navigator.navigate(SignOutRoutes.Info)
-
-            is AuthApiResponse.Failure -> {
-                _happyHelloWorldResponse.value = response.e.message ?: "Error"
-                _happyCallLoading.value = false
-            }
-
-            is AuthApiResponse.Success<*> -> {
-                _happyHelloWorldResponse.value = response.response.toString()
-                _happyCallLoading.value = false
-            }
         }
     }
 }

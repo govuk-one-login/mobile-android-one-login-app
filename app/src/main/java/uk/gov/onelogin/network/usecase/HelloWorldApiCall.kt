@@ -3,16 +3,14 @@ package uk.gov.onelogin.network.usecase
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import uk.gov.android.network.api.ApiFailureReason
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.R
-import uk.gov.onelogin.network.data.AuthApiResponse
 
 interface HelloWorldApiCall {
-    suspend fun happyPath(): AuthApiResponse
-    suspend fun errorPath(): AuthApiResponse
+    suspend fun happyPath(): String
+    suspend fun errorPath(): String
 }
 
 class HelloWorldApiCallImpl @Inject constructor(
@@ -20,7 +18,7 @@ class HelloWorldApiCallImpl @Inject constructor(
     private val context: Context,
     private val httpClient: GenericHttpClient
 ) : HelloWorldApiCall {
-    override suspend fun happyPath(): AuthApiResponse {
+    override suspend fun happyPath(): String {
         val endpoint = context.getString(R.string.helloWorldEndpoint)
         val request = ApiRequest.Get(
             url = context.getString(R.string.helloWorldUrl, endpoint)
@@ -29,7 +27,7 @@ class HelloWorldApiCallImpl @Inject constructor(
         return handleResponse(response)
     }
 
-    override suspend fun errorPath(): AuthApiResponse {
+    override suspend fun errorPath(): String {
         val endpoint = context.getString(R.string.helloWorldEndpoint) + "/error"
         val request = ApiRequest.Get(
             url = context.getString(R.string.helloWorldUrl, endpoint)
@@ -39,30 +37,11 @@ class HelloWorldApiCallImpl @Inject constructor(
         return handleResponse(response)
     }
 
-    private fun handleResponse(response: ApiResponse): AuthApiResponse {
-        return when (response) {
-            is ApiResponse.Failure ->
-                when (response.reason) {
-                    ApiFailureReason.AccessTokenExpired ->
-                        AuthApiResponse.AuthExpired
-
-                    ApiFailureReason.AuthFailed,
-                    ApiFailureReason.AuthProviderNotInitialised,
-                    ApiFailureReason.General,
-                    ApiFailureReason.Non200Response ->
-                        AuthApiResponse.Failure(
-                            Exception(response.error.message ?: "Error")
-                        )
-                }
-
-            is ApiResponse.Success<*> ->
-                AuthApiResponse.Success(response.response.toString())
-
-            ApiResponse.Loading ->
-                AuthApiResponse.Failure(Exception("Loading"))
-
-            ApiResponse.Offline ->
-                AuthApiResponse.Failure(Exception("Offline"))
+    private fun handleResponse(response: ApiResponse) =
+        when (response) {
+            is ApiResponse.Failure -> response.error.message ?: "Error"
+            ApiResponse.Loading,
+            ApiResponse.Offline -> "Error"
+            is ApiResponse.Success<*> -> response.response.toString()
         }
-    }
 }
