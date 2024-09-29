@@ -20,6 +20,7 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
+import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.navigation.Navigator
@@ -37,6 +38,9 @@ class SplashScreenTest : TestCase() {
 
     @BindValue
     val mockNavigator: Navigator = mock()
+
+    @BindValue
+    val mockSaveTokens: SaveTokens = mock()
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher

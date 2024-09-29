@@ -18,6 +18,7 @@ import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
+import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
 @HiltAndroidTest
 class HandleLoginTest : TestCase() {
@@ -25,18 +26,19 @@ class HandleLoginTest : TestCase() {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockGetFromTokenSecureStore: GetFromTokenSecureStore = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
 
     private val useCase = HandleLoginImpl(
         mockGetTokenExpiry,
         mockTokenRepository,
+        mockIsAccessTokenExpired,
         mockGetFromTokenSecureStore,
         mockBioPrefHandler
     )
 
     @Test
     fun tokenExpired_refreshLogin() {
-        val expiredTime = System.currentTimeMillis() - 1L
-        whenever(mockGetTokenExpiry()).thenReturn(expiredTime)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
@@ -50,6 +52,7 @@ class HandleLoginTest : TestCase() {
 
     @Test
     fun tokenNull_refreshLogin() {
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
 
@@ -62,8 +65,7 @@ class HandleLoginTest : TestCase() {
 
     @Test
     fun bioPrefNone_refreshLogin() {
-        val unexpiredTime = System.currentTimeMillis() + 100000L
-        whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
 
         runBlocking {
@@ -75,8 +77,7 @@ class HandleLoginTest : TestCase() {
 
     @Test
     fun nonSuccessResponseFromGetFromSecureStore() {
-        val unexpiredTime = System.currentTimeMillis() + 100000L
-        whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
@@ -97,6 +98,7 @@ class HandleLoginTest : TestCase() {
         val token = "Token"
         val unexpiredTime = System.currentTimeMillis() + 100000L
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {

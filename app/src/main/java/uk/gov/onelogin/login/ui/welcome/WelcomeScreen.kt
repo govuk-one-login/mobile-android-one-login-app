@@ -58,6 +58,7 @@ fun WelcomeScreen(
             contentDescription = R.string.app_signInIconDescription
         )
     )
+
     LaunchedEffect(key1 = Unit) {
         if (!shouldTryAgain()) return@LaunchedEffect
 

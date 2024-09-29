@@ -18,7 +18,8 @@ import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 @Composable
 fun SignedOutInfoScreen(
     loginViewModel: WelcomeScreenViewModel = hiltViewModel(),
-    viewModel: SignedOutInfoViewModel = hiltViewModel()
+    signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
+    shouldTryAgain: () -> Boolean = { false }
 ) {
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -26,13 +27,21 @@ fun SignedOutInfoScreen(
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.let { intent ->
                 loginViewModel.handleActivityResult(intent = intent, isReAuth = true)
-                viewModel.saveTokens()
+                signOutViewModel.saveTokens()
             }
         }
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.resetTokens()
+        signOutViewModel.resetTokens()
+
+        if (!shouldTryAgain()) return@LaunchedEffect
+
+        if (loginViewModel.onlineChecker.isOnline()) {
+            loginViewModel.onPrimary(launcher)
+        } else {
+            loginViewModel.navigateToOfflineError()
+        }
     }
 
     LandingPage(
