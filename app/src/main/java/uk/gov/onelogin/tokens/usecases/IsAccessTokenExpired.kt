@@ -9,6 +9,12 @@ fun interface IsAccessTokenExpired {
 class IsAccessTokenExpiredImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry
 ) : IsAccessTokenExpired {
-    override fun invoke() =
-        getTokenExpiry()?.let { it < System.currentTimeMillis() } ?: true
+    override fun invoke(): Boolean {
+        val tokenExpiry = getTokenExpiry()
+        return if (tokenExpiry != null) {
+            tokenExpiry < System.currentTimeMillis()
+        } else {
+            true
+        }
+    }
 }

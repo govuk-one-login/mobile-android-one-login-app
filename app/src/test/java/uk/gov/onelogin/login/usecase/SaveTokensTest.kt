@@ -2,6 +2,7 @@ package uk.gov.onelogin.login.usecase
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -18,18 +19,21 @@ import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 
 class SaveTokensTest {
-    private val saveTokens by lazy {
-        SaveTokensImpl(
+    private lateinit var saveTokens: SaveTokens
+    private val mockTokenRepository: TokenRepository = mock()
+    private val mockSaveToSecureStore: SaveToSecureStore = mock()
+    private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
+    private val mockGetPersistentId: GetPersistentId = mock()
+
+    @BeforeEach
+    fun setup() {
+        saveTokens = SaveTokensImpl(
             mockTokenRepository,
             mockSaveToSecureStore,
             mockSaveToOpenSecureStore,
             mockGetPersistentId
         )
     }
-    private val mockTokenRepository: TokenRepository = mock()
-    private val mockSaveToSecureStore: SaveToSecureStore = mock()
-    private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
-    private val mockGetPersistentId: GetPersistentId = mock()
 
     @Test
     fun saveTokenWhenTokensNotNull() = runTest {
