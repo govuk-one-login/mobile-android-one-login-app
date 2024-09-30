@@ -38,8 +38,7 @@ import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 
 @Composable
 fun SplashScreen(
-    viewModel: SplashScreenViewModel = hiltViewModel(),
-    fromLockScreen: Boolean = false
+    viewModel: SplashScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -47,9 +46,10 @@ fun SplashScreen(
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
-        onLogin = { viewModel.login(context, false) },
+        onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
+
     DisposableEffect(key1 = lifecycleOwner) {
         with(lifecycleOwner) {
             lifecycle.addObserver(viewModel)
@@ -58,9 +58,10 @@ fun SplashScreen(
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
                             isRequired -> viewModel.navigateToAnalyticsOptIn()
-                            !viewModel.showUnlock.value ->
-                                viewModel.login(context, fromLockScreen)
                         }
+                    }
+                    if (!viewModel.showUnlock.value) {
+                        viewModel.login(context)
                     }
                 }
             }

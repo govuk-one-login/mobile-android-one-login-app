@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -20,6 +21,7 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
+import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.navigation.Navigator
@@ -38,6 +40,9 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
+    @BindValue
+    val mockSaveTokens: SaveTokens = mock()
+
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
@@ -45,10 +50,6 @@ class SplashScreenTest : TestCase() {
     @Before
     fun setUp() {
         hiltRule.inject()
-
-        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
-            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
-        }
 
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
@@ -68,18 +69,27 @@ class SplashScreenTest : TestCase() {
 
     @Test
     fun testUnlockButton() {
+        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
+            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
+        }
+
         // Given
         composeTestRule.setContent {
             SplashScreen()
         }
+        composeTestRule.waitUntil {
+            composeTestRule.onNode(unlockButton).isDisplayed()
+        }
+
         wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
+
         // When
-        composeTestRule.onNode(unlockButton).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).performClick()
 
         // Then
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
     }
 }

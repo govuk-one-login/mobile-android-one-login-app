@@ -1,7 +1,6 @@
 package uk.gov.onelogin.developer
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,25 +43,30 @@ import uk.gov.onelogin.developer.tabs.AppTabScreen
 import uk.gov.onelogin.developer.tabs.auth.AuthTabScreen
 import uk.gov.onelogin.developer.tabs.features.FeaturesScreen
 import uk.gov.onelogin.developer.tabs.networking.NetworkingTabScreen
+import uk.gov.onelogin.developer.tabs.tokens.TokenTabScreen
 import uk.gov.onelogin.ui.components.SimpleTextPage
 
 @Suppress("LongMethod")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabView(goBack: () -> Unit) {
     val tabs = listOf(
         TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
+
+        TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
+            AuthTabScreen()
+        },
+        TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
+            TokenTabScreen()
+        },
+        TabItem(R.string.app_developer_tab_networking, Icons.Filled.Email) {
+            NetworkingTabScreen()
+        },
         TabItem(
             R.string.app_developer_tab_feature_flags,
             Icons.Filled.Settings
         ) {
             FeaturesScreen()
-        },
-        TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
-            AuthTabScreen()
-        },
-        TabItem(R.string.app_developer_tab_networking, Icons.Filled.Email) {
-            NetworkingTabScreen()
         },
         TabItem(
             R.string.app_developer_tab_secure_store,

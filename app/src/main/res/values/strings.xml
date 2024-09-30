@@ -93,7 +93,10 @@
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
     <string name="app_developer_tab_networking" translatable="false">Networking</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
+    <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
+
+    <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>

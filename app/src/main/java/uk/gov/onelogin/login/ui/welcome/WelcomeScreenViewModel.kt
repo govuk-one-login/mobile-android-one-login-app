@@ -23,12 +23,14 @@ import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
+import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
@@ -47,6 +49,8 @@ class WelcomeScreenViewModel @Inject constructor(
     private val getPersistentId: GetPersistentId,
     private val navigator: Navigator,
     private val localeUtils: LocaleUtils,
+    private val saveTokens: SaveTokens,
+    private val saveTokenExpiry: SaveTokenExpiry,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
@@ -108,14 +112,14 @@ class WelcomeScreenViewModel @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    fun handleActivityResult(intent: Intent) {
+    fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
         if (intent.data == null) return
 
         viewModelScope.launch {
             try {
                 loginSession.finalise(intent = intent) { tokens ->
                     viewModelScope.launch {
-                        handleTokens(tokens)
+                        handleTokens(tokens, isReAuth)
                     }
                 }
             } catch (e: Throwable) { // handle both Error and Exception types.
@@ -134,7 +138,7 @@ class WelcomeScreenViewModel @Inject constructor(
         navigator.navigate(ErrorRoutes.Offline)
     }
 
-    private suspend fun handleTokens(tokens: TokenResponse) {
+    private suspend fun handleTokens(tokens: TokenResponse, isReAuth: Boolean) {
         val jwksUrl = context.getString(
             R.string.stsUrl,
             context.getString(R.string.jwksEndpoint)
@@ -144,27 +148,47 @@ class WelcomeScreenViewModel @Inject constructor(
             if (!verifyIdToken(idToken, jwksUrl)) {
                 navigator.navigate(LoginRoutes.SignInError, true)
             } else {
-                checkLocalAuthRoute(tokens)
+                checkLocalAuthRoute(tokens, isReAuth)
             }
-        } ?: checkLocalAuthRoute(tokens)
+        } ?: checkLocalAuthRoute(tokens, isReAuth)
     }
 
     @Suppress("ReturnCount")
-    private fun checkLocalAuthRoute(tokens: TokenResponse) {
+    private suspend fun checkLocalAuthRoute(tokens: TokenResponse, isReAuth: Boolean) {
         tokenRepository.setTokenResponse(tokens)
+        saveTokenExpiry(tokens.accessTokenExpirationTime)
 
-        if (!credChecker.isDeviceSecure()) {
-            bioPrefHandler.setBioPref(BiometricPreference.NONE)
-            navigator.navigate(LoginRoutes.PasscodeInfo, true)
-        } else if (shouldSeeBiometricOptIn()) {
-            navigator.navigate(LoginRoutes.BioOptIn, true)
-        } else {
-            bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
-            autoInitialiseSecureStore()
-            navigator.navigate(MainNavRoutes.Start, true)
+        when {
+            isReAuth -> {
+                if (credChecker.isDeviceSecure()) {
+                    saveTokens()
+                }
+                navigator.goBack()
+            }
+
+            !credChecker.isDeviceSecure() -> {
+                bioPrefHandler.setBioPref(BiometricPreference.NONE)
+                navigator.navigate(LoginRoutes.PasscodeInfo, true)
+            }
+
+            shouldSeeBiometricOptIn() ->
+                navigator.navigate(LoginRoutes.BioOptIn, true)
+
+            else -> {
+                if (bioPrefHandler.getBioPref() != BiometricPreference.BIOMETRICS) {
+                    bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+                }
+                autoInitialiseSecureStore()
+                saveTokens()
+                navigator.navigate(MainNavRoutes.Start, true)
+            }
         }
     }
 
     private fun shouldSeeBiometricOptIn() =
-        credChecker.biometricStatus() == SUCCESS && bioPrefHandler.getBioPref() == null
+        credChecker.biometricStatus() == SUCCESS &&
+            (
+                bioPrefHandler.getBioPref() == null ||
+                    bioPrefHandler.getBioPref() == BiometricPreference.NONE
+                )
 }

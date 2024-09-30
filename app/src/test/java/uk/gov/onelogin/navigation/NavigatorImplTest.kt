@@ -28,7 +28,7 @@ class NavigatorImplTest {
 
         navigator.navigate({ "test" })
 
-        verify(mockNavController).navigate(route = eq("test"), builder = any())
+        verify(mockNavController).navigate("test")
     }
 
     @Test
@@ -57,7 +57,7 @@ class NavigatorImplTest {
         navigator.navigate(testRoute)
 
         verify(mockNavController, times(1))
-            .navigate(route = eq("test"), builder = any())
+            .navigate("test")
     }
 
     @Test

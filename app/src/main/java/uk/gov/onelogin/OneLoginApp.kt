@@ -30,7 +30,7 @@ fun OneLoginApp(
             loginGraph(navController)
             mainNavRoutesFlow()
             errorGraph(navController)
-            signOutGraph()
+            signOutGraph(navController)
             developerFlowRoutes(navController)
         }
     }

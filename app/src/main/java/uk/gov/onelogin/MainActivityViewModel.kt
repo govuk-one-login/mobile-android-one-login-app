@@ -25,6 +25,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
         if (bioPrefHandler.getBioPref() != BiometricPreference.NONE &&
             tokenRepository.getTokenResponse() != null
         ) {

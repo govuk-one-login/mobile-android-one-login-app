@@ -38,6 +38,7 @@ class AuthTabScreenViewModel @Inject constructor(
     private val _serviceFailingCallLoading = mutableStateOf(false)
     val serviceFailingCallLoading: State<Boolean>
         get() = _serviceFailingCallLoading
+
     fun makeHappyHelloWorldCall() {
         _happyCallLoading.value = true
         viewModelScope.launch {

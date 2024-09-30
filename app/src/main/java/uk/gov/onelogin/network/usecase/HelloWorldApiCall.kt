@@ -24,11 +24,7 @@ class HelloWorldApiCallImpl @Inject constructor(
             url = context.getString(R.string.helloWorldUrl, endpoint)
         )
         val response = httpClient.makeAuthorisedRequest(request, "sts-test.hello-world.read")
-        return if (response is ApiResponse.Success<*>) {
-            response.response.toString()
-        } else {
-            (response as ApiResponse.Failure).error.message ?: "Error"
-        }
+        return handleResponse(response)
     }
 
     override suspend fun errorPath(): String {
@@ -37,10 +33,15 @@ class HelloWorldApiCallImpl @Inject constructor(
             url = context.getString(R.string.helloWorldUrl, endpoint)
         )
         val response = httpClient.makeAuthorisedRequest(request, "sts-test.hello-world.read")
-        return if (response is ApiResponse.Success<*>) {
-            response.response.toString()
-        } else {
-            (response as ApiResponse.Failure).error.message ?: "Error"
-        }
+
+        return handleResponse(response)
     }
+
+    private fun handleResponse(response: ApiResponse) =
+        when (response) {
+            is ApiResponse.Failure -> response.error.message ?: "Error"
+            ApiResponse.Loading,
+            ApiResponse.Offline -> "Error"
+            is ApiResponse.Success<*> -> response.response.toString()
+        }
 }
