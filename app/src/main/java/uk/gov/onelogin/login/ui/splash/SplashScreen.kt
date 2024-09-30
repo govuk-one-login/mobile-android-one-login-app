@@ -49,6 +49,7 @@ fun SplashScreen(
         onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
+
     DisposableEffect(key1 = lifecycleOwner) {
         with(lifecycleOwner) {
             lifecycle.addObserver(viewModel)
@@ -57,9 +58,10 @@ fun SplashScreen(
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
                             isRequired -> viewModel.navigateToAnalyticsOptIn()
-                            !viewModel.showUnlock.value ->
-                                viewModel.login(context)
                         }
+                    }
+                    if (!viewModel.showUnlock.value) {
+                        viewModel.login(context)
                     }
                 }
             }
