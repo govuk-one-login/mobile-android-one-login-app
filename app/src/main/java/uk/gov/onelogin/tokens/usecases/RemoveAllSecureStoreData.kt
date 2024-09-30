@@ -5,9 +5,10 @@ import javax.inject.Inject
 import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.onelogin.core.delete.domain.Cleaner
 import uk.gov.onelogin.tokens.Keys
 
-fun interface RemoveAllSecureStoreData {
+interface RemoveAllSecureStoreData: Cleaner {
     /**
      * Use case for removing all data from the secure store instance
      */
@@ -29,6 +30,21 @@ class RemoveAllSecureStoreDataImpl @Inject constructor(
         } catch (e: SecureStorageError) {
             Log.e(this::class.simpleName, e.message, e)
             throw e
+        }
+    }
+
+    override suspend fun clean(): Result<Unit> {
+        return try {
+            tokenSecureStore.delete(
+                key = Keys.ACCESS_TOKEN_KEY
+            )
+            tokenSecureStore.delete(
+                key = Keys.ID_TOKEN_KEY
+            )
+            Result.success(Unit)
+        } catch (e: SecureStorageError) {
+            Log.e(this::class.simpleName, e.message, e)
+            Result.failure(e)
         }
     }
 }

@@ -6,12 +6,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import uk.gov.onelogin.core.delete.domain.Cleaner
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
-interface OptInRepository {
+interface OptInRepository: Cleaner {
     fun isOptInPreferenceRequired(): Flow<Boolean>
     fun hasAnalyticsOptIn(): Flow<Boolean>
     suspend fun optIn()
@@ -68,5 +69,10 @@ class AnalyticsOptInRepository @Inject constructor(
             val state = fetchOptInState()
             remoteSource.update(state)
         }
+    }
+
+    override suspend fun clean(): Result<Unit> {
+        reset()
+        return Result.success(Unit)
     }
 }

@@ -10,6 +10,10 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.Assertions
+import uk.gov.onelogin.signOut.domain.SignOutError
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 @ExperimentalCoroutinesApi
 class MultiCleanerTest {
@@ -47,5 +51,21 @@ class MultiCleanerTest {
         assertTrue(actual1)
         assertTrue(actual2)
         assertTrue(actual3)
+    }
+
+    @Test
+    fun `clean propagates sub-cleaners' exceptions`() = runTest {
+        // Given MultiCleaner
+        cleaner = MultiCleaner(
+            dispatcher,
+            Cleaner { Result.success(Unit) },
+            Cleaner { throw Exception("Oh no!") },
+            Cleaner { Result.success(Unit) },
+            Cleaner { Result.success(Unit) }
+        )
+        // When calling clean
+        Assertions.assertThrows(Exception::class.java) {
+            runTest { cleaner.clean() }
+        }
     }
 }
