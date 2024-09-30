@@ -13,10 +13,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 
-/*
-* Deliberately testing the public API provided by interface OptInRepository separately
-* from the concrete implementation, AnalyticsOptInRepository
-*  */
 @ExperimentalCoroutinesApi
 class OptInRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
@@ -73,5 +69,17 @@ class OptInRepositoryTest {
         val isOptInPreferenceRequired = repository.isOptInPreferenceRequired().first()
         assertEquals(expected = false, hasAnalyticsOptIn)
         assertEquals(expected = false, isOptInPreferenceRequired)
+    }
+
+    @Test
+    fun `calling reset() `() = runTest {
+        // Given an unknown opt in state
+        // When calling reset()
+        repository.reset()
+        // Then hasAnalyticsOptIn is false and isOptInPreferenceRequired is true
+        val hasAnalyticsOptIn = repository.hasAnalyticsOptIn().first()
+        val isOptInPreferenceRequired = repository.isOptInPreferenceRequired().first()
+        assertEquals(expected = false, hasAnalyticsOptIn)
+        assertEquals(expected = true, isOptInPreferenceRequired)
     }
 }

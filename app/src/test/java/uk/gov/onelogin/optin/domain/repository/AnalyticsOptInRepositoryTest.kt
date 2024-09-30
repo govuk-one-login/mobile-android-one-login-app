@@ -11,16 +11,10 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.assertThrows
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
-import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.FakeOptInLocalSource
 import uk.gov.onelogin.optin.domain.source.FakeOptInRemoteSource
 
-/*
-* I am deliberately testing the internal functionality of AnalyticsOptInRepository independently
-* from the public API
-*  */
 @ExperimentalCoroutinesApi
 class AnalyticsOptInRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
@@ -47,16 +41,14 @@ class AnalyticsOptInRepositoryTest {
     }
 
     @Test
-    fun `updateOptInState(None) throws DisallowedStateChange`() = runTest {
+    fun `updateOptInState(None) changes state to None`() = runTest {
         // Given an AnalyticsOptInState.No opt in preference
         repository.updateOptInState(AnalyticsOptInState.No)
         // When calling updateOptInState() with None
-        assertThrows<DisallowedStateChange> {
-            repository.updateOptInState(AnalyticsOptInState.None)
-        }
-        // Then the opt in state is unchanged (still No)
+        repository.updateOptInState(AnalyticsOptInState.None)
+        // Then the opt in state is changed to None
         val actual = repository.fetchOptInState()
-        assertEquals(expected = AnalyticsOptInState.No, actual)
+        assertEquals(expected = AnalyticsOptInState.None, actual)
     }
 
     @Test
@@ -97,6 +89,16 @@ class AnalyticsOptInRepositoryTest {
         // Then the opt in state is changed to AnalyticsOptInState.No
         val actual = repository.fetchOptInState()
         assertEquals(expected = AnalyticsOptInState.No, actual)
+    }
+
+    @Test
+    fun `reset() changes state to None`() = runTest {
+        // Given an unknown opt in preference
+        // When calling reset()
+        repository.reset()
+        // Then the opt in state is changed to AnalyticsOptInState.None
+        val actual = repository.fetchOptInState()
+        assertEquals(expected = AnalyticsOptInState.None, actual)
     }
 
     companion object {

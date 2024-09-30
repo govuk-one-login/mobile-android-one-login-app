@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
-import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 import uk.gov.onelogin.optin.ui.IODispatcherQualifier
@@ -17,6 +16,7 @@ interface OptInRepository {
     fun hasAnalyticsOptIn(): Flow<Boolean>
     suspend fun optIn()
     suspend fun optOut()
+    suspend fun reset()
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
@@ -53,9 +53,12 @@ class AnalyticsOptInRepository @Inject constructor(
 
     suspend fun updateOptInState(state: AnalyticsOptInState) {
         withContext(dispatcher) {
-            if (state == AnalyticsOptInState.None) throw DisallowedStateChange()
             localSource.update(state)
             remoteSource.update(state)
         }
+    }
+
+    override suspend fun reset() {
+        updateOptInState(AnalyticsOptInState.None)
     }
 }
