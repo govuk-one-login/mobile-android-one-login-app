@@ -52,25 +52,26 @@ import uk.gov.onelogin.ui.components.SimpleTextPage
 fun TabView(goBack: () -> Unit) {
     val tabs = listOf(
         TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
+
+        TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
+            AuthTabScreen()
+        },
+        TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
+            TokenTabScreen()
+        },
+        TabItem(R.string.app_developer_tab_networking, Icons.Filled.Email) {
+            NetworkingTabScreen()
+        },
         TabItem(
             R.string.app_developer_tab_feature_flags,
             Icons.Filled.Settings
         ) {
             FeaturesScreen()
         },
-        TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
-            AuthTabScreen()
-        },
-        TabItem(R.string.app_developer_tab_networking, Icons.Filled.Email) {
-            NetworkingTabScreen()
-        },
         TabItem(
             R.string.app_developer_tab_secure_store,
             Icons.Filled.Lock
-        ) { SimpleTextPage(R.string.app_developer_tab_secure_store) },
-        TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
-            TokenTabScreen()
-        }
+        ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
     )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()

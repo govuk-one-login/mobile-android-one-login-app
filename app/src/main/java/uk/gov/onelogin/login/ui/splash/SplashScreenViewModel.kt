@@ -15,6 +15,7 @@ import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.NavRoute
 import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
@@ -46,6 +47,9 @@ class SplashScreenViewModel @Inject constructor(
                         LocalAuthStatus.BioCheckFailed -> {
                             // Allow user to make multiple fails... do nothing for now
                         }
+
+                        LocalAuthStatus.ReAuthSignIn ->
+                            nextScreen(SignOutRoutes.Info)
                     }
                 }
             )
@@ -66,7 +70,8 @@ class SplashScreenViewModel @Inject constructor(
         if (comingFromLockScreen && authSuccessful) {
             navigator.goBack()
         } else {
-            navigator.navigate(route, true)
+            navigator.goBack()
+            navigator.navigate(route)
         }
     }
 }

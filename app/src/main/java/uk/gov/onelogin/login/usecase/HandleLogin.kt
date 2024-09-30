@@ -44,7 +44,11 @@ class HandleLoginImpl @Inject constructor(
                 callback(it)
             }
         } else {
-            callback(LocalAuthStatus.ManualSignIn)
+            if (getTokenExpiry() == null) {
+                callback(LocalAuthStatus.ManualSignIn)
+            } else {
+                callback(LocalAuthStatus.ReAuthSignIn)
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 
-interface SaveTokens {
+fun interface SaveTokens {
     suspend operator fun invoke()
 }
 

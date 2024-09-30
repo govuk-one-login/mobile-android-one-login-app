@@ -158,23 +158,30 @@ class WelcomeScreenViewModel @Inject constructor(
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)
 
-        if (isReAuth) {
-            if (credChecker.isDeviceSecure()) {
+        when {
+            isReAuth -> {
+                if (credChecker.isDeviceSecure()) {
+                    saveTokens()
+                }
+                navigator.goBack()
+            }
+
+            !credChecker.isDeviceSecure() -> {
+                bioPrefHandler.setBioPref(BiometricPreference.NONE)
+                navigator.navigate(LoginRoutes.PasscodeInfo, true)
+            }
+
+            shouldSeeBiometricOptIn() ->
+                navigator.navigate(LoginRoutes.BioOptIn, true)
+
+            else -> {
+                if (bioPrefHandler.getBioPref() != BiometricPreference.BIOMETRICS) {
+                    bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+                }
+                autoInitialiseSecureStore()
                 saveTokens()
+                navigator.navigate(MainNavRoutes.Start, true)
             }
-            navigator.goBack()
-        } else if (!credChecker.isDeviceSecure()) {
-            bioPrefHandler.setBioPref(BiometricPreference.NONE)
-            navigator.navigate(LoginRoutes.PasscodeInfo, true)
-        } else if (shouldSeeBiometricOptIn()) {
-            navigator.navigate(LoginRoutes.BioOptIn, true)
-        } else {
-            if (bioPrefHandler.getBioPref() != BiometricPreference.BIOMETRICS) {
-                bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
-            }
-            autoInitialiseSecureStore()
-            saveTokens()
-            navigator.navigate(MainNavRoutes.Start, true)
         }
     }
 

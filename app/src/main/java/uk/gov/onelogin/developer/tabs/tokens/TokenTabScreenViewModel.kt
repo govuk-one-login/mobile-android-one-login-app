@@ -10,6 +10,6 @@ class TokenTabScreenViewModel @Inject constructor(
     private val saveTokenExpiry: SaveTokenExpiry
 ) : ViewModel() {
     fun resetAccessToken() {
-        saveTokenExpiry(0L)
+        saveTokenExpiry(System.currentTimeMillis() - 1)
     }
 }

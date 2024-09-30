@@ -8,4 +8,5 @@ sealed class LocalAuthStatus {
     data object BioCheckFailed : LocalAuthStatus()
     data object SecureStoreError : LocalAuthStatus()
     data object ManualSignIn : LocalAuthStatus()
+    data object ReAuthSignIn : LocalAuthStatus()
 }

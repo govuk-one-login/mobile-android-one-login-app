@@ -22,6 +22,7 @@ import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.signOut.SignOutRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -46,7 +47,8 @@ class SplashScreenViewModelTest {
             }
         viewModel.login(mockActivity)
 
-        verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(LoginRoutes.SignInError, false)
     }
 
     @Test
@@ -72,7 +74,8 @@ class SplashScreenViewModelTest {
             }
         viewModel.login(mockActivity)
 
-        verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(MainNavRoutes.Start, false)
     }
 
     @Test
@@ -85,7 +88,22 @@ class SplashScreenViewModelTest {
             }
         viewModel.login(mockActivity)
 
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
+    }
+
+    @Test
+    fun loginRequiresReAuth() = runTest {
+        whenever(mockHandleLogin.invoke(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.ReAuthSignIn
+                )
+            }
+        viewModel.login(mockActivity)
+
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(SignOutRoutes.Info, false)
     }
 
     @Test

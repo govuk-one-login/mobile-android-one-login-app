@@ -2,7 +2,7 @@ package uk.gov.onelogin.tokens.usecases
 
 import javax.inject.Inject
 
-interface IsAccessTokenExpired {
+fun interface IsAccessTokenExpired {
     operator fun invoke(): Boolean
 }
 
