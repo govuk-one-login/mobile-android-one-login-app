@@ -234,6 +234,20 @@ class SignedOutInfoScreenTest : TestCase() {
     }
 
     @Test
+    fun loginFiresAutomaticallyButOffline() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                shouldTryAgain = {
+                    true
+                }
+            )
+        }
+
+        itOpensErrorScreen()
+    }
+
+    @Test
     fun opensNetworkErrorScreen() {
         givenWeAreOffline()
 

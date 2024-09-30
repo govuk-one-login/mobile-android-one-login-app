@@ -38,7 +38,6 @@ import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
-@Suppress("max-line-length")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
@@ -252,6 +251,54 @@ class WelcomeScreenViewModelTest {
         verify(mockTokenRepository).setTokenResponse(tokenResponse)
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
         verify(mockNavigator).navigate(LoginRoutes.PasscodeInfo, true)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `handleIntent when data != null, device not secure and reauth is true`() = runTest {
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
+        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+            .thenAnswer {
+                (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+
+        viewModel.handleActivityResult(mockIntent, true)
+
+        verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+        verify(mockTokenRepository).setTokenResponse(tokenResponse)
+        verify(mockNavigator).goBack()
+        verifyNoInteractions(mockSaveTokens)
+        verifyNoInteractions(mockBioPrefHandler)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `handleIntent when data != null, device is secure and reauth is true`() = runTest {
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+        whenever(mockLoginSession.finalise(eq(mockIntent), any()))
+            .thenAnswer {
+                (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+
+        viewModel.handleActivityResult(mockIntent, true)
+
+        verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+        verify(mockTokenRepository).setTokenResponse(tokenResponse)
+        verify(mockNavigator).goBack()
+        verify(mockSaveTokens).invoke()
+        verifyNoInteractions(mockBioPrefHandler)
     }
 
     @Test
