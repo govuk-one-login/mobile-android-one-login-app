@@ -16,6 +16,7 @@ interface OptInRepository {
     fun hasAnalyticsOptIn(): Flow<Boolean>
     suspend fun optIn()
     suspend fun optOut()
+    suspend fun synchronise()
     suspend fun reset()
 }
 
@@ -60,5 +61,12 @@ class AnalyticsOptInRepository @Inject constructor(
 
     override suspend fun reset() {
         updateOptInState(AnalyticsOptInState.None)
+    }
+
+    override suspend fun synchronise() {
+        withContext(dispatcher) {
+            val state = fetchOptInState()
+            remoteSource.update(state)
+        }
     }
 }

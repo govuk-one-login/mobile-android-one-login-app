@@ -11,18 +11,28 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.FakeOptInLocalSource
 import uk.gov.onelogin.optin.domain.source.FakeOptInRemoteSource
+import uk.gov.onelogin.optin.domain.source.OptInLocalSource
+import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 
 @ExperimentalCoroutinesApi
 class AnalyticsOptInRepositoryTest {
     private val dispatcher = StandardTestDispatcher()
+    private lateinit var remoteSource: OptInRemoteSource
     private lateinit var repository: AnalyticsOptInRepository
 
     @BeforeTest
     fun setUp() {
-        repository = createTestAnalyticsOptInRepository(dispatcher)
+        remoteSource = mock()
+        repository = createTestAnalyticsOptInRepository(dispatcher, remoteSource = remoteSource)
+        wheneverBlocking { remoteSource.update(any()) }.thenAnswer {}
         Dispatchers.setMain(dispatcher)
     }
 
@@ -101,12 +111,25 @@ class AnalyticsOptInRepositoryTest {
         assertEquals(expected = AnalyticsOptInState.None, actual)
     }
 
+    @Test
+    fun `synchronise sets the saved preference to the remote`() = runTest {
+        // Given any AnalyticsOptInState
+        val expected = AnalyticsOptInState.No
+        repository.updateOptInState(expected)
+        // When refreshing the preference
+        repository.synchronise()
+        // Then set AnalyticsOptInState to the remote Source twice
+        verify(remoteSource, times(2)).update(expected)
+    }
+
     companion object {
         fun createTestAnalyticsOptInRepository(
-            dispatcher: CoroutineDispatcher
+            dispatcher: CoroutineDispatcher,
+            localSource: OptInLocalSource = FakeOptInLocalSource(),
+            remoteSource: OptInRemoteSource = FakeOptInRemoteSource()
         ) = AnalyticsOptInRepository(
-            localSource = FakeOptInLocalSource(),
-            remoteSource = FakeOptInRemoteSource(),
+            localSource = localSource,
+            remoteSource = remoteSource,
             dispatcher = dispatcher
         )
     }
