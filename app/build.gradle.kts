@@ -21,7 +21,7 @@ apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
 apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 
 android {
-    namespace = "uk.gov.android.onelogin"
+    namespace = "uk.gov.one-login"
     compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
     defaultConfig {
