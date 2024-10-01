@@ -45,7 +45,7 @@ googleServices = "4.4.2"
 firebaseBom = "33.2.0"
 classgraph = "4.8.174"
 govuk-ui = "5.5.0"
-compose-runtime = "1.6.8"
+compose-runtime = "1.7.2"
 wallet = "1.29.0"
 
 [libraries]
