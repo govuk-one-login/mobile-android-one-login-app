@@ -9,7 +9,7 @@ inputs:
   package-name:
     description: 'App package name'
     required: false
-    default: 'uk.gov.onelogin'
+    default: 'uk.gov.one-login'
 
 runs:
   using: "composite"
