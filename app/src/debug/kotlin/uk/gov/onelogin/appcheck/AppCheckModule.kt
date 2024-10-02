@@ -11,6 +11,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.onelogin.BuildConfig
+import uk.gov.onelogin.developer.appcheck.AppCheck
+import uk.gov.onelogin.developer.appcheck.FirebaseAppCheck
 
 @Module
 @InstallIn(SingletonComponent::class)

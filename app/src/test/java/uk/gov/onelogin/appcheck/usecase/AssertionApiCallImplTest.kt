@@ -13,6 +13,8 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.onelogin.developer.appcheck.usecase.AssertionApiCall
+import uk.gov.onelogin.developer.appcheck.usecase.AssertionApiCallImpl
 
 class AssertionApiCallImplTest {
 

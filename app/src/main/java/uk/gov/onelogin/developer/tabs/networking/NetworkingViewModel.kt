@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.appcheck.AppCheck
-import uk.gov.onelogin.appcheck.usecase.AssertionApiCall
+import uk.gov.onelogin.developer.appcheck.AppCheck
+import uk.gov.onelogin.developer.appcheck.usecase.AssertionApiCall
 
 @HiltViewModel
 class NetworkingViewModel @Inject constructor(
