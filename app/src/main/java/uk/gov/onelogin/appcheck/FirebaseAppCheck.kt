@@ -6,13 +6,15 @@ import com.google.firebase.appcheck.AppCheckProviderFactory
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.initialize
 
-class FirebaseAppCheck : AppCheck {
+class FirebaseAppCheck(
+    private val firebase: Firebase = Firebase
+) : AppCheck {
     override fun init(
         context: Context,
         appCheckFactory: AppCheckProviderFactory
     ) {
-        Firebase.initialize(context)
-        Firebase.appCheck.installAppCheckProviderFactory(
+        firebase.initialize(context)
+        firebase.appCheck.installAppCheckProviderFactory(
             appCheckFactory
         )
     }
@@ -21,7 +23,7 @@ class FirebaseAppCheck : AppCheck {
         onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        Firebase.appCheck.getAppCheckToken(false)
+        firebase.appCheck.getAppCheckToken(false)
             .addOnSuccessListener { token ->
                 onSuccess(token.token)
             }
