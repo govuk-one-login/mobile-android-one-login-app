@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.appcheck
+package uk.gov.onelogin.appcheck
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

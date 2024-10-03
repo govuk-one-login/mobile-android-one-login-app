@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.appcheck.usecase
+package uk.gov.onelogin.appcheck.usecase
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext

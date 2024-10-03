@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.appcheck.usecase
+package uk.gov.onelogin.appcheck.usecase
 
 import dagger.Binds
 import dagger.Module

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.appcheck
+package uk.gov.onelogin.appcheck
 
 import android.content.Context
 import com.google.firebase.appcheck.AppCheckProviderFactory
