@@ -44,7 +44,7 @@ sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-g
 googleServices = "4.4.2"
 firebaseBom = "33.2.0"
 classgraph = "4.8.174"
-govuk-ui = "5.5.0"
+govuk-ui = "5.6.0"
 compose-runtime = "1.7.2"
 wallet = "1.29.0"
 
