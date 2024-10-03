@@ -14,7 +14,7 @@
     <string name="app_wallet" translatable="false">Wallet</string>
     <string name="app_profile">Profile</string>
 
-    <!--    Profile -->
+    <!-- Profile -->
     <string name="app_profileSubtitle1">Your details</string>
     <string name="app_signInDetails">Sign in details</string>
     <string name="app_manageSignInDetailsFootnote">Manage your sign in details with the GOV.UK One Login web service. You’ll need to sign in again.</string>
@@ -26,7 +26,7 @@
     <string name="app_appGuidanceLink">Guidance about using the app</string>
     <string name="app_signOutButton">Sign out</string>
 
-    <!--    Sign Out-->
+    <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Signing out will delete your app data</string>
     <string name="app_signOutConfirmationBody1">When you sign out, all the information and documents saved in your app will be deleted, including:</string>
     <string name="app_signOutConfirmationBullet1">any documents saved in your GOV.UK Wallet</string>
@@ -50,16 +50,16 @@
     <string name="app_signInIconDescription" translatable="false">Gov Uk Icon</string>
 
 
-    <!-- Errors-->
-    <!-- Errors Generic-->
+    <!-- Errors -->
+    <!-- Errors Generic -->
     <string name="app_somethingWentWrongErrorTitle">Something went wrong</string>
     <string name="app_somethingWentWrongErrorBody">Try again later.</string>
 
-    <!-- Errors Offline-->
+    <!-- Errors Offline -->
     <string name="app_networkErrorTitle">You appear to be offline</string>
     <string name="app_networkErrorBody">GOV.UK One Login is not available offline. Reconnect to the internet and try again</string>
 
-    <!-- Errors Sign Out-->
+    <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">There was a problem signing you out</string>
     <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
     <string name="app_exitButton">Exit</string>
@@ -86,7 +86,7 @@
 
     <string name="StagingEnv" translatable="false">staging</string>
 
-    <!--    Developer Panel -->
+    <!-- Developer Panel -->
     <string name="app_developer_panel" translatable="false">Developer Portal</string>
     <string name="app_developer_tab_app" translatable="false">App</string>
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
@@ -105,7 +105,7 @@
 
     <string name="assertionUrl" translatable="false">https://app-integrity-spike.mobile.dev.account.gov.uk%1$s</string>
 
-    <!-- Analytics Opt In   -->
+    <!-- Analytics Opt In -->
     <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
     <string name="app_analyticsPermissionBody">You can help the One Login team make improvements by sharing analytics about how you use the app.\n\nThese analytics are anonymous. They show us what is and is not working, and help make the app better.\n\nYou can stop sharing these analytics any time. Go to ‘Apps’ in  your phone’s settings, and select the GOV.UK One Login app to see or change your app settings.</string>
     <string name="app_privacyNoticeLink">Read more about this in the GOV.UK One Login privacy notice</string>
@@ -119,4 +119,14 @@
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
     <string name="app_updateApp_ContentDescription" translatable="false">Update App Required icon content description</string>
+    
+    <!-- Re-Auth Error -->
+    <string name="app_dataDeletedErrorTitle">Something went wrong</string>
+    <string name="app_dataDeletedErrorBody1">We’ve deleted the information in your GOV.UK One Login app because we could not confirm your sign in details.</string>
+    <string name="app_dataDeletedErrorBody2">This means:</string>
+    <string name="app_dataDeletedErrorBullet1">any documents saved in your GOV.UK Wallet have been removed</string>
+    <string name="app_dataDeletedErrorBullet2">if you were using biometrics or your phone’s pin or pattern to unlock the app, this has been switched off</string>
+    <string name="app_dataDeletedErrorBullet3">the app has stopped sharing analytics about how you use it</string>
+    <string name="app_dataDeletedErrorBody3">To keep using the app, you’ll need to sign in. You’ll then be able to add your documents to your GOV.UK Wallet and set your preferences again.</string>
+    <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
 </resources>
