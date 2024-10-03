@@ -102,7 +102,7 @@ theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.6.2" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.6.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
-logging-api = { group = "uk.gov.logging", name = "logging-api", version.ref = "govuk-logging" }
+logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -112,4 +112,4 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 
 [bundles]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics"]
-gov-uk = ["components", "pages", "theme", "authentication", "secure-store", "network", "logging-api"]
+gov-uk = ["components", "pages", "theme", "authentication", "secure-store", "network", "logging"]

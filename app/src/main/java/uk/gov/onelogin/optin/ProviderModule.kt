@@ -2,7 +2,6 @@ package uk.gov.onelogin.optin
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,9 +25,4 @@ internal object ProviderModule {
     @Provides
     @Suppress("InjectDispatcher") // this is the injection
     fun provideDispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-    @Provides
-    fun provideFirebaseAnalytics(
-        @ApplicationContext context: Context
-    ): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 }
