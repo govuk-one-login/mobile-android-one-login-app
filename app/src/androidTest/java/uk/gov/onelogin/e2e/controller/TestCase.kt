@@ -14,7 +14,7 @@ open class TestCase {
     @get:Rule(order = 2)
     var testNameRule: TestCaseNameWatcher = TestCaseNameWatcher()
 
-    protected var screenshotName: String? = null
+    private var screenshotName: String? = null
 
     protected open val phoneController =
         PhoneController(testNameRule = testNameRule)

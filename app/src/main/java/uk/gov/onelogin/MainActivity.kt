@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val navController = rememberNavController()
 
-            DisposableEffect(key1 = navController) {
+            DisposableEffect(Unit) {
                 navigator.setController(navController)
 
                 onDispose {

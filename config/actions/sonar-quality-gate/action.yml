@@ -1,0 +1,19 @@
+name: 'Run sonar quality gate'
+description: 'Run sonar quality gate on a PR or branch'
+
+inputs:
+  sonar-token:
+    description: "Sonarqube access token"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: SonarQube Quality Gate check
+      id: sonarqube-quality-gate-check
+      if: ${{ github.event_name == 'pull_request' }}
+      uses: sonarsource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496 # pin@v1.1.0
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+      with:
+        scanMetadataReportFile: ${{ github.workspace }}/build/sonar/report-task.txt
