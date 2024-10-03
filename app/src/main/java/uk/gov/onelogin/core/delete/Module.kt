@@ -18,7 +18,7 @@ internal object Module {
     fun provideCleaner(
         optInRepository: OptInRepository,
         biometricPreferenceHandler: BiometricPreferenceHandler,
-        secureStoreData: RemoveAllSecureStoreData,
+        secureStoreData: RemoveAllSecureStoreData
     ): Cleaner = MultiCleaner(
         Dispatchers.Default,
         optInRepository,

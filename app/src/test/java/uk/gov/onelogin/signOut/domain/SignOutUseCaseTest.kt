@@ -1,34 +1,30 @@
 package uk.gov.onelogin.signOut.domain
 
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.delete.domain.MultiCleaner
+import uk.gov.onelogin.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreData
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCaseImpl
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
+@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignOutUseCaseTest {
-    private val dispatcher = StandardTestDispatcher()
     private val activityFragment: FragmentActivity = mock()
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
     private lateinit var useCase: SignOutUseCase
@@ -36,15 +32,9 @@ class SignOutUseCaseTest {
     @BeforeTest
     fun setUp() {
         useCase = SignOutUseCaseImpl(
-                cleaner = { Result.success(Unit) },
-                deleteWalletData
-            )
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
+            cleaner = { Result.success(Unit) },
+            deleteWalletData
+        )
     }
 
     @Test
@@ -56,7 +46,12 @@ class SignOutUseCaseTest {
         // When we call sign out use case
         useCase =
             SignOutUseCaseImpl(
-                MultiCleaner(Dispatchers.Main, removeAllSecureStoreData, removeTokenExpiry, bioPrefHandler),
+                MultiCleaner(
+                    Dispatchers.Main,
+                    removeAllSecureStoreData,
+                    removeTokenExpiry,
+                    bioPrefHandler
+                ),
                 deleteWalletData
             )
         useCase.invoke(activityFragment)
@@ -68,6 +63,7 @@ class SignOutUseCaseTest {
     }
 
     @Test
+    @Suppress("TooGenericExceptionThrown")
     fun `exception propagates up as a SignOutError`() = runTest {
         // Given
         val errorMessage = "something went terribly bad"

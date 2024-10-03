@@ -1,35 +1,23 @@
 package uk.gov.onelogin.optin.ui
 
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
 
 @ExperimentalCoroutinesApi
 class OptInRequirementViewModelTest {
-    private val dispatcher = StandardTestDispatcher()
     private lateinit var repository: OptInRepository
     private lateinit var viewModel: OptInRequirementViewModel
 
     @BeforeTest
     fun setUp() {
-        repository = createTestAnalyticsOptInRepository(dispatcher)
+        repository = createTestAnalyticsOptInRepository()
         viewModel = OptInRequirementViewModel(repository)
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test

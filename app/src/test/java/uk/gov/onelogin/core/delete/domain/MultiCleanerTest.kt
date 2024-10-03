@@ -11,9 +11,6 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions
-import uk.gov.onelogin.signOut.domain.SignOutError
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
 
 @ExperimentalCoroutinesApi
 class MultiCleanerTest {
@@ -54,6 +51,7 @@ class MultiCleanerTest {
     }
 
     @Test
+    @Suppress("TooGenericExceptionThrown")
     fun `clean propagates sub-cleaners' exceptions`() = runTest {
         // Given MultiCleaner
         cleaner = MultiCleaner(

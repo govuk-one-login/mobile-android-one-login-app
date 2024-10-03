@@ -12,7 +12,7 @@ import uk.gov.onelogin.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
-interface OptInRepository: Cleaner {
+interface OptInRepository : Cleaner {
     fun isOptInPreferenceRequired(): Flow<Boolean>
     fun hasAnalyticsOptIn(): Flow<Boolean>
     suspend fun optIn()

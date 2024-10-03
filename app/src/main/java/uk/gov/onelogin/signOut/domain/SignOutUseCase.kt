@@ -1,8 +1,8 @@
 package uk.gov.onelogin.signOut.domain
 
 import androidx.fragment.app.FragmentActivity
-import uk.gov.onelogin.core.delete.domain.Cleaner
 import javax.inject.Inject
+import uk.gov.onelogin.core.delete.domain.Cleaner
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 
 fun interface SignOutUseCase {

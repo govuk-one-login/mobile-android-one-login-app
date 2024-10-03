@@ -1,16 +1,10 @@
 package uk.gov.onelogin.optin.domain.repository
 
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
@@ -24,21 +18,14 @@ import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 
 @ExperimentalCoroutinesApi
 class AnalyticsOptInRepositoryTest {
-    private val dispatcher = StandardTestDispatcher()
     private lateinit var remoteSource: OptInRemoteSource
     private lateinit var repository: AnalyticsOptInRepository
 
     @BeforeTest
     fun setUp() {
         remoteSource = mock()
-        repository = createTestAnalyticsOptInRepository(dispatcher, remoteSource = remoteSource)
+        repository = createTestAnalyticsOptInRepository(remoteSource = remoteSource)
         wheneverBlocking { remoteSource.update(any()) }.thenAnswer {}
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test
@@ -124,13 +111,11 @@ class AnalyticsOptInRepositoryTest {
 
     companion object {
         fun createTestAnalyticsOptInRepository(
-            dispatcher: CoroutineDispatcher,
             localSource: OptInLocalSource = FakeOptInLocalSource(),
             remoteSource: OptInRemoteSource = FakeOptInRemoteSource()
         ) = AnalyticsOptInRepository(
             localSource = localSource,
-            remoteSource = remoteSource,
-            dispatcher = dispatcher
+            remoteSource = remoteSource
         )
     }
 }

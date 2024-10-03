@@ -3,15 +3,13 @@ package uk.gov.onelogin.login.biooptin
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
-import uk.gov.onelogin.core.delete.domain.Cleaner
 import javax.inject.Inject
+import uk.gov.onelogin.core.delete.domain.Cleaner
 
-interface BiometricPreferenceHandler: Cleaner {
+interface BiometricPreferenceHandler : Cleaner {
     fun setBioPref(pref: BiometricPreference)
 
     fun getBioPref(): BiometricPreference?
-
-    fun clear()
 }
 
 class BiometricPreferenceHandlerImpl @Inject constructor(
@@ -33,13 +31,6 @@ class BiometricPreferenceHandlerImpl @Inject constructor(
             BiometricPreference.PASSCODE.name -> BiometricPreference.PASSCODE
             BiometricPreference.NONE.name -> BiometricPreference.NONE
             else -> null
-        }
-    }
-
-    override fun clear() {
-        with(sharedPrefs.edit()) {
-            clear()
-            apply()
         }
     }
 
