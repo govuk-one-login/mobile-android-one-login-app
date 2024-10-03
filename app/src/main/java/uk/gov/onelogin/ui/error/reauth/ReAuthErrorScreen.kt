@@ -54,7 +54,7 @@ fun ReAuthErrorScreen(
                 title = R.string.app_dataDeletedErrorTitle,
                 intro = R.string.app_dataDeletedErrorBody1,
                 content = R.string.app_dataDeletedErrorBody2,
-                bulletList = arrayOf(
+                bulletList = listOf(
                     R.string.app_dataDeletedErrorBullet1,
                     R.string.app_dataDeletedErrorBullet2,
                     R.string.app_dataDeletedErrorBullet3
@@ -175,6 +175,6 @@ data class ErrorInformation(
     val title: Int,
     val intro: Int,
     val content: Int,
-    val bulletList: Array<Int>,
+    val bulletList: List<Int>,
     val instruction: Int
 )
