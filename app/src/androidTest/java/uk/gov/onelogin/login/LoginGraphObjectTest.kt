@@ -6,14 +6,19 @@ import androidx.test.uiautomator.By
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import uk.gov.android.onelogin.R
+import uk.gov.onelogin.FlakyTestRule
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
 
 @HiltAndroidTest
 class LoginGraphObjectTest : TestCase() {
+    @get:Rule(order = 3)
+    val flakyTestRule = FlakyTestRule()
+
     @Inject
     lateinit var navigator: Navigator
 
