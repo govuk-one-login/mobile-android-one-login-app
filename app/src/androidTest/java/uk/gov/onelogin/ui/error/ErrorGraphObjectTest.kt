@@ -1,8 +1,8 @@
 package uk.gov.onelogin.ui.error
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Before
@@ -16,7 +16,7 @@ import uk.gov.onelogin.navigation.Navigator
 @HiltAndroidTest
 class ErrorGraphObjectTest : TestCase() {
     @get:Rule(order = 3)
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var navigator: Navigator
@@ -32,9 +32,7 @@ class ErrorGraphObjectTest : TestCase() {
             navigator.navigate(ErrorRoutes.SignOut)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signOutErrorTitle))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_signOutErrorTitle))
     }
 
     @Test
@@ -42,8 +40,8 @@ class ErrorGraphObjectTest : TestCase() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             navigator.navigate(ErrorRoutes.Generic)
         }
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_somethingWentWrongErrorTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_somethingWentWrongErrorTitle)
         )
     }
 
@@ -53,8 +51,6 @@ class ErrorGraphObjectTest : TestCase() {
             navigator.navigate(ErrorRoutes.Offline)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_networkErrorTitle))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_networkErrorTitle))
     }
 }

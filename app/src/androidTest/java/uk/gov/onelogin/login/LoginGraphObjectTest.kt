@@ -1,8 +1,9 @@
 package uk.gov.onelogin.login
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Before
@@ -16,7 +17,7 @@ import uk.gov.onelogin.navigation.Navigator
 @HiltAndroidTest
 class LoginGraphObjectTest : TestCase() {
     @get:Rule(order = 3)
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var navigator: Navigator
@@ -32,9 +33,7 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.SignInError)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signInErrorTitle))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_signInErrorTitle))
     }
 
     @Test
@@ -43,13 +42,9 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.BioOptIn)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_enableBiometricsTitle))
-        )
-        phoneController.pressBack()
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_enableBiometricsTitle))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
+        back()
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
     }
 
     @Test
@@ -58,13 +53,9 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_analyticsPermissionBody))
-        )
-        phoneController.pressBack()
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_analyticsPermissionBody))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
+        back()
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
     }
 
     @Test
@@ -73,24 +64,23 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.PasscodeInfo)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_noPasscodePatternSetupTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_noPasscodePatternSetupTitle)
         )
-        phoneController.click(
-            selectors = arrayOf(
-                Pair(By.text(resources.getString(R.string.app_continue)), "Continue button")
-            )
-        )
-        phoneController.waitUntilIdle()
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_homeTitle))
-        )
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_continue)).performClick()
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_homeTitle))
     }
 
     @Test
     fun loginGraph_Loading() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             navigator.navigate(LoginRoutes.Loading)
+        }
+    }
+
+    private fun back() {
+        composeTestRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
         }
     }
 }
