@@ -51,3 +51,4 @@ mockito
 runBlocking
 vararg
 veriff
+[Dd]eserialize

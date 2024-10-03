@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
@@ -33,7 +32,6 @@ import uk.gov.android.ui.components.m3.buttons.GdsButton
 import uk.gov.android.ui.components.m3.content.ContentParameters
 import uk.gov.android.ui.components.m3.content.GdsContent
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.wallet.core.ui.theme.buttonHeight
 import uk.gov.onelogin.ui.bulletPointIndentation
@@ -180,11 +178,3 @@ data class ErrorInformation(
     val bulletList: Array<Int>,
     val instruction: Int
 )
-
-@Preview
-@Composable
-fun ReAuthPreview() {
-    GdsTheme {
-        ReAuthErrorScreen()
-    }
-}
