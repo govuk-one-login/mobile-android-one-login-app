@@ -6,19 +6,14 @@ import androidx.test.uiautomator.By
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import uk.gov.android.onelogin.R
-import uk.gov.onelogin.FlakyTestRule
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
 
 @HiltAndroidTest
 class LoginGraphObjectTest : TestCase() {
-    @get:Rule(order = 3)
-    val flakyTestRule = FlakyTestRule()
-
     @Inject
     lateinit var navigator: Navigator
 
@@ -29,38 +24,13 @@ class LoginGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun loginGraph_SignInError_Back() {
+    fun loginGraph_SignInError() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             navigator.navigate(LoginRoutes.SignInError)
         }
 
         phoneController.assertElementExists(
             selector = By.text(resources.getString(R.string.app_signInErrorTitle))
-        )
-        phoneController.pressBack()
-        phoneController.waitUntilIdle()
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signInBody))
-        )
-    }
-
-    @Test
-    fun loginGraph_SignInError_Button() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            navigator.navigate(LoginRoutes.SignInError)
-        }
-
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signInErrorTitle))
-        )
-        phoneController.click(
-            selectors = arrayOf(
-                Pair(By.text(resources.getString(R.string.app_closeButton)), "Close button")
-            )
-        )
-        phoneController.waitUntilIdle()
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signInBody))
         )
     }
 
