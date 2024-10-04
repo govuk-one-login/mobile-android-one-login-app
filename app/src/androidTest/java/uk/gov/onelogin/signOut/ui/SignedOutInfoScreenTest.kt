@@ -7,6 +7,8 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -24,13 +26,18 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
+import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
+import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.signOut.SignOutModule
+import uk.gov.onelogin.signOut.domain.SignOutUseCase
+import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltAndroidTest
@@ -38,7 +45,8 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
     LoginSessionModule::class,
     FeaturesModule::class,
     NetworkModule::class,
-    NavigatorModule::class
+    NavigatorModule::class,
+    SignOutModule::class
 )
 class SignedOutInfoScreenTest : TestCase() {
     @BindValue
@@ -59,7 +67,15 @@ class SignedOutInfoScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
+    @BindValue
+    val mockSignOutUseCase: SignOutUseCase = mock()
+
+    @Inject
+    @Named("Open")
+    lateinit var secureStore: SecureStore
+
     private var shouldTryAgainCalled = false
+    private val persistentId = "id"
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
     private val signedOutBody1 = hasText(resources.getString(R.string.app_youveBeenSignedOutBody1))
@@ -68,9 +84,10 @@ class SignedOutInfoScreenTest : TestCase() {
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
     @Before
-    fun setup() {
+    fun setup() = runBlocking {
         hiltRule.inject()
         shouldTryAgainCalled = false
+        setPersistentId(persistentId)
     }
 
     @Test
@@ -121,7 +138,8 @@ class SignedOutInfoScreenTest : TestCase() {
             locale = Locale.EN,
             redirectUri = redirectUri,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
         )
 
         verify(loginSession).present(
@@ -134,6 +152,7 @@ class SignedOutInfoScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+
         composeTestRule.setContent {
             SignedOutInfoScreen()
         }
@@ -165,13 +184,30 @@ class SignedOutInfoScreenTest : TestCase() {
             locale = Locale.EN,
             redirectUri = redirectUri,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
         )
 
         verify(loginSession).present(
             any(),
             eq(loginSessionConfig)
         )
+    }
+
+    @Test
+    fun noPersistentId_OpensSignInScreen() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        setPersistentId("")
+
+        composeTestRule.setContent {
+            SignedOutInfoScreen()
+        }
+
+        whenWeClickSignIn()
+
+        verify(mockSignOutUseCase).invoke(composeTestRule.activity)
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
     }
 
     @Test
@@ -191,6 +227,7 @@ class SignedOutInfoScreenTest : TestCase() {
     fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+
         composeTestRule.setContent {
             SignedOutInfoScreen(
                 shouldTryAgain = {
@@ -224,7 +261,8 @@ class SignedOutInfoScreenTest : TestCase() {
             locale = Locale.EN,
             redirectUri = redirectUri,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
         )
 
         verify(loginSession).present(
@@ -269,5 +307,12 @@ class SignedOutInfoScreenTest : TestCase() {
 
     private fun itOpensErrorScreen() {
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
+
+    private suspend fun setPersistentId(id: String) {
+        secureStore.upsert(
+            key = Keys.PERSISTENT_ID_KEY,
+            value = id
+        )
     }
 }

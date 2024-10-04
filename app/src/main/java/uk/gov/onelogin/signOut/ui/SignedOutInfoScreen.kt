@@ -1,12 +1,16 @@
 package uk.gov.onelogin.signOut.ui
 
 import android.app.Activity
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
@@ -21,6 +25,7 @@ fun SignedOutInfoScreen(
     signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
+    val activity = LocalContext.current as FragmentActivity
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -40,11 +45,12 @@ fun SignedOutInfoScreen(
 
         if (!shouldTryAgain()) return@LaunchedEffect
 
-        if (loginViewModel.onlineChecker.isOnline()) {
-            loginViewModel.onPrimary(launcher)
-        } else {
-            loginViewModel.navigateToOfflineError()
-        }
+        handleLogin(
+            loginViewModel,
+            signOutViewModel,
+            launcher,
+            activity
+        )
     }
 
     LandingPage(
@@ -62,12 +68,27 @@ fun SignedOutInfoScreen(
             contentInternalPadding = PaddingValues(bottom = smallPadding),
             primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
             onPrimary = {
-                if (loginViewModel.onlineChecker.isOnline()) {
-                    loginViewModel.onPrimary(launcher)
-                } else {
-                    loginViewModel.navigateToOfflineError()
-                }
+                handleLogin(
+                    loginViewModel,
+                    signOutViewModel,
+                    launcher,
+                    activity
+                )
             }
         )
     )
+}
+
+private fun handleLogin(
+    loginViewModel: WelcomeScreenViewModel,
+    signOutViewModel: SignedOutInfoViewModel,
+    launcher: ActivityResultLauncher<Intent>,
+    activity: FragmentActivity
+) {
+    if (loginViewModel.onlineChecker.isOnline()) {
+        signOutViewModel.checkPersistentId(activity)
+        loginViewModel.onPrimary(launcher)
+    } else {
+        loginViewModel.navigateToOfflineError()
+    }
 }
