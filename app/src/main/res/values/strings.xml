@@ -97,6 +97,7 @@
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
+    <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>

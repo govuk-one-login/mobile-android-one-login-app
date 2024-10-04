@@ -95,6 +95,7 @@ class WelcomeScreenViewModel @Inject constructor(
         val locale = localeUtils.getLocaleAsSessionConfig()
 
         viewModelScope.launch {
+            val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             loginSession
                 .present(
                     launcher,
@@ -105,7 +106,7 @@ class WelcomeScreenViewModel @Inject constructor(
                         redirectUri = redirectUri,
                         scopes = scopes,
                         tokenEndpoint = tokenEndpoint,
-                        persistentSessionId = getPersistentId()
+                        persistentSessionId = persistentId
                     )
                 )
         }
