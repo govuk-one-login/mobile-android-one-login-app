@@ -1,7 +1,6 @@
 package uk.gov.onelogin.signOut.domain
 
 import androidx.fragment.app.FragmentActivity
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -28,14 +27,6 @@ class SignOutUseCaseTest {
     private val activityFragment: FragmentActivity = mock()
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
     private lateinit var useCase: SignOutUseCase
-
-    @BeforeTest
-    fun setUp() {
-        useCase = SignOutUseCaseImpl(
-            cleaner = { Result.success(Unit) },
-            deleteWalletData
-        )
-    }
 
     @Test
     fun `invoke clears all the required data`() = runTest {
@@ -89,6 +80,12 @@ class SignOutUseCaseTest {
         whenever(deleteWalletData.invoke(activityFragment)).then {
             throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
         }
+
+        useCase = SignOutUseCaseImpl(
+            cleaner = { Result.success(Unit) },
+            deleteWalletData
+        )
+
         // Then throw SignOutError
         val exception = assertThrows<SignOutError> {
             useCase.invoke(activityFragment)
