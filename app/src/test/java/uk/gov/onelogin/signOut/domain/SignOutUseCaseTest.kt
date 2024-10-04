@@ -82,7 +82,10 @@ class SignOutUseCaseTest {
         }
 
         useCase = SignOutUseCaseImpl(
-            cleaner = { Result.success(Unit) },
+            MultiCleaner(
+                Dispatchers.Main,
+                { Result.success(Unit) }
+            ),
             deleteWalletData
         )
 
