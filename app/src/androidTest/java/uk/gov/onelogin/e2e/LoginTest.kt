@@ -21,7 +21,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -131,10 +131,9 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
-        runBlocking {
-            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
-        }
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
+        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+
         startApp()
         clickOptOut()
         clickLogin()
