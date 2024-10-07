@@ -14,7 +14,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
-import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 
@@ -23,15 +22,16 @@ class SaveTokensTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockSaveToSecureStore: SaveToSecureStore = mock()
     private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
-    private val mockGetPersistentId: GetPersistentId = mock()
+
+    // encoded ID token with persistent ID in the body
+    private val idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJzaXN0ZW50X2lkIjoiMTIzNCJ9"
 
     @BeforeEach
     fun setup() {
         saveTokens = SaveTokensImpl(
             mockTokenRepository,
             mockSaveToSecureStore,
-            mockSaveToOpenSecureStore,
-            mockGetPersistentId
+            mockSaveToOpenSecureStore
         )
     }
 
@@ -41,11 +41,10 @@ class SaveTokensTest {
             tokenType = "test",
             accessToken = "access",
             accessTokenExpirationTime = 1L,
-            idToken = "id"
+            idToken = idToken
         )
 
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
-        whenever(mockGetPersistentId.invoke()).thenReturn("persistentId")
 
         saveTokens()
 
@@ -56,11 +55,11 @@ class SaveTokensTest {
             )
             verify(mockSaveToSecureStore).invoke(
                 Keys.ID_TOKEN_KEY,
-                "id"
+                idToken
             )
             verify(mockSaveToOpenSecureStore).invoke(
                 Keys.PERSISTENT_ID_KEY,
-                "persistentId"
+                "1234"
             )
         }
     }
@@ -75,7 +74,6 @@ class SaveTokensTest {
         )
 
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
-        whenever(mockGetPersistentId.invoke()).thenReturn(null)
 
         saveTokens()
         runBlocking {
@@ -89,7 +87,7 @@ class SaveTokensTest {
             )
             verify(mockSaveToOpenSecureStore, times(0)).invoke(
                 Keys.PERSISTENT_ID_KEY,
-                "persistentId"
+                "1234"
             )
         }
     }
@@ -125,7 +123,6 @@ class SaveTokensTest {
 
             verifyNoInteractions(mockSaveToSecureStore)
             verifyNoInteractions(mockSaveToOpenSecureStore)
-            verifyNoInteractions(mockGetPersistentId)
         }
     }
 }

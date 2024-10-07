@@ -207,7 +207,7 @@ class SignedOutInfoScreenTest : TestCase() {
         whenWeClickSignIn()
 
         verify(mockSignOutUseCase).invoke(composeTestRule.activity)
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.Start, true)
     }
 
     @Test

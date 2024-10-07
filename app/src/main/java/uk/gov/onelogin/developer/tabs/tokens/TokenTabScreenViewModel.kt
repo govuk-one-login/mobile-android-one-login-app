@@ -1,11 +1,12 @@
 package uk.gov.onelogin.developer.tabs.tokens
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
@@ -18,13 +19,13 @@ class TokenTabScreenViewModel @Inject constructor(
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getPersistentId: GetPersistentId
 ) : ViewModel() {
-    private val _persistentId = mutableStateOf("")
-    val persistentId: State<String>
-        get() = _persistentId
+    private val _persistentId = MutableStateFlow("")
+    val persistentId: StateFlow<String>
+        get() = _persistentId.asStateFlow()
 
     init {
         viewModelScope.launch {
-            _persistentId.value = getPersistentId() ?: ""
+            setPersistentId()
         }
     }
 
@@ -32,13 +33,17 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry(System.currentTimeMillis() - 1)
     }
 
-    fun resetPersistentID() {
+    fun resetPersistentId() {
         viewModelScope.launch {
             saveToOpenSecureStore(
                 Keys.PERSISTENT_ID_KEY,
                 ""
             )
-            _persistentId.value = getPersistentId() ?: ""
+            setPersistentId()
         }
+    }
+
+    private suspend fun setPersistentId() {
+        _persistentId.value = getPersistentId() ?: ""
     }
 }
