@@ -471,4 +471,6 @@ class PhoneController(
             throw PhoneControllerException(message, exception)
         }
     }
+
+    fun getCurrentPackage(): String = device.currentPackageName
 }

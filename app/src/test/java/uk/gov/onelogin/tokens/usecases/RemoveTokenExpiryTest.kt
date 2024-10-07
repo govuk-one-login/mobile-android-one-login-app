@@ -2,6 +2,8 @@ package uk.gov.onelogin.tokens.usecases
 
 import android.content.Context
 import android.content.SharedPreferences
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
@@ -33,10 +35,11 @@ class RemoveTokenExpiryTest {
     }
 
     @Test
-    fun `check expiry token removed`() {
-        useCase()
+    fun `check expiry token removed`() = runTest {
+        val result = useCase.clean()
 
         verify(mockEditor).remove(Keys.TOKEN_EXPIRY_KEY)
-        verify(mockEditor).apply()
+        verify(mockEditor).commit()
+        assertEquals(Result.success(Unit), result)
     }
 }

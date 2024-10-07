@@ -1,9 +1,9 @@
 package uk.gov.onelogin.login.ui.welcome
 
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.R
@@ -11,8 +11,6 @@ import uk.gov.onelogin.TestCase
 
 @HiltAndroidTest
 class WelcomeScreenDevMenuTest : TestCase() {
-    private var devMenuCLicked = 0
-
     @Before
     fun setupNavigation() {
         hiltRule.inject()
@@ -23,13 +21,11 @@ class WelcomeScreenDevMenuTest : TestCase() {
     @Test
     fun verifyDevMenuClick() {
         composeTestRule.setContent {
-            WelcomeScreen(
-                openDeveloperPanel = { devMenuCLicked++ }
-            )
+            WelcomeScreen()
         }
 
         composeTestRule.onNode(signInIcon).performClick()
 
-        assertEquals(0, devMenuCLicked)
+        composeTestRule.onNodeWithText("Developer Portal").assertDoesNotExist()
     }
 }

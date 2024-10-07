@@ -1,36 +1,20 @@
 package uk.gov.onelogin.optin.domain.repository
 
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 
-/*
-* Deliberately testing the public API provided by interface OptInRepository separately
-* from the concrete implementation, AnalyticsOptInRepository
-*  */
 @ExperimentalCoroutinesApi
 class OptInRepositoryTest {
-    private val dispatcher = StandardTestDispatcher()
     private lateinit var repository: OptInRepository
 
     @BeforeTest
     fun setUp() {
-        repository = createTestAnalyticsOptInRepository(dispatcher)
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
+        repository = createTestAnalyticsOptInRepository()
     }
 
     @Test
@@ -73,5 +57,17 @@ class OptInRepositoryTest {
         val isOptInPreferenceRequired = repository.isOptInPreferenceRequired().first()
         assertEquals(expected = false, hasAnalyticsOptIn)
         assertEquals(expected = false, isOptInPreferenceRequired)
+    }
+
+    @Test
+    fun `calling reset() `() = runTest {
+        // Given an unknown opt in state
+        // When calling reset()
+        repository.reset()
+        // Then hasAnalyticsOptIn is false and isOptInPreferenceRequired is true
+        val hasAnalyticsOptIn = repository.hasAnalyticsOptIn().first()
+        val isOptInPreferenceRequired = repository.isOptInPreferenceRequired().first()
+        assertEquals(expected = false, hasAnalyticsOptIn)
+        assertEquals(expected = true, isOptInPreferenceRequired)
     }
 }

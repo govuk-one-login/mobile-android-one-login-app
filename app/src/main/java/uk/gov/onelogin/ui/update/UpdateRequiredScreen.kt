@@ -1,4 +1,4 @@
-package uk.gov.onelogin.appcheck.ui
+package uk.gov.onelogin.ui.update
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme

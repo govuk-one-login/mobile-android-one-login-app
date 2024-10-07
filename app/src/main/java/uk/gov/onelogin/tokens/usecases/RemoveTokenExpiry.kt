@@ -3,15 +3,11 @@ package uk.gov.onelogin.tokens.usecases
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import uk.gov.onelogin.core.delete.domain.Cleaner
 import uk.gov.onelogin.tokens.Keys.TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.tokens.Keys.TOKEN_SHARED_PREFS
 
-fun interface RemoveTokenExpiry {
-    /**
-     * Use case to remove the expiry time of the token in open shared preferences
-     */
-    operator fun invoke()
-}
+interface RemoveTokenExpiry : Cleaner
 
 class RemoveTokenExpiryImpl @Inject constructor(
     @ApplicationContext
@@ -20,10 +16,11 @@ class RemoveTokenExpiryImpl @Inject constructor(
     private val sharedPrefs =
         context.getSharedPreferences(TOKEN_SHARED_PREFS, Context.MODE_PRIVATE)
 
-    override fun invoke() {
+    override suspend fun clean(): Result<Unit> {
         with(sharedPrefs.edit()) {
             remove(TOKEN_EXPIRY_KEY)
-            apply()
+            commit()
         }
+        return Result.success(Unit)
     }
 }
