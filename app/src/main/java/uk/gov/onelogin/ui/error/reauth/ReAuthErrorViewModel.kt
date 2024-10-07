@@ -8,7 +8,7 @@ import uk.gov.onelogin.navigation.Navigator
 
 @HiltViewModel
 class ReAuthErrorViewModel @Inject constructor(
-    val navigator: Navigator
+    private val navigator: Navigator
 ) : ViewModel() {
     fun navigateToSignIn() {
         navigator.navigate(LoginRoutes.Start, true)
