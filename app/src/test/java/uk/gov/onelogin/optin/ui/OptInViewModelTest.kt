@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
@@ -24,7 +25,7 @@ class OptInViewModelTest {
     @BeforeTest
     fun setUp() {
         viewModel = OptInViewModel(
-            repository = createTestAnalyticsOptInRepository(),
+            repository = createTestAnalyticsOptInRepository(UnconfinedTestDispatcher()),
             navigator = mockNavigator
         )
     }

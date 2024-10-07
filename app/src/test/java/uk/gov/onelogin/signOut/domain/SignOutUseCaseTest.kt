@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
@@ -29,7 +29,7 @@ class SignOutUseCaseTest {
     private lateinit var useCase: SignOutUseCase
 
     @Test
-    fun `invoke clears all the required data`() = runBlocking {
+    fun `invoke clears all the required data`() = runTest {
         // Given
         val removeAllSecureStoreData: RemoveAllSecureStoreData = mock()
         val removeTokenExpiry: RemoveTokenExpiry = mock()
@@ -54,7 +54,7 @@ class SignOutUseCaseTest {
     }
 
     @Test
-    fun `sign out delete wallet data error`() = runBlocking {
+    fun `sign out delete wallet data error`() = runTest {
         // When invoking the sign out use case
         whenever(deleteWalletData.invoke(activityFragment)).then {
             throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
@@ -77,7 +77,7 @@ class SignOutUseCaseTest {
 
     @Test
     @Suppress("TooGenericExceptionThrown")
-    fun `exception propagates up as a SignOutError`() = runBlocking {
+    fun `exception propagates up as a SignOutError`() = runTest {
         // Given
         val errorMessage = "something went terribly bad"
         useCase = SignOutUseCaseImpl(

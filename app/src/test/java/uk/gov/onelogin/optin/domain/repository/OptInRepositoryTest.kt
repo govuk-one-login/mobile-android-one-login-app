@@ -5,6 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
 
@@ -14,7 +15,7 @@ class OptInRepositoryTest {
 
     @BeforeTest
     fun setUp() {
-        repository = createTestAnalyticsOptInRepository()
+        repository = createTestAnalyticsOptInRepository(UnconfinedTestDispatcher())
     }
 
     @Test

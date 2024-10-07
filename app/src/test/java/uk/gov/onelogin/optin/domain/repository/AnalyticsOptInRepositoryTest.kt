@@ -3,7 +3,9 @@ package uk.gov.onelogin.optin.domain.repository
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -24,7 +26,10 @@ class AnalyticsOptInRepositoryTest {
     @BeforeTest
     fun setUp() {
         remoteSource = mock()
-        repository = createTestAnalyticsOptInRepository(remoteSource = remoteSource)
+        repository = createTestAnalyticsOptInRepository(
+            dispatcher = UnconfinedTestDispatcher(),
+            remoteSource = remoteSource
+        )
         wheneverBlocking { remoteSource.update(any()) }.thenAnswer {}
     }
 
@@ -111,9 +116,11 @@ class AnalyticsOptInRepositoryTest {
 
     companion object {
         fun createTestAnalyticsOptInRepository(
+            dispatcher: CoroutineDispatcher,
             localSource: OptInLocalSource = FakeOptInLocalSource(),
             remoteSource: OptInRemoteSource = FakeOptInRemoteSource()
         ) = AnalyticsOptInRepository(
+            dispatcher = dispatcher,
             localSource = localSource,
             remoteSource = remoteSource
         )
