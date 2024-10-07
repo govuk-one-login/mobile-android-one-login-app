@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import uk.gov.onelogin.core.delete.domain.Cleaner
 
-interface BiometricPreferenceHandler {
+interface BiometricPreferenceHandler : Cleaner {
     fun setBioPref(pref: BiometricPreference)
 
     fun getBioPref(): BiometricPreference?
-
-    fun clear()
 }
 
 class BiometricPreferenceHandlerImpl @Inject constructor(
@@ -35,11 +34,12 @@ class BiometricPreferenceHandlerImpl @Inject constructor(
         }
     }
 
-    override fun clear() {
+    override suspend fun clean(): Result<Unit> {
         with(sharedPrefs.edit()) {
             clear()
-            apply()
+            commit()
         }
+        return Result.success(Unit)
     }
 
     companion object {

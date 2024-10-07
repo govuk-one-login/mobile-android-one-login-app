@@ -1,40 +1,33 @@
 package uk.gov.onelogin.optin.domain.repository
 
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.assertThrows
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
-import uk.gov.onelogin.optin.domain.model.DisallowedStateChange
 import uk.gov.onelogin.optin.domain.source.FakeOptInLocalSource
 import uk.gov.onelogin.optin.domain.source.FakeOptInRemoteSource
+import uk.gov.onelogin.optin.domain.source.OptInLocalSource
+import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 
-/*
-* I am deliberately testing the internal functionality of AnalyticsOptInRepository independently
-* from the public API
-*  */
 @ExperimentalCoroutinesApi
 class AnalyticsOptInRepositoryTest {
-    private val dispatcher = StandardTestDispatcher()
+    private lateinit var remoteSource: OptInRemoteSource
     private lateinit var repository: AnalyticsOptInRepository
 
     @BeforeTest
     fun setUp() {
-        repository = createTestAnalyticsOptInRepository(dispatcher)
-        Dispatchers.setMain(dispatcher)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        Dispatchers.resetMain()
+        remoteSource = mock()
+        repository = createTestAnalyticsOptInRepository(
+            remoteSource = remoteSource
+        )
+        wheneverBlocking { remoteSource.update(any()) }.thenAnswer {}
     }
 
     @Test
@@ -47,16 +40,14 @@ class AnalyticsOptInRepositoryTest {
     }
 
     @Test
-    fun `updateOptInState(None) throws DisallowedStateChange`() = runTest {
+    fun `updateOptInState(None) changes state to None`() = runTest {
         // Given an AnalyticsOptInState.No opt in preference
         repository.updateOptInState(AnalyticsOptInState.No)
         // When calling updateOptInState() with None
-        assertThrows<DisallowedStateChange> {
-            repository.updateOptInState(AnalyticsOptInState.None)
-        }
-        // Then the opt in state is unchanged (still No)
+        repository.updateOptInState(AnalyticsOptInState.None)
+        // Then the opt in state is changed to None
         val actual = repository.fetchOptInState()
-        assertEquals(expected = AnalyticsOptInState.No, actual)
+        assertEquals(expected = AnalyticsOptInState.None, actual)
     }
 
     @Test
@@ -99,13 +90,34 @@ class AnalyticsOptInRepositoryTest {
         assertEquals(expected = AnalyticsOptInState.No, actual)
     }
 
+    @Test
+    fun `reset() changes state to None`() = runTest {
+        // Given an unknown opt in preference
+        // When calling reset()
+        repository.reset()
+        // Then the opt in state is changed to AnalyticsOptInState.None
+        val actual = repository.fetchOptInState()
+        assertEquals(expected = AnalyticsOptInState.None, actual)
+    }
+
+    @Test
+    fun `synchronise sets the saved preference to the remote`() = runTest {
+        // Given any AnalyticsOptInState
+        val expected = AnalyticsOptInState.No
+        repository.updateOptInState(expected)
+        // When refreshing the preference
+        repository.synchronise()
+        // Then set AnalyticsOptInState to the remote Source twice
+        verify(remoteSource, times(2)).update(expected)
+    }
+
     companion object {
         fun createTestAnalyticsOptInRepository(
-            dispatcher: CoroutineDispatcher
+            localSource: OptInLocalSource = FakeOptInLocalSource(),
+            remoteSource: OptInRemoteSource = FakeOptInRemoteSource()
         ) = AnalyticsOptInRepository(
-            localSource = FakeOptInLocalSource(),
-            remoteSource = FakeOptInRemoteSource(),
-            dispatcher = dispatcher
+            localSource = localSource,
+            remoteSource = remoteSource
         )
     }
 }

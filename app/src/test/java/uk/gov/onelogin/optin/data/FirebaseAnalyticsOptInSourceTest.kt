@@ -12,7 +12,6 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 
@@ -34,12 +33,12 @@ class FirebaseAnalyticsOptInSourceTest {
     }
 
     @Test
-    fun `update does nothing for None`() = runTest {
+    fun `update with None turns collection off`() = runTest {
         // Given OptInRemoteSource
         // When calling update with None
         source.update(AnalyticsOptInState.None)
-        // Then nothing happens
-        verifyNoInteractions(analytics)
+        // Then FirebaseAnalytics has analytics collection turned off
+        verify(analytics).setAnalyticsCollectionEnabled(false)
     }
 
     @Test

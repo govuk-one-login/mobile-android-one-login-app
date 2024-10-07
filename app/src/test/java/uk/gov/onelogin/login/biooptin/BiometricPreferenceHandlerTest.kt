@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.fragment.app.FragmentActivity
 import java.util.stream.Stream
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -52,11 +53,12 @@ class BiometricPreferenceHandlerTest {
     }
 
     @Test
-    fun `check clear preference`() {
-        bioPrefHandler.clear()
+    fun `check clear preference`() = runTest {
+        val result = bioPrefHandler.clean()
 
         verify(mockEditor).clear()
-        verify(mockEditor).apply()
+        verify(mockEditor).commit()
+        assertEquals(Result.success(Unit), result)
     }
 
     companion object {
