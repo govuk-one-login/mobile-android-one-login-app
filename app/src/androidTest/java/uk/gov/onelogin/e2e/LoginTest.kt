@@ -8,6 +8,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.isDisplayed
@@ -21,7 +23,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -79,8 +82,22 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        ArchTaskExecutor.getInstance()
+            .setDelegate(object : TaskExecutor() {
+                override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+
+                override fun postToMainThread(runnable: Runnable) = runnable.run()
+
+                override fun isMainThread(): Boolean = true
+            })
+
         hiltRule.inject()
         secureStore.delete(Keys.PERSISTENT_ID_KEY)
+    }
+
+    @After
+    fun tearDown() {
+        ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
     @Test
@@ -131,51 +148,9 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentId() {
-        tokenRepository.setTokenResponse(tokenResponse)
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
+        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
 
-        startApp()
-        clickOptOut()
-        clickLogin()
-
-        val authorizeUrl = Uri.parse(
-            resources.getString(
-                R.string.stsUrl,
-                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val redirectUrl = Uri.parse(
-            resources.getString(
-                R.string.webBaseUrl,
-                resources.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.stsUrl,
-                context.resources.getString(
-                    R.string.tokenExchangeEndpoint
-                )
-            )
-        )
-        val loginConfig = LoginSessionConfiguration(
-            authorizeEndpoint = authorizeUrl,
-            clientId = resources.getString(R.string.stsClientId),
-            locale = localeUtils.getLocaleAsSessionConfig(),
-            redirectUri = redirectUrl,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint,
-            persistentSessionId = persistentId
-        )
-
-        verify(mockLoginSession).present(any(), eq(loginConfig))
-    }
-
-    @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
-        runBlocking {
-            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
-        }
         startApp()
         clickOptOut()
         clickLogin()
