@@ -32,6 +32,7 @@ import uk.gov.android.ui.components.m3.buttons.GdsButton
 import uk.gov.android.ui.components.m3.content.ContentParameters
 import uk.gov.android.ui.components.m3.content.GdsContent
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.wallet.core.ui.theme.buttonHeight
 import uk.gov.onelogin.ui.bulletPointIndentation
@@ -42,47 +43,49 @@ import uk.gov.onelogin.ui.listContentPadding
 fun ReAuthErrorScreen(
     viewModel: ReAuthErrorViewModel = hiltViewModel()
 ) {
-    ConstraintLayout(
-        modifier = Modifier
-            .padding(horizontal = smallPadding)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        val (content, button) = createRefs()
-        Content(
-            parameters = ErrorInformation(
-                title = R.string.app_dataDeletedErrorTitle,
-                intro = R.string.app_dataDeletedErrorBody1,
-                content = R.string.app_dataDeletedErrorBody2,
-                bulletList = listOf(
-                    R.string.app_dataDeletedErrorBullet1,
-                    R.string.app_dataDeletedErrorBullet2,
-                    R.string.app_dataDeletedErrorBullet3
-                ),
-                instruction = R.string.app_dataDeletedErrorBody3
-            ),
+    GdsTheme {
+        ConstraintLayout(
             modifier = Modifier
-                .constrainAs(content) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(button.top)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                }
-        )
-        GdsButton(
-            buttonParameters = ButtonParameters(
-                buttonType = uk.gov.android.ui.components.m3.buttons.ButtonType.PRIMARY(),
-                onClick = { viewModel.navigateToSignIn() },
-                text = R.string.app_SignInWithGovUKOneLoginButton,
+                .padding(horizontal = smallPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            val (content, button) = createRefs()
+            Content(
+                parameters = ErrorInformation(
+                    title = R.string.app_dataDeletedErrorTitle,
+                    intro = R.string.app_dataDeletedErrorBody1,
+                    content = R.string.app_dataDeletedErrorBody2,
+                    bulletList = listOf(
+                        R.string.app_dataDeletedErrorBullet1,
+                        R.string.app_dataDeletedErrorBullet2,
+                        R.string.app_dataDeletedErrorBullet3
+                    ),
+                    instruction = R.string.app_dataDeletedErrorBody3
+                ),
                 modifier = Modifier
-                    .padding(bottom = smallPadding)
-                    .fillMaxWidth()
-                    .height(buttonHeight)
-                    .constrainAs(button) {
-                        bottom.linkTo(parent.bottom)
+                    .constrainAs(content) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(button.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
                     }
             )
-        )
+            GdsButton(
+                buttonParameters = ButtonParameters(
+                    buttonType = uk.gov.android.ui.components.m3.buttons.ButtonType.PRIMARY(),
+                    onClick = { viewModel.navigateToSignIn() },
+                    text = R.string.app_SignInWithGovUKOneLoginButton,
+                    modifier = Modifier
+                        .padding(bottom = smallPadding)
+                        .fillMaxWidth()
+                        .height(buttonHeight)
+                        .constrainAs(button) {
+                            bottom.linkTo(parent.bottom)
+                        }
+                )
+            )
+        }
     }
 }
 

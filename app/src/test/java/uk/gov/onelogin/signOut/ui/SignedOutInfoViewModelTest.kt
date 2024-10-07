@@ -18,6 +18,7 @@ import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
@@ -76,7 +77,7 @@ class SignedOutInfoViewModelTest {
         viewModel.checkPersistentId(activity) { callback = true }
 
         verify(mockSignOutUseCase).invoke(activity)
-        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
         assertFalse(callback)
     }
 
@@ -89,7 +90,7 @@ class SignedOutInfoViewModelTest {
         viewModel.checkPersistentId(activity) { callback = true }
 
         verify(mockSignOutUseCase).invoke(activity)
-        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
         assertFalse(callback)
     }
 

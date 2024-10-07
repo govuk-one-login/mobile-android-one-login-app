@@ -11,6 +11,7 @@ import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
@@ -40,7 +41,7 @@ class SignedOutInfoViewModel @Inject constructor(
             if (getPersistentId().isNullOrEmpty()) {
                 try {
                     signOutUseCase.invoke(activity)
-                    navigator.navigate(LoginRoutes.Start, true)
+                    navigator.navigate(SignOutRoutes.ReAuthError, true)
                 } catch (error: SignOutError) {
                     Log.e(this::class.simpleName, error.message, error)
                     navigator.navigate(LoginRoutes.SignInError, true)
