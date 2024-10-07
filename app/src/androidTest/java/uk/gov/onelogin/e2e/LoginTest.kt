@@ -131,47 +131,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentId() {
-        tokenRepository.setTokenResponse(tokenResponse)
-
-        startApp()
-        clickOptOut()
-        clickLogin()
-
-        val authorizeUrl = Uri.parse(
-            resources.getString(
-                R.string.stsUrl,
-                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val redirectUrl = Uri.parse(
-            resources.getString(
-                R.string.webBaseUrl,
-                resources.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.stsUrl,
-                context.resources.getString(
-                    R.string.tokenExchangeEndpoint
-                )
-            )
-        )
-        val loginConfig = LoginSessionConfiguration(
-            authorizeEndpoint = authorizeUrl,
-            clientId = resources.getString(R.string.stsClientId),
-            locale = localeUtils.getLocaleAsSessionConfig(),
-            redirectUri = redirectUrl,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint,
-            persistentSessionId = persistentId
-        )
-
-        verify(mockLoginSession).present(any(), eq(loginConfig))
-    }
-
-    @Test
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
         runBlocking {
             secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
