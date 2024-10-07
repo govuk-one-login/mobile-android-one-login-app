@@ -8,6 +8,8 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -25,6 +27,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
+import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
@@ -32,6 +35,7 @@ import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
+import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltAndroidTest
@@ -61,7 +65,12 @@ class WelcomeScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
+    @Inject
+    @Named("Open")
+    lateinit var secureStore: SecureStore
+
     private var shouldTryAgainCalled = false
+    private val persistentId = "id"
 
     @Before
     fun setup() {
@@ -176,6 +185,101 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
+    fun opensWebLoginViaCustomTab_StsFlagOn_goodPersistentId() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        setPersistentId(persistentId)
+
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+
+        whenWeClickSignIn()
+
+        val authorizeEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+            )
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.tokenExchangeEndpoint)
+            )
+        )
+        val redirectUri = Uri.parse(
+            context.resources.getString(
+                R.string.webBaseUrl,
+                context.resources.getString(R.string.webRedirectEndpoint)
+            )
+        )
+        val clientId = context.resources.getString(R.string.stsClientId)
+        val loginSessionConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeEndpoint,
+            clientId = clientId,
+            locale = Locale.EN,
+            redirectUri = redirectUri,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint,
+            persistentSessionId = persistentId
+        )
+
+        verify(loginSession).present(
+            any(),
+            eq(loginSessionConfig)
+        )
+        deletePersistentId()
+    }
+
+    @Test
+    fun opensWebLoginViaCustomTab_StsFlagOn_emptyPersistentId() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        setPersistentId("")
+
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+
+        whenWeClickSignIn()
+
+        val authorizeEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+            )
+        )
+        val tokenEndpoint = Uri.parse(
+            context.resources.getString(
+                R.string.stsUrl,
+                context.resources.getString(R.string.tokenExchangeEndpoint)
+            )
+        )
+        val redirectUri = Uri.parse(
+            context.resources.getString(
+                R.string.webBaseUrl,
+                context.resources.getString(R.string.webRedirectEndpoint)
+            )
+        )
+        val clientId = context.resources.getString(R.string.stsClientId)
+        val loginSessionConfig = LoginSessionConfiguration(
+            authorizeEndpoint = authorizeEndpoint,
+            clientId = clientId,
+            locale = Locale.EN,
+            redirectUri = redirectUri,
+            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+            tokenEndpoint = tokenEndpoint
+        )
+
+        verify(loginSession).present(
+            any(),
+            eq(loginSessionConfig)
+        )
+        deletePersistentId()
+    }
+
+    @Test
     fun shouldTryAgainCalledOnPageLoad() {
         composeTestRule.setContent {
             WelcomeScreen(
@@ -256,5 +360,18 @@ class WelcomeScreenTest : TestCase() {
 
     private fun itOpensErrorScreen() {
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
+
+    private suspend fun setPersistentId(id: String) {
+        secureStore.upsert(
+            key = Keys.PERSISTENT_ID_KEY,
+            value = id
+        )
+    }
+
+    private fun deletePersistentId() {
+        secureStore.delete(
+            key = Keys.PERSISTENT_ID_KEY
+        )
     }
 }

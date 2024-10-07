@@ -1,8 +1,6 @@
 package uk.gov.onelogin.tokens.usecases
 
 import javax.inject.Inject
-import uk.gov.onelogin.login.usecase.extractPersistentIdFromIdToken
-import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 
 fun interface GetPersistentId {
@@ -16,15 +14,7 @@ fun interface GetPersistentId {
 }
 
 class GetPersistentIdImpl @Inject constructor(
-    val tokenRepository: TokenRepository,
     val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : GetPersistentId {
-    override suspend fun invoke(): String? {
-        var persistentId = tokenRepository.getTokenResponse()
-            ?.idToken?.extractPersistentIdFromIdToken()
-        if (persistentId == null) {
-            persistentId = getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)
-        }
-        return persistentId
-    }
+    override suspend fun invoke() = getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)
 }
