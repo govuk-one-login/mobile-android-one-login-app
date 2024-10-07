@@ -8,6 +8,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.isDisplayed
@@ -22,6 +24,7 @@ import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -79,8 +82,22 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        ArchTaskExecutor.getInstance()
+            .setDelegate(object : TaskExecutor() {
+                override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+
+                override fun postToMainThread(runnable: Runnable) = runnable.run()
+
+                override fun isMainThread(): Boolean = true
+            })
+
         hiltRule.inject()
         secureStore.delete(Keys.PERSISTENT_ID_KEY)
+    }
+
+    @After
+    fun tearDown() {
+        ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
     @Test
