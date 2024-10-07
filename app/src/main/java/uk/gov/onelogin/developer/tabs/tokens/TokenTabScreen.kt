@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -28,7 +28,7 @@ fun TokenTabScreen(
     viewModel: TokenTabScreenViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val persistentId by remember { viewModel.persistentId }
+    val persistentId by viewModel.persistentId.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +73,7 @@ fun TokenTabScreen(
                     text = R.string.app_developer_reset_persistent_id_button,
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
-                        viewModel.resetPersistentID()
+                        viewModel.resetPersistentId()
                     }
                 )
             )

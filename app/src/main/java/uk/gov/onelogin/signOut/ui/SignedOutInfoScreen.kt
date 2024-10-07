@@ -86,8 +86,9 @@ private fun handleLogin(
     activity: FragmentActivity
 ) {
     if (loginViewModel.onlineChecker.isOnline()) {
-        signOutViewModel.checkPersistentId(activity)
-        loginViewModel.onPrimary(launcher)
+        signOutViewModel.checkPersistentId(activity) {
+            loginViewModel.onPrimary(launcher)
+        }
     } else {
         loginViewModel.navigateToOfflineError()
     }

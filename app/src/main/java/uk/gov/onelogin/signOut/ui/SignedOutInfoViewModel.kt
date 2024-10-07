@@ -35,16 +35,18 @@ class SignedOutInfoViewModel @Inject constructor(
 
     fun shouldReAuth() = navigator.hasBackStack()
 
-    fun checkPersistentId(activity: FragmentActivity) {
+    fun checkPersistentId(activity: FragmentActivity, callback: () -> Unit) {
         viewModelScope.launch {
             if (getPersistentId().isNullOrEmpty()) {
                 try {
                     signOutUseCase.invoke(activity)
-                    navigator.navigate(LoginRoutes.Welcome, true)
+                    navigator.navigate(LoginRoutes.Start, true)
                 } catch (error: SignOutError) {
                     Log.e(this::class.simpleName, error.message, error)
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
+            } else {
+                callback()
             }
         }
     }

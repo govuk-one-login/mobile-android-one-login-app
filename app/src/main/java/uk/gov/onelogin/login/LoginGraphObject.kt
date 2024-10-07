@@ -82,7 +82,7 @@ object LoginGraphObject {
                     }
                 }
                 SignInErrorScreen {
-                    navController.navigate(LoginRoutes.Welcome.getRoute()) {
+                    navController.navigate(LoginRoutes.Start.getRoute()) {
                         popUpTo(navController.graph.id) {
                             inclusive = true
                         }

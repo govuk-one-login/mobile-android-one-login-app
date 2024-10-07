@@ -13,16 +13,13 @@ class TokenApiResponseTest {
             expiresIn = 3600
         )
 
-        // Serialize to JSON string
         val jsonString = Json.encodeToString(TokenApiResponse.serializer(), tokenApiResponse)
 
-        // Deserialize from JSON string
         val deserializedApiResponse = Json.decodeFromString(
             TokenApiResponse.serializer(),
             jsonString
         )
 
-        // Assert equality
         assertEquals(tokenApiResponse, deserializedApiResponse)
     }
 }

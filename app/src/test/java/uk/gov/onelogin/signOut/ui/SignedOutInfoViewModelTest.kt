@@ -69,46 +69,54 @@ class SignedOutInfoViewModelTest {
 
     @Test
     fun `sign out usecase is called when persistent id is null`() = runTest {
+        var callback = false
         val activity: FragmentActivity = mock()
         whenever(mockGetPersistentId.invoke()).thenReturn(null)
 
-        viewModel.checkPersistentId(activity)
+        viewModel.checkPersistentId(activity) { callback = true }
 
         verify(mockSignOutUseCase).invoke(activity)
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        assertFalse(callback)
     }
 
     @Test
     fun `sign out usecase is called when persistent id is empty`() = runTest {
+        var callback = false
         val activity: FragmentActivity = mock()
         whenever(mockGetPersistentId.invoke()).thenReturn("")
 
-        viewModel.checkPersistentId(activity)
+        viewModel.checkPersistentId(activity) { callback = true }
 
         verify(mockSignOutUseCase).invoke(activity)
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        assertFalse(callback)
     }
 
     @Test
     fun `sign out usecase is not called when persistent id good`() = runTest {
+        var callback = false
         val activity: FragmentActivity = mock()
         whenever(mockGetPersistentId.invoke()).thenReturn("id")
 
-        viewModel.checkPersistentId(activity)
+        viewModel.checkPersistentId(activity) { callback = true }
 
         verifyNoInteractions(mockSignOutUseCase)
         verifyNoInteractions(mockNavigator)
+        assertTrue(callback)
     }
 
     @Test
     fun `sign out usecase throws`() = runTest {
+        var callback = false
         val activity: FragmentActivity = mock()
         whenever(mockGetPersistentId.invoke()).thenReturn("")
         whenever(mockSignOutUseCase.invoke(any())).thenThrow(SignOutError(Error()))
 
-        viewModel.checkPersistentId(activity)
+        viewModel.checkPersistentId(activity) { callback = true }
 
         verify(mockSignOutUseCase).invoke(activity)
         verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+        assertFalse(callback)
     }
 }
