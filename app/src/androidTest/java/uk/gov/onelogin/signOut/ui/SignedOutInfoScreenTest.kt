@@ -30,12 +30,12 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
-import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
 import uk.gov.onelogin.signOut.SignOutModule
+import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.error.ErrorRoutes
@@ -207,7 +207,7 @@ class SignedOutInfoScreenTest : TestCase() {
         whenWeClickSignIn()
 
         verify(mockSignOutUseCase).invoke(composeTestRule.activity)
-        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
     }
 
     @Test

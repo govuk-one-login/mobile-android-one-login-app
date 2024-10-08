@@ -1,5 +1,6 @@
 package uk.gov.onelogin.signOut
 
+import androidx.activity.compose.BackHandler
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -7,6 +8,7 @@ import androidx.navigation.navigation
 import uk.gov.onelogin.signOut.ui.SignOutScreen
 import uk.gov.onelogin.signOut.ui.SignedOutInfoScreen
 import uk.gov.onelogin.ui.error.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.error.reauth.ReAuthErrorScreen
 
 object SignOutGraphObject {
     fun NavGraphBuilder.signOutGraph(navController: NavHostController) {
@@ -30,6 +32,14 @@ object SignOutGraphObject {
                         tryAgain
                     }
                 )
+            }
+            composable(
+                route = SignOutRoutes.ReAuthError.getRoute()
+            ) {
+                BackHandler(enabled = true) {
+                    // always disabled
+                }
+                ReAuthErrorScreen()
             }
         }
     }

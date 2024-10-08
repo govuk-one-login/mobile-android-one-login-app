@@ -44,4 +44,22 @@ class SignOutGraphObjectTest : TestCase() {
             selector = By.text(resources.getString(R.string.app_youveBeenSignedOutTitle))
         )
     }
+
+    @Test
+    fun signOutGraph_navigateToReAuthErrorScreen() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            navigator.navigate(SignOutRoutes.ReAuthError)
+        }
+
+        phoneController.assertElementExists(
+            selector = By.text(resources.getString(R.string.app_dataDeletedErrorTitle))
+        )
+
+        phoneController.pressBack()
+        phoneController.navigateToApp(packageName = "uk.gov.android.onelogin")
+
+        phoneController.assertElementExists(
+            selector = By.text(resources.getString(R.string.app_dataDeletedErrorTitle))
+        )
+    }
 }
