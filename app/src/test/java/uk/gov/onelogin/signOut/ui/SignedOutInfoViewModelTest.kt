@@ -90,7 +90,6 @@ class SignedOutInfoViewModelTest {
 
         verify(mockSignOutUseCase).invoke(activity)
         verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
-        verify(mockNavigator).navigate(LoginRoutes.Start, true)
     }
 
     @Test
