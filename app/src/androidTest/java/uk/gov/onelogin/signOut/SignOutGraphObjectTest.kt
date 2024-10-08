@@ -56,5 +56,21 @@ class SignOutGraphObjectTest : TestCase() {
         )
 
         phoneController.pressBack()
+        phoneController.navigateToApp(packageName = "uk.gov.android.onelogin")
+
+        phoneController.assertElementExists(
+            selector = By.text(resources.getString(R.string.app_dataDeletedErrorTitle))
+        )
+
+        phoneController.click(
+            selectors = arrayOf(
+                By.text(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
+                    to "Click Sign in with GOV.UK One Login button"
+            )
+        )
+
+        phoneController.assertElementExists(
+            selector = By.text(resources.getString(R.string.app_analyticsPermissionTitle))
+        )
     }
 }

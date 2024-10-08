@@ -36,7 +36,7 @@ object SignOutGraphObject {
             composable(
                 route = SignOutRoutes.ReAuthError.getRoute()
             ) {
-                BackHandler(enabled = false) {
+                BackHandler(enabled = true) {
                     // always disabled
                 }
                 ReAuthErrorScreen()
