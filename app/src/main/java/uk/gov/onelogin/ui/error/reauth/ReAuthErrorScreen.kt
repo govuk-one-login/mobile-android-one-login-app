@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
@@ -35,9 +36,9 @@ import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.wallet.core.ui.theme.buttonHeight
-import uk.gov.onelogin.ui.bulletPointIndentation
-import uk.gov.onelogin.ui.bulletPointTextPadding
-import uk.gov.onelogin.ui.listContentPadding
+import uk.gov.onelogin.ui.error.reauth.ErrorInformation.Companion.bulletPointIndentation
+import uk.gov.onelogin.ui.error.reauth.ErrorInformation.Companion.bulletPointTextPadding
+import uk.gov.onelogin.ui.error.reauth.ErrorInformation.Companion.listContentPadding
 
 @Composable
 fun ReAuthErrorScreen(
@@ -180,4 +181,10 @@ data class ErrorInformation(
     val content: Int,
     val bulletList: List<Int>,
     val instruction: Int
-)
+) {
+    companion object {
+        val listContentPadding = 12.dp
+        val bulletPointIndentation = 10.dp
+        val bulletPointTextPadding = 20.dp
+    }
+}
