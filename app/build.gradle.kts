@@ -96,6 +96,7 @@ android {
             }
         }
     }
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -117,6 +118,13 @@ android {
     sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
         sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
         sourceSet.java.srcDir("src/e2eTestBulid/java")
+    }
+
+    bundle {
+        language {
+            @Suppress("UnstableApiUsage")
+            enableSplit = false
+        }
     }
 }
 
