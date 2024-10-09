@@ -10,6 +10,8 @@ import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
@@ -22,6 +24,7 @@ fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
+    val analytics: SignInAnalyticsViewModel = hiltViewModel()
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -35,6 +38,7 @@ fun WelcomeScreen(
         onSignIn = {
             if (viewModel.onlineChecker.isOnline()) {
                 viewModel.onPrimary(launcher)
+                analytics.trackSignIn()
             } else {
                 viewModel.navigateToOfflineError()
             }
@@ -54,6 +58,7 @@ fun WelcomeScreen(
             viewModel.navigateToOfflineError()
         }
     }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackWelcomeView() }
 }
 
 @Composable
