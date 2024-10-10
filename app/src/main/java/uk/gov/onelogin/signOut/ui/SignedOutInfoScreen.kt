@@ -15,6 +15,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
@@ -29,6 +31,7 @@ fun SignedOutInfoScreen(
     signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
+    val analytics: SignedOutInfoAnalyticsViewModel = hiltViewModel()
     val activity = LocalContext.current as FragmentActivity
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -57,6 +60,7 @@ fun SignedOutInfoScreen(
         )
     }
     SignedOutInfoBody {
+        analytics.trackReAuth()
         handleLogin(
             loginViewModel,
             signOutViewModel,
@@ -64,6 +68,7 @@ fun SignedOutInfoScreen(
             activity
         )
     }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackSignOutInfoView() }
 }
 
 private fun handleLogin(
