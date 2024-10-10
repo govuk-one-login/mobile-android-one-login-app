@@ -5,5 +5,5 @@ import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 
 sealed class AppInfoLocalState {
     data class Success(val value: AppInfoData) : AppInfoLocalState()
-    data class Failure(val reason: String) : AppInfoLocalState()
+    data class Failure(val reason: String, val exp: Exception? = null) : AppInfoLocalState()
 }

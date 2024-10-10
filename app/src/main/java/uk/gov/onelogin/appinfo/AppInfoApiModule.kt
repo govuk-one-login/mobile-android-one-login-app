@@ -5,6 +5,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.network.client.GenericHttpClient
@@ -21,7 +22,7 @@ import uk.gov.onelogin.appinfo.source.domain.source.AppInfoRemoteSource
 import javax.inject.Named
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 interface AppInfoApiModule {
     @Binds
     fun provideAppInfoApiCall(appInfoApiImpl: AppInfoApiImpl): AppInfoApi

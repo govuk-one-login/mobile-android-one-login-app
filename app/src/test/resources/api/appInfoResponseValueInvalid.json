@@ -1,0 +1,16 @@
+{
+  "app": {
+    "android": {
+      "minimumVersion": "0.0.0",
+      "releaseFlags": {
+        "walletVisibleViaDeepLink": true,
+        "walletVisibleIfExists": true,
+        "walletVisibleToAll": true
+      },
+      "available": true,
+      "featureFlags" : {
+        "appCheckEnabled": true
+      }
+    }
+  }
+}

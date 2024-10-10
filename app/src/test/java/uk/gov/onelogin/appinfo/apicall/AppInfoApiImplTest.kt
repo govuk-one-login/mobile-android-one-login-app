@@ -20,7 +20,7 @@ class AppInfoApiImplTest {
     private val context: Context = mock()
     private val httpClient: GenericHttpClient = mock()
     private val onlineChecker: OnlineChecker = mock()
-    private val apiResponse = ClassLoader.getSystemResource("api/appInfoApiResponseValue.json").readText()
+    private val apiResponse = ClassLoader.getSystemResource("api/appInfoResponseValue.json").readText()
     private val data = ApiResponse.Success(
         AppInfoData(
             apps = AppInfoData.App(
