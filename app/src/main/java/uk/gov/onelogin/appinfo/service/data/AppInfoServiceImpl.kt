@@ -1,6 +1,5 @@
 package uk.gov.onelogin.appinfo.service.data
 
-import android.util.Log
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
@@ -17,21 +16,27 @@ class AppInfoServiceImpl @Inject constructor(
     private val localSource: AppInfoLocalSource
 ) : AppInfoService {
     override suspend fun get(): AppInfoServiceState {
+        val localState = localSource.get()
         return when (val remoteResult = remoteSource.get()) {
             is AppInfoRemoteState.Success -> {
                 val encodedValue = Json.encodeToString<AppInfoData>(remoteResult.value)
-                localSource.update(encodedValue)
+                this.localSource.update(encodedValue)
                 return AppInfoServiceState.RemoteSuccess(remoteResult.value)
             }
-            else -> useLocalService()
+            AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)
+            is AppInfoRemoteState.Failure ->
+                useLocalSource(localState, AppInfoServiceState.Unavailable)
         }
     }
 
-    private suspend fun useLocalService() = when (val localResult = localSource.get()) {
-        is AppInfoLocalState.Success -> {
-            AppInfoServiceState.LocalSuccess(localResult.value)
+    private fun useLocalSource(
+        localSourceState: AppInfoLocalState,
+        fallback: AppInfoServiceState
+    ): AppInfoServiceState {
+        return if (localSourceState is AppInfoLocalState.Success) {
+            AppInfoServiceState.LocalSuccess(localSourceState.value)
+        } else {
+            fallback
         }
-
-        else -> AppInfoServiceState.Nothing
     }
 }

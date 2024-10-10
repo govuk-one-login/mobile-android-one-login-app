@@ -23,7 +23,6 @@ class AppInfoLocalSourceImpl @Inject constructor(
         return try {
             val result = sharedPrefs.getString(APP_INFO_KEY, null)
             if (!result.isNullOrEmpty()) {
-                Log.e("GetAppInfoLocal", "$result")
                 decodeAppInfoData(result)
             } else {
                 AppInfoLocalState.Failure(APP_INFO_LOCAL_SOURCE_ERROR)

@@ -3,6 +3,7 @@ package uk.gov.onelogin.appinfo.apicall.data
 import android.content.Context
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
@@ -38,10 +39,14 @@ class AppInfoApiImpl @Inject constructor(
         )
         return when (val response = httpClient.makeRequest(request)) {
             is ApiResponse.Success<*> -> {
-                val decodedResponse = jsonDecoder
-                    .decodeFromString<AppInfoData>(response.response.toString())
-                Log.d("AppInfo", "$decodedResponse")
-                ApiResponse.Success(decodedResponse)
+                try {
+                    val decodedResponse = jsonDecoder
+                        .decodeFromString<AppInfoData>(response.response.toString())
+                    Log.d("AppInfo", "$decodedResponse")
+                    ApiResponse.Success(decodedResponse)
+                } catch (e: SerializationException) {
+                    ApiResponse.Failure(1, e)
+                }
             }
             else -> response
         }
