@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.app-config")
