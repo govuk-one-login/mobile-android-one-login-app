@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appinfo.source
 
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -9,7 +10,6 @@ import uk.gov.onelogin.appinfo.apicall.domain.AppInfoApi
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.source.data.AppInfoRemoteSourceImpl
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoRemoteState
-import kotlin.test.assertEquals
 
 class AppInfoRemoteSourceImplTest {
     private val appInfoApi: AppInfoApi = mock()
@@ -18,7 +18,9 @@ class AppInfoRemoteSourceImplTest {
             AppInfoData.AppInfo(
                 minimumVersion = "0.0.0",
                 releaseFlags = AppInfoData.ReleaseFlags(
-                    true, true, true
+                    true,
+                    true,
+                    true
                 ),
                 available = true,
                 featureFlags = AppInfoData.FeatureFlags(true)
@@ -48,7 +50,8 @@ class AppInfoRemoteSourceImplTest {
         whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(500, exp))
         val result = sut.get()
         assertEquals(
-            AppInfoRemoteState.Failure(AppInfoRemoteSourceImpl.APP_INFO_REMOTE_SOURCE_ERROR), result
+            AppInfoRemoteState.Failure(AppInfoRemoteSourceImpl.APP_INFO_REMOTE_SOURCE_ERROR),
+            result
         )
     }
 }

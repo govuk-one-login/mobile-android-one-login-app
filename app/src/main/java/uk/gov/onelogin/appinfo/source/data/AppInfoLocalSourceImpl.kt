@@ -3,16 +3,16 @@ package uk.gov.onelogin.appinfo.source.data
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
-import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.optin.ui.IODispatcherQualifier
-import javax.inject.Inject
 
 class AppInfoLocalSourceImpl @Inject constructor(
     private val sharedPrefs: SharedPreferences,
@@ -28,7 +28,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
                 AppInfoLocalState.Failure(APP_INFO_LOCAL_SOURCE_ERROR)
             }
         } catch (e: ClassCastException) {
-            AppInfoLocalState.Failure(APP_INFO_CLASS_CAST_ERROR)
+            AppInfoLocalState.Failure(APP_INFO_CLASS_CAST_ERROR, e)
         }
     }
 
@@ -45,6 +45,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
     ): AppInfoLocalState {
         return try {
             val decodedResult = Json.decodeFromString<AppInfoData>(result)
+            Log.d("AppInfoLocal", "$decodedResult")
             AppInfoLocalState.Success(decodedResult)
         } catch (e: SerializationException) {
             AppInfoLocalState.Failure(reason = APP_INFO_ILLEGAL_ARG_ERROR, exp = e)

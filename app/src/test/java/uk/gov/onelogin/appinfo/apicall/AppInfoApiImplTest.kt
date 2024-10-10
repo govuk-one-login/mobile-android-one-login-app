@@ -1,6 +1,7 @@
 package uk.gov.onelogin.appinfo.apicall
 
 import android.content.Context
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,20 +15,22 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.onelogin.appinfo.apicall.data.AppInfoApiImpl
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
-import kotlin.test.assertEquals
 
 class AppInfoApiImplTest {
     private val context: Context = mock()
     private val httpClient: GenericHttpClient = mock()
     private val onlineChecker: OnlineChecker = mock()
-    private val apiResponse = ClassLoader.getSystemResource("api/appInfoResponseValue.json").readText()
+    private val apiResponse = ClassLoader
+        .getSystemResource("api/appInfoResponseValue.json").readText()
     private val data = ApiResponse.Success(
         AppInfoData(
             apps = AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "0.0.0",
                     releaseFlags = AppInfoData.ReleaseFlags(
-                        true, true, true
+                        true,
+                        true,
+                        true
                     ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)

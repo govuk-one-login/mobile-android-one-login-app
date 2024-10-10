@@ -1,11 +1,11 @@
 package uk.gov.onelogin.appinfo.source.data
 
+import javax.inject.Inject
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.onelogin.appinfo.apicall.domain.AppInfoApi
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoRemoteState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoRemoteSource
-import javax.inject.Inject
 
 class AppInfoRemoteSourceImpl @Inject constructor(
     private val appInfoApi: AppInfoApi
