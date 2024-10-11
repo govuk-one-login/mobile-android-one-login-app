@@ -58,17 +58,17 @@ class AppInfoServiceImplTest {
     @Test
     fun `device offline - failed local retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Offline)
-        whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
+        whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure("Error"))
         val result = sut.get()
-        assertEquals(AppInfoServiceState.LocalSuccess(data), result)
+        assertEquals(AppInfoServiceState.Offline, result)
     }
 
     @Test
     fun `failed remote - successful local retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Failure(remoteSourceErrorMsg))
-        whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure(localSourceErrorMsg))
+        whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
         val result = sut.get()
-        assertEquals(AppInfoServiceState.Unavailable, result)
+        assertEquals(AppInfoServiceState.LocalSuccess(data), result)
     }
 
     @Test
