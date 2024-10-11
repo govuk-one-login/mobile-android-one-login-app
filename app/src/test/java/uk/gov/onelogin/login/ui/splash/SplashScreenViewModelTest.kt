@@ -214,4 +214,34 @@ class SplashScreenViewModelTest {
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
     }
+
+    @Test
+    fun retrieveAppInfoRemoteSuccessful() = runTest {
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is successful remote
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.RemoteSuccess(data))
+
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo()
+
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+    }
+
+    @Test
+    fun retrieveAppInfoLocalSuccessful() = runTest {
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is successful remote
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.LocalSuccess(data))
+
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo()
+
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+    }
 }

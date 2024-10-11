@@ -5,6 +5,7 @@ import android.content.res.Resources
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -24,6 +25,8 @@ class SplashBodyTest {
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
+    private lateinit var loadingIndicator: SemanticsMatcher
+    private lateinit var loadingText: SemanticsMatcher
 
     @Before
     fun setup() {
@@ -32,6 +35,10 @@ class SplashBodyTest {
 
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
+        loadingIndicator = hasContentDescription(
+            resources.getString(R.string.app_splashScreenLoadingContentDescription)
+        )
+        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
     }
 
     @Test
@@ -40,6 +47,7 @@ class SplashBodyTest {
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = true,
+                loading = false,
                 onLogin = {},
                 onOpenDeveloperPortal = {}
             )
@@ -47,6 +55,9 @@ class SplashBodyTest {
         // Then both `splashIcon` and `unlockButton` are displayed
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsDisplayed()
+        // AND loading progress indicator is not displayed (including the text)
+        composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
+        composeTestRule.onNode(loadingText).assertIsNotDisplayed()
     }
 
     @Test
@@ -55,6 +66,7 @@ class SplashBodyTest {
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = false,
+                loading = true,
                 onLogin = {},
                 onOpenDeveloperPortal = {}
             )
@@ -62,6 +74,9 @@ class SplashBodyTest {
         // Then only `splashIcon` is displayed and `unlockButton` is not
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsNotDisplayed()
+        // AND loading progress indicator is displayed (including the text)
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
+        composeTestRule.onNode(loadingText).assertIsDisplayed()
     }
 
     @Test
@@ -71,6 +86,7 @@ class SplashBodyTest {
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = true,
+                loading = false,
                 onLogin = { actual = true },
                 onOpenDeveloperPortal = {}
             )
@@ -88,6 +104,7 @@ class SplashBodyTest {
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = false,
+                loading = true,
                 onLogin = {},
                 onOpenDeveloperPortal = { actual = true }
             )

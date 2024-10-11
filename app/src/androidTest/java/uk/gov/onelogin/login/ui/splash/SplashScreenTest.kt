@@ -3,6 +3,7 @@ package uk.gov.onelogin.login.ui.splash
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
@@ -46,6 +47,8 @@ class SplashScreenTest : TestCase() {
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
+    private lateinit var loadingIndicator: SemanticsMatcher
+    private lateinit var loadingText: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -54,6 +57,10 @@ class SplashScreenTest : TestCase() {
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
         privacyNotice = hasTestTag(NOTICE_TAG)
+        loadingIndicator = hasContentDescription(
+            resources.getString(R.string.app_splashScreenLoadingContentDescription)
+        )
+        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
     }
 
     @Test
@@ -65,6 +72,8 @@ class SplashScreenTest : TestCase() {
         // Then
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
+        composeTestRule.onNode(loadingText).assertIsDisplayed()
     }
 
     @Test

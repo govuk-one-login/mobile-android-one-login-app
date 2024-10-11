@@ -4,8 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
@@ -15,8 +22,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -33,6 +43,7 @@ import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
+import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 
@@ -46,6 +57,7 @@ fun SplashScreen(
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
+        loading = viewModel.loading.value,
         onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
@@ -76,6 +88,7 @@ fun SplashScreen(
 @Composable
 internal fun SplashBody(
     isUnlock: Boolean,
+    loading: Boolean,
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit
 ) {
@@ -99,7 +112,7 @@ internal fun SplashBody(
                     .testTag(stringResource(id = R.string.splashIconTestTag))
             )
         )
-        if (isUnlock) {
+        if (isUnlock && !loading) {
             GdsHeading(
                 headingParameters = HeadingParameters(
                     size = HeadingSize.H3(),
@@ -114,6 +127,49 @@ internal fun SplashBody(
                 )
             )
         }
+        if (loading && !isUnlock) {
+            LoadingIndicator()
+        }
+    }
+}
+
+@Composable
+internal fun LoadingIndicator() {
+    val loadingContentDescription = stringResource(
+        id = R.string.app_splashScreenLoadingContentDescription
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = smallPadding,
+                end = smallPadding,
+                bottom = PROGRESS_BAR
+            )
+            .semantics { contentDescription = loadingContentDescription }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = smallPadding)
+        ) {
+            CircularProgressIndicator(
+                trackColor = MaterialTheme.colors.onPrimary,
+                modifier = Modifier
+                    .width(PROGRESS_BAR)
+                    .height(PROGRESS_BAR)
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(id = R.string.app_splashScreenLoadingIndicatorText),
+                color = Color.White
+            )
+        }
     }
 }
 
@@ -123,6 +179,7 @@ internal fun SplashScreenPreview() {
     GdsTheme {
         SplashBody(
             isUnlock = false,
+            loading = false,
             onLogin = {},
             onOpenDeveloperPortal = {}
         )
@@ -135,8 +192,24 @@ internal fun UnlockScreenPreview() {
     GdsTheme {
         SplashBody(
             isUnlock = true,
+            loading = false,
             onLogin = {},
             onOpenDeveloperPortal = {}
         )
     }
 }
+
+@PreviewScreenSizes
+@Composable
+internal fun LoadingSplashScreenPreview() {
+    GdsTheme {
+        SplashBody(
+            isUnlock = false,
+            loading = true,
+            onLogin = {},
+            onOpenDeveloperPortal = {}
+        )
+    }
+}
+
+val PROGRESS_BAR = 48.dp
