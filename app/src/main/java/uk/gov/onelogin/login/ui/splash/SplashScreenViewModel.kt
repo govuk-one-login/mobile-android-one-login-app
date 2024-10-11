@@ -30,6 +30,9 @@ class SplashScreenViewModel @Inject constructor(
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: State<Boolean> = _showUnlock
 
+    private val _loading = mutableStateOf(false)
+    val loading: State<Boolean> = _loading
+
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
             handleLogin(
@@ -70,11 +73,13 @@ class SplashScreenViewModel @Inject constructor(
 
     fun retrieveAppInfo() {
         viewModelScope.launch {
+            _loading.value = true
             when (appInfoService.get()) {
                 AppInfoServiceState.Offline -> navigateToOfflineError()
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
+                // WHEN successful AppInfo response/ status
                 else -> {
-                    // Do nothing on success
+                    // Nothing to do when AppInfo retrieval was successful
                 }
             }
         }

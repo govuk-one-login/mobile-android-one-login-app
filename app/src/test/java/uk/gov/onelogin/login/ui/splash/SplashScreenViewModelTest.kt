@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -158,24 +159,34 @@ class SplashScreenViewModelTest {
 
     @Test
     fun retrieveAppInfoOffline() = runTest {
-        // WHEN AppInfo call is offline and local source has failed/ null
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is offline and local source has failed/ null
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
 
         // AND it calls retrieveAppInfo
         viewModel.retrieveAppInfo()
 
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
         // THEN it navigates to Offline Error screen
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
     }
 
     @Test
     fun retrieveAppInfoUnavailable() = runTest {
-        // WHEN AppInfo call is offline and local source has failed/ null
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is offline and local source has failed/ null
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
 
         // AND it calls retrieveAppInfo
         viewModel.retrieveAppInfo()
 
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
         // THEN it navigates to Generic Error screen
         verify(mockNavigator).navigate(ErrorRoutes.Generic)
     }
