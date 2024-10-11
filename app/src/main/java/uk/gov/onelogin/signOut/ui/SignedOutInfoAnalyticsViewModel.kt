@@ -33,7 +33,7 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        private fun makeReAuthEvent(context: Context) = with(context) {
+        fun makeReAuthEvent(context: Context) = with(context) {
             TrackEvent.Link(
                 isExternal = false,
                 domain = getEnglishString(R.string.openIdConnectBaseUrl, "").domain,
@@ -45,7 +45,7 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
             )
         }
 
-        private fun makeSignedOutInfoViewEvent(context: Context) = with(context) {
+        fun makeSignedOutInfoViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_youveBeenSignedOutTitle),
                 id = getEnglishString(R.string.signed_out_info_page_id),
