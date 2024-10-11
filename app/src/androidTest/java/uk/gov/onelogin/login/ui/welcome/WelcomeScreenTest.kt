@@ -1,10 +1,12 @@
 package uk.gov.onelogin.login.ui.welcome
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -28,7 +30,10 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.SecureStore
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
@@ -43,7 +48,8 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
     LoginSessionModule::class,
     FeaturesModule::class,
     NetworkModule::class,
-    NavigatorModule::class
+    NavigatorModule::class,
+    AnalyticsModule::class
 )
 class WelcomeScreenTest : TestCase() {
 
@@ -64,6 +70,9 @@ class WelcomeScreenTest : TestCase() {
 
     @BindValue
     val mockNavigator: Navigator = mock()
+
+    @BindValue
+    val analytics: AnalyticsLogger = mock()
 
     @Inject
     @Named("Open")
@@ -339,12 +348,49 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
+    fun navigateToErrorScreenIfNotOnlineAndShouldTryAgainIsTrue() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        composeTestRule.setContent {
+            WelcomeScreen(
+                shouldTryAgain = {
+                    true
+                }
+            )
+        }
+        verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
+
+    @Test
     fun opensNetworkErrorScreen() {
         givenWeAreOffline()
 
         whenWeClickSignIn()
 
         itOpensErrorScreen()
+    }
+
+    @Test
+    fun screenViewAnalyticsLogOnResume() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignInAnalyticsViewModel.makeWelcomeViewEvent(context)
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+
+        verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun signInAnalyticsLogOnSignInButton() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignInAnalyticsViewModel.makeSignInEvent(context)
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+        whenWeClickSignIn()
+        verify(analytics).logEventV3Dot1(event)
     }
 
     private fun whenWeClickSignIn() {

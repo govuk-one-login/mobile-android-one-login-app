@@ -13,7 +13,7 @@ import uk.gov.logging.impl.analytics.FirebaseAnalyticsLogger
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object Module {
+object AnalyticsModule {
     @Provides
     fun provideFirebaseAnalytics(): FirebaseAnalytics = Firebase.analytics
 

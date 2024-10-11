@@ -33,7 +33,7 @@ class SignInAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        private fun makeSignInEvent(context: Context) = with(context) {
+        fun makeSignInEvent(context: Context) = with(context) {
             TrackEvent.Link(
                 isExternal = false,
                 domain = getEnglishString(R.string.openIdConnectBaseUrl, "").domain,
@@ -45,7 +45,7 @@ class SignInAnalyticsViewModel @Inject constructor(
             )
         }
 
-        private fun makeWelcomeViewEvent(context: Context) = with(context) {
+        fun makeWelcomeViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signInTitle),
                 id = getEnglishString(R.string.sign_in_page_id),
