@@ -420,4 +420,12 @@ class WelcomeScreenTest : TestCase() {
             key = Keys.PERSISTENT_ID_KEY
         )
     }
+
+    @Test
+    fun previewTest() {
+        // Absolute cop out
+        composeTestRule.setContent {
+            WelcomePreview()
+        }
+    }
 }
