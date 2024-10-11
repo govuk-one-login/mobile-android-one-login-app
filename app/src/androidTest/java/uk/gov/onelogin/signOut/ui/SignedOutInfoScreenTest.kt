@@ -347,4 +347,11 @@ class SignedOutInfoScreenTest : TestCase() {
             value = id
         )
     }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            SignedOutInfoPreview()
+        }
+    }
 }
