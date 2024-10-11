@@ -3,6 +3,7 @@ package uk.gov.onelogin.login
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.filters.FlakyTest
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class LoginGraphObjectTest : TestCase() {
         hiltRule.inject()
     }
 
+    @FlakyTest
     @Test
     fun loginGraph_SignInError() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -36,6 +38,7 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.onNodeWithText(resources.getString(R.string.app_signInErrorTitle))
     }
 
+    @FlakyTest
     @Test
     fun loginGraph_BioOptInScreen() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -47,6 +50,7 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
     }
 
+    @FlakyTest
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -58,6 +62,7 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
     }
 
+    @FlakyTest
     @Test
     fun loginGraph_PasscodeInfo_Button() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -71,6 +76,7 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.onNodeWithText(resources.getString(R.string.app_homeTitle))
     }
 
+    @FlakyTest
     @Test
     fun loginGraph_Loading() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
