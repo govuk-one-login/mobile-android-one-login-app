@@ -133,4 +133,7 @@
     <string name="app_dataDeletedErrorBullet3">the app has stopped sharing analytics about how you use it</string>
     <string name="app_dataDeletedErrorBody3">To keep using the app, you’ll need to sign in. You’ll then be able to add your documents to your GOV.UK Wallet and set your preferences again.</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
+
+    <!-- Analytics Values   -->
+    <string name="system_bottomNavigation_backButton" translatable="false">back - system</string>
 </resources>
