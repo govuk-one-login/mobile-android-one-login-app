@@ -8,12 +8,11 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
@@ -53,12 +52,13 @@ class LoginGraphObjectTest : TestCase() {
     @Before
     fun setup() {
         hiltRule.inject()
+        wheneverBlocking { appInfoService.get() }
+            .thenReturn(AppInfoServiceState.RemoteSuccess(data))
     }
 
     @FlakyTest
     @Test
-    fun loginGraph_SignInError() = runTest {
-        whenever(appInfoService.get()).thenReturn(AppInfoServiceState.RemoteSuccess(data))
+    fun loginGraph_SignInError() {
         composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.SignInError)
         }
