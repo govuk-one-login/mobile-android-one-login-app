@@ -52,7 +52,7 @@ class AppInfoLocalSourceImplTest {
 
     @BeforeEach
     fun setup() {
-        sut = AppInfoLocalSourceImpl(prefs, dispatcher)
+        sut = AppInfoLocalSourceImpl(prefs)
         Dispatchers.setMain(dispatcher)
         whenever(prefs.edit()).thenReturn(editor)
     }

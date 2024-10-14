@@ -4,20 +4,14 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
 import javax.inject.Inject
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
-import uk.gov.onelogin.optin.ui.IODispatcherQualifier
 
 class AppInfoLocalSourceImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences,
-    @IODispatcherQualifier
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val sharedPrefs: SharedPreferences
 ) : AppInfoLocalSource {
     override suspend fun get(): AppInfoLocalState {
         return try {
@@ -33,10 +27,8 @@ class AppInfoLocalSourceImpl @Inject constructor(
     }
 
     override suspend fun update(value: String) {
-        withContext(dispatcher) {
-            sharedPrefs.edit(true) {
-                putString(APP_INFO_KEY, value)
-            }
+        sharedPrefs.edit(true) {
+            putString(APP_INFO_KEY, value)
         }
     }
 
