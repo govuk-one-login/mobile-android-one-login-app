@@ -111,6 +111,20 @@ class AnalyticsOptInRepositoryTest {
         verify(remoteSource, times(2)).update(expected)
     }
 
+    @Test
+    fun `clean resets the saved preference and the remote`() = runTest {
+        // Given any AnalyticsOptInState
+        val expected = AnalyticsOptInState.None
+        repository.updateOptInState(AnalyticsOptInState.Yes)
+        // When cleaning
+        repository.clean()
+        // Then the opt in state is changed to AnalyticsOptInState.None
+        val actual = repository.fetchOptInState()
+        assertEquals(expected = AnalyticsOptInState.None, actual)
+        // Then set AnalyticsOptInState to the remote Source twice
+        verify(remoteSource).update(expected)
+    }
+
     companion object {
         fun createTestAnalyticsOptInRepository(
             localSource: OptInLocalSource = FakeOptInLocalSource(),

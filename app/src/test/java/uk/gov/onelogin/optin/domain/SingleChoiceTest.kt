@@ -1,5 +1,6 @@
 package uk.gov.onelogin.optin.domain
 
+import kotlinx.coroutines.flow.first
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,5 +33,23 @@ class SingleChoiceTest {
         choice.choose { actual = true }
         // Then the second options code block is not called
         assertEquals(expected = false, actual)
+    }
+
+    @Test
+    fun `initial state is PreChoice`() = runTest {
+        // Given a SingleChoice
+        val actual = choice.state.first()
+        // Then initial state is PreChoice
+        assertEquals(expected = SingleChoice.State.PreChoice, actual)
+    }
+
+    @Test
+    fun `state after choice is PostChoice`() = runTest {
+        // Given a SingleChoice
+        // When choosing
+        choice.choose {  }
+        val actual = choice.state.first()
+        // Then the state is PostChoice
+        assertEquals(expected = SingleChoice.State.PostChoice, actual)
     }
 }
