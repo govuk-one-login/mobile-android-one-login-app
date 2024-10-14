@@ -91,7 +91,7 @@ private fun LinkOut() {
 @PreviewFontScale
 @PreviewLightDark
 @Composable
-internal fun PrivacyNoticePreview() {
+private fun PrivacyNoticePreview() {
     GdsTheme {
         PrivacyNotice(
             Modifier.padding(smallPadding),
