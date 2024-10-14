@@ -4,7 +4,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.filters.FlakyTest
-import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidTest
 import javax.inject.Inject
 import org.junit.Before
@@ -31,7 +30,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_SignInError() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.SignInError)
         }
 
@@ -41,7 +40,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_BioOptInScreen() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.BioOptIn)
         }
 
@@ -53,7 +52,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
@@ -65,7 +64,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_PasscodeInfo_Button() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.PasscodeInfo)
         }
 
@@ -79,7 +78,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_Loading() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.activityRule.scenario.onActivity {
             navigator.navigate(LoginRoutes.Loading)
         }
     }
