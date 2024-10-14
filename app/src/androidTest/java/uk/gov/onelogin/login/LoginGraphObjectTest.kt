@@ -16,7 +16,7 @@ import uk.gov.onelogin.navigation.Navigator
 
 @HiltAndroidTest
 class LoginGraphObjectTest : TestCase() {
-    @get:Rule(order = 4)
+    @get:Rule(order = 3)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
