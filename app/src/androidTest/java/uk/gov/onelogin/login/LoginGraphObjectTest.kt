@@ -15,6 +15,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
+import uk.gov.onelogin.TestUtils.setNavInitialPoint
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
@@ -59,9 +60,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_SignInError() {
-        composeTestRule.activityRule.scenario.onActivity {
-            navigator.navigate(LoginRoutes.SignInError)
-        }
+        composeTestRule.setNavInitialPoint { navigator.navigate(LoginRoutes.SignInError) }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_signInErrorTitle))
     }
@@ -69,9 +68,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_BioOptInScreen() {
-        composeTestRule.activityRule.scenario.onActivity {
-            navigator.navigate(LoginRoutes.BioOptIn)
-        }
+        composeTestRule.setNavInitialPoint { navigator.navigate(LoginRoutes.BioOptIn) }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
         back()
@@ -81,7 +78,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
-        composeTestRule.activityRule.scenario.onActivity {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
@@ -93,7 +90,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_PasscodeInfo_Button() {
-        composeTestRule.activityRule.scenario.onActivity {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(LoginRoutes.PasscodeInfo)
         }
 
@@ -107,7 +104,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_Loading() {
-        composeTestRule.activityRule.scenario.onActivity {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(LoginRoutes.Loading)
         }
     }
