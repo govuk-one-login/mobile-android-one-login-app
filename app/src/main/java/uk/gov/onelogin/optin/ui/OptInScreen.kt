@@ -125,7 +125,7 @@ internal fun OptInBody(
 @PreviewFontScale
 @PreviewScreenSizes
 @Composable
-internal fun OptInPreview() {
+private fun OptInPreview() {
     GdsTheme {
         OptInBody(
             uiState = OptInUIState.PreChoice,

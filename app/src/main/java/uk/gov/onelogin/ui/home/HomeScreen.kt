@@ -8,23 +8,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.authentication.TokenResponse
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.EmailHeader
 
 @Suppress("LongMethod")
 @Composable
-@Preview
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val tokens = viewModel.getTokens()
     val email = viewModel.email
+    HomeBody(tokens, email, viewModel::openDevPanel)
+}
+
+@Composable
+internal fun HomeBody(
+    tokens: TokenResponse? = null,
+    email: String = "",
+    onClick: () -> Unit = {}
+) {
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_homeTitle
@@ -73,11 +85,21 @@ fun HomeScreen(
             HorizontalDivider()
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
-                    onClick = { viewModel.openDevPanel() }
+                    onClick = onClick
                 ) {
                     Text("Developer Panel")
                 }
             }
         }
     )
+}
+
+@PreviewLightDark
+@PreviewFontScale
+@PreviewScreenSizes
+@Composable
+private fun HomePreview() {
+    GdsTheme {
+        HomeBody()
+    }
 }

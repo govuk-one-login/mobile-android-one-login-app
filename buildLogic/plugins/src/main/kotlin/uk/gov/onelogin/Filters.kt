@@ -91,12 +91,17 @@ object Filters {
         "**/*Directions.*"
     )
 
+    val composeFilter = listOf(
+        "**/.*Preview.*",
+    )
+
     val androidInstrumentationTests = listOf(
         android,
         dataBindingFilters,
         dependencyInjectionFilter,
         navigationPluginFilter,
-        kotlin
+        kotlin,
+        composeFilter
     ).flatten()
 
     val androidUnitTests = listOf(
