@@ -1,9 +1,9 @@
 package uk.gov.onelogin.optin.domain
 
-import kotlinx.coroutines.flow.first
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 
 class SingleChoiceTest {
@@ -47,7 +47,7 @@ class SingleChoiceTest {
     fun `state after choice is PostChoice`() = runTest {
         // Given a SingleChoice
         // When choosing
-        choice.choose {  }
+        choice.choose { }
         val actual = choice.state.first()
         // Then the state is PostChoice
         assertEquals(expected = SingleChoice.State.PostChoice, actual)
