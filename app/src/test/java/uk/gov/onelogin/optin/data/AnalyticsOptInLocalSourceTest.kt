@@ -11,7 +11,9 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.optin.data.AnalyticsOptInLocalSource.Companion.DEFAULT_ORDINAL
@@ -36,6 +38,27 @@ class AnalyticsOptInLocalSourceTest {
     @AfterTest
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `Default Dispatcher`() = runTest {
+        // Given AnalyticsOptInLocalSource with default construction
+        source = AnalyticsOptInLocalSource(preferences)
+        // When calling the update suspend method
+        source.update(AnalyticsOptInState.None)
+        // Then call the SharedPreferences.putInt with 0
+        verify(preferences.edit()).putInt(OPT_IN_KEY, AnalyticsOptInState.None.ordinal)
+    }
+
+    @Test
+    fun `Passed in Dispatcher is used`() = runTest {
+        // Given AnalyticsOptInLocalSource with the test dispatcher passed in
+        val passedDispatcher = spy(dispatcher)
+        source = AnalyticsOptInLocalSource(preferences, passedDispatcher)
+        // When calling the update suspend method
+        source.update(AnalyticsOptInState.None)
+        // Then the test dispatcher is used
+        verify(passedDispatcher).dispatch(any(), any())
     }
 
     @Test

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.optin.data
 
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -10,15 +9,18 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.optin.domain.model.AnalyticsOptInState
 import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 
 @ExperimentalCoroutinesApi
 class FirebaseAnalyticsOptInSourceTest {
     private val dispatcher = StandardTestDispatcher()
-    private val analytics: FirebaseAnalytics = mock()
+    private val analytics: AnalyticsLogger = mock()
     private lateinit var source: OptInRemoteSource
 
     @BeforeTest
@@ -33,12 +35,33 @@ class FirebaseAnalyticsOptInSourceTest {
     }
 
     @Test
+    fun `Default Dispatcher`() = runTest {
+        // Given FirebaseAnalyticsOptInSource with default construction
+        source = FirebaseAnalyticsOptInSource(analytics)
+        // When calling the update suspend method
+        source.update(AnalyticsOptInState.None)
+        // Then the AnalyticsLogger has analytics collection turned off
+        verify(analytics).setEnabled(false)
+    }
+
+    @Test
+    fun `Passed in Dispatcher is used`() = runTest {
+        // Given FirebaseAnalyticsOptInSource with the test dispatcher passed in
+        val passedDispatcher = spy(dispatcher)
+        source = FirebaseAnalyticsOptInSource(analytics, passedDispatcher)
+        // When calling the update suspend method
+        source.update(AnalyticsOptInState.None)
+        // Then the test dispatcher is used
+        verify(passedDispatcher).dispatch(any(), any())
+    }
+
+    @Test
     fun `update with None turns collection off`() = runTest {
         // Given OptInRemoteSource
         // When calling update with None
         source.update(AnalyticsOptInState.None)
-        // Then FirebaseAnalytics has analytics collection turned off
-        verify(analytics).setAnalyticsCollectionEnabled(false)
+        // Then the AnalyticsLogger has analytics collection turned off
+        verify(analytics).setEnabled(false)
     }
 
     @Test
@@ -46,8 +69,8 @@ class FirebaseAnalyticsOptInSourceTest {
         // Given OptInRemoteSource
         // When calling update with No
         source.update(AnalyticsOptInState.No)
-        // Then FirebaseAnalytics has analytics collection turned off
-        verify(analytics).setAnalyticsCollectionEnabled(false)
+        // Then the AnalyticsLogger has analytics collection turned off
+        verify(analytics).setEnabled(false)
     }
 
     @Test
@@ -55,7 +78,7 @@ class FirebaseAnalyticsOptInSourceTest {
         // Given OptInRemoteSource
         // When calling update with Yes
         source.update(AnalyticsOptInState.Yes)
-        // Then FirebaseAnalytics has analytics collection turned on
-        verify(analytics).setAnalyticsCollectionEnabled(true)
+        // Then the AnalyticsLogger has analytics collection turned on
+        verify(analytics).setEnabled(true)
     }
 }
