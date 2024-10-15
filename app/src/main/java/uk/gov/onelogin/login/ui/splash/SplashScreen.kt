@@ -199,7 +199,7 @@ internal fun UnlockScreenPreview() {
     }
 }
 
-@PreviewScreenSizes
+@Preview
 @Composable
 internal fun LoadingSplashScreenPreview() {
     GdsTheme {

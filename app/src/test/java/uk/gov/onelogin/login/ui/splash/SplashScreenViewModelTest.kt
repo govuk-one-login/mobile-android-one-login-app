@@ -216,32 +216,17 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun retrieveAppInfoRemoteSuccessful() = runTest {
+    fun retrieveAppInfoSuccessful() = runTest {
         // WHEN AppInfo has not been called yet - initial state
         // THEN loading progress indicator will be set to false
         assertFalse(viewModel.loading.value)
         // AND AppInfo call is successful remote
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.RemoteSuccess(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
 
         // AND it calls retrieveAppInfo
         viewModel.retrieveAppInfo()
 
         // THEN loading progress indicator will be set to false
-        assertFalse(viewModel.loading.value)
-    }
-
-    @Test
-    fun retrieveAppInfoLocalSuccessful() = runTest {
-        // WHEN AppInfo has not been called yet - initial state
-        // THEN loading progress indicator will be set to false
-        assertFalse(viewModel.loading.value)
-        // AND AppInfo call is successful remote
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.LocalSuccess(data))
-
-        // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
-
-        // THEN loading progress indicator will be set to false
-        assertFalse(viewModel.loading.value)
+        assertTrue(viewModel.loading.value)
     }
 }

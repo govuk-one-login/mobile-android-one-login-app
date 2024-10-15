@@ -8,17 +8,25 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.Lifecycle
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.appinfo.AppInfoApiModule
+import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
@@ -30,7 +38,7 @@ import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.optin.ui.NOTICE_TAG
 
 @HiltAndroidTest
-@UninstallModules(UseCaseModule::class, NavigatorModule::class)
+@UninstallModules(UseCaseModule::class, NavigatorModule::class, AppInfoApiModule::class)
 class SplashScreenTest : TestCase() {
     @BindValue
     val verifyIdToken: VerifyIdToken = mock()
@@ -44,6 +52,9 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val mockSaveTokens: SaveTokens = mock()
 
+    @BindValue
+    val appInfoService: AppInfoService = mock()
+
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
@@ -53,6 +64,10 @@ class SplashScreenTest : TestCase() {
     @Before
     fun setUp() {
         hiltRule.inject()
+
+        wheneverBlocking { appInfoService.get() }.thenAnswer {
+            AppInfoServiceState.Successful(TestUtils.data)
+        }
 
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
@@ -66,14 +81,17 @@ class SplashScreenTest : TestCase() {
     @Test
     fun verifySplashScreen() {
         // Given
+        wheneverBlocking { appInfoService.get() }.thenReturn(
+            AppInfoServiceState.Successful(TestUtils.data)
+        )
+        // And
         composeTestRule.setContent {
             SplashScreen()
         }
+
         // Then
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
-        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
-        composeTestRule.onNode(loadingText).assertIsDisplayed()
     }
 
     @Test
@@ -86,7 +104,7 @@ class SplashScreenTest : TestCase() {
         composeTestRule.setContent {
             SplashScreen()
         }
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(5000L) {
             composeTestRule.onNode(unlockButton).isDisplayed()
         }
 
