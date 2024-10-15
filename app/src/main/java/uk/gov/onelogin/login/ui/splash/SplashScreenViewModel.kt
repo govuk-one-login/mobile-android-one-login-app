@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
@@ -16,11 +18,13 @@ import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.NavRoute
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.signOut.SignOutRoutes
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val handleLogin: HandleLogin
+    private val handleLogin: HandleLogin,
+    private val appInfoService: AppInfoService
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val _showUnlock = mutableStateOf(false)
@@ -62,6 +66,26 @@ class SplashScreenViewModel @Inject constructor(
 
     fun navigateToAnalyticsOptIn() {
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
+    fun retrieveAppInfo() {
+        viewModelScope.launch {
+            when (appInfoService.get()) {
+                AppInfoServiceState.Offline -> navigateToOfflineError()
+                AppInfoServiceState.Unavailable -> navigateToGenericError()
+                else -> {
+                    // Nothing to do when AppInfo retrieval was successful
+                }
+            }
+        }
+    }
+
+    private fun navigateToGenericError() {
+        navigator.navigate(ErrorRoutes.Generic)
+    }
+
+    private fun navigateToOfflineError() {
+        navigator.navigate(ErrorRoutes.Offline)
     }
 
     private fun nextScreen(route: NavRoute) {

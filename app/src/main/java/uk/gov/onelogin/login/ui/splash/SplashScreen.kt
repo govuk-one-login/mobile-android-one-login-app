@@ -55,6 +55,7 @@ fun SplashScreen(
             lifecycle.addObserver(viewModel)
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    viewModel.retrieveAppInfo()
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
                             isRequired -> viewModel.navigateToAnalyticsOptIn()

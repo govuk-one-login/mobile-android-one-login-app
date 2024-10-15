@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.app-config")
@@ -96,6 +97,7 @@ android {
             }
         }
     }
+    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -117,6 +119,13 @@ android {
     sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
         sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
         sourceSet.java.srcDir("src/e2eTestBulid/java")
+    }
+
+    bundle {
+        language {
+            @Suppress("UnstableApiUsage")
+            enableSplit = false
+        }
     }
 }
 
@@ -164,18 +173,13 @@ dependencies {
         libs.androidx.hilt.navigation.compose,
         libs.androidx.lifecycle.viewmodel.compose,
         libs.androidx.lifecycle.runtime.compose,
-        libs.components,
+        libs.bundles.gov.uk,
         libs.gson,
         libs.hilt.android,
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.navigation.compose,
-        libs.pages,
         libs.slf4j.api,
-        libs.theme,
-        libs.secure.store,
-        libs.authentication,
-        libs.network,
         libs.jose4j,
         projects.features,
         libs.runtime.livedata,
