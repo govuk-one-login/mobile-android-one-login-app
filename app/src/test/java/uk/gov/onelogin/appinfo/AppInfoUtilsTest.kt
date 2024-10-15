@@ -1,8 +1,8 @@
 package uk.gov.onelogin.appinfo
 
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
 
 class AppInfoUtilsTest {
     private val correctV = "1.0.0"

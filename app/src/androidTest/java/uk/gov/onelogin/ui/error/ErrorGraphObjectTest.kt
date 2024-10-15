@@ -2,8 +2,6 @@ package uk.gov.onelogin.ui.error
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.core.app.launchActivity
-import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -16,7 +14,7 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestUtils
-import uk.gov.onelogin.TestUtils.setNavInitialPoint
+import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
@@ -50,7 +48,7 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_signOutError() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(ErrorRoutes.SignOut)
         }
 
@@ -59,7 +57,7 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_genericError() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(ErrorRoutes.Generic)
         }
         composeTestRule.onNodeWithText(
@@ -69,7 +67,7 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_offlineError() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(ErrorRoutes.Offline)
         }
 
@@ -78,7 +76,7 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_updateRequiredError() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(ErrorRoutes.UpdateRequired)
         }
 

@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -30,8 +32,8 @@ class SplashScreenViewModel @Inject constructor(
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: State<Boolean> = _showUnlock
 
-    private val _loading = mutableStateOf(false)
-    val loading: State<Boolean> = _loading
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
@@ -79,9 +81,7 @@ class SplashScreenViewModel @Inject constructor(
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
                 AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
                 // WHEN successful AppInfo response/ status
-                else -> {
-                    _loading.value = false
-                }
+                else -> _loading.value = false
             }
         }
     }

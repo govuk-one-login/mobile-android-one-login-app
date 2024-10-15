@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appinfo.appversioncheck.data
 
+import android.util.Log
 import javax.inject.Inject
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.appinfo.AppInfoUtils
@@ -25,8 +26,13 @@ class AppVersionCheckImpl @Inject constructor(
                 }
             }
         } catch (e: AppInfoUtils.AppError) {
+            Log.e(TAG, e.toString())
             result = AppInfoServiceState.Unavailable
         }
         return result
+    }
+
+    companion object {
+        const val TAG = "AppVersionCheck"
     }
 }

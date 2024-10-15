@@ -1,5 +1,7 @@
 package uk.gov.onelogin.ui.error
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
@@ -45,6 +47,10 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.UpdateRequired.getRoute()
             ) {
+                val context = LocalContext.current as Activity
+                BackHandler(enabled = true) {
+                    context.finishAndRemoveTask()
+                }
                 UpdateRequiredScreen()
             }
         }

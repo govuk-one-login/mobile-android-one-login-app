@@ -3,9 +3,7 @@ package uk.gov.onelogin.ui.error.update
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.R

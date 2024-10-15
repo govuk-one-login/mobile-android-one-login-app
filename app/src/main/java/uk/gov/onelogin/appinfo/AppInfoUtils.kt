@@ -16,18 +16,19 @@ interface AppInfoUtils {
     sealed class AppError(msg: String) : Exception(msg) {
         data object IncorrectVersionFormat : AppError(
             "Version number does not adhere to Major.minor.patch convention."
-        ) {
-            private fun readResolve(): Any = IncorrectVersionFormat
-        }
+        )
 
         data object IllegalVersionFormat : AppError(
             "The version contains illegal characters not adhering to the standard convention."
-        ) {
-            private fun readResolve(): Any = IllegalVersionFormat
-        }
+        )
+    }
+
+    companion object {
+        const val GOOGLE_PLAY_URL = "https://play.google.com/store/apps"
     }
 }
 
+@Suppress("MagicNumber")
 class AppInfoUtilsImpl @Inject constructor() : AppInfoUtils {
     override fun getComparableAppVersion(version: String): List<Int> {
         val result = try {

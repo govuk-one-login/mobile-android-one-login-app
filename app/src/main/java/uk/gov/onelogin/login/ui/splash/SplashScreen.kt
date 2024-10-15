@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,10 +55,11 @@ fun SplashScreen(
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
+    val loading = viewModel.loading.collectAsState().value
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
-        loading = viewModel.loading.value,
+        loading = loading,
         onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
@@ -65,15 +67,17 @@ fun SplashScreen(
     DisposableEffect(key1 = lifecycleOwner) {
         with(lifecycleOwner) {
             lifecycle.addObserver(viewModel)
+            viewModel.retrieveAppInfo()
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    viewModel.retrieveAppInfo()
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
-                            isRequired -> viewModel.navigateToAnalyticsOptIn()
+                            isRequired -> if (!loading) {
+                                viewModel.navigateToAnalyticsOptIn()
+                            }
                         }
                     }
-                    if (!viewModel.showUnlock.value) {
+                    if (!viewModel.showUnlock.value || !loading) {
                         viewModel.login(context)
                     }
                 }

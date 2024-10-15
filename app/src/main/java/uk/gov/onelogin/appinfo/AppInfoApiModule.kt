@@ -6,8 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.gov.onelogin.appinfo.apicall.data.AppInfoApiImpl
 import uk.gov.onelogin.appinfo.apicall.domain.AppInfoApi
-import uk.gov.onelogin.appinfo.appversioncheck.domain.AppVersionCheck
 import uk.gov.onelogin.appinfo.appversioncheck.data.AppVersionCheckImpl
+import uk.gov.onelogin.appinfo.appversioncheck.domain.AppVersionCheck
 import uk.gov.onelogin.appinfo.service.data.AppInfoServiceImpl
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.source.data.AppInfoLocalSourceImpl

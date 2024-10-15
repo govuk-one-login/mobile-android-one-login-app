@@ -15,9 +15,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
-import uk.gov.onelogin.TestUtils.setNavInitialPoint
+import uk.gov.onelogin.TestUtils.data
+import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
@@ -27,21 +27,6 @@ import uk.gov.onelogin.navigation.Navigator
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class LoginGraphObjectTest : TestCase() {
-    private val data = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "0.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
-
     @get:Rule(order = 3)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
@@ -57,14 +42,15 @@ class LoginGraphObjectTest : TestCase() {
     @Before
     fun setup() {
         hiltRule.inject()
+
         wheneverBlocking { appInfoService.get() }
-            .thenReturn(AppInfoServiceState.RemoteSuccess(data))
+            .thenReturn(AppInfoServiceState.Successful(data))
     }
 
     @FlakyTest
     @Test
     fun loginGraph_SignInError() {
-        composeTestRule.setNavInitialPoint { navigator.navigate(LoginRoutes.SignInError) }
+        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInError) }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_signInErrorTitle))
     }
@@ -72,17 +58,18 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_BioOptInScreen() {
-        composeTestRule.setNavInitialPoint { navigator.navigate(LoginRoutes.BioOptIn) }
+        composeTestRule.setActivity { navigator.navigate(LoginRoutes.BioOptIn) }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
         back()
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
+        back()
     }
 
     @FlakyTest
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
@@ -94,7 +81,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_PasscodeInfo_Button() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.PasscodeInfo)
         }
 
@@ -108,7 +95,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_Loading() {
-        composeTestRule.setNavInitialPoint {
+        composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.Loading)
         }
     }

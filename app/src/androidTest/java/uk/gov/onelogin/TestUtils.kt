@@ -20,8 +20,7 @@ object TestUtils {
         )
     )
 
-
-    fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.setNavInitialPoint(
+    fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.setActivity(
         action: () -> Unit
     ) {
         this.activityRule.scenario.onActivity { action() }

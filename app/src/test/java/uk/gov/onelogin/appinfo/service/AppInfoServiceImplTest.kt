@@ -34,6 +34,8 @@ class AppInfoServiceImplTest {
     @Test
     fun `successful remote retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Success(data))
+        whenever(appVersionCheck.compareVersions(eq(data)))
+            .thenReturn(AppInfoServiceState.Successful(data))
         val result = sut.get()
         assertEquals(AppInfoServiceState.Successful(data), result)
     }

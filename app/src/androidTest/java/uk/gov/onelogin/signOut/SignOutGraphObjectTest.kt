@@ -10,10 +10,13 @@ import javax.inject.Inject
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
+import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
@@ -34,6 +37,10 @@ class SignOutGraphObjectTest : TestCase() {
     fun setup() {
         hiltRule.inject()
         launchActivity<MainActivity>()
+
+        wheneverBlocking { mockAppInfoService.get() }.thenAnswer {
+            AppInfoServiceState.Successful(TestUtils.data)
+        }
     }
 
     @Test
