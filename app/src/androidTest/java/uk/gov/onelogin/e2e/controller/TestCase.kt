@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Before
 import org.junit.Rule
+import uk.gov.onelogin.FlakyTestRule
 
 open class TestCase {
     @get:Rule(order = 1)
@@ -13,6 +14,9 @@ open class TestCase {
 
     @get:Rule(order = 2)
     var testNameRule: TestCaseNameWatcher = TestCaseNameWatcher()
+
+    @get:Rule(order = 4)
+    var flakyTestRule = FlakyTestRule()
 
     private var screenshotName: String? = null
 

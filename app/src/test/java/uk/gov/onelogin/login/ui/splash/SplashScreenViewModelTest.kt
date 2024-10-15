@@ -15,6 +15,8 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
@@ -23,6 +25,7 @@ import uk.gov.onelogin.login.usecase.HandleLogin
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.signOut.SignOutRoutes
+import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -31,10 +34,12 @@ class SplashScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val mockLifeCycleOwner: LifecycleOwner = mock()
     private val mockActivity: FragmentActivity = mock()
+    private val mockAppInfoService: AppInfoService = mock()
 
     private val viewModel = SplashScreenViewModel(
         mockNavigator,
-        mockHandleLogin
+        mockHandleLogin,
+        mockAppInfoService
     )
 
     @Test
@@ -133,5 +138,29 @@ class SplashScreenViewModelTest {
 
         // THEN do NOT login (as the app will be going to background)
         verify(mockHandleLogin, times(1)).invoke(any(), any())
+    }
+
+    @Test
+    fun retrieveAppInfoOffline() = runTest {
+        // WHEN AppInfo call is offline and local source has failed/ null
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
+
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo()
+
+        // THEN it navigates to Offline Error screen
+        verify(mockNavigator).navigate(ErrorRoutes.Offline)
+    }
+
+    @Test
+    fun retrieveAppInfoUnavailable() = runTest {
+        // WHEN AppInfo call is offline and local source has failed/ null
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
+
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo()
+
+        // THEN it navigates to Generic Error screen
+        verify(mockNavigator).navigate(ErrorRoutes.Generic)
     }
 }
