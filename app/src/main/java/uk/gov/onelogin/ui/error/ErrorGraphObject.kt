@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import uk.gov.onelogin.ui.error.update.UpdateRequiredScreen
 
 object ErrorGraphObject {
     const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
@@ -40,6 +41,11 @@ object ErrorGraphObject {
                         popBackStack()
                     }
                 }
+            }
+            composable(
+                route = ErrorRoutes.UpdateRequired.getRoute()
+            ) {
+                UpdateRequiredScreen()
             }
         }
     }

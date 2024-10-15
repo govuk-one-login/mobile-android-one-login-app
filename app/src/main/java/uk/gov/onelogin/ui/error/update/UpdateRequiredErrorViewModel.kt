@@ -13,7 +13,7 @@ class UpdateRequiredErrorViewModel @Inject constructor(
     fun updateApp(context: Context) {
         val intent =  Intent(Intent.ACTION_VIEW).apply {
             data = Uri.parse("https://play.google.com/store/apps")
-            // To open the app once in prod uncomment line 18 once app available on PlayStore
+            // To open the app once in prod uncomment line 18 once app available on PlayStore and update Manifest and the Uri.parse above with the correct/ full URL
             // see more for implementation: https://developer.android.com/distribute/marketing-tools/linking-to-google-play#android-app
             // setPackage("uk.gov.onelogin")
         }

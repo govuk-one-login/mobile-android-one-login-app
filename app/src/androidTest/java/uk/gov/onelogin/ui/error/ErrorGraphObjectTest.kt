@@ -2,6 +2,7 @@ package uk.gov.onelogin.ui.error
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.launchActivity
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -11,11 +12,15 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
+import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.TestUtils.setNavInitialPoint
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
 
@@ -37,11 +42,15 @@ class ErrorGraphObjectTest : TestCase() {
     @Before
     fun setup() {
         hiltRule.inject()
+
+        wheneverBlocking { mockAppInfoService.get() }.thenAnswer {
+            AppInfoServiceState.Successful(TestUtils.data)
+        }
     }
 
     @Test
     fun errorGraph_signOutError() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(ErrorRoutes.SignOut)
         }
 
@@ -50,7 +59,7 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_genericError() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(ErrorRoutes.Generic)
         }
         composeTestRule.onNodeWithText(
@@ -60,10 +69,19 @@ class ErrorGraphObjectTest : TestCase() {
 
     @Test
     fun errorGraph_offlineError() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setNavInitialPoint {
             navigator.navigate(ErrorRoutes.Offline)
         }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_networkErrorTitle))
+    }
+
+    @Test
+    fun errorGraph_updateRequiredError() {
+        composeTestRule.setNavInitialPoint {
+            navigator.navigate(ErrorRoutes.UpdateRequired)
+        }
+
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_updateApp_Title))
     }
 }
