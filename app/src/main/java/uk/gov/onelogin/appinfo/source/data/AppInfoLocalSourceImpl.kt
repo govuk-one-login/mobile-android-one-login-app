@@ -13,7 +13,7 @@ import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 class AppInfoLocalSourceImpl @Inject constructor(
     private val sharedPrefs: SharedPreferences
 ) : AppInfoLocalSource {
-    override suspend fun get(): AppInfoLocalState {
+    override fun get(): AppInfoLocalState {
         return try {
             val result = sharedPrefs.getString(APP_INFO_KEY, null)
             if (!result.isNullOrEmpty()) {
@@ -26,7 +26,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(value: String) {
+    override fun update(value: String) {
         sharedPrefs.edit(true) {
             putString(APP_INFO_KEY, value)
         }

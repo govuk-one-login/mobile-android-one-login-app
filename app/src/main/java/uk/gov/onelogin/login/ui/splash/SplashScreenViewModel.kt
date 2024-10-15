@@ -11,6 +11,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
+import uk.gov.onelogin.features.domain.SetFeatureFlags
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
@@ -24,7 +25,8 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLogin: HandleLogin,
-    private val appInfoService: AppInfoService
+    private val appInfoService: AppInfoService,
+    private val setFeatureFlags: SetFeatureFlags
 ) : ViewModel(), DefaultLifecycleObserver {
 
     private val _showUnlock = mutableStateOf(false)
@@ -73,9 +75,8 @@ class SplashScreenViewModel @Inject constructor(
             when (appInfoService.get()) {
                 AppInfoServiceState.Offline -> navigateToOfflineError()
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
-                else -> {
-                    // Nothing to do when AppInfo retrieval was successful
-                }
+                else ->
+                    setFeatureFlags.fromAppInfo()
             }
         }
     }

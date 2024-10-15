@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -63,14 +62,14 @@ class AppInfoLocalSourceImplTest {
     }
 
     @Test
-    fun `successful retrieval`() = runTest {
+    fun `successful retrieval`() {
         whenever(prefs.getString(eq(APP_INFO_KEY), eq(null))).thenReturn(encodedValue)
         val result = sut.get()
         assertEquals(AppInfoLocalState.Success(data), result)
     }
 
     @Test
-    fun `successful retrieval - AppInfo is null or empty`() = runTest {
+    fun `successful retrieval - AppInfo is null or empty`() {
         whenever(prefs.getString(eq(APP_INFO_KEY), any())).thenReturn(null)
         val result = sut.get()
         assertEquals(
@@ -80,7 +79,7 @@ class AppInfoLocalSourceImplTest {
     }
 
     @Test
-    fun `successful retrieval - data retrieved can't be deserialized into AppInfoData`() = runTest {
+    fun `successful retrieval - data retrieved can't be deserialized into AppInfoData`() {
         whenever(prefs.getString(eq(APP_INFO_KEY), eq(null))).thenReturn(encodedInvalidValue)
         val result = sut.get()
         assert(
@@ -89,7 +88,7 @@ class AppInfoLocalSourceImplTest {
     }
 
     @Test
-    fun `failed retrieval`() = runTest {
+    fun `failed retrieval`() {
         whenever(prefs.getString(eq(APP_INFO_KEY), eq(null))).thenThrow(ClassCastException("Error"))
         val result = sut.get()
         assert(
@@ -98,7 +97,7 @@ class AppInfoLocalSourceImplTest {
     }
 
     @Test
-    fun `successful update`() = runTest {
+    fun `successful update`() {
         sut.update(encodedValue)
         verify(prefs.edit()).putString(APP_INFO_KEY, encodedValue)
         verify(editor).commit()
