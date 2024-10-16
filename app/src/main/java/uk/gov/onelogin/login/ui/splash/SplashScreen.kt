@@ -55,11 +55,11 @@ fun SplashScreen(
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
-    val loading = viewModel.loading.collectAsState().value
+    val loading = viewModel.loading.collectAsState()
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
-        loading = loading,
+        loading = loading.value,
         onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
@@ -67,17 +67,15 @@ fun SplashScreen(
     DisposableEffect(key1 = lifecycleOwner) {
         with(lifecycleOwner) {
             lifecycle.addObserver(viewModel)
-            viewModel.retrieveAppInfo()
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    viewModel.retrieveAppInfo()
                     optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                         when {
-                            isRequired -> if (!loading) {
-                                viewModel.navigateToAnalyticsOptIn()
-                            }
+                            isRequired -> viewModel.navigateToAnalyticsOptIn()
                         }
                     }
-                    if (!viewModel.showUnlock.value || !loading) {
+                    if (!viewModel.showUnlock.value) {
                         viewModel.login(context)
                     }
                 }

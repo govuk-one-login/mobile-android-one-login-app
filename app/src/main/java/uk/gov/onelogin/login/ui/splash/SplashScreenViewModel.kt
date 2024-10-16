@@ -73,16 +73,14 @@ class SplashScreenViewModel @Inject constructor(
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
     }
 
-    fun retrieveAppInfo() {
-        viewModelScope.launch {
-            _loading.value = true
-            when (appInfoService.get()) {
-                AppInfoServiceState.Offline -> navigateToOfflineError()
-                AppInfoServiceState.Unavailable -> navigateToGenericError()
-                AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
-                // WHEN successful AppInfo response/ status
-                else -> _loading.value = false
-            }
+    suspend fun retrieveAppInfo() {
+        _loading.emit(true)
+        when (appInfoService.get()) {
+            AppInfoServiceState.Offline -> navigateToOfflineError()
+            AppInfoServiceState.Unavailable -> navigateToGenericError()
+            AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
+            // WHEN successful AppInfo response/ status
+            else -> _loading.emit(false)
         }
     }
 
