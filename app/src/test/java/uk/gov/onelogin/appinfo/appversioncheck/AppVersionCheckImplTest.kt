@@ -1,7 +1,7 @@
 package uk.gov.onelogin.appinfo.appversioncheck
 
 import junit.framework.TestCase.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoUtils
 import uk.gov.onelogin.appinfo.AppInfoUtilsImpl
@@ -10,7 +10,7 @@ import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 
 class AppVersionCheckImplTest {
     private val appInfoUtils: AppInfoUtils = AppInfoUtilsImpl()
-    private val sut = AppVersionCheckImpl(appInfoUtils)
+    private val sut = AppVersionCheckImpl(appInfoUtils, "1.0.0")
 
     @Test
     fun versionCheckSuccessful() {

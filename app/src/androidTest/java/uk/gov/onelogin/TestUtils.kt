@@ -8,37 +8,7 @@ object TestUtils {
     val data = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
-                minimumVersion = "0.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
-
-    val updateRequiredData = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "2.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
-
-    val extractVersionErrorData = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "vers1.0.0",
+                minimumVersion = "1.0.0",
                 releaseFlags = AppInfoData.ReleaseFlags(
                     true,
                     true,
