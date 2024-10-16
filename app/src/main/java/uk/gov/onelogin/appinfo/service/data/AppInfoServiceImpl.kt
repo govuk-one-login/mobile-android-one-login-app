@@ -1,9 +1,6 @@
 package uk.gov.onelogin.appinfo.service.data
 
 import javax.inject.Inject
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
@@ -19,8 +16,7 @@ class AppInfoServiceImpl @Inject constructor(
         val localState = localSource.get()
         return when (val remoteResult = remoteSource.get()) {
             is AppInfoRemoteState.Success -> {
-                val encodedValue = Json.encodeToString<AppInfoData>(remoteResult.value)
-                this.localSource.update(encodedValue)
+                this.localSource.update(remoteResult.value)
                 return AppInfoServiceState.RemoteSuccess(remoteResult.value)
             }
             AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)

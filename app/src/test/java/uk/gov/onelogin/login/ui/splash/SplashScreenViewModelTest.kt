@@ -20,7 +20,6 @@ import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.domain.SetFeatureFlags
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
@@ -37,7 +36,6 @@ class SplashScreenViewModelTest {
     private val mockLifeCycleOwner: LifecycleOwner = mock()
     private val mockActivity: FragmentActivity = mock()
     private val mockAppInfoService: AppInfoService = mock()
-    private val setFeatureFlags: SetFeatureFlags = mock()
 
     private val data = AppInfoData(
         apps = AppInfoData.App(
@@ -57,8 +55,7 @@ class SplashScreenViewModelTest {
     private val viewModel = SplashScreenViewModel(
         mockNavigator,
         mockHandleLogin,
-        mockAppInfoService,
-        setFeatureFlags
+        mockAppInfoService
     )
 
     @Test
@@ -193,7 +190,6 @@ class SplashScreenViewModelTest {
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
-        verify(setFeatureFlags).fromAppInfo()
     }
 
     @Test
@@ -206,6 +202,5 @@ class SplashScreenViewModelTest {
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
-        verify(setFeatureFlags).fromAppInfo()
     }
 }

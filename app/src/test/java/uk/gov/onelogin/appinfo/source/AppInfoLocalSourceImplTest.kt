@@ -22,14 +22,18 @@ import uk.gov.onelogin.appinfo.source.data.AppInfoLocalSourceImpl.Companion.APP_
 import uk.gov.onelogin.appinfo.source.data.AppInfoLocalSourceImpl.Companion.APP_INFO_KEY
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
+import uk.gov.onelogin.features.domain.FeatureFlagSetter
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppInfoLocalSourceImplTest {
     private val prefs: SharedPreferences = mock()
+    private val mockFeatureFlagSetter: FeatureFlagSetter = mock()
+
     private val dispatcher = StandardTestDispatcher()
     private val editor: SharedPreferences.Editor = mock()
     private val encodedValue = ClassLoader
         .getSystemResource("api/appInfoResponseValue.json").readText()
+        .replace(" ", "").replace("\n", "")
     private val encodedInvalidValue = ClassLoader
         .getSystemResource("api/appInfoResponseValueInvalid.json").readText()
     private val data = AppInfoData(
@@ -51,7 +55,7 @@ class AppInfoLocalSourceImplTest {
 
     @BeforeEach
     fun setup() {
-        sut = AppInfoLocalSourceImpl(prefs)
+        sut = AppInfoLocalSourceImpl(prefs, mockFeatureFlagSetter)
         Dispatchers.setMain(dispatcher)
         whenever(prefs.edit()).thenReturn(editor)
     }
@@ -98,8 +102,9 @@ class AppInfoLocalSourceImplTest {
 
     @Test
     fun `successful update`() {
-        sut.update(encodedValue)
+        sut.update(data)
         verify(prefs.edit()).putString(APP_INFO_KEY, encodedValue)
         verify(editor).commit()
+        verify(mockFeatureFlagSetter).setFromAppInfo(data.apps.android)
     }
 }
