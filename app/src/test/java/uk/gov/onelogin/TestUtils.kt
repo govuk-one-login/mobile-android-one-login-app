@@ -17,34 +17,4 @@ object TestUtils {
             )
         )
     )
-
-    val updateRequiredData = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "2.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
-
-    val extractVersionErrorData = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "vers1.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
 }

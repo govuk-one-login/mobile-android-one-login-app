@@ -1,7 +1,7 @@
 package uk.gov.onelogin.appinfo.appversioncheck
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
+import junit.framework.TestCase.assertEquals
+import org.junit.Test
 import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoUtils
 import uk.gov.onelogin.appinfo.AppInfoUtilsImpl
