@@ -258,12 +258,14 @@ project.afterEvaluate {
         val flavorName = applicationVariant.flavorName
 
         if (flavorName.equals("production")) {
-            val taskToDisable =
-                tasks.findByName("process${applicationVariantCapitalised}GoogleServices")
-
-            if (taskToDisable != null) {
-                project.logger.lifecycle("Disabling ${taskToDisable.name}")
-                taskToDisable.enabled = false
+            listOf(
+                "process${applicationVariantCapitalised}GoogleServices",
+                "uploadCrashlyticsMappingFile$applicationVariantCapitalised"
+            ).mapNotNull { taskName ->
+                tasks.findByName(taskName)
+            }.forEach { task ->
+                project.logger.lifecycle("Disabling ${task.name}")
+                task.enabled = false
             }
         }
     }
