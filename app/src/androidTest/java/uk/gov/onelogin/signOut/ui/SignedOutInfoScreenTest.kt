@@ -1,9 +1,11 @@
 package uk.gov.onelogin.signOut.ui
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -27,7 +29,10 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.SecureStore
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
@@ -46,7 +51,8 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
     FeaturesModule::class,
     NetworkModule::class,
     NavigatorModule::class,
-    SignOutModule::class
+    SignOutModule::class,
+    AnalyticsModule::class
 )
 class SignedOutInfoScreenTest : TestCase() {
     @BindValue
@@ -69,6 +75,9 @@ class SignedOutInfoScreenTest : TestCase() {
 
     @BindValue
     val mockSignOutUseCase: SignOutUseCase = mock()
+
+    @BindValue
+    val analytics: AnalyticsLogger = mock()
 
     @Inject
     @Named("Open")
@@ -294,6 +303,29 @@ class SignedOutInfoScreenTest : TestCase() {
         itOpensErrorScreen()
     }
 
+    @Test
+    fun screenViewAnalyticsLogOnResume() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignedOutInfoAnalyticsViewModel.makeSignedOutInfoViewEvent(context)
+        composeTestRule.setContent {
+            SignedOutInfoScreen()
+        }
+
+        verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun reAuthAnalyticsLogOnSignInButton() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignedOutInfoAnalyticsViewModel.makeReAuthEvent(context)
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        composeTestRule.setContent {
+            SignedOutInfoScreen()
+        }
+        whenWeClickSignIn()
+        verify(analytics).logEventV3Dot1(event)
+    }
+
     private fun whenWeClickSignIn() {
         composeTestRule.onNode(signedOutButton).performClick()
     }
@@ -314,5 +346,12 @@ class SignedOutInfoScreenTest : TestCase() {
             key = Keys.PERSISTENT_ID_KEY,
             value = id
         )
+    }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            SignedOutInfoPreview()
+        }
     }
 }

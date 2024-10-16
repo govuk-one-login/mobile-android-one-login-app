@@ -10,12 +10,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewFontScale
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 
@@ -25,6 +31,7 @@ fun SignedOutInfoScreen(
     signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
+    val analytics: SignedOutInfoAnalyticsViewModel = hiltViewModel()
     val activity = LocalContext.current as FragmentActivity
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -52,31 +59,16 @@ fun SignedOutInfoScreen(
             activity
         )
     }
-
-    LandingPage(
-        landingPageParameters = LandingPageParameters(
-            title = R.string.app_youveBeenSignedOutTitle,
-            titleBottomPadding = smallPadding,
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody1)
-                ),
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody2)
-                )
-            ),
-            contentInternalPadding = PaddingValues(bottom = smallPadding),
-            primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
-            onPrimary = {
-                handleLogin(
-                    loginViewModel,
-                    signOutViewModel,
-                    launcher,
-                    activity
-                )
-            }
+    SignedOutInfoBody {
+        analytics.trackReAuth()
+        handleLogin(
+            loginViewModel,
+            signOutViewModel,
+            launcher,
+            activity
         )
-    )
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackSignOutInfoView() }
 }
 
 private fun handleLogin(
@@ -91,5 +83,38 @@ private fun handleLogin(
         }
     } else {
         loginViewModel.navigateToOfflineError()
+    }
+}
+
+@Composable
+internal fun SignedOutInfoBody(
+    onPrimary: () -> Unit
+) {
+    LandingPage(
+        landingPageParameters = LandingPageParameters(
+            title = R.string.app_youveBeenSignedOutTitle,
+            titleBottomPadding = smallPadding,
+            content = listOf(
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(R.string.app_youveBeenSignedOutBody1)
+                ),
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(R.string.app_youveBeenSignedOutBody2)
+                )
+            ),
+            contentInternalPadding = PaddingValues(bottom = smallPadding),
+            primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
+            onPrimary = onPrimary
+        )
+    )
+}
+
+@PreviewLightDark
+@PreviewFontScale
+@PreviewScreenSizes
+@Composable
+internal fun SignedOutInfoPreview() {
+    GdsTheme {
+        SignedOutInfoBody {}
     }
 }
