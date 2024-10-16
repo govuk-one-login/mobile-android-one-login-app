@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.After
@@ -61,12 +62,13 @@ class UpdateRequiredErrorScreenTest : TestCase() {
     }
 
     @Test
-    fun click() {
+    fun verifyIntent() {
         intending(hasData(AppInfoUtils.GOOGLE_PLAY_URL)).respondWith(result)
         composeTestRule.apply {
             onNodeWithText(resources.getString(R.string.app_updateAppButton)).performClick()
         }
 
+        intended(hasAction(Intent.ACTION_VIEW))
         intended(hasData(Uri.parse(AppInfoUtils.GOOGLE_PLAY_URL)))
     }
 }
