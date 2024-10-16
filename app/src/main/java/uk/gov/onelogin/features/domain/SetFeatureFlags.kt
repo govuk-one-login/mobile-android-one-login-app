@@ -19,6 +19,9 @@ class SetFeatureFlagsImpl @Inject constructor(
 ) : SetFeatureFlags {
     override fun fromAppInfo() {
         when (val appInfoState = appInfoLocalSource.get()) {
+            is AppInfoLocalState.Success ->
+                setFeatures(appInfoState.value.apps.android)
+
             is AppInfoLocalState.Failure ->
                 Log.e(
                     this::class.simpleName,
@@ -26,8 +29,11 @@ class SetFeatureFlagsImpl @Inject constructor(
                     appInfoState.exp
                 )
 
-            is AppInfoLocalState.Success ->
-                setFeatures(appInfoState.value.apps.android)
+            else ->
+                Log.e(
+                    this::class.simpleName,
+                    "Failed to read local appInfo"
+                )
         }
     }
 

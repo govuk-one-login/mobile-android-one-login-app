@@ -15,6 +15,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
 
@@ -29,6 +30,9 @@ class ErrorGraphObjectTest : TestCase() {
 
     @BindValue
     val mockAppInfoService: AppInfoService = mock()
+
+    @BindValue
+    val appInfoLocalSource: AppInfoLocalSource = mock()
 
     @Before
     fun setup() {

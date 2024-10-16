@@ -20,6 +20,7 @@ import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
 
@@ -49,6 +50,9 @@ class LoginGraphObjectTest : TestCase() {
 
     @BindValue
     val appInfoService: AppInfoService = mock()
+
+    @BindValue
+    val appInfoLocalSource: AppInfoLocalSource = mock()
 
     @Before
     fun setup() {
