@@ -141,6 +141,7 @@ class SplashScreenViewModelTest {
         verifyNoInteractions(mockNavigator)
         Handler(Looper.getMainLooper()).post {
             assertTrue(viewModel.showUnlock.value)
+            assertFalse(viewModel.loading.value)
         }
     }
 
@@ -226,7 +227,7 @@ class SplashScreenViewModelTest {
         // AND it calls retrieveAppInfo
         viewModel.retrieveAppInfo()
 
-        // THEN loading progress indicator will be set to false
-        assertFalse(viewModel.loading.value)
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
     }
 }

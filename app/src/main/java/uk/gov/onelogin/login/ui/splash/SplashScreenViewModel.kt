@@ -50,8 +50,10 @@ class SplashScreenViewModel @Inject constructor(
                         is LocalAuthStatus.Success ->
                             nextScreen(MainNavRoutes.Start)
 
-                        LocalAuthStatus.UserCancelled ->
+                        LocalAuthStatus.UserCancelled -> {
+                            _showUnlock.value = false
                             _showUnlock.value = true
+                        }
 
                         LocalAuthStatus.BioCheckFailed -> {
                             // Allow user to make multiple fails... do nothing for now
@@ -80,7 +82,9 @@ class SplashScreenViewModel @Inject constructor(
             AppInfoServiceState.Unavailable -> navigateToGenericError()
             AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
             // WHEN successful AppInfo response/ status
-            else -> _loading.emit(false)
+            else -> {
+                // Nothing to do
+            }
         }
     }
 
