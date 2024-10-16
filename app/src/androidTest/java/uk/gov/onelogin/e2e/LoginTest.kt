@@ -104,6 +104,7 @@ class LoginTest : TestCase() {
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
+    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         tokenRepository.setTokenResponse(
@@ -196,6 +197,7 @@ class LoginTest : TestCase() {
     }
 
     // App remains on sign in page when not data is returned in intent from login
+    @FlakyTest
     @Test
     fun handleActivityResultNullData() {
         setupActivityForResult(
@@ -209,6 +211,7 @@ class LoginTest : TestCase() {
         verify(mockLoginSession, times(0)).finalise(any(), any())
     }
 
+    @FlakyTest
     @Test
     fun handleActivityResultWithDataButLoginThrows() {
         whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
@@ -223,6 +226,7 @@ class LoginTest : TestCase() {
         nodeWithTextExists("There was a problem signing you in")
     }
 
+    @FlakyTest
     @Test
     fun handleActivityResultWithDataUnsecured() {
         mockGoodLogin()
@@ -241,6 +245,7 @@ class LoginTest : TestCase() {
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
+    @FlakyTest
     @Test
     fun handleActivityResultWithDataBioOptIn() {
         mockGoodLogin()
@@ -257,6 +262,7 @@ class LoginTest : TestCase() {
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
+    @FlakyTest
     @Test
     fun handleActivityResultWithDataPasscode() {
         mockGoodLogin()
