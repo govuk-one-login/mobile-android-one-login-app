@@ -24,7 +24,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -104,7 +104,6 @@ class LoginTest : TestCase() {
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
-    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         tokenRepository.setTokenResponse(
@@ -154,9 +153,12 @@ class LoginTest : TestCase() {
 
     @FlakyTest
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
+        runBlocking {
+            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+        }
+
         startApp()
-        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
         clickOptOut()
         clickLogin()
 
@@ -194,7 +196,6 @@ class LoginTest : TestCase() {
     }
 
     // App remains on sign in page when not data is returned in intent from login
-    @FlakyTest
     @Test
     fun handleActivityResultNullData() {
         setupActivityForResult(
@@ -208,7 +209,6 @@ class LoginTest : TestCase() {
         verify(mockLoginSession, times(0)).finalise(any(), any())
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataButLoginThrows() {
         whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
@@ -223,7 +223,6 @@ class LoginTest : TestCase() {
         nodeWithTextExists("There was a problem signing you in")
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataUnsecured() {
         mockGoodLogin()
@@ -242,7 +241,6 @@ class LoginTest : TestCase() {
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataBioOptIn() {
         mockGoodLogin()
@@ -259,7 +257,6 @@ class LoginTest : TestCase() {
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataPasscode() {
         mockGoodLogin()
