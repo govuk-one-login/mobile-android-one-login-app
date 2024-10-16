@@ -49,6 +49,7 @@ object ErrorGraphObject {
             ) {
                 val context = LocalContext.current as Activity
                 BackHandler(enabled = true) {
+                    // Close/ terminate the app
                     context.finishAndRemoveTask()
                 }
                 UpdateRequiredScreen()

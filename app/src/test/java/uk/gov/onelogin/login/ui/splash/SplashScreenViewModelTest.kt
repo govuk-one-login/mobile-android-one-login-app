@@ -167,7 +167,9 @@ class SplashScreenViewModelTest {
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
 
         // THEN loading progress indicator will be set to true
         assertTrue(viewModel.loading.value)
@@ -184,7 +186,9 @@ class SplashScreenViewModelTest {
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
 
         // THEN loading progress indicator will be set to true
         assertTrue(viewModel.loading.value)
@@ -225,9 +229,29 @@ class SplashScreenViewModelTest {
         // AND AppInfo call is successful remote
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
 
         // THEN loading progress indicator will be set to true
         assertTrue(viewModel.loading.value)
+    }
+
+    @Test
+    fun retrieveAppInfoUpdateRequired() = runTest {
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+
+        // AND AppInfo call is successful remote
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.UpdateRequired)
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
+
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
+        verify(mockNavigator).navigate(ErrorRoutes.UpdateRequired)
     }
 }

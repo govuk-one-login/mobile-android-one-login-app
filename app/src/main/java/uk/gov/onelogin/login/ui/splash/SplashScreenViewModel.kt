@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -51,7 +52,7 @@ class SplashScreenViewModel @Inject constructor(
                             nextScreen(MainNavRoutes.Start)
 
                         LocalAuthStatus.UserCancelled -> {
-                            _showUnlock.value = false
+                            _loading.value = false
                             _showUnlock.value = true
                         }
 
@@ -75,15 +76,15 @@ class SplashScreenViewModel @Inject constructor(
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
     }
 
-    suspend fun retrieveAppInfo() {
-        _loading.emit(true)
-        when (appInfoService.get()) {
-            AppInfoServiceState.Offline -> navigateToOfflineError()
-            AppInfoServiceState.Unavailable -> navigateToGenericError()
-            AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
-            // WHEN successful AppInfo response/ status
-            else -> {
-                // Nothing to do
+    fun retrieveAppInfo(callback: suspend CoroutineScope.() -> Unit) {
+        viewModelScope.launch {
+            _loading.emit(true)
+            when (appInfoService.get()) {
+                AppInfoServiceState.Offline -> navigateToOfflineError()
+                AppInfoServiceState.Unavailable -> navigateToGenericError()
+                AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
+                // WHEN successful AppInfo response/ status
+                else -> callback()
             }
         }
     }

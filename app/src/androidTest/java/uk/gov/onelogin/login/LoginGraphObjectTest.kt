@@ -15,6 +15,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
+import uk.gov.onelogin.TestUtils.back
 import uk.gov.onelogin.TestUtils.data
 import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
@@ -61,9 +62,9 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.setActivity { navigator.navigate(LoginRoutes.BioOptIn) }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
-        back()
+        composeTestRule.back()
         composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
-        back()
+        composeTestRule.back()
     }
 
     @FlakyTest
@@ -74,7 +75,7 @@ class LoginGraphObjectTest : TestCase() {
         }
 
         composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
-        back()
+        composeTestRule.back()
         composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
     }
 
@@ -97,12 +98,6 @@ class LoginGraphObjectTest : TestCase() {
     fun loginGraph_Loading() {
         composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.Loading)
-        }
-    }
-
-    private fun back() {
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressedDispatcher.onBackPressed()
         }
     }
 }

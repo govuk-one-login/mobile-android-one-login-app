@@ -5,7 +5,7 @@ import javax.inject.Inject
 /**
  * Interface for utilities in [AppInfoService]
  */
-interface AppInfoUtils {
+fun interface AppInfoUtils {
     /**
      * Converts [String] version into [List] of [Int] to allow for comparison between versions.
      * @throws [AppError.IncorrectVersionFormat] when version does not adhere to conventional commits versioning (e.g.: 1.2.0).

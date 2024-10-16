@@ -18,7 +18,6 @@ class AppVersionCheckImpl @Inject constructor(
         lateinit var result: AppInfoServiceState
         try {
             val localVersion = utils.getComparableAppVersion(appVersion)
-            Log.d("AppVersionLocal", "$localVersion")
             val serverVersion = utils.getComparableAppVersion(updatedVersion)
             for (i in serverVersion.indices) {
                 if (localVersion[i] < serverVersion[i]) {

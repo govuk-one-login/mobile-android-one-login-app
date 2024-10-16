@@ -14,6 +14,7 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.TestUtils.back
 import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
@@ -52,7 +53,9 @@ class ErrorGraphObjectTest : TestCase() {
             navigator.navigate(ErrorRoutes.SignOut)
         }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_signOutErrorTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signOutErrorTitle)
+        ).assertExists()
     }
 
     @Test
@@ -62,7 +65,7 @@ class ErrorGraphObjectTest : TestCase() {
         }
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_somethingWentWrongErrorTitle)
-        )
+        ).assertExists()
     }
 
     @Test
@@ -71,7 +74,9 @@ class ErrorGraphObjectTest : TestCase() {
             navigator.navigate(ErrorRoutes.Offline)
         }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_networkErrorTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_networkErrorTitle)
+        ).assertExists()
     }
 
     @Test
@@ -80,6 +85,12 @@ class ErrorGraphObjectTest : TestCase() {
             navigator.navigate(ErrorRoutes.UpdateRequired)
         }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_updateApp_Title))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_updateApp_Title)
+        ).assertExists()
+        composeTestRule.back()
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_updateApp_Title)
+        ).assertDoesNotExist()
     }
 }

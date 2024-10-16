@@ -10,15 +10,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -69,14 +70,15 @@ fun SplashScreen(
             lifecycle.addObserver(viewModel)
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    viewModel.retrieveAppInfo()
-                    optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
-                        when {
-                            isRequired -> viewModel.navigateToAnalyticsOptIn()
+                    viewModel.retrieveAppInfo {
+                        optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
+                            when {
+                                isRequired -> viewModel.navigateToAnalyticsOptIn()
+                            }
                         }
-                    }
-                    if (!viewModel.showUnlock.value) {
-                        viewModel.login(context)
+                        if (!viewModel.showUnlock.value) {
+                            viewModel.login(context)
+                        }
                     }
                 }
             }
@@ -157,7 +159,9 @@ internal fun LoadingIndicator() {
                 .padding(bottom = smallPadding)
         ) {
             CircularProgressIndicator(
-                trackColor = MaterialTheme.colors.onPrimary,
+                color = colorResource(id = R.color.govuk_blue),
+                trackColor = MaterialTheme.colorScheme.onPrimary,
+                strokeCap = StrokeCap.Square,
                 modifier = Modifier
                     .width(PROGRESS_BAR)
                     .height(PROGRESS_BAR)

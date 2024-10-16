@@ -100,7 +100,7 @@ class SplashScreenTest : TestCase() {
         composeTestRule.setContent {
             SplashScreen()
         }
-        composeTestRule.waitUntil(5000L) {
+        composeTestRule.waitUntil {
             composeTestRule.onNode(unlockButton).isDisplayed()
         }
 
@@ -114,5 +114,40 @@ class SplashScreenTest : TestCase() {
         // Then
         verify(mockNavigator).goBack()
         verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
+    }
+
+    @Test
+    fun verifyPreview() {
+        composeTestRule.setContent {
+            SplashScreenPreview()
+        }
+
+        composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
+        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+    }
+
+    @Test
+    fun verifyUnlockPreview() {
+        composeTestRule.setContent {
+            UnlockScreenPreview()
+        }
+
+        composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
+        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
+        composeTestRule.onNode(loadingText).assertIsNotDisplayed()
+        composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
+    }
+
+    @Test
+    fun testLoadingPreview() {
+        composeTestRule.setContent {
+            LoadingSplashScreenPreview()
+        }
+
+        composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
+        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(loadingText).assertIsDisplayed()
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
     }
 }

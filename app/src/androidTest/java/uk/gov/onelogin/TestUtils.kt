@@ -25,4 +25,10 @@ object TestUtils {
     ) {
         this.activityRule.scenario.onActivity { action() }
     }
+
+    fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.back() {
+        this.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
+    }
 }
