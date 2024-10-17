@@ -20,7 +20,7 @@ class AppInfoServiceImpl @Inject constructor(
             is AppInfoRemoteState.Success -> {
                 // Check remote min version compatible
                 localSource.update(remoteResult.value)
-                return appVersionCheck.compareVersions(remoteResult.value)
+                appVersionCheck.compareVersions(remoteResult.value)
             }
             AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)
             is AppInfoRemoteState.Failure ->

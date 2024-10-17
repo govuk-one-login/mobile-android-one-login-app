@@ -29,7 +29,6 @@ fun interface AppInfoUtils {
     }
 }
 
-@Suppress("MagicNumber")
 class AppInfoUtilsImpl @Inject constructor() : AppInfoUtils {
     override fun getComparableAppVersion(version: String): List<Int> {
         val result = try {
@@ -40,10 +39,14 @@ class AppInfoUtilsImpl @Inject constructor() : AppInfoUtils {
         } catch (e: NumberFormatException) {
             throw AppInfoUtils.AppError.IllegalVersionFormat
         }
-        return if (result.size != 3) {
+        return if (result.size != SIZE) {
             throw AppInfoUtils.AppError.IncorrectVersionFormat
         } else {
             result
         }
+    }
+
+    companion object {
+        private const val SIZE = 3
     }
 }
