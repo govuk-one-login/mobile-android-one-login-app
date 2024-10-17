@@ -5,7 +5,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 
 object TestUtils {
-    val data = AppInfoData(
+    val appInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
                 minimumVersion = "1.0.0",

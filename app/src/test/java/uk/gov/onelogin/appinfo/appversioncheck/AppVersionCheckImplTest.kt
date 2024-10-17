@@ -14,19 +14,19 @@ class AppVersionCheckImplTest {
 
     @Test
     fun versionCheckSuccessful() {
-        val result = sut.compareVersions(TestUtils.data)
-        assertEquals(AppInfoServiceState.Successful(TestUtils.data), result)
+        val result = sut.compareVersions(TestUtils.appInfoData)
+        assertEquals(AppInfoServiceState.Successful(TestUtils.appInfoData), result)
     }
 
     @Test
     fun versionCheckUpdateRequired() {
-        val result = sut.compareVersions(TestUtils.updateRequiredData)
+        val result = sut.compareVersions(TestUtils.updateRequiredAppInfoData)
         assertEquals(AppInfoServiceState.UpdateRequired, result)
     }
 
     @Test
     fun versionCheckError() {
-        val result = sut.compareVersions(TestUtils.extractVersionErrorData)
+        val result = sut.compareVersions(TestUtils.extractVersionErrorAppInfoData)
         assertEquals(AppInfoServiceState.Unavailable, result)
     }
 }

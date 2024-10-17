@@ -17,8 +17,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
+import uk.gov.onelogin.TestUtils.appInfoData
 import uk.gov.onelogin.TestUtils.back
-import uk.gov.onelogin.TestUtils.data
 import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
@@ -48,7 +48,7 @@ class LoginGraphObjectTest : TestCase() {
         hiltRule.inject()
 
         wheneverBlocking { appInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
     }
 
     @FlakyTest

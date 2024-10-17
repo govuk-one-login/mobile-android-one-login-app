@@ -21,7 +21,7 @@ class AppInfoServiceImplTest {
     private val remoteSource: AppInfoRemoteSource = mock()
     private val localSource: AppInfoLocalSource = mock()
     private val appVersionCheck: AppVersionCheck = mock()
-    private val data = TestUtils.data
+    private val data = TestUtils.appInfoData
     private val localSourceErrorMsg = AppInfoLocalSourceImpl.APP_INFO_LOCAL_SOURCE_ERROR
     private val remoteSourceErrorMsg = AppInfoRemoteSourceImpl.APP_INFO_REMOTE_SOURCE_ERROR
 

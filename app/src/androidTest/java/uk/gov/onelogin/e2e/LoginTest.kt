@@ -86,7 +86,7 @@ class LoginTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
-    private val data = TestUtils.data
+    private val data = TestUtils.appInfoData
 
     @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()

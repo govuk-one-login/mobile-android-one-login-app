@@ -44,7 +44,7 @@ class SignOutGraphObjectTest : TestCase() {
         hiltRule.inject()
 
         wheneverBlocking { mockAppInfoService.get() }.thenAnswer {
-            AppInfoServiceState.Successful(TestUtils.data)
+            AppInfoServiceState.Successful(TestUtils.appInfoData)
         }
     }
 

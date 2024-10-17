@@ -62,7 +62,7 @@ class SplashScreenTest : TestCase() {
         hiltRule.inject()
 
         wheneverBlocking { appInfoService.get() }.thenAnswer {
-            AppInfoServiceState.Successful(TestUtils.data)
+            AppInfoServiceState.Successful(TestUtils.appInfoData)
         }
 
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
@@ -78,7 +78,7 @@ class SplashScreenTest : TestCase() {
     fun verifySplashScreen() {
         // Given
         wheneverBlocking { appInfoService.get() }.thenReturn(
-            AppInfoServiceState.Successful(TestUtils.data)
+            AppInfoServiceState.Successful(TestUtils.appInfoData)
         )
         // And
         composeTestRule.setContent {

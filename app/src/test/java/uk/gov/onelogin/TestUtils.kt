@@ -3,7 +3,7 @@ package uk.gov.onelogin
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 
 object TestUtils {
-    val data = AppInfoData(
+    val appInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
                 minimumVersion = "1.0.0",
@@ -18,7 +18,7 @@ object TestUtils {
         )
     )
 
-    val updateRequiredData = AppInfoData(
+    val updateRequiredAppInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
                 minimumVersion = "2.0.0",
@@ -33,7 +33,7 @@ object TestUtils {
         )
     )
 
-    val extractVersionErrorData = AppInfoData(
+    val extractVersionErrorAppInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
                 minimumVersion = "vers1.0.0",

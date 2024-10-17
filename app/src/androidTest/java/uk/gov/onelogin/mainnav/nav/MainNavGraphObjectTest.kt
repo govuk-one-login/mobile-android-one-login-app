@@ -44,7 +44,7 @@ class MainNavGraphObjectTest : TestCase() {
         hiltRule.inject()
 
         wheneverBlocking { appInfoService.get() }.thenReturn(
-            AppInfoServiceState.Successful(TestUtils.data)
+            AppInfoServiceState.Successful(TestUtils.appInfoData)
         )
     }
 
