@@ -35,6 +35,8 @@ import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.optin.BinderModule
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
+import uk.gov.onelogin.optin.domain.source.OptInLocalSource
+import uk.gov.onelogin.optin.domain.source.OptInRemoteSource
 import uk.gov.onelogin.optin.ui.NOTICE_TAG
 
 @HiltAndroidTest
@@ -65,6 +67,12 @@ class SplashScreenTest : TestCase() {
 
     @BindValue
     val analyticsRepo: OptInRepository = mock()
+
+    @BindValue
+    val optInLocalSource: OptInLocalSource = mock()
+
+    @BindValue
+    val optInRemoteSource: OptInRemoteSource = mock()
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
