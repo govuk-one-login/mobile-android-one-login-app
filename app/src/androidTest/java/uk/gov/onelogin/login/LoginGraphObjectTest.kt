@@ -1,6 +1,8 @@
 package uk.gov.onelogin.login
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.filters.FlakyTest
@@ -23,6 +25,7 @@ import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.e2e.controller.TestCase
+import uk.gov.onelogin.login.ui.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.navigation.Navigator
 
 @HiltAndroidTest
@@ -53,7 +56,9 @@ class LoginGraphObjectTest : TestCase() {
     fun loginGraph_SignInError() {
         composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInError) }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_signInErrorTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signInErrorTitle)
+        ).assertIsDisplayed()
     }
 
     @FlakyTest
@@ -61,9 +66,13 @@ class LoginGraphObjectTest : TestCase() {
     fun loginGraph_BioOptInScreen() {
         composeTestRule.setActivity { navigator.navigate(LoginRoutes.BioOptIn) }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_enableBiometricsTitle)
+        ).assertIsDisplayed()
         composeTestRule.back()
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsTitle))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_enableBiometricsTitle)
+        ).assertIsDisplayed()
         composeTestRule.back()
     }
 
@@ -74,9 +83,13 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_analyticsPermissionBody)
+        ).assertIsDisplayed()
         composeTestRule.back()
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_analyticsPermissionBody))
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_analyticsPermissionBody)
+        ).assertIsDisplayed()
     }
 
     @FlakyTest
@@ -86,11 +99,15 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.PasscodeInfo)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_noPasscodePatternSetupTitle)
-        )
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_continue)).performClick()
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_homeTitle))
+        composeTestRule.apply {
+            onNodeWithText(
+                resources.getString(R.string.app_noPasscodePatternSetupTitle)
+            ).assertIsDisplayed()
+            onNodeWithText(resources.getString(R.string.app_continue)).performClick()
+            onNodeWithText(
+                resources.getString(R.string.app_home)
+            )
+        }
     }
 
     @FlakyTest
@@ -99,5 +116,9 @@ class LoginGraphObjectTest : TestCase() {
         composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.Loading)
         }
+
+        composeTestRule.onNodeWithTag(
+            LOADING_SCREEN_PROGRESS_INDICATOR
+        ).assertIsDisplayed()
     }
 }

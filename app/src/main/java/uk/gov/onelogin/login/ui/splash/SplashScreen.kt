@@ -74,10 +74,10 @@ fun SplashScreen(
                         optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
                             when {
                                 isRequired -> viewModel.navigateToAnalyticsOptIn()
+                                else -> if (!viewModel.showUnlock.value) {
+                                    viewModel.login(context)
+                                }
                             }
-                        }
-                        if (!viewModel.showUnlock.value) {
-                            viewModel.login(context)
                         }
                     }
                 }

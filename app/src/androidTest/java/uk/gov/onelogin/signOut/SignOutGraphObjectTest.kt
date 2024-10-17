@@ -1,19 +1,22 @@
 package uk.gov.onelogin.signOut
 
-import androidx.test.core.app.launchActivity
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.TestUtils.back
+import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -24,6 +27,9 @@ import uk.gov.onelogin.navigation.Navigator
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class SignOutGraphObjectTest : TestCase() {
+    @get:Rule(order = 3)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
     @Inject
     lateinit var navigator: Navigator
 
@@ -36,7 +42,6 @@ class SignOutGraphObjectTest : TestCase() {
     @Before
     fun setup() {
         hiltRule.inject()
-        launchActivity<MainActivity>()
 
         wheneverBlocking { mockAppInfoService.get() }.thenAnswer {
             AppInfoServiceState.Successful(TestUtils.data)
@@ -45,41 +50,44 @@ class SignOutGraphObjectTest : TestCase() {
 
     @Test
     fun signOutGraph_startingDestination() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setActivity {
             navigator.navigate(SignOutRoutes.Start)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_signOutConfirmationTitle))
-        )
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signOutConfirmationTitle)
+        ).assertIsDisplayed()
     }
 
     @Test
     fun signOutGraph_navigateToSignedOutInfoScreen() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setActivity {
             navigator.navigate(SignOutRoutes.Info)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_youveBeenSignedOutTitle))
-        )
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_youveBeenSignedOutTitle)
+        ).assertIsDisplayed()
     }
 
     @Test
     fun signOutGraph_navigateToReAuthErrorScreen() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setActivity {
             navigator.navigate(SignOutRoutes.ReAuthError)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_dataDeletedErrorTitle))
-        )
+        composeTestRule.apply {
+            onNodeWithText(
+                resources.getString(R.string.app_dataDeletedErrorTitle)
+            ).assertIsDisplayed()
 
-        phoneController.pressBack()
-        phoneController.navigateToApp(packageName = "uk.gov.android.onelogin")
+            back()
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_dataDeletedErrorTitle))
-        )
+            cancelAndRecreateRecomposer()
+
+            onNodeWithText(
+                resources.getString(R.string.app_dataDeletedErrorTitle)
+            ).assertIsDisplayed()
+        }
     }
 }

@@ -1,19 +1,21 @@
 package uk.gov.onelogin.mainnav.nav
 
-import androidx.test.core.app.launchActivity
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.TestUtils.setActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -31,13 +33,15 @@ class MainNavGraphObjectTest : TestCase() {
     @BindValue
     val appInfoService: AppInfoService = mock()
 
+    @get:Rule(order = 3)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
     @BindValue
     val appInfoLocalSource: AppInfoLocalSource = mock()
 
     @Before
     fun setup() {
         hiltRule.inject()
-        launchActivity<MainActivity>()
 
         wheneverBlocking { appInfoService.get() }.thenReturn(
             AppInfoServiceState.Successful(TestUtils.data)
@@ -46,12 +50,12 @@ class MainNavGraphObjectTest : TestCase() {
 
     @Test
     fun mainGraph_startingDestination() {
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        composeTestRule.setActivity {
             navigator.navigate(MainNavRoutes.Start)
         }
 
-        phoneController.assertElementExists(
-            selector = By.text(resources.getString(R.string.app_homeTitle))
-        )
+        composeTestRule.onAllNodesWithText(
+            resources.getString(R.string.app_homeTitle)
+        ).assertCountEquals(2)
     }
 }
