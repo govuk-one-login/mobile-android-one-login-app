@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.update
+package uk.gov.onelogin.ui.error.update
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
