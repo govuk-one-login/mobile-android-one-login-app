@@ -15,6 +15,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.appinfo.AppInfoUtils
 
 @HiltViewModel
 class UpdateRequiredAnalyticsViewModel @Inject constructor(
@@ -41,7 +42,7 @@ class UpdateRequiredAnalyticsViewModel @Inject constructor(
         fun makeUpdateEvent(context: Context) = with(context) {
             TrackEvent.Link(
                 isExternal = true,
-                domain = getEnglishString(R.string.openIdConnectBaseUrl, "").domain,
+                domain = AppInfoUtils.GOOGLE_PLAY_URL.domain,
                 text = getEnglishString(R.string.app_updateAppButton),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
