@@ -44,6 +44,8 @@ class AppInfoServiceImplTest {
     fun `device offline - successful local retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Offline)
         whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
+        whenever(appVersionCheck.compareVersions(eq(data)))
+            .thenReturn(AppInfoServiceState.Successful(data))
         val result = sut.get()
         assertEquals(AppInfoServiceState.Successful(data), result)
     }
@@ -60,6 +62,8 @@ class AppInfoServiceImplTest {
     fun `failed remote - successful local retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Failure(remoteSourceErrorMsg))
         whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
+        whenever(appVersionCheck.compareVersions(eq(data)))
+            .thenReturn(AppInfoServiceState.Successful(data))
         val result = sut.get()
         assertEquals(AppInfoServiceState.Successful(data), result)
     }

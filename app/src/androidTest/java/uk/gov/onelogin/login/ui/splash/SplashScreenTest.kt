@@ -11,6 +11,7 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.flow.flow
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -31,10 +32,17 @@ import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
+import uk.gov.onelogin.optin.BinderModule
+import uk.gov.onelogin.optin.domain.repository.OptInRepository
 import uk.gov.onelogin.optin.ui.NOTICE_TAG
 
 @HiltAndroidTest
-@UninstallModules(UseCaseModule::class, NavigatorModule::class, AppInfoApiModule::class)
+@UninstallModules(
+    UseCaseModule::class,
+    NavigatorModule::class,
+    AppInfoApiModule::class,
+    BinderModule::class
+)
 class SplashScreenTest : TestCase() {
     @BindValue
     val verifyIdToken: VerifyIdToken = mock()
@@ -51,6 +59,9 @@ class SplashScreenTest : TestCase() {
     @BindValue
     val appInfoService: AppInfoService = mock()
 
+    @BindValue
+    val analyticsRepo: OptInRepository = mock()
+
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
@@ -61,9 +72,8 @@ class SplashScreenTest : TestCase() {
     fun setUp() {
         hiltRule.inject()
 
-        wheneverBlocking { appInfoService.get() }.thenAnswer {
-            AppInfoServiceState.Successful(TestUtils.appInfoData)
-        }
+        wheneverBlocking { appInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(TestUtils.appInfoData))
 
         splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
@@ -77,10 +87,6 @@ class SplashScreenTest : TestCase() {
     @Test
     fun verifySplashScreen() {
         // Given
-        wheneverBlocking { appInfoService.get() }.thenReturn(
-            AppInfoServiceState.Successful(TestUtils.appInfoData)
-        )
-        // And
         composeTestRule.setContent {
             SplashScreen()
         }
@@ -92,6 +98,9 @@ class SplashScreenTest : TestCase() {
 
     @Test
     fun testUnlockButton() {
+        wheneverBlocking {
+            analyticsRepo.isOptInPreferenceRequired()
+        }.thenReturn(flow { emit(false) })
         wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
         }
@@ -100,7 +109,7 @@ class SplashScreenTest : TestCase() {
         composeTestRule.setContent {
             SplashScreen()
         }
-        composeTestRule.waitUntil {
+        composeTestRule.waitUntil(15000) {
             composeTestRule.onNode(unlockButton).isDisplayed()
         }
 

@@ -76,7 +76,7 @@ class SplashScreenViewModel @Inject constructor(
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
     }
 
-    fun retrieveAppInfo(callback: suspend CoroutineScope.() -> Unit) {
+    fun retrieveAppInfo(onSuccess: suspend CoroutineScope.() -> Unit) {
         viewModelScope.launch {
             _loading.emit(true)
             when (appInfoService.get()) {
@@ -84,7 +84,7 @@ class SplashScreenViewModel @Inject constructor(
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
                 AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
                 // WHEN successful AppInfo response/ status
-                else -> callback()
+                else -> onSuccess()
             }
         }
     }

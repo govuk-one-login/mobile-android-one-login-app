@@ -35,6 +35,6 @@ class AppVersionCheckImpl @Inject constructor(
     }
 
     companion object {
-        const val TAG = "AppVersionCheck"
+        private const val TAG = "AppVersionCheck"
     }
 }

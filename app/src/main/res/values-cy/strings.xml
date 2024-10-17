@@ -82,4 +82,5 @@
     <string name="app_dataDeletedErrorBullet2">os oeddech chi\'n defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, mae hyn wedi\'i ddiffodd</string>
     <string name="app_dataDeletedErrorBullet3">mae\'r ap wedi rhoi\'r gorau i rannu dadansoddeg am sut rydych yn ei ddefnyddio</string>
     <string name="app_dataDeletedErrorBody3">Er mwyn parhau i ddefnyddio\'r ap, bydd angen i chi fewngofnodi. Yna byddwch yn gallu ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
+    <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
 </resources>

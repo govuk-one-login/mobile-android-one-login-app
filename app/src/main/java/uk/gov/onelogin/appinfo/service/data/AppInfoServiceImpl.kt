@@ -22,15 +22,9 @@ class AppInfoServiceImpl @Inject constructor(
         return when (val remoteResult = remoteSource.get()) {
             is AppInfoRemoteState.Success -> {
                 // Check remote min version compatible
-                when (val compareResult = appVersionCheck.compareVersions(remoteResult.value)) {
-                    is AppInfoServiceState.Successful -> {
-                        // Encode value to save in SharedPrefs and save/ update
-                        val encodedValue = Json.encodeToString<AppInfoData>(remoteResult.value)
-                        localSource.update(encodedValue)
-                        AppInfoServiceState.Successful(remoteResult.value)
-                    }
-                    else -> compareResult
-                }
+                val encodedValue = Json.encodeToString<AppInfoData>(remoteResult.value)
+                localSource.update(encodedValue)
+                return appVersionCheck.compareVersions(remoteResult.value)
             }
             AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)
             is AppInfoRemoteState.Failure ->
@@ -45,7 +39,6 @@ class AppInfoServiceImpl @Inject constructor(
         return if (localSourceState is AppInfoLocalState.Success) {
             // Check local min version compatible
             appVersionCheck.compareVersions(localSourceState.value)
-            AppInfoServiceState.Successful(localSourceState.value)
         } else {
             fallback
         }
