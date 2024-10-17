@@ -25,6 +25,7 @@ import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -35,6 +36,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
 import uk.gov.android.authentication.TokenResponse
@@ -42,6 +44,11 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
+import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.appinfo.AppInfoApiModule
+import uk.gov.onelogin.appinfo.service.domain.AppInfoService
+import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.credentialchecker.BiometricManager
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
@@ -56,7 +63,8 @@ import uk.gov.onelogin.ui.LocaleUtils
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    CredentialCheckerModule::class
+    CredentialCheckerModule::class,
+    AppInfoApiModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -67,6 +75,12 @@ class LoginTest : TestCase() {
 
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
+
+    @BindValue
+    val mockAppInfoService: AppInfoService = mock()
+
+    @BindValue
+    val mockAppInfoLocalSource: AppInfoLocalSource = mock()
 
     @Inject
     lateinit var tokenRepository: TokenRepository
@@ -80,6 +94,8 @@ class LoginTest : TestCase() {
     @Inject
     @Named("Open")
     lateinit var secureStore: SecureStore
+
+    private val data = TestUtils.appInfoData
 
     @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()
@@ -106,7 +122,8 @@ class LoginTest : TestCase() {
 
     @FlakyTest
     @Test
-    fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
+    fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
         tokenRepository.setTokenResponse(
             TokenResponse(
                 tokenType = "type",
@@ -158,6 +175,8 @@ class LoginTest : TestCase() {
         runBlocking {
             secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
         }
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
 
         startApp()
         clickOptOut()
@@ -200,6 +219,8 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultNullData() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
         setupActivityForResult(
             Intent()
         )
@@ -214,6 +235,8 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultWithDataButLoginThrows() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
         whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
         setupActivityForResult(
             Intent(
@@ -229,6 +252,8 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultWithDataUnsecured() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
         setupActivityForResult(
@@ -248,6 +273,8 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultWithDataBioOptIn() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
@@ -265,6 +292,8 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultWithDataPasscode() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(data))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)

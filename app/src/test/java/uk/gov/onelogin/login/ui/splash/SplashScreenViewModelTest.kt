@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,7 +16,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
+import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
@@ -37,20 +38,7 @@ class SplashScreenViewModelTest {
     private val mockActivity: FragmentActivity = mock()
     private val mockAppInfoService: AppInfoService = mock()
 
-    private val data = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "0.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
+    private val data = TestUtils.appInfoData
 
     private val viewModel = SplashScreenViewModel(
         mockNavigator,
@@ -140,6 +128,7 @@ class SplashScreenViewModelTest {
         verifyNoInteractions(mockNavigator)
         Handler(Looper.getMainLooper()).post {
             assertTrue(viewModel.showUnlock.value)
+            assertFalse(viewModel.loading.value)
         }
     }
 
@@ -158,24 +147,38 @@ class SplashScreenViewModelTest {
 
     @Test
     fun retrieveAppInfoOffline() = runTest {
-        // WHEN AppInfo call is offline and local source has failed/ null
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is offline and local source has failed/ null
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
 
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
         // THEN it navigates to Offline Error screen
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
     }
 
     @Test
     fun retrieveAppInfoUnavailable() = runTest {
-        // WHEN AppInfo call is offline and local source has failed/ null
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+        // AND AppInfo call is offline and local source has failed/ null
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
 
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
         // THEN it navigates to Generic Error screen
         verify(mockNavigator).navigate(ErrorRoutes.Generic)
     }
@@ -183,10 +186,10 @@ class SplashScreenViewModelTest {
     @Test
     fun retrieveAppInfoGoodLocal() = runTest {
         // WHEN AppInfo call is successful from local
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.LocalSuccess(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo({})
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
@@ -195,12 +198,47 @@ class SplashScreenViewModelTest {
     @Test
     fun retrieveAppInfoGoodRemote() = runTest {
         // WHEN AppInfo call is successful from the remote
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.RemoteSuccess(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo({})
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
+    }
+
+    @Test
+    fun retrieveAppInfoSuccessful() = runTest {
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+
+        // AND AppInfo call is successful remote
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
+
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
+    }
+
+    @Test
+    fun retrieveAppInfoUpdateRequired() = runTest {
+        // WHEN AppInfo has not been called yet - initial state
+        // THEN loading progress indicator will be set to false
+        assertFalse(viewModel.loading.value)
+
+        // AND AppInfo call is successful remote
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.UpdateRequired)
+        // AND it calls retrieveAppInfo
+        viewModel.retrieveAppInfo {
+            // Callback - Nothing to do
+        }
+
+        // THEN loading progress indicator will be set to true
+        assertTrue(viewModel.loading.value)
+        verify(mockNavigator).navigate(ErrorRoutes.UpdateRequired)
     }
 }

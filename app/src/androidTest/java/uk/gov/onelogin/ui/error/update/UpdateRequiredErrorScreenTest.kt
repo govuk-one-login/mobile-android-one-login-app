@@ -1,27 +1,43 @@
-package uk.gov.onelogin.ui.update
+package uk.gov.onelogin.ui.error.update
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.TestCase.assertEquals
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.appinfo.AppInfoUtils
 
 @HiltAndroidTest
-class UpdateRequiredScreenTest : TestCase() {
-    private var onPrimary = 0
+class UpdateRequiredErrorScreenTest : TestCase() {
+    private val intent = Intent()
+    private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
 
     @Before
     fun setup() {
+        hiltRule.inject()
+        Intents.init()
         composeTestRule.setContent {
-            UpdateRequiredScreen(
-                updateApp = { onPrimary++ }
-            )
+            UpdateRequiredScreen()
         }
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
     }
 
     @Test
@@ -46,16 +62,13 @@ class UpdateRequiredScreenTest : TestCase() {
     }
 
     @Test
-    fun verifyOnSignInClick() {
+    fun verifyIntent() {
+        intending(hasData(AppInfoUtils.GOOGLE_PLAY_URL)).respondWith(result)
         composeTestRule.apply {
-            onNodeWithText(
-                resources.getString(R.string.app_updateAppButton)
-            ).apply {
-                assertIsDisplayed()
-                performClick()
-            }
+            onNodeWithText(resources.getString(R.string.app_updateAppButton)).performClick()
         }
 
-        assertEquals(1, onPrimary)
+        intended(hasAction(Intent.ACTION_VIEW))
+        intended(hasData(Uri.parse(AppInfoUtils.GOOGLE_PLAY_URL)))
     }
 }

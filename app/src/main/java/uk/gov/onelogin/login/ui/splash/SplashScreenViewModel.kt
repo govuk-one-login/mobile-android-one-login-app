@@ -8,6 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -30,6 +33,9 @@ class SplashScreenViewModel @Inject constructor(
     private val _showUnlock = mutableStateOf(false)
     val showUnlock: State<Boolean> = _showUnlock
 
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
             handleLogin(
@@ -45,8 +51,10 @@ class SplashScreenViewModel @Inject constructor(
                         is LocalAuthStatus.Success ->
                             nextScreen(MainNavRoutes.Start)
 
-                        LocalAuthStatus.UserCancelled ->
+                        LocalAuthStatus.UserCancelled -> {
+                            _loading.value = false
                             _showUnlock.value = true
+                        }
 
                         LocalAuthStatus.BioCheckFailed -> {
                             // Allow user to make multiple fails... do nothing for now
@@ -68,14 +76,15 @@ class SplashScreenViewModel @Inject constructor(
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
     }
 
-    fun retrieveAppInfo() {
+    fun retrieveAppInfo(onSuccess: suspend CoroutineScope.() -> Unit) {
         viewModelScope.launch {
+            _loading.emit(true)
             when (appInfoService.get()) {
                 AppInfoServiceState.Offline -> navigateToOfflineError()
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
-                else -> {
-                    // Do nothing on success
-                }
+                AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
+                // WHEN successful AppInfo response/ status
+                else -> onSuccess()
             }
         }
     }
@@ -86,6 +95,10 @@ class SplashScreenViewModel @Inject constructor(
 
     private fun navigateToOfflineError() {
         navigator.navigate(ErrorRoutes.Offline)
+    }
+
+    private fun navigateToUpdateRequiredError() {
+        navigator.navigate(ErrorRoutes.UpdateRequired)
     }
 
     private fun nextScreen(route: NavRoute) {

@@ -1,8 +1,9 @@
-package uk.gov.onelogin.ui.update
+package uk.gov.onelogin.ui.error.update
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.R as UiR
 import uk.gov.android.ui.components.content.GdsContentText
@@ -12,7 +13,7 @@ import uk.gov.android.ui.theme.smallPadding
 
 @Composable
 fun UpdateRequiredScreen(
-    updateApp: () -> Unit
+    viewModel: UpdateRequiredErrorViewModel = hiltViewModel()
 ) {
     LandingPage(
         landingPageParameters = LandingPageParameters(
@@ -31,7 +32,7 @@ fun UpdateRequiredScreen(
             ),
             contentInternalPadding = PaddingValues(bottom = smallPadding),
             primaryButtonText = R.string.app_updateAppButton,
-            onPrimary = updateApp
+            onPrimary = { viewModel.updateApp() }
         )
     )
 }
