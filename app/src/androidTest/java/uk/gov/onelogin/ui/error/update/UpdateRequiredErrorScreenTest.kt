@@ -86,10 +86,7 @@ class UpdateRequiredErrorScreenTest : TestCase() {
             UpdateRequiredScreen()
         }
         intending(hasData(AppInfoUtils.GOOGLE_PLAY_URL)).respondWith(result)
-        composeTestRule.apply {
-            onNodeWithText(resources.getString(R.string.app_updateAppButton)).performClick()
-        }
-
+        composeTestRule.onNode(primaryButton).performClick()
         intended(hasAction(Intent.ACTION_VIEW))
         intended(hasData(Uri.parse(AppInfoUtils.GOOGLE_PLAY_URL)))
     }
@@ -110,7 +107,7 @@ class UpdateRequiredErrorScreenTest : TestCase() {
             UpdateRequiredScreen()
         }
         val event = UpdateRequiredAnalyticsViewModel.makeUpdateEvent(context)
-
+        intending(hasData(AppInfoUtils.GOOGLE_PLAY_URL)).respondWith(result)
         composeTestRule.onNode(primaryButton).performClick()
         verify(analytics).logEventV3Dot1(event)
     }
