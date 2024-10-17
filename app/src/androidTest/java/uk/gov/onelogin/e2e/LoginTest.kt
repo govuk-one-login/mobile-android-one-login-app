@@ -25,6 +25,7 @@ import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -47,6 +48,7 @@ import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.credentialchecker.BiometricManager
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
@@ -61,7 +63,8 @@ import uk.gov.onelogin.ui.LocaleUtils
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    CredentialCheckerModule::class
+    CredentialCheckerModule::class,
+    AppInfoApiModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -72,6 +75,12 @@ class LoginTest : TestCase() {
 
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
+
+    @BindValue
+    val mockAppInfoService: AppInfoService = mock()
+
+    @BindValue
+    val mockAppInfoLocalSource: AppInfoLocalSource = mock()
 
     @Inject
     lateinit var tokenRepository: TokenRepository

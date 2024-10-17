@@ -16,7 +16,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
+import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
@@ -38,20 +38,7 @@ class SplashScreenViewModelTest {
     private val mockActivity: FragmentActivity = mock()
     private val mockAppInfoService: AppInfoService = mock()
 
-    private val data = AppInfoData(
-        apps = AppInfoData.App(
-            AppInfoData.AppInfo(
-                minimumVersion = "0.0.0",
-                releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
-                ),
-                available = true,
-                featureFlags = AppInfoData.FeatureFlags(true)
-            )
-        )
-    )
+    private val data = TestUtils.appInfoData
 
     private val viewModel = SplashScreenViewModel(
         mockNavigator,
@@ -199,10 +186,10 @@ class SplashScreenViewModelTest {
     @Test
     fun retrieveAppInfoGoodLocal() = runTest {
         // WHEN AppInfo call is successful from local
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.LocalSuccess(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo({})
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)
@@ -211,10 +198,10 @@ class SplashScreenViewModelTest {
     @Test
     fun retrieveAppInfoGoodRemote() = runTest {
         // WHEN AppInfo call is successful from the remote
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.RemoteSuccess(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
 
         // AND it calls retrieveAppInfo
-        viewModel.retrieveAppInfo()
+        viewModel.retrieveAppInfo({})
 
         // THEN it does not navigate and calls set feature flags
         verifyNoInteractions(mockNavigator)

@@ -24,6 +24,7 @@ import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
+import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLogin
@@ -60,6 +61,9 @@ class SplashScreenTest : TestCase() {
     val appInfoService: AppInfoService = mock()
 
     @BindValue
+    val appInfoLocalSource: AppInfoLocalSource = mock()
+
+    @BindValue
     val analyticsRepo: OptInRepository = mock()
 
     private lateinit var splashIcon: SemanticsMatcher
@@ -86,6 +90,9 @@ class SplashScreenTest : TestCase() {
 
     @Test
     fun verifySplashScreen() {
+        wheneverBlocking {
+            analyticsRepo.isOptInPreferenceRequired()
+        }.thenReturn(flow { emit(false) })
         // Given
         composeTestRule.setContent {
             SplashScreen()

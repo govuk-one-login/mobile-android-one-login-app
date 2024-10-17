@@ -1,9 +1,6 @@
 package uk.gov.onelogin.appinfo.service.data
 
 import javax.inject.Inject
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.appversioncheck.domain.AppVersionCheck
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -22,8 +19,7 @@ class AppInfoServiceImpl @Inject constructor(
         return when (val remoteResult = remoteSource.get()) {
             is AppInfoRemoteState.Success -> {
                 // Check remote min version compatible
-                val encodedValue = Json.encodeToString<AppInfoData>(remoteResult.value)
-                localSource.update(encodedValue)
+                localSource.update(remoteResult.value)
                 return appVersionCheck.compareVersions(remoteResult.value)
             }
             AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)
