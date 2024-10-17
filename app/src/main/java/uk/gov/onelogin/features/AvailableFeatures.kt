@@ -10,7 +10,8 @@ class AvailableFeatures(
     @Inject
     constructor() : this(
         listOf(
-            StsFeatureFlag.entries.toTypedArray()
+            StsFeatureFlag.entries.toTypedArray(),
+            AppCheckFeatureFlag.entries.toTypedArray()
         ).flatMap {
             it.asIterable()
         }.toMutableSet()

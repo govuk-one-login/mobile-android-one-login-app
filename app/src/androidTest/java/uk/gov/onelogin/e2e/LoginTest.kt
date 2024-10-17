@@ -24,7 +24,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -42,8 +42,6 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
-import uk.gov.onelogin.appinfo.AppInfoApiModule
-import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.credentialchecker.BiometricManager
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
@@ -58,8 +56,7 @@ import uk.gov.onelogin.ui.LocaleUtils
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    CredentialCheckerModule::class,
-    AppInfoApiModule::class
+    CredentialCheckerModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -70,9 +67,6 @@ class LoginTest : TestCase() {
 
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
-
-    @BindValue
-    val mockAppInfoService: AppInfoService = mock()
 
     @Inject
     lateinit var tokenRepository: TokenRepository
@@ -160,8 +154,10 @@ class LoginTest : TestCase() {
 
     @FlakyTest
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
-        secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
+        runBlocking {
+            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+        }
 
         startApp()
         clickOptOut()

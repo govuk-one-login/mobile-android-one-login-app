@@ -5,15 +5,18 @@ import android.util.Log
 import androidx.core.content.edit
 import javax.inject.Inject
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
+import uk.gov.onelogin.features.domain.FeatureFlagSetter
 
 class AppInfoLocalSourceImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences
+    private val sharedPrefs: SharedPreferences,
+    private val featureFlagSetter: FeatureFlagSetter
 ) : AppInfoLocalSource {
-    override suspend fun get(): AppInfoLocalState {
+    override fun get(): AppInfoLocalState {
         return try {
             val result = sharedPrefs.getString(APP_INFO_KEY, null)
             if (!result.isNullOrEmpty()) {
@@ -26,10 +29,12 @@ class AppInfoLocalSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(value: String) {
+    override fun update(value: AppInfoData) {
+        val encodedValue = Json.encodeToString<AppInfoData>(value)
         sharedPrefs.edit(true) {
-            putString(APP_INFO_KEY, value)
+            putString(APP_INFO_KEY, encodedValue)
         }
+        featureFlagSetter.setFromAppInfo(value.apps.android)
     }
 
     private fun decodeAppInfoData(

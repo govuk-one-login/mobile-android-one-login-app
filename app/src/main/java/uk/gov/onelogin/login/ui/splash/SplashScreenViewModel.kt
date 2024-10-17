@@ -74,7 +74,7 @@ class SplashScreenViewModel @Inject constructor(
                 AppInfoServiceState.Offline -> navigateToOfflineError()
                 AppInfoServiceState.Unavailable -> navigateToGenericError()
                 else -> {
-                    // Nothing to do when AppInfo retrieval was successful
+                    // Do nothing on success
                 }
             }
         }

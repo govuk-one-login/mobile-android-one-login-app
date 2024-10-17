@@ -63,7 +63,7 @@ private fun FeatureToggle(
     ) {
         Text(
             modifier = Modifier.weight(1F),
-            text = featureFlag.toString(),
+            text = featureFlag.id,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold
         )

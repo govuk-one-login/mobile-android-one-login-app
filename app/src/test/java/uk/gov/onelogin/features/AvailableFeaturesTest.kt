@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import uk.gov.android.features.FeatureFlag
 
-private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 1
+private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 2
 
 class AvailableFeaturesTest {
     private val availableFeatures by lazy {
@@ -53,9 +53,8 @@ class AvailableFeaturesTest {
 
     @Test
     fun `available features contains included feature`() {
-        val featureFlagList = getFeatureFlagImplementations()
-
         assertTrue(availableFeatures.contains(StsFeatureFlag.STS_ENDPOINT))
+        assertTrue(availableFeatures.contains(AppCheckFeatureFlag.ENABLED))
     }
 
     @Test
@@ -69,7 +68,7 @@ class AvailableFeaturesTest {
 
     @Test
     fun `to String`() {
-        assertEquals("AvailableFeatures[STS_ENDPOINT]", availableFeatures.toString())
+        assertEquals("AvailableFeatures[STS_ENDPOINT, ENABLED]", availableFeatures.toString())
     }
 
     @Test
