@@ -3,6 +3,7 @@ package uk.gov.onelogin
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -17,6 +18,7 @@ import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.optin.domain.repository.AnalyticsOptInRepository
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 
@@ -24,6 +26,7 @@ import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class MainActivityViewModelTest {
     private val mockContext: Context = mock()
+    private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
@@ -45,6 +48,7 @@ class MainActivityViewModelTest {
     @BeforeEach
     fun setup() {
         viewModel = MainActivityViewModel(
+            analyticsOptInRepo,
             mockBioPrefHandler,
             mockTokenRepository,
             mockNavigator,
@@ -73,5 +77,11 @@ class MainActivityViewModelTest {
         verify(mockTokenRepository).clearTokenResponse()
         // AND user navigates to the lock screen (splash screen)
         verify(mockNavigator).navigate(LoginRoutes.Start)
+    }
+
+    @Test
+    fun `synchronise analytics on each app start`() = runTest {
+        viewModel.onStart(owner = mockLifecycleOwner)
+        verify(analyticsOptInRepo).synchronise()
     }
 }
