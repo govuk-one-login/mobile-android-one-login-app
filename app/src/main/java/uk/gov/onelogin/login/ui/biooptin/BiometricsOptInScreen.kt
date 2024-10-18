@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
@@ -30,6 +29,8 @@ import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.hintTextGrey
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 
 @Suppress("LongMethod")
 @Composable
@@ -125,8 +126,9 @@ fun BiometricsOptInScreen(
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
 @Composable
-@Preview
-private fun Preview() {
+internal fun BiometricsPreview() {
     BiometricsOptInScreen()
 }

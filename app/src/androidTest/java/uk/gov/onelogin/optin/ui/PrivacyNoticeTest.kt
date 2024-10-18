@@ -40,4 +40,11 @@ class PrivacyNoticeTest {
         val icon = hasTestTag(ICON_TAG)
         composeTestRule.onNode(icon).isDisplayed()
     }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            PrivacyNoticePreview()
+        }
+    }
 }

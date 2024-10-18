@@ -68,4 +68,11 @@ class OptInScreenTest : TestCase() {
         verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
         verifyBlocking(repository) { optOut() }
     }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            OptInPreview()
+        }
+    }
 }

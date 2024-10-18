@@ -29,6 +29,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.ui.components.ClickableText
 
 private const val WHITE_SPACE = " "
@@ -88,6 +89,7 @@ private fun LinkOut() {
     )
 }
 
+@ExcludeFromJacocoGeneratedReport
 @PreviewFontScale
 @PreviewLightDark
 @Composable

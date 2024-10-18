@@ -18,17 +18,9 @@ import uk.gov.onelogin.navigation.NavigatorModule
 
 @HiltAndroidTest
 @UninstallModules(NavigatorModule::class)
-class BioOptInScreenKtTest : TestCase() {
+class BioOptInScreenTest : TestCase() {
     @BindValue
     var mockNavigator: Navigator = mock()
-
-    @Before
-    fun setupNavigation() {
-        hiltRule.inject()
-        composeTestRule.setContent {
-            BiometricsOptInScreen()
-        }
-    }
 
     private val title = hasText(resources.getString(R.string.app_enableBiometricsTitle))
     private val content1 = hasText(resources.getString(R.string.app_enableBiometricsBody1))
@@ -38,8 +30,16 @@ class BioOptInScreenKtTest : TestCase() {
     private val secondaryButton =
         hasText(resources.getString(R.string.app_enablePasscodeOrPatternButton))
 
+    @Before
+    fun setupNavigation() {
+        hiltRule.inject()
+    }
+
     @Test
     fun verifyStrings() {
+        composeTestRule.setContent {
+            BiometricsOptInScreen()
+        }
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(content1).assertIsDisplayed()
         composeTestRule.onNode(content2).assertIsDisplayed()
@@ -50,6 +50,9 @@ class BioOptInScreenKtTest : TestCase() {
 
     @Test
     fun testPrimaryButton() {
+        composeTestRule.setContent {
+            BiometricsOptInScreen()
+        }
         composeTestRule.onNode(primaryButton).performClick()
 
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
@@ -57,8 +60,18 @@ class BioOptInScreenKtTest : TestCase() {
 
     @Test
     fun testSecondaryButton() {
+        composeTestRule.setContent {
+            BiometricsOptInScreen()
+        }
         composeTestRule.onNode(secondaryButton).performClick()
 
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+    }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            BiometricsPreview()
+        }
     }
 }

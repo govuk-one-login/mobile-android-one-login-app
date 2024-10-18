@@ -6,9 +6,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.tooling.preview.PreviewFontScale
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -17,6 +14,8 @@ import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
 
 @Composable
@@ -88,9 +87,8 @@ internal fun WelcomeBody(
     )
 }
 
-@PreviewLightDark
-@PreviewFontScale
-@PreviewScreenSizes
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
 @Composable
 internal fun WelcomePreview() {
     GdsTheme {

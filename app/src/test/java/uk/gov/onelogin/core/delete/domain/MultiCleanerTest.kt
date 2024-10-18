@@ -11,6 +11,10 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions
+import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
 
 @ExperimentalCoroutinesApi
 class MultiCleanerTest {
@@ -65,5 +69,19 @@ class MultiCleanerTest {
         Assertions.assertThrows(Exception::class.java) {
             runTest { cleaner.clean() }
         }
+    }
+
+    @Test
+    fun `Passed in Dispatcher is used`() = runTest {
+        // Given MultiCleaner with the test dispatcher passed in
+        val passedDispatcher = spy(dispatcher)
+        cleaner = MultiCleaner(
+            passedDispatcher,
+            Cleaner { Result.success(Unit) }
+        )
+        // When cleaning
+        cleaner.clean()
+        // Then the test dispatcher is used
+        verify(passedDispatcher, atLeastOnce()).dispatch(any(), any())
     }
 }
