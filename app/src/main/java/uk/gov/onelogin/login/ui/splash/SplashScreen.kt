@@ -46,6 +46,7 @@ import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 
@@ -179,6 +180,7 @@ internal fun LoadingIndicator() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @PreviewScreenSizes
 @Composable
 internal fun SplashScreenPreview() {
@@ -192,6 +194,7 @@ internal fun SplashScreenPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Preview
 @Composable
 internal fun UnlockScreenPreview() {
@@ -205,6 +208,7 @@ internal fun UnlockScreenPreview() {
     }
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Preview
 @Composable
 internal fun LoadingSplashScreenPreview() {

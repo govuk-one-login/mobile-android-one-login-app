@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.PreviewFontScale
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -23,6 +20,8 @@ import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 
 @Composable
@@ -109,9 +108,8 @@ internal fun SignedOutInfoBody(
     )
 }
 
-@PreviewLightDark
-@PreviewFontScale
-@PreviewScreenSizes
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
 @Composable
 internal fun SignedOutInfoPreview() {
     GdsTheme {
