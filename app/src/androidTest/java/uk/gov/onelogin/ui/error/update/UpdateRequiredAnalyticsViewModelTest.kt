@@ -16,6 +16,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.appinfo.AppInfoUtils
 
 class UpdateRequiredAnalyticsViewModelTest {
     private lateinit var domain: String
@@ -35,7 +36,7 @@ class UpdateRequiredAnalyticsViewModelTest {
             taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
             taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
         )
-        domain = context.getEnglishString(R.string.openIdConnectBaseUrl, "").domain
+        domain = AppInfoUtils.GOOGLE_PLAY_URL.domain
         buttonText = context.getEnglishString(R.string.app_updateAppButton)
         name = context.getEnglishString(R.string.app_updateApp_Title)
         id = context.getEnglishString(R.string.update_required_page_id)
@@ -44,7 +45,7 @@ class UpdateRequiredAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackSignOutLogsTrackEventLink() {
+    fun trackAppUpdateLogsTrackEventLink() {
         // Given a TrackEvent.Link
         val event = TrackEvent.Link(
             isExternal = true,
