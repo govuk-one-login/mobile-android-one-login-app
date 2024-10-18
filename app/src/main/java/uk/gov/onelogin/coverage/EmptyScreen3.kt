@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 
+@Suppress("EmptyFunctionBlock")
 @Composable
 fun EmptyScreen3() {}
 
