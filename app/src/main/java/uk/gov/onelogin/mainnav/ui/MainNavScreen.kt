@@ -7,6 +7,8 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -39,11 +41,11 @@ fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
-    val navItems = listOf(
-        BottomNavDestination.Home,
-        BottomNavDestination.Wallet,
-        BottomNavDestination.Profile
-    )
+    val navItems = createBottomNavItems(walletScreenViewModel.enabled)
+
+    LaunchedEffect(Unit) {
+        walletScreenViewModel.isWalletEnabled()
+    }
     Scaffold(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -103,6 +105,20 @@ fun MainNavScreen(
         }
     }
 }
+
+private fun createBottomNavItems(walletEnabled: State<Boolean>) =
+    if (walletEnabled.value) {
+        listOf(
+            BottomNavDestination.Home,
+            BottomNavDestination.Wallet,
+            BottomNavDestination.Profile
+        )
+    } else {
+        listOf(
+            BottomNavDestination.Home,
+            BottomNavDestination.Profile
+        )
+    }
 
 val TextUnit.nonScaledSp
     @Composable
