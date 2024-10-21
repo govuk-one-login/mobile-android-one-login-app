@@ -11,6 +11,7 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
+import kotlin.io.encoding.Base64.PaddingOption
 
 fun interface VerifyIdToken {
     suspend operator fun invoke(
@@ -98,9 +99,10 @@ class VerifyIdTokenImpl @Inject constructor(
 fun String.extractEmailFromIdToken(): String? {
     try {
         val bodyEncoded = this.split(".")[1]
-        val body = String(Base64.decode(bodyEncoded))
+        val body = String(Base64.withPadding(PaddingOption.PRESENT_OPTIONAL).decode(bodyEncoded))
         val data = Json.parseToJsonElement(body)
         val email = data.jsonObject["email"]
+        println(email)
         val stripEmail = email?.toString()?.removeSurrounding("\"")
         return stripEmail
     } catch (e: Exception) {
