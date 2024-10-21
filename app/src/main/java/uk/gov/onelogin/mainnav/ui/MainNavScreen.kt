@@ -41,10 +41,10 @@ fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
-    val navItems = createBottomNavItems(walletScreenViewModel.enabled)
+    val navItems = createBottomNavItems(walletScreenViewModel.walletEnabled)
 
     LaunchedEffect(Unit) {
-        walletScreenViewModel.isWalletEnabled()
+        walletScreenViewModel.checkWalletEnabled()
     }
     Scaffold(
         bottomBar = {

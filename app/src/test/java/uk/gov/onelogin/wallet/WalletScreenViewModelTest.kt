@@ -18,26 +18,26 @@ class WalletScreenViewModelTest {
     @Test
     fun `wallet visible`() {
         // Test initial state
-        assertFalse(sut.enabled.value)
+        assertFalse(sut.walletEnabled.value)
 
         // WHEN
         whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
-        sut.isWalletEnabled()
+        sut.checkWalletEnabled()
 
         // THEN
-        assertTrue(sut.enabled.value)
+        assertTrue(sut.walletEnabled.value)
     }
 
     @Test
     fun `wallet not visible`() {
         // Test initial state
-        assertFalse(sut.enabled.value)
+        assertFalse(sut.walletEnabled.value)
 
         // WHEN
         whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(false)
-        sut.isWalletEnabled()
+        sut.checkWalletEnabled()
 
         // THEN
-        assertFalse(sut.enabled.value)
+        assertFalse(sut.walletEnabled.value)
     }
 }

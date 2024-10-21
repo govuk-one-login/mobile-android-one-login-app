@@ -14,10 +14,10 @@ class WalletScreenViewModel @Inject constructor(
     val walletSdk: WalletSdk,
     private val features: FeatureFlags
 ) : ViewModel() {
-    private val _enabled = mutableStateOf(false)
-    val enabled: State<Boolean> = _enabled
+    private val _walletEnabled = mutableStateOf(false)
+    val walletEnabled: State<Boolean> = _walletEnabled
 
-    fun isWalletEnabled() {
-        _enabled.value = features[WalletFeatureFlag.ENABLED]
+    fun checkWalletEnabled() {
+        _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
     }
 }
