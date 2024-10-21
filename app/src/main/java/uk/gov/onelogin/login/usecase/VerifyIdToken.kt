@@ -3,6 +3,7 @@ package uk.gov.onelogin.login.usecase
 import android.util.Log
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
+import kotlin.io.encoding.Base64.PaddingOption
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -98,9 +99,10 @@ class VerifyIdTokenImpl @Inject constructor(
 fun String.extractEmailFromIdToken(): String? {
     try {
         val bodyEncoded = this.split(".")[1]
-        val body = String(Base64.decode(bodyEncoded))
+        val body = String(Base64.withPadding(PaddingOption.PRESENT_OPTIONAL).decode(bodyEncoded))
         val data = Json.parseToJsonElement(body)
         val email = data.jsonObject["email"]
+        println(email)
         val stripEmail = email?.toString()?.removeSurrounding("\"")
         return stripEmail
     } catch (e: Exception) {
