@@ -16,6 +16,6 @@ object FeaturesModule {
     @Provides
     @Singleton
     fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
-        setOf(StsFeatureFlag.STS_ENDPOINT)
+        setOf(StsFeatureFlag.STS_ENDPOINT, WalletFeatureFlag.ENABLED)
     )
 }
