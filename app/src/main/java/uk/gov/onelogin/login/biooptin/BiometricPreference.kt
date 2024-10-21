@@ -5,3 +5,7 @@ enum class BiometricPreference {
     PASSCODE,
     NONE
 }
+
+enum class SomeNewEnum {
+    New, Old, Some
+}
