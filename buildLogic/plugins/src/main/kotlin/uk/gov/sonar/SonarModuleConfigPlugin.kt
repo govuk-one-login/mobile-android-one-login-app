@@ -91,6 +91,7 @@ class SonarModuleConfigPlugin : Plugin<Project> {
         "sonar.sources" to sourceFolders(SourceSetFolder(project)),
         "sonar.tests" to testFolders(SourceSetFolder(project)),
         "sonar.exclusions" to sonarExclusions(),
+        "sonar.coverage.exclusions" to "**/**.*Preview*,**/ui/**/EmptyScreen1Kt.class,**/ui/**/EmptyScreen1.class",
         "sonar.androidLint.reportPaths" to androidLintReportFiles(project),
         "sonar.coverage.jacoco.xmlReportPaths" to jacocoXmlReportFiles(project),
         "sonar.kotlin.detekt.reportPaths" to detektReportFiles(project),
