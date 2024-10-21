@@ -22,4 +22,17 @@ class SomeNewEnumTest {
         val preference = SomeNewEnum.Some
         assertEquals(expected = preference, actual = SomeNewEnum.valueOf("Some"))
     }
+
+    @Test
+    fun values() {
+        val list = SomeNewEnum.values()
+        SomeNewEnum.entries
+        assertEquals(expected = 3, actual = list.size)
+    }
+
+    @Test
+    fun entries() {
+        val list = SomeNewEnum.entries
+        assertEquals(expected = 3, actual = list.size)
+    }
 }
