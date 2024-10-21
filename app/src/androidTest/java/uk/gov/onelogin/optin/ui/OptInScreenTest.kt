@@ -1,10 +1,24 @@
 package uk.gov.onelogin.optin.ui
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
+import androidx.test.espresso.intent.matcher.UriMatchers
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -37,6 +51,15 @@ class OptInScreenTest : TestCase() {
             repository,
             mockNavigator
         )
+        Intents.init()
+        intending(not(isInternal())).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
     }
 
     @Test
@@ -46,9 +69,7 @@ class OptInScreenTest : TestCase() {
             OptInScreen(viewModel)
         }
         // When clicking on the "Share analytics" `primaryButton`
-        composeTestRule.waitForIdle()
         composeTestRule.onNode(primaryButton).performClick()
-        composeTestRule.waitForIdle()
         // Then call optIn()
         verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
         verifyBlocking(repository) { optIn() }
@@ -61,12 +82,34 @@ class OptInScreenTest : TestCase() {
             OptInScreen(viewModel)
         }
         // When clicking on the "Do not share analytics" `textButton`
-        composeTestRule.waitForIdle()
         composeTestRule.onNode(textButton).performClick()
-        composeTestRule.waitForIdle()
         // Then call optOut()
         verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
         verifyBlocking(repository) { optOut() }
+    }
+
+    @Test
+    fun privacyNoticeLaunchesBrowser() {
+        // Given the OptOutScreen Composable
+        val url = resources.getString(R.string.privacy_notice_url)
+        val privacyURL = Uri.parse(url)
+        composeTestRule.setContent {
+            OptInScreen(viewModel)
+        }
+        // When clicking on the privacy notice link
+        composeTestRule.onNode(privacyNotice).performClick()
+        // Then open a browser with the correct URL
+        val host = privacyURL.host
+        val path = privacyURL.path
+        val scheme = privacyURL.scheme
+        intended(
+            allOf(
+                IntentMatchers.hasAction(Intent.ACTION_VIEW),
+                hasData(UriMatchers.hasHost(host)),
+                hasData(UriMatchers.hasPath(path)),
+                hasData(UriMatchers.hasScheme(scheme))
+            )
+        )
     }
 
     @Test
