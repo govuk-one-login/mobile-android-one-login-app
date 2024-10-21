@@ -3,6 +3,7 @@ package uk.gov.onelogin.login.usecase
 import android.util.Log
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
+import kotlin.io.encoding.Base64.PaddingOption
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -11,7 +12,6 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
-import kotlin.io.encoding.Base64.PaddingOption
 
 fun interface VerifyIdToken {
     suspend operator fun invoke(
