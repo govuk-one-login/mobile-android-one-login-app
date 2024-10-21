@@ -25,6 +25,7 @@
     <string name="app_reportAProblemGiveFeedbackLink">Report a problem or give feedback</string>
     <string name="app_appGuidanceLink">Guidance about using the app</string>
     <string name="app_signOutButton">Sign out</string>
+    <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=en</string>
 
     <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Signing out will delete your app data</string>

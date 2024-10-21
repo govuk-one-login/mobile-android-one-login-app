@@ -4,6 +4,9 @@
     <string name="app_tryAgainButton">Rhowch gynnig arall</string>
     <string name="app_closeButton">Cau</string>
 
+    <!-- Profile -->
+    <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=cy</string>
+
     <!-- Passcode info -->
     <string name="app_noPasscodePatternSetupTitle">Mae\'n edrych fel nad oes gan y ffôn hwn god neu batrwm mynediad</string>
     <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>

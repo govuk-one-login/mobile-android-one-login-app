@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -45,8 +44,9 @@ fun ProfileScreen(
     viewModel: ProfileScreenViewModel = hiltViewModel()
 ) {
     val uriHandler = LocalUriHandler.current
-    val lang = remember { viewModel.locale }
     val email = viewModel.email
+    val signInUrl = stringResource(R.string.sign_in_url)
+    val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
     TitledPage(
         parameters = TitledPageParameters(
             R.string.app_profile
@@ -60,11 +60,11 @@ fun ProfileScreen(
                     id = R.string.app_manageSignInDetailsFootnote
                 )
             ) {
-                uriHandler.openUri("https://signin.account.gov.uk/sign-in-or-create?lng=$lang")
+                uriHandler.openUri(signInUrl)
             }
             HeadingRow(R.string.app_profileSubtitle2)
             ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
-                uriHandler.openUri("https://signin.account.gov.uk/privacy-notice?lng=$lang")
+                uriHandler.openUri(privacyNoticeUrl)
             }
             HorizontalDivider()
             ExternalLinkRow(R.string.app_OpenSourceLicences, R.drawable.arrow_right_icon)
