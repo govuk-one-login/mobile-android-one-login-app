@@ -18,7 +18,7 @@ import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltAndroidTest
 @UninstallModules(NavigatorModule::class)
-class ProfileScreenKtTest : TestCase() {
+class ProfileScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
 
