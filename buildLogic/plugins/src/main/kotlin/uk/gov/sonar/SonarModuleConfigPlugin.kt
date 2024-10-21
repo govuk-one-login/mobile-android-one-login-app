@@ -76,7 +76,12 @@ class SonarModuleConfigPlugin : Plugin<Project> {
             Filters.androidInstrumentationTests,
             Filters.sonar,
             Filters.testSourceSets,
-            Filters.developer
+            Filters.developer,
+            listOf(
+                "**/**.*Preview*",
+                "**/ui/**/EmptyScreen1Kt.class",
+                "**/ui/**/EmptyScreen1.class"
+            )
         ).flatten().joinToString(separator = ",")
 
     private fun sourceFolders(
@@ -90,7 +95,8 @@ class SonarModuleConfigPlugin : Plugin<Project> {
     private fun projectSonarProperties(project: Project): MutableMap<String, Any> = mutableMapOf(
         "sonar.sources" to sourceFolders(SourceSetFolder(project)),
         "sonar.tests" to testFolders(SourceSetFolder(project)),
-        "sonar.exclusions" to sonarExclusions(),
+//        "sonar.exclusions" to sonarExclusions(),
+        "sonar.coverage.exclusions" to sonarExclusions(),
         "sonar.androidLint.reportPaths" to androidLintReportFiles(project),
         "sonar.coverage.jacoco.xmlReportPaths" to jacocoXmlReportFiles(project),
         "sonar.kotlin.detekt.reportPaths" to detektReportFiles(project),
