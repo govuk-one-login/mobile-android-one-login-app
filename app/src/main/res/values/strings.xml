@@ -2,11 +2,7 @@
     <string name="app_name" translatable="false">OneLogin</string>
     <string name="action_settings" translatable="false">Settings</string>
 
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label" translatable="false">First Fragment</string>
-    <string name="second_fragment_label" translatable="false">Second Fragment</string>
-    <string name="next" translatable="false">Next</string>
-    <string name="previous" translatable="false">Previous</string>
+    <!-- Navigation -->
     <string name="app_continue">Continue</string>
     <string name="app_tryAgainButton">Try again</string>
     <string name="app_closeButton">Close</string>
@@ -53,7 +49,6 @@
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
     <string name="app_signInIconDescription" translatable="false">Gov Uk Icon</string>
-
 
     <!-- Errors -->
     <!-- Errors Generic -->
