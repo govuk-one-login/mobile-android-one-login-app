@@ -51,7 +51,7 @@ object TestUtils {
     val extractVersionErrorAppInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
-                minimumVersion = "vers1.0.0",
+                minimumVersion = "One.Two.Zero",
                 releaseFlags = AppInfoData.ReleaseFlags(
                     true,
                     true,
