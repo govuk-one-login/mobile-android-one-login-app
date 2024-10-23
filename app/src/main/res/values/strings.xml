@@ -6,8 +6,8 @@
     <string name="app_continue">Continue</string>
     <string name="app_tryAgainButton">Try again</string>
     <string name="app_closeButton">Close</string>
-    <string name="app_home" translatable="false">Home</string>
-    <string name="app_wallet" translatable="false">Wallet</string>
+    <string name="app_home">Home</string>
+    <string name="app_wallet">Wallet</string>
     <string name="app_profile">Profile</string>
 
     <!-- Profile -->
