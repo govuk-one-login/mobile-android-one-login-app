@@ -2,29 +2,25 @@
     <string name="app_name" translatable="false">OneLogin</string>
     <string name="action_settings" translatable="false">Settings</string>
 
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label" translatable="false">First Fragment</string>
-    <string name="second_fragment_label" translatable="false">Second Fragment</string>
-    <string name="next" translatable="false">Next</string>
-    <string name="previous" translatable="false">Previous</string>
+    <!-- Navigation -->
     <string name="app_continue">Continue</string>
     <string name="app_tryAgainButton">Try again</string>
     <string name="app_closeButton">Close</string>
-    <string name="app_home" translatable="false">Home</string>
-    <string name="app_wallet" translatable="false">Wallet</string>
+    <string name="app_home">Home</string>
+    <string name="app_wallet">Wallet</string>
     <string name="app_profile">Profile</string>
 
     <!-- Profile -->
     <string name="app_profileSubtitle1">Your details</string>
-    <string name="app_signInDetails">Sign in details</string>
-    <string name="app_manageSignInDetailsFootnote">Manage your sign in details with the GOV.UK One Login web service. You’ll need to sign in again.</string>
     <string name="app_profileSubtitle2">Legal</string>
+    <string name="app_profileSubtitle3">Help and feedback</string>
+    <string name="app_manageSignInDetailsFootnote">Manage your sign in details with the GOV.UK One Login web service. You’ll need to sign in again.</string>
     <string name="app_privacyNoticeLink2">GOV.UK One Login privacy notice</string>
     <string name="app_OpenSourceLicences">Open source licences</string>
-    <string name="app_profileSubtitle3">Help and feedback</string>
     <string name="app_reportAProblemGiveFeedbackLink">Report a problem or give feedback</string>
     <string name="app_appGuidanceLink">Guidance about using the app</string>
     <string name="app_signOutButton">Sign out</string>
+    <string name="app_signInDetails">Sign in details</string>
     <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=en</string>
 
     <!-- Sign Out -->
@@ -53,7 +49,6 @@
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
     <string name="app_signInIconDescription" translatable="false">Gov Uk Icon</string>
-
 
     <!-- Errors -->
     <!-- Errors Generic -->

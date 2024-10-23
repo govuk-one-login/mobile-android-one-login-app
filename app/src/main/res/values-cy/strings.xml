@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Navigation -->
     <string name="app_continue">Parhau</string>
     <string name="app_tryAgainButton">Rhowch gynnig arall</string>
     <string name="app_closeButton">Cau</string>
+    <string name="app_home">Hafan</string>
+    <string name="app_wallet">Waled</string>
+    <string name="app_profile">Proffil</string>
 
     <!-- Profile -->
+    <string name="app_profileSubtitle1">Eich manylion</string>
+    <string name="app_profileSubtitle2">Cyfreithiol</string>
+    <string name="app_profileSubtitle3">Help ac adborth</string>
+    <string name="app_manageSignInDetailsFootnote">Rheoli eich manylion mewngofnodi gyda\'r gwasanaeth gwe GOV.UK One Login. Bydd angen i chi fewngofnodi eto.</string>
+    <string name="app_privacyNoticeLink2">Rhybudd Preifatrwydd GOV.UK One Login</string>
+    <string name="app_OpenSourceLicences">Trwyddedau ffynhonnell agored</string>
+    <string name="app_reportAProblemGiveFeedbackLink">Rhoi gwybod am broblem neu roi adborth</string>
+    <string name="app_appGuidanceLink">Canllawiau ar ddefnyddio\'r ap</string>
+    <string name="app_signOutButton">Allgofnodi</string>
+    <string name="app_signInDetails">Manylion mewngofnodi</string>
     <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=cy</string>
 
-    <!-- Passcode info -->
-    <string name="app_noPasscodePatternSetupTitle">Mae\'n edrych fel nad oes gan y ffôn hwn god neu batrwm mynediad</string>
-    <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
-    <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
+    <!-- Sign Out-->
+    <string name="app_signOutConfirmationTitle">Bydd allgofnodi yn dileu data eich ap</string>
+    <string name="app_signOutConfirmationBody1">Pan fyddwch yn allgofnodi, bydd yr holl wybodaeth a dogfennau a gedwir yn eich ap yn cael eu dileu, gan gynnwys:</string>
+    <string name="app_signOutConfirmationBullet1">unrhyw ddogfennau a arbedwyd yn eich GOV.UK Wallet</string>
+    <string name="app_signOutConfirmationBullet2">eich gosodiadau ar gyfer mewngofnodi</string>
+    <string name="app_signOutConfirmationBullet3">eich dewisiadau rhannu dadansoddi</string>
+    <string name="app_signOutConfirmationBody2">Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
+    <string name="app_signOutConfirmationBody3">Bydd unrhyw ddogfennau sydd wedi\'u dileu yn dal i fod ar gael ar-lein i chi eu hychwanegu at eich GOV.UK Wallet eto.</string>
+    <string name="app_signOutAndDeleteAppDataButton">Allgofnodwch a dileu data yr ap</string>
+    <string name="app_youveBeenSignedOutTitle">Rydych wedi cael eich allgofnodi</string>
+    <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
+    <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
+    <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
+
+    <!-- Splash Screen -->
+    <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
 
     <!--  Sign In  -->
     <string name="app_signInBody">Mewngofnodwch gyda\'r cyfeiriad e-bost rydych yn ei ddefnyddio ar gyfer eich GOV.UK One Login</string>
@@ -23,9 +49,20 @@
     <!-- Errors Generic-->
     <string name="app_somethingWentWrongErrorTitle">Aeth rhywbeth o\'i le</string>
     <string name="app_somethingWentWrongErrorBody">Rhowch gynnig arall yn nes ymlaen.</string>
+
     <!-- Errors Offline-->
     <string name="app_networkErrorTitle">Mae\'n ymddangos nad ydych ar-lein</string>
     <string name="app_networkErrorBody">Nid yw GOV.UK One Login ar gael os nad ydych ar-lein. Ailgysylltwch â\'r rhyngrwyd a rhoi cynnig arall</string>
+
+    <!-- Errors Sign Out -->
+    <string name="app_signOutErrorTitle">Roedd problem wrth eich allgofnodi</string>
+    <string name="app_signOutErrorBody">Gallwch orfodi allgofnodi trwy ddileu\'r ap o\'ch dyfais.</string>
+    <string name="app_exitButton">Gadael</string>
+
+    <!-- Passcode info -->
+    <string name="app_noPasscodePatternSetupTitle">Mae\'n edrych fel nad oes gan y ffôn hwn god neu batrwm mynediad</string>
+    <string name="app_noPasscodeSetupBody1">Mae gosod cod mynediad ar eich ffôn yn ychwanegu mwy o ddiogelwch. Yna gallwch fewngofnodi i\'r ap y ffordd hyn yn hytrach na gyda\'ch cyfeiriad e-bost a\'ch cyfrinair.</string>
+    <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
 
     <!-- Biometric Opt-In -->
     <string name="app_enableBiometricsTitle">Defnyddiwch biometreg i fewngofnodi</string>
@@ -38,30 +75,6 @@
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>
     <string name="app_displayEmail">Rydych wedi mewngofnodi fel</string>
-    <string name="app_profile">Proffil</string>
-    <string name="app_profileSubtitle1">Eich manylion</string>
-    <string name="app_profileSubtitle2">Cyfreithiol</string>
-    <string name="app_profileSubtitle3">Help ac adborth</string>
-    <string name="app_manageSignInDetailsFootnote">Rheoli eich manylion mewngofnodi gyda\'r gwasanaeth gwe GOV.UK One Login. Bydd angen i chi fewngofnodi eto.</string>
-    <string name="app_privacyNoticeLink2">Rhybudd Preifatrwydd GOV.UK One Login</string>
-    <string name="app_OpenSourceLicences">Trwyddedau ffynhonnell agored</string>
-    <string name="app_reportAProblemGiveFeedbackLink">Rhoi gwybod am broblem neu roi adborth</string>
-    <string name="app_appGuidanceLink">Canllawiau ar ddefnyddio\'r ap</string>
-    <string name="app_signOutButton">Allgofnodi</string>
-    <string name="app_signInDetails">Manylion mewngofnodi</string>
-
-    <!--    Sign Out-->
-    <string name="app_signOutConfirmationTitle">Bydd allgofnodi yn dileu data eich ap</string>
-    <string name="app_signOutConfirmationBody1">Pan fyddwch yn allgofnodi, bydd yr holl wybodaeth a dogfennau a gedwir yn eich ap yn cael eu dileu, gan gynnwys:</string>
-    <string name="app_signOutConfirmationBullet1">unrhyw ddogfennau a arbedwyd yn eich GOV.UK Wallet</string>
-    <string name="app_signOutConfirmationBullet2">eich gosodiadau ar gyfer mewngofnodi</string>
-    <string name="app_signOutConfirmationBullet3">eich dewisiadau rhannu dadansoddi</string>
-    <string name="app_signOutConfirmationBody2">Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
-    <string name="app_signOutConfirmationBody3">Bydd unrhyw ddogfennau sydd wedi\'u dileu yn dal i fod ar gael ar-lein i chi eu hychwanegu at eich GOV.UK Wallet eto.</string>
-    <string name="app_signOutAndDeleteAppDataButton">Allgofnodwch a dileu data yr ap</string>
-    <string name="app_signOutErrorTitle">Roedd problem wrth eich allgofnodi</string>
-    <string name="app_signOutErrorBody">Gallwch orfodi allgofnodi trwy ddileu\'r ap o\'ch dyfais.</string>
-    <string name="app_exitButton">Gadael</string>
 
     <!-- Analytics Opt In   -->
     <string name="app_analyticsPermissionTitle">Helpu i wella\'r ap drwy rannu dadansoddi</string>
@@ -70,10 +83,6 @@
     <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
     <string name="app_doNotShareAnalytics">Peidiwch â rhannu dadansoddeg</string>
     <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
-    <string name="app_youveBeenSignedOutTitle">Rydych wedi cael eich allgofnodi</string>
-    <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
-    <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
-    <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
     <string name="app_updateApp_Title">Mae angen i chi ddiweddaru eich ap</string>
     <string name="app_updateAppBody1">Rydych yn defnyddio hen fersiwn o\'r ap GOV.UK One Login.</string>
     <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
@@ -85,5 +94,4 @@
     <string name="app_dataDeletedErrorBullet2">os oeddech chi\'n defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, mae hyn wedi\'i ddiffodd</string>
     <string name="app_dataDeletedErrorBullet3">mae\'r ap wedi rhoi\'r gorau i rannu dadansoddeg am sut rydych yn ei ddefnyddio</string>
     <string name="app_dataDeletedErrorBody3">Er mwyn parhau i ddefnyddio\'r ap, bydd angen i chi fewngofnodi. Yna byddwch yn gallu ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
-    <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
 </resources>
