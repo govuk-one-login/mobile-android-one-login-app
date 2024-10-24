@@ -18,6 +18,21 @@ object TestUtils {
         )
     )
 
+    val additionalAppInfoData = AppInfoData(
+        apps = AppInfoData.App(
+            AppInfoData.AppInfo(
+                minimumVersion = "1.0.0",
+                releaseFlags = AppInfoData.ReleaseFlags(
+                    true,
+                    true,
+                    true
+                ),
+                available = true,
+                featureFlags = AppInfoData.FeatureFlags(true)
+            )
+        )
+    )
+
     val appInfoDataDisabledFeatures = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
@@ -51,7 +66,7 @@ object TestUtils {
     val extractVersionErrorAppInfoData = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(
-                minimumVersion = "vers1.0.0",
+                minimumVersion = "One.Two.Zero",
                 releaseFlags = AppInfoData.ReleaseFlags(
                     true,
                     true,
