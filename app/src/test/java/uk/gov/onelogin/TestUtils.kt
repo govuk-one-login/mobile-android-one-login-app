@@ -18,6 +18,21 @@ object TestUtils {
         )
     )
 
+    val additionalAppInfoData = AppInfoData(
+        apps = AppInfoData.App(
+            AppInfoData.AppInfo(
+                minimumVersion = "1.0.0",
+                releaseFlags = AppInfoData.ReleaseFlags(
+                    true,
+                    true,
+                    true
+                ),
+                available = true,
+                featureFlags = AppInfoData.FeatureFlags(true)
+            )
+        )
+    )
+
     val appInfoDataDisabledFeatures = AppInfoData(
         apps = AppInfoData.App(
             AppInfoData.AppInfo(

@@ -14,8 +14,10 @@ class AppVersionCheckImplTest {
 
     @Test
     fun versionCheckSuccessful() {
-        val result = sut.compareVersions(TestUtils.appInfoData)
+        var result = sut.compareVersions(TestUtils.appInfoData)
         assertEquals(AppInfoServiceState.Successful(TestUtils.appInfoData), result)
+        result = sut.compareVersions(TestUtils.additionalAppInfoData)
+        assertEquals(AppInfoServiceState.Successful(TestUtils.additionalAppInfoData), result)
     }
 
     @Test
