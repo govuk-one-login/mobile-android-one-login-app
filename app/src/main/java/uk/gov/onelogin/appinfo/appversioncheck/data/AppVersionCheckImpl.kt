@@ -8,6 +8,7 @@ import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.appversioncheck.domain.AppVersionCheck
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 
+@Suppress("LoopWithTooManyJumpStatements")
 class AppVersionCheckImpl @Inject constructor(
     private val utils: AppInfoUtils,
     @BuildConfigVersion
@@ -20,7 +21,12 @@ class AppVersionCheckImpl @Inject constructor(
             val localVersion = utils.getComparableAppVersion(appVersion)
             val serverVersion = utils.getComparableAppVersion(updatedVersion)
             for (i in serverVersion.indices) {
-                if (localVersion[i] < serverVersion[i]) {
+                // Exit the loop if any of the version parts is bigger - avoid returning [UpdateRequired] when
+                // local version is 1.0.0 but server version is 0.1.0
+                if (localVersion[i] > serverVersion[i]) {
+                    result = AppInfoServiceState.Successful(data)
+                    break
+                } else if (localVersion[i] < serverVersion[i]) {
                     result = AppInfoServiceState.UpdateRequired
                     break
                 } else {
