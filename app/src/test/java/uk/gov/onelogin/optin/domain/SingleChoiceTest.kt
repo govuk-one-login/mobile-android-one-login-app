@@ -52,4 +52,28 @@ class SingleChoiceTest {
         // Then the state is PostChoice
         assertEquals(expected = SingleChoice.State.PostChoice, actual)
     }
+
+    @Test
+    fun `Pre Choice`() {
+        val state = SingleChoice.State.PreChoice
+        assertEquals(expected = state, actual = SingleChoice.State.valueOf("PreChoice"))
+    }
+
+    @Test
+    fun `Post Choice`() {
+        val state = SingleChoice.State.PostChoice
+        assertEquals(expected = state, actual = SingleChoice.State.valueOf("PostChoice"))
+    }
+
+    @Test
+    fun values() {
+        val list = SingleChoice.State.values()
+        assertEquals(expected = 2, actual = list.size)
+    }
+
+    @Test
+    fun entries() {
+        val list = SingleChoice.State.entries
+        assertEquals(expected = 2, actual = list.size)
+    }
 }

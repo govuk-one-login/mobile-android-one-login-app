@@ -2,12 +2,55 @@ package uk.gov.onelogin.credentialchecker
 
 import androidx.biometric.BiometricManager
 import java.util.stream.Stream
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 class BiometricStatusTest {
+
+    @Test
+    fun success() {
+        val status = BiometricStatus.SUCCESS
+        assertEquals(expected = status, actual = BiometricStatus.valueOf("SUCCESS"))
+    }
+
+    @Test
+    fun `no hardware`() {
+        val status = BiometricStatus.NO_HARDWARE
+        assertEquals(expected = status, actual = BiometricStatus.valueOf("NO_HARDWARE"))
+    }
+
+    @Test
+    fun `hardware unavailable`() {
+        val status = BiometricStatus.HARDWARE_UNAVAILABLE
+        assertEquals(expected = status, actual = BiometricStatus.valueOf("HARDWARE_UNAVAILABLE"))
+    }
+
+    @Test
+    fun `not enrolled`() {
+        val status = BiometricStatus.NOT_ENROLLED
+        assertEquals(expected = status, actual = BiometricStatus.valueOf("NOT_ENROLLED"))
+    }
+
+    @Test
+    fun unknown() {
+        val status = BiometricStatus.UNKNOWN
+        assertEquals(expected = status, actual = BiometricStatus.valueOf("UNKNOWN"))
+    }
+
+    @Test
+    fun values() {
+        val list = BiometricStatus.values()
+        assertEquals(expected = 5, actual = list.size)
+    }
+
+    @Test
+    fun entries() {
+        val list = BiometricStatus.entries
+        assertEquals(expected = 5, actual = list.size)
+    }
 
     @ParameterizedTest
     @MethodSource("biometricStatusArgs")
