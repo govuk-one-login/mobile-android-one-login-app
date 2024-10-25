@@ -7,31 +7,22 @@ import org.junit.jupiter.api.assertThrows
 class AppInfoUtilsTest {
     private val correctV = "1.0.0"
     private val correctVersion = "v1.0.0"
-    private val longVersion = "1.0.8.0"
-    private val incorrectVersion = "vers1.0.0"
+    private val githubVersion = "1729695540-1.0.0"
+    private val incorrectVersion = ""
     private val sut = AppInfoUtilsImpl()
 
     @Test
-    fun `check correct version format`() {
-        val result = sut.getComparableAppVersion(correctV)
-        assertEquals(listOf(1, 0, 0), result)
-    }
-
-    @Test
     fun `check conventional correct version format`() {
-        val result = sut.getComparableAppVersion(correctVersion)
+        var result = sut.getComparableAppVersion(correctVersion)
+        assertEquals(listOf(1, 0, 0), result)
+        result = sut.getComparableAppVersion(githubVersion)
+        assertEquals(listOf(1, 0, 0), result)
+        result = sut.getComparableAppVersion(correctV)
         assertEquals(listOf(1, 0, 0), result)
     }
 
-    @Test()
-    fun `conventional commits violation - version has too many arguments`() {
-        assertThrows<AppInfoUtils.AppError.IncorrectVersionFormat> {
-            sut.getComparableAppVersion(longVersion)
-        }
-    }
-
     @Test
-    fun `conventional commits violation - illegal characters`() {
+    fun `conventional commits violation - empty version`() {
         assertThrows<AppInfoUtils.AppError.IllegalVersionFormat> {
             sut.getComparableAppVersion(incorrectVersion)
         }
