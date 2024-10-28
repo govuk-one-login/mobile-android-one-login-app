@@ -1,6 +1,7 @@
 package uk.gov.onelogin.optin.ui
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -21,5 +22,17 @@ class OptInUIStateTest {
         uiState = OptInUIState.PostChoice
         // Then hasButtonsOn is false
         assertFalse(uiState.hasButtonsOn)
+    }
+
+    @Test
+    fun values() {
+        val list = OptInUIState.values()
+        assertEquals(expected = 2, actual = list.size)
+    }
+
+    @Test
+    fun entries() {
+        val list = OptInUIState.entries
+        assertEquals(expected = 2, actual = list.size)
     }
 }
