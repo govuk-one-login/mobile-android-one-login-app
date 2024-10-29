@@ -5,7 +5,7 @@ import android.content.Context
 interface AppChecker {
     fun init(context: Context)
 
-    fun getAppCheckToken(
+    suspend fun getAppCheckToken(
         onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit
     )

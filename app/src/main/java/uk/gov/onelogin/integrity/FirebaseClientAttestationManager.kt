@@ -1,6 +1,7 @@
 package uk.gov.onelogin.integrity
 
 import android.util.Log
+import kotlinx.coroutines.flow.MutableStateFlow
 import uk.gov.onelogin.integrity.appcheck.AppChecker
 import uk.gov.onelogin.integrity.model.AppIntegrityConfiguration
 import uk.gov.onelogin.integrity.model.AttestationResponse
@@ -15,19 +16,23 @@ class FirebaseClientAttestationManager(
 
     override suspend fun getAttestation(): AttestationResponse {
         // Get Firebase token
-        var response: AttestationResponse = AttestationResponse.Loading
-        appChecker.getAppCheckToken(
-            onSuccess = { token ->
-                Log.d("FirebaseToken", token)
-                response = AttestationResponse.Success(token)
-            },
-            onFailure = { error ->
-                Log.e("FirebaseToken", error.toString())
-                response = AttestationResponse.Failure(error.message.toString(), error)
-            }
-        )
-        Log.d("FirebaseTokenResult", "$response")
-        return response
+        val res: MutableStateFlow<AttestationResponse> = MutableStateFlow(AttestationResponse.Loading)
+        try {
+            appChecker.getAppCheckToken(
+                onSuccess = { result ->
+                    Log.d("SuccessFirebaseToken", result)
+                    res.value = AttestationResponse.Success(result)
+                },
+                onFailure = { error ->
+                    Log.e("FailureFirebaseToken", error.toString())
+                    res.value = AttestationResponse.Failure(error.message.toString(), error)
+                }
+            )
+        } catch (e: Exception) {
+            res.value = AttestationResponse.Failure(e.toString())
+        }
+        Log.d("FirebaseTokenResult", "${res.value}")
+        return AttestationResponse.Success(res.value.toString())
     }
 
     override suspend fun signAttestation(attestation: String): SignedResponse {

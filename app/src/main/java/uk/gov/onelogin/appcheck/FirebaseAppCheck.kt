@@ -1,15 +1,21 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
+import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseException
 import com.google.firebase.appcheck.AppCheckProviderFactory
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.initialize
+import kotlinx.coroutines.tasks.await
+import uk.gov.onelogin.integrity.appcheck.AppChecker
+import javax.inject.Inject
 
-class FirebaseAppCheck : AppCheck {
+class FirebaseAppCheck @Inject constructor(
+    private val appCheckFactory: AppCheckProviderFactory
+) : AppChecker {
     override fun init(
         context: Context,
-        appCheckFactory: AppCheckProviderFactory
     ) {
         Firebase.initialize(context)
         Firebase.appCheck.installAppCheckProviderFactory(
@@ -17,16 +23,21 @@ class FirebaseAppCheck : AppCheck {
         )
     }
 
-    override fun getAppCheckToken(
+    override suspend fun getAppCheckToken(
         onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        Firebase.appCheck.getAppCheckToken(false)
-            .addOnSuccessListener { token ->
-                onSuccess(token.token)
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
+        try {
+            Firebase.appCheck.getAppCheckToken(false)
+                .addOnSuccessListener { token ->
+                    onSuccess(token.token)
+                }
+                .addOnFailureListener { e ->
+                    onFailure(e)
+                }
+                .await()
+        } catch (e: FirebaseException) {
+            throw Exception("debug_token_null")
+        }
     }
 }
