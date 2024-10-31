@@ -20,6 +20,7 @@ import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.TokenResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
@@ -55,6 +56,7 @@ class WelcomeScreenViewModelTest {
     private val mockLocaleUtils: LocaleUtils = mock()
     private val mockSaveTokens: SaveTokens = mock()
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
+    private val mockAppIntegrity: AppIntegrity = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String? = "testIdToken"
@@ -80,7 +82,8 @@ class WelcomeScreenViewModelTest {
         mockLocaleUtils,
         mockSaveTokens,
         mockSaveTokenExpiry,
-        mockOnlineChecker
+        mockOnlineChecker,
+        mockAppIntegrity
     )
 
     @BeforeEach
@@ -368,5 +371,10 @@ class WelcomeScreenViewModelTest {
         viewModel.navigateToOfflineError()
 
         verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
+    }
+
+    @Test
+    fun `check app integrity check successful`() {
+        
     }
 }

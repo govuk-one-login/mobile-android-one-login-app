@@ -14,8 +14,8 @@ class AppIntegrityImpl @Inject constructor(
         return if (featureFlags[AppCheckFeatureFlag.ENABLED]) {
             when (val result = appCheck.getAttestation()) {
                 is AttestationResponse.Success -> AppIntegrityResult.Success(result.attestationJwt)
-                is AttestationResponse.Failure -> AppIntegrityResult.Failure(result.error.toString())
-                else -> AppIntegrityResult.Loading
+                is AttestationResponse.Failure -> AppIntegrityResult.Failure(result.reason)
+                else -> AppIntegrityResult.Failure(result.toString())
             }
         } else {
             AppIntegrityResult.NotRequired

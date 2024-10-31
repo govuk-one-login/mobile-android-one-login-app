@@ -135,7 +135,7 @@ androidComponents {
             "AppCheckDebugSecret",
             BuildConfigField(
                 "String",
-                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
+                "\"" + providers.gradleProperty("debugAppCheckToken").get() + "\"",
                 "debug token"
             )
         )

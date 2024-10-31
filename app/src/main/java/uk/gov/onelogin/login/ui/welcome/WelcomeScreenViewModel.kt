@@ -103,11 +103,14 @@ class WelcomeScreenViewModel @Inject constructor(
 
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
+            _loading.emit(true)
             when (appIntegrity.startCheck()) {
-                is AppIntegrityResult.Loading -> _loading.emit(true)
-                is AppIntegrityResult.Failure -> navigator.navigate(ErrorRoutes.Generic)
+                is AppIntegrityResult.Failure -> {
+                    _loading.emit(false)
+                    navigator.navigate(ErrorRoutes.Generic)
+                }
                 else -> {
-//                    _loading.emit(false)
+                    _loading.emit(false)
                     loginSession
                         .present(
                             launcher,

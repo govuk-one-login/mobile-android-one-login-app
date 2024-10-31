@@ -1,10 +1,9 @@
 package uk.gov.onelogin.integrity.model
 
-import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.integrity.appcheck.AppChecker
+import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
 
 data class AppIntegrityConfiguration(
-    val httpClient: GenericHttpClient,
-    val attestationUrl: String,
+    val attestationCaller: AttestationCaller,
     val appChecker: AppChecker
 )

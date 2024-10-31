@@ -15,6 +15,7 @@ import uk.gov.onelogin.appcheck.FirebaseAppCheck
 import uk.gov.onelogin.integrity.ClientAttestationManager
 import uk.gov.onelogin.integrity.FirebaseClientAttestationManager
 import uk.gov.onelogin.integrity.appcheck.AppChecker
+import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.onelogin.integrity.model.AppIntegrityConfiguration
 
 @SuppressWarnings("kotlin:S6517")
@@ -25,13 +26,12 @@ object AppCheckUseCaseModule {
     fun provideAppIntegrityConfig(
         @ApplicationContext
         context: Context,
-        httpClient: GenericHttpClient,
+        attestationCaller: AttestationCaller,
         appChecker: AppChecker
     ): AppIntegrityConfiguration {
         val endpoint = context.getString(R.string.assertionEndpoint)
         return AppIntegrityConfiguration(
-            httpClient = httpClient,
-            attestationUrl = context.getString(R.string.assertionUrl, endpoint) + "?device=android",
+            attestationCaller = attestationCaller,
             appChecker = appChecker
         )
     }
@@ -59,6 +59,6 @@ object AppCheckUseCaseModule {
     fun provideAssertionApiCall(
         @ApplicationContext
         context: Context,
-        appIntegrityConfiguration: AppIntegrityConfiguration
-    ): AssertionApiCall = AssertionApiCallImpl(context, appIntegrityConfiguration.httpClient)
+        genericHttpClient: GenericHttpClient
+    ): AttestationCaller = AssertionApiCallImpl(context, genericHttpClient)
 }
