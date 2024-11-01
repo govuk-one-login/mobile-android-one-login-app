@@ -372,9 +372,4 @@ class WelcomeScreenViewModelTest {
 
         verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
     }
-
-    @Test
-    fun `check app integrity check successful`() {
-        
-    }
 }

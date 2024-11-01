@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.LoginSession
 import uk.gov.android.authentication.LoginSessionConfiguration
@@ -98,7 +98,6 @@ class WelcomeScreenViewModel @Inject constructor(
         }
 
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
-
         val locale = localeUtils.getLocaleAsSessionConfig()
 
         viewModelScope.launch {

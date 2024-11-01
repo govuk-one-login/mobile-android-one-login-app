@@ -23,7 +23,7 @@ class FirebaseClientAttestationManager(
         // If successful -> functionality to get signed attestation form Mobile back-end
         return if (token is AppCheckToken) {
             AttestationResponse.Success(attestationJwt = token.jwtToken)
-        // If unsuccessful -> return the failure
+            // If unsuccessful -> return the failure
         } else {
             token as AttestationResponse.Failure
         }

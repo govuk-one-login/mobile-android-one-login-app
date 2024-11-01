@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appcheck
 
+import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -8,7 +9,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.integrity.ClientAttestationManager
 import uk.gov.onelogin.integrity.model.AttestationResponse
-import kotlin.test.assertEquals
 
 class AppIntegrityImplTest {
     private val featureFlags: FeatureFlags = mock()
@@ -24,7 +24,7 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `start check - firebase client attestation call successful`() = runBlocking {
+    fun `start check - firebase token call successful`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation()).thenReturn(AttestationResponse.Success(SUCCESS))
         val result = sut.startCheck()
@@ -32,7 +32,7 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `start check - firebase client attestation call failure`() = runBlocking {
+    fun `start check - firebase token call failure`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation()).thenReturn(
             AttestationResponse.Failure(reason = FAILURE, error = Exception(FAILURE))

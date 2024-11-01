@@ -2,7 +2,6 @@ package uk.gov.onelogin.appcheck.usecase
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
@@ -10,11 +9,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
 
-interface AssertionApiCall {
-    suspend operator fun invoke(firebaseToken: String): String
-}
-
-class AssertionApiCallImpl @Inject constructor(
+class AttestationApiCall @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val httpClient: GenericHttpClient
@@ -33,10 +28,12 @@ class AssertionApiCallImpl @Inject constructor(
         )
         val response = httpClient.makeRequest(request)
         return if (response is ApiResponse.Success<*>) {
-            Result.success(AttestationCaller.Response(
-                jwt = response.response.toString(),
-                expiresIn = getTimeMillis()
-            ))
+            Result.success(
+                AttestationCaller.Response(
+                    jwt = response.response.toString(),
+                    expiresIn = 0
+                )
+            )
         } else {
             Result.failure((response as ApiResponse.Failure).error)
         }
