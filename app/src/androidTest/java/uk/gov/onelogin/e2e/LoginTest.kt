@@ -37,10 +37,6 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
-import uk.gov.android.authentication.integrity.ClientAttestationManager
-import uk.gov.android.authentication.integrity.appcheck.AppChecker
-import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
-import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -49,10 +45,6 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.TestUtils
-import uk.gov.onelogin.appcheck.AppCheckModule
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AppIntegrityResult
-import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -72,9 +64,7 @@ import uk.gov.onelogin.ui.LocaleUtils
 @UninstallModules(
     LoginSessionModule::class,
     CredentialCheckerModule::class,
-    AppInfoApiModule::class,
-    AppCheckUseCaseModule::class,
-    AppCheckModule::class
+    AppInfoApiModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -85,24 +75,6 @@ class LoginTest : TestCase() {
 
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
-
-    @BindValue
-    val mockAppIntegrity: AppIntegrity = mock()
-
-    @BindValue
-    val mockAttestationManager: ClientAttestationManager = mock()
-
-    @BindValue
-    val mockAttestationCaller: AttestationCaller = mock()
-
-    @BindValue
-    val mockAppChecker: AppChecker = mock()
-
-    @BindValue
-    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
-        mockAttestationCaller,
-        mockAppChecker
-    )
 
     @BindValue
     val mockAppInfoService: AppInfoService = mock()
@@ -333,26 +305,6 @@ class LoginTest : TestCase() {
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
-    }
-
-    @FlakyTest
-    @Test
-    fun appIntegrityFailureLogin() {
-        wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
-        wheneverBlocking { mockAppIntegrity.startCheck() }
-            .thenReturn(AppIntegrityResult.Failure("Error"))
-        mockGoodLogin()
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-        setupActivityForResult(
-            Intent(Intent.ACTION_VIEW, Uri.EMPTY)
-        )
-
-        clickOptOut()
-        clickLogin()
-
-        nodeWithTextExists(resources.getString(R.string.app_somethingWentWrongErrorBody))
     }
 
     private fun setupActivityForResult(returnedIntent: Intent) {

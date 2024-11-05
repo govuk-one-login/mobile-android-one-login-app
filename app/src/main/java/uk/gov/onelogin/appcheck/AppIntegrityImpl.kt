@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appcheck
 
+import android.util.Log
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.ClientAttestationManager
 import uk.gov.android.authentication.integrity.model.AttestationResponse
@@ -12,7 +13,9 @@ class AppIntegrityImpl @Inject constructor(
 ) : AppIntegrity {
     override suspend fun startCheck(): AppIntegrityResult {
         return if (featureFlags[AppCheckFeatureFlag.ENABLED]) {
-            when (val result = appCheck.getAttestation()) {
+            val result = appCheck.getAttestation()
+            Log.d("AppIntegrity", "$result")
+            when (result) {
                 is AttestationResponse.Success -> AppIntegrityResult.Success(result.attestationJwt)
                 is AttestationResponse.Failure -> AppIntegrityResult.Failure(result.reason)
             }

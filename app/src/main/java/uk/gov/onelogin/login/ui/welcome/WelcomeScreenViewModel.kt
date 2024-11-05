@@ -125,7 +125,7 @@ class WelcomeScreenViewModel @Inject constructor(
 
     private suspend fun handleAppIntegrityFailure() {
         _loading.emit(false)
-        navigator.navigate(ErrorRoutes.Generic)
+        navigator.navigate(LoginRoutes.SignInError)
     }
 
     @Suppress("TooGenericExceptionCaught")
