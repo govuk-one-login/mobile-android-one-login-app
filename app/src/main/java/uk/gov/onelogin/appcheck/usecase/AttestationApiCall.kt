@@ -3,11 +3,11 @@ package uk.gov.onelogin.appcheck.usecase
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.R
-import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
 
 class AttestationApiCall @Inject constructor(
     @ApplicationContext

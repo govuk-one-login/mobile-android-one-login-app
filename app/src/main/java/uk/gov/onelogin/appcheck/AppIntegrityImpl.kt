@@ -1,10 +1,10 @@
 package uk.gov.onelogin.appcheck
 
 import javax.inject.Inject
+import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.model.AttestationResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.features.AppCheckFeatureFlag
-import uk.gov.onelogin.integrity.ClientAttestationManager
-import uk.gov.onelogin.integrity.model.AttestationResponse
 
 class AppIntegrityImpl @Inject constructor(
     private val featureFlags: FeatureFlags,

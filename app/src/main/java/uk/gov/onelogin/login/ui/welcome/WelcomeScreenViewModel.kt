@@ -13,9 +13,9 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
@@ -96,18 +96,13 @@ class WelcomeScreenViewModel @Inject constructor(
         } else {
             context.getString(R.string.openIdConnectClientId)
         }
-
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
         val locale = localeUtils.getLocaleAsSessionConfig()
-
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             _loading.emit(true)
             when (appIntegrity.startCheck()) {
-                is AppIntegrityResult.Failure -> {
-                    _loading.emit(false)
-                    navigator.navigate(ErrorRoutes.Generic)
-                }
+                is AppIntegrityResult.Failure -> handleAppIntegrityFailure()
                 else -> {
                     _loading.emit(false)
                     loginSession
@@ -126,6 +121,11 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun handleAppIntegrityFailure() {
+        _loading.emit(false)
+        navigator.navigate(ErrorRoutes.Generic)
     }
 
     @Suppress("TooGenericExceptionCaught")

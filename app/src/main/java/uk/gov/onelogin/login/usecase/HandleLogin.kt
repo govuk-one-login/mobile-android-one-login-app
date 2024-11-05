@@ -2,7 +2,7 @@ package uk.gov.onelogin.login.usecase
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.state.LocalAuthStatus

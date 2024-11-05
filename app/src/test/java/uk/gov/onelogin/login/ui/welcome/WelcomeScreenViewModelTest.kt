@@ -15,9 +15,9 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.AuthenticationError
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.AuthenticationError
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.onelogin.appcheck.AppIntegrity
@@ -325,7 +325,12 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
-            .thenThrow(AuthenticationError("Sign in error", AuthenticationError.ErrorType.OAUTH))
+            .thenThrow(
+                AuthenticationError(
+                    "Sign in error",
+                    AuthenticationError.ErrorType.OAUTH
+                )
+            )
 
         viewModel.handleActivityResult(mockIntent)
 

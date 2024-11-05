@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
+import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.model.AttestationResponse
 import uk.gov.android.features.FeatureFlags
-import uk.gov.onelogin.integrity.ClientAttestationManager
-import uk.gov.onelogin.integrity.model.AttestationResponse
 
 class AppIntegrityImplTest {
     private val featureFlags: FeatureFlags = mock()

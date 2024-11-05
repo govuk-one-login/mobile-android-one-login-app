@@ -10,10 +10,10 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
 
 class AttestationApiCallTest {
 

@@ -6,15 +6,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.FirebaseClientAttestationManager
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
+import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AppIntegrityImpl
-import uk.gov.onelogin.integrity.ClientAttestationManager
-import uk.gov.onelogin.integrity.FirebaseClientAttestationManager
-import uk.gov.onelogin.integrity.appcheck.AppChecker
-import uk.gov.onelogin.integrity.appcheck.usecase.AttestationCaller
-import uk.gov.onelogin.integrity.model.AppIntegrityConfiguration
 
 @SuppressWarnings("kotlin:S6517")
 @Module

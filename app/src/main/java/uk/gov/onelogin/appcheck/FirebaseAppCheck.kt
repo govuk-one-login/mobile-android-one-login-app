@@ -8,8 +8,8 @@ import com.google.firebase.appcheck.appCheck
 import com.google.firebase.initialize
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
-import uk.gov.onelogin.integrity.appcheck.AppChecker
-import uk.gov.onelogin.integrity.model.AppCheckToken
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.model.AppCheckToken
 
 class FirebaseAppCheck @Inject constructor(
     private val appCheckFactory: AppCheckProviderFactory
