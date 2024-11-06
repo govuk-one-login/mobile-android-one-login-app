@@ -59,6 +59,7 @@ class WelcomeScreenViewModel @Inject constructor(
     private val appIntegrity: AppIntegrity
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
+    private val locale = localeUtils.getLocaleAsSessionConfig()
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
@@ -97,35 +98,31 @@ class WelcomeScreenViewModel @Inject constructor(
             context.getString(R.string.openIdConnectClientId)
         }
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
-        val locale = localeUtils.getLocaleAsSessionConfig()
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             _loading.emit(true)
             when (appIntegrity.startCheck()) {
-                is AppIntegrityResult.Failure -> handleAppIntegrityFailure()
+                is AppIntegrityResult.Failure -> {
+                    _loading.emit(false)
+                    navigator.navigate(LoginRoutes.SignInError)
+                }
                 else -> {
                     _loading.emit(false)
-                    loginSession
-                        .present(
-                            launcher,
-                            configuration = LoginSessionConfiguration(
-                                authorizeEndpoint = authorizeEndpoint,
-                                clientId = clientId,
-                                locale = locale,
-                                redirectUri = redirectUri,
-                                scopes = scopes,
-                                tokenEndpoint = tokenEndpoint,
-                                persistentSessionId = persistentId
-                            )
+                    loginSession.present(
+                        launcher,
+                        configuration = LoginSessionConfiguration(
+                            authorizeEndpoint = authorizeEndpoint,
+                            clientId = clientId,
+                            locale = locale,
+                            redirectUri = redirectUri,
+                            scopes = scopes,
+                            tokenEndpoint = tokenEndpoint,
+                            persistentSessionId = persistentId
                         )
+                    )
                 }
             }
         }
-    }
-
-    private suspend fun handleAppIntegrityFailure() {
-        _loading.emit(false)
-        navigator.navigate(LoginRoutes.SignInError)
     }
 
     @Suppress("TooGenericExceptionCaught")
