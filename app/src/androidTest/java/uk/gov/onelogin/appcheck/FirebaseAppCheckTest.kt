@@ -17,8 +17,7 @@ class FirebaseAppCheckTest {
 
     @Before
     fun setup() {
-        sut = FirebaseAppCheck(factory)
-        sut.init(context)
+        sut = FirebaseAppCheck(factory, context)
     }
 
     @Test

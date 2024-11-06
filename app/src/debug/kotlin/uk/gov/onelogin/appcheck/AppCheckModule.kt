@@ -22,7 +22,7 @@ object AppCheckModule {
         context: Context
     ): AppChecker {
         val factory = DebugAppCheckProviderFactory.getInstance()
-        return FirebaseAppCheck(factory).also {
+        return FirebaseAppCheck(factory, context).also {
             val key = Firebase.app.persistenceKey
             context.getSharedPreferences(
                 "com.google.firebase.appcheck.debug.store.$key",
@@ -34,8 +34,6 @@ object AppCheckModule {
                 )
                 commit()
             }
-
-            it.init(context)
         }
     }
 }

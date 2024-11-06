@@ -135,7 +135,7 @@ androidComponents {
             "AppCheckDebugSecret",
             BuildConfigField(
                 "String",
-                "\"" + providers.gradleProperty("debugAppCheckToken").get() + "\"",
+                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
                 "debug token"
             )
         )
@@ -184,7 +184,8 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.bundles.firebase
+        libs.bundles.firebase,
+        libs.play.integrity
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

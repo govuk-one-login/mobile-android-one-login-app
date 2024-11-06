@@ -8,7 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
-import uk.gov.android.onelogin.R
+import uk.gov.onelogin.R
 import uk.gov.onelogin.TestCase
 
 @HiltAndroidTest

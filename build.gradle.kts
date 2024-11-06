@@ -54,7 +54,7 @@ buildscript {
         getVersionName()
     )
     val debugAppCheckToken: String by rootProject.extra(
-        localProperties.getProperty("firebaseAppCheckDebugSecret") ?: ""
+        providers.gradleProperty("debugAppCheckToken").get()
     )
 }
 
