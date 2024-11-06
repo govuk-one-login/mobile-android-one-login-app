@@ -54,7 +54,11 @@ buildscript {
         getVersionName()
     )
     val debugAppCheckToken: String by rootProject.extra(
-        providers.gradleProperty("debugAppCheckToken").get()
+        try {
+            providers.gradleProperty("debugAppCheckToken").get()
+        }  catch (e: org.gradle.api.internal.provider.MissingValueException) {
+            System.getProperty("BUILD_DEBUG_APP_CHECK_TOKEN")
+        }
     )
 }
 

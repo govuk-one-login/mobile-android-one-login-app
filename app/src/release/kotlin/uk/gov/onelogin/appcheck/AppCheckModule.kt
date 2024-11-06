@@ -18,8 +18,6 @@ object AppCheckModule {
         context: Context
     ): AppChecker {
         val factory = PlayIntegrityAppCheckProviderFactory.getInstance()
-        return FirebaseAppCheck(factory).also {
-            it.init(context)
-        }
+        return FirebaseAppCheck(factory, context)
     }
 }

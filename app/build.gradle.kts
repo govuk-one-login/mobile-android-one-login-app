@@ -184,8 +184,7 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.bundles.firebase,
-        libs.play.integrity
+        libs.bundles.firebase
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {
