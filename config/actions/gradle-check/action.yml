@@ -16,7 +16,8 @@ inputs:
     required: true
   app-check-token:
     description: 'App check token'
-    required: true
+    required: false
+    default: ''
 
 runs:
   using: "composite"
