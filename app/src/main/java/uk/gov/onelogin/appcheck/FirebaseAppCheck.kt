@@ -1,7 +1,6 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
-import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.appcheck.AppCheckProviderFactory
@@ -26,7 +25,6 @@ class FirebaseAppCheck @Inject constructor(
     }
 
     override suspend fun getAppCheckToken(): Result<AppCheckToken> {
-        Log.d("FirebaseAppIntegrityCall", "${appCheck.getAppCheckToken(false).await()}")
         return try {
             Result.success(
                 AppCheckToken(appCheck.getAppCheckToken(false).await().token)
