@@ -27,8 +27,8 @@ runs:
         ./.sh/tests/runUnitChecks
       env:
         CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         TOKEN: ${{ inputs.github-token }}
         USERNAME: ${{ inputs.github-actor }}
-        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
