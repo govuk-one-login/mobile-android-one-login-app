@@ -57,7 +57,7 @@ buildscript {
         try {
             providers.gradleProperty("debugAppCheckToken").get()
         }  catch (e: org.gradle.api.internal.provider.MissingValueException) {
-            System.getenv("BUILD_APPCHECK_DEBUG_TOKEN")
+            System.getenv("BUILD_DEBUG_APP_CHECK_TOKEN")
         }
     )
 }

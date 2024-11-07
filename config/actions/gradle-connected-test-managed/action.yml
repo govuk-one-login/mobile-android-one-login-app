@@ -18,6 +18,9 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: true
 
 runs:
   using: "composite"
@@ -34,6 +37,7 @@ runs:
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         TOKEN: ${{ inputs.github-token }}
         USERNAME: ${{ inputs.github-actor }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
       run: |
         ./.sh/tests/runInstrumentationChecks
       shell: bash
