@@ -1,3 +1,5 @@
+import org.gradle.api.internal.provider.MissingValueException
+
 buildscript {
     dependencies {
         listOf(
@@ -56,7 +58,9 @@ buildscript {
     val debugAppCheckToken: String by rootProject.extra(
         try {
             providers.gradleProperty("debugAppCheckToken").get()
-        }  catch (e: org.gradle.api.internal.provider.MissingValueException) {
+        }  catch (e: MissingValueException) {
+            println("firebase debug token not found in gradle properties")
+            println("system env token is empty? ${System.getenv("BUILD_DEBUG_APP_CHECK_TOKEN").isEmpty()}")
             System.getenv("BUILD_DEBUG_APP_CHECK_TOKEN")
         }
     )
