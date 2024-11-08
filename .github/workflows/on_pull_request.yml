@@ -84,6 +84,7 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Run sonar quality gate
         uses: ./config/actions/sonar-quality-gate

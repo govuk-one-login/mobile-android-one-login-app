@@ -15,6 +15,10 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
