@@ -42,6 +42,7 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
 
     - name: Run Sonarqube Branch Analysis
       if: ${{ github.event_name != 'pull_request' }}
@@ -60,3 +61,4 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}

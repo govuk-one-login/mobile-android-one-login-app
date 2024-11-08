@@ -22,6 +22,10 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
 
 outputs:
   aab-paths:
@@ -68,3 +72,4 @@ runs:
         GITHUB_ACTOR: ${{ inputs.github-actor }}
         TOKEN: ${{ inputs.module-fetch-token }}
         USERNAME: ${{ inputs.module-fetch-token-username }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
