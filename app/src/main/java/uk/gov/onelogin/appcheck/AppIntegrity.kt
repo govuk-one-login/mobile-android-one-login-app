@@ -1,5 +1,5 @@
 package uk.gov.onelogin.appcheck
 
-interface AppIntegrity {
+fun interface AppIntegrity {
     suspend fun startCheck(): AppIntegrityResult
 }
