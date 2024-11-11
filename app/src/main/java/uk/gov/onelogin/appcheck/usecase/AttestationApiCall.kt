@@ -2,9 +2,9 @@ package uk.gov.onelogin.appcheck.usecase
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.model.AttestationResponse
-import javax.inject.Inject
 import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.authentication.integrity.usecase.JWK
 import uk.gov.android.network.api.ApiRequest
@@ -21,7 +21,7 @@ class AttestationApiCall @Inject constructor(
         firebaseToken: String,
         jwk: JWK.JsonWebKey
     ): AttestationResponse {
-        val endpoint = context.getString(R.string.assertionEndpoint)
+        val endpoint = context.getString(R.string.clientAttestationEndpoint)
         val request = ApiRequest.Post(
             url = context.getString(R.string.webBaseUrl, endpoint) + "?device=android",
             body = jwk,
@@ -30,14 +30,13 @@ class AttestationApiCall @Inject constructor(
                 AttestationCaller.CONTENT_TYPE to AttestationCaller.CONTENT_TYPE_VALUE
             )
         )
-        val apiResponse = httpClient.makeRequest(request)
-        return if (apiResponse is ApiResponse.Success<*>) {
-            handleResponse(apiResponse)
-        } else {
-            AttestationResponse.Failure(
-                (apiResponse as ApiResponse.Failure).error.message ?: NETWORK_ERROR,
+        return when (val apiResponse = httpClient.makeRequest(request)) {
+            is ApiResponse.Success<*> -> handleResponse(apiResponse)
+            is ApiResponse.Failure -> AttestationResponse.Failure(
+                apiResponse.error.message ?: NETWORK_ERROR,
                 apiResponse.error
             )
+            else -> AttestationResponse.Failure(NETWORK_ERROR)
         }
     }
 

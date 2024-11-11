@@ -22,20 +22,21 @@ class AppIntegrityImpl @Inject constructor(
             val result = appCheck.getAttestation()
             Log.d("AppIntegrity", "$result")
             when (result) {
-                is AttestationResponse.Success -> {
-                    try {
-                        saveToOpenSecureStore.invoke(CLIENT_ATTESTATION, result.attestationJwt)
-                        saveToOpenSecureStore
-                            .invoke(CLIENT_ATTESTATION_EXPIRY, result.expiresIn.toString())
-                        AppIntegrityResult.Success(result.attestationJwt)
-                    } catch (e: SecureStorageError) {
-                        AppIntegrityResult.Failure(e.message ?: SECURE_STORE_ERROR)
-                    }
-                }
+                is AttestationResponse.Success -> handleClientAttestation(result)
                 is AttestationResponse.Failure -> AppIntegrityResult.Failure(result.reason)
             }
         } else {
             AppIntegrityResult.NotRequired
         }
     }
+
+    private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
+        try {
+            saveToOpenSecureStore.invoke(CLIENT_ATTESTATION, result.attestationJwt)
+            saveToOpenSecureStore
+                .invoke(CLIENT_ATTESTATION_EXPIRY, result.expiresIn.toString())
+            AppIntegrityResult.Success(result.attestationJwt)
+        } catch (e: SecureStorageError) {
+            AppIntegrityResult.Failure(e.message ?: SECURE_STORE_ERROR)
+        }
 }

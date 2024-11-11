@@ -1,6 +1,5 @@
 package uk.gov.onelogin.developer.tabs.networking
 
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -33,7 +33,9 @@ fun NetworkingTabScreen(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(smallPadding)
+        ) {
             Text(
                 text = buildAnnotatedString {
                     appendBold("App Check")
@@ -41,51 +43,42 @@ fun NetworkingTabScreen(
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = buildAnnotatedString {
-                    appendBold("Token: ")
-                }
-            )
-            Button(
-                modifier = Modifier.padding(start = smallPadding),
-                onClick = {
-                    viewModel.getToken()
-                }
-            ) {
-                Text(text = "Get Firebase Token")
-            }
-        }
-        Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.tokenResponse.value)
-        }
-        Row {
-            Button(
-                modifier = Modifier.padding(start = smallPadding),
-                onClick = {
-                    viewModel.makeNetworkCall()
-                }
-            ) {
-                Text(text = "Make Mobile Backend Api Call")
-            }
-        }
-        Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.networkResponse.value)
-        }
+        ActionItem(
+            action = { viewModel.getToken() },
+            result = viewModel.tokenResponse,
+            buttonText = "Get Firebase Token"
+        )
 
-        Row {
-            Button(
-                modifier = Modifier.padding(start = smallPadding),
-                onClick = {
-                    viewModel.startAppIntegrityCheck()
-                }
-            ) {
-                Text(text = "Start App Integrity Check")
-            }
+        ActionItem(
+            action = { viewModel.makeNetworkCall() },
+            result = viewModel.networkResponse,
+            buttonText = "Make Mobile Backend Api Call"
+        )
+
+        ActionItem(
+            action = { viewModel.startAppIntegrityCheck() },
+            result = viewModel.appIntegrityResult,
+            buttonText = "Start App Integrity Check"
+        )
+    }
+}
+
+@Composable
+private fun ActionItem(
+    action: () -> Unit,
+    result: MutableState<String>,
+    buttonText: String
+) {
+    Row {
+        Button(
+            modifier = Modifier.padding(start = smallPadding),
+            onClick = action
+        ) {
+            Text(text = buttonText)
         }
-        Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.appIntegrityResult.value)
-        }
+    }
+    Row(modifier = Modifier.padding(all = smallPadding)) {
+        Text(text = result.value)
     }
 }
 

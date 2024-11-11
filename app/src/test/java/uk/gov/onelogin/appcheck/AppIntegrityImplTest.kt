@@ -1,8 +1,9 @@
 package uk.gov.onelogin.appcheck
 
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
@@ -11,8 +12,6 @@ import uk.gov.android.authentication.integrity.model.AttestationResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 
 class AppIntegrityImplTest {
     private lateinit var featureFlags: FeatureFlags
@@ -65,7 +64,7 @@ class AppIntegrityImplTest {
             .thenThrow(sse)
         val result = sut.startCheck()
 
-        assertEquals(AppIntegrityResult.Failure(sse.toString()), result)
+        assertEquals(AppIntegrityResult.Failure(sse.message!!), result)
     }
 
     companion object {
