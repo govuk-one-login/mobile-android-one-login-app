@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appcheck
 
+import io.ktor.util.date.getTimeMillis
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -11,7 +12,7 @@ import uk.gov.android.authentication.integrity.ClientAttestationManager
 import uk.gov.android.authentication.integrity.model.AttestationResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
+import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
@@ -56,7 +57,8 @@ class AppIntegrityImplTest {
     @Test
     fun `start check - attestation already stored in secure store`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
-        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)).thenReturn("Success")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("${getTimeMillis() + (advanceByFiveMin())}")
         val result = sut.startCheck()
         assertEquals(AppIntegrityResult.NotRequired, result)
     }
@@ -87,5 +89,9 @@ class AppIntegrityImplTest {
     companion object {
         private const val SUCCESS = "Success"
         private const val FAILURE = "Failure"
+
+        private fun advanceByFiveMin(): Int {
+            return 5 * 60000
+        }
     }
 }
