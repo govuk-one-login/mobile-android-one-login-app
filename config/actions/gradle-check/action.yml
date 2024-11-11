@@ -14,6 +14,10 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -24,6 +28,7 @@ runs:
         ./.sh/tests/runUnitChecks
       env:
         CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         TOKEN: ${{ inputs.github-token }}

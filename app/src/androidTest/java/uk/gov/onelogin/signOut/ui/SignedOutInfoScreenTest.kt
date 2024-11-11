@@ -20,9 +20,9 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.authentication.LoginSessionConfiguration.Locale
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.android.authentication.login.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker

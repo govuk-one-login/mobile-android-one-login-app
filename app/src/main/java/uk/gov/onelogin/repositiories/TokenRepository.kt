@@ -1,7 +1,7 @@
 package uk.gov.onelogin.repositiories
 
 import javax.inject.Inject
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.TokenResponse
 
 /**
  * Repository to hold value of tokens in working memory. [TokenResponse] held in repository has initial null value

@@ -47,7 +47,7 @@ classgraph = "4.8.177"
 govuk-ui = "5.6.0"
 govuk-logging = "0.9.0"
 compose-runtime = "1.7.5"
-wallet = "1.29.0"
+wallet = "1.30.0"
 
 [libraries]
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
@@ -101,7 +101,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.6.2" }
+authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.9.3" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.6.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }

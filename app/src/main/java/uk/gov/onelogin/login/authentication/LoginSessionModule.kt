@@ -6,8 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import uk.gov.android.authentication.AppAuthSession
-import uk.gov.android.authentication.LoginSession
+import uk.gov.android.authentication.login.AppAuthSession
+import uk.gov.android.authentication.login.LoginSession
 
 @Module
 @InstallIn(SingletonComponent::class)

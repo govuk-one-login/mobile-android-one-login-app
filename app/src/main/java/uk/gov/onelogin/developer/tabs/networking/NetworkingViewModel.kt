@@ -7,33 +7,32 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.appcheck.AppCheck
-import uk.gov.onelogin.appcheck.usecase.AssertionApiCall
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 
 @HiltViewModel
 class NetworkingViewModel @Inject constructor(
-    private val appCheck: AppCheck,
-    private val assertionApiCall: AssertionApiCall
+    private val appCheck: AppChecker,
+    private val assertionApiCall: AttestationCaller
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")
     val networkResponse: MutableState<String> = mutableStateOf("")
 
     fun getToken() {
-        tokenResponse.value = "Loading..."
-        appCheck.getAppCheckToken(
-            onSuccess = { token ->
-                this.tokenResponse.value = token
-            },
-            onFailure = { error ->
-                tokenResponse.value = "error: " + error.localizedMessage
-            }
-        )
+        viewModelScope.launch {
+            tokenResponse.value = "Loading..."
+            tokenResponse.value = appCheck.getAppCheckToken().toString()
+        }
     }
 
     fun makeNetworkCall() {
         viewModelScope.launch {
             networkResponse.value = "Loading..."
-            networkResponse.value = assertionApiCall(tokenResponse.value)
+            networkResponse.value = assertionApiCall.call(
+                signedProofOfPossession = "",
+                "",
+                ""
+            ).toString()
         }
     }
 }

@@ -18,6 +18,9 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: true
 
 runs:
   using: "composite"
@@ -29,6 +32,7 @@ runs:
 
     - name: Run Gradle managed device test suites
       env:
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
         INPUT_SHARD_COUNT: ${{ inputs.shard-count }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}

@@ -21,9 +21,13 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.authentication.LoginSessionConfiguration.Locale
+import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
+import uk.gov.android.authentication.integrity.usecase.AttestationCaller
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.android.authentication.login.LoginSessionConfiguration.Locale
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
@@ -33,9 +37,14 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.appcheck.AppCheckModule
+import uk.gov.onelogin.appcheck.AppIntegrity
+import uk.gov.onelogin.appcheck.AppIntegrityResult
+import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
+import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
@@ -49,7 +58,9 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
     FeaturesModule::class,
     NetworkModule::class,
     NavigatorModule::class,
-    AnalyticsModule::class
+    AnalyticsModule::class,
+    AppCheckUseCaseModule::class,
+    AppCheckModule::class
 )
 class WelcomeScreenTest : TestCase() {
 
@@ -73,6 +84,24 @@ class WelcomeScreenTest : TestCase() {
 
     @BindValue
     val analytics: AnalyticsLogger = mock()
+
+    @BindValue
+    val mockAppIntegrity: AppIntegrity = mock()
+
+    @BindValue
+    val mockAttestationManager: ClientAttestationManager = mock()
+
+    @BindValue
+    val mockAttestationCaller: AttestationCaller = mock()
+
+    @BindValue
+    val mockAppChecker: AppChecker = mock()
+
+    @BindValue
+    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
+        mockAttestationCaller,
+        mockAppChecker
+    )
 
     @Inject
     @Named("Open")
@@ -391,6 +420,20 @@ class WelcomeScreenTest : TestCase() {
         }
         whenWeClickSignIn()
         verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun signInAppIntegrityFailure() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        runBlocking {
+            whenever(mockAppIntegrity.startCheck())
+                .thenReturn(AppIntegrityResult.Failure("Error"))
+        }
+        composeTestRule.setContent {
+            WelcomeScreen()
+        }
+        whenWeClickSignIn()
+        verify(mockNavigator).navigate(LoginRoutes.SignInError)
     }
 
     private fun whenWeClickSignIn() {

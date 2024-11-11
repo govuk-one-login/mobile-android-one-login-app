@@ -3,7 +3,7 @@ package uk.gov.onelogin.ui.home
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.GetEmail
