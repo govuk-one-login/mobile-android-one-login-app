@@ -50,11 +50,11 @@ class AppIntegrityImpl @Inject constructor(
         }
 
     private fun isAttestationExpired(expiryTime: String?): Boolean {
-        if (expiryTime != null) {
+        return if (expiryTime != null) {
             val result = expiryTime.toLong() <= getTimeMillis()
-            return result
+            result
         } else {
-            return true
+            true
         }
     }
 }

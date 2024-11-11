@@ -103,8 +103,6 @@
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
     <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
 
-    <string name="assertionUrl" translatable="false">https://mobile.account.gov.uk%1$s</string>
-
     <!-- Analytics Opt In -->
     <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
     <string name="app_analyticsPermissionBody">You can help the One Login team make improvements by sharing analytics about how you use the app.\n\nThese analytics are anonymous. They show us what is and is not working, and help make the app better.\n\nYou can stop sharing these analytics any time. Go to ‘Apps’ in  your phone’s settings, and select the GOV.UK One Login app to see or change your app settings.</string>
