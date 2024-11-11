@@ -7,6 +7,7 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.ClientAttestationManager
 import uk.gov.android.authentication.integrity.model.AttestationResponse
@@ -58,9 +59,20 @@ class AppIntegrityImplTest {
     fun `start check - attestation already stored in secure store`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
-            .thenReturn("${getTimeMillis() + (advanceByFiveMin())}")
+            .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
         val result = sut.startCheck()
         assertEquals(AppIntegrityResult.NotRequired, result)
+    }
+
+    @Test
+    fun `start check - attestation stored is expired`(): Unit = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("${getTimeMillis() - (getFiveMinInMillis())}")
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        sut.startCheck()
+        verify(appCheck).getAttestation()
     }
 
     @Test
@@ -90,7 +102,7 @@ class AppIntegrityImplTest {
         private const val SUCCESS = "Success"
         private const val FAILURE = "Failure"
 
-        private fun advanceByFiveMin(): Int {
+        private fun getFiveMinInMillis(): Int {
             return 5 * 60000
         }
     }
