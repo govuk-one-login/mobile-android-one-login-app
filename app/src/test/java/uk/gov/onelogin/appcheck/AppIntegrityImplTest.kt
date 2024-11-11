@@ -11,12 +11,15 @@ import uk.gov.android.authentication.integrity.ClientAttestationManager
 import uk.gov.android.authentication.integrity.model.AttestationResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
 class AppIntegrityImplTest {
     private lateinit var featureFlags: FeatureFlags
     private lateinit var appCheck: ClientAttestationManager
     private lateinit var saveToOpenSecureStore: SaveToOpenSecureStore
+    private lateinit var getFromOpenSecureStore: GetFromOpenSecureStore
 
     private lateinit var sut: AppIntegrity
 
@@ -25,7 +28,13 @@ class AppIntegrityImplTest {
         featureFlags = mock()
         appCheck = mock()
         saveToOpenSecureStore = mock()
-        sut = AppIntegrityImpl(featureFlags, appCheck, saveToOpenSecureStore)
+        getFromOpenSecureStore = mock()
+        sut = AppIntegrityImpl(
+            featureFlags,
+            appCheck,
+            saveToOpenSecureStore,
+            getFromOpenSecureStore
+        )
     }
 
     @Test
@@ -36,7 +45,7 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `start check - firebase token call successful`() = runBlocking {
+    fun `start check - attestation call successful`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
@@ -45,7 +54,15 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `start check - firebase token call failure`() = runBlocking {
+    fun `start check - attestation already stored in secure store`() = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)).thenReturn("Success")
+        val result = sut.startCheck()
+        assertEquals(AppIntegrityResult.NotRequired, result)
+    }
+
+    @Test
+    fun `start check - attestation call failure`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation()).thenReturn(
             AttestationResponse.Failure(reason = FAILURE, error = Exception(FAILURE))

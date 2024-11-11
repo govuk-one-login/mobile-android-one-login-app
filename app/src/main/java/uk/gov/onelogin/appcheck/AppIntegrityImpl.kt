@@ -10,15 +10,22 @@ import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.SECURE_STORE_ERROR
 import uk.gov.onelogin.features.AppCheckFeatureFlag
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
 class AppIntegrityImpl @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val appCheck: ClientAttestationManager,
-    private val saveToOpenSecureStore: SaveToOpenSecureStore
+    private val saveToOpenSecureStore: SaveToOpenSecureStore,
+    private val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : AppIntegrity {
     override suspend fun startCheck(): AppIntegrityResult {
-        return if (featureFlags[AppCheckFeatureFlag.ENABLED]) {
+        // This is just to not block from using the app as the Firebase Token expiry time is set for a longer time
+        // which blocks from logging back in - to solve this needs deleting the app and re-install or waiting for > 15 min
+        // This logic will need to be changed when adding the conditional check for expiry time
+        val savedClientAttestation: String? = getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)
+        Log.d("SavedClientAttestation", "$savedClientAttestation")
+        return if (featureFlags[AppCheckFeatureFlag.ENABLED] && savedClientAttestation == null) {
             val result = appCheck.getAttestation()
             Log.d("AppIntegrity", "$result")
             when (result) {
