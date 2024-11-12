@@ -8,11 +8,15 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
 import uk.gov.android.ui.pages.AlertPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 
 @Composable
 fun SignOutScreen(
@@ -20,26 +24,43 @@ fun SignOutScreen(
 ) {
     // Needed for deleteWalletData
     val fragmentActivity = LocalContext.current as FragmentActivity
+    SignOutBody(
+        uiState = viewModel.uiState,
+        onClose = {
+            viewModel.goBack()
+        },
+        onPrimary = {
+            viewModel.signOut(fragmentActivity)
+        }
+    )
+}
+
+@Suppress("unused")
+@Composable
+internal fun SignOutBody(
+    uiState: SignOutUIState,
+    onPrimary: () -> Unit,
+    onClose: () -> Unit
+) {
     AlertPage(
         alertPageParameters = AlertPageParameters(
             title = R.string.app_signOutConfirmationTitle,
             annotatedContent = buildAnnotatedString {
                 append(stringResource(id = R.string.app_signOutConfirmationBody1))
+                appendLine()
+                appendLine()
+                append(stringResource(id = R.string.app_signOutConfirmationSubtitle))
+                appendLine()
                 appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet1))
                 appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet2))
                 appendBulletLine(stringResource(id = R.string.app_signOutConfirmationBullet3))
                 appendLine()
-                appendBoldLine(stringResource(id = R.string.app_signOutConfirmationBody2))
                 appendLine()
                 append(stringResource(id = R.string.app_signOutConfirmationBody3))
             },
             ctaText = R.string.app_signOutAndDeleteAppDataButton,
-            onClose = {
-                viewModel.goBack()
-            },
-            onPrimary = {
-                viewModel.signOut(fragmentActivity)
-            }
+            onClose = onClose,
+            onPrimary = onPrimary
         )
     )
 }
@@ -52,10 +73,28 @@ private fun AnnotatedString.Builder.appendBulletLine(string: String) {
     append(string)
 }
 
-private fun AnnotatedString.Builder.appendBoldLine(string: String) {
-    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-        appendLine()
-        append(string)
-        appendLine()
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun SignOutWalletPreview() {
+    GdsTheme {
+        SignOutBody(
+            uiState = SignOutUIState.Wallet,
+            onPrimary = {},
+            onClose = {}
+        )
+    }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@PreviewLightDark
+@Composable
+internal fun SignOutNoWalletPreview() {
+    GdsTheme {
+        SignOutBody(
+            uiState = SignOutUIState.NoWallet,
+            onPrimary = {},
+            onClose = {}
+        )
     }
 }

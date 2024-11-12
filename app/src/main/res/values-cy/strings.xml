@@ -22,14 +22,15 @@
     <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=cy</string>
 
     <!-- Sign Out-->
-    <string name="app_signOutConfirmationTitle">Bydd allgofnodi yn dileu data eich ap</string>
-    <string name="app_signOutConfirmationBody1">Pan fyddwch yn allgofnodi, bydd yr holl wybodaeth a dogfennau a gedwir yn eich ap yn cael eu dileu, gan gynnwys:</string>
-    <string name="app_signOutConfirmationBullet1">unrhyw ddogfennau a arbedwyd yn eich GOV.UK Wallet</string>
-    <string name="app_signOutConfirmationBullet2">eich gosodiadau ar gyfer mewngofnodi</string>
-    <string name="app_signOutConfirmationBullet3">eich dewisiadau rhannu dadansoddi</string>
-    <string name="app_signOutConfirmationBody2">Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
-    <string name="app_signOutConfirmationBody3">Bydd unrhyw ddogfennau sydd wedi\'u dileu yn dal i fod ar gael ar-lein i chi eu hychwanegu at eich GOV.UK Wallet eto.</string>
-    <string name="app_signOutAndDeleteAppDataButton">Allgofnodwch a dileu data yr ap</string>
+    <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
+    <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
+    <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
+    <string name="app_signOutConfirmationBullet1">bydd unrhyw ddogfennau a arbedir yn eich GOV.UK Wallet yn cael eu dileu</string>
+    <string name="app_signOutConfirmationBullet2">os ydych yn defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, bydd hyn yn cael ei ddiffodd</string>
+    <string name="app_signOutConfirmationBullet3">byddwch yn stopio rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
+    <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, gallwch ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
+    <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
+
     <string name="app_youveBeenSignedOutTitle">Rydych wedi cael eich allgofnodi</string>
     <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
     <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
