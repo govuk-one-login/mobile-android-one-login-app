@@ -20,7 +20,7 @@ class AppIntegrityImpl @Inject constructor(
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : AppIntegrity {
-    override suspend fun startCheck(): AppIntegrityResult {
+    override suspend fun getClientAttestation(): AttestationResult {
         // This is just to not block from using the app as the Firebase Token expiry time is set for a longer time
         // which blocks from logging back in - to solve this needs deleting the app and re-install or waiting for > 15 min
         // Needs to be update with the proper logic on DCMAW-10441
@@ -32,21 +32,21 @@ class AppIntegrityImpl @Inject constructor(
             Log.d("AppIntegrity", "$result")
             when (result) {
                 is AttestationResponse.Success -> handleClientAttestation(result)
-                is AttestationResponse.Failure -> AppIntegrityResult.Failure(result.reason)
+                is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
             }
         } else {
-            AppIntegrityResult.NotRequired
+            AttestationResult.NotRequired
         }
     }
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
         try {
-            saveToOpenSecureStore.invoke(CLIENT_ATTESTATION, result.attestationJwt)
+            saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
             saveToOpenSecureStore
-                .invoke(CLIENT_ATTESTATION_EXPIRY, result.expiresIn.toString())
-            AppIntegrityResult.Success(result.attestationJwt)
+                .save(CLIENT_ATTESTATION_EXPIRY, result.expiresIn)
+            AttestationResult.Success
         } catch (e: SecureStorageError) {
-            AppIntegrityResult.Failure(e.message ?: SECURE_STORE_ERROR)
+            AttestationResult.Failure(e.message ?: SECURE_STORE_ERROR)
         }
 
     private fun isAttestationExpired(expiryTime: String?): Boolean {

@@ -25,7 +25,7 @@ class SaveTokensImpl @Inject constructor(
             tokenResponse.idToken?.let {
                 it.extractPersistentIdFromIdToken()
                     ?.let { id ->
-                        saveToOpenSecureStore(
+                        saveToOpenSecureStore.save(
                             key = Keys.PERSISTENT_ID_KEY,
                             value = id
                         )

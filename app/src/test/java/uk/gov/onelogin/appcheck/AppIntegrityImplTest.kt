@@ -42,8 +42,8 @@ class AppIntegrityImplTest {
     @Test
     fun `start check - feature flag disabled`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(false)
-        val result = sut.startCheck()
-        assertEquals(AppIntegrityResult.NotRequired, result)
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired, result)
     }
 
     @Test
@@ -51,8 +51,8 @@ class AppIntegrityImplTest {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-        val result = sut.startCheck()
-        assertEquals(AppIntegrityResult.Success(SUCCESS), result)
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.Success, result)
     }
 
     @Test
@@ -60,8 +60,8 @@ class AppIntegrityImplTest {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
-        val result = sut.startCheck()
-        assertEquals(AppIntegrityResult.NotRequired, result)
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired, result)
     }
 
     @Test
@@ -71,7 +71,7 @@ class AppIntegrityImplTest {
             .thenReturn("${getTimeMillis() - (getFiveMinInMillis())}")
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-        sut.startCheck()
+        sut.getClientAttestation()
         verify(appCheck).getAttestation()
     }
 
@@ -81,8 +81,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation()).thenReturn(
             AttestationResponse.Failure(reason = FAILURE, error = Exception(FAILURE))
         )
-        val result = sut.startCheck()
-        assertEquals(AppIntegrityResult.Failure(FAILURE), result)
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.Failure(FAILURE), result)
     }
 
     @Test
@@ -91,11 +91,11 @@ class AppIntegrityImplTest {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-        whenever(saveToOpenSecureStore.invoke(any(), any()))
+        whenever(saveToOpenSecureStore.save(any(), any<String>()))
             .thenThrow(sse)
-        val result = sut.startCheck()
+        val result = sut.getClientAttestation()
 
-        assertEquals(AppIntegrityResult.Failure(sse.message!!), result)
+        assertEquals(AttestationResult.Failure(sse.message!!), result)
     }
 
     companion object {

@@ -1,7 +1,7 @@
 package uk.gov.onelogin.appcheck
 
 fun interface AppIntegrity {
-    suspend fun startCheck(): AppIntegrityResult
+    suspend fun getClientAttestation(): AttestationResult
 
     companion object {
         const val CLIENT_ATTESTATION = "appCheckClientAttestation"

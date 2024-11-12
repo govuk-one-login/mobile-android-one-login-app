@@ -38,7 +38,7 @@ class NetworkingViewModel @Inject constructor(
     fun startAppIntegrityCheck() {
         viewModelScope.launch {
             appIntegrityResult.value = "Loading..."
-            appIntegrityResult.value = appIntegrity.startCheck().toString()
+            appIntegrityResult.value = appIntegrity.getClientAttestation().toString()
         }
     }
 }

@@ -20,7 +20,7 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AppIntegrityResult
+import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.credentialchecker.BiometricStatus.SUCCESS
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.features.StsFeatureFlag
@@ -101,8 +101,8 @@ class WelcomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             _loading.emit(true)
-            when (appIntegrity.startCheck()) {
-                is AppIntegrityResult.Failure -> {
+            when (appIntegrity.getClientAttestation()) {
+                is AttestationResult.Failure -> {
                     _loading.emit(false)
                     navigator.navigate(LoginRoutes.SignInError)
                 }
