@@ -15,6 +15,8 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AppIntegrityImpl
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
+import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
 @SuppressWarnings("kotlin:S6517")
 @Module
@@ -41,11 +43,15 @@ object AppCheckUseCaseModule {
     @Provides
     fun provideAppIntegrityCheck(
         featureFlags: FeatureFlags,
-        appCheck: ClientAttestationManager
+        appCheck: ClientAttestationManager,
+        saveToOpenSecureStore: SaveToOpenSecureStore,
+        getFromOpenSecureStore: GetFromOpenSecureStore
     ): AppIntegrity {
         return AppIntegrityImpl(
             featureFlags,
-            appCheck
+            appCheck,
+            saveToOpenSecureStore,
+            getFromOpenSecureStore
         )
     }
 

@@ -39,7 +39,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.appcheck.AppCheckModule
 import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AppIntegrityResult
+import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
@@ -426,8 +426,8 @@ class WelcomeScreenTest : TestCase() {
     fun signInAppIntegrityFailure() {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         runBlocking {
-            whenever(mockAppIntegrity.startCheck())
-                .thenReturn(AppIntegrityResult.Failure("Error"))
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Failure("Error"))
         }
         composeTestRule.setContent {
             WelcomeScreen()

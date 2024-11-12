@@ -35,7 +35,7 @@ class TokenTabScreenViewModel @Inject constructor(
 
     fun resetPersistentId() {
         viewModelScope.launch {
-            saveToOpenSecureStore(
+            saveToOpenSecureStore.save(
                 Keys.PERSISTENT_ID_KEY,
                 ""
             )

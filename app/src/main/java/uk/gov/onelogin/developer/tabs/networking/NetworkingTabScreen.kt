@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -24,12 +27,15 @@ fun NetworkingTabScreen(
 ) {
     Column(
         modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .fillMaxSize()
             .padding(smallPadding),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        Row {
+        Row(
+            modifier = Modifier.padding(smallPadding)
+        ) {
             Text(
                 text = buildAnnotatedString {
                     appendBold("App Check")
@@ -37,37 +43,42 @@ fun NetworkingTabScreen(
             )
         }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = buildAnnotatedString {
-                    appendBold("Token: ")
-                }
-            )
-            Button(
-                modifier = Modifier.padding(start = smallPadding),
-                onClick = {
-                    viewModel.getToken()
-                }
-            ) {
-                Text(text = "Get Token")
-            }
+        ActionItem(
+            action = { viewModel.getToken() },
+            result = viewModel.tokenResponse,
+            buttonText = "Get Firebase Token"
+        )
+
+        ActionItem(
+            action = { viewModel.makeNetworkCall() },
+            result = viewModel.networkResponse,
+            buttonText = "Make Mobile Backend Api Call"
+        )
+
+        ActionItem(
+            action = { viewModel.startAppIntegrityCheck() },
+            result = viewModel.appIntegrityResult,
+            buttonText = "Start App Integrity Check"
+        )
+    }
+}
+
+@Composable
+private fun ActionItem(
+    action: () -> Unit,
+    result: MutableState<String>,
+    buttonText: String
+) {
+    Row {
+        Button(
+            modifier = Modifier.padding(start = smallPadding),
+            onClick = action
+        ) {
+            Text(text = buttonText)
         }
-        Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.tokenResponse.value)
-        }
-        Row {
-            Button(
-                modifier = Modifier.padding(start = smallPadding),
-                onClick = {
-                    viewModel.makeNetworkCall()
-                }
-            ) {
-                Text(text = "Make Network Call")
-            }
-        }
-        Row(modifier = Modifier.padding(all = smallPadding)) {
-            Text(text = viewModel.networkResponse.value)
-        }
+    }
+    Row(modifier = Modifier.padding(all = smallPadding)) {
+        Text(text = result.value)
     }
 }
 
