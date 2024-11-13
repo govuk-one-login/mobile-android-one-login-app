@@ -3,15 +3,23 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directories:
+      - "/"
+      - "/config/actions/**"
     schedule:
-      # Check for updates to GitHub Actions every week
       interval: "weekly"
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
+
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
