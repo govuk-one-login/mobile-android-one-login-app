@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # pin@v4.0.2
+      uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
       with:
         aws-region: eu-west-2
         role-to-assume: ${{ inputs.actions-role-arn }}
@@ -18,7 +18,7 @@ runs:
         role-skip-session-tagging: true
 
     - name: Store github-actions-env secret from AWS SecretManager
-      uses: aws-actions/aws-secretsmanager-get-secrets@f91b2a3e784edce744f972af1685eca7e24d2302 # pin@v2.0.2
+      uses: aws-actions/aws-secretsmanager-get-secrets@1d6311ab61b4856de027ff508aac818ddc1e141b # v2.0.7
       with:
         secret-ids: |
           ,di-mobile-android-onelogin-app/github-actions-env-v2
@@ -34,7 +34,7 @@ runs:
     - name: Parse google-play-service-account-json variable
       run: |
         JSON_KEY_DATA=$(echo "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" | jq -r '.json_key_data')
-        echo "::add-mask::$JSON_KEY_DATA" 
+        echo "::add-mask::$JSON_KEY_DATA"
         echo "JSON_KEY_DATA=$JSON_KEY_DATA" >> $GITHUB_ENV
       shell: bash
 
