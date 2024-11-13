@@ -17,7 +17,10 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.R
 import uk.gov.android.wallet.sdk.WalletSdk
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
@@ -32,7 +35,8 @@ import uk.gov.onelogin.wallet.WalletModule
 @UninstallModules(
     SignOutModule::class,
     NavigatorModule::class,
-    WalletModule::class
+    WalletModule::class,
+    AnalyticsModule::class
 )
 class SignOutScreenTest : TestCase() {
     @BindValue
@@ -45,11 +49,14 @@ class SignOutScreenTest : TestCase() {
     val walletSdk: WalletSdk = mock()
 
     @BindValue
+    val analytics: AnalyticsLogger = mock()
+
+    @BindValue
     val deleteWalletDataUseCase: DeleteWalletDataUseCase = mock()
 
     private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
     private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
-    private val goBackButton = hasContentDescription("Close")
+    private val closeButton = hasContentDescription("Close")
 
     @Before
     fun setupNavigation() {
@@ -67,6 +74,8 @@ class SignOutScreenTest : TestCase() {
     @Test
     fun verifySignOutButtonSucceeds() = runBlocking {
         composeTestRule.onNode(ctaButton).performClick()
+
+        verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
         verify(signOutUseCase).invoke(any())
         verify(mockNavigator).navigate(LoginRoutes.Root, true)
     }
@@ -81,8 +90,10 @@ class SignOutScreenTest : TestCase() {
     }
 
     @Test
-    fun verifyGoBackButton() {
-        composeTestRule.onNode(goBackButton).performClick()
+    fun verifyCloseIconButton() {
+        composeTestRule.onNode(closeButton).performClick()
+
+        verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onCloseIcon())
         verify(mockNavigator).goBack()
     }
 }

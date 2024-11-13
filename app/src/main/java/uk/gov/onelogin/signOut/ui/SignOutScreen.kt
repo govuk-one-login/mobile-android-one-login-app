@@ -1,5 +1,7 @@
 package uk.gov.onelogin.signOut.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -13,13 +15,43 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.pages.AlertPage
 import uk.gov.android.ui.pages.AlertPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 
 @Composable
 fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
+    val onBackPressedDispatcher =
+        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val analytics: SignOutAnalyticsViewModel = hiltViewModel()
     // Needed for deleteWalletData
     val fragmentActivity = LocalContext.current as FragmentActivity
+    SignOutBody(
+        onClose = {
+            analytics.trackCloseIcon()
+            viewModel.goBack()
+        },
+        onPrimary = {
+            analytics.trackPrimary()
+            viewModel.signOut(fragmentActivity)
+        }
+    )
+    analytics.trackSignOutView()
+
+    BackHandler {
+        println("pressing back")
+        analytics.trackBackPressed()
+        onBackPressedDispatcher?.onBackPressed()
+    }
+}
+
+@Composable
+internal fun SignOutBody(
+    onClose: () -> Unit = {},
+    onPrimary: () -> Unit = {}
+) {
     AlertPage(
         alertPageParameters = AlertPageParameters(
             title = R.string.app_signOutConfirmationTitle,
@@ -35,13 +67,22 @@ fun SignOutScreen(
             },
             ctaText = R.string.app_signOutAndDeleteAppDataButton,
             onClose = {
-                viewModel.goBack()
+                onClose()
             },
             onPrimary = {
-                viewModel.signOut(fragmentActivity)
+                onPrimary()
             }
         )
     )
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun SignOutPreview() {
+    GdsTheme {
+        SignOutBody()
+    }
 }
 
 private fun AnnotatedString.Builder.appendBulletLine(string: String) {
