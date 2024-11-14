@@ -2,31 +2,35 @@ package uk.gov.onelogin.appcheck
 
 import android.content.Context
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseException
 import com.google.firebase.appcheck.AppCheckProviderFactory
 import com.google.firebase.appcheck.appCheck
 import com.google.firebase.initialize
+import javax.inject.Inject
+import kotlinx.coroutines.tasks.await
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.model.AppCheckToken
 
-class FirebaseAppCheck : AppCheck {
-    override fun init(
-        context: Context,
-        appCheckFactory: AppCheckProviderFactory
-    ) {
-        Firebase.initialize(context)
+class FirebaseAppCheck @Inject constructor(
+    appCheckFactory: AppCheckProviderFactory,
+    context: Context
+) : AppChecker {
+    private val appCheck = Firebase.appCheck
+
+    init {
         Firebase.appCheck.installAppCheckProviderFactory(
             appCheckFactory
         )
+        Firebase.initialize(context)
     }
 
-    override fun getAppCheckToken(
-        onSuccess: (String) -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        Firebase.appCheck.getAppCheckToken(false)
-            .addOnSuccessListener { token ->
-                onSuccess(token.token)
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
+    override suspend fun getAppCheckToken(): Result<AppCheckToken> {
+        return try {
+            Result.success(
+                AppCheckToken(appCheck.getAppCheckToken(false).await().token)
+            )
+        } catch (e: FirebaseException) {
+            Result.failure(e)
+        }
     }
 }

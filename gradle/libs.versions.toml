@@ -19,7 +19,7 @@ core-ktx = "1.13.1"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
 appcompat = "1.6.1"
-lifecycle-runtime-compose = "2.8.6"
+lifecycle-runtime-compose = "2.8.7"
 ktlint = "12.1.1"
 hiltPlugin = "2.52"
 detekt = "1.23.7"
@@ -47,13 +47,13 @@ classgraph = "4.8.177"
 govuk-ui = "5.6.0"
 govuk-logging = "0.10.0"
 compose-runtime = "1.7.5"
-wallet = "1.29.0"
+wallet = "1.30.0"
 
 [libraries]
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
-test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
+test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.11.0" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltPlugin" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltPlugin" }
@@ -101,7 +101,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.6.2" }
+authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.10.1" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.6.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }

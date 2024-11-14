@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.android.features.FeatureFlags
+import uk.gov.onelogin.features.WalletFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.signOut.domain.SignOutError
@@ -16,8 +18,16 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 @HiltViewModel
 class SignOutViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val featureFlags: FeatureFlags
 ) : ViewModel() {
+    val uiState: SignOutUIState
+        get() = if (featureFlags[WalletFeatureFlag.ENABLED]) {
+            SignOutUIState.Wallet
+        } else {
+            SignOutUIState.NoWallet
+        }
+
     fun signOut(activityFragment: FragmentActivity) {
         viewModelScope.launch {
             try {

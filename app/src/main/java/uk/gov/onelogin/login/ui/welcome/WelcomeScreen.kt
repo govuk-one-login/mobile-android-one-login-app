@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -17,6 +18,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.login.ui.LoadingScreen
 
 @Composable
 fun WelcomeScreen(
@@ -24,6 +26,7 @@ fun WelcomeScreen(
     shouldTryAgain: () -> Boolean = { false }
 ) {
     val analytics: SignInAnalyticsViewModel = hiltViewModel()
+    val loading = viewModel.loading.collectAsState()
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -48,6 +51,9 @@ fun WelcomeScreen(
             }
         }
     )
+    if (loading.value) {
+        LoadingScreen()
+    }
 
     LaunchedEffect(key1 = Unit) {
         if (!shouldTryAgain()) return@LaunchedEffect

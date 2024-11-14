@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.repositiories.TokenRepositoryImpl
 

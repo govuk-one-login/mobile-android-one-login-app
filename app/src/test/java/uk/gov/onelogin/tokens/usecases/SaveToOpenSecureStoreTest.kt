@@ -1,5 +1,6 @@
 package uk.gov.onelogin.tokens.usecases
 
+import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -21,7 +22,8 @@ class SaveToOpenSecureStoreTest {
     private val mockSecureStore: SecureStore = mock()
 
     private val expectedStoreKey: String = "key"
-    private val expectedStoreValue: String = "value"
+    private val expectedStoreValueString: String = "value"
+    private val expectedStoreValueNumber: Number = getTimeMillis()
 
     @BeforeEach
     fun setUp() {
@@ -35,17 +37,27 @@ class SaveToOpenSecureStoreTest {
         )
 
         assertDoesNotThrow {
-            useCase.invoke(expectedStoreKey, expectedStoreValue)
+            useCase.save(expectedStoreKey, expectedStoreValueString)
         }
     }
 
     @Test
-    fun `saves value successfully`() = runTest {
-        useCase.invoke(expectedStoreKey, expectedStoreValue)
+    fun `saves value successfully (String, String)`() = runTest {
+        useCase.save(expectedStoreKey, expectedStoreValueString)
 
         verify(mockSecureStore).upsert(
             expectedStoreKey,
-            expectedStoreValue
+            expectedStoreValueString
+        )
+    }
+
+    @Test
+    fun `saves value successfully (String, Number)`() = runTest {
+        useCase.save(expectedStoreKey, expectedStoreValueNumber)
+
+        verify(mockSecureStore).upsert(
+            expectedStoreKey,
+            expectedStoreValueNumber.toString()
         )
     }
 }

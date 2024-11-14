@@ -15,11 +15,12 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.AuthenticationError
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.AuthenticationError
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
@@ -55,6 +56,7 @@ class WelcomeScreenViewModelTest {
     private val mockLocaleUtils: LocaleUtils = mock()
     private val mockSaveTokens: SaveTokens = mock()
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
+    private val mockAppIntegrity: AppIntegrity = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String? = "testIdToken"
@@ -77,10 +79,11 @@ class WelcomeScreenViewModelTest {
         mockFeatureFlags,
         mockGetPersistentId,
         mockNavigator,
-        mockLocaleUtils,
         mockSaveTokens,
         mockSaveTokenExpiry,
-        mockOnlineChecker
+        mockAppIntegrity,
+        mockOnlineChecker,
+        mockLocaleUtils
     )
 
     @BeforeEach
@@ -322,7 +325,12 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
-            .thenThrow(AuthenticationError("Sign in error", AuthenticationError.ErrorType.OAUTH))
+            .thenThrow(
+                AuthenticationError(
+                    "Sign in error",
+                    AuthenticationError.ErrorType.OAUTH
+                )
+            )
 
         viewModel.handleActivityResult(mockIntent)
 

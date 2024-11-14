@@ -11,7 +11,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
@@ -57,7 +57,7 @@ class SaveTokensTest {
                 Keys.ID_TOKEN_KEY,
                 idToken
             )
-            verify(mockSaveToOpenSecureStore).invoke(
+            verify(mockSaveToOpenSecureStore).save(
                 Keys.PERSISTENT_ID_KEY,
                 "1234"
             )
@@ -85,7 +85,7 @@ class SaveTokensTest {
                 Keys.ID_TOKEN_KEY,
                 "id"
             )
-            verify(mockSaveToOpenSecureStore, times(0)).invoke(
+            verify(mockSaveToOpenSecureStore, times(0)).save(
                 Keys.PERSISTENT_ID_KEY,
                 "1234"
             )
@@ -110,7 +110,7 @@ class SaveTokensTest {
                 "test"
             )
             verify(mockSaveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY))
-            verify(mockSaveToOpenSecureStore, times(0)).invoke(any(), any())
+            verify(mockSaveToOpenSecureStore, times(0)).save(any(), any<String>())
         }
     }
 

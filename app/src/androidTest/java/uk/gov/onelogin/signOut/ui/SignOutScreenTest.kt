@@ -61,18 +61,21 @@ class SignOutScreenTest : TestCase() {
     @Before
     fun setupNavigation() {
         hiltRule.inject()
-        composeTestRule.setContent {
-            SignOutScreen()
-        }
     }
 
     @Test
     fun verifyScreenDisplayed() {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
         composeTestRule.onNode(title).assertIsDisplayed()
     }
 
     @Test
     fun verifySignOutButtonSucceeds() = runBlocking {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
         composeTestRule.onNode(ctaButton).performClick()
 
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
@@ -80,8 +83,11 @@ class SignOutScreenTest : TestCase() {
         verify(mockNavigator).navigate(LoginRoutes.Root, true)
     }
 
-    @Test()
+    @Test
     fun verifySignOutButtonFails() = runTest {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
         whenever(signOutUseCase.invoke(any()))
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(ctaButton).performClick()
@@ -91,9 +97,26 @@ class SignOutScreenTest : TestCase() {
 
     @Test
     fun verifyCloseIconButton() {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
         composeTestRule.onNode(closeButton).performClick()
 
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onCloseIcon())
         verify(mockNavigator).goBack()
+    }
+
+    @Test
+    fun previewWalletTest() {
+        composeTestRule.setContent {
+            SignOutWalletPreview()
+        }
+    }
+
+    @Test
+    fun previewNoWalletTest() {
+        composeTestRule.setContent {
+            SignOutNoWalletPreview()
+        }
     }
 }

@@ -37,9 +37,9 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity

@@ -54,7 +54,12 @@ buildscript {
         getVersionName()
     )
     val debugAppCheckToken: String by rootProject.extra(
-        localProperties.getProperty("firebaseAppCheckDebugSecret") ?: ""
+        try {
+            providers.gradleProperty("debugAppCheckToken").get()
+        }  catch (e: org.gradle.api.internal.provider.MissingValueException) {
+            logger.warn("firebase debug token not found in gradle properties")
+            System.getenv("BUILD_DEBUG_APP_CHECK_TOKEN")
+        }
     )
 }
 

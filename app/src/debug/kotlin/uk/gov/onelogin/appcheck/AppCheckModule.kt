@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uk.gov.android.authentication.integrity.appcheck.AppChecker
 import uk.gov.android.onelogin.BuildConfig
 
 @Module
@@ -19,22 +20,20 @@ object AppCheckModule {
     fun provideAppCheck(
         @ApplicationContext
         context: Context
-    ): AppCheck = FirebaseAppCheck().also {
-        val key = Firebase.app.persistenceKey
-        context.getSharedPreferences(
-            "com.google.firebase.appcheck.debug.store.$key",
-            MODE_PRIVATE
-        ).edit().apply {
-            putString(
-                "com.google.firebase.appcheck.debug.DEBUG_SECRET",
-                BuildConfig.AppCheckDebugSecret
-            )
-            commit()
+    ): AppChecker {
+        val factory = DebugAppCheckProviderFactory.getInstance()
+        return FirebaseAppCheck(factory, context).also {
+            val key = Firebase.app.persistenceKey
+            context.getSharedPreferences(
+                "com.google.firebase.appcheck.debug.store.$key",
+                MODE_PRIVATE
+            ).edit().apply {
+                putString(
+                    "com.google.firebase.appcheck.debug.DEBUG_SECRET",
+                    BuildConfig.AppCheckDebugSecret
+                )
+                commit()
+            }
         }
-
-        it.init(
-            context,
-            DebugAppCheckProviderFactory.getInstance()
-        )
     }
 }

@@ -10,13 +10,17 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import uk.gov.android.authentication.LoginSession
-import uk.gov.android.authentication.LoginSessionConfiguration
-import uk.gov.android.authentication.TokenResponse
+import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
+import uk.gov.onelogin.appcheck.AppIntegrity
+import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.credentialchecker.BiometricStatus.SUCCESS
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.features.StsFeatureFlag
@@ -48,12 +52,16 @@ class WelcomeScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val getPersistentId: GetPersistentId,
     private val navigator: Navigator,
-    private val localeUtils: LocaleUtils,
     private val saveTokens: SaveTokens,
     private val saveTokenExpiry: SaveTokenExpiry,
-    val onlineChecker: OnlineChecker
+    private val appIntegrity: AppIntegrity,
+    val onlineChecker: OnlineChecker,
+    localeUtils: LocaleUtils
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
+    private val locale = localeUtils.getLocaleAsSessionConfig()
+    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
 
     fun onPrimary(
         launcher: ActivityResultLauncher<Intent>
@@ -89,26 +97,31 @@ class WelcomeScreenViewModel @Inject constructor(
         } else {
             context.getString(R.string.openIdConnectClientId)
         }
-
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
-
-        val locale = localeUtils.getLocaleAsSessionConfig()
-
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
-            loginSession
-                .present(
-                    launcher,
-                    configuration = LoginSessionConfiguration(
-                        authorizeEndpoint = authorizeEndpoint,
-                        clientId = clientId,
-                        locale = locale,
-                        redirectUri = redirectUri,
-                        scopes = scopes,
-                        tokenEndpoint = tokenEndpoint,
-                        persistentSessionId = persistentId
+            _loading.emit(true)
+            when (appIntegrity.getClientAttestation()) {
+                is AttestationResult.Failure -> {
+                    _loading.emit(false)
+                    navigator.navigate(LoginRoutes.SignInError)
+                }
+                else -> {
+                    _loading.emit(false)
+                    loginSession.present(
+                        launcher,
+                        configuration = LoginSessionConfiguration(
+                            authorizeEndpoint = authorizeEndpoint,
+                            clientId = clientId,
+                            locale = locale,
+                            redirectUri = redirectUri,
+                            scopes = scopes,
+                            tokenEndpoint = tokenEndpoint,
+                            persistentSessionId = persistentId
+                        )
                     )
-                )
+                }
+            }
         }
     }
 
@@ -154,7 +167,6 @@ class WelcomeScreenViewModel @Inject constructor(
         } ?: checkLocalAuthRoute(tokens, isReAuth)
     }
 
-    @Suppress("ReturnCount")
     private suspend fun checkLocalAuthRoute(tokens: TokenResponse, isReAuth: Boolean) {
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)

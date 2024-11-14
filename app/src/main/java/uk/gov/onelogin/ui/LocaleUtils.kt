@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.core.os.ConfigurationCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import uk.gov.android.authentication.LoginSessionConfiguration
+import uk.gov.android.authentication.login.LoginSessionConfiguration
 
 interface LocaleUtils {
     fun getLocaleAsSessionConfig(): LoginSessionConfiguration.Locale
