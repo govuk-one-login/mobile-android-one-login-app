@@ -13,6 +13,10 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import uk.gov.android.authentication.integrity.appcheck.usecase.JWK
+import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
@@ -36,6 +40,7 @@ import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
+import uk.gov.onelogin.tokens.verifier.JwtVerifier
 import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
@@ -57,7 +62,9 @@ class WelcomeScreenViewModel @Inject constructor(
     private val saveTokens: SaveTokens,
     private val saveTokenExpiry: SaveTokenExpiry,
     val onlineChecker: OnlineChecker,
-    private val appIntegrity: AppIntegrity
+    private val appIntegrity: AppIntegrity,
+    private val appIntegrityConfiguration: AppIntegrityConfiguration,
+    private val verifier: JwtVerifier
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
     private val locale = localeUtils.getLocaleAsSessionConfig()
@@ -129,10 +136,25 @@ class WelcomeScreenViewModel @Inject constructor(
     @Suppress("TooGenericExceptionCaught")
     fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
         if (intent.data == null) return
-
+        // Create PoP
+        val popResult = appIntegrity.getProofOfPossession()
+        // Get public Key ECCoordinate
+        val pubKeyECCoord = appIntegrityConfiguration.keyStoreManager.getPublicKey()
+        // Create JWK
+        val jwk = JWK.makeJWK(x = pubKeyECCoord.first, y = pubKeyECCoord.second)
+        // turn JWK to String (use only the content of the JWK created)
+        val jwkStr = Json.encodeToString<JWK.JsonWebKeyFormat>(jwk.jwk)
+        Log.d("JwkString", jwkStr)
         viewModelScope.launch {
-            when (val popResult = appIntegrity.getProofOfPossession()) {
+            when (popResult) {
                 is SignedPoP.Success -> try {
+                    try {
+                        verifier.verify(popResult.popJwt, jwkStr)
+                        Log.d("VerifyPopJwt", "${true}")
+                    } catch (e: Throwable) {
+                        Log.e("ErrorVerifyingPoP", e.message ?: "null", e)
+                        Log.d("VerifyPopJwt", "${false}")
+                    }
                     loginSession.finalise(intent = intent) { tokens ->
                         viewModelScope.launch {
                             handleTokens(tokens, isReAuth)
