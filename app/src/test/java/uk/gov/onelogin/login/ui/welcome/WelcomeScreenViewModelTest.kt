@@ -15,6 +15,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
@@ -102,6 +103,8 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("Success"))
             whenever(mockLoginSession.finalise(eq(mockIntent), any()))
                 .thenAnswer {
                     (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -121,6 +124,25 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
+    @Test
+    fun `handleIntent when data != null, device secure, generatePoP failure`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Failure("Error"))
+
+            viewModel.handleActivityResult(
+                mockIntent
+            )
+
+            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+        }
+
     @Suppress("UNCHECKED_CAST")
     @Test
     fun `when data != null, device secure, verify id token success, bio pref set to biometrics`() =
@@ -132,6 +154,8 @@ class WelcomeScreenViewModelTest {
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
             whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("Success"))
             whenever(mockLoginSession.finalise(eq(mockIntent), any()))
                 .thenAnswer {
                     (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -167,6 +191,8 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("Success"))
             whenever(mockLoginSession.finalise(eq(mockIntent), any()))
                 .thenAnswer {
                     (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(nullIdTokenResponse)
@@ -191,6 +217,8 @@ class WelcomeScreenViewModelTest {
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -216,6 +244,8 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("Success"))
             whenever(mockLoginSession.finalise(eq(mockIntent), any()))
                 .thenAnswer {
                     (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -240,6 +270,8 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -264,6 +296,8 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -288,6 +322,8 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -324,6 +360,8 @@ class WelcomeScreenViewModelTest {
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenThrow(
                 AuthenticationError(
@@ -348,6 +386,8 @@ class WelcomeScreenViewModelTest {
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(eq(mockIntent), any()))
             .thenAnswer {
                 (it.arguments[1] as (token: TokenResponse) -> Unit).invoke(tokenResponse)

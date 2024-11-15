@@ -4,9 +4,9 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.serialization.json.Json
-import uk.gov.android.authentication.integrity.model.AttestationResponse
-import uk.gov.android.authentication.integrity.usecase.AttestationCaller
-import uk.gov.android.authentication.integrity.usecase.JWK
+import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
+import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
+import uk.gov.android.authentication.integrity.appcheck.usecase.JWK
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient

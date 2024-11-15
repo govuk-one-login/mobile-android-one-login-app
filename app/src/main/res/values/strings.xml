@@ -91,7 +91,7 @@
     <string name="app_developer_tab_app" translatable="false">App</string>
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
-    <string name="app_developer_tab_networking" translatable="false">Networking</string>
+    <string name="app_developer_tab_app_integrity" translatable="false">AppIntegrity</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
