@@ -19,7 +19,8 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 class SignOutAnalyticsViewModelTest {
     private lateinit var buttonText: String
     private lateinit var name: String
-    private lateinit var id: String
+    private lateinit var walletId: String
+    private lateinit var noWalletId: String
     private lateinit var logger: AnalyticsLogger
     private lateinit var requiredParameters: RequiredParameters
     private lateinit var viewModel: SignOutAnalyticsViewModel
@@ -34,7 +35,8 @@ class SignOutAnalyticsViewModelTest {
         )
         buttonText = context.getEnglishString(R.string.app_signOutAndDeleteAppDataButton)
         name = context.getEnglishString(R.string.app_signOutConfirmationTitle)
-        id = context.getEnglishString(R.string.sign_out_wallet_page_id)
+        walletId = context.getEnglishString(R.string.sign_out_wallet_page_id)
+        noWalletId = context.getEnglishString(R.string.sign_out_no_wallet_page_id)
         viewModel = SignOutAnalyticsViewModel(context, logger)
     }
 
@@ -78,15 +80,29 @@ class SignOutAnalyticsViewModelTest {
     }
 
     @Test
+    fun trackSignOutWalletViewLogsViewEventScreen() {
+        // Given a ViewEvent.Screen
+        val event = ViewEvent.Screen(
+            name = name,
+            id = walletId,
+            params = requiredParameters
+        )
+        // When tracking the signed out info screen view
+        viewModel.trackSignOutView(SignOutUIState.Wallet)
+        // Then log a ScreenView to the AnalyticsLogger
+        verify(logger).logEventV3Dot1(event)
+    }
+
+    @Test
     fun trackSignOutViewLogsViewEventScreen() {
         // Given a ViewEvent.Screen
         val event = ViewEvent.Screen(
             name = name,
-            id = id,
+            id = noWalletId,
             params = requiredParameters
         )
         // When tracking the signed out info screen view
-        viewModel.trackSignOutView()
+        viewModel.trackSignOutView(SignOutUIState.NoWallet)
         // Then log a ScreenView to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
     }

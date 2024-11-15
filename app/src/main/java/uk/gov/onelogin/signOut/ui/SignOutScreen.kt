@@ -32,13 +32,15 @@ fun SignOutScreen(
     SignOutBody(
         uiState = viewModel.uiState,
         onClose = {
+            analytics.trackCloseIcon()
             viewModel.goBack()
         },
         onPrimary = {
+            analytics.trackPrimary()
             viewModel.signOut(fragmentActivity)
         }
     )
-    analytics.trackSignOutView()
+    analytics.trackSignOutView(viewModel.uiState)
 
     BackHandler {
         println("pressing back")

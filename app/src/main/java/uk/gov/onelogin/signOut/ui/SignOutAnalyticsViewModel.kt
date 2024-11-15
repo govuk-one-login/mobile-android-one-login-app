@@ -23,7 +23,8 @@ class SignOutAnalyticsViewModel @Inject constructor(
     private val onPrimaryEvent = onPrimaryEvent(context)
     private val onCloseIcon = onCloseIcon()
     private val onBackPressed = onBackPressed()
-    private val signOutViewEvent = makeSignOutViewEvent(context)
+    private val signOutNoWalletViewEvent = makeSignOutNoWalletViewEvent(context)
+    private val signOutWalletViewEvent = makeSignOutWalletViewEvent(context)
 
     fun trackPrimary() {
         analyticsLogger.logEventV3Dot1(onPrimaryEvent)
@@ -37,8 +38,12 @@ class SignOutAnalyticsViewModel @Inject constructor(
         analyticsLogger.logEventV3Dot1(onBackPressed)
     }
 
-    fun trackSignOutView() {
-        analyticsLogger.logEventV3Dot1(signOutViewEvent)
+    fun trackSignOutView(uiState: SignOutUIState) {
+        if (uiState == SignOutUIState.Wallet) {
+            analyticsLogger.logEventV3Dot1(signOutWalletViewEvent)
+        } else {
+            analyticsLogger.logEventV3Dot1(signOutNoWalletViewEvent)
+        }
     }
 
     companion object {
@@ -68,10 +73,21 @@ class SignOutAnalyticsViewModel @Inject constructor(
             )
         )
 
-        fun makeSignOutViewEvent(context: Context) = with(context) {
+        fun makeSignOutWalletViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signOutConfirmationTitle),
                 id = getEnglishString(R.string.sign_out_wallet_page_id),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
+                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+                )
+            )
+        }
+
+        fun makeSignOutNoWalletViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_signOutConfirmationTitle),
+                id = getEnglishString(R.string.sign_out_no_wallet_page_id),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
                     taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
