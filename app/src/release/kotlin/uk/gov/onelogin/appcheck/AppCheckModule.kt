@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 
 @Module
 @InstallIn(SingletonComponent::class)

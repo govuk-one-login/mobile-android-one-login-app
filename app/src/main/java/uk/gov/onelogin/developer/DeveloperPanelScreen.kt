@@ -12,7 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.developer.tabs.app.AppTabScreen
+import uk.gov.onelogin.developer.tabs.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.developer.tabs.auth.AuthTabScreen
 import uk.gov.onelogin.developer.tabs.features.FeaturesScreen
-import uk.gov.onelogin.developer.tabs.networking.NetworkingTabScreen
 import uk.gov.onelogin.developer.tabs.tokens.TokenTabScreen
 import uk.gov.onelogin.ui.components.SimpleTextPage
 
@@ -59,8 +59,8 @@ fun TabView(goBack: () -> Unit) {
         TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
             TokenTabScreen()
         },
-        TabItem(R.string.app_developer_tab_networking, Icons.Filled.Email) {
-            NetworkingTabScreen()
+        TabItem(R.string.app_developer_tab_app_integrity, Icons.Filled.CheckCircle) {
+            AppIntegrityTabScreen()
         },
         TabItem(
             R.string.app_developer_tab_feature_flags,

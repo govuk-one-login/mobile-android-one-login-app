@@ -8,7 +8,7 @@ import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 
 class FirebaseAppCheckTest {
     private val context: Context = ApplicationProvider.getApplicationContext()

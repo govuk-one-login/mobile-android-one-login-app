@@ -1,11 +1,14 @@
 package uk.gov.onelogin.appcheck
 
+import android.content.Context
 import android.util.Log
 import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.ClientAttestationManager
-import uk.gov.android.authentication.integrity.model.AttestationResponse
+import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
+import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.features.FeatureFlags
+import uk.gov.android.onelogin.R
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
@@ -15,6 +18,7 @@ import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
 class AppIntegrityImpl @Inject constructor(
+    private val context: Context,
     private val featureFlags: FeatureFlags,
     private val appCheck: ClientAttestationManager,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
@@ -37,6 +41,13 @@ class AppIntegrityImpl @Inject constructor(
         } else {
             AttestationResult.NotRequired
         }
+    }
+
+    override fun getProofOfPossession(): SignedPoP {
+        return appCheck.generatePoP(
+            iss = context.getString(R.string.stsClientId),
+            aud = context.getString(R.string.baseStsUrl)
+        )
     }
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =

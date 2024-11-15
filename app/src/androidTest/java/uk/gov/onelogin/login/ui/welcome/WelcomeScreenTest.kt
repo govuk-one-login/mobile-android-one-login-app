@@ -12,6 +12,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -22,9 +23,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.ClientAttestationManager
-import uk.gov.android.authentication.integrity.appcheck.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
+import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
+import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
-import uk.gov.android.authentication.integrity.usecase.AttestationCaller
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.LoginSessionConfiguration.Locale
@@ -52,6 +55,7 @@ import uk.gov.onelogin.network.di.NetworkModule
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
+@OptIn(ExperimentalEncodingApi::class)
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
@@ -98,9 +102,13 @@ class WelcomeScreenTest : TestCase() {
     val mockAppChecker: AppChecker = mock()
 
     @BindValue
+    val mockKeyStoreManager: KeyStoreManager = ECKeyManager()
+
+    @BindValue
     val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
         mockAttestationCaller,
-        mockAppChecker
+        mockAppChecker,
+        mockKeyStoreManager
     )
 
     @Inject

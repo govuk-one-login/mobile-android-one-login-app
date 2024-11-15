@@ -13,6 +13,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -130,16 +131,22 @@ class WelcomeScreenViewModel @Inject constructor(
         if (intent.data == null) return
 
         viewModelScope.launch {
-            try {
-                loginSession.finalise(intent = intent) { tokens ->
-                    viewModelScope.launch {
-                        handleTokens(tokens, isReAuth)
+            when (val popResult = appIntegrity.getProofOfPossession()) {
+                is SignedPoP.Success -> try {
+                    loginSession.finalise(intent = intent) { tokens ->
+                        viewModelScope.launch {
+                            handleTokens(tokens, isReAuth)
+                        }
                     }
+                } catch (e: Throwable) { // handle both Error and Exception types.
+                    // Includes AuthenticationError
+                    Log.e(tag, e.message, e)
+                    navigator.navigate(LoginRoutes.SignInError, true)
                 }
-            } catch (e: Throwable) { // handle both Error and Exception types.
-                // Includes AuthenticationError
-                Log.e(tag, e.message, e)
-                navigator.navigate(LoginRoutes.SignInError, true)
+                is SignedPoP.Failure -> {
+                    Log.e(tag, popResult.reason, popResult.error)
+                    navigator.navigate(LoginRoutes.SignInError, true)
+                }
             }
         }
     }

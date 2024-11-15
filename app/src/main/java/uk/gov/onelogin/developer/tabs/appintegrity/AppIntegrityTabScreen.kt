@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.networking
+package uk.gov.onelogin.developer.tabs.appintegrity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,8 +22,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.ui.theme.smallPadding
 
 @Composable
-fun NetworkingTabScreen(
-    viewModel: NetworkingViewModel = hiltViewModel()
+fun AppIntegrityTabScreen(
+    viewModel: AppIntegrityTabViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
@@ -56,9 +56,15 @@ fun NetworkingTabScreen(
         )
 
         ActionItem(
-            action = { viewModel.startAppIntegrityCheck() },
-            result = viewModel.appIntegrityResult,
-            buttonText = "Start App Integrity Check"
+            action = { viewModel.getClientAttestation() },
+            result = viewModel.clientAttestationResult,
+            buttonText = "Get Client Attestation"
+        )
+
+        ActionItem(
+            action = { viewModel.generatePoP() },
+            result = viewModel.proofOfPossessionResult,
+            buttonText = "Generate Proof Of Possession"
         )
     }
 }
