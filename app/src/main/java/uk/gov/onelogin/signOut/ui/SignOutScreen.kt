@@ -1,7 +1,5 @@
 package uk.gov.onelogin.signOut.ui
 
-import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -19,13 +17,12 @@ import uk.gov.android.ui.pages.AlertPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
+import uk.gov.onelogin.ui.components.BackHandlerWithPop
 
 @Composable
 fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
-    val onBackPressedDispatcher =
-        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val analytics: SignOutAnalyticsViewModel = hiltViewModel()
     // Needed for deleteWalletData
     val fragmentActivity = LocalContext.current as FragmentActivity
@@ -42,10 +39,8 @@ fun SignOutScreen(
     )
     analytics.trackSignOutView(viewModel.uiState)
 
-    BackHandler {
-        println("pressing back")
+    BackHandlerWithPop {
         analytics.trackBackPressed()
-        onBackPressedDispatcher?.onBackPressed()
     }
 }
 
