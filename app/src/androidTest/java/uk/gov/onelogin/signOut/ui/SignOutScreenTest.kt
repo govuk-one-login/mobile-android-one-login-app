@@ -135,6 +135,19 @@ class SignOutScreenTest : TestCase() {
     }
 
     @Test
+    fun verifyBackButton() {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
+        composeTestRule.activityRule.scenario.onActivity {
+            it.onBackPressedDispatcher.onBackPressed()
+
+            verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onBackPressed())
+            verify(mockNavigator).goBack()
+        }
+    }
+
+    @Test
     fun previewWalletTest() {
         composeTestRule.setContent {
             SignOutWalletPreview()
