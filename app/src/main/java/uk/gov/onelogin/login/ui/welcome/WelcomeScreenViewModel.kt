@@ -149,8 +149,8 @@ class WelcomeScreenViewModel @Inject constructor(
             when (popResult) {
                 is SignedPoP.Success -> try {
                     try {
-                        verifier.verify(popResult.popJwt, jwkStr)
-                        Log.d("VerifyPopJwt", "${true}")
+                        val result = verifier.verify(popResult.popJwt, jwkStr)
+                        Log.d("VerifyPopJwt", "$result")
                     } catch (e: Throwable) {
                         Log.e("ErrorVerifyingPoP", e.message ?: "null", e)
                         Log.d("VerifyPopJwt", "${false}")
