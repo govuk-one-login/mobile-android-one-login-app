@@ -12,8 +12,8 @@ import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 
 class FirebaseAppCheck @Inject constructor(
-    private val appCheckFactory: AppCheckProviderFactory,
-    private val context: Context
+    appCheckFactory: AppCheckProviderFactory,
+    context: Context
 ) : AppChecker {
     private val appCheck = Firebase.appCheck
 

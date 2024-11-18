@@ -53,11 +53,11 @@ class WelcomeScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val getPersistentId: GetPersistentId,
     private val navigator: Navigator,
-    private val localeUtils: LocaleUtils,
     private val saveTokens: SaveTokens,
     private val saveTokenExpiry: SaveTokenExpiry,
+    private val appIntegrity: AppIntegrity,
     val onlineChecker: OnlineChecker,
-    private val appIntegrity: AppIntegrity
+    localeUtils: LocaleUtils
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
     private val locale = localeUtils.getLocaleAsSessionConfig()
@@ -174,7 +174,6 @@ class WelcomeScreenViewModel @Inject constructor(
         } ?: checkLocalAuthRoute(tokens, isReAuth)
     }
 
-    @Suppress("ReturnCount")
     private suspend fun checkLocalAuthRoute(tokens: TokenResponse, isReAuth: Boolean) {
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)

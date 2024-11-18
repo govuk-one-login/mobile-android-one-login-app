@@ -80,11 +80,11 @@ class WelcomeScreenViewModelTest {
         mockFeatureFlags,
         mockGetPersistentId,
         mockNavigator,
-        mockLocaleUtils,
         mockSaveTokens,
         mockSaveTokenExpiry,
+        mockAppIntegrity,
         mockOnlineChecker,
-        mockAppIntegrity
+        mockLocaleUtils
     )
 
     @BeforeEach

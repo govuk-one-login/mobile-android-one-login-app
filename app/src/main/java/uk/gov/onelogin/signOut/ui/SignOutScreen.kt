@@ -17,22 +17,31 @@ import uk.gov.android.ui.pages.AlertPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
+import uk.gov.onelogin.ui.components.BackHandlerWithPop
 
 @Composable
 fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
+    val analytics: SignOutAnalyticsViewModel = hiltViewModel()
     // Needed for deleteWalletData
     val fragmentActivity = LocalContext.current as FragmentActivity
     SignOutBody(
         uiState = viewModel.uiState,
         onClose = {
+            analytics.trackCloseIcon()
             viewModel.goBack()
         },
         onPrimary = {
+            analytics.trackPrimary()
             viewModel.signOut(fragmentActivity)
         }
     )
+    analytics.trackSignOutView(viewModel.uiState)
+
+    BackHandlerWithPop {
+        analytics.trackBackPressed()
+    }
 }
 
 @Suppress("unused")

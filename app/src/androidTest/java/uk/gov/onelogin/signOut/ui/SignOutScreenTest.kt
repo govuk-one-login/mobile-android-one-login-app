@@ -15,9 +15,16 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.features.FeatureFlags
+import uk.gov.android.features.InMemoryFeatureFlags
 import uk.gov.android.onelogin.R
 import uk.gov.android.wallet.sdk.WalletSdk
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
+import uk.gov.onelogin.features.FeaturesModule
+import uk.gov.onelogin.features.WalletFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
@@ -32,7 +39,9 @@ import uk.gov.onelogin.wallet.WalletModule
 @UninstallModules(
     SignOutModule::class,
     NavigatorModule::class,
-    WalletModule::class
+    WalletModule::class,
+    AnalyticsModule::class,
+    FeaturesModule::class
 )
 class SignOutScreenTest : TestCase() {
     @BindValue
@@ -45,11 +54,17 @@ class SignOutScreenTest : TestCase() {
     val walletSdk: WalletSdk = mock()
 
     @BindValue
+    val analytics: AnalyticsLogger = mock()
+
+    @BindValue
     val deleteWalletDataUseCase: DeleteWalletDataUseCase = mock()
+
+    @BindValue
+    val featureFlags: FeatureFlags = InMemoryFeatureFlags()
 
     private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
     private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
-    private val goBackButton = hasContentDescription("Close")
+    private val closeButton = hasContentDescription("Close")
 
     @Before
     fun setupNavigation() {
@@ -57,11 +72,31 @@ class SignOutScreenTest : TestCase() {
     }
 
     @Test
-    fun verifyScreenDisplayed() {
+    fun verifyScreenDisplayedWallet() {
+        (featureFlags as InMemoryFeatureFlags).plusAssign(setOf(WalletFeatureFlag.ENABLED))
         composeTestRule.setContent {
             SignOutScreen()
         }
         composeTestRule.onNode(title).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SignOutAnalyticsViewModel.makeSignOutWalletViewEvent(
+                context
+            )
+        )
+    }
+
+    @Test
+    fun verifyScreenDisplayedNoWallet() {
+        (featureFlags as InMemoryFeatureFlags).minusAssign(setOf(WalletFeatureFlag.ENABLED))
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
+        composeTestRule.onNode(title).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SignOutAnalyticsViewModel.makeSignOutNoWalletViewEvent(
+                context
+            )
+        )
     }
 
     @Test
@@ -70,6 +105,8 @@ class SignOutScreenTest : TestCase() {
             SignOutScreen()
         }
         composeTestRule.onNode(ctaButton).performClick()
+
+        verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
         verify(signOutUseCase).invoke(any())
         verify(mockNavigator).navigate(LoginRoutes.Root, true)
     }
@@ -87,12 +124,27 @@ class SignOutScreenTest : TestCase() {
     }
 
     @Test
-    fun verifyGoBackButton() {
+    fun verifyCloseIconButton() {
         composeTestRule.setContent {
             SignOutScreen()
         }
-        composeTestRule.onNode(goBackButton).performClick()
+        composeTestRule.onNode(closeButton).performClick()
+
+        verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onCloseIcon())
         verify(mockNavigator).goBack()
+    }
+
+    @Test
+    fun verifyBackButton() {
+        composeTestRule.setContent {
+            SignOutScreen()
+        }
+        composeTestRule.activityRule.scenario.onActivity {
+            it.onBackPressedDispatcher.onBackPressed()
+
+            verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onBackPressed())
+            verify(mockNavigator).goBack()
+        }
     }
 
     @Test
