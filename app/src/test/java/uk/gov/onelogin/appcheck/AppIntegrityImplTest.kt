@@ -11,12 +11,13 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
@@ -25,7 +26,7 @@ import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 class AppIntegrityImplTest {
     private lateinit var context: Context
     private lateinit var featureFlags: FeatureFlags
-    private lateinit var appCheck: ClientAttestationManager
+    private lateinit var appCheck: AppIntegrityManager
     private lateinit var saveToOpenSecureStore: SaveToOpenSecureStore
     private lateinit var getFromOpenSecureStore: GetFromOpenSecureStore
 
@@ -57,9 +58,18 @@ class AppIntegrityImplTest {
     @Test
     fun `get client attestation - attestation call successful`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn("testAttestation")
+        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(false)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        whenever(appCheck.getExpiry(SUCCESS)).thenReturn(100L)
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, "100")
         assertEquals(AttestationResult.Success, result)
     }
 
@@ -68,15 +78,50 @@ class AppIntegrityImplTest {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn("testAttestation")
+        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
         val result = sut.getClientAttestation()
         assertEquals(AttestationResult.NotRequired, result)
     }
+
+    @Test
+    fun `get client attestation - saved attestation does not match saved jwks`(): Unit =
+        runBlocking {
+            whenever(featureFlags[any()]).thenReturn(true)
+            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+                .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
+            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+                .thenReturn("testAttestation")
+            whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(false)
+            whenever(appCheck.getAttestation())
+                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+            sut.getClientAttestation()
+            verify(appCheck).getAttestation()
+        }
 
     @Test
     fun `get client attestation - attestation stored is expired`(): Unit = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() - (getFiveMinInMillis())}")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn("testAttestation")
+        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        sut.getClientAttestation()
+        verify(appCheck).getAttestation()
+    }
+
+    @Test
+    fun `get client attestation - attestation is not stored`(): Unit = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn(null)
+        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         sut.getClientAttestation()

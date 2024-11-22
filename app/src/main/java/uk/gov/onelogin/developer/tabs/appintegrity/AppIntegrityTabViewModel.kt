@@ -7,14 +7,14 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.onelogin.appcheck.AppIntegrity
 
 @HiltViewModel
 class AppIntegrityTabViewModel @Inject constructor(
     private val firebaseAppCheck: AppChecker,
-    private val appCheck: ClientAttestationManager,
+    private val appCheck: AppIntegrityManager,
     private val appIntegrity: AppIntegrity
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")

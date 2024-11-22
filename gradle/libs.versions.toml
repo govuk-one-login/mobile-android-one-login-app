@@ -101,7 +101,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.11.0" }
+authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.12.0" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.6.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }

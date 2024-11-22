@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
-import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.features.FeatureFlags
@@ -20,18 +20,12 @@ import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 class AppIntegrityImpl @Inject constructor(
     private val context: Context,
     private val featureFlags: FeatureFlags,
-    private val appCheck: ClientAttestationManager,
+    private val appCheck: AppIntegrityManager,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : AppIntegrity {
     override suspend fun getClientAttestation(): AttestationResult {
-        // This is just to not block from using the app as the Firebase Token expiry time is set for a longer time
-        // which blocks from logging back in - to solve this needs deleting the app and re-install or waiting for > 15 min
-        // Needs to be update with the proper logic on DCMAW-10441
-        val expiry: String? = getFromOpenSecureStore.invoke(
-            CLIENT_ATTESTATION_EXPIRY
-        )
-        return if (featureFlags[AppCheckFeatureFlag.ENABLED] && isAttestationExpired(expiry)) {
+        return if (isAttestationCallRequired()) {
             val result = appCheck.getAttestation()
             Log.d("AppIntegrity", "$result")
             when (result) {
@@ -52,13 +46,32 @@ class AppIntegrityImpl @Inject constructor(
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
         try {
+            // Currently this is failing
             saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
             saveToOpenSecureStore
-                .save(CLIENT_ATTESTATION_EXPIRY, result.expiresIn)
+                .save(
+                    CLIENT_ATTESTATION_EXPIRY,
+                    appCheck.getExpiry(result.attestationJwt).toString()
+                )
             AttestationResult.Success
         } catch (e: SecureStorageError) {
             AttestationResult.Failure(e.message ?: SECURE_STORE_ERROR)
         }
+
+    private suspend fun isAttestationCallRequired(): Boolean {
+        val expiry: String? = getFromOpenSecureStore.invoke(
+            CLIENT_ATTESTATION_EXPIRY
+        )
+        val clientAttestation: String? = getFromOpenSecureStore.invoke(
+            CLIENT_ATTESTATION
+        )
+
+        val result = isAttestationExpired(expiry) ||
+            clientAttestation == null ||
+            !appCheck.verifyAttestationJwk(clientAttestation)
+
+        return featureFlags[AppCheckFeatureFlag.ENABLED] && result
+    }
 
     private fun isAttestationExpired(expiryTime: String?): Boolean {
         return if (expiryTime != null) {
