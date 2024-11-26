@@ -22,7 +22,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.integrity.ClientAttestationManager
+import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
@@ -93,7 +93,7 @@ class WelcomeScreenTest : TestCase() {
     val mockAppIntegrity: AppIntegrity = mock()
 
     @BindValue
-    val mockAttestationManager: ClientAttestationManager = mock()
+    val mockAttestationManager: AppIntegrityManager = mock()
 
     @BindValue
     val mockAttestationCaller: AttestationCaller = mock()
@@ -114,6 +114,8 @@ class WelcomeScreenTest : TestCase() {
     @Inject
     @Named("Open")
     lateinit var secureStore: SecureStore
+
+    private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
 
     private var shouldTryAgainCalled = false
     private val persistentId = "id"
@@ -459,17 +461,21 @@ class WelcomeScreenTest : TestCase() {
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
     }
 
-    private suspend fun setPersistentId(id: String) {
-        secureStore.upsert(
-            key = Keys.PERSISTENT_ID_KEY,
-            value = id
-        )
+    private fun setPersistentId(id: String) {
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.upsert(
+//            key = Keys.PERSISTENT_ID_KEY,
+//            value = id
+//        )
+        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, id).apply()
     }
 
     private fun deletePersistentId() {
-        secureStore.delete(
-            key = Keys.PERSISTENT_ID_KEY
-        )
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.delete(
+//            key = Keys.PERSISTENT_ID_KEY
+//        )
+        sharedPrefs.edit().remove(Keys.PERSISTENT_ID_KEY).apply()
     }
 
     @Test
