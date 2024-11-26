@@ -47,11 +47,9 @@ class AppIntegrityImpl @Inject constructor(
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
         try {
             saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
-            saveToOpenSecureStore
-                .save(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    appCheck.getExpiry(result.attestationJwt).toString()
-                )
+            appCheck.getExpiry(result.attestationJwt)?.let {
+                saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, it)
+            }
             AttestationResult.Success
         } catch (e: SecureStorageError) {
             AttestationResult.Failure(e.message ?: SECURE_STORE_ERROR)
