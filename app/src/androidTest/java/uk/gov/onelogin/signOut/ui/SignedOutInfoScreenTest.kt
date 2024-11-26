@@ -83,6 +83,9 @@ class SignedOutInfoScreenTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
+    // Remove this once Secure Store is fixed
+    private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
+
     private var shouldTryAgainCalled = false
     private val persistentId = "id"
 
@@ -96,7 +99,7 @@ class SignedOutInfoScreenTest : TestCase() {
     fun setup() = runBlocking {
         hiltRule.inject()
         shouldTryAgainCalled = false
-        setPersistentId(persistentId)
+        setPersistentId()
     }
 
     @Test
@@ -207,7 +210,7 @@ class SignedOutInfoScreenTest : TestCase() {
     fun noPersistentId_OpensSignInScreen() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
-        setPersistentId("")
+        deletePersistentId()
 
         composeTestRule.setContent {
             SignedOutInfoScreen()
@@ -341,11 +344,21 @@ class SignedOutInfoScreenTest : TestCase() {
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
     }
 
-    private suspend fun setPersistentId(id: String) {
-        secureStore.upsert(
-            key = Keys.PERSISTENT_ID_KEY,
-            value = id
-        )
+    private fun setPersistentId() {
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.upsert(
+//            key = Keys.PERSISTENT_ID_KEY,
+//            value = id
+//        )
+        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, persistentId).apply()
+    }
+
+    private fun deletePersistentId() {
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.delete(
+//            key = Keys.PERSISTENT_ID_KEY
+//        )
+        sharedPrefs.edit().remove(Keys.PERSISTENT_ID_KEY).apply()
     }
 
     @Test

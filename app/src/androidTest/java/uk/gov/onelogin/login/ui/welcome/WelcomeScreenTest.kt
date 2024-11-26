@@ -115,6 +115,7 @@ class WelcomeScreenTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
+    // Remove this once Secure Store is fixed
     private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
 
     private var shouldTryAgainCalled = false
