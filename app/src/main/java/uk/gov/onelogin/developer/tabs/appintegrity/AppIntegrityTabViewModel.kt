@@ -5,22 +5,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.onelogin.appcheck.AppIntegrity
+import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
+import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
+import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
 @HiltViewModel
 class AppIntegrityTabViewModel @Inject constructor(
     private val firebaseAppCheck: AppChecker,
     private val appCheck: AppIntegrityManager,
-    private val appIntegrity: AppIntegrity
+    private val appIntegrity: AppIntegrity,
+    private val getFromOpenSecureStore: GetFromOpenSecureStore,
+    private val saveToOpenSecureStore: SaveToOpenSecureStore
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")
     val networkResponse: MutableState<String> = mutableStateOf("")
     val clientAttestationResult: MutableState<String> = mutableStateOf("")
+    val clientAttestation: MutableState<String> = mutableStateOf("")
+    val clientAttestationExpiry: MutableState<String> = mutableStateOf("")
     val proofOfPossessionResult: MutableState<String> = mutableStateOf("")
+
+    init {
+        getSavedAttestation()
+    }
 
     fun getToken() {
         viewModelScope.launch {
@@ -33,6 +46,7 @@ class AppIntegrityTabViewModel @Inject constructor(
         viewModelScope.launch {
             networkResponse.value = "Loading..."
             networkResponse.value = appCheck.getAttestation().toString()
+            getSavedAttestation()
         }
     }
 
@@ -40,11 +54,53 @@ class AppIntegrityTabViewModel @Inject constructor(
         viewModelScope.launch {
             clientAttestationResult.value = "Loading..."
             clientAttestationResult.value = appIntegrity.getClientAttestation().toString()
+            getSavedAttestation()
         }
     }
 
     fun generatePoP() {
         proofOfPossessionResult.value = "Loading..."
         proofOfPossessionResult.value = appIntegrity.getProofOfPossession().toString()
+    }
+
+    fun resetAttestation() {
+        viewModelScope.launch {
+            saveToOpenSecureStore.save(CLIENT_ATTESTATION, "")
+            getSavedAttestation()
+        }
+    }
+
+    fun setFakeAttestation() {
+        viewModelScope.launch {
+            saveToOpenSecureStore.save(CLIENT_ATTESTATION, "fake attestation")
+            getSavedAttestation()
+        }
+    }
+
+    fun resetAttestationExpiry() {
+        viewModelScope.launch {
+            saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, "")
+            getSavedAttestation()
+        }
+    }
+
+    fun setFutureAttestationExpiry() {
+        viewModelScope.launch {
+            val time = getTimeMillis() + TIME_TO_ADD
+            saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, time.toString())
+            getSavedAttestation()
+        }
+    }
+
+    private fun getSavedAttestation() {
+        viewModelScope.launch {
+            clientAttestation.value = getFromOpenSecureStore.invoke(CLIENT_ATTESTATION).toString()
+            clientAttestationExpiry.value =
+                getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY).toString()
+        }
+    }
+
+    companion object {
+        private const val TIME_TO_ADD = 50000
     }
 }

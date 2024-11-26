@@ -46,7 +46,6 @@ class AppIntegrityImpl @Inject constructor(
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
         try {
-            // Currently this is failing
             saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
             saveToOpenSecureStore
                 .save(
@@ -66,6 +65,16 @@ class AppIntegrityImpl @Inject constructor(
             CLIENT_ATTESTATION
         )
 
+        println("isAttestationExpired: ${isAttestationExpired(expiry)}")
+        println("isAttestationNull: ${clientAttestation == null}")
+        println(
+            "isAttestationVerified: ${
+                clientAttestation?.let {
+                    appCheck.verifyAttestationJwk(clientAttestation)
+                }
+            }"
+        )
+
         val result = isAttestationExpired(expiry) ||
             clientAttestation == null ||
             !appCheck.verifyAttestationJwk(clientAttestation)
@@ -74,11 +83,14 @@ class AppIntegrityImpl @Inject constructor(
     }
 
     private fun isAttestationExpired(expiryTime: String?): Boolean {
-        return if (expiryTime != null) {
-            val result = expiryTime.toLong() <= getTimeMillis()
-            result
+        return if (!expiryTime.isNullOrEmpty()) {
+            expiryTime.toLong() <= getTimeMillis() / CONVERT_TO_SECONDS
         } else {
             true
         }
+    }
+
+    companion object {
+        private const val CONVERT_TO_SECONDS = 1000
     }
 }

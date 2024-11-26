@@ -104,7 +104,7 @@ class AppIntegrityImplTest {
     fun `get client attestation - attestation stored is expired`(): Unit = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
-            .thenReturn("${getTimeMillis() - (getFiveMinInMillis())}")
+            .thenReturn("${(getTimeMillis() - (getFiveMinInMillis())) / 1000}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
             .thenReturn("testAttestation")
         whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
