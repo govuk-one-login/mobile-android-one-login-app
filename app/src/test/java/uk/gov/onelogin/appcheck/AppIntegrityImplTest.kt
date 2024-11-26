@@ -69,7 +69,7 @@ class AppIntegrityImplTest {
         val result = sut.getClientAttestation()
 
         verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, "100")
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, 100L)
         assertEquals(AttestationResult.Success, result)
     }
 
