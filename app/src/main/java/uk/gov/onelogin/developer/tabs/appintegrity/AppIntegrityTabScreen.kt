@@ -43,6 +43,22 @@ fun AppIntegrityTabScreen(
             )
         }
 
+        DataItem(
+            action1 = { viewModel.resetAttestation() },
+            action2 = { viewModel.setFakeAttestation() },
+            result = viewModel.clientAttestation,
+            buttonText1 = "Remove attestation",
+            buttonText2 = "Set fake attestation"
+        )
+
+        DataItem(
+            action1 = { viewModel.resetAttestationExpiry() },
+            action2 = { viewModel.setFutureAttestationExpiry() },
+            result = viewModel.clientAttestationExpiry,
+            buttonText1 = "Reset attestation expiry time",
+            buttonText2 = "Set expiry in future"
+        )
+
         ActionItem(
             action = { viewModel.getToken() },
             result = viewModel.tokenResponse,
@@ -81,6 +97,33 @@ private fun ActionItem(
             onClick = action
         ) {
             Text(text = buttonText)
+        }
+    }
+    Row(modifier = Modifier.padding(all = smallPadding)) {
+        Text(text = result.value)
+    }
+}
+
+@Composable
+private fun DataItem(
+    action1: () -> Unit,
+    action2: () -> Unit,
+    result: MutableState<String>,
+    buttonText1: String,
+    buttonText2: String
+) {
+    Row {
+        Button(
+            modifier = Modifier.padding(start = smallPadding).weight(1F),
+            onClick = action1
+        ) {
+            Text(text = buttonText1)
+        }
+        Button(
+            modifier = Modifier.padding(start = smallPadding).weight(1F),
+            onClick = action2
+        ) {
+            Text(text = buttonText2)
         }
     }
     Row(modifier = Modifier.padding(all = smallPadding)) {

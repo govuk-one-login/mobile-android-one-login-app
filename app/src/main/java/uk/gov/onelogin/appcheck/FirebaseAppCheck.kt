@@ -27,7 +27,7 @@ class FirebaseAppCheck @Inject constructor(
     override suspend fun getAppCheckToken(): Result<AppCheckToken> {
         return try {
             Result.success(
-                AppCheckToken(appCheck.getAppCheckToken(false).await().token)
+                AppCheckToken(appCheck.limitedUseAppCheckToken.await().token)
             )
         } catch (e: FirebaseException) {
             Result.failure(e)

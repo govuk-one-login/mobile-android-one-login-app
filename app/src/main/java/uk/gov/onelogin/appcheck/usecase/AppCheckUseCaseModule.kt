@@ -7,8 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlin.io.encoding.ExperimentalEncodingApi
-import uk.gov.android.authentication.integrity.ClientAttestationManager
-import uk.gov.android.authentication.integrity.FirebaseClientAttestationManager
+import uk.gov.android.authentication.integrity.AppIntegrityManager
+import uk.gov.android.authentication.integrity.FirebaseAppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
@@ -41,8 +41,8 @@ object AppCheckUseCaseModule {
     @Provides
     fun provideFirebaseTokenManager(
         config: AppIntegrityConfiguration
-    ): ClientAttestationManager {
-        return FirebaseClientAttestationManager(config)
+    ): AppIntegrityManager {
+        return FirebaseAppIntegrityManager(config)
     }
 
     @Provides
@@ -50,7 +50,7 @@ object AppCheckUseCaseModule {
         @ApplicationContext
         context: Context,
         featureFlags: FeatureFlags,
-        appCheck: ClientAttestationManager,
+        appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
         getFromOpenSecureStore: GetFromOpenSecureStore
     ): AppIntegrity {

@@ -1,5 +1,6 @@
 package uk.gov.onelogin.tokens.usecases
 
+import android.content.SharedPreferences
 import android.util.Log
 import javax.inject.Inject
 import javax.inject.Named
@@ -37,5 +38,15 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
             }
             is RetrievalEvent.Success -> retrievalEvent.value
         }
+    }
+}
+
+class TemporaryGetFromOpenSecureStoreImpl @Inject constructor(
+    private val sharedPrefs: SharedPreferences
+) : GetFromOpenSecureStore {
+    override suspend fun invoke(
+        key: String
+    ): String? {
+        return sharedPrefs.getString(key, null)
     }
 }
