@@ -1,6 +1,7 @@
 package uk.gov.onelogin.e2e
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.LocalActivityResultRegistryOwner
@@ -95,6 +96,9 @@ class LoginTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
+    // Remove this once Secure Store is fixed
+    private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
+
     private val data = TestUtils.appInfoData
 
     @get:Rule(order = 3)
@@ -112,7 +116,7 @@ class LoginTest : TestCase() {
             })
 
         hiltRule.inject()
-        secureStore.delete(Keys.PERSISTENT_ID_KEY)
+        deletePersistentId()
     }
 
     @After
@@ -173,7 +177,7 @@ class LoginTest : TestCase() {
     @Test
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
         runBlocking {
-            secureStore.upsert(Keys.PERSISTENT_ID_KEY, persistentId)
+            setPersistentId()
         }
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
@@ -385,6 +389,23 @@ class LoginTest : TestCase() {
             @Suppress("unchecked_cast")
             (it.arguments[1] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
+    }
+
+    private fun setPersistentId() {
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.upsert(
+//            key = Keys.PERSISTENT_ID_KEY,
+//            value = id
+//        )
+        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, persistentId).apply()
+    }
+
+    private fun deletePersistentId() {
+        // This has been removed due to temporary Secure Store fix, change this back
+//        secureStore.delete(
+//            key = Keys.PERSISTENT_ID_KEY
+//        )
+        sharedPrefs.edit().remove(Keys.PERSISTENT_ID_KEY).apply()
     }
 
     companion object {
