@@ -9,6 +9,7 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -19,6 +20,7 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import uk.gov.onelogin.features.AppCheckFeatureFlag
 import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
@@ -50,9 +52,11 @@ class AppIntegrityImplTest {
 
     @Test
     fun `get client attestation - feature flag disabled`() = runBlocking {
-        whenever(featureFlags[any()]).thenReturn(false)
+        whenever(featureFlags[eq(AppCheckFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(getFromOpenSecureStore(eq(CLIENT_ATTESTATION))).thenReturn(ATTESTATION)
+
         val result = sut.getClientAttestation()
-        assertEquals(AttestationResult.NotRequired, result)
+        assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
     }
 
     @Test
@@ -61,8 +65,8 @@ class AppIntegrityImplTest {
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-            .thenReturn("testAttestation")
-        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(false)
+            .thenReturn(ATTESTATION)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         whenever(appCheck.getExpiry(SUCCESS)).thenReturn(100L)
@@ -70,7 +74,7 @@ class AppIntegrityImplTest {
 
         verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, 100L)
-        assertEquals(AttestationResult.Success, result)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
     @Test
@@ -79,10 +83,10 @@ class AppIntegrityImplTest {
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-            .thenReturn("testAttestation")
-        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
+            .thenReturn(ATTESTATION)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         val result = sut.getClientAttestation()
-        assertEquals(AttestationResult.NotRequired, result)
+        assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
     }
 
     @Test
@@ -92,8 +96,8 @@ class AppIntegrityImplTest {
             whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
                 .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
             whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-                .thenReturn("testAttestation")
-            whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(false)
+                .thenReturn(ATTESTATION)
+            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
             whenever(appCheck.getAttestation())
                 .thenReturn(AttestationResponse.Success(SUCCESS, 0))
             sut.getClientAttestation()
@@ -106,8 +110,8 @@ class AppIntegrityImplTest {
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${(getTimeMillis() - (getFiveMinInMillis())) / 1000}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-            .thenReturn("testAttestation")
-        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
+            .thenReturn(ATTESTATION)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         sut.getClientAttestation()
@@ -121,7 +125,7 @@ class AppIntegrityImplTest {
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
             .thenReturn(null)
-        whenever(appCheck.verifyAttestationJwk("testAttestation")).thenReturn(true)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         sut.getClientAttestation()
@@ -140,7 +144,7 @@ class AppIntegrityImplTest {
 
     @Test
     fun `get client attestation - save to secure store failure`() = runBlocking {
-        val sse = SecureStorageError(Exception("Error"))
+        val sse = SecureStorageError(Exception(FAILURE))
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
@@ -154,12 +158,12 @@ class AppIntegrityImplTest {
     @Test
     fun `generate Proof of Possession - success`() {
         whenever(appCheck.generatePoP(any(), any()))
-            .thenReturn(SignedPoP.Success(popJwt = "Success"))
+            .thenReturn(SignedPoP.Success(popJwt = SUCCESS))
         whenever(context.getString(any()))
             .thenReturn("")
 
         val result = sut.getProofOfPossession()
-        assertEquals(SignedPoP.Success("Success"), result)
+        assertEquals(SignedPoP.Success(SUCCESS), result)
     }
 
     @Test
@@ -177,6 +181,7 @@ class AppIntegrityImplTest {
     companion object {
         private const val SUCCESS = "Success"
         private const val FAILURE = "Failure"
+        private const val ATTESTATION = "testAttestation"
 
         private fun getFiveMinInMillis(): Int {
             return 5 * 60000

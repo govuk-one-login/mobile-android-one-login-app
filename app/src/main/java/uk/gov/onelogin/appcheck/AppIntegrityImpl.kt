@@ -33,7 +33,8 @@ class AppIntegrityImpl @Inject constructor(
                 is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
             }
         } else {
-            AttestationResult.NotRequired
+            // The non-null assertion is used because this is being checked in the isAttestationCallRequired() call
+            AttestationResult.NotRequired(getFromOpenSecureStore(CLIENT_ATTESTATION)!!)
         }
     }
 
@@ -44,13 +45,17 @@ class AppIntegrityImpl @Inject constructor(
         )
     }
 
+    override suspend fun retrieveSavedClientAttestation(): String? {
+        return getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)
+    }
+
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
         try {
             saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
             appCheck.getExpiry(result.attestationJwt)?.let {
                 saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, it)
             }
-            AttestationResult.Success
+            AttestationResult.Success(result.attestationJwt)
         } catch (e: SecureStorageError) {
             AttestationResult.Failure(e.message ?: SECURE_STORE_ERROR)
         }
@@ -63,18 +68,8 @@ class AppIntegrityImpl @Inject constructor(
             CLIENT_ATTESTATION
         )
 
-        println("isAttestationExpired: ${isAttestationExpired(expiry)}")
-        println("isAttestationNull: ${clientAttestation == null}")
-        println(
-            "isAttestationVerified: ${
-                clientAttestation?.let {
-                    appCheck.verifyAttestationJwk(clientAttestation)
-                }
-            }"
-        )
-
         val result = isAttestationExpired(expiry) ||
-            clientAttestation == null ||
+            clientAttestation.isNullOrEmpty() ||
             !appCheck.verifyAttestationJwk(clientAttestation)
 
         return featureFlags[AppCheckFeatureFlag.ENABLED] && result
