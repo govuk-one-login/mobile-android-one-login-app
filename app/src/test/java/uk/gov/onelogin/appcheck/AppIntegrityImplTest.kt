@@ -60,6 +60,15 @@ class AppIntegrityImplTest {
     }
 
     @Test
+    fun `get client attestation - feature flag disabled and no saved attestation`() = runBlocking {
+        whenever(featureFlags[eq(AppCheckFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(getFromOpenSecureStore(eq(CLIENT_ATTESTATION))).thenReturn(null)
+
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired(""), result)
+    }
+
+    @Test
     fun `get client attestation - attestation call successful`() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))

@@ -163,25 +163,35 @@ class WelcomeScreenViewModel @Inject constructor(
 
     @Suppress("TooGenericExceptionCaught")
     private fun handleCreatePoP(intent: Intent, attestation: String, isReAuth: Boolean) {
-        println(appIntegrity.getProofOfPossession())
-        when (val popResult = appIntegrity.getProofOfPossession()) {
-            is SignedPoP.Success -> try {
-                loginSession.finalise(
-                    intent = intent,
-                    appIntegrity = AppIntegrityParameters(attestation, popResult.popJwt)
-                ) { tokens ->
-                    viewModelScope.launch {
-                        handleTokens(tokens, isReAuth)
+        if (attestation.isNotEmpty()) {
+            when (val popResult = appIntegrity.getProofOfPossession()) {
+                is SignedPoP.Success -> try {
+                    loginSession.finalise(
+                        intent = intent,
+                        appIntegrity = AppIntegrityParameters(attestation, popResult.popJwt)
+                    ) { tokens ->
+                        viewModelScope.launch {
+                            handleTokens(tokens, isReAuth)
+                        }
                     }
+                } catch (e: Throwable) { // handle both Error and Exception types.
+                    // Includes AuthenticationError
+                    Log.e(tag, e.message, e)
+                    navigator.navigate(LoginRoutes.SignInError, true)
                 }
-            } catch (e: Throwable) { // handle both Error and Exception types.
-                // Includes AuthenticationError
-                Log.e(tag, e.message, e)
-                navigator.navigate(LoginRoutes.SignInError, true)
+                is SignedPoP.Failure -> {
+                    Log.e(tag, popResult.reason, popResult.error)
+                    navigator.navigate(LoginRoutes.SignInError, true)
+                }
             }
-            is SignedPoP.Failure -> {
-                Log.e(tag, popResult.reason, popResult.error)
-                navigator.navigate(LoginRoutes.SignInError, true)
+        } else {
+            loginSession.finalise(
+                intent = intent,
+                appIntegrity = AppIntegrityParameters(attestation, "")
+            ) { tokens ->
+                viewModelScope.launch {
+                    handleTokens(tokens, isReAuth)
+                }
             }
         }
     }

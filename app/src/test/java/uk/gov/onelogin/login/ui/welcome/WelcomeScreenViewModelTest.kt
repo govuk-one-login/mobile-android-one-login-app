@@ -127,6 +127,37 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
+    @Suppress("UNCHECKED_CAST")
+    @Test
+    fun `handleIntent when data != null, no ClientAttestation and appCheckDisabled`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired(""))
+            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent
+            )
+
+            verify(mockSaveTokens).invoke()
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
+            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+        }
+
     @Test
     fun `handleIntent when data != null, device secure, generatePoP failure`() =
         runTest {

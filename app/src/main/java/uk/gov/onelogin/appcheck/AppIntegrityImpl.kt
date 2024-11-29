@@ -33,8 +33,8 @@ class AppIntegrityImpl @Inject constructor(
                 is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
             }
         } else {
-            // The non-null assertion is used because this is being checked in the isAttestationCallRequired() call
-            AttestationResult.NotRequired(getFromOpenSecureStore(CLIENT_ATTESTATION)!!)
+            AttestationResult
+                .NotRequired(getFromOpenSecureStore(CLIENT_ATTESTATION) ?: "")
         }
     }
 
