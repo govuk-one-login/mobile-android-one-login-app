@@ -119,12 +119,54 @@ class AppIntegrityImplTest {
     }
 
     @Test
+    fun `get client attestation - attestation expiry time is null`(): Unit = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn(null)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn(ATTESTATION)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        sut.getClientAttestation()
+        verify(appCheck).getAttestation()
+    }
+
+    @Test
+    fun `get client attestation - attestation expiry time is empty`(): Unit = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn(ATTESTATION)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        sut.getClientAttestation()
+        verify(appCheck).getAttestation()
+    }
+
+    @Test
     fun `get client attestation - attestation is not stored`(): Unit = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
             .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
         whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
             .thenReturn(null)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        sut.getClientAttestation()
+        verify(appCheck).getAttestation()
+    }
+
+    @Test
+    fun `get client attestation - saved attestation is empty`(): Unit = runBlocking {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY))
+            .thenReturn("${getTimeMillis() + (getFiveMinInMillis())}")
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn("")
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
@@ -176,6 +218,15 @@ class AppIntegrityImplTest {
 
         val result = sut.getProofOfPossession()
         assertEquals(SignedPoP.Failure(exp.message!!, exp), result)
+    }
+
+    @Test
+    fun `retrieve saved ClientAttestation`() = runBlocking {
+        whenever(getFromOpenSecureStore.invoke(any()))
+            .thenReturn(SUCCESS)
+        val result = sut.retrieveSavedClientAttestation()
+
+        assertEquals(SUCCESS, result)
     }
 
     companion object {
