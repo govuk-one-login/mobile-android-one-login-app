@@ -129,11 +129,29 @@ class WelcomeScreenViewModel @Inject constructor(
             // Very unlikely to occur
             if (savedAttestation.isNullOrEmpty()) {
                 handleGetClientAttestation { attestation ->
-                    handleCreatePoP(intent, attestation, isReAuth)
+                    handleCreatePoP(attestation) { jwt ->
+                        loginSession.finalise(
+                            intent = intent,
+                            appIntegrity = AppIntegrityParameters(attestation, jwt)
+                        ) { tokens ->
+                            viewModelScope.launch {
+                                handleTokens(tokens, isReAuth)
+                            }
+                        }
+                    }
                 }
                 // Attestation retrieved successfully, directly create PoP
             } else {
-                handleCreatePoP(intent, savedAttestation, isReAuth)
+                handleCreatePoP(savedAttestation) { jwt ->
+                    loginSession.finalise(
+                        intent = intent,
+                        appIntegrity = AppIntegrityParameters(savedAttestation, jwt)
+                    ) { tokens ->
+                        viewModelScope.launch {
+                            handleTokens(tokens, isReAuth)
+                        }
+                    }
+                }
             }
         }
     }
@@ -162,18 +180,11 @@ class WelcomeScreenViewModel @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun handleCreatePoP(intent: Intent, attestation: String, isReAuth: Boolean) {
+    private fun handleCreatePoP(attestation: String, onSuccess: (popJwt: String) -> Unit) {
         if (attestation.isNotEmpty()) {
             when (val popResult = appIntegrity.getProofOfPossession()) {
                 is SignedPoP.Success -> try {
-                    loginSession.finalise(
-                        intent = intent,
-                        appIntegrity = AppIntegrityParameters(attestation, popResult.popJwt)
-                    ) { tokens ->
-                        viewModelScope.launch {
-                            handleTokens(tokens, isReAuth)
-                        }
-                    }
+                    onSuccess(popResult.popJwt)
                 } catch (e: Throwable) { // handle both Error and Exception types.
                     // Includes AuthenticationError
                     Log.e(tag, e.message, e)
@@ -185,14 +196,7 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
             }
         } else {
-            loginSession.finalise(
-                intent = intent,
-                appIntegrity = AppIntegrityParameters(attestation, "")
-            ) { tokens ->
-                viewModelScope.launch {
-                    handleTokens(tokens, isReAuth)
-                }
-            }
+            onSuccess("")
         }
     }
 

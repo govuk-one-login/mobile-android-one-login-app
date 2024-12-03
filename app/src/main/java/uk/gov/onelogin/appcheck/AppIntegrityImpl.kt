@@ -34,7 +34,7 @@ class AppIntegrityImpl @Inject constructor(
             }
         } else {
             AttestationResult
-                .NotRequired(getFromOpenSecureStore(CLIENT_ATTESTATION) ?: "")
+                .NotRequired(retrieveSavedClientAttestation() ?: "")
         }
     }
 
