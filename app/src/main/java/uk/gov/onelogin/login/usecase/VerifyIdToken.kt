@@ -116,7 +116,7 @@ fun String.extractEmailFromIdToken(): String? {
 fun String.extractPersistentIdFromIdToken(): String? {
     try {
         val bodyEncoded = this.split(".")[1]
-        val body = String(Base64.decode(bodyEncoded))
+        val body = String(Base64.withPadding(PaddingOption.ABSENT).decode(bodyEncoded))
         val data = Json.parseToJsonElement(body)
         val id = data.jsonObject["persistent_id"]
         val stripEmail = id?.toString()?.removeSurrounding("\"")

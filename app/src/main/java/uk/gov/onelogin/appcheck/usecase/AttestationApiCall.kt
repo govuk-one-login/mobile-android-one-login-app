@@ -17,10 +17,7 @@ class AttestationApiCall @Inject constructor(
     private val context: Context,
     private val httpClient: GenericHttpClient
 ) : AttestationCaller {
-    override suspend fun call(
-        firebaseToken: String,
-        jwk: JWK.JsonWebKey
-    ): AttestationResponse {
+    override suspend fun call(firebaseToken: String, jwk: JWK.JsonWebKey): AttestationResponse {
         val endpoint = context.getString(R.string.clientAttestationEndpoint)
         val request = ApiRequest.Post(
             url = context.getString(R.string.webBaseUrl, endpoint) + "?device=android",
