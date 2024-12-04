@@ -1,8 +1,8 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
+import io.jsonwebtoken.security.SignatureException
 import io.ktor.util.date.getTimeMillis
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -14,7 +14,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
-import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
@@ -24,7 +23,6 @@ import uk.gov.onelogin.features.AppCheckFeatureFlag
 import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
 
-@OptIn(ExperimentalEncodingApi::class)
 class AppIntegrityImplTest {
     private lateinit var context: Context
     private lateinit var featureFlags: FeatureFlags
@@ -65,7 +63,7 @@ class AppIntegrityImplTest {
         whenever(getFromOpenSecureStore(eq(CLIENT_ATTESTATION))).thenReturn(null)
 
         val result = sut.getClientAttestation()
-        assertEquals(AttestationResult.NotRequired(""), result)
+        assertEquals(AttestationResult.NotRequired(null), result)
     }
 
     @Test
@@ -219,7 +217,7 @@ class AppIntegrityImplTest {
 
     @Test
     fun `generate Proof of Possession - failure`() {
-        val exp = ECKeyManager.SigningError.InvalidSignature
+        val exp = SignatureException(FAILURE)
         whenever(appCheck.generatePoP(any(), any()))
             .thenReturn(SignedPoP.Failure(exp.message!!, exp))
         whenever(context.getString(any()))

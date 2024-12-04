@@ -8,7 +8,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-org-sonarqube = { id = "org.sonarqube", version.ref = "sonarqube-gradle" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
 [versions]
@@ -23,7 +22,6 @@ lifecycle-runtime-compose = "2.8.7"
 ktlint = "12.1.1"
 hiltPlugin = "2.52"
 detekt = "1.23.7"
-parcelize = "2.0.0"
 andoridxBrowser = "1.8.0"
 androidxBiometric = "1.1.0"
 androidxHilt = "1.2.0"
@@ -39,7 +37,6 @@ compose-material3 = "1.3.1"
 serialization = "2.0.20"
 junit = "5.11.3"
 jacoco = "0.8.12" # https://www.jacoco.org/jacoco/trunk/doc/changes.html
-sonarqube-gradle = "5.0.0.4638" # https://github.com/SonarSource/sonar-scanner-gradle/releases
 googleServices = "4.4.2"
 firebaseBom = "33.5.1"
 crashlytics = "3.0.2"
@@ -101,7 +98,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.13.1" }
+authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.13.2" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.6.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }

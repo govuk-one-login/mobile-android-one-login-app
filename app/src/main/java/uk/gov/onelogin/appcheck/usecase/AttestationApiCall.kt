@@ -6,7 +6,7 @@ import javax.inject.Inject
 import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
-import uk.gov.android.authentication.integrity.appcheck.usecase.JWK
+import uk.gov.android.authentication.json.jwk.JWK
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
@@ -17,13 +17,13 @@ class AttestationApiCall @Inject constructor(
     private val context: Context,
     private val httpClient: GenericHttpClient
 ) : AttestationCaller {
-    override suspend fun call(firebaseToken: String, jwk: JWK.JsonWebKey): AttestationResponse {
+    override suspend fun call(token: String, jwk: JWK.JsonWebKey): AttestationResponse {
         val endpoint = context.getString(R.string.clientAttestationEndpoint)
         val request = ApiRequest.Post(
             url = context.getString(R.string.webBaseUrl, endpoint) + "?device=android",
             body = jwk,
             headers = listOf(
-                AttestationCaller.FIREBASE_HEADER to firebaseToken,
+                AttestationCaller.FIREBASE_HEADER to token,
                 AttestationCaller.CONTENT_TYPE to AttestationCaller.CONTENT_TYPE_VALUE
             )
         )

@@ -167,7 +167,7 @@ class WelcomeScreenViewModel @Inject constructor(
             is AttestationResult.NotRequired -> {
                 _loading.emit(false)
                 onSuccess(
-                    attestation.savedAttestation
+                    attestation.savedAttestation ?: ""
                 )
             }
             else -> {
@@ -180,11 +180,11 @@ class WelcomeScreenViewModel @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun handleCreatePoP(attestation: String, onSuccess: (popJwt: String) -> Unit) {
+    private fun handleCreatePoP(attestation: String, callback: (popJwt: String) -> Unit) {
         if (attestation.isNotEmpty()) {
             when (val popResult = appIntegrity.getProofOfPossession()) {
                 is SignedPoP.Success -> try {
-                    onSuccess(popResult.popJwt)
+                    callback(popResult.popJwt)
                 } catch (e: Throwable) { // handle both Error and Exception types.
                     // Includes AuthenticationError
                     Log.e(tag, e.message, e)
@@ -196,7 +196,7 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
             }
         } else {
-            onSuccess("")
+            callback("")
         }
     }
 

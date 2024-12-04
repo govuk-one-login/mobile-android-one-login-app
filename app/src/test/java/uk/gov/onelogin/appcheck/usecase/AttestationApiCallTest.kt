@@ -12,7 +12,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
-import uk.gov.android.authentication.integrity.appcheck.usecase.JWK
+import uk.gov.android.authentication.json.jwk.JWK
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 
@@ -105,7 +105,7 @@ class AttestationApiCallTest {
     }
 
     companion object {
-        private val jwk = JWK.makeJWK("x", "y")
+        private val jwk = JWK.generateJwk("x", "y")
         private const val INVALID_CLIENT_ATTESTATION = "{\"client_attestation\": \"Success\", " +
             "\"expires_in\": \"a\"}"
         private const val VALID_CLIENT_ATTESTATION = "{\"client_attestation\": \"Success\", " +
