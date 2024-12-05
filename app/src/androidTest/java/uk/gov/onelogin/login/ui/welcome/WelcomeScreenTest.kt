@@ -22,6 +22,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
@@ -149,6 +150,8 @@ class WelcomeScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success("Success"))
 
         composeTestRule.setContent {
             WelcomeScreen()
@@ -193,6 +196,8 @@ class WelcomeScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         composeTestRule.setContent {
             WelcomeScreen()
         }
@@ -237,6 +242,8 @@ class WelcomeScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn_goodPersistentId() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         setPersistentId(persistentId)
 
         composeTestRule.setContent {
@@ -285,6 +292,8 @@ class WelcomeScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn_emptyPersistentId() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         setPersistentId("")
 
         composeTestRule.setContent {
@@ -345,6 +354,8 @@ class WelcomeScreenTest : TestCase() {
     fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         composeTestRule.setContent {
             WelcomeScreen(
                 shouldTryAgain = {
@@ -426,6 +437,8 @@ class WelcomeScreenTest : TestCase() {
         val context: Context = ApplicationProvider.getApplicationContext()
         val event = SignInAnalyticsViewModel.makeSignInEvent(context)
         whenever(onlineChecker.isOnline()).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         composeTestRule.setContent {
             WelcomeScreen()
         }

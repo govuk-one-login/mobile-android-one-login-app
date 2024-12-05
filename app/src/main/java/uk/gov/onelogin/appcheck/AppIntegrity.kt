@@ -5,6 +5,7 @@ import uk.gov.android.authentication.integrity.pop.SignedPoP
 interface AppIntegrity {
     suspend fun getClientAttestation(): AttestationResult
     fun getProofOfPossession(): SignedPoP
+    suspend fun retrieveSavedClientAttestation(): String?
 
     companion object {
         const val CLIENT_ATTESTATION = "appCheckClientAttestation"

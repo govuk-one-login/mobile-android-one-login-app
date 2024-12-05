@@ -13,6 +13,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
@@ -102,42 +103,88 @@ class WelcomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             _loading.emit(true)
-            when (appIntegrity.getClientAttestation()) {
-                is AttestationResult.Failure -> {
-                    _loading.emit(false)
-                    navigator.navigate(LoginRoutes.SignInError)
-                }
-                else -> {
-                    _loading.emit(false)
-                    loginSession.present(
-                        launcher,
-                        configuration = LoginSessionConfiguration(
-                            authorizeEndpoint = authorizeEndpoint,
-                            clientId = clientId,
-                            locale = locale,
-                            redirectUri = redirectUri,
-                            scopes = scopes,
-                            tokenEndpoint = tokenEndpoint,
-                            persistentSessionId = persistentId
-                        )
+            handleGetClientAttestation {
+                loginSession.present(
+                    launcher,
+                    configuration = LoginSessionConfiguration(
+                        authorizeEndpoint = authorizeEndpoint,
+                        clientId = clientId,
+                        locale = locale,
+                        redirectUri = redirectUri,
+                        scopes = scopes,
+                        tokenEndpoint = tokenEndpoint,
+                        persistentSessionId = persistentId
                     )
+                )
+            }
+        }
+    }
+
+    fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
+        if (intent.data == null) return
+
+        viewModelScope.launch {
+            val savedAttestation = appIntegrity.retrieveSavedClientAttestation()
+            // Attempt to get a new attestation if the saved one is not available due to device or open secure store
+            // Very unlikely to occur
+            if (savedAttestation.isNullOrEmpty()) {
+                handleGetClientAttestation { attestation ->
+                    handleCreatePoP(attestation) { jwt ->
+                        loginSession.finalise(
+                            intent = intent,
+                            appIntegrity = AppIntegrityParameters(attestation, jwt)
+                        ) { tokens ->
+                            viewModelScope.launch {
+                                handleTokens(tokens, isReAuth)
+                            }
+                        }
+                    }
+                }
+                // Attestation retrieved successfully, directly create PoP
+            } else {
+                handleCreatePoP(savedAttestation) { jwt ->
+                    loginSession.finalise(
+                        intent = intent,
+                        appIntegrity = AppIntegrityParameters(savedAttestation, jwt)
+                    ) { tokens ->
+                        viewModelScope.launch {
+                            handleTokens(tokens, isReAuth)
+                        }
+                    }
                 }
             }
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
-        if (intent.data == null) return
+    private suspend fun handleGetClientAttestation(
+        onSuccess: (String) -> Unit
+    ) {
+        when (val attestation = appIntegrity.getClientAttestation()) {
+            is AttestationResult.Failure -> {
+                _loading.emit(false)
+                navigator.navigate(LoginRoutes.SignInError)
+            }
+            is AttestationResult.NotRequired -> {
+                _loading.emit(false)
+                onSuccess(
+                    attestation.savedAttestation ?: ""
+                )
+            }
+            else -> {
+                _loading.emit(false)
+                onSuccess(
+                    (attestation as AttestationResult.Success).clientAttestation
+                )
+            }
+        }
+    }
 
-        viewModelScope.launch {
+    @Suppress("TooGenericExceptionCaught")
+    private fun handleCreatePoP(attestation: String, callback: (popJwt: String) -> Unit) {
+        if (attestation.isNotEmpty()) {
             when (val popResult = appIntegrity.getProofOfPossession()) {
                 is SignedPoP.Success -> try {
-                    loginSession.finalise(intent = intent) { tokens ->
-                        viewModelScope.launch {
-                            handleTokens(tokens, isReAuth)
-                        }
-                    }
+                    callback(popResult.popJwt)
                 } catch (e: Throwable) { // handle both Error and Exception types.
                     // Includes AuthenticationError
                     Log.e(tag, e.message, e)
@@ -148,6 +195,8 @@ class WelcomeScreenViewModel @Inject constructor(
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
             }
+        } else {
+            callback("")
         }
     }
 

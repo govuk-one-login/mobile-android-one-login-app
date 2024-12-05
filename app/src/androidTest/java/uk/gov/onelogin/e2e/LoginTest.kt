@@ -25,6 +25,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -38,6 +39,13 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import uk.gov.android.authentication.integrity.AppIntegrityManager
+import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
+import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
+import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
+import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
+import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -46,6 +54,10 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.TestUtils
+import uk.gov.onelogin.appcheck.AppCheckModule
+import uk.gov.onelogin.appcheck.AppIntegrity
+import uk.gov.onelogin.appcheck.AttestationResult
+import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
@@ -65,7 +77,9 @@ import uk.gov.onelogin.ui.LocaleUtils
 @UninstallModules(
     LoginSessionModule::class,
     CredentialCheckerModule::class,
-    AppInfoApiModule::class
+    AppInfoApiModule::class,
+    AppCheckUseCaseModule::class,
+    AppCheckModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -91,6 +105,29 @@ class LoginTest : TestCase() {
 
     @Inject
     lateinit var navigator: Navigator
+
+    @BindValue
+    val mockAppIntegrity: AppIntegrity = mock()
+
+    @BindValue
+    val mockAttestationManager: AppIntegrityManager = mock()
+
+    @BindValue
+    val mockAttestationCaller: AttestationCaller = mock()
+
+    @BindValue
+    val mockAppChecker: AppChecker = mock()
+
+    @OptIn(ExperimentalEncodingApi::class)
+    @BindValue
+    val mockKeyStoreManager: KeyStoreManager = ECKeyManager()
+
+    @BindValue
+    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
+        mockAttestationCaller,
+        mockAppChecker,
+        mockKeyStoreManager
+    )
 
     @Inject
     @Named("Open")
@@ -128,6 +165,10 @@ class LoginTest : TestCase() {
     @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         tokenRepository.setTokenResponse(
             TokenResponse(
                 tokenType = "type",
@@ -181,6 +222,10 @@ class LoginTest : TestCase() {
         }
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
 
         startApp()
         clickOptOut()
@@ -225,6 +270,10 @@ class LoginTest : TestCase() {
     fun handleActivityResultNullData() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         setupActivityForResult(
             Intent()
         )
@@ -233,7 +282,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any())
     }
 
     @FlakyTest
@@ -241,7 +290,11 @@ class LoginTest : TestCase() {
     fun handleActivityResultWithDataButLoginThrows() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
-        whenever(mockLoginSession.finalise(any(), any())).thenThrow(Error())
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
+        whenever(mockLoginSession.finalise(any(), any(), any())).thenThrow(Error())
         setupActivityForResult(
             Intent(
                 Intent.ACTION_VIEW,
@@ -258,6 +311,10 @@ class LoginTest : TestCase() {
     fun handleActivityResultWithDataUnsecured() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
         setupActivityForResult(
@@ -279,6 +336,10 @@ class LoginTest : TestCase() {
     fun handleActivityResultWithDataBioOptIn() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
@@ -298,6 +359,10 @@ class LoginTest : TestCase() {
     fun handleActivityResultWithDataPasscode() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
@@ -385,9 +450,9 @@ class LoginTest : TestCase() {
     }
 
     private fun mockGoodLogin() {
-        whenever(mockLoginSession.finalise(any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[1] as (TokenResponse) -> Unit).invoke(tokenResponse)
+            (it.arguments[2] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
     }
 

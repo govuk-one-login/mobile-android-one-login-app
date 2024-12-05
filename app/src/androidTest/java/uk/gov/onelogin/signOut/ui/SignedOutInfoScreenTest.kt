@@ -11,6 +11,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -20,6 +21,13 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
+import uk.gov.android.authentication.integrity.AppIntegrityManager
+import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
+import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
+import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
+import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
+import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.LoginSessionConfiguration.Locale
@@ -32,6 +40,10 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.appcheck.AppCheckModule
+import uk.gov.onelogin.appcheck.AppIntegrity
+import uk.gov.onelogin.appcheck.AttestationResult
+import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
@@ -52,7 +64,9 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
     NetworkModule::class,
     NavigatorModule::class,
     SignOutModule::class,
-    AnalyticsModule::class
+    AnalyticsModule::class,
+    AppCheckUseCaseModule::class,
+    AppCheckModule::class
 )
 class SignedOutInfoScreenTest : TestCase() {
     @BindValue
@@ -78,6 +92,29 @@ class SignedOutInfoScreenTest : TestCase() {
 
     @BindValue
     val analytics: AnalyticsLogger = mock()
+
+    @BindValue
+    val mockAppIntegrity: AppIntegrity = mock()
+
+    @BindValue
+    val mockAttestationManager: AppIntegrityManager = mock()
+
+    @BindValue
+    val mockAttestationCaller: AttestationCaller = mock()
+
+    @BindValue
+    val mockAppChecker: AppChecker = mock()
+
+    @OptIn(ExperimentalEncodingApi::class)
+    @BindValue
+    val mockKeyStoreManager: KeyStoreManager = ECKeyManager()
+
+    @BindValue
+    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
+        mockAttestationCaller,
+        mockAppChecker,
+        mockKeyStoreManager
+    )
 
     @Inject
     @Named("Open")
@@ -119,6 +156,8 @@ class SignedOutInfoScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success("Success"))
 
         composeTestRule.setContent {
             SignedOutInfoScreen()
@@ -164,6 +203,8 @@ class SignedOutInfoScreenTest : TestCase() {
     fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success("Success"))
 
         composeTestRule.setContent {
             SignedOutInfoScreen()
@@ -239,6 +280,8 @@ class SignedOutInfoScreenTest : TestCase() {
     fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success("Success"))
 
         composeTestRule.setContent {
             SignedOutInfoScreen(
@@ -322,6 +365,8 @@ class SignedOutInfoScreenTest : TestCase() {
         val context: Context = ApplicationProvider.getApplicationContext()
         val event = SignedOutInfoAnalyticsViewModel.makeReAuthEvent(context)
         whenever(onlineChecker.isOnline()).thenReturn(true)
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
         composeTestRule.setContent {
             SignedOutInfoScreen()
         }
