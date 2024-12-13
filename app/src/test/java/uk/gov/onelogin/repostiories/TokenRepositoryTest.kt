@@ -21,7 +21,8 @@ class TokenRepositoryTest {
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "test",
-            accessTokenExpirationTime = 1L
+            accessTokenExpirationTime = 1L,
+            idToken = "test"
         )
         repo.setTokenResponse(testResponse)
 
@@ -39,7 +40,8 @@ class TokenRepositoryTest {
         val testResponse = TokenResponse(
             tokenType = "test",
             accessToken = "test",
-            accessTokenExpirationTime = 1L
+            accessTokenExpirationTime = 1L,
+            idToken = "test"
         )
         repo.setTokenResponse(testResponse)
 

@@ -43,7 +43,8 @@ class StsAuthenticationProviderTest {
             TokenResponse(
                 tokenType = "type",
                 accessToken = "accessToken",
-                accessTokenExpirationTime = 1L
+                accessTokenExpirationTime = 1L,
+                idToken = "idToken"
             )
         )
 
@@ -63,7 +64,8 @@ class StsAuthenticationProviderTest {
             TokenResponse(
                 tokenType = "type",
                 accessToken = "accessToken",
-                accessTokenExpirationTime = 1L
+                accessTokenExpirationTime = 1L,
+                idToken = "idToken"
             )
         )
 
@@ -79,7 +81,8 @@ class StsAuthenticationProviderTest {
             TokenResponse(
                 tokenType = "type",
                 accessToken = "accessToken",
-                accessTokenExpirationTime = 1L
+                accessTokenExpirationTime = 1L,
+                idToken = "idToken"
             )
         )
 
@@ -111,7 +114,8 @@ class StsAuthenticationProviderTest {
             TokenResponse(
                 tokenType = "type",
                 accessToken = "accessToken",
-                accessTokenExpirationTime = 1L
+                accessTokenExpirationTime = 1L,
+                idToken = "idToken"
             )
         )
 

@@ -187,8 +187,6 @@ dependencies {
         libs.bundles.firebase
     ).forEach(::implementation)
 
-    implementation(files("/Users/bmihaila/Development/GDS/Android/mobile-android-secure-store/app/build/outputs/aar/app-debug.aar"))
-
     implementation(libs.wallet.sdk) {
         exclude(group = "uk.gov.android", module = "network")
         exclude(group = "uk.gov.securestore", module = "app")

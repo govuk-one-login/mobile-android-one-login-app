@@ -32,11 +32,13 @@ class GetFromTokenSecureStoreTest : TestCase() {
     fun secureStoreFailsWithGeneral() = runTest {
         val result = RetrievalEvent.Failed(SecureStoreErrorType.GENERAL)
 
-        whenever(mockSecureStore.retrieveWithAuthentication(
-            any(),
-            authPromptConfig = any(),
-            context = any()
-        )).thenReturn(result)
+        whenever(
+            mockSecureStore.retrieveWithAuthentication(
+                any(),
+                authPromptConfig = any(),
+                context = any()
+            )
+        ).thenReturn(result)
 
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
@@ -50,11 +52,13 @@ class GetFromTokenSecureStoreTest : TestCase() {
     fun secureStoreFailsWithUserCancelled() = runTest {
         val result = RetrievalEvent.Failed(SecureStoreErrorType.USER_CANCELED_BIO_PROMPT)
 
-        whenever(mockSecureStore.retrieveWithAuthentication(
-            any(),
-            authPromptConfig = any(),
-            context = any()
-        )).thenReturn(result)
+        whenever(
+            mockSecureStore.retrieveWithAuthentication(
+                any(),
+                authPromptConfig = any(),
+                context = any()
+            )
+        ).thenReturn(result)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey
@@ -67,11 +71,13 @@ class GetFromTokenSecureStoreTest : TestCase() {
     fun secureStoreFailsWithBioFailed() = runTest {
         val result = RetrievalEvent.Failed(SecureStoreErrorType.FAILED_BIO_PROMPT)
 
-        whenever(mockSecureStore.retrieveWithAuthentication(
-            any(),
-            authPromptConfig = any(),
-            context = any()
-        )).thenReturn(result)
+        whenever(
+            mockSecureStore.retrieveWithAuthentication(
+                any(),
+                authPromptConfig = any(),
+                context = any()
+            )
+        ).thenReturn(result)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey
@@ -87,11 +93,13 @@ class GetFromTokenSecureStoreTest : TestCase() {
         val expectedResult = mapOf(expectedKey to expectedValue)
         val flow = RetrievalEvent.Success(expectedResult)
 
-        whenever(mockSecureStore.retrieveWithAuthentication(
-            eq(expectedKey),
-            authPromptConfig = any(),
-            context = any()
-        )).thenReturn(flow)
+        whenever(
+            mockSecureStore.retrieveWithAuthentication(
+                eq(expectedKey),
+                authPromptConfig = any(),
+                context = any()
+            )
+        ).thenReturn(flow)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey

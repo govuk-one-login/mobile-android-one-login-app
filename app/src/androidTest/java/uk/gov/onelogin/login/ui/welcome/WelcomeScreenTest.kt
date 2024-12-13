@@ -475,21 +475,17 @@ class WelcomeScreenTest : TestCase() {
         verify(mockNavigator).navigate(ErrorRoutes.Offline)
     }
 
-    private fun setPersistentId(id: String) {
-        // This has been removed due to temporary Secure Store fix, change this back
-//        secureStore.upsert(
-//            key = Keys.PERSISTENT_ID_KEY,
-//            value = id
-//        )
-        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, id).apply()
+    private suspend fun setPersistentId(id: String) {
+        secureStore.upsert(
+            key = Keys.PERSISTENT_ID_KEY,
+            value = id
+        )
     }
 
     private fun deletePersistentId() {
-        // This has been removed due to temporary Secure Store fix, change this back
-//        secureStore.delete(
-//            key = Keys.PERSISTENT_ID_KEY
-//        )
-        sharedPrefs.edit().remove(Keys.PERSISTENT_ID_KEY).apply()
+        secureStore.delete(
+            key = Keys.PERSISTENT_ID_KEY
+        )
     }
 
     @Test
