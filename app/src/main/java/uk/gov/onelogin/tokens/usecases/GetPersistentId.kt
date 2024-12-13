@@ -16,5 +16,7 @@ fun interface GetPersistentId {
 class GetPersistentIdImpl @Inject constructor(
     val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : GetPersistentId {
-    override suspend fun invoke() = getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)
+    override suspend fun invoke(): String? {
+        return getFromOpenSecureStore(Keys.PERSISTENT_ID_KEY)?.get(Keys.PERSISTENT_ID_KEY)
+    }
 }

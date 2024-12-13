@@ -1,6 +1,5 @@
 package uk.gov.onelogin.tokens.usecases
 
-import android.content.SharedPreferences
 import android.util.Log
 import javax.inject.Inject
 import javax.inject.Named
@@ -49,17 +48,5 @@ class SaveToOpenSecureStoreImpl @Inject constructor(
         } catch (e: SecureStorageError) {
             Log.e(this::class.simpleName, e.message, e)
         }
-    }
-}
-
-class TemporarySaveToOpenSecureStoreImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences
-) : SaveToOpenSecureStore {
-    override suspend fun save(key: String, value: String) {
-        sharedPrefs.edit().putString(key, value).apply()
-    }
-
-    override suspend fun save(key: String, value: Number) {
-        sharedPrefs.edit().putString(key, value.toString()).apply()
     }
 }

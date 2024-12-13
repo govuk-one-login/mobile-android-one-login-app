@@ -4,8 +4,8 @@ import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.tokens.Keys
 
@@ -17,7 +17,8 @@ class GetPersistentIdImplTest {
 
     @Test
     fun successScenario() = runTest {
-        whenever(mockGetFromOpenSecureStore.invoke(any())).thenReturn(expectedPersistentId)
+        whenever(mockGetFromOpenSecureStore.invoke(ArgumentMatchers.any()))
+            .thenReturn(mapOf(Keys.PERSISTENT_ID_KEY to expectedPersistentId))
 
         val idResponse = sut.invoke()
 
