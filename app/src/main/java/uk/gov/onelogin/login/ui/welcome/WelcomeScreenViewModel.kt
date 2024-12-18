@@ -214,13 +214,11 @@ class WelcomeScreenViewModel @Inject constructor(
             context.getString(R.string.jwksEndpoint)
         )
 
-        return tokens.idToken?.let { idToken ->
-            if (!verifyIdToken(idToken, jwksUrl)) {
-                navigator.navigate(LoginRoutes.SignInError, true)
-            } else {
-                checkLocalAuthRoute(tokens, isReAuth)
-            }
-        } ?: checkLocalAuthRoute(tokens, isReAuth)
+        if (!verifyIdToken(tokens.idToken, jwksUrl)) {
+            navigator.navigate(LoginRoutes.SignInError, true)
+        } else {
+            checkLocalAuthRoute(tokens, isReAuth)
+        }
     }
 
     private suspend fun checkLocalAuthRoute(tokens: TokenResponse, isReAuth: Boolean) {

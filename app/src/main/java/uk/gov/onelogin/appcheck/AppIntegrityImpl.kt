@@ -1,7 +1,6 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
-import android.util.Log
 import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -27,7 +26,6 @@ class AppIntegrityImpl @Inject constructor(
     override suspend fun getClientAttestation(): AttestationResult {
         return if (isAttestationCallRequired()) {
             val result = appCheck.getAttestation()
-            Log.d("AppIntegrity", "$result")
             when (result) {
                 is AttestationResponse.Success -> handleClientAttestation(result)
                 is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
@@ -46,7 +44,7 @@ class AppIntegrityImpl @Inject constructor(
     }
 
     override suspend fun retrieveSavedClientAttestation(): String? {
-        return getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)
+        return getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)?.get(CLIENT_ATTESTATION)
     }
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
@@ -61,16 +59,16 @@ class AppIntegrityImpl @Inject constructor(
         }
 
     private suspend fun isAttestationCallRequired(): Boolean {
-        val expiry: String? = getFromOpenSecureStore.invoke(
-            CLIENT_ATTESTATION_EXPIRY
-        )
-        val clientAttestation: String? = getFromOpenSecureStore.invoke(
+        val ssResult: Map<String, String>? = getFromOpenSecureStore.invoke(
+            CLIENT_ATTESTATION_EXPIRY,
             CLIENT_ATTESTATION
         )
+        val exp = ssResult?.get(CLIENT_ATTESTATION_EXPIRY)
+        val attestation = ssResult?.get(CLIENT_ATTESTATION)
 
-        val result = isAttestationExpired(expiry) ||
-            clientAttestation.isNullOrEmpty() ||
-            !appCheck.verifyAttestationJwk(clientAttestation)
+        val result = isAttestationExpired(exp) ||
+            attestation.isNullOrEmpty() ||
+            !appCheck.verifyAttestationJwk(attestation)
 
         return featureFlags[AppCheckFeatureFlag.ENABLED] && result
     }

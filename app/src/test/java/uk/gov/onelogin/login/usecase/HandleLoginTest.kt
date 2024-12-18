@@ -4,16 +4,19 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
@@ -65,6 +68,34 @@ class HandleLoginTest {
     }
 
     @Test
+    fun idTokenNull_refreshLogin() {
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        wheneverBlocking {
+            mockGetFromTokenSecureStore.invoke(
+                context = any(),
+                ArgumentMatchers.contains(Keys.ID_TOKEN_KEY),
+                callback = any()
+            )
+        }.thenAnswer {
+            (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(
+                    payload = mapOf(
+                        Keys.ACCESS_TOKEN_KEY to "accessToken"
+                    )
+                )
+            )
+        }
+
+        runBlocking {
+            useCase(mockActivity) {
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
+            }
+        }
+    }
+
+    @Test
     fun bioPrefNone_refreshLogin() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry()).thenReturn(null)
@@ -83,7 +114,7 @@ class HandleLoginTest {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
-            whenever(mockGetFromTokenSecureStore(any(), any(), any())).thenAnswer {
+            whenever(mockGetFromTokenSecureStore(any(), any(), callback = any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
             }
 
@@ -97,30 +128,46 @@ class HandleLoginTest {
 
     @Test
     fun goodLogin() {
-        val token = "Token"
-        val unexpiredTime = System.currentTimeMillis() + 100000L
+        val accessToken = "Token"
+        val idToken = "IdToken"
+        val tokenResponse = mapOf(
+            Pair(Keys.ACCESS_TOKEN_KEY, accessToken),
+            Pair(Keys.ID_TOKEN_KEY, idToken)
+        )
+
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
-            whenever(mockGetFromTokenSecureStore(any(), any(), any())).thenAnswer {
+            whenever(
+                mockGetFromTokenSecureStore(
+                    context = any(),
+                    ArgumentMatchers.any(),
+                    callback = any()
+                )
+            ).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(token)
+                    LocalAuthStatus.Success(tokenResponse)
                 )
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.Success(token), it)
+                assertEquals(LocalAuthStatus.Success(tokenResponse), it)
             }
 
             verify(mockTokenRepository).setTokenResponse(
                 TokenResponse(
-                    accessToken = token,
+                    accessToken = accessToken,
+                    idToken = idToken,
                     tokenType = "",
                     accessTokenExpirationTime = unexpiredTime
                 )
             )
         }
+    }
+
+    companion object {
+        val unexpiredTime = System.currentTimeMillis() + 100000L
     }
 }

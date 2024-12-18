@@ -34,7 +34,7 @@ class MainActivityViewModelTest {
     private val mockNavigator: Navigator = mock()
 
     private val testAccessToken = "testAccessToken"
-    private var testIdToken: String? = "testIdToken"
+    private var testIdToken: String = "testIdToken"
     private val tokenResponse = TokenResponse(
         "testType",
         testAccessToken,

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.tokens.usecases
 
-import android.content.SharedPreferences
 import android.util.Log
 import javax.inject.Inject
 import javax.inject.Named
@@ -11,13 +10,13 @@ fun interface GetFromOpenSecureStore {
     /**
      * Use case for getting data from an open secure store instance.
      *
-     * @param key [String] value of key value pair to retrieve
-     * @return The saved [String] is returned unless there is an issue or the key does not exist,
-     * in which case, null is returned
+     * @param key [String] value of key value pair/ pairs to retrieve
+     * @return The saved [String]s correlating to each key requested are returned unless there is
+     * an issue or one of the keys requested does not exist, in which case, null is returned
      */
     suspend operator fun invoke(
-        key: String
-    ): String?
+        vararg key: String
+    ): Map<String, String>?
 }
 
 class GetFromOpenSecureStoreImpl @Inject constructor(
@@ -25,28 +24,14 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
     private val secureStore: SecureStore
 ) : GetFromOpenSecureStore {
     override suspend fun invoke(
-        key: String
-    ): String? {
-        val retrievalEvent = secureStore.retrieve(
-            key = key
-        )
-
-        return when (retrievalEvent) {
+        vararg key: String
+    ): Map<String, String>? {
+        return when (val retrievalEvent = secureStore.retrieve(*key)) {
             is RetrievalEvent.Failed -> {
                 Log.e(this::class.simpleName, "Reason: ${retrievalEvent.reason}")
                 null
             }
             is RetrievalEvent.Success -> retrievalEvent.value
         }
-    }
-}
-
-class TemporaryGetFromOpenSecureStoreImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences
-) : GetFromOpenSecureStore {
-    override suspend fun invoke(
-        key: String
-    ): String? {
-        return sharedPrefs.getString(key, null)
     }
 }

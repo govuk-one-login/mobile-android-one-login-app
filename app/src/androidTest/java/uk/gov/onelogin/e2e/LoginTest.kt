@@ -456,21 +456,18 @@ class LoginTest : TestCase() {
         }
     }
 
-    private fun setPersistentId() {
-        // This has been removed due to temporary Secure Store fix, change this back
-//        secureStore.upsert(
-//            key = Keys.PERSISTENT_ID_KEY,
-//            value = id
-//        )
+    private suspend fun setPersistentId() {
+        secureStore.upsert(
+            key = Keys.PERSISTENT_ID_KEY,
+            value = persistentId
+        )
         sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, persistentId).apply()
     }
 
     private fun deletePersistentId() {
-        // This has been removed due to temporary Secure Store fix, change this back
-//        secureStore.delete(
-//            key = Keys.PERSISTENT_ID_KEY
-//        )
-        sharedPrefs.edit().remove(Keys.PERSISTENT_ID_KEY).apply()
+        secureStore.delete(
+            key = Keys.PERSISTENT_ID_KEY
+        )
     }
 
     companion object {

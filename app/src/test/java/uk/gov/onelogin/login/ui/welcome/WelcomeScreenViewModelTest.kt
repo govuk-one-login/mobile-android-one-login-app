@@ -61,7 +61,7 @@ class WelcomeScreenViewModelTest {
     private val mockAppIntegrity: AppIntegrity = mock()
 
     private val testAccessToken = "testAccessToken"
-    private var testIdToken: String? = "testIdToken"
+    private var testIdToken: String = "testIdToken"
     private val tokenResponse = TokenResponse(
         "testType",
         testAccessToken,
@@ -209,41 +209,6 @@ class WelcomeScreenViewModelTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockBioPrefHandler, times(0)).setBioPref(any())
-            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
-        }
-
-    @Suppress("UNCHECKED_CAST")
-    @Test
-    fun `handleIntent when data != null, device secure, no biometrics, id token is null`() =
-        runTest {
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-            val nullIdTokenResponse = TokenResponse(
-                tokenType = "testType",
-                accessToken = testAccessToken,
-                accessTokenExpirationTime = 1L,
-                refreshToken = "testRefreshToken"
-            )
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("Success"))
-            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(nullIdTokenResponse)
-                }
-
-            viewModel.handleActivityResult(mockIntent)
-
-            verify(mockSaveTokens).invoke()
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
-            verify(mockTokenRepository).setTokenResponse(nullIdTokenResponse)
-            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }

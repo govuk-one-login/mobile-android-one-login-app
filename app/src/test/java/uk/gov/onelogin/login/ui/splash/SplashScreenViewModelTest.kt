@@ -78,7 +78,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success("token")
+                    LocalAuthStatus.Success(mapOf("key" to "token"))
                 )
             }
         viewModel.login(mockActivity)

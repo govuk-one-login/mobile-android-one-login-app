@@ -189,6 +189,7 @@ dependencies {
 
     implementation(libs.wallet.sdk) {
         exclude(group = "uk.gov.android", module = "network")
+        exclude(group = "uk.gov.securestore", module = "app")
     }
 
     listOf(

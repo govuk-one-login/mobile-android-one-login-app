@@ -7,6 +7,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import uk.gov.onelogin.tokens.usecases.GetEmail
 import uk.gov.onelogin.tokens.usecases.GetEmailImpl
 import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
+import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
@@ -16,12 +17,11 @@ import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreDataImpl
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiryImpl
 import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
+import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStore
 import uk.gov.onelogin.tokens.usecases.SaveToSecureStoreImpl
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiryImpl
-import uk.gov.onelogin.tokens.usecases.TemporaryGetFromOpenSecureStoreImpl
-import uk.gov.onelogin.tokens.usecases.TemporarySaveToOpenSecureStoreImpl
 import uk.gov.onelogin.tokens.verifier.Jose4jJwtVerifier
 import uk.gov.onelogin.tokens.verifier.JwtVerifier
 
@@ -36,7 +36,7 @@ interface TokenModule {
 
     @Binds
     fun bindGetFromOpenSecureStore(
-        getFromOpenSecureStore: TemporaryGetFromOpenSecureStoreImpl
+        getFromOpenSecureStore: GetFromOpenSecureStoreImpl
     ): GetFromOpenSecureStore
 
     @Binds
@@ -46,7 +46,7 @@ interface TokenModule {
 
     @Binds
     fun bindSaveToOpenSecureStore(
-        saveToOpenSecureStore: TemporarySaveToOpenSecureStoreImpl
+        saveToOpenSecureStore: SaveToOpenSecureStoreImpl
     ): SaveToOpenSecureStore
 
     @Binds

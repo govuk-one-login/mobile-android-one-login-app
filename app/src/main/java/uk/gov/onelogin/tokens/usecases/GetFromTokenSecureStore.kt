@@ -15,12 +15,12 @@ fun interface GetFromTokenSecureStore {
      * Use case for getting data from a secure store instance.
      *
      * @param context Must be a FragmentActivity context (due to authentication prompt)
-     * @param key [String] value of key value pair to save
-     * @return [Flow<RetrievalEvent>]
+     * @param key [String] value of key value pairs to retrieve
+     * @param callback which is used for handling [LocalAuthStatus] result
      */
     suspend operator fun invoke(
         context: FragmentActivity,
-        key: String,
+        vararg key: String,
         callback: (LocalAuthStatus) -> Unit
     )
 }
@@ -31,32 +31,33 @@ class GetFromTokenSecureStoreImpl @Inject constructor(
 ) : GetFromTokenSecureStore {
     override suspend fun invoke(
         context: FragmentActivity,
-        key: String,
+        vararg key: String,
         callback: (LocalAuthStatus) -> Unit
     ) {
         val authPromptConfig = AuthenticatorPromptConfiguration(
             title = context.getString(R.string.app_authenticationDialogueTitle)
         )
 
-        secureStore.retrieveWithAuthentication(
+        val result = secureStore.retrieveWithAuthentication(
             key = key,
             authPromptConfig = authPromptConfig,
             context = context
-        ).collect { event ->
-            when (event) {
-                is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(event.value))
+        )
 
-                is RetrievalEvent.Failed -> {
-                    val localAuthStatus = when (event.type) {
-                        SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
+        when (result) {
+            is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
 
-                        SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
-                            LocalAuthStatus.UserCancelled
+            is RetrievalEvent.Failed -> {
+                val localAuthStatus = when (result.type) {
+                    SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
 
-                        SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
-                    }
-                    callback(localAuthStatus)
+                    SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
+                        LocalAuthStatus.UserCancelled
+
+                    SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
+                    SecureStoreErrorType.NOT_FOUND -> LocalAuthStatus.SecureStoreError
                 }
+                callback(localAuthStatus)
             }
         }
     }
