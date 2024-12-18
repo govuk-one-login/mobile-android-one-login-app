@@ -43,6 +43,7 @@ class GetFromTokenSecureStoreImpl @Inject constructor(
             authPromptConfig = authPromptConfig,
             context = context
         )
+
         when (result) {
             is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
 

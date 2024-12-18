@@ -7,7 +7,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
+import org.mockito.kotlin.anyVararg
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.RetrievalEvent
@@ -30,15 +30,7 @@ class GetFromTokenSecureStoreTest : TestCase() {
 
     @Test
     fun secureStoreFailsWithGeneral() = runTest {
-        val result = RetrievalEvent.Failed(SecureStoreErrorType.GENERAL)
-
-        whenever(
-            mockSecureStore.retrieveWithAuthentication(
-                any(),
-                authPromptConfig = any(),
-                context = any()
-            )
-        ).thenReturn(result)
+        mockSecureStore(RetrievalEvent.Failed(SecureStoreErrorType.GENERAL))
 
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
@@ -50,15 +42,8 @@ class GetFromTokenSecureStoreTest : TestCase() {
 
     @Test
     fun secureStoreFailsWithUserCancelled() = runTest {
-        val result = RetrievalEvent.Failed(SecureStoreErrorType.USER_CANCELED_BIO_PROMPT)
+        mockSecureStore(RetrievalEvent.Failed(SecureStoreErrorType.USER_CANCELED_BIO_PROMPT))
 
-        whenever(
-            mockSecureStore.retrieveWithAuthentication(
-                any(),
-                authPromptConfig = any(),
-                context = any()
-            )
-        ).thenReturn(result)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey
@@ -69,15 +54,7 @@ class GetFromTokenSecureStoreTest : TestCase() {
 
     @Test
     fun secureStoreFailsWithBioFailed() = runTest {
-        val result = RetrievalEvent.Failed(SecureStoreErrorType.FAILED_BIO_PROMPT)
-
-        whenever(
-            mockSecureStore.retrieveWithAuthentication(
-                any(),
-                authPromptConfig = any(),
-                context = any()
-            )
-        ).thenReturn(result)
+        mockSecureStore(RetrievalEvent.Failed(SecureStoreErrorType.FAILED_BIO_PROMPT))
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey
@@ -91,20 +68,24 @@ class GetFromTokenSecureStoreTest : TestCase() {
         val expectedKey = "expectedKey"
         val expectedValue = "expectedValue"
         val expectedResult = mapOf(expectedKey to expectedValue)
-        val result = RetrievalEvent.Success(expectedResult)
+        mockSecureStore(RetrievalEvent.Success(expectedResult))
 
-        whenever(
-            mockSecureStore.retrieveWithAuthentication(
-                eq(expectedKey),
-                authPromptConfig = any(),
-                context = any()
-            )
-        ).thenReturn(result)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
-            expectedStoreKey
+            expectedStoreKey,
+            "test"
         ) {
             assertEquals(LocalAuthStatus.Success(expectedResult), it)
         }
+    }
+
+    private suspend fun mockSecureStore(returnResult: RetrievalEvent) {
+        whenever(
+            mockSecureStore.retrieveWithAuthentication(
+                anyVararg(),
+                authPromptConfig = any(),
+                context = any()
+            )
+        ).thenReturn(returnResult)
     }
 }
