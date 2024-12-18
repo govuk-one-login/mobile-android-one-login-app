@@ -56,6 +56,11 @@ buildscript {
     val debugAppCheckToken: String by rootProject.extra(
         localProperties.getProperty("firebaseAppCheckDebugSecret") ?: ""
     )
+
+    // https://issuetracker.google.com/issues/380600747
+    dependencies {
+        classpath("org.bouncycastle:bcutil-jdk18on:1.79")
+    }
 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
