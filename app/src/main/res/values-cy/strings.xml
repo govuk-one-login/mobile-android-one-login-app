@@ -36,6 +36,13 @@
     <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
+    <string name="app_signOutConfirmationTitle_no_wallet">Ydych chi\'n siŵr eich bod eisiau allgofnodi?</string>
+    <string name="app_signOutConfirmationBody1_no_wallet">Bydd allgofnodi yn difodd eich dewisiadau am:</string>
+    <string name="app_signOutConfirmationBullet1_no_wallet">defnyddio biometreg neu bin neu batrwm eich ffôn i ddatgloi\'r ap</string>
+    <string name="app_signOutConfirmationBullet2_no_wallet">rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
+    <string name="app_signOutConfirmationBody2_no_wallet">Gofynnir i chi osod y dewisiadau hyn eto y tro nesaf y byddwch yn mewngofnodi.</string>
+    <string name="app_signOutButton_no_wallet">Allgofnodi a dileu dewisiadau</string>
+
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
 

@@ -38,6 +38,13 @@
     <string name="app_youveBeenSignedOutBody2">You need to sign in again to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
+    <string name="app_signOutConfirmationTitle_no_wallet">Are you sure you want to sign out?</string>
+    <string name="app_signOutConfirmationBody1_no_wallet">Signing out will switch off your preferences for:</string>
+    <string name="app_signOutConfirmationBullet1_no_wallet">using biometrics or your phone’s pin or pattern to unlock the app</string>
+    <string name="app_signOutConfirmationBullet2_no_wallet">sharing analytics about how you use the app</string>
+    <string name="app_signOutConfirmationBody2_no_wallet">You’ll be asked to set these preferences again next time you sign in.</string>
+    <string name="app_signOutButton_no_wallet">Sign out and delete preferences</string>
+
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Loading</string>
     <string name="app_splashScreenLoadingContentDescription" translatable="false">Circular progress/ loading indicator</string>
