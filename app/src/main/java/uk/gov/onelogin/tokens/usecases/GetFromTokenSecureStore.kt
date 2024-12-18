@@ -16,7 +16,7 @@ fun interface GetFromTokenSecureStore {
      *
      * @param context Must be a FragmentActivity context (due to authentication prompt)
      * @param key [String] value of key value pairs to retrieve
-     * @return [RetrievalEvent] which is used for handling [LocalAuth]
+     * @param callback which is used for handling [LocalAuthStatus] result
      */
     suspend operator fun invoke(
         context: FragmentActivity,
@@ -58,9 +58,6 @@ class GetFromTokenSecureStoreImpl @Inject constructor(
                 }
                 callback(localAuthStatus)
             }
-
-            // Solves kotlin.NoWhenBranchMatchedException that is thrown without the else branch
-            else -> {}
         }
     }
 }

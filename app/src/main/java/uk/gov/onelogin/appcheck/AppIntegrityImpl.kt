@@ -1,7 +1,6 @@
 package uk.gov.onelogin.appcheck
 
 import android.content.Context
-import android.util.Log
 import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -27,7 +26,6 @@ class AppIntegrityImpl @Inject constructor(
     override suspend fun getClientAttestation(): AttestationResult {
         return if (isAttestationCallRequired()) {
             val result = appCheck.getAttestation()
-            Log.d("AppIntegrity", "$result")
             when (result) {
                 is AttestationResponse.Success -> handleClientAttestation(result)
                 is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)

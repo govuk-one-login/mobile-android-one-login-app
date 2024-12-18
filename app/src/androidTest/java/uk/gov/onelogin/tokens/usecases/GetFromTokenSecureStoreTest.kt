@@ -91,7 +91,7 @@ class GetFromTokenSecureStoreTest : TestCase() {
         val expectedKey = "expectedKey"
         val expectedValue = "expectedValue"
         val expectedResult = mapOf(expectedKey to expectedValue)
-        val flow = RetrievalEvent.Success(expectedResult)
+        val result = RetrievalEvent.Success(expectedResult)
 
         whenever(
             mockSecureStore.retrieveWithAuthentication(
@@ -99,7 +99,7 @@ class GetFromTokenSecureStoreTest : TestCase() {
                 authPromptConfig = any(),
                 context = any()
             )
-        ).thenReturn(flow)
+        ).thenReturn(result)
         useCase.invoke(
             composeTestRule.activity as FragmentActivity,
             expectedStoreKey
