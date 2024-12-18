@@ -76,7 +76,7 @@ fun ReAuthErrorScreen(
                 buttonParameters = ButtonParameters(
                     buttonType = uk.gov.android.ui.components.m3.buttons.ButtonType.PRIMARY(),
                     onClick = { viewModel.navigateToSignIn() },
-                    text = R.string.app_SignInWithGovUKOneLoginButton,
+                    text = stringResource(R.string.app_SignInWithGovUKOneLoginButton),
                     modifier = Modifier
                         .padding(bottom = smallPadding)
                         .fillMaxWidth()
@@ -159,7 +159,7 @@ private fun ErrorInformation.ContentList() {
 private fun ErrorInformation.Introduction() {
     Heading(
         text = title,
-        size = HeadingSize.H1(),
+        size = HeadingSize.DisplaySmall(),
         textAlign = TextAlign.Center,
         padding = PaddingValues(bottom = smallPadding)
     ).generate()

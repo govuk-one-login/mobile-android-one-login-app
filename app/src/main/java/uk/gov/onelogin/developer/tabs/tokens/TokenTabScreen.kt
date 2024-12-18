@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.m3.buttons.ButtonParameters
@@ -45,7 +46,7 @@ fun TokenTabScreen(
         ) {
             GdsButton(
                 buttonParameters = ButtonParameters(
-                    text = R.string.app_developer_reset_access_token_button,
+                    text = stringResource(R.string.app_developer_reset_access_token_button),
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
                         viewModel.resetAccessToken()
@@ -70,7 +71,7 @@ fun TokenTabScreen(
             GdsButton(
                 buttonParameters = ButtonParameters(
                     modifier = Modifier.weight(1F),
-                    text = R.string.app_developer_reset_persistent_id_button,
+                    text = stringResource(R.string.app_developer_reset_persistent_id_button),
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
                         viewModel.resetPersistentId()
