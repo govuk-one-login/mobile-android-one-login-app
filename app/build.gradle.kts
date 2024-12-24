@@ -11,11 +11,11 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
-    kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.app-config")
     id("uk.gov.sonar.module-config")
     id("uk.gov.onelogin.emulator-config")
+    alias(libs.plugins.ksp)
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
@@ -192,14 +192,9 @@ dependencies {
         exclude(group = "uk.gov.securestore", module = "app")
     }
 
-    listOf(
-        libs.hilt.android.compiler,
-        libs.hilt.compiler
-    ).forEach(::kapt)
-
-    listOf(
-        libs.hilt.android.compiler
-    ).forEach(::kaptAndroidTest)
+    ksp(libs.hilt.android.compiler)
+    ksp(libs.hilt.compiler)
+    kspAndroidTest(libs.hilt.android.compiler)
 
     listOf(
         kotlin("test"),
@@ -219,10 +214,6 @@ dependencies {
     ).forEach {
         androidTestUtil(it)
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {

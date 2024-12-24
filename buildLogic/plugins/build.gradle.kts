@@ -1,6 +1,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
+    alias(libs.plugins.ksp)
 }
 
 val dokkaVersion by rootProject.extra("1.9.20")
@@ -11,7 +12,6 @@ val kotlinGradleVersion by rootProject.extra("2.0.0")
 dependencies {
     listOf(
         "com.android.tools.build:gradle:$gradleVersion",
-        "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.0.21-1.0.27",
         "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:$dokkaVersion",
         "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradleVersion",
         "org.jetbrains.dokka:android-documentation-plugin:$dokkaVersion",

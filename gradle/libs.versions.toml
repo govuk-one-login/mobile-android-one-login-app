@@ -9,6 +9,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
 [versions]
 jose4j = "0.9.6"
@@ -45,6 +46,7 @@ govuk-ui = "5.6.0"
 govuk-logging = "0.11.0"
 compose-runtime = "1.7.5"
 wallet = "1.30.0"
+ksp = "2.0.21-1.0.28"
 
 [libraries]
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
