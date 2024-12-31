@@ -48,7 +48,7 @@ fun AppUnavailableScreen() {
 
 @Composable
 internal fun AppUnavailableBody() {
-    // TODO update typography references when UI is updated
+    // Update typography references when UI is updated
     val color = colorScheme.contentColorFor(colorScheme.background)
     Box(
         modifier = Modifier
