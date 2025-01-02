@@ -9,7 +9,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AttestationResult
 
-interface HandleLoginRedirect {
+fun interface HandleLoginRedirect {
     suspend fun handle(
         intent: Intent,
         onFailure: (Throwable?) -> Unit,

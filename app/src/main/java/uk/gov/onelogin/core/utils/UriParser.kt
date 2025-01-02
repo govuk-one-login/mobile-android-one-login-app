@@ -3,7 +3,7 @@ package uk.gov.onelogin.core.utils
 import android.net.Uri
 import javax.inject.Inject
 
-interface UriParser {
+fun interface UriParser {
     fun parse(uri: String): Uri
 }
 

@@ -16,7 +16,7 @@ import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
 
-interface HandleRemoteLogin {
+fun interface HandleRemoteLogin {
     suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
         onFailure: () -> Unit
