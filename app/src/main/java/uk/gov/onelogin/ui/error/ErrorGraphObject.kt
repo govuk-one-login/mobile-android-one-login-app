@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import uk.gov.onelogin.feature.unavailable.ui.AppUnavailableScreen
 import uk.gov.onelogin.ui.error.update.UpdateRequiredScreen
 
 object ErrorGraphObject {
@@ -53,6 +54,11 @@ object ErrorGraphObject {
                     context.finishAndRemoveTask()
                 }
                 UpdateRequiredScreen()
+            }
+            composable(
+                route = ErrorRoutes.Unavailable.getRoute()
+            ) {
+                AppUnavailableScreen()
             }
         }
     }

@@ -52,6 +52,10 @@
     <string name="app_signInIconDescription" translatable="false">Gov Uk Icon</string>
 
     <!-- Errors -->
+    <!-- App Unavailable -->
+    <string name="app_appUnavailableTitle">Sorry, the app is unavailable</string>
+    <string name="app_appUnavailableBody">You cannot use the GOV.UK One Login app at the moment.\n\nTry again later.</string>
+
     <!-- Errors Generic -->
     <string name="app_somethingWentWrongErrorTitle">Something went wrong</string>
     <string name="app_somethingWentWrongErrorBody">Try again later.</string>
