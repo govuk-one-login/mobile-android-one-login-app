@@ -16,7 +16,7 @@ import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.login.usecase.HandleLogin
+import uk.gov.onelogin.login.usecase.HandleLocalLogin
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.NavRoute
 import uk.gov.onelogin.navigation.Navigator
@@ -26,7 +26,7 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
-    private val handleLogin: HandleLogin,
+    private val handleLocalLogin: HandleLocalLogin,
     private val appInfoService: AppInfoService
 ) : ViewModel(), DefaultLifecycleObserver {
 
@@ -38,7 +38,7 @@ class SplashScreenViewModel @Inject constructor(
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
-            handleLogin(
+            handleLocalLogin(
                 fragmentActivity,
                 callback = {
                     when (it) {

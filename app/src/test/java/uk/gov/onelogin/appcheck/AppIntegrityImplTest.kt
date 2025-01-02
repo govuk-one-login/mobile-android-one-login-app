@@ -127,6 +127,8 @@ class AppIntegrityImplTest {
             whenever(appCheck.getAttestation())
                 .thenReturn(AttestationResponse.Success(SUCCESS, 0))
             val result = sut.getClientAttestation()
+
+            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
             assertEquals(AttestationResult.Success(SUCCESS), result)
         }
 
@@ -144,6 +146,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
@@ -160,6 +164,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
@@ -181,6 +187,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
@@ -201,6 +209,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
@@ -222,6 +232,8 @@ class AppIntegrityImplTest {
         whenever(appCheck.getAttestation())
             .thenReturn(AttestationResponse.Success(SUCCESS, 0))
         val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
         assertEquals(AttestationResult.Success(SUCCESS), result)
     }
 
@@ -232,6 +244,7 @@ class AppIntegrityImplTest {
             AttestationResponse.Failure(reason = FAILURE, error = Exception(FAILURE))
         )
         val result = sut.getClientAttestation()
+
         assertEquals(AttestationResult.Failure(FAILURE), result)
     }
 

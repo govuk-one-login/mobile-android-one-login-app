@@ -258,7 +258,7 @@ class LoginTest : TestCase() {
             redirectUri = redirectUrl,
             scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
             tokenEndpoint = tokenEndpoint,
-            persistentSessionId = persistentId
+            persistentSessionId = PERSISTENT_ID
         )
 
         verify(mockLoginSession).present(any(), eq(loginConfig))
@@ -440,7 +440,10 @@ class LoginTest : TestCase() {
     }
 
     private fun clickLogin() {
-        composeRule.waitForIdle()
+        composeRule.waitUntil(TIMEOUT) {
+            composeRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+                .isDisplayed()
+        }
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
     }
 
@@ -459,9 +462,9 @@ class LoginTest : TestCase() {
     private suspend fun setPersistentId() {
         secureStore.upsert(
             key = Keys.PERSISTENT_ID_KEY,
-            value = persistentId
+            value = PERSISTENT_ID
         )
-        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, persistentId).apply()
+        sharedPrefs.edit().putString(Keys.PERSISTENT_ID_KEY, PERSISTENT_ID).apply()
     }
 
     private fun deletePersistentId() {
@@ -471,7 +474,8 @@ class LoginTest : TestCase() {
     }
 
     companion object {
-        private const val persistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
+        private const val TIMEOUT = 10000L
+        private const val PERSISTENT_ID = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
         private val tokenResponse = TokenResponse(
             tokenType = "test",
             accessToken = "test",

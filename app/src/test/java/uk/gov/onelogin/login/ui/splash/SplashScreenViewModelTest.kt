@@ -23,7 +23,7 @@ import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.login.usecase.HandleLogin
+import uk.gov.onelogin.login.usecase.HandleLocalLogin
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.signOut.SignOutRoutes
@@ -32,7 +32,7 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SplashScreenViewModelTest {
-    private val mockHandleLogin: HandleLogin = mock()
+    private val mockHandleLocalLogin: HandleLocalLogin = mock()
     private val mockNavigator: Navigator = mock()
     private val mockLifeCycleOwner: LifecycleOwner = mock()
     private val mockActivity: FragmentActivity = mock()
@@ -42,13 +42,13 @@ class SplashScreenViewModelTest {
 
     private val viewModel = SplashScreenViewModel(
         mockNavigator,
-        mockHandleLogin,
+        mockHandleLocalLogin,
         mockAppInfoService
     )
 
     @Test
     fun loginFailsWithSecureStoreError() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.SecureStoreError
@@ -62,7 +62,7 @@ class SplashScreenViewModelTest {
 
     @Test
     fun loginFailsWithBioCheckFailed() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.BioCheckFailed
@@ -75,7 +75,7 @@ class SplashScreenViewModelTest {
 
     @Test
     fun loginSuccess() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.Success(mapOf("key" to "token"))
@@ -89,7 +89,7 @@ class SplashScreenViewModelTest {
 
     @Test
     fun loginRequiresRefresh() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.ManualSignIn
@@ -103,7 +103,7 @@ class SplashScreenViewModelTest {
 
     @Test
     fun loginRequiresReAuth() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.ReAuthSignIn
@@ -117,7 +117,7 @@ class SplashScreenViewModelTest {
 
     @Test
     fun loginReturnsUserCancelled() = runTest {
-        whenever(mockHandleLogin.invoke(any(), any()))
+        whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.UserCancelled
@@ -142,7 +142,7 @@ class SplashScreenViewModelTest {
         viewModel.login(mockActivity)
 
         // THEN do NOT login (as the app will be going to background)
-        verify(mockHandleLogin, times(1)).invoke(any(), any())
+        verify(mockHandleLocalLogin, times(1)).invoke(any(), any())
     }
 
     @Test

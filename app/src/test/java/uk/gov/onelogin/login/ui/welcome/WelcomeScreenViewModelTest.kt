@@ -15,14 +15,8 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.AuthenticationError
-import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.credentialchecker.BiometricStatus
 import uk.gov.onelogin.credentialchecker.CredentialChecker
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
@@ -30,35 +24,32 @@ import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.usecase.HandleLoginRedirect
+import uk.gov.onelogin.login.usecase.HandleRemoteLogin
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
-import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
-import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private val mockContext: Context = mock()
-    private val mockLoginSession: LoginSession = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockVerifyIdToken: VerifyIdToken = mock()
-    private val mockFeatureFlags: FeatureFlags = mock()
-    private val mockGetPersistentId: GetPersistentId = mock()
     private val mockNavigator: Navigator = mock()
     private val mockOnlineChecker: OnlineChecker = mock()
-    private val mockLocaleUtils: LocaleUtils = mock()
     private val mockSaveTokens: SaveTokens = mock()
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
-    private val mockAppIntegrity: AppIntegrity = mock()
+    private val mockHandleRemoteLogin: HandleRemoteLogin = mock()
+    private val mockHandleLoginRedirect: HandleLoginRedirect = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -72,20 +63,17 @@ class WelcomeScreenViewModelTest {
 
     private val viewModel = WelcomeScreenViewModel(
         mockContext,
-        mockLoginSession,
         mockCredChecker,
         mockBioPrefHandler,
         mockTokenRepository,
         mockAutoInitialiseSecureStore,
         mockVerifyIdToken,
-        mockFeatureFlags,
-        mockGetPersistentId,
         mockNavigator,
         mockSaveTokens,
         mockSaveTokenExpiry,
-        mockAppIntegrity,
-        mockOnlineChecker,
-        mockLocaleUtils
+        mockHandleRemoteLogin,
+        mockHandleLoginRedirect,
+        mockOnlineChecker
     )
 
     @BeforeEach
@@ -104,11 +92,7 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("Success"))
-            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -125,58 +109,6 @@ class WelcomeScreenViewModelTest {
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
             verify(mockAutoInitialiseSecureStore, times(1)).invoke()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
-        }
-
-    @Suppress("UNCHECKED_CAST")
-    @Test
-    fun `handleIntent when data != null, no ClientAttestation and appCheckDisabled`() =
-        runTest {
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired(""))
-            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-                }
-            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-
-            viewModel.handleActivityResult(
-                mockIntent
-            )
-
-            verify(mockSaveTokens).invoke()
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
-            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
-            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
-            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
-        }
-
-    @Test
-    fun `handleIntent when data != null, device secure, generatePoP failure`() =
-        runTest {
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Failure("Error"))
-
-            viewModel.handleActivityResult(
-                mockIntent
-            )
-
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 
     @Suppress("UNCHECKED_CAST")
@@ -190,11 +122,7 @@ class WelcomeScreenViewModelTest {
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
             whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("Success"))
-            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -222,11 +150,7 @@ class WelcomeScreenViewModelTest {
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
         whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation())
-            .thenReturn("Success")
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
             .thenAnswer {
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
@@ -251,11 +175,7 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("Success"))
-            whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -279,11 +199,7 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
             .thenAnswer {
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
@@ -307,11 +223,7 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
             .thenAnswer {
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
@@ -335,11 +247,7 @@ class WelcomeScreenViewModelTest {
 
         whenever(mockIntent.data).thenReturn(mockUri)
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
             .thenAnswer {
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
@@ -370,22 +278,15 @@ class WelcomeScreenViewModelTest {
     }
 
     @Test
-    fun `When sign fails with AuthenticationError - it displays sign in error screen`() = runTest {
+    fun `When login redirect fails - it displays sign in error screen`() = runTest {
         val mockIntent: Intent = mock()
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
-            .thenThrow(
-                AuthenticationError(
-                    "Sign in error",
-                    AuthenticationError.ErrorType.OAUTH
-                )
-            )
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (error: Throwable?) -> Unit).invoke(Throwable())
+            }
 
         viewModel.handleActivityResult(mockIntent)
 
@@ -403,11 +304,7 @@ class WelcomeScreenViewModelTest {
         val mockUri: Uri = mock()
 
         whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(eq(mockIntent), any(), any()))
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
             .thenAnswer {
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
