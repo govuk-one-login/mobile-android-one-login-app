@@ -1,4 +1,4 @@
-package uk.gov.onelogin.feature.unavailable.ui
+package uk.gov.onelogin.ui.error.unavailable
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement

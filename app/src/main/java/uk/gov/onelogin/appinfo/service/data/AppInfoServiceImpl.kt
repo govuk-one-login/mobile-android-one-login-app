@@ -1,5 +1,6 @@
 package uk.gov.onelogin.appinfo.service.data
 
+import android.util.Log
 import javax.inject.Inject
 import uk.gov.onelogin.appinfo.appversioncheck.domain.AppVersionCheck
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
@@ -21,7 +22,10 @@ class AppInfoServiceImpl @Inject constructor(
                 useLocalSource(AppInfoServiceState.Unavailable)
             }
             AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
-            else -> useLocalSource(AppInfoServiceState.Unavailable)
+            is AppInfoRemoteState.Failure -> {
+                Log.e(TAG, remoteResult.reason)
+                useLocalSource(AppInfoServiceState.Unavailable)
+            }
         }
     }
 
@@ -40,5 +44,9 @@ class AppInfoServiceImpl @Inject constructor(
         } else {
             fallback
         }
+    }
+
+    companion object {
+        private const val TAG = "AppInfoServiceError"
     }
 }

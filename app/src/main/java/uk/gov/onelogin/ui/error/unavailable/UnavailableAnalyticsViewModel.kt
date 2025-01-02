@@ -1,4 +1,4 @@
-package uk.gov.onelogin.feature.unavailable.ui
+package uk.gov.onelogin.ui.error.unavailable
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
