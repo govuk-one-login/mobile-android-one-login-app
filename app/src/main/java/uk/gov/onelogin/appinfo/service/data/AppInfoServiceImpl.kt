@@ -15,26 +15,28 @@ class AppInfoServiceImpl @Inject constructor(
     private val appVersionCheck: AppVersionCheck
 ) : AppInfoService {
     override suspend fun get(): AppInfoServiceState {
-        val localState = localSource.get()
         return when (val remoteResult = remoteSource.get()) {
             is AppInfoRemoteState.Success -> {
-                // Check remote min version compatible
                 localSource.update(remoteResult.value)
-                appVersionCheck.compareVersions(remoteResult.value)
+                useLocalSource(AppInfoServiceState.Unavailable)
             }
-            AppInfoRemoteState.Offline -> useLocalSource(localState, AppInfoServiceState.Offline)
-            is AppInfoRemoteState.Failure ->
-                useLocalSource(localState, AppInfoServiceState.Unavailable)
+            AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
+            else -> useLocalSource(AppInfoServiceState.Unavailable)
         }
     }
 
     private fun useLocalSource(
-        localSourceState: AppInfoLocalState,
         fallback: AppInfoServiceState
     ): AppInfoServiceState {
-        return if (localSourceState is AppInfoLocalState.Success) {
-            // Check local min version compatible
-            appVersionCheck.compareVersions(localSourceState.value)
+        val localState = localSource.get()
+        return if (localState is AppInfoLocalState.Success) {
+            // Check app availability
+            if (localState.value.apps.android.available) {
+                // Check min version compatible
+                appVersionCheck.compareVersions(localState.value)
+            } else {
+                fallback
+            }
         } else {
             fallback
         }
