@@ -10,6 +10,7 @@ import uk.gov.onelogin.core.delete.domain.MultiCleaner
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
 import uk.gov.onelogin.tokens.usecases.RemoveAllSecureStoreData
+import uk.gov.onelogin.tokens.usecases.RemoveTokenExpiry
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -18,9 +19,11 @@ internal object Module {
     fun provideCleaner(
         optInRepository: OptInRepository,
         biometricPreferenceHandler: BiometricPreferenceHandler,
-        secureStoreData: RemoveAllSecureStoreData
+        secureStoreData: RemoveAllSecureStoreData,
+        removeTokenExpiry: RemoveTokenExpiry
     ): Cleaner = MultiCleaner(
         Dispatchers.Default,
+        removeTokenExpiry,
         optInRepository,
         biometricPreferenceHandler,
         secureStoreData

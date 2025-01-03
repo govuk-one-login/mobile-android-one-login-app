@@ -9,11 +9,17 @@ import dagger.hilt.android.components.ViewModelComponent
 @Module
 interface UseCaseModule {
     @Binds
-    fun bindHandleLogin(useCase: HandleLoginImpl): HandleLogin
+    fun bindHandleLogin(useCase: HandleLocalLoginImpl): HandleLocalLogin
 
     @Binds
     fun bindVerifyIdToken(usecase: VerifyIdTokenImpl): VerifyIdToken
 
     @Binds
     fun bindSaveTokens(saveTokens: SaveTokensImpl): SaveTokens
+
+    @Binds
+    fun bindHandleRemoteLogin(handleLogin: HandleRemoteLoginImpl): HandleRemoteLogin
+
+    @Binds
+    fun bindHandleLoginRedirect(handleRedirect: HandleLoginRedirectImpl): HandleLoginRedirect
 }

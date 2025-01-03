@@ -12,20 +12,20 @@ import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
-fun interface HandleLogin {
+fun interface HandleLocalLogin {
     suspend operator fun invoke(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit
     )
 }
 
-class HandleLoginImpl @Inject constructor(
+class HandleLocalLoginImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,
     private val getFromTokenSecureStore: GetFromTokenSecureStore,
     private val bioPrefHandler: BiometricPreferenceHandler
-) : HandleLogin {
+) : HandleLocalLogin {
     override suspend fun invoke(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit

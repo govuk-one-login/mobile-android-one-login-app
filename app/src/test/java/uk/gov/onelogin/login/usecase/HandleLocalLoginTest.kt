@@ -21,7 +21,7 @@ import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
 import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
 import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
 
-class HandleLoginTest {
+class HandleLocalLoginTest {
     private val mockActivity: FragmentActivity = mock()
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockTokenRepository: TokenRepository = mock()
@@ -29,7 +29,7 @@ class HandleLoginTest {
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
 
-    private val useCase = HandleLoginImpl(
+    private val useCase = HandleLocalLoginImpl(
         mockGetTokenExpiry,
         mockTokenRepository,
         mockIsAccessTokenExpired,

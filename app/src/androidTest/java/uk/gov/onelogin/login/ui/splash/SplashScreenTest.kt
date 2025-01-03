@@ -27,7 +27,9 @@ import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.login.usecase.HandleLogin
+import uk.gov.onelogin.login.usecase.HandleLocalLogin
+import uk.gov.onelogin.login.usecase.HandleLoginRedirect
+import uk.gov.onelogin.login.usecase.HandleRemoteLogin
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.UseCaseModule
 import uk.gov.onelogin.login.usecase.VerifyIdToken
@@ -51,7 +53,13 @@ class SplashScreenTest : TestCase() {
     val verifyIdToken: VerifyIdToken = mock()
 
     @BindValue
-    val handleLogin: HandleLogin = mock()
+    val handleLocalLogin: HandleLocalLogin = mock()
+
+    @BindValue
+    val handleRemoteLogin: HandleRemoteLogin = mock()
+
+    @BindValue
+    val handleLoginRedirect: HandleLoginRedirect = mock()
 
     @BindValue
     val mockNavigator: Navigator = mock()
@@ -116,7 +124,7 @@ class SplashScreenTest : TestCase() {
         wheneverBlocking {
             analyticsRepo.isOptInPreferenceRequired()
         }.thenReturn(flow { emit(false) })
-        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
+        wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
         }
 
@@ -128,7 +136,7 @@ class SplashScreenTest : TestCase() {
             composeTestRule.onNode(unlockButton).isDisplayed()
         }
 
-        wheneverBlocking { handleLogin.invoke(any(), any()) }.thenAnswer {
+        wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
 

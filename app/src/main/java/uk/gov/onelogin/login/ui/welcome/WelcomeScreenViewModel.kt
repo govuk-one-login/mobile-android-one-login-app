@@ -2,7 +2,6 @@ package uk.gov.onelogin.login.ui.welcome
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
@@ -13,31 +12,23 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import uk.gov.android.authentication.integrity.AppIntegrityParameters
-import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.LoginSession
-import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.R
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.credentialchecker.BiometricStatus.SUCCESS
 import uk.gov.onelogin.credentialchecker.CredentialChecker
-import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.usecase.HandleLoginRedirect
+import uk.gov.onelogin.login.usecase.HandleRemoteLogin
 import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.login.usecase.VerifyIdToken
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.repositiories.TokenRepository
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
-import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
-import uk.gov.onelogin.ui.LocaleUtils
 import uk.gov.onelogin.ui.error.ErrorRoutes
 
 @HiltViewModel
@@ -45,158 +36,51 @@ import uk.gov.onelogin.ui.error.ErrorRoutes
 class WelcomeScreenViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val loginSession: LoginSession,
     private val credChecker: CredentialChecker,
     private val bioPrefHandler: BiometricPreferenceHandler,
     private val tokenRepository: TokenRepository,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
     private val verifyIdToken: VerifyIdToken,
-    private val featureFlags: FeatureFlags,
-    private val getPersistentId: GetPersistentId,
     private val navigator: Navigator,
     private val saveTokens: SaveTokens,
     private val saveTokenExpiry: SaveTokenExpiry,
-    private val appIntegrity: AppIntegrity,
-    val onlineChecker: OnlineChecker,
-    localeUtils: LocaleUtils
+    private val handleRemoteLogin: HandleRemoteLogin,
+    private val handleLoginRedirect: HandleLoginRedirect,
+    val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
-    private val locale = localeUtils.getLocaleAsSessionConfig()
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
 
     fun onPrimary(
         launcher: ActivityResultLauncher<Intent>
-    ) {
-        val authorizeEndpoint = Uri.parse(
-            context.getString(
-                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    R.string.stsUrl
-                } else {
-                    R.string.openIdConnectBaseUrl
-                },
-                context.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.getString(
-                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    R.string.stsUrl
-                } else {
-                    R.string.apiBaseUrl
-                },
-                context.getString(R.string.tokenExchangeEndpoint)
-            )
-        )
-        val redirectUri = Uri.parse(
-            context.getString(
-                R.string.webBaseUrl,
-                context.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val clientId = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            context.getString(R.string.stsClientId)
-        } else {
-            context.getString(R.string.openIdConnectClientId)
+    ) = viewModelScope.launch {
+        _loading.emit(true)
+        handleRemoteLogin.login(
+            launcher
+        ) {
+            navigator.navigate(LoginRoutes.SignInError)
         }
-        val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
-        viewModelScope.launch {
-            val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
-            _loading.emit(true)
-            handleGetClientAttestation {
-                loginSession.present(
-                    launcher,
-                    configuration = LoginSessionConfiguration(
-                        authorizeEndpoint = authorizeEndpoint,
-                        clientId = clientId,
-                        locale = locale,
-                        redirectUri = redirectUri,
-                        scopes = scopes,
-                        tokenEndpoint = tokenEndpoint,
-                        persistentSessionId = persistentId
-                    )
-                )
-            }
-        }
+        _loading.emit(false)
     }
 
     fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
         if (intent.data == null) return
 
         viewModelScope.launch {
-            val savedAttestation = appIntegrity.retrieveSavedClientAttestation()
-            // Attempt to get a new attestation if the saved one is not available due to device or open secure store
-            // Very unlikely to occur
-            if (savedAttestation.isNullOrEmpty()) {
-                handleGetClientAttestation { attestation ->
-                    handleCreatePoP(attestation) { jwt ->
-                        loginSession.finalise(
-                            intent = intent,
-                            appIntegrity = AppIntegrityParameters(attestation, jwt)
-                        ) { tokens ->
-                            viewModelScope.launch {
-                                handleTokens(tokens, isReAuth)
-                            }
-                        }
+            _loading.emit(true)
+            handleLoginRedirect.handle(
+                intent,
+                onSuccess = {
+                    viewModelScope.launch {
+                        handleTokens(it, isReAuth)
                     }
-                }
-                // Attestation retrieved successfully, directly create PoP
-            } else {
-                handleCreatePoP(savedAttestation) { jwt ->
-                    loginSession.finalise(
-                        intent = intent,
-                        appIntegrity = AppIntegrityParameters(savedAttestation, jwt)
-                    ) { tokens ->
-                        viewModelScope.launch {
-                            handleTokens(tokens, isReAuth)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun handleGetClientAttestation(
-        onSuccess: (String) -> Unit
-    ) {
-        when (val attestation = appIntegrity.getClientAttestation()) {
-            is AttestationResult.Failure -> {
-                _loading.emit(false)
-                navigator.navigate(LoginRoutes.SignInError)
-            }
-            is AttestationResult.NotRequired -> {
-                _loading.emit(false)
-                onSuccess(
-                    attestation.savedAttestation ?: ""
-                )
-            }
-            else -> {
-                _loading.emit(false)
-                onSuccess(
-                    (attestation as AttestationResult.Success).clientAttestation
-                )
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun handleCreatePoP(attestation: String, callback: (popJwt: String) -> Unit) {
-        if (attestation.isNotEmpty()) {
-            when (val popResult = appIntegrity.getProofOfPossession()) {
-                is SignedPoP.Success -> try {
-                    callback(popResult.popJwt)
-                } catch (e: Throwable) { // handle both Error and Exception types.
-                    // Includes AuthenticationError
-                    Log.e(tag, e.message, e)
+                },
+                onFailure = {
+                    Log.e(tag, it?.message, it)
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
-                is SignedPoP.Failure -> {
-                    Log.e(tag, popResult.reason, popResult.error)
-                    navigator.navigate(LoginRoutes.SignInError, true)
-                }
-            }
-        } else {
-            callback("")
+            )
         }
     }
 
