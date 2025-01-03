@@ -22,6 +22,7 @@ class AppInfoServiceImplTest {
     private val localSource: AppInfoLocalSource = mock()
     private val appVersionCheck: AppVersionCheck = mock()
     private val data = TestUtils.appInfoData
+    private val dataAppUnavailable = TestUtils.appInfoDataAppUnavailable
     private val localSourceErrorMsg = AppInfoLocalSourceImpl.APP_INFO_LOCAL_SOURCE_ERROR
     private val remoteSourceErrorMsg = AppInfoRemoteSourceImpl.APP_INFO_REMOTE_SOURCE_ERROR
 
@@ -34,6 +35,7 @@ class AppInfoServiceImplTest {
     @Test
     fun `successful remote retrieval`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Success(data))
+        whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
         whenever(appVersionCheck.compareVersions(eq(data)))
             .thenReturn(AppInfoServiceState.Successful(data))
         val result = sut.get()
@@ -79,9 +81,18 @@ class AppInfoServiceImplTest {
     @Test
     fun `update required error`() = runTest {
         whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Success(data))
+        whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
         whenever(appVersionCheck.compareVersions(eq(data)))
             .thenReturn(AppInfoServiceState.UpdateRequired)
         val result = sut.get()
         assertEquals(AppInfoServiceState.UpdateRequired, result)
+    }
+
+    @Test
+    fun `available set to false - unavailable `() = runTest {
+        whenever(remoteSource.get()).thenReturn(AppInfoRemoteState.Success(dataAppUnavailable))
+        whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(dataAppUnavailable))
+        val result = sut.get()
+        assertEquals(AppInfoServiceState.Unavailable, result)
     }
 }

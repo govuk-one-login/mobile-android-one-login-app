@@ -1,4 +1,4 @@
-package uk.gov.onelogin.feature.unavailable.ui
+package uk.gov.onelogin.ui.error.unavailable
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +25,9 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.R as Res
@@ -41,9 +44,14 @@ private val iconPadding = 1.dp
 
 @Composable
 fun AppUnavailableScreen() {
+    val analytics: UnavailableAnalyticsViewModel = hiltViewModel()
     val navController = rememberNavController()
     GdsTheme { AppUnavailableBody() }
-    BackHandler { navController.closeApp() }
+    BackHandler {
+        analytics.trackBackButton()
+        navController.closeApp()
+    }
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackUnavailableView() }
 }
 
 @Composable

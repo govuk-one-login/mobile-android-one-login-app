@@ -19,6 +19,6 @@ class AppInfoRemoteSourceImpl @Inject constructor(
     }
 
     companion object {
-        const val APP_INFO_REMOTE_SOURCE_ERROR = "Retrieving AppInfo from remote"
+        const val APP_INFO_REMOTE_SOURCE_ERROR = "Error retrieving AppInfo from remote"
     }
 }

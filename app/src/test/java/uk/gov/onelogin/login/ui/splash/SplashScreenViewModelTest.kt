@@ -179,8 +179,8 @@ class SplashScreenViewModelTest {
 
         // THEN loading progress indicator will be set to true
         assertTrue(viewModel.loading.value)
-        // THEN it navigates to Generic Error screen
-        verify(mockNavigator).navigate(ErrorRoutes.Generic)
+        // THEN it navigates to Unavailable Error screen
+        verify(mockNavigator).navigate(ErrorRoutes.Unavailable)
     }
 
     @Test

@@ -81,7 +81,7 @@ class SplashScreenViewModel @Inject constructor(
             _loading.emit(true)
             when (appInfoService.get()) {
                 AppInfoServiceState.Offline -> navigateToOfflineError()
-                AppInfoServiceState.Unavailable -> navigateToGenericError()
+                AppInfoServiceState.Unavailable -> navigateToAppUnavailableError()
                 AppInfoServiceState.UpdateRequired -> navigateToUpdateRequiredError()
                 // WHEN successful AppInfo response/ status
                 else -> onSuccess()
@@ -89,8 +89,8 @@ class SplashScreenViewModel @Inject constructor(
         }
     }
 
-    private fun navigateToGenericError() {
-        navigator.navigate(ErrorRoutes.Generic)
+    private fun navigateToAppUnavailableError() {
+        navigator.navigate(ErrorRoutes.Unavailable)
     }
 
     private fun navigateToOfflineError() {
