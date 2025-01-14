@@ -18,7 +18,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
-import uk.gov.onelogin.login.ui.LoadingScreen
+import uk.gov.onelogin.ui.LoadingScreen
 
 @Composable
 fun WelcomeScreen(

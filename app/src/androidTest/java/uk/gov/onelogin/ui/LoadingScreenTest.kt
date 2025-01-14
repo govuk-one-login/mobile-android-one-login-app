@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.ui
+package uk.gov.onelogin.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
@@ -19,6 +19,14 @@ class LoadingScreenTest : TestCase() {
     @Test
     fun verifyComponents() {
         composeTestRule.onNodeWithTag(LOADING_SCREEN_BOX).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEXT).assertIsDisplayed()
         composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
+    }
+
+    @Test
+    fun preview() {
+        composeTestRule.setContent {
+            LoadingPreview()
+        }
     }
 }
