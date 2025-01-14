@@ -98,11 +98,11 @@ internal fun OptInBody(
                     .padding(horizontal = smallPadding)
                     .padding(top = xsmallPadding)
                     .fillMaxWidth(),
-                text = R.string.app_shareAnalyticsButton,
+                text = stringResource(R.string.app_shareAnalyticsButton),
                 buttonType = ButtonType.PRIMARY(),
                 textStyle = MaterialTheme.typography.labelMedium,
                 onClick = onShare,
-                enabled = uiState.hasButtonsOn
+                isEnabled = uiState.hasButtonsOn
             )
         )
         GdsButton(
@@ -110,11 +110,11 @@ internal fun OptInBody(
                 modifier = Modifier
                     .padding(horizontal = smallPadding, vertical = xsmallPadding)
                     .fillMaxWidth(),
-                text = R.string.app_doNotShareAnalytics,
+                text = stringResource(R.string.app_doNotShareAnalytics),
                 buttonType = ButtonType.SECONDARY(),
                 textStyle = MaterialTheme.typography.labelMedium,
                 onClick = onDoNotShare,
-                enabled = uiState.hasButtonsOn
+                isEnabled = uiState.hasButtonsOn
             )
         )
     }

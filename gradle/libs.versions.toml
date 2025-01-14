@@ -41,10 +41,10 @@ googleServices = "4.4.2"
 firebaseBom = "33.7.0"
 crashlytics = "3.0.2"
 classgraph = "4.8.179"
-govuk-ui = "5.6.0"
+govuk-ui = "5.7.5"
 govuk-logging = "0.11.0"
 compose-runtime = "1.7.5"
-wallet = "1.30.0"
+wallet = "1.34.0"
 
 [libraries]
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }

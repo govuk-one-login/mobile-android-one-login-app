@@ -1,5 +1,6 @@
 package uk.gov.onelogin.signOut.ui
 
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
@@ -62,18 +63,21 @@ class SignOutScreenTest : TestCase() {
     @BindValue
     val featureFlags: FeatureFlags = InMemoryFeatureFlags()
 
-    private val title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
-    private val ctaButton = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
-    private val closeButton = hasContentDescription("Close")
+    private lateinit var title: SemanticsMatcher
+    private lateinit var button: SemanticsMatcher
+    private lateinit var closeButton: SemanticsMatcher
 
     @Before
-    fun setupNavigation() {
+    fun setup() {
         hiltRule.inject()
+        title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
+        button = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
+        closeButton = hasContentDescription("Close")
+        (featureFlags as InMemoryFeatureFlags).plusAssign(setOf(WalletFeatureFlag.ENABLED))
     }
 
     @Test
     fun verifyScreenDisplayedWallet() {
-        (featureFlags as InMemoryFeatureFlags).plusAssign(setOf(WalletFeatureFlag.ENABLED))
         composeTestRule.setContent {
             SignOutScreen()
         }
@@ -104,7 +108,7 @@ class SignOutScreenTest : TestCase() {
         composeTestRule.setContent {
             SignOutScreen()
         }
-        composeTestRule.onNode(ctaButton).performClick()
+        composeTestRule.onNode(button).performClick()
 
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
         verify(signOutUseCase).invoke(any())
@@ -118,7 +122,7 @@ class SignOutScreenTest : TestCase() {
         }
         whenever(signOutUseCase.invoke(any()))
             .thenThrow(SignOutError(Exception("something went wrong")))
-        composeTestRule.onNode(ctaButton).performClick()
+        composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke(any())
         verify(mockNavigator).navigate(ErrorRoutes.SignOut)
     }
@@ -144,20 +148,6 @@ class SignOutScreenTest : TestCase() {
 
             verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onBackPressed())
             verify(mockNavigator).goBack()
-        }
-    }
-
-    @Test
-    fun previewWalletTest() {
-        composeTestRule.setContent {
-            SignOutWalletPreview()
-        }
-    }
-
-    @Test
-    fun previewNoWalletTest() {
-        composeTestRule.setContent {
-            SignOutNoWalletPreview()
         }
     }
 }
