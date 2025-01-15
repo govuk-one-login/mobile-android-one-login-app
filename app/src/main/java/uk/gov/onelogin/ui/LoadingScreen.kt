@@ -52,7 +52,7 @@ fun LoadingBody() {
         Text(
             modifier = Modifier
                 .semantics { heading() }
-                .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
+                .testTag(LOADING_SCREEN_TEXT),
             style = MaterialTheme.typography.bodyLarge,
             color = color,
             text = stringResource(R.string.app_loadingBody)
