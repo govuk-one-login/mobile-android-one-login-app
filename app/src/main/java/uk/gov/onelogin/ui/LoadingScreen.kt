@@ -19,8 +19,9 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import uk.gov.android.onelogin.R
+import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 
@@ -44,7 +45,7 @@ fun LoadingBody() {
         CircularProgressIndicator(
             modifier = Modifier
                 .width(64.dp)
-                .padding(bottom = smallPadding)
+                .padding(bottom = mediumPadding)
                 .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
             color = colorScheme.primary,
             trackColor = colorScheme.secondary
@@ -52,6 +53,7 @@ fun LoadingBody() {
         Text(
             modifier = Modifier
                 .semantics { heading() }
+                .padding(top = largePadding)
                 .testTag(LOADING_SCREEN_TEXT),
             style = MaterialTheme.typography.bodyLarge,
             color = color,
