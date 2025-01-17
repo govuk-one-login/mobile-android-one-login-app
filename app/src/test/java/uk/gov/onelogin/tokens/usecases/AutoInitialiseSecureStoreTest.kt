@@ -1,7 +1,14 @@
 package uk.gov.onelogin.tokens.usecases
 
 import android.content.Context
-import org.junit.jupiter.api.BeforeEach
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -14,6 +21,7 @@ import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
+import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.tokens.Keys
 
 class AutoInitialiseSecureStoreTest {
@@ -23,35 +31,65 @@ class AutoInitialiseSecureStoreTest {
     private val mockContext: Context = mock()
     private val mockSecureStore: SecureStore = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val mockSaveTokens: SaveTokens = mock()
+    private val dispatcher = StandardTestDispatcher()
 
-    @BeforeEach
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @BeforeTest
     fun setUp() {
-        useCase = AutoInitialiseSecureStoreImpl(mockBioPrefHandler, mockSecureStore, mockContext)
+        Dispatchers.setMain(dispatcher)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @AfterTest
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 
     @Test
-    fun `does not initialise - when pref is null`() {
+    fun `does not initialise - when pref is null`() = runTest {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(null)
+        useCase = AutoInitialiseSecureStoreImpl(
+            mockBioPrefHandler,
+            mockSaveTokens,
+            mockSecureStore,
+            mockContext,
+            dispatcher
+        )
 
-        useCase.invoke()
+        useCase.initialise()
 
         verify(mockSecureStore, never()).init(any(), any())
     }
 
     @Test
-    fun `does not initialise - when pref is NONE`() {
+    fun `does not initialise - when pref is NONE`() = runTest {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+        useCase = AutoInitialiseSecureStoreImpl(
+            mockBioPrefHandler,
+            mockSaveTokens,
+            mockSecureStore,
+            mockContext,
+            dispatcher
+        )
 
-        useCase.invoke()
+        useCase.initialise()
 
         verify(mockSecureStore, never()).init(any(), any())
     }
 
     @Test
-    fun `does initialise with PASSCODE ACL - when pref is PASSCODE`() {
+    fun `does initialise with PASSCODE ACL - when pref is PASSCODE`() = runTest {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        useCase = AutoInitialiseSecureStoreImpl(
+            mockBioPrefHandler,
+            mockSaveTokens,
+            mockSecureStore,
+            mockContext,
+            dispatcher
+        )
 
-        useCase.invoke()
+        useCase.initialise()
 
         val expectedConfiguration = SecureStorageConfiguration(
             Keys.TOKEN_SECURE_STORE_ID,
@@ -61,15 +99,23 @@ class AutoInitialiseSecureStoreTest {
     }
 
     @Test
-    fun `does initialise with PASSCODE_AND_CURRENT_BIOMETRICS ACL - when pref is BIOMETRICS`() {
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+    fun `does initialise with PASSCODE_AND_CURRENT_BIOMETRICS ACL - when pref is BIOMETRICS`() =
+        runTest {
+            whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+            useCase = AutoInitialiseSecureStoreImpl(
+                mockBioPrefHandler,
+                mockSaveTokens,
+                mockSecureStore,
+                mockContext,
+                dispatcher
+            )
 
-        useCase.invoke()
+            useCase.initialise()
 
-        val expectedConfiguration = SecureStorageConfiguration(
-            Keys.TOKEN_SECURE_STORE_ID,
-            AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
-        )
-        verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
-    }
+            val expectedConfiguration = SecureStorageConfiguration(
+                Keys.TOKEN_SECURE_STORE_ID,
+                AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
+            )
+            verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
+        }
 }

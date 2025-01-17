@@ -177,6 +177,7 @@ dependencies {
         libs.gson,
         libs.hilt.android,
         libs.kotlinx.serialization.json,
+        libs.kotlinx.coroutines.core,
         libs.ktor.client.android,
         libs.navigation.compose,
         libs.slf4j.api,

@@ -103,11 +103,10 @@ class WelcomeScreenViewModelTest {
                 mockIntent
             )
 
-            verify(mockSaveTokens).invoke()
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
-            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
+            verify(mockAutoInitialiseSecureStore, times(1)).initialise()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -122,6 +121,7 @@ class WelcomeScreenViewModelTest {
             whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
             whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
             whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+            // Login redirect fires `onSuccess`
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -129,15 +129,15 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
+            // re-authenticate is false by default
             viewModel.handleActivityResult(
                 mockIntent
             )
 
-            verify(mockSaveTokens).invoke()
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockBioPrefHandler, times(0)).setBioPref(any())
-            verify(mockAutoInitialiseSecureStore, times(1)).invoke()
+            verify(mockAutoInitialiseSecureStore, times(1)).initialise()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 

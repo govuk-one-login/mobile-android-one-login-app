@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
@@ -17,7 +18,7 @@ import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStoreImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SecureStoreModule {
+object SecureStoreSingletonModule {
 
     @Provides
     @Singleton
@@ -37,9 +38,12 @@ object SecureStoreModule {
         )
         it.init(context, configuration)
     }
+}
 
+@Module
+@InstallIn(ViewModelComponent::class)
+object SecureStoreViewModelModule {
     @Provides
-    @Singleton
     fun providesAutoInitialiseSecureStore(
         autoInitialiseSecureStoreImpl: AutoInitialiseSecureStoreImpl
     ): AutoInitialiseSecureStore = autoInitialiseSecureStoreImpl

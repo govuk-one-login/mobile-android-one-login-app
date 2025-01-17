@@ -10,7 +10,6 @@ import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
@@ -21,22 +20,19 @@ class BioOptInViewModelTest {
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockNavigator: Navigator = mock()
-    private val mockSaveTokens: SaveTokens = mock()
 
     private val viewModel =
         BioOptInViewModel(
             mockBioPrefHandler,
             mockAutoInitialiseSecureStore,
-            mockNavigator,
-            mockSaveTokens
+            mockNavigator
         )
 
     @Test
     fun `use biometrics`() = runTest {
         viewModel.useBiometrics()
 
-        verify(mockAutoInitialiseSecureStore).invoke()
-        verify(mockSaveTokens).invoke()
+        verify(mockAutoInitialiseSecureStore).initialise()
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.BIOMETRICS)
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
@@ -45,8 +41,7 @@ class BioOptInViewModelTest {
     fun `not use biometrics`() = runTest {
         viewModel.doNotUseBiometrics()
 
-        verify(mockSaveTokens).invoke()
-        verify(mockAutoInitialiseSecureStore).invoke()
+        verify(mockAutoInitialiseSecureStore).initialise()
         verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
     }
