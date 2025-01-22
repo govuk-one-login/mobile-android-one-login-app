@@ -46,7 +46,6 @@ import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.appcheck.usecase.AppCheckUseCaseModule
 import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
-import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
@@ -150,56 +149,8 @@ class SignedOutInfoScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() = runBlocking {
-        whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(false)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-
-        composeTestRule.setContent {
-            SignedOutInfoScreen()
-        }
-
-        whenWeClickSignIn()
-        val authorizeEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.openIdConnectBaseUrl,
-                context.resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.apiBaseUrl,
-                context.resources.getString(R.string.tokenExchangeEndpoint)
-            )
-        )
-        val redirectUri = Uri.parse(
-            context.resources.getString(
-                R.string.webBaseUrl,
-                context.resources.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val clientId = context.resources.getString(R.string.openIdConnectClientId)
-        val loginSessionConfig = LoginSessionConfiguration(
-            authorizeEndpoint = authorizeEndpoint,
-            clientId = clientId,
-            locale = Locale.EN,
-            redirectUri = redirectUri,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint,
-            persistentSessionId = persistentId
-        )
-
-        verify(loginSession).present(
-            any(),
-            eq(loginSessionConfig)
-        )
-    }
-
-    @Test
     fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         whenever(mockAppIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.Success("Success"))
 
@@ -247,7 +198,6 @@ class SignedOutInfoScreenTest : TestCase() {
     @Test
     fun noPersistentId_OpensSignInScreen() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         deletePersistentId()
 
         composeTestRule.setContent {
@@ -276,7 +226,6 @@ class SignedOutInfoScreenTest : TestCase() {
     @Test
     fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(featureFlags[StsFeatureFlag.STS_ENDPOINT]).thenReturn(true)
         whenever(mockAppIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.Success("Success"))
 
