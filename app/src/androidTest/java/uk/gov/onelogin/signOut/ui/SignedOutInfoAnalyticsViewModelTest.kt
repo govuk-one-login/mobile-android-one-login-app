@@ -34,7 +34,7 @@ class SignedOutInfoAnalyticsViewModelTest {
             taxonomyLevel2 = TaxonomyLevel2.LOGIN,
             taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
         )
-        domain = context.getEnglishString(R.string.openIdConnectBaseUrl, "").domain
+        domain = context.getEnglishString(R.string.baseStsUrl, "").domain
         buttonText = context.getEnglishString(R.string.app_SignInWithGovUKOneLoginButton)
         name = context.getEnglishString(R.string.app_youveBeenSignedOutTitle)
         id = context.getEnglishString(R.string.signed_out_info_page_id)

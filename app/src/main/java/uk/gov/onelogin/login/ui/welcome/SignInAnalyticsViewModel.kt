@@ -36,7 +36,7 @@ class SignInAnalyticsViewModel @Inject constructor(
         fun makeSignInEvent(context: Context) = with(context) {
             TrackEvent.Link(
                 isExternal = false,
-                domain = getEnglishString(R.string.openIdConnectBaseUrl, "").domain,
+                domain = getEnglishString(R.string.baseStsUrl, "").domain,
                 text = getEnglishString(R.string.app_signInButton),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.LOGIN,

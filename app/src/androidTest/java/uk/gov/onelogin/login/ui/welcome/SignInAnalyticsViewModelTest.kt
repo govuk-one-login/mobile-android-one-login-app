@@ -34,7 +34,7 @@ class SignInAnalyticsViewModelTest {
             taxonomyLevel2 = TaxonomyLevel2.LOGIN,
             taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
         )
-        domain = context.getEnglishString(R.string.openIdConnectBaseUrl, "").domain
+        domain = context.getEnglishString(R.string.baseStsUrl, "").domain
         buttonText = context.getEnglishString(R.string.app_signInButton)
         name = context.getEnglishString(R.string.app_signInTitle)
         id = context.getEnglishString(R.string.sign_in_page_id)
