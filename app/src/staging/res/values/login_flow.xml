@@ -5,7 +5,6 @@
     <string name="stsClientId" translatable="false">ctQpngJQrFFCrppZtYQFFoklHaq</string>
     <string name="webBaseUrl" translatable="false">https://mobile.staging.account.gov.uk%1$s</string>
     <string name="webBaseHost" translatable="false">mobile.staging.account.gov.uk</string>
-    <string name="apiBaseUrl" translatable="false">https://mobile.staging.account.gov.uk%1$s</string>
     <string name="helloWorldUrl" translatable="false">https://hello-world.token.staging.account.gov.uk%1$s</string>
     <string name="appInfoUrl" translatable="false">https://mobile.staging.account.gov.uk%1$s</string>
 </resources>
