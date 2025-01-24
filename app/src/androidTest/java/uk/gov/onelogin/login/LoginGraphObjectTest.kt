@@ -26,7 +26,7 @@ import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.Navigator
-import uk.gov.onelogin.ui.LOADING_SCREEN_PROGRESS_INDICATOR
+import uk.gov.onelogin.ui.loading.LOADING_SCREEN_PROGRESS_INDICATOR
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)

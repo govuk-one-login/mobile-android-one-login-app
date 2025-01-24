@@ -13,8 +13,8 @@ import uk.gov.onelogin.login.ui.welcome.WelcomeScreen
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.hasPreviousBackStack
 import uk.gov.onelogin.optin.ui.OptInScreen
-import uk.gov.onelogin.ui.LoadingScreen
 import uk.gov.onelogin.ui.error.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
+import uk.gov.onelogin.ui.loading.LoadingScreen
 
 object LoginGraphObject {
     @Suppress("LongMethod")
@@ -51,7 +51,7 @@ object LoginGraphObject {
             composable(
                 route = LoginRoutes.Loading.getRoute()
             ) {
-                LoadingScreen()
+                LoadingScreen {}
             }
 
             composable(
