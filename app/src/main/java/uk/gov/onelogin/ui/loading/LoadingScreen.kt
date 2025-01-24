@@ -1,5 +1,6 @@
-package uk.gov.onelogin.ui
+package uk.gov.onelogin.ui.loading
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -18,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
@@ -26,7 +29,18 @@ import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(
+    backHandler: () -> Unit
+) {
+    val analytics: LoadingScreenAnalyticsViewModel = hiltViewModel()
+    BackHandler(true) {
+        analytics.trackBackButton()
+        backHandler()
+    }
+    LaunchedEffect(Unit) {
+        analytics.trackLoadingScreenEvent()
+    }
+
     GdsTheme {
         LoadingBody()
     }
