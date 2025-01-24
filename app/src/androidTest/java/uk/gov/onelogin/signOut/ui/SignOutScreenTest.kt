@@ -4,6 +4,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -27,6 +28,7 @@ import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.WalletFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.login.ui.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.signOut.SignOutModule
@@ -110,6 +112,7 @@ class SignOutScreenTest : TestCase() {
         }
         composeTestRule.onNode(button).performClick()
 
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
         verify(signOutUseCase).invoke(any())
         verify(mockNavigator).navigate(LoginRoutes.Root, true)

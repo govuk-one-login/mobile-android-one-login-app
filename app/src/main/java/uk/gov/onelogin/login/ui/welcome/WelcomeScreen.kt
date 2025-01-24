@@ -63,7 +63,14 @@ fun WelcomeScreen(
             viewModel.navigateToOfflineError()
         }
     }
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackWelcomeView() }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        analytics.trackWelcomeView()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        viewModel.stopLoading()
+    }
 }
 
 @Composable

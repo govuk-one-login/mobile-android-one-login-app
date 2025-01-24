@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.BindValue
@@ -48,6 +49,7 @@ import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
+import uk.gov.onelogin.login.ui.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
@@ -369,6 +371,18 @@ class SignedOutInfoScreenTest : TestCase() {
         }
         whenWeClickSignIn()
         verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun loadingScreenDisplaysOnButtonClick() {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        composeTestRule.setContent {
+            SignedOutInfoScreen()
+        }
+
+        whenWeClickSignIn()
+
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
     }
 
     private fun whenWeClickSignIn() {

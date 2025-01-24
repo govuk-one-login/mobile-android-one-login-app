@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +24,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
+import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
 
 @Composable
@@ -30,6 +33,7 @@ fun SignedOutInfoScreen(
     signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
+    val loading by loginViewModel.loading.collectAsState()
     val analytics: SignedOutInfoAnalyticsViewModel = hiltViewModel()
     val activity = LocalContext.current as FragmentActivity
     val launcher = rememberLauncherForActivityResult(
@@ -58,16 +62,28 @@ fun SignedOutInfoScreen(
             activity
         )
     }
-    SignedOutInfoBody {
-        analytics.trackReAuth()
-        handleLogin(
-            loginViewModel,
-            signOutViewModel,
-            launcher,
-            activity
-        )
+
+    if (loading) {
+        LoadingScreen()
+    } else {
+        SignedOutInfoBody {
+            analytics.trackReAuth()
+            handleLogin(
+                loginViewModel,
+                signOutViewModel,
+                launcher,
+                activity
+            )
+        }
     }
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { analytics.trackSignOutInfoView() }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        analytics.trackSignOutInfoView()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        loginViewModel.stopLoading()
+    }
 }
 
 private fun handleLogin(
