@@ -127,7 +127,7 @@ class SignOutScreenTest : TestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke(any())
-        verify(mockNavigator).navigate(ErrorRoutes.SignOut)
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
     }
 
     @Test
