@@ -4,6 +4,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -33,6 +34,7 @@ import uk.gov.onelogin.signOut.SignOutModule
 import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.ui.error.ErrorRoutes
+import uk.gov.onelogin.ui.loading.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.WalletModule
 
@@ -110,6 +112,7 @@ class SignOutScreenTest : TestCase() {
         }
         composeTestRule.onNode(button).performClick()
 
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
         verify(signOutUseCase).invoke(any())
         verify(mockNavigator).navigate(LoginRoutes.Root, true)
@@ -124,7 +127,7 @@ class SignOutScreenTest : TestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke(any())
-        verify(mockNavigator).navigate(ErrorRoutes.SignOut)
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
     }
 
     @Test

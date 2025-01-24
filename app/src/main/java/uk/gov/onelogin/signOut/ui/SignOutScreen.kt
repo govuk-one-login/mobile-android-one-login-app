@@ -1,6 +1,8 @@
 package uk.gov.onelogin.signOut.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -13,26 +15,35 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.ui.components.BackHandlerWithPop
+import uk.gov.onelogin.ui.loading.LoadingScreen
 
 @Composable
 fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel()
 ) {
+    val loading by viewModel.loadingState.collectAsState()
     val analytics: SignOutAnalyticsViewModel = hiltViewModel()
     // Needed for deleteWalletData
     val fragmentActivity = LocalContext.current as FragmentActivity
-    SignOutBody(
-        uiState = viewModel.uiState,
-        onClose = {
-            analytics.trackCloseIcon()
-            viewModel.goBack()
-        },
-        onPrimary = {
-            analytics.trackPrimary()
-            viewModel.signOut(fragmentActivity)
+
+    if (loading) {
+        LoadingScreen {
+            fragmentActivity.finish()
         }
-    )
-    analytics.trackSignOutView(viewModel.uiState)
+    } else {
+        SignOutBody(
+            uiState = viewModel.uiState,
+            onClose = {
+                analytics.trackCloseIcon()
+                viewModel.goBack()
+            },
+            onPrimary = {
+                analytics.trackPrimary()
+                viewModel.signOut(fragmentActivity)
+            }
+        )
+        analytics.trackSignOutView(viewModel.uiState)
+    }
 
     BackHandlerWithPop {
         analytics.trackBackPressed()

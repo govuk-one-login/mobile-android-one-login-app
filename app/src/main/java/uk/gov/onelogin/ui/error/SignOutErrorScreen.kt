@@ -13,6 +13,8 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.meta.ScreenPreview
 
 @Composable
 fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
@@ -44,4 +46,11 @@ fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
             )
         )
     }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+fun Preview() {
+    SignOutErrorScreen { }
 }
