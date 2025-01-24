@@ -6,4 +6,5 @@
     <string name="sign_out_no_wallet_page_id" translatable="false">3e50cd12-4ee8-4787-add8-6a2ac7d4a840</string>
     <string name="update_required_page_id" translatable="false">ae56a0d6-072a-406f-84c7-83759aa4f942</string>
     <string name="app_unavailable_page_id" translatable="false">d21ab1f2-9b2f-43cd-a2f4-3da0c5c611ea</string>
+    <string name="app_loading_page_id" translatable="false">0672f0fa-8126-479b-b191-8e750fa3d909</string>
 </resources>

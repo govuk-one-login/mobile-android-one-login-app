@@ -10,6 +10,9 @@
     <string name="app_wallet">Wallet</string>
     <string name="app_profile">Profile</string>
 
+    <!-- Loading -->
+    <string name="app_loadingBody">Loading…</string>
+
     <!-- Profile -->
     <string name="app_profileSubtitle1">Your details</string>
     <string name="app_profileSubtitle2">Legal</string>
