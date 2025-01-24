@@ -8,6 +8,9 @@
     <string name="app_wallet">Waled</string>
     <string name="app_profile">Proffil</string>
 
+    <!-- Loading -->
+    <string name="app_loadingBody">Llwytho…</string>
+
     <!-- Profile -->
     <string name="app_profileSubtitle1">Eich manylion</string>
     <string name="app_profileSubtitle2">Cyfreithiol</string>
