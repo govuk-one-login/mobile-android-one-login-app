@@ -28,13 +28,13 @@ import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.WalletFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
-import uk.gov.onelogin.login.ui.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.signOut.SignOutModule
 import uk.gov.onelogin.signOut.domain.SignOutError
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.ui.error.ErrorRoutes
+import uk.gov.onelogin.ui.loading.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.wallet.DeleteWalletDataUseCase
 import uk.gov.onelogin.wallet.WalletModule
 

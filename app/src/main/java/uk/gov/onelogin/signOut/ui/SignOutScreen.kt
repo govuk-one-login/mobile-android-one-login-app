@@ -14,8 +14,8 @@ import uk.gov.android.ui.pages.modal.ModalDialogParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
-import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.ui.components.BackHandlerWithPop
+import uk.gov.onelogin.ui.loading.LoadingScreen
 
 @Composable
 fun SignOutScreen(
@@ -27,7 +27,9 @@ fun SignOutScreen(
     val fragmentActivity = LocalContext.current as FragmentActivity
 
     if (loading) {
-        LoadingScreen()
+        LoadingScreen {
+            fragmentActivity.finish()
+        }
     } else {
         SignOutBody(
             uiState = viewModel.uiState,

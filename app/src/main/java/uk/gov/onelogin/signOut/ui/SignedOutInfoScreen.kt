@@ -24,8 +24,8 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
-import uk.gov.onelogin.login.ui.LoadingScreen
 import uk.gov.onelogin.login.ui.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.ui.loading.LoadingScreen
 
 @Composable
 fun SignedOutInfoScreen(
@@ -64,7 +64,7 @@ fun SignedOutInfoScreen(
     }
 
     if (loading) {
-        LoadingScreen()
+        LoadingScreen {}
     } else {
         SignedOutInfoBody {
             analytics.trackReAuth()

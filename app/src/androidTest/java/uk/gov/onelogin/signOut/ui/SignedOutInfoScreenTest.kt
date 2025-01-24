@@ -49,7 +49,6 @@ import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.login.authentication.LoginSessionModule
-import uk.gov.onelogin.login.ui.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.network.di.NetworkModule
@@ -58,6 +57,7 @@ import uk.gov.onelogin.signOut.SignOutRoutes
 import uk.gov.onelogin.signOut.domain.SignOutUseCase
 import uk.gov.onelogin.tokens.Keys
 import uk.gov.onelogin.ui.error.ErrorRoutes
+import uk.gov.onelogin.ui.loading.LOADING_SCREEN_PROGRESS_INDICATOR
 
 @HiltAndroidTest
 @UninstallModules(
