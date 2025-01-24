@@ -143,7 +143,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
+    fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
@@ -188,7 +188,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn_goodPersistentId() = runBlocking {
+    fun opensWebLoginViaCustomTab_goodPersistentId() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
@@ -237,7 +237,7 @@ class WelcomeScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn_emptyPersistentId() = runBlocking {
+    fun opensWebLoginViaCustomTab_emptyPersistentId() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))

@@ -149,7 +149,7 @@ class SignedOutInfoScreenTest : TestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab_StsFlagOn() = runBlocking {
+    fun opensWebLoginViaCustomTab() = runBlocking {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(mockAppIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.Success("Success"))
