@@ -55,7 +55,7 @@ class SignOutViewModelTest {
         viewModel.signOut(mockActivity)
 
         verify(mockSignOutUseCase).invoke(mockActivity)
-        verify(mockNavigator).navigate(ErrorRoutes.SignOut)
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
     }
 
     @Test

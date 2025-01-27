@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.features.WalletFeatureFlag
@@ -21,6 +23,9 @@ class SignOutViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val featureFlags: FeatureFlags
 ) : ViewModel() {
+    private val _loadingState = MutableStateFlow(false)
+    val loadingState = _loadingState.asStateFlow()
+
     val uiState: SignOutUIState
         get() = if (featureFlags[WalletFeatureFlag.ENABLED]) {
             SignOutUIState.Wallet
@@ -29,13 +34,14 @@ class SignOutViewModel @Inject constructor(
         }
 
     fun signOut(activityFragment: FragmentActivity) {
+        _loadingState.value = true
         viewModelScope.launch {
             try {
                 signOutUseCase.invoke(activityFragment)
                 navigator.navigate(LoginRoutes.Root, true)
             } catch (e: SignOutError) {
                 Log.e(this::class.simpleName, e.message, e)
-                navigator.navigate(ErrorRoutes.SignOut)
+                navigator.navigate(ErrorRoutes.SignOut, true)
             }
         }
     }

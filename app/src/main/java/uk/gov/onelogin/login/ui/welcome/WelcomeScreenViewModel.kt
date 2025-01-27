@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.online.OnlineChecker
@@ -50,7 +50,7 @@ class WelcomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val loading: StateFlow<Boolean> = _loading
+    val loading = _loading.asStateFlow()
 
     fun onPrimary(
         launcher: ActivityResultLauncher<Intent>
@@ -61,7 +61,6 @@ class WelcomeScreenViewModel @Inject constructor(
         ) {
             navigator.navigate(LoginRoutes.SignInError)
         }
-        _loading.emit(false)
     }
 
     fun handleActivityResult(intent: Intent, isReAuth: Boolean = false) {
@@ -90,6 +89,10 @@ class WelcomeScreenViewModel @Inject constructor(
 
     fun navigateToOfflineError() {
         navigator.navigate(ErrorRoutes.Offline)
+    }
+
+    fun stopLoading() {
+        _loading.value = false
     }
 
     private suspend fun handleTokens(tokens: TokenResponse, isReAuth: Boolean) {

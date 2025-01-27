@@ -25,3 +25,8 @@ available.
 [Project's Git Hooks]: /.githooks
 
 [Git Hook Framework]: https://git-scm.com/docs/githooks
+
+### Note
+
+Generally we don't run the `pre-push` hook because it runs all the Android Tests which
+can take a while

@@ -12,15 +12,15 @@ crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyti
 
 [versions]
 jose4j = "0.9.6"
-kotlin = "2.0.21"
-agp = "8.7.3"
+kotlin = "2.1.0"
+agp = "8.8.0"
 core-ktx = "1.13.1"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
 appcompat = "1.7.0"
 lifecycle-runtime-compose = "2.8.7"
 ktlint = "12.1.1"
-hiltPlugin = "2.52"
+hiltPlugin = "2.55"
 detekt = "1.23.7"
 andoridxBrowser = "1.8.0"
 androidxBiometric = "1.1.0"
