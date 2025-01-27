@@ -7,7 +7,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.login.biooptin.BiometricPreference
 import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.usecase.SaveTokens
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
@@ -16,8 +15,7 @@ import uk.gov.onelogin.tokens.usecases.AutoInitialiseSecureStore
 class BioOptInViewModel @Inject constructor(
     private val biometricPreferenceHandler: BiometricPreferenceHandler,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
-    private val navigator: Navigator,
-    private val saveTokens: SaveTokens
+    private val navigator: Navigator
 ) : ViewModel() {
 
     fun useBiometrics() {
@@ -32,9 +30,8 @@ class BioOptInViewModel @Inject constructor(
 
     private fun setBioPreference(pref: BiometricPreference) {
         biometricPreferenceHandler.setBioPref(pref)
-        autoInitialiseSecureStore()
         viewModelScope.launch {
-            saveTokens()
+            autoInitialiseSecureStore.initialise()
         }
     }
 

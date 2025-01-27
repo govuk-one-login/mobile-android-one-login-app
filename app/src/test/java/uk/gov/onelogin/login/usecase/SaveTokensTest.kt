@@ -4,8 +4,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -89,29 +87,6 @@ class SaveTokensTest {
                 Keys.PERSISTENT_ID_KEY,
                 "1234"
             )
-        }
-    }
-
-    @Test
-    fun saveTokenWhenTokensNotNullIdTokenIsNull() {
-        val testResponse = TokenResponse(
-            tokenType = "test",
-            accessToken = "test",
-            accessTokenExpirationTime = 1L,
-            idToken = "test"
-        )
-
-        runBlocking {
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
-
-            saveTokens()
-
-            verify(mockSaveToSecureStore).invoke(
-                Keys.ACCESS_TOKEN_KEY,
-                "test"
-            )
-            verify(mockSaveToSecureStore, times(0)).invoke(any(), eq(Keys.ID_TOKEN_KEY))
-            verify(mockSaveToOpenSecureStore, times(0)).save(any(), any<String>())
         }
     }
 

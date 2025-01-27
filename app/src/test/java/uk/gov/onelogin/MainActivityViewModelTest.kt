@@ -59,8 +59,8 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `secure store auto initialised`() {
-        verify(mockAutoInitialiseSecureStore).invoke()
+    fun `secure store auto initialised`() = runTest {
+        verify(mockAutoInitialiseSecureStore).initialise()
     }
 
     @Test

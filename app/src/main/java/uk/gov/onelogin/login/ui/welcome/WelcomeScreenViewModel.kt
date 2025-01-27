@@ -132,8 +132,9 @@ class WelcomeScreenViewModel @Inject constructor(
                 if (bioPrefHandler.getBioPref() != BiometricPreference.BIOMETRICS) {
                     bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
                 }
-                autoInitialiseSecureStore()
-                saveTokens()
+                viewModelScope.launch {
+                    autoInitialiseSecureStore.initialise()
+                }
                 navigator.navigate(MainNavRoutes.Start, true)
             }
         }

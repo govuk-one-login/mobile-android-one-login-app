@@ -25,7 +25,9 @@ class MainActivityViewModel @Inject constructor(
 ) : ViewModel(), DefaultLifecycleObserver {
 
     init {
-        autoInitialiseSecureStore()
+        viewModelScope.launch {
+            autoInitialiseSecureStore.initialise()
+        }
     }
 
     override fun onStart(owner: LifecycleOwner) {
