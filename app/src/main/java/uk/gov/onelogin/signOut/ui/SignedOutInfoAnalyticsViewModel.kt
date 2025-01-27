@@ -36,7 +36,7 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
         fun makeReAuthEvent(context: Context) = with(context) {
             TrackEvent.Link(
                 isExternal = false,
-                domain = getEnglishString(R.string.openIdConnectBaseUrl, "").domain,
+                domain = getEnglishString(R.string.baseStsUrl, "").domain,
                 text = getEnglishString(R.string.app_SignInWithGovUKOneLoginButton),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.LOGIN,

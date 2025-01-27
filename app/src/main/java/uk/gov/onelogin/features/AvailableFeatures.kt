@@ -10,7 +10,6 @@ class AvailableFeatures(
     @Inject
     constructor() : this(
         listOf(
-            StsFeatureFlag.entries.toTypedArray(),
             AppCheckFeatureFlag.entries.toTypedArray(),
             WalletFeatureFlag.entries.toTypedArray()
         ).flatMap {

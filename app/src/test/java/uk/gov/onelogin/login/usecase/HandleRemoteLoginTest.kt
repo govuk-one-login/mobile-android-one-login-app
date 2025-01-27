@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -17,17 +16,14 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
-import uk.gov.android.features.FeatureFlags
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.core.utils.UriParser
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class HandleRemoteLoginTest {
     private val mockContext: Context = mock()
-    private val mockFeatureFlags: FeatureFlags = mock()
     private val mockGetPersistentId: GetPersistentId = mock()
     private val mockLocaleUtils: LocaleUtils = mock()
     private val mockLoginSession: LoginSession = mock()
@@ -44,7 +40,6 @@ class HandleRemoteLoginTest {
     fun setUp() {
         handleRemoteLogin = HandleRemoteLoginImpl(
             mockContext,
-            mockFeatureFlags,
             mockLocaleUtils,
             mockLoginSession,
             mockGetPersistentId,

@@ -7,12 +7,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
-import uk.gov.android.features.FeatureFlags
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AttestationResult
 import uk.gov.onelogin.core.utils.UriParser
-import uk.gov.onelogin.features.StsFeatureFlag
 import uk.gov.onelogin.tokens.usecases.GetPersistentId
 import uk.gov.onelogin.ui.LocaleUtils
 
@@ -27,7 +25,6 @@ fun interface HandleRemoteLogin {
 class HandleRemoteLoginImpl @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val featureFlags: FeatureFlags,
     private val localeUtils: LocaleUtils,
     private val loginSession: LoginSession,
     private val getPersistentId: GetPersistentId,
@@ -65,21 +62,13 @@ class HandleRemoteLoginImpl @Inject constructor(
         val locale = localeUtils.getLocaleAsSessionConfig()
         val authorizeEndpoint = uriParser.parse(
             context.getString(
-                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    R.string.stsUrl
-                } else {
-                    R.string.openIdConnectBaseUrl
-                },
+                R.string.stsUrl,
                 context.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
         )
         val tokenEndpoint = uriParser.parse(
             context.getString(
-                if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-                    R.string.stsUrl
-                } else {
-                    R.string.apiBaseUrl
-                },
+                R.string.stsUrl,
                 context.getString(R.string.tokenExchangeEndpoint)
             )
         )
@@ -89,11 +78,7 @@ class HandleRemoteLoginImpl @Inject constructor(
                 context.getString(R.string.webRedirectEndpoint)
             )
         )
-        val clientId = if (featureFlags[StsFeatureFlag.STS_ENDPOINT]) {
-            context.getString(R.string.stsClientId)
-        } else {
-            context.getString(R.string.openIdConnectClientId)
-        }
+        val clientId = context.getString(R.string.stsClientId)
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
 
         return LoginSessionConfiguration(
