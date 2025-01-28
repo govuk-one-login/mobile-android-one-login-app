@@ -2,11 +2,13 @@ package uk.gov.onelogin.ui.home
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.navigation.Navigator
@@ -19,9 +21,11 @@ class HomeScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val tokenRepository: TokenRepository = mock()
     private val getEmail: GetEmail = mock()
+    private val httpClient: GenericHttpClient = mock()
 
     private val viewModel by lazy {
         HomeScreenViewModel(
+            httpClient,
             mockNavigator,
             tokenRepository,
             getEmail
@@ -47,5 +51,12 @@ class HomeScreenViewModelTest {
         viewModel.openDevPanel()
 
         verify(mockNavigator).openDeveloperPanel()
+    }
+
+    @Test
+    fun httpClientProvided() {
+        val result = viewModel.getHttpClient()
+
+        assertNotNull(result)
     }
 }
