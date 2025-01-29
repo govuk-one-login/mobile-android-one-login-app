@@ -2,7 +2,6 @@ package uk.gov.onelogin.ui.home
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
@@ -51,12 +50,5 @@ class HomeScreenViewModelTest {
         viewModel.openDevPanel()
 
         verify(mockNavigator).openDeveloperPanel()
-    }
-
-    @Test
-    fun httpClientProvided() {
-        val result = viewModel.getHttpClient()
-
-        assertNotNull(result)
     }
 }

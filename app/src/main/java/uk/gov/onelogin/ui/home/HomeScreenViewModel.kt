@@ -12,7 +12,7 @@ import uk.gov.onelogin.tokens.usecases.GetEmail
 @HiltViewModel
 @Suppress("LongParameterList")
 class HomeScreenViewModel @Inject constructor(
-    private val httpClient: GenericHttpClient,
+    val httpClient: GenericHttpClient,
     private val navigator: Navigator,
     private val tokenRepository: TokenRepository,
     getEmail: GetEmail
@@ -25,9 +25,5 @@ class HomeScreenViewModel @Inject constructor(
 
     fun openDevPanel() {
         navigator.openDeveloperPanel()
-    }
-
-    fun getHttpClient(): GenericHttpClient {
-        return httpClient
     }
 }
