@@ -97,7 +97,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 
 # GDS
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
-cri-orchestrator = { module = "uk.gov.onelogin.criorchestrator.sdk:sdk", version.ref = "cri-orchestrator" }
+cri-orchestrator = { group = "uk.gov.onelogin.criorchestrator.sdk", name = "sdk", version.ref = "cri-orchestrator" }
 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
