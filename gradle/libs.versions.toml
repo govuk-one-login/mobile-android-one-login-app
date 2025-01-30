@@ -116,4 +116,4 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 
 [bundles]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
-gov-uk = ["components", "pages", "theme", "authentication", "secure-store", "network", "logging"]
+gov-uk = ["components", "pages", "theme", "authentication", "secure-store", "network", "logging", "cri-orchestrator"]
