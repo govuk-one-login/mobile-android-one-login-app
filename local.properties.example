@@ -6,6 +6,6 @@
 # for use as `versionCode`
 # Ensure the versionName adheres to the convention v*.*.*, it requires it in this format for
 # AppInfo to allow comparing the app version to the required mobile backend version to meet
-# minimum version requirements.
+# minimum version requirements
 versionCode=
 versionName=
