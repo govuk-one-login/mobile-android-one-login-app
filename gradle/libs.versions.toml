@@ -47,7 +47,7 @@ compose-runtime = "1.7.6"
 wallet = "1.38.0"
 
 [libraries]
-wallet-sdk = { group = "uk.gov.android.wallet", name = "wallet_sdk", version.ref = "wallet" }
+wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
