@@ -9,6 +9,7 @@
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_profile">Profile</string>
+    <string name="app_cri_card_test_tag" translatable="false">Cri Orchestrator test tag</string>
 
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
