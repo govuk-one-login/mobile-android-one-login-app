@@ -7,13 +7,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.network.usecase.HelloWorldApiCall
 import uk.gov.onelogin.repositiories.TokenRepository
+import uk.gov.onelogin.tokens.usecases.GetEmail
 
 @HiltViewModel
 class AuthTabScreenViewModel @Inject constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
-    private val tokenRepository: TokenRepository
+    private val tokenRepository: TokenRepository,
+    getEmail: GetEmail
 ) : ViewModel() {
     private val _happyHelloWorldResponse = mutableStateOf("")
     val happyHelloWorldResponse: State<String>
@@ -38,6 +41,12 @@ class AuthTabScreenViewModel @Inject constructor(
     private val _serviceFailingCallLoading = mutableStateOf(false)
     val serviceFailingCallLoading: State<Boolean>
         get() = _serviceFailingCallLoading
+
+    val email = getEmail().orEmpty()
+
+    fun getTokens(): TokenResponse? {
+        return tokenRepository.getTokenResponse()
+    }
 
     fun makeHappyHelloWorldCall() {
         _happyCallLoading.value = true

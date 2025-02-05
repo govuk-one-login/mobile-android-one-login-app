@@ -8,15 +8,12 @@ import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.features.CriCardFeatureFlag
 import uk.gov.onelogin.navigation.Navigator
-import uk.gov.onelogin.repositiories.TokenRepository
 
 @HiltViewModel
-@Suppress("LongParameterList")
 class HomeScreenViewModel @Inject constructor(
     val httpClient: GenericHttpClient,
     private val featureFlag: FeatureFlags,
-    private val navigator: Navigator,
-    private val tokenRepository: TokenRepository
+    private val navigator: Navigator
 ) : ViewModel() {
     val uiCardEnabled = MutableStateFlow(featureFlag[CriCardFeatureFlag.ENABLED])
 

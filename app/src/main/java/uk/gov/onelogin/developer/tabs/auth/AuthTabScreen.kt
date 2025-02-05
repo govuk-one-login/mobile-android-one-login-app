@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,43 +28,105 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.m3.buttons.ButtonParameters
 import uk.gov.android.ui.components.m3.buttons.ButtonType
 import uk.gov.android.ui.components.m3.buttons.GdsButton
+import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.ui.components.EmailHeader
 
 @Composable
 fun AuthTabScreen(
     viewModel: AuthTabScreenViewModel = hiltViewModel()
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
-        val happyApiResponse by viewModel.happyHelloWorldResponse
-        val happyCallLoading by viewModel.happyCallLoading
-        val authFailingApiResponse by viewModel.authFailingHelloWorldResponse
-        val authFailingCallLoading by viewModel.authFailingCallLoading
-        val serviceFailingApiResponse by viewModel.serviceFailingHelloWorldResponse
-        val serviceFailingCallLoading by viewModel.serviceFailingCallLoading
-        ButtonRow(
-            buttonText = R.string.app_helloworld_happy_button,
-            buttonLoading = happyCallLoading,
-            apiResponse = happyApiResponse
-        ) {
-            viewModel.makeHappyHelloWorldCall()
-        }
-        ButtonRow(
-            buttonText = R.string.app_helloworld_auth_failing_button,
-            buttonLoading = authFailingCallLoading,
-            apiResponse = authFailingApiResponse
-        ) {
-            viewModel.makeAuthFailingHelloWorldCall()
-        }
-        ButtonRow(
-            buttonText = R.string.app_helloworld_service_failing_button,
-            buttonLoading = serviceFailingCallLoading,
-            apiResponse = serviceFailingApiResponse
-        ) {
-            viewModel.makeServiceFailingHelloWorldCall()
-        }
+        AuthTokensSection(viewModel)
+        OpenIdAuthSection(viewModel)
+    }
+}
+
+@Composable
+private fun AuthTokensSection(
+    viewModel: AuthTabScreenViewModel
+) {
+    val tokens = viewModel.getTokens()
+    val email = viewModel.email
+    Text(
+        text = "Authentication Tokens",
+        style = MaterialTheme.typography.titleMedium
+    )
+    EmailHeader(email)
+    Text(
+        text = "Access Token",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp)
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Text(
+        tokens?.accessToken ?: "No access token set!",
+        modifier = Modifier
+            .padding(16.dp)
+    )
+    HorizontalDivider()
+    Text(
+        text = "ID Token",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp)
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Text(
+        text = tokens?.idToken ?: "No id token set!",
+        modifier = Modifier
+            .padding(16.dp)
+    )
+    HorizontalDivider()
+    Text(
+        text = "Refresh Token",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp)
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Text(
+        text = tokens?.refreshToken ?: "No refresh token set!",
+        modifier = Modifier
+            .padding(
+                all = 16.dp
+            )
+    )
+    HorizontalDivider()
+}
+
+@Composable
+private fun OpenIdAuthSection(
+    viewModel: AuthTabScreenViewModel
+) {
+    val happyApiResponse by viewModel.happyHelloWorldResponse
+    val happyCallLoading by viewModel.happyCallLoading
+    val authFailingApiResponse by viewModel.authFailingHelloWorldResponse
+    val authFailingCallLoading by viewModel.authFailingCallLoading
+    val serviceFailingApiResponse by viewModel.serviceFailingHelloWorldResponse
+    val serviceFailingCallLoading by viewModel.serviceFailingCallLoading
+    ButtonRow(
+        buttonText = R.string.app_helloworld_happy_button,
+        buttonLoading = happyCallLoading,
+        apiResponse = happyApiResponse
+    ) {
+        viewModel.makeHappyHelloWorldCall()
+    }
+    ButtonRow(
+        buttonText = R.string.app_helloworld_auth_failing_button,
+        buttonLoading = authFailingCallLoading,
+        apiResponse = authFailingApiResponse
+    ) {
+        viewModel.makeAuthFailingHelloWorldCall()
+    }
+    ButtonRow(
+        buttonText = R.string.app_helloworld_service_failing_button,
+        buttonLoading = serviceFailingCallLoading,
+        apiResponse = serviceFailingApiResponse
+    ) {
+        viewModel.makeServiceFailingHelloWorldCall()
     }
 }
 
@@ -74,7 +139,8 @@ private fun ButtonRow(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .padding(vertical = smallPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
