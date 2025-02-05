@@ -24,7 +24,6 @@ import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.TitledPage
 
-@Suppress("LongMethod")
 @Composable
 @Preview
 fun HomeScreen(
@@ -47,11 +46,11 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = smallPadding)
                         .padding(bottom = smallPadding)
+                        .testTag(stringResource(R.string.app_cri_card_test_tag))
                 ) {
                     ProveYourIdentityCard(
                         component = criOrchestratorComponent,
                         modifier = Modifier
-                            .testTag(stringResource(R.string.app_cri_card_test_tag))
                     )
                 }
             }

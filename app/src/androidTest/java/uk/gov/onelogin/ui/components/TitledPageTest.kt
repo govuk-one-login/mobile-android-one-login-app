@@ -7,13 +7,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
 import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.ext.setupComposeTestRule
 
 @HiltAndroidTest
 class TitledPageTest : TestCase() {
     @Test
     fun titlePageDisplayed() {
-        composeTestRule.setupComposeTestRule { _ ->
+        composeTestRule.setContent {
             TitledPage(R.string.app_homeTitle) {
                 Text("test")
             }
@@ -21,10 +20,11 @@ class TitledPageTest : TestCase() {
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_homeTitle)
+                resources.getString(R.string.app_homeTitle),
+                useUnmergedTree = true
             ).assertIsDisplayed()
 
-            onNodeWithText("text").assertIsDisplayed()
+            onNodeWithText("test").assertIsDisplayed()
         }
     }
 }

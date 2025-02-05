@@ -23,7 +23,8 @@ class HomeScreenKtTest : TestCase() {
             ).assertIsDisplayed()
 
             onNodeWithTag(
-                resources.getString(R.string.app_cri_card_test_tag)
+                resources.getString(R.string.app_cri_card_test_tag),
+                useUnmergedTree = true
             ).assertIsDisplayed()
 
             onNodeWithText("Developer Panel").assertIsDisplayed()

@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.R
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.home.HomeScreen
 import uk.gov.onelogin.ui.profile.ProfileScreen
@@ -42,65 +43,67 @@ fun MainNavScreen(
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
     val navItems = createBottomNavItems(walletScreenViewModel.walletEnabled)
-
-    LaunchedEffect(Unit) {
-        walletScreenViewModel.checkWalletEnabled()
-    }
-    Scaffold(
-        bottomBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            GdsNavigationBar(
-                items = navItems.map { navDest ->
-                    GdsNavigationItem(
-                        icon = {
-                            Icon(painterResource(id = navDest.icon), navDest.key)
-                        },
-                        onClick = {
-                            navController.navigate(navDest.key) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        selected = navBackStackEntry?.destination?.route == navDest.key,
-                        label = {
-                            Text(
-                                text = stringResource(id = navDest.label),
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                fontSize = MaterialTheme.typography.bodyMedium.fontSize.nonScaledSp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        },
-                        colors = {
-                            NavigationBarItemDefaults.colors(
-                                indicatorColor = colorResource(id = R.color.nav_bottom_selected)
-                            )
-                        }
-                    )
-                },
-                tonalElevation = 0.dp,
-                containerColor = {
-                    MaterialTheme.colorScheme.background
-                }
-            ).generate()
+    GdsTheme {
+        LaunchedEffect(Unit) {
+            walletScreenViewModel.checkWalletEnabled()
         }
-    ) { paddingValues ->
-        NavHost(
-            navController = navController,
-            startDestination = BottomNavDestination.Home.key,
-            modifier = Modifier.padding(paddingValues)
-        ) {
-            composable(BottomNavDestination.Home.key) {
-                HomeScreen()
+        Scaffold(
+            bottomBar = {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                GdsNavigationBar(
+                    items = navItems.map { navDest ->
+                        GdsNavigationItem(
+                            icon = {
+                                Icon(painterResource(id = navDest.icon), navDest.key)
+                            },
+                            onClick = {
+                                navController.navigate(navDest.key) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                            selected = navBackStackEntry?.destination?.route == navDest.key,
+                            label = {
+                                Text(
+                                    text = stringResource(id = navDest.label),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = MaterialTheme
+                                        .typography.bodyMedium.fontSize.nonScaledSp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            colors = {
+                                NavigationBarItemDefaults.colors(
+                                    indicatorColor = colorResource(id = R.color.nav_bottom_selected)
+                                )
+                            }
+                        )
+                    },
+                    tonalElevation = 0.dp,
+                    containerColor = {
+                        MaterialTheme.colorScheme.background
+                    }
+                ).generate()
             }
-            composable(BottomNavDestination.Wallet.key) {
-                walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
-            }
-            composable(BottomNavDestination.Profile.key) {
-                ProfileScreen()
+        ) { paddingValues ->
+            NavHost(
+                navController = navController,
+                startDestination = BottomNavDestination.Home.key,
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                composable(BottomNavDestination.Home.key) {
+                    HomeScreen()
+                }
+                composable(BottomNavDestination.Wallet.key) {
+                    walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
+                }
+                composable(BottomNavDestination.Profile.key) {
+                    ProfileScreen()
+                }
             }
         }
     }

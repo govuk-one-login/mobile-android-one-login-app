@@ -31,12 +31,11 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.pages.TitledPage
-import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
+import uk.gov.onelogin.ui.components.TitledPage
 
 @Composable
 @Preview
@@ -48,8 +47,10 @@ fun ProfileScreen(
     val signInUrl = stringResource(R.string.sign_in_url)
     val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
     TitledPage(
-        parameters = TitledPageParameters(
-            R.string.app_profile
+        title = R.string.app_profile
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues)
         ) {
             EmailHeader(email)
             HeadingRow(R.string.app_profileSubtitle1)
@@ -78,7 +79,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(mediumPadding))
             SignOutRow { viewModel.goToSignOut() }
         }
-    )
+    }
 }
 
 @Composable
