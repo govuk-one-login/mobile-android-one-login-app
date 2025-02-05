@@ -88,7 +88,7 @@ internal fun OptInBody(
         PrivacyNotice(
             modifier = Modifier
                 .padding(horizontal = smallPadding),
-            privacyNoticeString = stringResource(id = R.string.app_privacyNoticeLink),
+            privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),
             onPrivacyNotice = { onPrivacyNotice(Uri.parse(url)) }
         )
         Spacer(modifier = Modifier.weight(1f))

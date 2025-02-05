@@ -30,7 +30,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
-import uk.gov.onelogin.ui.components.ClickableText
+import uk.gov.onelogin.ui.components.TextWithLink
 
 private const val WHITE_SPACE = " "
 private const val ICON_KEY = "link_out.key"
@@ -40,10 +40,11 @@ internal const val NOTICE_TAG = "notice.tag"
 @Composable
 fun PrivacyNotice(
     modifier: Modifier,
-    privacyNoticeString: String,
+    privacyNoticeString: String? = null,
+    privacyNoticeLink: String,
     onPrivacyNotice: () -> Unit
 ) {
-    ClickableText(
+    TextWithLink(
         modifier = modifier.then(
             Modifier
                 .minimumInteractiveComponentSize()
@@ -57,9 +58,11 @@ fun PrivacyNotice(
                 .focusable()
                 .testTag(NOTICE_TAG)
         ),
-        text = buildAnnotatedString {
+        text = privacyNoticeString,
+        linkText = buildAnnotatedString {
+            append(WHITE_SPACE)
             withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                append(privacyNoticeString)
+                append(privacyNoticeLink)
             }
             append(WHITE_SPACE)
             appendInlineContent(ICON_KEY)
@@ -72,7 +75,7 @@ fun PrivacyNotice(
                 LinkOut()
             }
         )
-    ) { _ ->
+    ) {
         onPrivacyNotice()
     }
 }
@@ -97,7 +100,8 @@ internal fun PrivacyNoticePreview() {
     GdsTheme {
         PrivacyNotice(
             Modifier.padding(smallPadding),
-            privacyNoticeString = stringResource(id = R.string.app_privacyNoticeLink)
+            privacyNoticeString = stringResource(R.string.app_settingsAnalyticsToggleFootnote),
+            privacyNoticeLink = stringResource(id = R.string.app_settingsAnalyticsToggleFootnoteLink)
         ) {}
     }
 }

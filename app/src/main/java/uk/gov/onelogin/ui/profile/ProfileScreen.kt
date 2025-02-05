@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -27,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
@@ -35,6 +38,7 @@ import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.optin.ui.PrivacyNotice
 import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
 
@@ -45,6 +49,7 @@ fun ProfileScreen(
 ) {
     val uriHandler = LocalUriHandler.current
     val email = viewModel.email
+    val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
     val signInUrl = stringResource(R.string.sign_in_url)
     val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
     TitledPage(
@@ -75,6 +80,21 @@ fun ProfileScreen(
             )
             HorizontalDivider()
             ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
+            HeadingRow(R.string.app_settingsSubtitle2)
+            PreferenceToggleRow(
+                title = R.string.app_settingsAnalyticsToggle,
+                checked = optInState,
+                onToggle = {
+                    viewModel.toggleOptInPreference(optInState)
+                }
+            )
+            PrivacyNotice(
+                Modifier.padding(smallPadding),
+                privacyNoticeString = stringResource(id = R.string.app_settingsAnalyticsToggleFootnote),
+                privacyNoticeLink = stringResource(id = R.string.app_settingsAnalyticsToggleFootnoteLink)
+            ) {
+                uriHandler.openUri(privacyNoticeUrl)
+            }
             Spacer(modifier = Modifier.height(mediumPadding))
             SignOutRow { viewModel.goToSignOut() }
         }
@@ -138,6 +158,36 @@ private fun ExternalLinkRow(
                 .align(alignment = Alignment.TopEnd)
         )
     }
+}
+
+@Composable
+private fun PreferenceToggleRow(
+    @androidx.annotation.StringRes title: Int,
+    checked: Boolean,
+    onToggle: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(
+                start = smallPadding,
+                end = smallPadding
+            )
+    ) {
+        Text(
+            modifier = Modifier.weight(1F),
+            text = stringResource(title),
+            style = MaterialTheme.typography.bodySmall
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = { onToggle() }
+        )
+    }
+    HorizontalDivider()
 }
 
 @Composable

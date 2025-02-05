@@ -22,6 +22,10 @@
     <string name="app_OpenSourceLicences">Open source licences</string>
     <string name="app_reportAProblemGiveFeedbackLink">Report a problem or give feedback</string>
     <string name="app_appGuidanceLink">Guidance about using the app</string>
+    <string name="app_settingsSubtitle2">About the app</string>
+    <string name="app_settingsAnalyticsToggle">Share app analytics</string>
+    <string name="app_settingsAnalyticsToggleFootnote">You can share anonymous analytics about how you use the app to help the GOV.UK One Login team make improvements.</string>
+    <string name="app_settingsAnalyticsToggleFootnoteLink">Read more in the privacy notice</string>
     <string name="app_signOutButton">Sign out</string>
     <string name="app_signInDetails">Sign in details</string>
     <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=en</string>

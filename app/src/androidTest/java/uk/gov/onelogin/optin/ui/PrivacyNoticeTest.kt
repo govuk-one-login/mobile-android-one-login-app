@@ -18,7 +18,7 @@ class PrivacyNoticeTest {
         // Given a PrivacyNotice Composable
         var actual = false
         composeTestRule.setContent {
-            PrivacyNotice(modifier = Modifier, "Test Link") {
+            PrivacyNotice(modifier = Modifier, privacyNoticeLink = "Test Link") {
                 actual = true
             }
         }
@@ -34,7 +34,7 @@ class PrivacyNoticeTest {
     fun hasIcon() {
         // Given a PrivacyNotice Composable
         composeTestRule.setContent {
-            PrivacyNotice(modifier = Modifier, "Test Link") {}
+            PrivacyNotice(modifier = Modifier, privacyNoticeLink = "Test Link") {}
         }
         // Then an icon is visible
         val icon = hasTestTag(ICON_TAG)
