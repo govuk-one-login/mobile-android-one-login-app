@@ -1,7 +1,7 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.ui.components
 
+import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
@@ -10,11 +10,13 @@ import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.ext.setupComposeTestRule
 
 @HiltAndroidTest
-class HomeScreenKtTest : TestCase() {
+class TitledPageTest : TestCase() {
     @Test
-    fun homeScreenDisplayed() {
+    fun titlePageDisplayed() {
         composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen()
+            TitledPage(R.string.app_homeTitle) {
+                Text("test")
+            }
         }
 
         composeTestRule.apply {
@@ -22,11 +24,7 @@ class HomeScreenKtTest : TestCase() {
                 resources.getString(R.string.app_homeTitle)
             ).assertIsDisplayed()
 
-            onNodeWithTag(
-                resources.getString(R.string.app_cri_card_test_tag)
-            ).assertIsDisplayed()
-
-            onNodeWithText("Developer Panel").assertIsDisplayed()
+            onNodeWithText("text").assertIsDisplayed()
         }
     }
 }
