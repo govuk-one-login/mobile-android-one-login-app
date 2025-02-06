@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -63,52 +64,83 @@ fun ProfileScreen(
                 R.string.app_profile
             ) {
                 EmailHeader(email)
-                HeadingRow(R.string.app_profileSubtitle1)
-                ExternalLinkRow(
-                    R.string.app_signInDetails,
-                    R.drawable.external_link_icon,
-                    description = stringResource(
-                        id = R.string.app_manageSignInDetailsFootnote
-                    )
-                ) {
-                    uriHandler.openUri(signInUrl)
-                }
-                HeadingRow(R.string.app_profileSubtitle2)
-                ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
-                    uriHandler.openUri(privacyNoticeUrl)
-                }
-                HorizontalDivider()
-                ExternalLinkRow(R.string.app_OpenSourceLicences, R.drawable.arrow_right_icon)
-                HeadingRow(R.string.app_profileSubtitle3)
-                ExternalLinkRow(
-                    R.string.app_reportAProblemGiveFeedbackLink,
-                    R.drawable.external_link_icon
-                )
-                HorizontalDivider()
-                ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
-                HeadingRow(R.string.app_settingsSubtitle2)
-                PreferenceToggleRow(
-                    title = R.string.app_settingsAnalyticsToggle,
-                    checked = optInState,
-                    onToggle = {
-                        viewModel.toggleOptInPreference(optInState)
-                    }
-                )
-                PrivacyNotice(
-                    Modifier.padding(smallPadding),
-                    style = MaterialTheme.typography.bodySmall,
-                    privacyNoticeString = stringResource(
-                        id = R.string.app_settingsAnalyticsToggleFootnote
-                    ),
-                    privacyNoticeLink = stringResource(
-                        id = R.string.app_settingsAnalyticsToggleFootnoteLink
-                    )
-                ) {
-                    uriHandler.openUri(privacyNoticeUrl)
-                }
+                YourDetailsSection(uriHandler, signInUrl)
+                LegalSection(uriHandler, privacyNoticeUrl)
+                HelpAndFeedbackSection()
+                AboutTheAppSection(optInState, viewModel, uriHandler, privacyNoticeUrl)
                 SignOutRow { viewModel.goToSignOut() }
             }
         )
+    }
+}
+
+@Composable
+private fun YourDetailsSection(
+    uriHandler: UriHandler,
+    signInUrl: String
+) {
+    HeadingRow(R.string.app_profileSubtitle1)
+    ExternalLinkRow(
+        R.string.app_signInDetails,
+        R.drawable.external_link_icon,
+        description = stringResource(
+            id = R.string.app_manageSignInDetailsFootnote
+        )
+    ) {
+        uriHandler.openUri(signInUrl)
+    }
+}
+
+@Composable
+private fun LegalSection(
+    uriHandler: UriHandler,
+    privacyNoticeUrl: String
+) {
+    HeadingRow(R.string.app_profileSubtitle2)
+    ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
+        uriHandler.openUri(privacyNoticeUrl)
+    }
+    HorizontalDivider()
+    ExternalLinkRow(R.string.app_OpenSourceLicences, R.drawable.arrow_right_icon)
+}
+
+@Composable
+private fun HelpAndFeedbackSection() {
+    HeadingRow(R.string.app_profileSubtitle3)
+    ExternalLinkRow(
+        R.string.app_reportAProblemGiveFeedbackLink,
+        R.drawable.external_link_icon
+    )
+    HorizontalDivider()
+    ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
+}
+
+@Composable
+private fun AboutTheAppSection(
+    optInState: Boolean,
+    viewModel: ProfileScreenViewModel,
+    uriHandler: UriHandler,
+    privacyNoticeUrl: String
+) {
+    HeadingRow(R.string.app_settingsSubtitle2)
+    PreferenceToggleRow(
+        title = R.string.app_settingsAnalyticsToggle,
+        checked = optInState,
+        onToggle = {
+            viewModel.toggleOptInPreference(optInState)
+        }
+    )
+    PrivacyNotice(
+        Modifier.padding(smallPadding),
+        style = MaterialTheme.typography.bodySmall,
+        privacyNoticeString = stringResource(
+            id = R.string.app_settingsAnalyticsToggleFootnote
+        ),
+        privacyNoticeLink = stringResource(
+            id = R.string.app_settingsAnalyticsToggleFootnoteLink
+        )
+    ) {
+        uriHandler.openUri(privacyNoticeUrl)
     }
 }
 
