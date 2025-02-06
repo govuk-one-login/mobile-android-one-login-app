@@ -49,9 +49,7 @@ fun TextWithLink(
             layoutResult.value?.let { layoutResult ->
                 val offset = layoutResult.getOffsetForPosition(pos)
                 annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
-                    .firstOrNull()?.let {
-                        onClick(offset)
-                    }
+                    .firstOrNull()?.let { onClick(offset) }
             }
         }
     }

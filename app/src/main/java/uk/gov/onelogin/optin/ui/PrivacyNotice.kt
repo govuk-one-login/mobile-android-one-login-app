@@ -102,8 +102,12 @@ internal fun PrivacyNoticePreview() {
     GdsTheme {
         PrivacyNotice(
             Modifier.padding(smallPadding),
-            privacyNoticeString = stringResource(R.string.app_settingsAnalyticsToggleFootnote),
-            privacyNoticeLink = stringResource(id = R.string.app_settingsAnalyticsToggleFootnoteLink)
+            privacyNoticeString = stringResource(
+                R.string.app_settingsAnalyticsToggleFootnote
+            ),
+            privacyNoticeLink = stringResource(
+                id = R.string.app_settingsAnalyticsToggleFootnoteLink
+            )
         ) {}
     }
 }

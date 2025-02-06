@@ -96,8 +96,12 @@ fun ProfileScreen(
             )
             PrivacyNotice(
                 Modifier.padding(smallPadding),
-                privacyNoticeString = stringResource(id = R.string.app_settingsAnalyticsToggleFootnote),
-                privacyNoticeLink = stringResource(id = R.string.app_settingsAnalyticsToggleFootnoteLink)
+                privacyNoticeString = stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnote
+                ),
+                privacyNoticeLink = stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                )
             ) {
                 uriHandler.openUri(privacyNoticeUrl)
             }
