@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewFontScale
@@ -40,6 +41,7 @@ internal const val NOTICE_TAG = "notice.tag"
 @Composable
 fun PrivacyNotice(
     modifier: Modifier,
+    style: TextStyle = TextStyle.Default,
     privacyNoticeString: String? = null,
     privacyNoticeLink: String,
     onPrivacyNotice: () -> Unit
@@ -69,7 +71,7 @@ fun PrivacyNotice(
             append(WHITE_SPACE)
             appendInlineContent(ICON_KEY)
         },
-        style = MaterialTheme.typography.bodyLarge,
+        style = style,
         inlineContent = mapOf(
             ICON_KEY to InlineTextContent(
                 Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)

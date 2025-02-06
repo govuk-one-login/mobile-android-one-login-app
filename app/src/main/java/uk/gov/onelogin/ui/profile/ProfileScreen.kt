@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,7 +41,7 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.pages.TitledPage
 import uk.gov.android.ui.pages.TitledPageParameters
-import uk.gov.android.ui.theme.mediumPadding
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.optin.ui.PrivacyNotice
 import uk.gov.onelogin.ui.components.EmailHeader
@@ -58,57 +57,59 @@ fun ProfileScreen(
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
     val signInUrl = stringResource(R.string.sign_in_url)
     val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
-    TitledPage(
-        parameters = TitledPageParameters(
-            R.string.app_profile
-        ) {
-            EmailHeader(email)
-            HeadingRow(R.string.app_profileSubtitle1)
-            ExternalLinkRow(
-                R.string.app_signInDetails,
-                R.drawable.external_link_icon,
-                description = stringResource(
-                    id = R.string.app_manageSignInDetailsFootnote
-                )
+    GdsTheme {
+        TitledPage(
+            parameters = TitledPageParameters(
+                R.string.app_profile
             ) {
-                uriHandler.openUri(signInUrl)
-            }
-            HeadingRow(R.string.app_profileSubtitle2)
-            ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
-                uriHandler.openUri(privacyNoticeUrl)
-            }
-            HorizontalDivider()
-            ExternalLinkRow(R.string.app_OpenSourceLicences, R.drawable.arrow_right_icon)
-            HeadingRow(R.string.app_profileSubtitle3)
-            ExternalLinkRow(
-                R.string.app_reportAProblemGiveFeedbackLink,
-                R.drawable.external_link_icon
-            )
-            HorizontalDivider()
-            ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
-            HeadingRow(R.string.app_settingsSubtitle2)
-            PreferenceToggleRow(
-                title = R.string.app_settingsAnalyticsToggle,
-                checked = optInState,
-                onToggle = {
-                    viewModel.toggleOptInPreference(optInState)
+                EmailHeader(email)
+                HeadingRow(R.string.app_profileSubtitle1)
+                ExternalLinkRow(
+                    R.string.app_signInDetails,
+                    R.drawable.external_link_icon,
+                    description = stringResource(
+                        id = R.string.app_manageSignInDetailsFootnote
+                    )
+                ) {
+                    uriHandler.openUri(signInUrl)
                 }
-            )
-            PrivacyNotice(
-                Modifier.padding(smallPadding),
-                privacyNoticeString = stringResource(
-                    id = R.string.app_settingsAnalyticsToggleFootnote
-                ),
-                privacyNoticeLink = stringResource(
-                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                HeadingRow(R.string.app_profileSubtitle2)
+                ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
+                    uriHandler.openUri(privacyNoticeUrl)
+                }
+                HorizontalDivider()
+                ExternalLinkRow(R.string.app_OpenSourceLicences, R.drawable.arrow_right_icon)
+                HeadingRow(R.string.app_profileSubtitle3)
+                ExternalLinkRow(
+                    R.string.app_reportAProblemGiveFeedbackLink,
+                    R.drawable.external_link_icon
                 )
-            ) {
-                uriHandler.openUri(privacyNoticeUrl)
+                HorizontalDivider()
+                ExternalLinkRow(R.string.app_appGuidanceLink, R.drawable.external_link_icon)
+                HeadingRow(R.string.app_settingsSubtitle2)
+                PreferenceToggleRow(
+                    title = R.string.app_settingsAnalyticsToggle,
+                    checked = optInState,
+                    onToggle = {
+                        viewModel.toggleOptInPreference(optInState)
+                    }
+                )
+                PrivacyNotice(
+                    Modifier.padding(smallPadding),
+                    style = MaterialTheme.typography.bodySmall,
+                    privacyNoticeString = stringResource(
+                        id = R.string.app_settingsAnalyticsToggleFootnote
+                    ),
+                    privacyNoticeLink = stringResource(
+                        id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                    )
+                ) {
+                    uriHandler.openUri(privacyNoticeUrl)
+                }
+                SignOutRow { viewModel.goToSignOut() }
             }
-            Spacer(modifier = Modifier.height(mediumPadding))
-            SignOutRow { viewModel.goToSignOut() }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -198,7 +199,7 @@ private fun PreferenceToggleRow(
         Text(
             modifier = Modifier.weight(1F),
             text = stringResource(title),
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
         Switch(
             checked = checked,
