@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.features.CriCardFeatureFlag
@@ -15,13 +16,14 @@ class HomeScreenViewModel @Inject constructor(
     private val featureFlag: FeatureFlags,
     private val navigator: Navigator
 ) : ViewModel() {
-    val uiCardEnabled = MutableStateFlow(featureFlag[CriCardFeatureFlag.ENABLED])
+    private val _uiCardEnabled = MutableStateFlow(featureFlag[CriCardFeatureFlag.ENABLED])
+    val uiCardEnabled: StateFlow<Boolean> = _uiCardEnabled
 
     fun openDevPanel() {
         navigator.openDeveloperPanel()
     }
 
     fun getUiCardFlagState() {
-        uiCardEnabled.value = featureFlag[CriCardFeatureFlag.ENABLED]
+        _uiCardEnabled.value = featureFlag[CriCardFeatureFlag.ENABLED]
     }
 }
