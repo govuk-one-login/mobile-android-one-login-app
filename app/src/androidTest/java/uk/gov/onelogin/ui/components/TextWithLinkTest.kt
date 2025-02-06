@@ -22,7 +22,7 @@ class TextWithLinkTest : TestCase() {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun testClickableTextClick() {
+    fun testOnlyLinkTextClickOnLink() {
         var clickIndex = -1
         composeTestRule.setContent {
             TextWithLink(
@@ -45,7 +45,7 @@ class TextWithLinkTest : TestCase() {
     }
 
     @Test
-    fun testClickableTextClickOutsideText() {
+    fun testOnlyLinkTextClickOutsideLink() {
         var clicked = false
         composeTestRule.setContent {
             TextWithLink(
@@ -68,7 +68,7 @@ class TextWithLinkTest : TestCase() {
     }
 
     @Test
-    fun testClickableTextClickOnNormalText() {
+    fun testLinkWithNormalTextClickOnNormalText() {
         var clicked = false
         val annotatedString = buildAnnotatedString {
             withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
@@ -97,7 +97,7 @@ class TextWithLinkTest : TestCase() {
     }
 
     @Test
-    fun testClickableTextClickOnLinkText() {
+    fun testLinkWithNormalTextClickOnLinkText() {
         var clicked = false
         val annotatedString = buildAnnotatedString {
             withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {

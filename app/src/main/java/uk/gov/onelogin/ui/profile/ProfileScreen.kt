@@ -3,6 +3,7 @@ package uk.gov.onelogin.ui.profile
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -172,6 +178,14 @@ private fun PreferenceToggleRow(
             .height(56.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .semantics {
+                role = Role.Switch
+                onClick {
+                    onToggle()
+                    true
+                }
+            }
+            .focusable()
             .padding(
                 start = smallPadding,
                 end = smallPadding
@@ -184,7 +198,8 @@ private fun PreferenceToggleRow(
         )
         Switch(
             checked = checked,
-            onCheckedChange = { onToggle() }
+            onCheckedChange = { onToggle() },
+            modifier = Modifier.clearAndSetSemantics { }
         )
     }
     HorizontalDivider()

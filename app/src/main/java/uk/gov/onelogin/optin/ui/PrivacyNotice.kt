@@ -60,7 +60,9 @@ fun PrivacyNotice(
         ),
         text = privacyNoticeString,
         linkText = buildAnnotatedString {
-            append(WHITE_SPACE)
+            privacyNoticeString?.let {
+                append(WHITE_SPACE)
+            }
             withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                 append(privacyNoticeLink)
             }

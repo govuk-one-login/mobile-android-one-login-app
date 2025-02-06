@@ -37,7 +37,7 @@ fun TextWithLink(
         text?.let {
             append(it)
         }
-        pushStringAnnotation(tag = "URL", annotation = "URL")
+        pushStringAnnotation(tag = "URL", annotation = "")
         append(linkText)
         pop()
     }
