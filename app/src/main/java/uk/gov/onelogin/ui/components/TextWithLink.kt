@@ -48,7 +48,11 @@ fun TextWithLink(
         detectTapGestures { pos ->
             layoutResult.value?.let { layoutResult ->
                 val offset = layoutResult.getOffsetForPosition(pos)
-                annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                annotatedString.getStringAnnotations(
+                    tag = "URL",
+                    start = offset - 1,
+                    end = offset - 1
+                )
                     .firstOrNull()?.let { onClick(offset) }
             }
         }
