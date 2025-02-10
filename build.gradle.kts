@@ -64,7 +64,7 @@ buildscript {
 
     // https://issuetracker.google.com/issues/380600747
     dependencies {
-        classpath("org.bouncycastle:bcutil-jdk18on:1.79")
+        classpath("org.bouncycastle:bcutil-jdk18on:1.80")
     }
 }
 
