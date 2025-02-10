@@ -11,6 +11,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 
 /**
@@ -20,9 +21,10 @@ import androidx.compose.ui.text.style.TextOverflow
  */
 @SuppressWarnings("kotlin:S107") // Suppressing due to matching Android
 @Composable
-fun ClickableText(
-    text: AnnotatedString,
+fun TextWithLink(
     modifier: Modifier = Modifier,
+    linkText: AnnotatedString,
+    text: String? = null,
     style: TextStyle = TextStyle.Default,
     softWrap: Boolean = true,
     overflow: TextOverflow = TextOverflow.Clip,
@@ -31,17 +33,33 @@ fun ClickableText(
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onClick: (Int) -> Unit
 ) {
+    val annotatedString = buildAnnotatedString {
+        text?.let {
+            append(it)
+        }
+        pushStringAnnotation(tag = "URL", annotation = "")
+        append(linkText)
+        pop()
+    }
+
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+
     val pressIndicator = Modifier.pointerInput(onClick) {
         detectTapGestures { pos ->
             layoutResult.value?.let { layoutResult ->
-                onClick(layoutResult.getOffsetForPosition(pos))
+                val offset = layoutResult.getOffsetForPosition(pos)
+                annotatedString.getStringAnnotations(
+                    tag = "URL",
+                    start = offset - 1,
+                    end = offset - 1
+                )
+                    .firstOrNull()?.let { onClick(offset) }
             }
         }
     }
 
     BasicText(
-        text = text,
+        text = annotatedString,
         modifier = modifier.then(pressIndicator),
         style = style,
         softWrap = softWrap,

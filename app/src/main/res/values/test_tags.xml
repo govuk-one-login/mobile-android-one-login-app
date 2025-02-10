@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="splashIconTestTag" translatable="false">splash icon test tag</string>
+    <string name="optInSwitchTestTag" translatable="false">opt in switch test tag</string>
 </resources>

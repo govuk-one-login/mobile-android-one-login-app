@@ -20,6 +20,10 @@
     <string name="app_OpenSourceLicences">Trwyddedau ffynhonnell agored</string>
     <string name="app_reportAProblemGiveFeedbackLink">Rhoi gwybod am broblem neu roi adborth</string>
     <string name="app_appGuidanceLink">Canllawiau ar ddefnyddio\'r ap</string>
+    <string name="app_settingsSubtitle2">Am yr ap</string>
+    <string name="app_settingsAnalyticsToggle">Rhannu dadansoddeg yr ap</string>
+    <string name="app_settingsAnalyticsToggleFootnote">Gallwch rannu dadansoddeg anhysbys am sut rydych yn defnyddio\'r ap i helpu\'r tim GOV.UK One Login i wneud gwelliannau.</string>
+    <string name="app_settingsAnalyticsToggleFootnoteLink">Darllenwch fwy yn yr hysbysiad preifatrwydd</string>
     <string name="app_signOutButton">Allgofnodi</string>
     <string name="app_signInDetails">Manylion mewngofnodi</string>
     <string name="sign_in_url">https://signin.account.gov.uk/sign-in-or-create?lng=cy</string>
