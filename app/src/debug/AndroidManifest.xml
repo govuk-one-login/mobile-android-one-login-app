@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <application>
         <activity
             android:name="uk.gov.onelogin.HiltTestActivity"
@@ -11,6 +11,10 @@
             android:name="uk.gov.onelogin.TestActivityForResult"
             android:exported="false"
             android:permission="">
+        </activity>
+        <activity
+            android:name="uk.gov.android.securestore.TestActivity"
+            tools:node="remove" >
         </activity>
     </application>
 </manifest>
