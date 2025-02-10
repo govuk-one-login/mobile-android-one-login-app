@@ -1,81 +1,60 @@
 package uk.gov.onelogin.ui.home
 
-import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
-import uk.gov.android.ui.pages.TitledPage
-import uk.gov.android.ui.pages.TitledPageParameters
+import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
-import uk.gov.onelogin.ui.components.EmailHeader
+import uk.gov.onelogin.ui.components.TitledPage
 
-@Suppress("LongMethod")
 @Composable
 @Preview
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
-    val tokens = viewModel.getTokens()
-    val email = viewModel.email
     val httpClient = viewModel.httpClient
-    TitledPage(
-        parameters = TitledPageParameters(
-            R.string.app_homeTitle
+    val criOrchestratorComponent = rememberCriOrchestrator(httpClient)
+    LaunchedEffect(Unit) {
+        viewModel.getUiCardFlagState()
+    }
+    TitledPage(R.string.app_homeTitle) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .height(IntrinsicSize.Max)
         ) {
-            val criOrchestratorComponent = rememberCriOrchestrator(httpClient)
-            Log.d("CriIOrchestratorInstance", "$criOrchestratorComponent")
-            EmailHeader(email)
-            Text(
-                text = "Access Token",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
-            HorizontalDivider(Modifier.padding(start = 16.dp))
-            Text(
-                tokens?.accessToken ?: "No access token set!",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .testTag("homeScreen-accessToken")
-            )
-            HorizontalDivider()
-            Text(
-                text = "ID Token",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
-            HorizontalDivider(Modifier.padding(start = 16.dp))
-            Text(
-                text = tokens?.idToken ?: "No id token set!",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .testTag("homeScreen-idToken")
-            )
-            HorizontalDivider()
-            Text(
-                text = "Refresh Token",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(16.dp)
-            )
-            HorizontalDivider(Modifier.padding(start = 16.dp))
-            Text(
-                text = tokens?.refreshToken ?: "No refresh token set!",
-                modifier = Modifier
-                    .padding(
-                        all = 16.dp
+            if (viewModel.uiCardEnabled.collectAsState().value) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = smallPadding)
+                        .padding(bottom = smallPadding)
+                        .testTag(stringResource(R.string.app_cri_card_test_tag))
+                ) {
+                    ProveYourIdentityCard(
+                        component = criOrchestratorComponent,
+                        modifier = Modifier
                     )
-                    .testTag("homeScreen-refreshToken")
-            )
-            HorizontalDivider()
+                }
+            }
+
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
                     onClick = { viewModel.openDevPanel() }
@@ -84,5 +63,5 @@ fun HomeScreen(
                 }
             }
         }
-    )
+    }
 }

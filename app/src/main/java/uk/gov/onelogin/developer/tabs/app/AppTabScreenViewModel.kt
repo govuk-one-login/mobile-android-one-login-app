@@ -3,8 +3,7 @@ package uk.gov.onelogin.developer.tabs.app
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
+import kotlinx.coroutines.flow.MutableStateFlow
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.appinfo.source.domain.model.AppInfoLocalState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
@@ -13,22 +12,14 @@ import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
 class AppTabScreenViewModel @Inject constructor(
     private val appInfoLocalSource: AppInfoLocalSource
 ) : ViewModel() {
-    @OptIn(ExperimentalSerializationApi::class)
-    fun getAppInfoAsString(): String {
-        return when (val appInfoStatus = appInfoLocalSource.get()) {
-            is AppInfoLocalState.Failure ->
-                "Failed to retrieve app info"
+    val appInfo: MutableStateFlow<AppInfoData?> = MutableStateFlow(null)
 
-            is AppInfoLocalState.Success -> {
-                val json = Json {
-                    prettyPrint = true
-                    prettyPrintIndent = " "
-                }
-                json.encodeToString<AppInfoData>(
-                    AppInfoData.serializer(),
-                    appInfoStatus.value
-                )
-            }
-        }
+    fun getAppInfo() = when (val appInfoStatus = appInfoLocalSource.get()) {
+        is AppInfoLocalState.Failure -> appInfo.value = null
+        is AppInfoLocalState.Success -> appInfo.value = appInfoStatus.value
+    }
+
+    fun updateAppInfoData(data: AppInfoData) {
+        appInfoLocalSource.update(data)
     }
 }

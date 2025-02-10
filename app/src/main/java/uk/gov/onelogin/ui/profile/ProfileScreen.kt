@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,13 +43,11 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.pages.TitledPage
-import uk.gov.android.ui.pages.TitledPageParameters
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.optin.ui.PrivacyNotice
 import uk.gov.onelogin.ui.components.EmailHeader
 import uk.gov.onelogin.ui.components.LightRed
+import uk.gov.onelogin.ui.components.TitledPage
 
 @Composable
 @Preview
@@ -59,25 +59,27 @@ fun ProfileScreen(
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
     val signInUrl = stringResource(R.string.sign_in_url)
     val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
-    GdsTheme {
-        TitledPage(
-            parameters = TitledPageParameters(
-                R.string.app_profile
+    TitledPage(
+        title = R.string.app_profile
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+        ) {
+            EmailHeader(email)
+            YourDetailsSection(uriHandler, signInUrl)
+            LegalSection(uriHandler, privacyNoticeUrl)
+            HelpAndFeedbackSection()
+            AboutTheAppSection(
+                optInState,
+                uriHandler,
+                privacyNoticeUrl
             ) {
-                EmailHeader(email)
-                YourDetailsSection(uriHandler, signInUrl)
-                LegalSection(uriHandler, privacyNoticeUrl)
-                HelpAndFeedbackSection()
-                AboutTheAppSection(
-                    optInState,
-                    uriHandler,
-                    privacyNoticeUrl
-                ) {
-                    viewModel.toggleOptInPreference()
-                }
-                SignOutRow { viewModel.goToSignOut() }
+                viewModel.toggleOptInPreference()
             }
-        )
+            SignOutRow { viewModel.goToSignOut() }
+        }
     }
 }
 

@@ -3,27 +3,27 @@ package uk.gov.onelogin.ui.home
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import uk.gov.android.authentication.login.TokenResponse
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.onelogin.features.CriCardFeatureFlag
 import uk.gov.onelogin.navigation.Navigator
-import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.tokens.usecases.GetEmail
 
 @HiltViewModel
-@Suppress("LongParameterList")
 class HomeScreenViewModel @Inject constructor(
     val httpClient: GenericHttpClient,
-    private val navigator: Navigator,
-    private val tokenRepository: TokenRepository,
-    getEmail: GetEmail
+    private val featureFlag: FeatureFlags,
+    private val navigator: Navigator
 ) : ViewModel() {
-    val email = getEmail().orEmpty()
-
-    fun getTokens(): TokenResponse? {
-        return tokenRepository.getTokenResponse()
-    }
+    private val _uiCardEnabled = MutableStateFlow(featureFlag[CriCardFeatureFlag.ENABLED])
+    val uiCardEnabled: StateFlow<Boolean> = _uiCardEnabled
 
     fun openDevPanel() {
         navigator.openDeveloperPanel()
+    }
+
+    fun getUiCardFlagState() {
+        _uiCardEnabled.value = featureFlag[CriCardFeatureFlag.ENABLED]
     }
 }

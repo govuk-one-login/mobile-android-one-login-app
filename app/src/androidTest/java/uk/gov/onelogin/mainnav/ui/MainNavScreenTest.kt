@@ -1,10 +1,12 @@
 package uk.gov.onelogin.mainnav.ui
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
@@ -89,6 +91,10 @@ class MainNavScreenTest : TestCase() {
             BottomNavDestination.Profile.key,
             navController.currentDestination?.route
         )
+
+        composeTestRule.onAllNodesWithText(
+            resources.getString(R.string.app_profile)
+        ).assertCountEquals(2)
     }
 
     private fun setup() {
