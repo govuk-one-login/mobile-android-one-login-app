@@ -105,7 +105,7 @@ class ProfileScreenTest : TestCase() {
         composeTestRule.setContent {
             ProfileScreen()
         }
-        composeTestRule.onNode(aboutTheAppSwitch).assertIsDisplayed()
+        composeTestRule.onNode(aboutTheAppSwitch).performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(aboutTheAppPrivacyLink).performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(aboutTheAppSubTitle).assertIsDisplayed()
     }
