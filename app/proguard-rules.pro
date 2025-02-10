@@ -22,4 +22,4 @@
 
 -dontwarn kotlinx.parcelize.Parcelize
 -dontwarn javax.servlet.ServletContainerInitializer
--keep class com.squareup.anvil.annotations.**
+-dontwarn com.squareup.anvil.**
