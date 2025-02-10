@@ -21,6 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewFontScale
@@ -30,7 +31,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
-import uk.gov.onelogin.ui.components.ClickableText
+import uk.gov.onelogin.ui.components.TextWithLink
 
 private const val WHITE_SPACE = " "
 private const val ICON_KEY = "link_out.key"
@@ -40,10 +41,12 @@ internal const val NOTICE_TAG = "notice.tag"
 @Composable
 fun PrivacyNotice(
     modifier: Modifier,
-    privacyNoticeString: String,
+    style: TextStyle = TextStyle.Default,
+    privacyNoticeString: String? = null,
+    privacyNoticeLink: String,
     onPrivacyNotice: () -> Unit
 ) {
-    ClickableText(
+    TextWithLink(
         modifier = modifier.then(
             Modifier
                 .minimumInteractiveComponentSize()
@@ -57,14 +60,18 @@ fun PrivacyNotice(
                 .focusable()
                 .testTag(NOTICE_TAG)
         ),
-        text = buildAnnotatedString {
+        text = privacyNoticeString,
+        linkText = buildAnnotatedString {
+            privacyNoticeString?.let {
+                append(WHITE_SPACE)
+            }
             withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                append(privacyNoticeString)
+                append(privacyNoticeLink)
             }
             append(WHITE_SPACE)
             appendInlineContent(ICON_KEY)
         },
-        style = MaterialTheme.typography.bodyLarge,
+        style = style,
         inlineContent = mapOf(
             ICON_KEY to InlineTextContent(
                 Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
@@ -72,7 +79,7 @@ fun PrivacyNotice(
                 LinkOut()
             }
         )
-    ) { _ ->
+    ) {
         onPrivacyNotice()
     }
 }
@@ -97,7 +104,12 @@ internal fun PrivacyNoticePreview() {
     GdsTheme {
         PrivacyNotice(
             Modifier.padding(smallPadding),
-            privacyNoticeString = stringResource(id = R.string.app_privacyNoticeLink)
+            privacyNoticeString = stringResource(
+                R.string.app_settingsAnalyticsToggleFootnote
+            ),
+            privacyNoticeLink = stringResource(
+                id = R.string.app_settingsAnalyticsToggleFootnoteLink
+            )
         ) {}
     }
 }
