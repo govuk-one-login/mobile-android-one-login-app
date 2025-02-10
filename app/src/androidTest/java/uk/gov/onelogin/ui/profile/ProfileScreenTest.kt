@@ -4,11 +4,15 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
@@ -30,6 +34,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
+import uk.gov.onelogin.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltAndroidTest
@@ -44,6 +49,9 @@ class ProfileScreenTest : TestCase() {
     private lateinit var legalHeader: SemanticsMatcher
     private lateinit var legalLink1: SemanticsMatcher
     private lateinit var legalLink2: SemanticsMatcher
+    private lateinit var aboutTheAppSwitch: SemanticsMatcher
+    private lateinit var aboutTheAppSubTitle: SemanticsMatcher
+    private lateinit var aboutTheAppPrivacyLink: SemanticsMatcher
     private lateinit var signOutButton: SemanticsMatcher
 
     @Before
@@ -54,6 +62,12 @@ class ProfileScreenTest : TestCase() {
         legalHeader = hasText(resources.getString(R.string.app_profileSubtitle2))
         legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
         legalLink2 = hasText(resources.getString(R.string.app_OpenSourceLicences))
+        aboutTheAppSwitch = hasTestTag(resources.getString(R.string.optInSwitchTestTag))
+        aboutTheAppSubTitle = hasText(
+            resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
+            substring = true
+        )
+        aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
         Intents.init()
         intending(not(isInternal())).respondWith(
@@ -84,6 +98,47 @@ class ProfileScreenTest : TestCase() {
         composeTestRule.onNode(legalHeader).assertIsDisplayed()
         composeTestRule.onNode(legalLink1).assertIsDisplayed()
         composeTestRule.onNode(legalLink2).assertIsDisplayed()
+    }
+
+    @Test
+    fun aboutTheAppSectionDisplayed() {
+        composeTestRule.setContent {
+            ProfileScreen()
+        }
+        composeTestRule.onNode(aboutTheAppSwitch).assertIsDisplayed()
+        composeTestRule.onNode(aboutTheAppPrivacyLink).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(aboutTheAppSubTitle).assertIsDisplayed()
+    }
+
+    @Test
+    fun toggleSwitchCallOnToggleClickEvent() {
+        var optInState = false
+        composeTestRule.setContent {
+            PreferenceToggleRow(
+                title = R.string.app_settingsAnalyticsToggle,
+                checked = optInState,
+                onToggle = { optInState = true }
+            )
+        }
+        composeTestRule.onNode(aboutTheAppSwitch).performClick()
+        assert(optInState)
+    }
+
+    @Test
+    fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() {
+        var optInState = false
+        val privacyNoticeUrl = resources.getString(R.string.privacy_notice_url)
+        val uriHandler = mock<UriHandler>()
+        composeTestRule.setContent {
+            AboutTheAppSection(optInState, uriHandler, privacyNoticeUrl) {
+                optInState = true
+            }
+        }
+        composeTestRule.onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
+            .performTouchInput {
+                click(bottomRight.copy(x = bottomRight.x - 10f))
+            }
+        verify(uriHandler).openUri(privacyNoticeUrl)
     }
 
     @Test

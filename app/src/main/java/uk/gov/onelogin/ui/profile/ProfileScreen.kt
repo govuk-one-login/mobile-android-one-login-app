@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -67,7 +68,13 @@ fun ProfileScreen(
                 YourDetailsSection(uriHandler, signInUrl)
                 LegalSection(uriHandler, privacyNoticeUrl)
                 HelpAndFeedbackSection()
-                AboutTheAppSection(optInState, viewModel, uriHandler, privacyNoticeUrl)
+                AboutTheAppSection(
+                    optInState,
+                    uriHandler,
+                    privacyNoticeUrl
+                ) {
+                    viewModel.toggleOptInPreference()
+                }
                 SignOutRow { viewModel.goToSignOut() }
             }
         )
@@ -116,22 +123,21 @@ private fun HelpAndFeedbackSection() {
 }
 
 @Composable
-private fun AboutTheAppSection(
+internal fun AboutTheAppSection(
     optInState: Boolean,
-    viewModel: ProfileScreenViewModel,
     uriHandler: UriHandler,
-    privacyNoticeUrl: String
+    privacyNoticeUrl: String,
+    onToggle: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle2)
     PreferenceToggleRow(
         title = R.string.app_settingsAnalyticsToggle,
         checked = optInState,
-        onToggle = {
-            viewModel.toggleOptInPreference(optInState)
-        }
+        onToggle = { onToggle() }
     )
     PrivacyNotice(
-        Modifier.padding(smallPadding),
+        Modifier
+            .padding(smallPadding),
         style = MaterialTheme.typography.bodySmall,
         privacyNoticeString = stringResource(
             id = R.string.app_settingsAnalyticsToggleFootnote
@@ -203,8 +209,8 @@ private fun ExternalLinkRow(
     }
 }
 
-@Composable
-private fun PreferenceToggleRow(
+@Composable()
+internal fun PreferenceToggleRow(
     @androidx.annotation.StringRes title: Int,
     checked: Boolean,
     onToggle: () -> Unit
@@ -236,7 +242,9 @@ private fun PreferenceToggleRow(
         Switch(
             checked = checked,
             onCheckedChange = { onToggle() },
-            modifier = Modifier.clearAndSetSemantics { }
+            modifier = Modifier
+                .testTag(stringResource(id = R.string.optInSwitchTestTag))
+                .clearAndSetSemantics { }
         )
     }
     HorizontalDivider()

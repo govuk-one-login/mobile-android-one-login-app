@@ -7,6 +7,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.optin.domain.repository.OptInRepository
@@ -37,13 +38,15 @@ class ProfileScreenViewModel @Inject constructor(
         navigator.navigate(SignOutRoutes.Start)
     }
 
-    fun toggleOptInPreference(optIn: Boolean) {
+    fun toggleOptInPreference() {
         viewModelScope.launch {
-            _optInState.value = !optIn
-            if (optIn) {
-                optInRepository.optOut()
-            } else {
-                optInRepository.optIn()
+            _optInState.update { currentOptInState ->
+                currentOptInState.not().also { newOptInState ->
+                    when (newOptInState) {
+                        true -> optInRepository.optIn()
+                        false -> optInRepository.optOut()
+                    }
+                }
             }
         }
     }

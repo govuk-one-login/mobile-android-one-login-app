@@ -86,15 +86,31 @@ class ProfileScreenViewModelTest {
     }
 
     @Test
-    fun `toggleOptInPreference(true) calls optOut on repository`() = runTest {
-        viewModel.toggleOptInPreference(true)
+    fun `toggleOptInPreference calls optOut on repository when state is true`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(true))
+        viewModel = ProfileScreenViewModel(
+            mockOptInRepository,
+            mockNavigator,
+            mockGetEmail
+        )
+        assertEquals(true, viewModel.optInState.value)
+
+        viewModel.toggleOptInPreference()
 
         verify(mockOptInRepository).optOut()
     }
 
     @Test
-    fun `toggleOptInPreference(false) calls optIn on repository`() = runTest {
-        viewModel.toggleOptInPreference(false)
+    fun `toggleOptInPreference calls optOut on repository when state is false`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+        viewModel = ProfileScreenViewModel(
+            mockOptInRepository,
+            mockNavigator,
+            mockGetEmail
+        )
+        assertEquals(false, viewModel.optInState.value)
+
+        viewModel.toggleOptInPreference()
 
         verify(mockOptInRepository).optIn()
     }
