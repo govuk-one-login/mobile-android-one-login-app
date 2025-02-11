@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -32,11 +33,12 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 
-@Suppress("LongMethod")
 @Composable
 fun BiometricsOptInScreen(
     viewModel: BioOptInViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: BioOptInAnalyticsViewModel = hiltViewModel()
+    LaunchedEffect(Unit) { analyticsViewModel.trackBioOptInScreen() }
     GdsTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,77 +54,92 @@ fun BiometricsOptInScreen(
                     .weight(1F),
                 verticalArrangement = Arrangement.Center
             ) {
-                GdsVectorImage(
-                    VectorImageParameters(
-                        image = R.drawable.bio_opt_in,
-                        scale = ContentScale.Fit
-                    )
-                )
-                GdsHeading(
-                    HeadingParameters(
-                        modifier = Modifier.padding(top = smallPadding),
-                        text = R.string.app_enableBiometricsTitle,
-                        size = HeadingSize.H1(),
-                        textAlign = TextAlign.Center
-                    )
-                )
-                GdsContent(
-                    ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                intArrayOf(
-                                    R.string.app_enableBiometricsBody1
-                                )
-                            )
-                        )
-                    )
-                )
-                GdsContent(
-                    ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                intArrayOf(R.string.app_enableBiometricsBody2)
-                            )
-                        )
-                    )
-                )
+                Content()
             }
-            Column(
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                GdsContent(
-                    ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                intArrayOf(R.string.app_enableBiometricsFootnote)
-                            )
-                        ),
-                        textStyle = Typography.bodyMedium,
-                        color = hintTextGrey
-                    )
-                )
-                GdsButton(
-                    ButtonParameters(
-                        modifier = Modifier.fillMaxWidth(),
-                        buttonType = ButtonType.PRIMARY(),
-                        text = R.string.app_enableBiometricsButton,
-                        onClick = {
-                            viewModel.useBiometrics()
-                        }
-                    )
-                )
-                GdsButton(
-                    ButtonParameters(
-                        modifier = Modifier.fillMaxWidth(),
-                        buttonType = ButtonType.SECONDARY(),
-                        text = R.string.app_enablePasscodeOrPatternButton,
-                        onClick = {
-                            viewModel.doNotUseBiometrics()
-                        }
-                    )
-                )
-            }
+            BioOptInButtons(analyticsViewModel, viewModel)
         }
+    }
+}
+
+@Composable
+private fun Content() {
+    GdsVectorImage(
+        VectorImageParameters(
+            image = R.drawable.bio_opt_in,
+            scale = ContentScale.Fit
+        )
+    )
+    GdsHeading(
+        HeadingParameters(
+            modifier = Modifier.padding(top = smallPadding),
+            text = R.string.app_enableBiometricsTitle,
+            size = HeadingSize.H1(),
+            textAlign = TextAlign.Center
+        )
+    )
+    GdsContent(
+        ContentParameters(
+            resource = listOf(
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(
+                        R.string.app_enableBiometricsBody1
+                    )
+                )
+            )
+        )
+    )
+    GdsContent(
+        ContentParameters(
+            resource = listOf(
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(R.string.app_enableBiometricsBody2)
+                )
+            )
+        )
+    )
+}
+
+@Composable
+private fun BioOptInButtons(
+    analyticsViewModel: BioOptInAnalyticsViewModel,
+    viewModel: BioOptInViewModel
+) {
+    Column(
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        GdsContent(
+            ContentParameters(
+                resource = listOf(
+                    GdsContentText.GdsContentTextString(
+                        intArrayOf(R.string.app_enableBiometricsFootnote)
+                    )
+                ),
+                textStyle = Typography.bodyMedium,
+                color = hintTextGrey
+            )
+        )
+        GdsButton(
+            ButtonParameters(
+                modifier = Modifier.fillMaxWidth(),
+                buttonType = ButtonType.PRIMARY(),
+                text = R.string.app_enableBiometricsButton,
+                onClick = {
+                    analyticsViewModel.trackBiometricsButton()
+                    viewModel.useBiometrics()
+                }
+            )
+        )
+        GdsButton(
+            ButtonParameters(
+                modifier = Modifier.fillMaxWidth(),
+                buttonType = ButtonType.SECONDARY(),
+                text = R.string.app_enablePasscodeOrPatternButton,
+                onClick = {
+                    analyticsViewModel.trackPasscodeButton()
+                    viewModel.doNotUseBiometrics()
+                }
+            )
+        )
     }
 }
 
