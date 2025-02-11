@@ -25,4 +25,4 @@
 -dontwarn com.squareup.anvil.annotations.ContributesBinding
 -dontwarn com.squareup.anvil.annotations.ContributesTo
 -dontwarn com.squareup.anvil.annotations.internal.InternalMergedTypeMarker
--keep class com.squareup.anvil.**
+-keep class com.squareup.anvil.annotations.** { *; }
