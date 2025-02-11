@@ -8,6 +8,7 @@ import javax.inject.Inject
 import uk.gov.android.onelogin.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.analytics.logging.TAXONOMY_LEVEL3
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
@@ -38,14 +39,16 @@ class SplashScreenAnalyticsViewModel @Inject constructor(
 
     private fun makeScreenEvent(context: Context, isLocked: Boolean) = with(context) {
         val getCorrectDetails = if (isLocked) {
-            Pair(
+            Triple(
                 R.string.app_splashScreenUnlockAnalyticsScreenName,
-                R.string.splash_unlock_screen_page_id
+                R.string.splash_unlock_screen_page_id,
+                TaxonomyLevel3.UNLOCK
             )
         } else {
-            Pair(
+            Triple(
                 R.string.app_splashScreenAnalyticsScreenName,
-                R.string.splash_screen_page_id
+                R.string.splash_screen_page_id,
+                TaxonomyLevel3.UNDEFINED
             )
         }
 
@@ -53,8 +56,8 @@ class SplashScreenAnalyticsViewModel @Inject constructor(
             name = getEnglishString(getCorrectDetails.first),
             id = getEnglishString(getCorrectDetails.second),
             params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                taxonomyLevel3 = getCorrectDetails.third
             )
         )
     }

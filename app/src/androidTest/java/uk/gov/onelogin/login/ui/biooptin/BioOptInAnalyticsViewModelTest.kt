@@ -41,6 +41,10 @@ class BioOptInAnalyticsViewModelTest {
 
     @Test
     fun trackBioOptInScreen() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
+        )
         val event = ViewEvent.Screen(
             name = name,
             id = id,

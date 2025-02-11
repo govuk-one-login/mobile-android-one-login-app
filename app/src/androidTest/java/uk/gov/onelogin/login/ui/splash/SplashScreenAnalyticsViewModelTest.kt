@@ -31,10 +31,6 @@ class SplashScreenAnalyticsViewModelTest {
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
         logger = mock()
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
         name = context.getString(R.string.app_splashScreenAnalyticsScreenName)
         id = context.getString(R.string.splash_screen_page_id)
         nameUnlock = context.getString(R.string.app_splashScreenUnlockAnalyticsScreenName)
@@ -46,6 +42,10 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackSplashScreen() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         val event = ViewEvent.Screen(
             name = name,
             id = id,
@@ -59,6 +59,10 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackSplashUnlockScreen() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.UNLOCK
+        )
         val event = ViewEvent.Screen(
             name = nameUnlock,
             id = idUnlock,
@@ -72,6 +76,10 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackUnlockButton() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         val event = TrackEvent.Button(
             text = unlockButton,
             params = requiredParameters
@@ -84,6 +92,10 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackBackButton() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         val event = TrackEvent.Icon(
             text = backButton,
             params = requiredParameters

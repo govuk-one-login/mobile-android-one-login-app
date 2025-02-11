@@ -44,8 +44,8 @@ class BioOptInAnalyticsViewModel @Inject constructor(
             name = getEnglishString(R.string.app_enableBiometricsTitle),
             id = getEnglishString(R.string.bio_opt_in_screen_page_id),
             params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
             )
         )
     }
