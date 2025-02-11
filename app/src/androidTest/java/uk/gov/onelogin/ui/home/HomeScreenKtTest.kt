@@ -27,6 +27,11 @@ class HomeScreenKtTest : TestCase() {
                 useUnmergedTree = true
             ).assertIsDisplayed()
 
+            onNodeWithTag(
+                resources.getString(R.string.yourServicesCardTestTag),
+                useUnmergedTree = true
+            ).assertIsDisplayed()
+
             onNodeWithText("Developer Panel").assertIsDisplayed()
         }
     }

@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
+import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
@@ -31,6 +33,11 @@ fun HomeScreen(
 ) {
     val httpClient = viewModel.httpClient
     val criOrchestratorComponent = rememberCriOrchestrator(httpClient)
+    val contentsCardTitle = stringResource(R.string.app_oneLoginCardTitle)
+    val contentsCardBody = stringResource(R.string.app_oneLoginCardBody)
+    val contentsCardLinkText = stringResource(R.string.app_oneLoginCardLink)
+    val servicesUrl = stringResource(R.string.app_oneLoginCardLink)
+    val uriHandler = LocalUriHandler.current
     LaunchedEffect(Unit) {
         viewModel.getUiCardFlagState()
     }
@@ -38,13 +45,13 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .padding(horizontal = smallPadding)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = smallPadding)
                         .padding(bottom = smallPadding)
                         .testTag(stringResource(R.string.app_cri_card_test_tag))
                 ) {
@@ -54,6 +61,15 @@ fun HomeScreen(
                     )
                 }
             }
+            GdsCard(
+                title = contentsCardTitle,
+                body = contentsCardBody,
+                buttonText = contentsCardLinkText,
+                displayPrimary = false,
+                showSecondaryIcon = true,
+                onClick = { uriHandler.openUri(servicesUrl) },
+                modifier = Modifier.testTag(stringResource(R.string.yourServicesCardTestTag))
+            )
 
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
