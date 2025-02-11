@@ -8,7 +8,6 @@ import javax.inject.Inject
 import uk.gov.android.onelogin.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.analytics.logging.TAXONOMY_LEVEL3
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
