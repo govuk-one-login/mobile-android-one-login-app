@@ -12,6 +12,7 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
+import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @HiltViewModel
@@ -19,16 +20,58 @@ class SplashScreenAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {
-    private val splashScreenViewEvent = makeScreenEvent(context)
+    private val unlockBtnEvent = makeButtonEvent(context)
+    private val backBtnEvent = makeBackEvent(context)
 
-    fun trackSplashScreen() {
-        analyticsLogger.logEventV3Dot1(splashScreenViewEvent)
+    fun trackSplashScreen(context: Context, isLocked: Boolean) {
+        val event = makeScreenEvent(context, isLocked)
+        analyticsLogger.logEventV3Dot1(event)
     }
 
-    private fun makeScreenEvent(context: Context) = with(context) {
+    fun trackUnlockButton() {
+        analyticsLogger.logEventV3Dot1(unlockBtnEvent)
+    }
+
+    fun trackBackButton() {
+        analyticsLogger.logEventV3Dot1(backBtnEvent)
+    }
+
+    private fun makeScreenEvent(context: Context, isLocked: Boolean) = with(context) {
+        val getCorrectDetails = if (isLocked) {
+            Pair(
+                R.string.app_splashScreenUnlockAnalyticsScreenName,
+                R.string.splash_unlock_screen_page_id
+            )
+        } else {
+            Pair(
+                R.string.app_splashScreenAnalyticsScreenName,
+                R.string.splash_screen_page_id
+            )
+        }
+
         ViewEvent.Screen(
-            name = getEnglishString(R.string.app_splashScreenAnalyticsScreenName),
-            id = getEnglishString(R.string.splash_screen_page_id),
+            name = getEnglishString(getCorrectDetails.first),
+            id = getEnglishString(getCorrectDetails.second),
+            params = RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
+        )
+    }
+
+    private fun makeButtonEvent(context: Context) = with(context) {
+        TrackEvent.Button(
+            text = getEnglishString(R.string.app_unlockButton),
+            params = RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
+        )
+    }
+
+    private fun makeBackEvent(context: Context) = with(context) {
+        TrackEvent.Icon(
+            text = getEnglishString(R.string.system_bottomNavigation_backButton),
             params = RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED

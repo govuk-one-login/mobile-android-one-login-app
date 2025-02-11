@@ -12,7 +12,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -49,6 +49,7 @@ class SplashBodyTest {
                 isUnlock = true,
                 loading = false,
                 onLogin = {},
+                trackUnlockButton = {},
                 onOpenDeveloperPortal = {}
             )
         }
@@ -68,6 +69,7 @@ class SplashBodyTest {
                 isUnlock = false,
                 loading = true,
                 onLogin = {},
+                trackUnlockButton = {},
                 onOpenDeveloperPortal = {}
             )
         }
@@ -83,10 +85,12 @@ class SplashBodyTest {
     fun onLogin() {
         // Given the SplashBody Composable
         var actual = false
+        var buttonLogged = false
         composeTestRule.setContent {
             SplashBody(
                 isUnlock = true,
                 loading = false,
+                trackUnlockButton = { buttonLogged = true },
                 onLogin = { actual = true },
                 onOpenDeveloperPortal = {}
             )
@@ -94,7 +98,8 @@ class SplashBodyTest {
         // When clicking the `unlockButton`
         composeTestRule.onNode(unlockButton).performClick()
         // Then onLogin() is called and the variable is changed to true
-        assertEquals(true, actual)
+        assertTrue(actual)
+        assertTrue(buttonLogged)
     }
 
     @Test
@@ -105,6 +110,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = false,
                 loading = false,
+                trackUnlockButton = { },
                 onLogin = {},
                 onOpenDeveloperPortal = { actual = true }
             )
@@ -112,6 +118,6 @@ class SplashBodyTest {
         // When clicking the `splashIcon`
         composeTestRule.onNode(splashIcon).performClick()
         // Then onOpenDeveloperPortal() is called and the variable is changed to true
-        assertEquals(true, actual)
+        assertTrue(actual)
     }
 }
