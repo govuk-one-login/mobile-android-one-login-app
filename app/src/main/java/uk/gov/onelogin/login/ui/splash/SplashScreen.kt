@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,10 +55,13 @@ import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: SplashScreenAnalyticsViewModel = hiltViewModel()
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
     val loading = viewModel.loading.collectAsState()
+
+    LaunchedEffect(Unit) { analyticsViewModel.trackSplashScreen() }
 
     SplashBody(
         isUnlock = viewModel.showUnlock.value,
