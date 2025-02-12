@@ -7,6 +7,7 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
@@ -32,10 +33,10 @@ class BioOptInAnalyticsViewModelTest {
             taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
             taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
         )
-        name = context.getString(R.string.app_enableBiometricsTitle)
-        id = context.getString(R.string.bio_opt_in_screen_page_id)
-        passcodeBtn = context.getString(R.string.app_enablePasscodeOrPatternButton)
-        biometricsBtn = context.getString(R.string.app_enableBiometricsButton)
+        name = context.getEnglishString(R.string.app_enableBiometricsTitle)
+        id = context.getEnglishString(R.string.bio_opt_in_screen_page_id)
+        passcodeBtn = context.getEnglishString(R.string.app_enablePasscodeOrPatternButton)
+        biometricsBtn = context.getEnglishString(R.string.app_enableBiometricsButton)
         viewModel = BioOptInAnalyticsViewModel(context, logger)
     }
 

@@ -7,6 +7,7 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
@@ -31,12 +32,12 @@ class SplashScreenAnalyticsViewModelTest {
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
         logger = mock()
-        name = context.getString(R.string.app_splashScreenAnalyticsScreenName)
-        id = context.getString(R.string.splash_screen_page_id)
-        nameUnlock = context.getString(R.string.app_splashScreenUnlockAnalyticsScreenName)
-        idUnlock = context.getString(R.string.splash_unlock_screen_page_id)
-        unlockButton = context.getString(R.string.app_unlockButton)
-        backButton = context.getString(R.string.system_bottomNavigation_backButton)
+        name = context.getEnglishString(R.string.app_splashScreenAnalyticsScreenName)
+        id = context.getEnglishString(R.string.splash_screen_page_id)
+        nameUnlock = context.getEnglishString(R.string.app_splashScreenUnlockAnalyticsScreenName)
+        idUnlock = context.getEnglishString(R.string.splash_unlock_screen_page_id)
+        unlockButton = context.getEnglishString(R.string.app_unlockButton)
+        backButton = context.getEnglishString(R.string.system_bottomNavigation_backButton)
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
 
