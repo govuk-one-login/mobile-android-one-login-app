@@ -1,15 +1,22 @@
 package uk.gov.onelogin.ui.home
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -49,11 +56,20 @@ class HomeScreenKtTest : TestCase() {
         setOf(WalletFeatureFlag.ENABLED, CriCardFeatureFlag.ENABLED)
     )
 
+    private val intent = Intent()
+    private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
+
     @Before
     fun setup() {
+        Intents.init()
         composeTestRule.setupComposeTestRule { _ ->
             HomeScreen()
         }
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
     }
 
     @Test
@@ -79,6 +95,8 @@ class HomeScreenKtTest : TestCase() {
 
     @Test
     fun analyticsTriggered() {
+        // This will stop the test from throwing an error due to missing intent on pipeline
+        intending(hasData(context.getString(R.string.app_oneLoginCardLinkUrl))).respondWith(result)
         composeTestRule.apply {
             activityRule.scenario.onActivity { activity ->
                 activity.onBackPressedDispatcher.onBackPressed()
