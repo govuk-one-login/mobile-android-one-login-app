@@ -51,7 +51,7 @@ cri-orchestrator = "0.7.9"
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
-gson = { group = "com.google.code.gson", name = "gson", version = "2.11.0" }
+gson = { group = "com.google.code.gson", name = "gson", version = "2.12.1" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hiltPlugin" }
 hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hiltPlugin" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hiltPlugin" }
