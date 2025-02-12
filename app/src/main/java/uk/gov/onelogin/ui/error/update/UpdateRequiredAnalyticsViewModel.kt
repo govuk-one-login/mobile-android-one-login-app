@@ -64,7 +64,7 @@ class UpdateRequiredAnalyticsViewModel @Inject constructor(
 
         fun makeBackEvent(context: Context) = with(context) {
             TrackEvent.Icon(
-                text = getEnglishString(R.string.system_bottomNavigation_backButton),
+                text = getEnglishString(R.string.system_backButton),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                     taxonomyLevel3 = TaxonomyLevel3.UNDEFINED

@@ -1,5 +1,6 @@
 package uk.gov.onelogin.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -31,15 +32,18 @@ import uk.gov.onelogin.ui.components.TitledPage
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
     val httpClient = viewModel.httpClient
     val criOrchestratorComponent = rememberCriOrchestrator(httpClient)
     val contentsCardTitle = stringResource(R.string.app_oneLoginCardTitle)
     val contentsCardBody = stringResource(R.string.app_oneLoginCardBody)
     val contentsCardLinkText = stringResource(R.string.app_oneLoginCardLink)
-    val servicesUrl = stringResource(R.string.app_oneLoginCardLink)
+    val servicesUrl = stringResource(R.string.app_oneLoginCardLinkUrl)
     val uriHandler = LocalUriHandler.current
+    BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.getUiCardFlagState()
+        analyticsViewModel.trackScreen()
     }
     TitledPage(R.string.app_homeTitle) { paddingValues ->
         Column(
@@ -52,7 +56,6 @@ fun HomeScreen(
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
                     modifier = Modifier
-                        .padding(bottom = smallPadding)
                         .testTag(stringResource(R.string.app_cri_card_test_tag))
                 ) {
                     ProveYourIdentityCard(
@@ -67,8 +70,13 @@ fun HomeScreen(
                 buttonText = contentsCardLinkText,
                 displayPrimary = false,
                 showSecondaryIcon = true,
-                onClick = { uriHandler.openUri(servicesUrl) },
-                modifier = Modifier.testTag(stringResource(R.string.yourServicesCardTestTag))
+                onClick = {
+                    analyticsViewModel.trackLink()
+                    uriHandler.openUri(servicesUrl)
+                },
+                modifier = Modifier
+                    .padding(top = smallPadding)
+                    .testTag(stringResource(R.string.yourServicesCardTestTag))
             )
 
             if (DeveloperTools.isDeveloperPanelEnabled()) {

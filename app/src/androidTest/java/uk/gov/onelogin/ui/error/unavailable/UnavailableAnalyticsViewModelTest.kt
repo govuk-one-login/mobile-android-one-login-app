@@ -34,7 +34,7 @@ class UnavailableAnalyticsViewModelTest {
         )
         name = context.getEnglishString(R.string.app_appUnavailableTitle)
         id = context.getEnglishString(R.string.app_unavailable_page_id)
-        iconText = context.getEnglishString(R.string.system_bottomNavigation_backButton)
+        iconText = context.getEnglishString(R.string.system_backButton)
         viewModel = UnavailableAnalyticsViewModel(context, logger)
     }
 

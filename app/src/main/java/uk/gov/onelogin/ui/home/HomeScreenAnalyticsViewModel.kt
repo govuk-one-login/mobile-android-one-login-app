@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.loading
+package uk.gov.onelogin.ui.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -16,25 +16,42 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @HiltViewModel
-class LoadingScreenAnalyticsViewModel @Inject constructor(
+class HomeScreenAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {
-    private val updateLoadingViewEvent = makeLoadingScreenViewEvent(context)
-    private val backEvent = makeBackEvent(context)
+    private val screenEvent = makeScreenEvent(context)
+    private val cardLinkEvent = makeCardLinkEvent(context)
+    private val backButtonEvent = makeBackButtonEvent(context)
 
-    fun trackLoadingScreenEvent() {
-        analyticsLogger.logEventV3Dot1(updateLoadingViewEvent)
+    fun trackScreen() {
+        analyticsLogger.logEventV3Dot1(screenEvent)
+    }
+
+    fun trackLink() {
+        analyticsLogger.logEventV3Dot1(cardLinkEvent)
     }
 
     fun trackBackButton() {
-        analyticsLogger.logEventV3Dot1(backEvent)
+        analyticsLogger.logEventV3Dot1(backButtonEvent)
     }
 
-    private fun makeLoadingScreenViewEvent(context: Context) = with(context) {
+    private fun makeScreenEvent(context: Context) = with(context) {
         ViewEvent.Screen(
-            name = getEnglishString(R.string.app_loadingBody),
-            id = getEnglishString(R.string.app_loading_page_id),
+            name = getEnglishString(R.string.app_home),
+            id = getEnglishString(R.string.home_page_id),
+            params = RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.HOME,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
+        )
+    }
+
+    private fun makeCardLinkEvent(context: Context) = with(context) {
+        TrackEvent.Link(
+            isExternal = true,
+            domain = getEnglishString(R.string.app_oneLoginCardLinkUrl),
+            text = getEnglishString(R.string.app_oneLoginCardLink),
             params = RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
@@ -42,7 +59,7 @@ class LoadingScreenAnalyticsViewModel @Inject constructor(
         )
     }
 
-    private fun makeBackEvent(context: Context) = with(context) {
+    private fun makeBackButtonEvent(context: Context) = with(context) {
         TrackEvent.Icon(
             text = getEnglishString(R.string.system_backButton),
             params = RequiredParameters(

@@ -149,7 +149,7 @@
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
 
     <!-- Analytics Values   -->
-    <string name="system_bottomNavigation_backButton" translatable="false">back - system</string>
+    <string name="system_backButton" translatable="false">back - system</string>
 
     <!-- Home Screen -->
     <string name="app_oneLoginCardTitle" translatable="false">Using your GOV.UK One Login</string>
