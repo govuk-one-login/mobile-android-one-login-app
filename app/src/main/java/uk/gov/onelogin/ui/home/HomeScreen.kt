@@ -46,7 +46,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = smallPadding)
                         .padding(bottom = smallPadding)
-                        .testTag(stringResource(R.string.app_cri_card_test_tag))
+                        .testTag(stringResource(R.string.appCriCardTestTag))
                 ) {
                     ProveYourIdentityCard(
                         component = criOrchestratorComponent,

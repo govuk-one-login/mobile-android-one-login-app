@@ -16,15 +16,19 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.appinfo.service.domain.AppInfoService
 import uk.gov.onelogin.appinfo.service.domain.model.AppInfoServiceState
 import uk.gov.onelogin.appinfo.source.domain.source.AppInfoLocalSource
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.login.state.LocalAuthStatus
 import uk.gov.onelogin.login.usecase.HandleLocalLogin
@@ -46,7 +50,8 @@ import uk.gov.onelogin.optin.ui.NOTICE_TAG
     UseCaseModule::class,
     NavigatorModule::class,
     AppInfoApiModule::class,
-    BinderModule::class
+    BinderModule::class,
+    AnalyticsModule::class
 )
 class SplashScreenTest : TestCase() {
     @BindValue
@@ -81,6 +86,9 @@ class SplashScreenTest : TestCase() {
 
     @BindValue
     val optInRemoteSource: OptInRemoteSource = mock()
+
+    @BindValue
+    val analytics: AnalyticsLogger = mock()
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
@@ -117,6 +125,12 @@ class SplashScreenTest : TestCase() {
         // Then
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        verify(analytics, times(2)).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeScreenEvent(
+                context,
+                false
+            )
+        )
     }
 
     @Test
@@ -141,11 +155,27 @@ class SplashScreenTest : TestCase() {
         }
 
         // When
-        composeTestRule.onNode(unlockButton).performClick()
+        composeTestRule.apply {
+            onNode(unlockButton).performClick()
+            // Test system back button to trigger analytics event being logged
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+            }
+        }
 
         // Then
         verify(mockNavigator).goBack()
         verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeScreenEvent(
+                context,
+                true
+            )
+        )
+        verify(analytics).logEventV3Dot1(SplashScreenAnalyticsViewModel.makeButtonEvent(context))
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeBackEvent(context, true)
+        )
     }
 
     @Test

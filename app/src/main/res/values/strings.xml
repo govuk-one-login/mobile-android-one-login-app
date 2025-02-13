@@ -9,7 +9,6 @@
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_profile">Profile</string>
-    <string name="app_cri_card_test_tag" translatable="false">Cri Orchestrator test tag</string>
 
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
@@ -54,6 +53,8 @@
     <string name="app_signOutButton_no_wallet">Sign out and delete preferences</string>
 
     <!-- Splash Screen -->
+    <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
+    <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
     <string name="app_splashScreenLoadingIndicatorText">Loading</string>
     <string name="app_splashScreenLoadingContentDescription" translatable="false">Circular progress/ loading indicator</string>
 
