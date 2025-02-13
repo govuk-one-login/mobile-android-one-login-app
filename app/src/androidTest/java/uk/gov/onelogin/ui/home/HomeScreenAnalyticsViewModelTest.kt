@@ -22,12 +22,17 @@ class HomeScreenAnalyticsViewModelTest {
     private lateinit var name: String
     private lateinit var id: String
     private lateinit var back: String
+    private lateinit var requiredParameters: RequiredParameters
     private lateinit var logger: AnalyticsLogger
     private lateinit var viewModel: HomeScreenAnalyticsViewModel
 
     @Before
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.HOME,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         logger = mock()
         domain = context.getEnglishString(R.string.app_oneLoginCardLinkUrl)
         linkText = context.getEnglishString(R.string.app_oneLoginCardLink)
@@ -39,10 +44,6 @@ class HomeScreenAnalyticsViewModelTest {
 
     @Test
     fun trackScreen() {
-        val requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.HOME,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
         // Given a ViewEvent.Screen
         val event = ViewEvent.Screen(
             name = name,
@@ -57,10 +58,6 @@ class HomeScreenAnalyticsViewModelTest {
 
     @Test
     fun trackEventLink() {
-        val requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
         // Given a TrackEvent.Link
         val event = TrackEvent.Link(
             isExternal = true,
@@ -76,10 +73,6 @@ class HomeScreenAnalyticsViewModelTest {
 
     @Test
     fun trackBackButton() {
-        val requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
         // Given a TrackEvent.Icon
         val event = TrackEvent.Icon(
             text = back,
