@@ -30,8 +30,8 @@ class BioOptInAnalyticsViewModelTest {
         val context: Context = ApplicationProvider.getApplicationContext()
         logger = mock()
         requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
         )
         name = context.getEnglishString(R.string.app_enableBiometricsTitle)
         id = context.getEnglishString(R.string.bio_opt_in_screen_page_id)
@@ -42,10 +42,6 @@ class BioOptInAnalyticsViewModelTest {
 
     @Test
     fun trackBioOptInScreen() {
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
-        )
         val event = ViewEvent.Screen(
             name = name,
             id = id,

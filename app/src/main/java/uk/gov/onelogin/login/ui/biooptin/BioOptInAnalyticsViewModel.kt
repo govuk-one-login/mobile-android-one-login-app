@@ -39,24 +39,25 @@ class BioOptInAnalyticsViewModel @Inject constructor(
         analyticsLogger.logEventV3Dot1(passcodeBtnEvent)
     }
 
-    private fun makeScreenEvent(context: Context) = with(context) {
-        ViewEvent.Screen(
-            name = getEnglishString(R.string.app_enableBiometricsTitle),
-            id = getEnglishString(R.string.bio_opt_in_screen_page_id),
-            params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
+    companion object {
+        internal fun makeScreenEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_enableBiometricsTitle),
+                id = getEnglishString(R.string.bio_opt_in_screen_page_id),
+                params = requiredParams
             )
-        )
-    }
+        }
 
-    private fun makeButtonEvent(context: Context, text: Int) = with(context) {
-        TrackEvent.Button(
-            text = getEnglishString(text),
-            params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        internal fun makeButtonEvent(context: Context, text: Int) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(text),
+                params = requiredParams
             )
+        }
+
+        private val requiredParams = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
         )
     }
 }

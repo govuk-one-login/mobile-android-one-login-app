@@ -8,20 +8,27 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 
 @HiltAndroidTest
-class SplashBodyTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+@UninstallModules(AnalyticsModule::class)
+class SplashBodyTest : TestCase() {
+    @BindValue
+    var analytics: AnalyticsLogger = mock()
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
@@ -59,14 +66,21 @@ class SplashBodyTest {
         // And both `splashIcon` and `unlockButton` are displayed
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeScreenEvent(
+                context,
+                true
+            )
+        )
     }
 
     @Test
     fun verifyLock() {
+        val unlock = false
         // Given the SplashBody Composable with `isUnlock` set to false
         composeTestRule.setContent {
             SplashBody(
-                isUnlock = false,
+                isUnlock = unlock,
                 loading = true,
                 onLogin = {},
                 trackUnlockButton = {},
@@ -79,16 +93,23 @@ class SplashBodyTest {
         // And only `splashIcon` is displayed and`unlockButton` is not
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsNotDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeScreenEvent(
+                context,
+                unlock
+            )
+        )
     }
 
     @Test
     fun onLogin() {
         // Given the SplashBody Composable
+        val unlock = true
         var actual = false
         var buttonLogged = false
         composeTestRule.setContent {
             SplashBody(
-                isUnlock = true,
+                isUnlock = unlock,
                 loading = false,
                 trackUnlockButton = { buttonLogged = true },
                 onLogin = { actual = true },
@@ -96,10 +117,20 @@ class SplashBodyTest {
             )
         }
         // When clicking the `unlockButton`
-        composeTestRule.onNode(unlockButton).performClick()
+        composeTestRule.apply {
+            onNode(unlockButton).performClick()
+            // Test system back button to trigger analytics event being logged
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+            }
+        }
         // Then onLogin() is called and the variable is changed to true
         assertTrue(actual)
         assertTrue(buttonLogged)
+        verify(analytics).logEventV3Dot1(SplashScreenAnalyticsViewModel.makeButtonEvent(context))
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeBackEvent(context, unlock)
+        )
     }
 
     @Test

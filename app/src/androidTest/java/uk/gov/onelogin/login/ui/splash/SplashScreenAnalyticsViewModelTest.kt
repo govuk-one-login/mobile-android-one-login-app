@@ -78,8 +78,8 @@ class SplashScreenAnalyticsViewModelTest {
     @Test
     fun trackUnlockButton() {
         requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.UNLOCK
         )
         val event = TrackEvent.Button(
             text = unlockButton,
@@ -92,9 +92,9 @@ class SplashScreenAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackBackButton() {
+    fun trackBackButtonSplash() {
         requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
             taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
         )
         val event = TrackEvent.Icon(
@@ -102,7 +102,23 @@ class SplashScreenAnalyticsViewModelTest {
             params = requiredParameters
         )
 
-        viewModel.trackBackButton()
+        viewModel.trackBackButton(context, false)
+
+        verify(logger).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun trackBackButtonUnlock() {
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.UNLOCK
+        )
+        val event = TrackEvent.Icon(
+            text = backButton,
+            params = requiredParameters
+        )
+
+        viewModel.trackBackButton(context, true)
 
         verify(logger).logEventV3Dot1(event)
     }
