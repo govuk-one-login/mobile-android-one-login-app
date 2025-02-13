@@ -1,5 +1,6 @@
 package uk.gov.onelogin.ui.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
+import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
@@ -29,23 +32,30 @@ import uk.gov.onelogin.ui.components.TitledPage
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
     val httpClient = viewModel.httpClient
     val criOrchestratorComponent = rememberCriOrchestrator(httpClient)
+    val contentsCardTitle = stringResource(R.string.app_oneLoginCardTitle)
+    val contentsCardBody = stringResource(R.string.app_oneLoginCardBody)
+    val contentsCardLinkText = stringResource(R.string.app_oneLoginCardLink)
+    val servicesUrl = stringResource(R.string.app_oneLoginCardLinkUrl)
+    val uriHandler = LocalUriHandler.current
+    BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.getUiCardFlagState()
+        analyticsViewModel.trackScreen()
     }
     TitledPage(R.string.app_homeTitle) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .padding(horizontal = smallPadding)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
                     modifier = Modifier
-                        .padding(horizontal = smallPadding)
-                        .padding(bottom = smallPadding)
                         .testTag(stringResource(R.string.appCriCardTestTag))
                 ) {
                     ProveYourIdentityCard(
@@ -54,6 +64,20 @@ fun HomeScreen(
                     )
                 }
             }
+            GdsCard(
+                title = contentsCardTitle,
+                body = contentsCardBody,
+                buttonText = contentsCardLinkText,
+                displayPrimary = false,
+                showSecondaryIcon = true,
+                onClick = {
+                    analyticsViewModel.trackLink()
+                    uriHandler.openUri(servicesUrl)
+                },
+                modifier = Modifier
+                    .padding(top = smallPadding)
+                    .testTag(stringResource(R.string.yourServicesCardTestTag))
+            )
 
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(

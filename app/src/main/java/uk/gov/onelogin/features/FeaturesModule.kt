@@ -16,6 +16,6 @@ object FeaturesModule {
     @Provides
     @Singleton
     fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
-        setOf(WalletFeatureFlag.ENABLED, CriCardFeatureFlag.ENABLED)
+        setOf(WalletFeatureFlag.ENABLED)
     )
 }

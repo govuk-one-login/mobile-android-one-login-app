@@ -37,7 +37,7 @@ class SplashScreenAnalyticsViewModelTest {
         nameUnlock = context.getEnglishString(R.string.app_splashScreenUnlockAnalyticsScreenName)
         idUnlock = context.getEnglishString(R.string.splash_unlock_screen_page_id)
         unlockButton = context.getEnglishString(R.string.app_unlockButton)
-        backButton = context.getEnglishString(R.string.system_bottomNavigation_backButton)
+        backButton = context.getEnglishString(R.string.system_backButton)
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
 

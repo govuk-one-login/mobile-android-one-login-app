@@ -34,7 +34,7 @@ class LoadingScreenAnalyticsViewModelTest {
         )
         name = context.getString(R.string.app_loadingBody)
         id = context.getString(R.string.app_loading_page_id)
-        nativeBackBtn = context.getEnglishString(R.string.system_bottomNavigation_backButton)
+        nativeBackBtn = context.getEnglishString(R.string.system_backButton)
         viewModel = LoadingScreenAnalyticsViewModel(context, logger)
     }
 

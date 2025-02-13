@@ -3,4 +3,5 @@
     <string name="splashIconTestTag" translatable="false">splash icon test tag</string>
     <string name="optInSwitchTestTag" translatable="false">opt in switch test tag</string>
     <string name="appCriCardTestTag" translatable="false">Cri Orchestrator test tag</string>
+    <string name="yourServicesCardTestTag" translatable="false">Your services card test tag</string>
 </resources>

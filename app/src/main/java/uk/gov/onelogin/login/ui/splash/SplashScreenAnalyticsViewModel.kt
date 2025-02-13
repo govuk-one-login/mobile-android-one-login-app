@@ -61,7 +61,7 @@ class SplashScreenAnalyticsViewModel @Inject constructor(
 
         internal fun makeBackEvent(context: Context, isLocked: Boolean) = with(context) {
             TrackEvent.Icon(
-                text = getEnglishString(R.string.system_bottomNavigation_backButton),
+                text = getEnglishString(R.string.system_backButton),
                 params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.LOGIN,
                     taxonomyLevel3 = if (isLocked) {
