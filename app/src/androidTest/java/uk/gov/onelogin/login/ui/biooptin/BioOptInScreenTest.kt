@@ -11,16 +11,22 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.mainnav.MainNavRoutes
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 
 @HiltAndroidTest
-@UninstallModules(NavigatorModule::class)
+@UninstallModules(NavigatorModule::class, AnalyticsModule::class)
 class BioOptInScreenTest : TestCase() {
     @BindValue
     var mockNavigator: Navigator = mock()
+
+    @BindValue
+    val analytics: AnalyticsLogger = mock()
 
     private val title = hasText(resources.getString(R.string.app_enableBiometricsTitle))
     private val content1 = hasText(resources.getString(R.string.app_enableBiometricsBody1))
@@ -46,6 +52,7 @@ class BioOptInScreenTest : TestCase() {
         composeTestRule.onNode(footnote).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).assertIsDisplayed()
         composeTestRule.onNode(secondaryButton).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(BioOptInAnalyticsViewModel.makeScreenEvent(context))
     }
 
     @Test
@@ -56,6 +63,12 @@ class BioOptInScreenTest : TestCase() {
         composeTestRule.onNode(primaryButton).performClick()
 
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+        verify(analytics).logEventV3Dot1(
+            BioOptInAnalyticsViewModel.makeButtonEvent(
+                context,
+                R.string.app_enableBiometricsButton
+            )
+        )
     }
 
     @Test
@@ -66,6 +79,12 @@ class BioOptInScreenTest : TestCase() {
         composeTestRule.onNode(secondaryButton).performClick()
 
         verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+        verify(analytics).logEventV3Dot1(
+            BioOptInAnalyticsViewModel.makeButtonEvent(
+                context,
+                R.string.app_enablePasscodeOrPatternButton
+            )
+        )
     }
 
     @Test

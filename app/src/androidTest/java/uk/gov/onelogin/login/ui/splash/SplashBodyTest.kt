@@ -8,21 +8,17 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import uk.gov.android.onelogin.R
+import uk.gov.onelogin.TestCase
 
 @HiltAndroidTest
-class SplashBodyTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
+class SplashBodyTest : TestCase() {
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var loadingText: SemanticsMatcher
@@ -49,6 +45,7 @@ class SplashBodyTest {
                 isUnlock = true,
                 loading = false,
                 onLogin = {},
+                trackUnlockButton = {},
                 onOpenDeveloperPortal = {}
             )
         }
@@ -68,6 +65,7 @@ class SplashBodyTest {
                 isUnlock = false,
                 loading = true,
                 onLogin = {},
+                trackUnlockButton = {},
                 onOpenDeveloperPortal = {}
             )
         }
@@ -82,19 +80,24 @@ class SplashBodyTest {
     @Test
     fun onLogin() {
         // Given the SplashBody Composable
+        val unlock = true
         var actual = false
+        var buttonLogged = false
         composeTestRule.setContent {
             SplashBody(
-                isUnlock = true,
+                isUnlock = unlock,
                 loading = false,
+                trackUnlockButton = { buttonLogged = true },
                 onLogin = { actual = true },
                 onOpenDeveloperPortal = {}
             )
         }
         // When clicking the `unlockButton`
         composeTestRule.onNode(unlockButton).performClick()
+
         // Then onLogin() is called and the variable is changed to true
-        assertEquals(true, actual)
+        assertTrue(actual)
+        assertTrue(buttonLogged)
     }
 
     @Test
@@ -105,6 +108,7 @@ class SplashBodyTest {
             SplashBody(
                 isUnlock = false,
                 loading = false,
+                trackUnlockButton = { },
                 onLogin = {},
                 onOpenDeveloperPortal = { actual = true }
             )
@@ -112,6 +116,6 @@ class SplashBodyTest {
         // When clicking the `splashIcon`
         composeTestRule.onNode(splashIcon).performClick()
         // Then onOpenDeveloperPortal() is called and the variable is changed to true
-        assertEquals(true, actual)
+        assertTrue(actual)
     }
 }

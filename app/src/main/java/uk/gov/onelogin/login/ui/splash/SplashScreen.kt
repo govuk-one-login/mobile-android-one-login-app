@@ -1,5 +1,6 @@
 package uk.gov.onelogin.login.ui.splash
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,14 +56,20 @@ import uk.gov.onelogin.optin.ui.OptInRequirementViewModel
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: SplashScreenAnalyticsViewModel = hiltViewModel()
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
     val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
     val loading = viewModel.loading.collectAsState()
+    val unlock = viewModel.showUnlock.collectAsState()
+
+    BackHandler { analyticsViewModel.trackBackButton(context, unlock.value) }
+    SideEffect { analyticsViewModel.trackSplashScreen(context, unlock.value) }
 
     SplashBody(
-        isUnlock = viewModel.showUnlock.value,
+        isUnlock = unlock.value,
         loading = loading.value,
+        trackUnlockButton = { analyticsViewModel.trackUnlockButton() },
         onLogin = { viewModel.login(context) },
         onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
     )
@@ -94,6 +102,7 @@ fun SplashScreen(
 internal fun SplashBody(
     isUnlock: Boolean,
     loading: Boolean,
+    trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit
 ) {
@@ -126,6 +135,7 @@ internal fun SplashBody(
                     backgroundColor = colorResource(id = R.color.govuk_blue),
                     modifier = Modifier
                         .clickable {
+                            trackUnlockButton()
                             onLogin()
                         }
                         .padding(bottom = mediumPadding)
@@ -188,6 +198,7 @@ internal fun SplashScreenPreview() {
         SplashBody(
             isUnlock = false,
             loading = false,
+            trackUnlockButton = {},
             onLogin = {},
             onOpenDeveloperPortal = {}
         )
@@ -202,6 +213,7 @@ internal fun UnlockScreenPreview() {
         SplashBody(
             isUnlock = true,
             loading = false,
+            trackUnlockButton = {},
             onLogin = {},
             onOpenDeveloperPortal = {}
         )
@@ -216,6 +228,7 @@ internal fun LoadingSplashScreenPreview() {
         SplashBody(
             isUnlock = false,
             loading = true,
+            trackUnlockButton = {},
             onLogin = {},
             onOpenDeveloperPortal = {}
         )

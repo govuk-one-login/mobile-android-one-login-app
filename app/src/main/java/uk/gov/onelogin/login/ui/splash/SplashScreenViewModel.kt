@@ -1,7 +1,5 @@
 package uk.gov.onelogin.login.ui.splash
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel
@@ -30,8 +28,8 @@ class SplashScreenViewModel @Inject constructor(
     private val appInfoService: AppInfoService
 ) : ViewModel(), DefaultLifecycleObserver {
 
-    private val _showUnlock = mutableStateOf(false)
-    val showUnlock: State<Boolean> = _showUnlock
+    private val _showUnlock = MutableStateFlow(false)
+    val showUnlock: StateFlow<Boolean> = _showUnlock
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading

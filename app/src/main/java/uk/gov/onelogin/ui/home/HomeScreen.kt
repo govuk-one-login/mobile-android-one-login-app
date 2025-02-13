@@ -56,7 +56,7 @@ fun HomeScreen(
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
                     modifier = Modifier
-                        .testTag(stringResource(R.string.app_cri_card_test_tag))
+                        .testTag(stringResource(R.string.appCriCardTestTag))
                 ) {
                     ProveYourIdentityCard(
                         component = criOrchestratorComponent,
