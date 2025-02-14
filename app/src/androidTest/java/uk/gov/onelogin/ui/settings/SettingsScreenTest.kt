@@ -101,9 +101,9 @@ class SettingsScreenTest : TestCase() {
         composeTestRule.setContent {
             SettingsScreen()
         }
-        composeTestRule.onNode(legalLink1).assertIsDisplayed()
-        composeTestRule.onNode(legalLink2).assertIsDisplayed()
-        composeTestRule.onNode(legalLink3).assertIsDisplayed()
+        composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -198,7 +198,7 @@ class SettingsScreenTest : TestCase() {
         }
         // When clicking on the link
 
-        composeTestRule.onNode(linkView).performClick()
+        composeTestRule.onNode(linkView).performScrollTo().performClick()
         // Then open a browser with the correct URL
         val host = signInURL.host
         val path = signInURL.path
