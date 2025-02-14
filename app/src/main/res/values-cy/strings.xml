@@ -26,7 +26,7 @@
     <string name="app_settingsAnalyticsToggleFootnote">Gallwch rannu dadansoddeg anhysbys am sut rydych yn defnyddio\'r ap i helpu\'r tim GOV.UK One Login i wneud gwelliannau.</string>
     <string name="app_settingsAnalyticsToggleFootnoteLink">Darllenwch fwy yn yr hysbysiad preifatrwydd GOV.UK One Login</string>
     <string name="app_signOutButton">Allgofnodi</string>
-    <string name="app_settingsSignInDetailsLink">Manylion mewngofnodi</string>
+    <string name="app_settingsSignInDetailsLink">Rheoli eich manylion mewngofnodi</string>
     <string name="app_manageSignInDetailsUrl">https://www.gov.uk/defnyddio-eich-gov-uk-one-login</string>
     <string name="app_helpUrl">http://gov.uk/one-login/app-help/cy</string>
     <string name="app_contactUrl">https://home.account.gov.uk/contact-gov-uk-one-login?lng=cy</string>
