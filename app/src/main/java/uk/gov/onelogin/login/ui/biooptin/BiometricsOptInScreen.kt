@@ -12,23 +12,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
-import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.GdsVectorImage
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.VectorImageParameters
-import uk.gov.android.ui.components.buttons.ButtonParameters
-import uk.gov.android.ui.components.buttons.ButtonType
-import uk.gov.android.ui.components.buttons.GdsButton
-import uk.gov.android.ui.components.content.ContentParameters
-import uk.gov.android.ui.components.content.GdsContent
 import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.android.ui.theme.hintTextGrey
-import uk.gov.android.ui.theme.m3.Typography
+import uk.gov.android.ui.components.m3.Heading
+import uk.gov.android.ui.components.m3.HeadingSize
+import uk.gov.android.ui.components.m3.buttons.ButtonParameters
+import uk.gov.android.ui.components.m3.buttons.ButtonType
+import uk.gov.android.ui.components.m3.buttons.GdsButton
+import uk.gov.android.ui.components.m3.content.ContentParameters
+import uk.gov.android.ui.components.m3.content.GdsContent
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
@@ -69,14 +67,12 @@ private fun Content() {
             scale = ContentScale.Fit
         )
     )
-    GdsHeading(
-        HeadingParameters(
-            modifier = Modifier.padding(top = smallPadding),
-            text = R.string.app_enableBiometricsTitle,
-            size = HeadingSize.H1(),
-            textAlign = TextAlign.Center
-        )
-    )
+    Heading(
+        modifier = Modifier.padding(top = smallPadding),
+        text = R.string.app_enableBiometricsTitle,
+        size = HeadingSize.DisplaySmall(),
+        textAlign = TextAlign.Center
+    ).generate()
     GdsContent(
         ContentParameters(
             resource = listOf(
@@ -97,6 +93,15 @@ private fun Content() {
             )
         )
     )
+    GdsContent(
+        ContentParameters(
+            resource = listOf(
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(R.string.app_enableBiometricsBody3)
+                )
+            )
+        )
+    )
 }
 
 @Composable
@@ -107,22 +112,11 @@ private fun BioOptInButtons(
     Column(
         verticalArrangement = Arrangement.Bottom
     ) {
-        GdsContent(
-            ContentParameters(
-                resource = listOf(
-                    GdsContentText.GdsContentTextString(
-                        intArrayOf(R.string.app_enableBiometricsFootnote)
-                    )
-                ),
-                textStyle = Typography.bodyMedium,
-                color = hintTextGrey
-            )
-        )
         GdsButton(
             ButtonParameters(
                 modifier = Modifier.fillMaxWidth(),
                 buttonType = ButtonType.PRIMARY(),
-                text = R.string.app_enableBiometricsButton,
+                text = stringResource(R.string.app_enableBiometricsButton),
                 onClick = {
                     analyticsViewModel.trackBiometricsButton()
                     viewModel.useBiometrics()
@@ -132,8 +126,8 @@ private fun BioOptInButtons(
         GdsButton(
             ButtonParameters(
                 modifier = Modifier.fillMaxWidth(),
-                buttonType = ButtonType.SECONDARY(),
-                text = R.string.app_enablePasscodeOrPatternButton,
+                buttonType = ButtonType.QUATERNARY(),
+                text = stringResource(R.string.app_enablePasscodeOrPatternButton),
                 onClick = {
                     analyticsViewModel.trackPasscodeButton()
                     viewModel.doNotUseBiometrics()

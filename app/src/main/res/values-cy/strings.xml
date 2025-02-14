@@ -84,12 +84,12 @@
     <string name="app_noPasscodeSetupBody2">Gallwch osod cod mynediad yn nes ymlaen trwy fynd i\'ch gosodiadau ffôn.</string>
 
     <!-- Biometric Opt-In -->
-    <string name="app_enableBiometricsTitle">Defnyddiwch biometreg i fewngofnodi</string>
-    <string name="app_enableBiometricsBody1">Mewngofnodi gyda\'ch wyneb neu olion bysedd yn hytrach na\'ch cyfeiriad e-bost a chyfrinair. Nid yw eich biometreg yn cael ei rannu â GOV.UK One Login.</string>
-    <string name="app_enableBiometricsBody2">Os nad ydych am ddefnyddio biometreg, gallwch fewngofnodi gyda\'ch cod mynediad neu batrwm ffôn yn lle hynny.</string>
-    <string name="app_enableBiometricsFootnote">Os ydych yn defnyddio biometreg, bydd unrhyw un sydd â biometreg wedi\'i arbed ar eich ffôn yn gallu mewngofnodi i\'r ap hwn.</string>
+    <string name="app_enableBiometricsTitle">Datgloi\'r ap gyda biometreg</string>
+    <string name="app_enableBiometricsBody1">Gallwch ddatgloi\'r ap gyda\'ch wyneb, olion bysedd neu iris o fewn 30 munud o fewngofnodi gyda GOV.UK One Login.</string>
+    <string name="app_enableBiometricsBody2">Os nad ydych am ddefnyddio\'ch biometreg, gallwch ddatgloi\'r ap gyda pin neu batrwm eich ffôn yn lle hynny.</string>
+    <string name="app_enableBiometricsBody3">Efallai y bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap.</string>
     <string name="app_enableBiometricsButton">Defnyddio biometreg</string>
-    <string name="app_enablePasscodeOrPatternButton">Defnyddio god mynediad neu batrwm</string>
+    <string name="app_enablePasscodeOrPatternButton">Defnyddio pin neu batrwm yn lle hynny</string>
 
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>

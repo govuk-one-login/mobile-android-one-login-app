@@ -31,7 +31,7 @@ class BioOptInScreenTest : TestCase() {
     private val title = hasText(resources.getString(R.string.app_enableBiometricsTitle))
     private val content1 = hasText(resources.getString(R.string.app_enableBiometricsBody1))
     private val content2 = hasText(resources.getString(R.string.app_enableBiometricsBody2))
-    private val footnote = hasText(resources.getString(R.string.app_enableBiometricsFootnote))
+    private val content3 = hasText(resources.getString(R.string.app_enableBiometricsBody3))
     private val primaryButton = hasText(resources.getString(R.string.app_enableBiometricsButton))
     private val secondaryButton =
         hasText(resources.getString(R.string.app_enablePasscodeOrPatternButton))
@@ -49,7 +49,7 @@ class BioOptInScreenTest : TestCase() {
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(content1).assertIsDisplayed()
         composeTestRule.onNode(content2).assertIsDisplayed()
-        composeTestRule.onNode(footnote).assertIsDisplayed()
+        composeTestRule.onNode(content3).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).assertIsDisplayed()
         composeTestRule.onNode(secondaryButton).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(BioOptInAnalyticsViewModel.makeScreenEvent(context))
