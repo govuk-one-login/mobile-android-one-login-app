@@ -49,7 +49,7 @@ class SignInErrorScreenTest : TestCase() {
     }
 
     @Test
-    fun checkButtonClick() {
+    fun checkBackClicked() {
         composeTestRule.activityRule.scenario.onActivity { activity ->
             activity.onBackPressedDispatcher.onBackPressed()
         }
