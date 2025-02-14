@@ -29,7 +29,10 @@ fun SignInErrorScreen(onClick: () -> Unit = { }) {
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = onClick,
+                    onClick = {
+                        analyticsViewModel.trackButton()
+                        onClick()
+                    },
                     text = R.string.app_closeButton
                 ),
                 informationParameters = InformationParameters(
