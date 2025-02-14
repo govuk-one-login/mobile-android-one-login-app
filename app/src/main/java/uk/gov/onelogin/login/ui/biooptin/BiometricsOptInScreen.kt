@@ -27,8 +27,6 @@ import uk.gov.android.ui.components.content.ContentParameters
 import uk.gov.android.ui.components.content.GdsContent
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.theme.GdsTheme
-import uk.gov.android.ui.theme.hintTextGrey
-import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
@@ -97,6 +95,15 @@ private fun Content() {
             )
         )
     )
+    GdsContent(
+        ContentParameters(
+            resource = listOf(
+                GdsContentText.GdsContentTextString(
+                    intArrayOf(R.string.app_enableBiometricsBody3)
+                )
+            )
+        )
+    )
 }
 
 @Composable
@@ -107,17 +114,6 @@ private fun BioOptInButtons(
     Column(
         verticalArrangement = Arrangement.Bottom
     ) {
-        GdsContent(
-            ContentParameters(
-                resource = listOf(
-                    GdsContentText.GdsContentTextString(
-                        intArrayOf(R.string.app_enableBiometricsFootnote)
-                    )
-                ),
-                textStyle = Typography.bodyMedium,
-                color = hintTextGrey
-            )
-        )
         GdsButton(
             ButtonParameters(
                 modifier = Modifier.fillMaxWidth(),
