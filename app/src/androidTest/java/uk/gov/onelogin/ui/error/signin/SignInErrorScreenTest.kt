@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.ui
+package uk.gov.onelogin.ui.error.signin
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
