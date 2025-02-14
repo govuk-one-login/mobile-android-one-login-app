@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
@@ -18,16 +17,20 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.onelogin.R
 import uk.gov.android.wallet.core.R as walletR
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 
 @HiltAndroidTest
-@UninstallModules(FeaturesModule::class)
+@UninstallModules(FeaturesModule::class, AnalyticsModule::class)
 class MainNavScreenTest : TestCase() {
     private val homeTab = hasText(resources.getString(R.string.app_home))
     private val walletTab = hasText(resources.getString(R.string.app_wallet))
@@ -36,11 +39,17 @@ class MainNavScreenTest : TestCase() {
     @BindValue
     val featureFlags: FeatureFlags = mock()
 
+    @BindValue
+    var analytics: AnalyticsLogger = mock()
+
     @Test
     fun checkBottomOptionsDisplayed() {
         whenever(featureFlags[any()]).thenReturn(true)
         setup()
-        composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
+        composeTestRule.onAllNodes(homeTab)[1].apply {
+            isDisplayed()
+            performClick()
+        } // we have double match of `Home` text
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(settingsTab).isDisplayed()
@@ -49,6 +58,7 @@ class MainNavScreenTest : TestCase() {
             BottomNavDestination.Home.key,
             navController.currentDestination?.route
         )
+        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeHomeButtonEvent(context))
     }
 
     @Test
@@ -66,6 +76,8 @@ class MainNavScreenTest : TestCase() {
         composeTestRule.onNodeWithText(
             resources.getString(walletR.string.introCardTitle)
         ).assertIsDisplayed()
+
+        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))
     }
 
     @Test
@@ -92,9 +104,9 @@ class MainNavScreenTest : TestCase() {
             navController.currentDestination?.route
         )
 
-        composeTestRule.onAllNodesWithText(
-            resources.getString(R.string.app_settingsTitle)
-        ).assertCountEquals(2)
+        composeTestRule.onAllNodes(settingsTab).assertCountEquals(2)
+
+        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
     }
 
     private fun setup() {
