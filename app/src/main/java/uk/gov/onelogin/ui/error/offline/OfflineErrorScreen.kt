@@ -1,8 +1,10 @@
-package uk.gov.onelogin.ui.error
+package uk.gov.onelogin.ui.error.offline
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.R
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.buttons.ButtonParameters
@@ -14,26 +16,31 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.ui.components.BackHandlerWithPop
 
 @Composable
 @Preview
-fun GenericErrorScreen(onClick: () -> Unit = { }) {
+fun OfflineErrorScreen(onRetryClick: () -> Unit = {}) {
     GdsTheme {
+        val analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel()
+        BackHandlerWithPop { analyticsViewModel.trackBackButton() }
+        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
-                    onClick = onClick,
-                    text = R.string.app_closeButton
+                    onClick = {
+                        analyticsViewModel.trackButton()
+                        onRetryClick()
+                    },
+                    text = R.string.app_tryAgainButton
                 ),
                 informationParameters = InformationParameters(
                     contentParameters = ContentParameters(
                         resource = listOf(
                             GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_somethingWentWrongErrorTitle,
-                                text = intArrayOf(
-                                    R.string.app_somethingWentWrongErrorBody
-                                )
+                                subTitle = R.string.app_networkErrorTitle,
+                                text = intArrayOf(R.string.app_networkErrorBody)
                             )
                         ),
                         headingSize = HeadingSize.H1()
