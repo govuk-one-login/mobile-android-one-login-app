@@ -1,6 +1,5 @@
 package uk.gov.onelogin.ui.error.offline
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
@@ -17,19 +16,14 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.ui.components.BackHandlerWithPop
 
 @Composable
 @Preview
-fun OfflineErrorScreen(
-    goBack: () -> Unit = {},
-    onRetryClick: () -> Unit = {}
-) {
+fun OfflineErrorScreen(onRetryClick: () -> Unit = {}) {
     GdsTheme {
         val analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel()
-        BackHandler {
-            analyticsViewModel.trackBackButton()
-            goBack()
-        }
+        BackHandlerWithPop { analyticsViewModel.trackBackButton() }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(

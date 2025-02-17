@@ -1,6 +1,5 @@
 package uk.gov.onelogin.ui.error.signin
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
@@ -17,16 +16,14 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.ui.components.BackHandlerWithPop
 
 @Composable
 @Preview
 fun SignInErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         val analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel()
-        BackHandler {
-            analyticsViewModel.trackBackButton()
-            onClick()
-        }
+        BackHandlerWithPop { analyticsViewModel.trackBackButton() }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(

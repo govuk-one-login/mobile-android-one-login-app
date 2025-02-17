@@ -37,9 +37,7 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.Offline.getRoute()
             ) {
-                OfflineErrorScreen(
-                    goBack = { navController.popBackStack() }
-                ) {
+                OfflineErrorScreen {
                     navController.apply {
                         previousBackStackEntry?.savedStateHandle?.set(
                             OFFLINE_ERROR_TRY_AGAIN_KEY,
