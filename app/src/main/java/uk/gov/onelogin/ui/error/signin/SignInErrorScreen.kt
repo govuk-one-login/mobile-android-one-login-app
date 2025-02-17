@@ -23,7 +23,10 @@ import uk.gov.android.ui.theme.GdsTheme
 fun SignInErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         val analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel()
-        BackHandler { analyticsViewModel.trackBackButton() }
+        BackHandler {
+            analyticsViewModel.trackBackButton()
+            onClick()
+        }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(

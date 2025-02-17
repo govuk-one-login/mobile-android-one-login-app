@@ -20,11 +20,17 @@ import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
 @Preview
-fun OfflineErrorScreen(onRetryClick: () -> Unit = { }) {
+fun OfflineErrorScreen(
+    goBack: () -> Unit = {},
+    onRetryClick: () -> Unit = {}
+) {
     GdsTheme {
         val analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel()
         BackHandler { analyticsViewModel.trackBackButton() }
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
+        LaunchedEffect(Unit) {
+            analyticsViewModel.trackScreen()
+            goBack()
+        }
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(

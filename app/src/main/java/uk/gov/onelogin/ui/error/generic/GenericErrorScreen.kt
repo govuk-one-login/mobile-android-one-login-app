@@ -24,7 +24,10 @@ fun GenericErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         val analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel()
         BackHandler { analyticsViewModel.trackBackButton() }
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
+        LaunchedEffect(Unit) {
+            analyticsViewModel.trackScreen()
+            onClick()
+        }
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
