@@ -1,5 +1,6 @@
 package uk.gov.onelogin.mainnav.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,7 @@ import uk.gov.android.onelogin.R
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.mainnav.nav.BottomNavDestination
 import uk.gov.onelogin.ui.home.HomeScreen
-import uk.gov.onelogin.ui.profile.ProfileScreen
+import uk.gov.onelogin.ui.settings.SettingsScreen
 import uk.gov.onelogin.wallet.WalletScreenViewModel
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
@@ -78,7 +79,11 @@ fun MainNavScreen(
                             },
                             colors = {
                                 NavigationBarItemDefaults.colors(
-                                    indicatorColor = colorResource(id = R.color.nav_bottom_selected)
+                                    indicatorColor = if (isSystemInDarkTheme()) {
+                                        MaterialTheme.colorScheme.tertiary
+                                    } else {
+                                        colorResource(id = R.color.nav_bottom_selected)
+                                    }
                                 )
                             }
                         )
@@ -101,8 +106,8 @@ fun MainNavScreen(
                 composable(BottomNavDestination.Wallet.key) {
                     walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
                 }
-                composable(BottomNavDestination.Profile.key) {
-                    ProfileScreen()
+                composable(BottomNavDestination.Settings.key) {
+                    SettingsScreen()
                 }
             }
         }
@@ -114,12 +119,12 @@ private fun createBottomNavItems(walletEnabled: State<Boolean>) =
         listOf(
             BottomNavDestination.Home,
             BottomNavDestination.Wallet,
-            BottomNavDestination.Profile
+            BottomNavDestination.Settings
         )
     } else {
         listOf(
             BottomNavDestination.Home,
-            BottomNavDestination.Profile
+            BottomNavDestination.Settings
         )
     }
 
