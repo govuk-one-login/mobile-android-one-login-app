@@ -26,11 +26,11 @@ fun OfflineErrorScreen(
 ) {
     GdsTheme {
         val analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel()
-        BackHandler { analyticsViewModel.trackBackButton() }
-        LaunchedEffect(Unit) {
-            analyticsViewModel.trackScreen()
+        BackHandler {
+            analyticsViewModel.trackBackButton()
             goBack()
         }
+        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(

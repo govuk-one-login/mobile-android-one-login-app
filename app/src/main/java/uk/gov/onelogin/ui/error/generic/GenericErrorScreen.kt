@@ -23,11 +23,11 @@ import uk.gov.android.ui.theme.GdsTheme
 fun GenericErrorScreen(onClick: () -> Unit = { }) {
     GdsTheme {
         val analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel()
-        BackHandler { analyticsViewModel.trackBackButton() }
-        LaunchedEffect(Unit) {
-            analyticsViewModel.trackScreen()
+        BackHandler {
+            analyticsViewModel.trackBackButton()
             onClick()
         }
+        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
             parameters = ErrorPageParameters(
                 primaryButtonParameters = ButtonParameters(
