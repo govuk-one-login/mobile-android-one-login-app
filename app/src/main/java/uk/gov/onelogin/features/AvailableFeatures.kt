@@ -12,8 +12,7 @@ class AvailableFeatures(
         listOf(
             AppCheckFeatureFlag.entries.toTypedArray(),
             WalletFeatureFlag.entries.toTypedArray(),
-            CriCardFeatureFlag.entries.toTypedArray(),
-            CriModalFeatureFlag.entries.toTypedArray()
+            CriOrchestratorFeatureFlag.entries.toTypedArray()
         ).flatMap {
             it.asIterable()
         }.toMutableSet()
