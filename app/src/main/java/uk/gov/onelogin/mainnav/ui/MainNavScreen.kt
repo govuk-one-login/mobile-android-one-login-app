@@ -1,5 +1,6 @@
 package uk.gov.onelogin.mainnav.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -78,7 +79,11 @@ fun MainNavScreen(
                             },
                             colors = {
                                 NavigationBarItemDefaults.colors(
-                                    indicatorColor = colorResource(id = R.color.nav_bottom_selected)
+                                    indicatorColor = if (isSystemInDarkTheme()) {
+                                        MaterialTheme.colorScheme.tertiary
+                                    } else {
+                                        colorResource(id = R.color.nav_bottom_selected)
+                                    }
                                 )
                             }
                         )

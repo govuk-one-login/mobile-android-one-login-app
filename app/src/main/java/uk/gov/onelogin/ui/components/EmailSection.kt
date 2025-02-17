@@ -44,7 +44,8 @@ fun EmailSection(email: String) {
                 appendLine()
                 withStyle(
                     style = SpanStyle(
-                        fontSize = MaterialTheme.typography.bodySmall.fontSize
+                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                        color = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     append(email)

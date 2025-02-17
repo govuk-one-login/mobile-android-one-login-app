@@ -158,7 +158,7 @@ internal fun AboutTheAppSection(
     PrivacyNotice(
         Modifier
             .padding(smallPadding),
-        style = MaterialTheme.typography.bodySmall,
+        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.surface),
         privacyNoticeString = stringResource(
             id = R.string.app_settingsAnalyticsToggleFootnote
         ),
@@ -214,6 +214,7 @@ private fun ExternalLinkRow(
                             end = 64.dp
                         ),
                     style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.surface,
                     text = it
                 )
             }
