@@ -27,7 +27,7 @@ class MainNavAnalyticsViewModelTest {
         val context: Context = ApplicationProvider.getApplicationContext()
         homeButton = context.getEnglishString(R.string.app_home)
         walletButton = context.getEnglishString(R.string.app_wallet)
-        settingsButton = context.getEnglishString(R.string.app_profile)
+        settingsButton = context.getEnglishString(R.string.app_settingsTitle)
         analyticsLogger = mock()
         viewModel = MainNavAnalyticsViewModel(context, analyticsLogger)
     }
