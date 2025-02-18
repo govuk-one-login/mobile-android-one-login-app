@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -29,7 +31,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
 import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.features.CriCardFeatureFlag
+import uk.gov.onelogin.features.CriOrchestratorFeatureFlag
 import uk.gov.onelogin.features.FeaturesModule
 import uk.gov.onelogin.features.WalletFeatureFlag
 
@@ -46,9 +48,7 @@ class HomeScreenKtTest : TestCase() {
     // TODO: Remove this after `activeSession` has been added to the CriOrchestrator and test using the stub
     //  provided
     @BindValue
-    var featureFlags: FeatureFlags = InMemoryFeatureFlags(
-        setOf(WalletFeatureFlag.ENABLED, CriCardFeatureFlag.ENABLED)
-    )
+    lateinit var featureFlags: FeatureFlags
 
     private val intent = Intent()
     private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
@@ -56,6 +56,9 @@ class HomeScreenKtTest : TestCase() {
     @Before
     fun setup() {
         Intents.init()
+        featureFlags = InMemoryFeatureFlags(
+            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+        )
         composeTestRule.setupComposeTestRule { _ ->
             HomeScreen()
         }
@@ -69,6 +72,18 @@ class HomeScreenKtTest : TestCase() {
     @Test
     fun homeScreenDisplayed() {
         composeTestRule.apply {
+            waitUntil(TIMEOUT) {
+                onNodeWithContentDescription(
+                    "Close",
+                    useUnmergedTree = true
+                ).isDisplayed()
+            }
+
+            onNodeWithContentDescription(
+                "Close",
+                useUnmergedTree = true
+            ).performClick()
+
             onNodeWithText(
                 resources.getString(R.string.app_homeTitle)
             ).assertIsDisplayed()
@@ -77,6 +92,23 @@ class HomeScreenKtTest : TestCase() {
                 resources.getString(R.string.appCriCardTestTag),
                 useUnmergedTree = true
             ).assertIsDisplayed()
+
+            onNodeWithText(
+                "Continue proving your identity",
+                useUnmergedTree = true
+            ).performClick()
+
+            waitUntil(TIMEOUT) {
+                onNodeWithContentDescription(
+                    "Close",
+                    useUnmergedTree = true
+                ).isDisplayed()
+            }
+
+            onNodeWithContentDescription(
+                "Close",
+                useUnmergedTree = true
+            ).performClick()
 
             onNodeWithTag(
                 resources.getString(R.string.yourServicesCardTestTag),
@@ -92,6 +124,18 @@ class HomeScreenKtTest : TestCase() {
         // This will stop the test from throwing an error due to missing intent on pipeline
         intending(hasData(context.getString(R.string.app_oneLoginCardLinkUrl))).respondWith(result)
         composeTestRule.apply {
+            waitUntil(TIMEOUT) {
+                onNodeWithContentDescription(
+                    "Close",
+                    useUnmergedTree = true
+                ).isDisplayed()
+            }
+
+            onNodeWithContentDescription(
+                "Close",
+                useUnmergedTree = true
+            ).performClick()
+
             activityRule.scenario.onActivity { activity ->
                 activity.onBackPressedDispatcher.onBackPressed()
             }
@@ -112,5 +156,9 @@ class HomeScreenKtTest : TestCase() {
         verify(mockAnalyticsLogger).logEventV3Dot1(
             HomeScreenAnalyticsViewModel.makeCardLinkEvent(context)
         )
+    }
+
+    companion object {
+        private const val TIMEOUT = 10000L
     }
 }

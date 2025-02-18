@@ -11,6 +11,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.features.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.navigation.Navigator
@@ -20,11 +21,13 @@ import uk.gov.onelogin.navigation.Navigator
 class HomeScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val httpClient: GenericHttpClient = mock()
+    private val analyticsLogger: AnalyticsLogger = mock()
     private val featureFlag: FeatureFlags = mock()
 
     private val viewModel by lazy {
         HomeScreenViewModel(
             httpClient,
+            analyticsLogger,
             featureFlag,
             mockNavigator
         )

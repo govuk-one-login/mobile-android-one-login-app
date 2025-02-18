@@ -42,10 +42,10 @@ firebaseBom = "33.7.0"
 crashlytics = "3.0.2"
 classgraph = "4.8.179"
 govuk-ui = "7.3.0"
-govuk-logging = "0.14.0"
+govuk-logging = "0.15.0"
 compose-runtime = "1.7.8"
 wallet = "1.38.0"
-cri-orchestrator = "0.7.9"
+cri-orchestrator = "0.9.2"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -106,7 +106,7 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.13.4" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.8.0" }
-network = { group = "uk.gov.android", name = "network", version = "0.2.8" }
+network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 
 # Firebase
