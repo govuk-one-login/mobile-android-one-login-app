@@ -55,3 +55,7 @@ veriff
 [Uu]ncomment
 onelogin
 [Bb]ackstack
+walletEnabled
+trackHome
+trackWallet
+trackProfile

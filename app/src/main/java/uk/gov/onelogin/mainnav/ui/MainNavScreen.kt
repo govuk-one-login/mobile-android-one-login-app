@@ -43,7 +43,13 @@ fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel()
 ) {
-    val navItems = createBottomNavItems(walletScreenViewModel.walletEnabled)
+    val analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
+    val navItems = createBottomNavItems(
+        walletScreenViewModel.walletEnabled,
+        { analyticsViewModel.trackHomeTabButton() },
+        { analyticsViewModel.trackWalletTabButton() },
+        { analyticsViewModel.trackSettingsTabButton() }
+    )
     GdsTheme {
         LaunchedEffect(Unit) {
             walletScreenViewModel.checkWalletEnabled()
@@ -55,10 +61,11 @@ fun MainNavScreen(
                     items = navItems.map { navDest ->
                         GdsNavigationItem(
                             icon = {
-                                Icon(painterResource(id = navDest.icon), navDest.key)
+                                Icon(painterResource(id = navDest.first.icon), navDest.first.key)
                             },
                             onClick = {
-                                navController.navigate(navDest.key) {
+                                navDest.second()
+                                navController.navigate(navDest.first.key) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }
@@ -66,17 +73,8 @@ fun MainNavScreen(
                                     restoreState = true
                                 }
                             },
-                            selected = navBackStackEntry?.destination?.route == navDest.key,
-                            label = {
-                                Text(
-                                    text = stringResource(id = navDest.label),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    fontSize = MaterialTheme
-                                        .typography.bodyMedium.fontSize.nonScaledSp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            },
+                            selected = navBackStackEntry?.destination?.route == navDest.first.key,
+                            label = { Label(navDest.first.label) },
                             colors = {
                                 NavigationBarItemDefaults.colors(
                                     indicatorColor = if (isSystemInDarkTheme()) {
@@ -114,19 +112,42 @@ fun MainNavScreen(
     }
 }
 
-private fun createBottomNavItems(walletEnabled: State<Boolean>) =
-    if (walletEnabled.value) {
-        listOf(
-            BottomNavDestination.Home,
-            BottomNavDestination.Wallet,
-            BottomNavDestination.Settings
-        )
+@Composable
+private fun Label(text: Int) {
+    Text(
+        text = stringResource(id = text),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        fontSize = MaterialTheme
+            .typography.bodyMedium.fontSize.nonScaledSp,
+        fontWeight = FontWeight.Bold
+    )
+}
+
+/**
+ * Based on the WalletFeatureFlag, it returns a [Pair] of [BottomNavDestination] and function to
+ * allow for displaying the correct tabs, but also log analytics based on what tab has been clicked.
+ *
+ * @param walletEnabled - Wallet feature flag value which controls if the Wallet tab is displayed
+ * @param trackHome - GA4 `trackEventIcon` for Home tab button
+ * @param trackWallet - - GA4 `trackEventIcon` for Wallet tab button
+ * @param trackProfile - GA4 `trackEventIcon` for Profile tab button
+ */
+private fun createBottomNavItems(
+    walletEnabled: State<Boolean>,
+    trackHome: () -> Unit,
+    trackWallet: () -> Unit,
+    trackProfile: () -> Unit
+): List<Pair<BottomNavDestination, () -> Unit>> {
+    val home = BottomNavDestination.Home to trackHome
+    val wallet = BottomNavDestination.Wallet to trackWallet
+    val profile = BottomNavDestination.Settings to trackProfile
+    return if (walletEnabled.value) {
+        listOf(home, wallet, profile)
     } else {
-        listOf(
-            BottomNavDestination.Home,
-            BottomNavDestination.Settings
-        )
+        listOf(home, profile)
     }
+}
 
 val TextUnit.nonScaledSp
     @Composable
