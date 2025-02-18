@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "uk.gov.onelogin.features"
+    namespace = "uk.gov.onelogin.core"
     compileSdk = 34
 
     defaultConfig {
