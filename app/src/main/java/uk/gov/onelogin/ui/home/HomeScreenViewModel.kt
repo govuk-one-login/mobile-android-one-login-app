@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.features.CriOrchestratorFeatureFlag

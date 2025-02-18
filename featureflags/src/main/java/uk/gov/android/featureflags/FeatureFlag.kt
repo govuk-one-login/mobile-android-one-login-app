@@ -1,4 +1,4 @@
-package uk.gov.android.features
+package uk.gov.android.featureflags
 
 /**
  * Interface for declaring a feature / sub-system within the code base.

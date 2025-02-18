@@ -5,9 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import uk.gov.android.features.FeatureFlag
-import uk.gov.android.features.FeatureFlags
-import uk.gov.android.features.InMemoryFeatureFlags
+import uk.gov.android.featureflags.FeatureFlag
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.features.AvailableFeatures
 
 @HiltViewModel

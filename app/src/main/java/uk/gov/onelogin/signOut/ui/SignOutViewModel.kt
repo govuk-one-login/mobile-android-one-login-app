@@ -9,7 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.onelogin.features.WalletFeatureFlag
 import uk.gov.onelogin.login.LoginRoutes
 import uk.gov.onelogin.navigation.Navigator

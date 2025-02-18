@@ -14,7 +14,7 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCalle
 import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.onelogin.appcheck.AppIntegrity
 import uk.gov.onelogin.appcheck.AppIntegrityImpl

@@ -1,4 +1,4 @@
-package uk.gov.android.features
+package uk.gov.android.featureflags
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -21,7 +21,7 @@ class InMemoryFeatureFlagsTest {
     @Test
     fun `flags may have features removed in an immutable way`() {
         val updateByFlag = FeatureFlagsTestData.originalFeatures -
-            FeatureFlagsTestData.existingFeature
+                FeatureFlagsTestData.existingFeature
         val updateBySet =
             FeatureFlagsTestData.originalFeatures - FeatureFlagsTestData.existingFeature
 

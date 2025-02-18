@@ -19,7 +19,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.R
 import uk.gov.android.wallet.core.R as walletR
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger

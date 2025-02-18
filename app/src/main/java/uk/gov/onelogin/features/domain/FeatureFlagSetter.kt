@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.domain
 
 import javax.inject.Inject
-import uk.gov.android.features.FeatureFlags
-import uk.gov.android.features.InMemoryFeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
 import uk.gov.onelogin.features.AppCheckFeatureFlag
 import uk.gov.onelogin.features.WalletFeatureFlag

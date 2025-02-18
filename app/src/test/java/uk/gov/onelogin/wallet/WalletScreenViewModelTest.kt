@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.WalletFeatureFlag
 

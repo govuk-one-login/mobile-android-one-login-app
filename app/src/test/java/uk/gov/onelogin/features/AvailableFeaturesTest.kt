@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
-import uk.gov.android.features.FeatureFlag
+import uk.gov.android.featureflags.FeatureFlag
 
 private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 3
 

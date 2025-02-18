@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import uk.gov.android.features.FeatureFlags
-import uk.gov.android.features.InMemoryFeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 
 @Module
 @InstallIn(

@@ -1,4 +1,4 @@
-package uk.gov.android.features
+package uk.gov.android.featureflags
 
 /**
  * An implementation of [FeatureFlags] that uses a [Set] as the underlying container of app

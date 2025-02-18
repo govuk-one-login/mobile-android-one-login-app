@@ -15,7 +15,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.features.FeatureFlags
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY

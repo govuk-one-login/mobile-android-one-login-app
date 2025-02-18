@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import uk.gov.android.features.InMemoryFeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.TestUtils
 import uk.gov.onelogin.features.AppCheckFeatureFlag
 import uk.gov.onelogin.features.WalletFeatureFlag

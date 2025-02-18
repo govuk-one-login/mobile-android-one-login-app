@@ -1,7 +1,7 @@
 package uk.gov.onelogin.features
 
 import javax.inject.Inject
-import uk.gov.android.features.FeatureFlag
+import uk.gov.android.featureflags.FeatureFlag
 
 class AvailableFeatures(
     private val features: MutableSet<FeatureFlag>

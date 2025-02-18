@@ -1,4 +1,4 @@
-package uk.gov.android.features
+package uk.gov.android.featureflags
 
 /**
  * Abstraction for containers of [FeatureFlag] objects.
