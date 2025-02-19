@@ -34,7 +34,7 @@ class SettingsAnalyticsViewModelTest {
     }
 
     @Test
-    fun testScreenEvent(){
+    fun testScreenEvent() {
         val event = TrackEventTestCase.Screen(
             trackFunction = {
                 viewModel.trackSettingsView()
@@ -48,7 +48,7 @@ class SettingsAnalyticsViewModelTest {
     }
 
     @Test
-    fun testButtonEvents(){
+    fun testButtonEvents() {
         listOf(
             TrackEventTestCase.Button(
                 trackFunction = {
