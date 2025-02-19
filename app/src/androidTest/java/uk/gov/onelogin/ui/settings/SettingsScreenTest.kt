@@ -45,6 +45,8 @@ import uk.gov.onelogin.signOut.SignOutRoutes
 class SettingsScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
+    @BindValue
+    var analytics: AnalyticsLogger = mock()
 
     @BindValue
     var analytics: AnalyticsLogger = mock()
