@@ -34,22 +34,22 @@ class SettingsAnalyticsViewModelTest {
     }
 
     @Test
-    fun testSettingsScreenTrackEvents() {
-        // Given a TrackEvent
+    fun testScreenEvent(){
+        val event = TrackEventTestCase.Screen(
+            trackFunction = {
+                viewModel.trackSettingsView()
+            },
+            name = context.getEnglishString(R.string.action_settings),
+            id = context.getEnglishString(R.string.settings_page_id)
+        )
+        val result = executeTrackEventTestCase(event, requiredParameters)
+        // Then log a event to the AnalyticsLogger
+        verify(logger).logEventV3Dot1(result)
+    }
+
+    @Test
+    fun testButtonEvents(){
         listOf(
-            TrackEventTestCase.Screen(
-                trackFunction = {
-                    viewModel.trackSettingsView()
-                },
-                name = context.getEnglishString(R.string.action_settings),
-                id = context.getEnglishString(R.string.settings_page_id)
-            ),
-            TrackEventTestCase.Icon(
-                trackFunction = {
-                    viewModel.trackBackButton()
-                },
-                text = context.getEnglishString(R.string.system_backButton)
-            ),
             TrackEventTestCase.Button(
                 trackFunction = {
                     viewModel.trackSignOutButton()
@@ -61,6 +61,24 @@ class SettingsAnalyticsViewModelTest {
                     viewModel.trackOpenSourceButton()
                 },
                 text = context.getEnglishString(R.string.app_openSourceLicences)
+            )
+        ).forEach {
+            // When tracking
+            val result = executeTrackEventTestCase(it, requiredParameters)
+            // Then log a event to the AnalyticsLogger
+            verify(logger).logEventV3Dot1(result)
+        }
+    }
+
+    @Test
+    fun testLinkEvents() {
+        // Given a TrackEvent
+        listOf(
+            TrackEventTestCase.Icon(
+                trackFunction = {
+                    viewModel.trackBackButton()
+                },
+                text = context.getEnglishString(R.string.system_backButton)
             ),
             TrackEventTestCase.Link(
                 trackFunction = {
@@ -99,7 +117,7 @@ class SettingsAnalyticsViewModelTest {
             )
         ).forEach {
             // When tracking
-           val result = executeTrackEventTestCase(it, requiredParameters)
+            val result = executeTrackEventTestCase(it, requiredParameters)
             // Then log a event to the AnalyticsLogger
             verify(logger).logEventV3Dot1(result)
         }

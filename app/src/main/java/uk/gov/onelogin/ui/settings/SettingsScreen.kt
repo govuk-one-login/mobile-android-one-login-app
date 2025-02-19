@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,68 +64,98 @@ fun SettingsScreen(
     val uriHandler = LocalUriHandler.current
     val email = viewModel.email
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
-    val signInUrl = stringResource(R.string.app_manageSignInDetailsUrl)
-    val privacyNoticeUrl = stringResource(R.string.privacy_notice_url)
-    val accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl)
-    val helpUrl = stringResource(R.string.app_helpUrl)
-    val contactUrl = stringResource(R.string.app_contactUrl)
-    TitledPage(
-        title = R.string.app_settingsTitle
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-        ) {
-            EmailSection(email)
-            YourDetailsSection(
-                onClick = {
-                    analyticsViewModel.trackSignInDetailLink()
-                    uriHandler.openUri(signInUrl)
-                }
-            )
-            HelpAndFeedbackSection(
-                onHelpClick = {
-                    analyticsViewModel.trackUsingOneLoginLink()
-                    uriHandler.openUri(helpUrl)
-                },
-                onContactClick = {
-                    analyticsViewModel.trackContactOneLoginLink()
-                    uriHandler.openUri(contactUrl)
-                }
-            )
-            AboutTheAppSection(
-                optInState = optInState,
-                onToggle = {
-                    viewModel.toggleOptInPreference()
-                },
-                onPrivacyNoticeClick = {
-                    analyticsViewModel.trackPrivacyNoticeLink()
-                    uriHandler.openUri(privacyNoticeUrl)
-                }
-            )
-            LegalSection(
-                onPrivacyNoticeClick = {
-                    analyticsViewModel.trackPrivacyNoticeLink()
-                    uriHandler.openUri(privacyNoticeUrl)
-                },
-                onAccessibilityStatementClick = {
-                    analyticsViewModel.trackAccessibilityStatementLink()
-                    uriHandler.openUri(accessibilityStatementUrl)
-                },
-                onOpenSourceLicensesClick = {
-                    analyticsViewModel.trackOpenSourceButton()
-                }
-            )
-            SignOutRow(
-                openSignOutScreen = {
-                    analyticsViewModel.trackSignOutButton()
-                    viewModel.goToSignOut()
-                }
-            )
-        }
+    val settingsScreenLinks = SettingsScreenLinks(
+        signInUrl = stringResource(R.string.app_manageSignInDetailsUrl),
+        privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
+        accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
+        helpUrl = stringResource(R.string.app_helpUrl),
+        contactUrl = stringResource(R.string.app_contactUrl)
+    )
+
+    TitledPage(title = R.string.app_settingsTitle) { paddingValues ->
+        SettingsScreenContent(
+            paddingValues = paddingValues,
+            email = email,
+            optInState = optInState,
+            viewModel = viewModel,
+            analyticsViewModel = analyticsViewModel,
+            uriHandler = uriHandler,
+            settingsScreenLinks = settingsScreenLinks
+        )
     }
 }
+
+@Composable
+private fun SettingsScreenContent(
+    paddingValues: PaddingValues,
+    email: String,
+    optInState: Boolean,
+    viewModel: SettingsScreenViewModel,
+    analyticsViewModel: SettingsAnalyticsViewModel,
+    uriHandler: UriHandler,
+    settingsScreenLinks: SettingsScreenLinks
+) {
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState())
+    ) {
+        EmailSection(email)
+        YourDetailsSection(
+            onClick = {
+                analyticsViewModel.trackSignInDetailLink()
+                uriHandler.openUri(settingsScreenLinks.signInUrl)
+            }
+        )
+        HelpAndFeedbackSection(
+            onHelpClick = {
+                analyticsViewModel.trackUsingOneLoginLink()
+                uriHandler.openUri(settingsScreenLinks.helpUrl)
+            },
+            onContactClick = {
+                analyticsViewModel.trackContactOneLoginLink()
+                uriHandler.openUri(settingsScreenLinks.contactUrl)
+            }
+        )
+        AboutTheAppSection(
+            optInState = optInState,
+            onToggle = {
+                viewModel.toggleOptInPreference()
+            },
+            onPrivacyNoticeClick = {
+                analyticsViewModel.trackPrivacyNoticeLink()
+                uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
+            }
+        )
+        LegalSection(
+            onPrivacyNoticeClick = {
+                analyticsViewModel.trackPrivacyNoticeLink()
+                uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
+            },
+            onAccessibilityStatementClick = {
+                analyticsViewModel.trackAccessibilityStatementLink()
+                uriHandler.openUri(settingsScreenLinks.accessibilityStatementUrl)
+            },
+            onOpenSourceLicensesClick = {
+                analyticsViewModel.trackOpenSourceButton()
+            }
+        )
+        SignOutRow(
+            openSignOutScreen = {
+                analyticsViewModel.trackSignOutButton()
+                viewModel.goToSignOut()
+            }
+        )
+    }
+}
+
+private data class SettingsScreenLinks(
+    val signInUrl: String,
+    val privacyNoticeUrl: String,
+    val accessibilityStatementUrl: String,
+    val helpUrl: String,
+    val contactUrl: String
+)
 
 @Composable
 private fun YourDetailsSection(
