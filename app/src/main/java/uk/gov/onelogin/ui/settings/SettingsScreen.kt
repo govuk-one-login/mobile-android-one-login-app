@@ -1,5 +1,6 @@
 package uk.gov.onelogin.ui.settings
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,11 +22,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +55,11 @@ import uk.gov.onelogin.ui.components.TitledPage
 fun SettingsScreen(
     viewModel: SettingsScreenViewModel = hiltViewModel()
 ) {
+    val analyticsViewModel: SettingsAnalyticsViewModel = hiltViewModel()
+    BackHandler { analyticsViewModel.trackBackButton() }
+    LaunchedEffect(Unit) {
+        analyticsViewModel.trackSettingsView()
+    }
     val uriHandler = LocalUriHandler.current
     val email = viewModel.email
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
@@ -71,25 +77,58 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             EmailSection(email)
-            YourDetailsSection(uriHandler, signInUrl)
-            HelpAndFeedbackSection(uriHandler, helpUrl, contactUrl)
+            YourDetailsSection(
+                onClick = {
+                    analyticsViewModel.trackSignInDetailLink()
+                    uriHandler.openUri(signInUrl)
+                }
+            )
+            HelpAndFeedbackSection(
+                onHelpClick = {
+                    analyticsViewModel.trackUsingOneLoginLink()
+                    uriHandler.openUri(helpUrl)
+                },
+                onContactClick = {
+                    analyticsViewModel.trackContactOneLoginLink()
+                    uriHandler.openUri(contactUrl)
+                }
+            )
             AboutTheAppSection(
-                optInState,
-                uriHandler,
-                privacyNoticeUrl
-            ) {
-                viewModel.toggleOptInPreference()
-            }
-            LegalSection(uriHandler, privacyNoticeUrl, accessibilityStatementUrl)
-            SignOutRow { viewModel.goToSignOut() }
+                optInState = optInState,
+                onToggle = {
+                    viewModel.toggleOptInPreference()
+                },
+                onPrivacyNoticeClick = {
+                    analyticsViewModel.trackPrivacyNoticeLink()
+                    uriHandler.openUri(privacyNoticeUrl)
+                }
+            )
+            LegalSection(
+                onPrivacyNoticeClick = {
+                    analyticsViewModel.trackPrivacyNoticeLink()
+                    uriHandler.openUri(privacyNoticeUrl)
+                },
+                onAccessibilityStatementClick = {
+                    analyticsViewModel.trackAccessibilityStatementLink()
+                    uriHandler.openUri(accessibilityStatementUrl)
+                },
+                onOpenSourceLicensesClick = {
+                    analyticsViewModel.trackOpenSourceButton()
+                }
+            )
+            SignOutRow(
+                openSignOutScreen = {
+                    analyticsViewModel.trackSignOutButton()
+                    viewModel.goToSignOut()
+                }
+            )
         }
     }
 }
 
 @Composable
 private fun YourDetailsSection(
-    uriHandler: UriHandler,
-    signInUrl: String
+    onClick: () -> Unit
 ) {
     HorizontalDivider()
     ExternalLinkRow(
@@ -99,55 +138,55 @@ private fun YourDetailsSection(
             id = R.string.app_settingSignInDetailsFootnote
         )
     ) {
-        uriHandler.openUri(signInUrl)
+        onClick()
     }
 }
 
 @Composable
 private fun LegalSection(
-    uriHandler: UriHandler,
-    privacyNoticeUrl: String,
-    accessibilityStatementUrl: String
+    onPrivacyNoticeClick: () -> Unit,
+    onAccessibilityStatementClick: () -> Unit,
+    onOpenSourceLicensesClick: () -> Unit
 ) {
     ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
-        uriHandler.openUri(privacyNoticeUrl)
+        onPrivacyNoticeClick()
     }
     HorizontalDivider()
     ExternalLinkRow(R.string.app_accessibilityStatement, R.drawable.external_link_icon) {
-        uriHandler.openUri(accessibilityStatementUrl)
+        onAccessibilityStatementClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(R.string.app_openSourceLicences, R.drawable.arrow_right_icon)
+    ExternalLinkRow(R.string.app_openSourceLicences, R.drawable.arrow_right_icon) {
+        onOpenSourceLicensesClick()
+    }
 }
 
 @Composable
 private fun HelpAndFeedbackSection(
-    uriHandler: UriHandler,
-    helpUrl: String,
-    contactUrl: String
+    onHelpClick: () -> Unit,
+    onContactClick: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle1)
     ExternalLinkRow(
         R.string.app_appGuidanceLink,
         R.drawable.external_link_icon
     ) {
-        uriHandler.openUri(helpUrl)
+        onHelpClick()
     }
     HorizontalDivider()
     ExternalLinkRow(
         R.string.app_contactLink,
         R.drawable.external_link_icon
     ) {
-        uriHandler.openUri(contactUrl)
+        onContactClick()
     }
 }
 
 @Composable
 internal fun AboutTheAppSection(
     optInState: Boolean,
-    uriHandler: UriHandler,
-    privacyNoticeUrl: String,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
+    onPrivacyNoticeClick: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle2)
     PreferenceToggleRow(
@@ -166,7 +205,7 @@ internal fun AboutTheAppSection(
             id = R.string.app_settingsAnalyticsToggleFootnoteLink
         )
     ) {
-        uriHandler.openUri(privacyNoticeUrl)
+        onPrivacyNoticeClick()
     }
 }
 
