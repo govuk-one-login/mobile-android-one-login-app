@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.click
@@ -23,6 +22,7 @@ import androidx.test.espresso.intent.matcher.UriMatchers
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -31,17 +31,23 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.TestCase
+import uk.gov.onelogin.core.analytics.AnalyticsModule
 import uk.gov.onelogin.navigation.Navigator
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.signOut.SignOutRoutes
 
 @HiltAndroidTest
-@UninstallModules(NavigatorModule::class)
+@UninstallModules(NavigatorModule::class, AnalyticsModule::class)
 class SettingsScreenTest : TestCase() {
     @BindValue
     val mockNavigator: Navigator = mock()
+
+    @BindValue
+    var analytics: AnalyticsLogger = mock()
 
     private lateinit var yourDetailsHeader: SemanticsMatcher
     private lateinit var yourDetailsTitle: SemanticsMatcher
@@ -55,6 +61,7 @@ class SettingsScreenTest : TestCase() {
     private lateinit var aboutTheAppSubTitle: SemanticsMatcher
     private lateinit var aboutTheAppPrivacyLink: SemanticsMatcher
     private lateinit var signOutButton: SemanticsMatcher
+    private lateinit var openSourceLicensesButton: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -75,6 +82,7 @@ class SettingsScreenTest : TestCase() {
         )
         aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
+        openSourceLicensesButton = hasText(resources.getString(R.string.app_openSourceLicences))
         Intents.init()
         intending(not(isInternal())).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
@@ -94,6 +102,7 @@ class SettingsScreenTest : TestCase() {
         composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
     }
 
     @Test
@@ -133,18 +142,19 @@ class SettingsScreenTest : TestCase() {
     @Test
     fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() {
         var optInState = false
-        val privacyNoticeUrl = resources.getString(R.string.privacy_notice_url)
-        val uriHandler = mock<UriHandler>()
+        var privacyNoticeClicked = false
         composeTestRule.setContent {
-            AboutTheAppSection(optInState, uriHandler, privacyNoticeUrl) {
-                optInState = true
-            }
+            AboutTheAppSection(
+                optInState,
+                onToggle = { optInState = true },
+                onPrivacyNoticeClick = { privacyNoticeClicked = true }
+            )
         }
         composeTestRule.onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
             .performTouchInput {
                 click(bottomRight.copy(x = bottomRight.x - 10f))
             }
-        verify(uriHandler).openUri(privacyNoticeUrl)
+        assertTrue(privacyNoticeClicked)
     }
 
     @Test
@@ -154,6 +164,16 @@ class SettingsScreenTest : TestCase() {
         }
         composeTestRule.onNode(signOutButton).performScrollTo().performClick()
         verify(mockNavigator).navigate(SignOutRoutes.Start)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignOutEvent(context))
+    }
+
+    @Test
+    fun openSourceLicensesCta() {
+        composeTestRule.setContent {
+            SettingsScreen()
+        }
+        composeTestRule.onNode(openSourceLicensesButton).performScrollTo().performClick()
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeOpenSourceEvent(context))
     }
 
     @Test
@@ -161,6 +181,7 @@ class SettingsScreenTest : TestCase() {
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_manageSignInDetailsUrl)
         checkTheLinkOpensTheCorrectUrl(yourDetailsTitle, url)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignInDetailsEvent(context))
     }
 
     @Test
@@ -168,6 +189,7 @@ class SettingsScreenTest : TestCase() {
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_helpUrl)
         checkTheLinkOpensTheCorrectUrl(helpLink, url)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeUsingOneLoginEvent(context))
     }
 
     @Test
@@ -175,6 +197,7 @@ class SettingsScreenTest : TestCase() {
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_contactUrl)
         checkTheLinkOpensTheCorrectUrl(contactLink, url)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeContactEvent(context))
     }
 
     @Test
@@ -182,6 +205,7 @@ class SettingsScreenTest : TestCase() {
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.privacy_notice_url)
         checkTheLinkOpensTheCorrectUrl(legalLink1, url)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makePrivacyNoticeEvent(context))
     }
 
     @Test
@@ -189,6 +213,7 @@ class SettingsScreenTest : TestCase() {
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_accessibilityStatementUrl)
         checkTheLinkOpensTheCorrectUrl(legalLink3, url)
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAccessibilityEvent(context))
     }
 
     private fun checkTheLinkOpensTheCorrectUrl(linkView: SemanticsMatcher, url: String) {
