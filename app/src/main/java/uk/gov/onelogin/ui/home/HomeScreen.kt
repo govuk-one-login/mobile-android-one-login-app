@@ -26,6 +26,7 @@ import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdenti
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.ui.components.TitledPage
+import uk.gov.onelogin.ui.components.customAccessibility
 
 @Composable
 @Preview
@@ -75,7 +76,7 @@ fun HomeScreen(
                     analyticsViewModel.trackLink()
                     uriHandler.openUri(servicesUrl)
                 },
-                modifier = Modifier
+                modifier = Modifier.customAccessibility(contentsCardTitle)
                     .padding(top = smallPadding)
                     .testTag(stringResource(R.string.yourServicesCardTestTag))
             )

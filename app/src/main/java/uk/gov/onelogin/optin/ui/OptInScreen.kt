@@ -29,6 +29,7 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
+import uk.gov.onelogin.ui.components.customAccessibility
 
 @Composable
 fun OptInScreen(
@@ -93,13 +94,16 @@ private fun OptInHeader() {
 private fun OptInContent(onPrivacyNotice: (Uri) -> Unit, url: String) {
     Text(
         modifier = Modifier
+            .customAccessibility(
+                stringResource(id = R.string.app_analyticsPermissionBody)
+            )
             .padding(all = smallPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.bodyLarge,
         text = stringResource(id = R.string.app_analyticsPermissionBody)
     )
     PrivacyNotice(
-        modifier = Modifier
+        modifier = Modifier.customAccessibility(stringResource(id = R.string.app_privacyNoticeLink))
             .padding(horizontal = smallPadding),
         style = MaterialTheme.typography.bodyLarge,
         privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),

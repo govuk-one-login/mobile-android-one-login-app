@@ -37,6 +37,7 @@ import uk.gov.android.ui.theme.spacingDouble
 import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.meta.ScreenPreview
 import uk.gov.onelogin.navigation.closeApp
+import uk.gov.onelogin.ui.components.customAccessibility
 
 internal const val ICON_TAG = "icon.tag"
 private val iconSize = 100.dp
@@ -89,7 +90,7 @@ internal fun AppUnavailableBody() {
             )
             Text(
                 color = color,
-                modifier = Modifier
+                modifier = Modifier.customAccessibility(stringResource(R.string.app_appUnavailableBody))
                     .fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge, // `bodySmall`
                 text = stringResource(R.string.app_appUnavailableBody),

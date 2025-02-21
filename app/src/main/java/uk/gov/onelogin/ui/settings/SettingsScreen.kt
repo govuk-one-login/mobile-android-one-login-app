@@ -50,6 +50,7 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.optin.ui.PrivacyNotice
 import uk.gov.onelogin.ui.components.EmailSection
 import uk.gov.onelogin.ui.components.TitledPage
+import uk.gov.onelogin.ui.components.customAccessibility
 
 @Composable
 @Preview
@@ -227,6 +228,11 @@ internal fun AboutTheAppSection(
     )
     PrivacyNotice(
         Modifier
+            .customAccessibility(
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnote
+                )
+            )
             .padding(smallPadding),
         style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.surface),
         privacyNoticeString = stringResource(
@@ -269,6 +275,7 @@ private fun ExternalLinkRow(
         Column {
             Text(
                 modifier = Modifier
+                    .customAccessibility(stringResource(title))
                     .padding(horizontal = smallPadding)
                     .padding(top = smallPadding)
                     .padding(bottom = if (description == null) smallPadding else 4.dp),
@@ -278,6 +285,7 @@ private fun ExternalLinkRow(
             description?.let {
                 Text(
                     modifier = Modifier
+                        .customAccessibility(it)
                         .padding(
                             start = smallPadding,
                             bottom = smallPadding,

@@ -49,9 +49,6 @@ class SettingsScreenTest : TestCase() {
     @BindValue
     var analytics: AnalyticsLogger = mock()
 
-    @BindValue
-    var analytics: AnalyticsLogger = mock()
-
     private lateinit var yourDetailsHeader: SemanticsMatcher
     private lateinit var yourDetailsTitle: SemanticsMatcher
     private lateinit var yourDetailsSubTitle: SemanticsMatcher
