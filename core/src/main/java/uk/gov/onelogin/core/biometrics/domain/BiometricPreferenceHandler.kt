@@ -13,9 +13,7 @@ interface BiometricPreferenceHandler : Cleaner {
     fun getBioPref(): BiometricPreference?
 }
 
-class BiometricPreferenceHandlerImpl
-@Inject
-constructor(
+class BiometricPreferenceHandlerImpl @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) : BiometricPreferenceHandler {

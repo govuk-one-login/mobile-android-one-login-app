@@ -7,9 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import uk.gov.onelogin.core.biometrics.data.BiometricStatus
 
-class BiometricManagerImpl
-@Inject
-constructor(
+class BiometricManagerImpl @Inject constructor(
     @ApplicationContext
     context: Context
 ) : BiometricManager {

@@ -6,9 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import uk.gov.onelogin.core.biometrics.data.BiometricStatus
 
-class DeviceCredentialChecker
-@Inject
-constructor(
+class DeviceCredentialChecker @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val biometricManager: BiometricManager
