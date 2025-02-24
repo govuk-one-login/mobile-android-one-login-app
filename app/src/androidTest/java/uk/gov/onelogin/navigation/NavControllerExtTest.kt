@@ -8,9 +8,11 @@ import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.login.LoginGraphObject.loginGraph
-import uk.gov.onelogin.login.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.domain.closeApp
+import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
+import uk.gov.onelogin.navigation.graphs.LoginGraphObject.loginGraph
+import uk.gov.onelogin.utils.TestCase
 
 @HiltAndroidTest
 class NavControllerExtTest : TestCase() {
