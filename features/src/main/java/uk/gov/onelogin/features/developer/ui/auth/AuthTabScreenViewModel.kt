@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.auth
+package uk.gov.onelogin.features.developer.ui.auth
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,12 +8,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.network.usecase.HelloWorldApiCall
-import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.tokens.usecases.GetEmail
+import uk.gov.onelogin.core.network.domain.HelloWorldApiCall
+import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 
 @HiltViewModel
-class AuthTabScreenViewModel @Inject constructor(
+class AuthTabScreenViewModel
+@Inject
+constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
     private val tokenRepository: TokenRepository,
     getEmail: GetEmail

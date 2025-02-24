@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.tokens
+package uk.gov.onelogin.features.developer.ui.tokens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.m3.buttons.ButtonParameters
 import uk.gov.android.ui.components.m3.buttons.ButtonType
 import uk.gov.android.ui.components.m3.buttons.GdsButton
@@ -25,9 +25,7 @@ import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
 @Composable
-fun TokenTabScreen(
-    viewModel: TokenTabScreenViewModel = hiltViewModel()
-) {
+fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val persistentId by viewModel.persistentId.collectAsState()
     Column(

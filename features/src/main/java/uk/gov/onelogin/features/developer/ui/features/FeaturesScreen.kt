@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.features
+package uk.gov.onelogin.features.developer.ui.features
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.GdsHeading
 import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
@@ -24,17 +24,17 @@ import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
 @Composable
-fun FeaturesScreen(
-    viewModel: FeaturesScreenViewModel = hiltViewModel()
-) {
+fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
     val availableFeatures by viewModel.featureList
     Column(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxSize()
             .padding(mediumPadding)
     ) {
         GdsHeading(
-            headingParameters = HeadingParameters(
+            headingParameters =
+            HeadingParameters(
                 size = HeadingSize.H2(),
                 text = R.string.app_developer_features_title
             )

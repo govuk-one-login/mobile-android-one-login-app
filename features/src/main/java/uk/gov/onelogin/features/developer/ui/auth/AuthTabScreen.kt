@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.auth
+package uk.gov.onelogin.features.developer.ui.auth
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -24,21 +24,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.m3.buttons.ButtonParameters
 import uk.gov.android.ui.components.m3.buttons.ButtonType
 import uk.gov.android.ui.components.m3.buttons.GdsButton
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.ui.components.EmailSection
+import uk.gov.onelogin.core.ui.components.EmailSection
 
 @Composable
-fun AuthTabScreen(
-    viewModel: AuthTabScreenViewModel = hiltViewModel()
-) {
+fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier =
+        Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         AuthTokensSection(viewModel)
@@ -47,9 +46,7 @@ fun AuthTabScreen(
 }
 
 @Composable
-private fun AuthTokensSection(
-    viewModel: AuthTabScreenViewModel
-) {
+private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     val tokens = viewModel.getTokens()
     val email = viewModel.email
     Text(
@@ -66,7 +63,8 @@ private fun AuthTokensSection(
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
-        modifier = Modifier
+        modifier =
+        Modifier
             .padding(16.dp)
     )
     HorizontalDivider()
@@ -78,7 +76,8 @@ private fun AuthTokensSection(
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
-        modifier = Modifier
+        modifier =
+        Modifier
             .padding(16.dp)
     )
     HorizontalDivider()
@@ -90,7 +89,8 @@ private fun AuthTokensSection(
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.refreshToken ?: "No refresh token set!",
-        modifier = Modifier
+        modifier =
+        Modifier
             .padding(
                 all = 16.dp
             )
@@ -99,9 +99,7 @@ private fun AuthTokensSection(
 }
 
 @Composable
-private fun OpenIdAuthSection(
-    viewModel: AuthTabScreenViewModel
-) {
+private fun OpenIdAuthSection(viewModel: AuthTabScreenViewModel) {
     val happyApiResponse by viewModel.happyHelloWorldResponse
     val happyCallLoading by viewModel.happyCallLoading
     val authFailingApiResponse by viewModel.authFailingHelloWorldResponse
@@ -140,14 +138,16 @@ private fun ButtonRow(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier =
+        Modifier.fillMaxWidth()
             .padding(vertical = smallPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (!buttonLoading) {
             GdsButton(
-                buttonParameters = ButtonParameters(
+                buttonParameters =
+                ButtonParameters(
                     modifier = Modifier.padding(bottom = 8.dp),
                     text = stringResource(buttonText),
                     buttonType = ButtonType.PRIMARY(),
@@ -164,10 +164,12 @@ private fun ButtonRow(
         }
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = buildAnnotatedString {
+            text =
+            buildAnnotatedString {
                 append("Api response: ")
                 withStyle(
-                    style = SpanStyle(
+                    style =
+                    SpanStyle(
                         fontWeight = FontWeight.Bold
                     )
                 ) {

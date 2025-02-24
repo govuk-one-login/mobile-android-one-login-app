@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.features
+package uk.gov.onelogin.features.developer.ui.features
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,10 +8,12 @@ import javax.inject.Inject
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
-import uk.gov.onelogin.features.AvailableFeatures
+import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 
 @HiltViewModel
-class FeaturesScreenViewModel @Inject constructor(
+class FeaturesScreenViewModel
+@Inject
+constructor(
     private val featureFlags: FeatureFlags,
     private val availableFeatures: AvailableFeatures
 ) : ViewModel() {

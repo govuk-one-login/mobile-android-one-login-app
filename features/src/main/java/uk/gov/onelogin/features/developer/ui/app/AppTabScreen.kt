@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.app
+package uk.gov.onelogin.features.developer.ui.app
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -28,15 +28,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.onelogin.BuildConfig
+import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.mediumPadding
-import uk.gov.onelogin.appinfo.apicall.domain.model.AppInfoData
+import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
 @Composable
-fun AppTabScreen(
-    viewModel: AppTabScreenViewModel = hiltViewModel()
-) {
+fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
     val data = viewModel.appInfo.collectAsState()
     LaunchedEffect(viewModel.appInfo) {
         viewModel.getAppInfo()
@@ -53,15 +51,15 @@ fun AppTabScreen(
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = buildAnnotatedString {
+                    text =
+                    buildAnnotatedString {
                         append("App flavor: ")
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append(BuildConfig.FLAVOR)
                         }
                     }
                 )
-                Text(text = "Version Name: ${BuildConfig.VERSION_NAME}")
-                Text(text = "Version Code: ${BuildConfig.VERSION_CODE}")
+                Text(text = "Version Name: ${viewModel.version}")
             }
         }
         Text(
@@ -110,22 +108,25 @@ private fun AppInfoView(
     )
     Button(
         onClick = {
-            val updatedData = AppInfoData(
-                AppInfoData.App(
-                    AppInfoData.AppInfo(
-                        minimumVersion = minimumVersion,
-                        releaseFlags = AppInfoData.ReleaseFlags(
-                            walletVisibleViaDeepLink = false,
-                            walletVisibleIfExists = false,
-                            walletVisibleToAll = walletEnabled
-                        ),
-                        available = appAvailable,
-                        featureFlags = AppInfoData.FeatureFlags(
-                            appCheckEnabled = appCheckEnabled
+            val updatedData =
+                AppInfoData(
+                    AppInfoData.App(
+                        AppInfoData.AppInfo(
+                            minimumVersion = minimumVersion,
+                            releaseFlags =
+                            AppInfoData.ReleaseFlags(
+                                walletVisibleViaDeepLink = false,
+                                walletVisibleIfExists = false,
+                                walletVisibleToAll = walletEnabled
+                            ),
+                            available = appAvailable,
+                            featureFlags =
+                            AppInfoData.FeatureFlags(
+                                appCheckEnabled = appCheckEnabled
+                            )
                         )
                     )
                 )
-            )
             Log.d("UpdatedAppInfo", "$updatedData")
             viewModel.updateAppInfoData(updatedData)
         }

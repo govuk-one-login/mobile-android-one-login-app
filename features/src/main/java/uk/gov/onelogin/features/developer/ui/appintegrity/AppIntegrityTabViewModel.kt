@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.appintegrity
+package uk.gov.onelogin.features.developer.ui.appintegrity
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -10,14 +10,16 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
-import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
-import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 
 @HiltViewModel
-class AppIntegrityTabViewModel @Inject constructor(
+class AppIntegrityTabViewModel
+@Inject
+constructor(
     private val firebaseAppCheck: AppChecker,
     private val appCheck: AppIntegrityManager,
     private val appIntegrity: AppIntegrity,

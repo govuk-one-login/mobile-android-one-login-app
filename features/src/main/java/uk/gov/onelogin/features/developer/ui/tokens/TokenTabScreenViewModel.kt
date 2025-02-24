@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer.tabs.tokens
+package uk.gov.onelogin.features.developer.ui.tokens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,13 +8,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.tokens.Keys
-import uk.gov.onelogin.tokens.usecases.GetPersistentId
-import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
-import uk.gov.onelogin.tokens.usecases.SaveTokenExpiry
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
+import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
+import uk.gov.onelogin.core.tokens.utils.Keys
 
 @HiltViewModel
-class TokenTabScreenViewModel @Inject constructor(
+class TokenTabScreenViewModel
+@Inject
+constructor(
     private val saveTokenExpiry: SaveTokenExpiry,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getPersistentId: GetPersistentId

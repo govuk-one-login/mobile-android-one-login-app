@@ -1,4 +1,4 @@
-package uk.gov.onelogin.developer
+package uk.gov.onelogin.features.developer.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -38,46 +38,47 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import uk.gov.android.onelogin.R
-import uk.gov.onelogin.developer.tabs.app.AppTabScreen
-import uk.gov.onelogin.developer.tabs.appintegrity.AppIntegrityTabScreen
-import uk.gov.onelogin.developer.tabs.auth.AuthTabScreen
-import uk.gov.onelogin.developer.tabs.features.FeaturesScreen
-import uk.gov.onelogin.developer.tabs.tokens.TokenTabScreen
-import uk.gov.onelogin.ui.components.SimpleTextPage
+import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.core.ui.pages.SimpleTextPage
+import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
+import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
+import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
+import uk.gov.onelogin.features.developer.ui.features.FeaturesScreen
+import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 
 @Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabView(goBack: () -> Unit) {
-    val tabs = listOf(
-        TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
-
-        TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
-            AuthTabScreen()
-        },
-        TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
-            TokenTabScreen()
-        },
-        TabItem(R.string.app_developer_tab_app_integrity, Icons.Filled.CheckCircle) {
-            AppIntegrityTabScreen()
-        },
-        TabItem(
-            R.string.app_developer_tab_feature_flags,
-            Icons.Filled.Settings
-        ) {
-            FeaturesScreen()
-        },
-        TabItem(
-            R.string.app_developer_tab_secure_store,
-            Icons.Filled.Lock
-        ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
-    )
+    val tabs =
+        listOf(
+            TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
+            TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
+                AuthTabScreen()
+            },
+            TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
+                TokenTabScreen()
+            },
+            TabItem(R.string.app_developer_tab_app_integrity, Icons.Filled.CheckCircle) {
+                AppIntegrityTabScreen()
+            },
+            TabItem(
+                R.string.app_developer_tab_feature_flags,
+                Icons.Filled.Settings
+            ) {
+                FeaturesScreen()
+            },
+            TabItem(
+                R.string.app_developer_tab_secure_store,
+                Icons.Filled.Lock
+            ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
+        )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     Column {
         CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
+            colors =
+            TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,
                 titleContentColor = Color.Gray
             ),
@@ -105,7 +106,8 @@ fun TabView(goBack: () -> Unit) {
             contentColor = Color.Gray,
             indicator = { tabPositions ->
                 SecondaryIndicator(
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .tabIndicatorOffset(tabPositions[pagerState.currentPage])
                         .fillMaxWidth(),
                     color = Color.Black
@@ -129,7 +131,8 @@ fun TabView(goBack: () -> Unit) {
                             Text(
                                 text = stringResource(tab.title),
                                 modifier = Modifier.padding(8.dp),
-                                color = if (pagerState.currentPage == index) {
+                                color =
+                                if (pagerState.currentPage == index) {
                                     Color.Black
                                 } else {
                                     Color.Gray
