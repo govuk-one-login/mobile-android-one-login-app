@@ -1,4 +1,4 @@
-package uk.gov.onelogin.appcheck.usecase
+package uk.gov.onelogin.login
 
 import android.content.Context
 import dagger.Module
@@ -16,15 +16,16 @@ import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AppIntegrityImpl
-import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
-import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityImpl
+import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
 
 @SuppressWarnings("kotlin:S6517")
 @Module
 @InstallIn(ViewModelComponent::class)
-object AppCheckUseCaseModule {
+object AppIntegrityModule {
     @Provides
     fun provideAppIntegrityConfig(
         attestationCaller: AttestationCaller,

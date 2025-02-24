@@ -12,10 +12,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.onelogin.BuildConfig
+import uk.gov.onelogin.features.login.domain.appintegrity.FirebaseAppCheck
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppCheckModule {
+object AppCheckerModule {
     @Provides
     fun provideAppCheck(
         @ApplicationContext

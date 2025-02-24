@@ -1,4 +1,4 @@
-package uk.gov.onelogin.appcheck
+package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
 import io.ktor.util.date.getTimeMillis
@@ -7,16 +7,18 @@ import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.securestore.error.SecureStorageError
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
-import uk.gov.onelogin.appcheck.AppIntegrity.Companion.SECURE_STORE_ERROR
-import uk.gov.onelogin.features.AppCheckFeatureFlag
-import uk.gov.onelogin.tokens.usecases.GetFromOpenSecureStore
-import uk.gov.onelogin.tokens.usecases.SaveToOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
+import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.SECURE_STORE_ERROR
 
-class AppIntegrityImpl @Inject constructor(
+class AppIntegrityImpl
+@Inject
+constructor(
     private val context: Context,
     private val featureFlags: FeatureFlags,
     private val appCheck: AppIntegrityManager,
@@ -31,8 +33,7 @@ class AppIntegrityImpl @Inject constructor(
                 is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
             }
         } else {
-            AttestationResult
-                .NotRequired(retrieveSavedClientAttestation())
+            AttestationResult.NotRequired(retrieveSavedClientAttestation())
         }
     }
 
@@ -59,18 +60,20 @@ class AppIntegrityImpl @Inject constructor(
         }
 
     private suspend fun isAttestationCallRequired(): Boolean {
-        val ssResult: Map<String, String>? = getFromOpenSecureStore.invoke(
-            CLIENT_ATTESTATION_EXPIRY,
-            CLIENT_ATTESTATION
-        )
+        val ssResult: Map<String, String>? =
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION
+            )
         val exp = ssResult?.get(CLIENT_ATTESTATION_EXPIRY)
         val attestation = ssResult?.get(CLIENT_ATTESTATION)
 
-        val result = isAttestationExpired(exp) ||
-            attestation.isNullOrEmpty() ||
-            !appCheck.verifyAttestationJwk(attestation)
+        val result =
+            isAttestationExpired(exp) ||
+                attestation.isNullOrEmpty() ||
+                !appCheck.verifyAttestationJwk(attestation)
 
-        return featureFlags[AppCheckFeatureFlag.ENABLED] && result
+        return featureFlags[AppIntegrityFeatureFlag.ENABLED] && result
     }
 
     private fun isAttestationExpired(expiryTime: String?): Boolean {

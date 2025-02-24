@@ -1,10 +1,12 @@
-package uk.gov.onelogin.appcheck
+package uk.gov.onelogin.features.login.domain.appintegrity
 
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 
 interface AppIntegrity {
     suspend fun getClientAttestation(): AttestationResult
+
     fun getProofOfPossession(): SignedPoP
+
     suspend fun retrieveSavedClientAttestation(): String?
 
     companion object {
