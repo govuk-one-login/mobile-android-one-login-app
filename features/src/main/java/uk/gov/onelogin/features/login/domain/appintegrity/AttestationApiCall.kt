@@ -22,16 +22,14 @@ class AttestationApiCall @Inject constructor(
         jwk: JWK.JsonWebKey
     ): AttestationResponse {
         val endpoint = context.getString(R.string.clientAttestationEndpoint)
-        val request =
-            ApiRequest.Post(
-                url = context.getString(R.string.webBaseUrl, endpoint) + "?device=android",
-                body = jwk,
-                headers =
-                listOf(
-                    AttestationCaller.FIREBASE_HEADER to token,
-                    AttestationCaller.CONTENT_TYPE to AttestationCaller.CONTENT_TYPE_VALUE
-                )
+        val request = ApiRequest.Post(
+            url = context.getString(R.string.webBaseUrl, endpoint) + "?device=android",
+            body = jwk,
+            headers = listOf(
+                AttestationCaller.FIREBASE_HEADER to token,
+                AttestationCaller.CONTENT_TYPE to AttestationCaller.CONTENT_TYPE_VALUE
             )
+        )
         return when (val apiResponse = httpClient.makeRequest(request)) {
             is ApiResponse.Success<*> -> handleResponse(apiResponse)
             is ApiResponse.Failure ->
@@ -39,6 +37,7 @@ class AttestationApiCall @Inject constructor(
                     apiResponse.error.message ?: NETWORK_ERROR,
                     apiResponse.error
                 )
+
             else -> AttestationResponse.Failure(NETWORK_ERROR)
         }
     }

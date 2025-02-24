@@ -36,8 +36,7 @@ class LoadingScreenAnalyticsViewModel @Inject constructor(
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_loadingBody),
                 id = getEnglishString(R.string.app_loading_page_id),
-                params =
-                RequiredParameters(
+                params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                     taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
@@ -48,8 +47,7 @@ class LoadingScreenAnalyticsViewModel @Inject constructor(
         with(context) {
             TrackEvent.Icon(
                 text = getEnglishString(R.string.system_backButton),
-                params =
-                RequiredParameters(
+                params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                     taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )

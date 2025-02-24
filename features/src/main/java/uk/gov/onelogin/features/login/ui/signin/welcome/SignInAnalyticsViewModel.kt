@@ -33,31 +33,27 @@ class SignInAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        fun makeSignInEvent(context: Context) =
-            with(context) {
-                TrackEvent.Link(
-                    isExternal = false,
-                    domain = getEnglishString(R.string.baseStsUrl, "").domain,
-                    text = getEnglishString(R.string.app_signInButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                        taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
-                    )
+        fun makeSignInEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = false,
+                domain = getEnglishString(R.string.baseStsUrl, "").domain,
+                text = getEnglishString(R.string.app_signInButton),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                    taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
                 )
-            }
+            )
+        }
 
-        fun makeWelcomeViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_signInTitle),
-                    id = getEnglishString(R.string.sign_in_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                        taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
-                    )
+        fun makeWelcomeViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_signInTitle),
+                id = getEnglishString(R.string.sign_in_page_id),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                    taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
                 )
-            }
+            )
+        }
     }
 }

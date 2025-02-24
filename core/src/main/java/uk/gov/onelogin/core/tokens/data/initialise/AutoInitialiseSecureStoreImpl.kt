@@ -28,11 +28,10 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
     override suspend fun initialise() {
         val bioPref = biometricPreferenceHandler.getBioPref()
         if (bioPref == null || bioPref == BiometricPreference.NONE) return
-        val configuration =
-            SecureStorageConfiguration(
-                AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                BiometricPrefsMapper.mapAccessControlLevel(bioPref)
-            )
+        val configuration = SecureStorageConfiguration(
+            AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
+            BiometricPrefsMapper.mapAccessControlLevel(bioPref)
+        )
         withContext(coroutineContext) {
             secureStore.init(context, configuration)
             saveTokens()

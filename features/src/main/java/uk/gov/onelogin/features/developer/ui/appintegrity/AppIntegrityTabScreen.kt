@@ -24,8 +24,7 @@ import uk.gov.android.ui.theme.smallPadding
 @Composable
 fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel()) {
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
             .padding(smallPadding),

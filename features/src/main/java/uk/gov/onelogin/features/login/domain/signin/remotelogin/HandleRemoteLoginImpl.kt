@@ -53,27 +53,24 @@ class HandleRemoteLoginImpl @Inject constructor(
 
     private fun createLoginConfiguration(persistentId: String?): LoginSessionConfiguration {
         val locale = localeUtils.getLocaleAsSessionConfig()
-        val authorizeEndpoint =
-            uriParser.parse(
-                context.getString(
-                    R.string.stsUrl,
-                    context.getString(R.string.openIdConnectAuthorizeEndpoint)
-                )
+        val authorizeEndpoint = uriParser.parse(
+            context.getString(
+                R.string.stsUrl,
+                context.getString(R.string.openIdConnectAuthorizeEndpoint)
             )
-        val tokenEndpoint =
-            uriParser.parse(
-                context.getString(
-                    R.string.stsUrl,
-                    context.getString(R.string.tokenExchangeEndpoint)
-                )
+        )
+        val tokenEndpoint = uriParser.parse(
+            context.getString(
+                R.string.stsUrl,
+                context.getString(R.string.tokenExchangeEndpoint)
             )
-        val redirectUri =
-            uriParser.parse(
-                context.getString(
-                    R.string.webBaseUrl,
-                    context.getString(R.string.webRedirectEndpoint)
-                )
+        )
+        val redirectUri = uriParser.parse(
+            context.getString(
+                R.string.webBaseUrl,
+                context.getString(R.string.webRedirectEndpoint)
             )
+        )
         val clientId = context.getString(R.string.stsClientId)
         val scopes = listOf(LoginSessionConfiguration.Scope.OPENID)
 

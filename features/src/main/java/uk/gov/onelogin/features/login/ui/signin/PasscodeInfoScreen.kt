@@ -13,11 +13,9 @@ import uk.gov.android.ui.theme.GdsTheme
 fun PasscodeInfoScreen(onPrimary: () -> Unit = {}) {
     GdsTheme {
         LandingPage(
-            landingPageParameters =
-            LandingPageParameters(
+            landingPageParameters = LandingPageParameters(
                 title = R.string.app_noPasscodePatternSetupTitle,
-                content =
-                listOf(
+                content = listOf(
                     GdsContentText.GdsContentTextString(
                         text = intArrayOf(R.string.app_noPasscodeSetupBody1)
                     ),

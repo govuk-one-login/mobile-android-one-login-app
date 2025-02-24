@@ -16,19 +16,17 @@ class LocaleUtilsImpl @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) : LocaleUtils {
-    override fun getLocaleAsSessionConfig(): LoginSessionConfiguration.Locale =
-        when (getLocale()) {
-            "cy" -> LoginSessionConfiguration.Locale.CY
-            else -> LoginSessionConfiguration.Locale.EN
-        }
+    override fun getLocaleAsSessionConfig(): LoginSessionConfiguration.Locale = when (getLocale()) {
+        "cy" -> LoginSessionConfiguration.Locale.CY
+        else -> LoginSessionConfiguration.Locale.EN
+    }
 
     override fun getLocale(): String {
         val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0]
-        val locale =
-            when (currentLocale?.language) {
-                "cy" -> "cy"
-                else -> "en"
-            }
+        val locale = when (currentLocale?.language) {
+            "cy" -> "cy"
+            else -> "en"
+        }
         return locale
     }
 }

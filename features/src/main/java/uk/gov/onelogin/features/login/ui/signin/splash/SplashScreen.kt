@@ -108,21 +108,18 @@ internal fun SplashBody(
     onOpenDeveloperPortal: () -> Unit
 ) {
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.govuk_blue)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         GdsIcon(
-            parameters =
-            IconParameters(
+            parameters = IconParameters(
                 image = R.drawable.tudor_crown_with_gov_uk,
                 backGroundColor = colorResource(id = R.color.govuk_blue),
                 foreGroundColor = Color.White,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .weight(1F)
                     .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
                         onOpenDeveloperPortal()
@@ -132,14 +129,12 @@ internal fun SplashBody(
         )
         if (isUnlock && !loading) {
             GdsHeading(
-                headingParameters =
-                HeadingParameters(
+                headingParameters = HeadingParameters(
                     size = HeadingSize.H3(),
                     text = R.string.app_unlockButton,
                     color = Color.White,
                     backgroundColor = colorResource(id = R.color.govuk_blue),
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .clickable {
                             trackUnlockButton()
                             onLogin()
@@ -161,8 +156,7 @@ internal fun LoadingIndicator() {
             id = R.string.app_splashScreenLoadingContentDescription
         )
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(
                 start = smallPadding,
@@ -173,8 +167,7 @@ internal fun LoadingIndicator() {
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = smallPadding)
         ) {
@@ -182,8 +175,7 @@ internal fun LoadingIndicator() {
                 color = colorResource(id = R.color.govuk_blue),
                 trackColor = MaterialTheme.colorScheme.onPrimary,
                 strokeCap = StrokeCap.Square,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .width(PROGRESS_BAR)
                     .height(PROGRESS_BAR)
             )

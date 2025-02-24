@@ -18,8 +18,7 @@ enum class SignOutUIState(
         title = R.string.app_signOutConfirmationTitle,
         header = R.string.app_signOutConfirmationBody1,
         subTitle = R.string.app_signOutConfirmationSubtitle,
-        bullets =
-        listOf(
+        bullets = listOf(
             R.string.app_signOutConfirmationBullet1,
             R.string.app_signOutConfirmationBullet2,
             R.string.app_signOutConfirmationBullet3
@@ -32,8 +31,7 @@ enum class SignOutUIState(
         title = R.string.app_signOutConfirmationTitle_no_wallet,
         header = R.string.app_signOutConfirmationBody1_no_wallet,
         subTitle = 0,
-        bullets =
-        listOf(
+        bullets = listOf(
             R.string.app_signOutConfirmationBullet1_no_wallet,
             R.string.app_signOutConfirmationBullet2_no_wallet
         ),

@@ -33,31 +33,27 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        fun makeReAuthEvent(context: Context) =
-            with(context) {
-                TrackEvent.Link(
-                    isExternal = false,
-                    domain = getEnglishString(R.string.baseStsUrl, "").domain,
-                    text = getEnglishString(R.string.app_SignInWithGovUKOneLoginButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                        taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
-                    )
+        fun makeReAuthEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = false,
+                domain = getEnglishString(R.string.baseStsUrl, "").domain,
+                text = getEnglishString(R.string.app_SignInWithGovUKOneLoginButton),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                    taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
                 )
-            }
+            )
+        }
 
-        fun makeSignedOutInfoViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_youveBeenSignedOutTitle),
-                    id = getEnglishString(R.string.signed_out_info_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                        taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
-                    )
+        fun makeSignedOutInfoViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_youveBeenSignedOutTitle),
+                id = getEnglishString(R.string.signed_out_info_page_id),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                    taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
                 )
-            }
+            )
+        }
     }
 }

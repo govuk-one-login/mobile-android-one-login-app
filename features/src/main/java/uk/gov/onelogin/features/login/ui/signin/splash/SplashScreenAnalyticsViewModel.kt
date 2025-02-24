@@ -34,54 +34,40 @@ class SplashScreenAnalyticsViewModel @Inject constructor(
         analyticsLogger.logEventV3Dot1(unlockBtnEvent)
     }
 
-    fun trackBackButton(
-        context: Context,
-        isLocked: Boolean
-    ) {
+    fun trackBackButton(context: Context, isLocked: Boolean) {
         analyticsLogger.logEventV3Dot1(makeBackEvent(context, isLocked))
     }
 
     companion object {
-        internal fun makeScreenEvent(
-            context: Context,
-            isLocked: Boolean
-        ) = with(context) {
+        internal fun makeScreenEvent(context: Context, isLocked: Boolean) = with(context) {
             val correctDetails = getCorrectDetails(isLocked)
 
             ViewEvent.Screen(
                 name = getEnglishString(correctDetails.first),
                 id = getEnglishString(correctDetails.second),
-                params =
-                RequiredParameters(
+                params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.LOGIN,
                     taxonomyLevel3 = correctDetails.third
                 )
             )
         }
 
-        internal fun makeButtonEvent(context: Context) =
-            with(context) {
-                TrackEvent.Button(
-                    text = getEnglishString(R.string.app_unlockButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                        taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-                    )
+        internal fun makeButtonEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.app_unlockButton),
+                params = RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                    taxonomyLevel3 = TaxonomyLevel3.UNLOCK
                 )
-            }
+            )
+        }
 
-        internal fun makeBackEvent(
-            context: Context,
-            isLocked: Boolean
-        ) = with(context) {
+        internal fun makeBackEvent(context: Context, isLocked: Boolean) = with(context) {
             TrackEvent.Icon(
                 text = getEnglishString(R.string.system_backButton),
-                params =
-                RequiredParameters(
+                params = RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 =
-                    if (isLocked) {
+                    taxonomyLevel3 = if (isLocked) {
                         TaxonomyLevel3.UNLOCK
                     } else {
                         TaxonomyLevel3.UNDEFINED

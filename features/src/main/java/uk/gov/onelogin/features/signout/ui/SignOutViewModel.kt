@@ -28,12 +28,11 @@ class SignOutViewModel @Inject constructor(
     val loadingState = _loadingState.asStateFlow()
 
     val uiState: SignOutUIState
-        get() =
-            if (featureFlags[WalletFeatureFlag.ENABLED]) {
-                SignOutUIState.Wallet
-            } else {
-                SignOutUIState.NoWallet
-            }
+        get() = if (featureFlags[WalletFeatureFlag.ENABLED]) {
+            SignOutUIState.Wallet
+        } else {
+            SignOutUIState.NoWallet
+        }
 
     fun signOut(activityFragment: FragmentActivity) {
         _loadingState.value = true

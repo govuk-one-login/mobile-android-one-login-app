@@ -31,10 +31,8 @@ fun GenericErrorScreen(
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
-            parameters =
-            ErrorPageParameters(
-                primaryButtonParameters =
-                ButtonParameters(
+            parameters = ErrorPageParameters(
+                primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
                         analyticsViewModel.trackButton()
@@ -42,10 +40,8 @@ fun GenericErrorScreen(
                     },
                     text = R.string.app_closeButton
                 ),
-                informationParameters =
-                InformationParameters(
-                    contentParameters =
-                    ContentParameters(
+                informationParameters = InformationParameters(
+                    contentParameters = ContentParameters(
                         resource =
                         listOf(
                             GdsContentText.GdsContentTextString(
@@ -58,8 +54,7 @@ fun GenericErrorScreen(
                         ),
                         headingSize = HeadingSize.H1()
                     ),
-                    iconParameters =
-                    IconParameters(
+                    iconParameters = IconParameters(
                         foreGroundColor = Color.Unspecified,
                         image = uk.gov.android.ui.components.R.drawable.ic_error
                     )

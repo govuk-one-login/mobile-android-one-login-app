@@ -12,10 +12,10 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStoreErrorType
-import uk.gov.onelogin.core.TestCase
+import uk.gov.onelogin.core.FragmentActivityTestCase
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
-class GetFromEncryptedSecureStoreTest : TestCase() {
+class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
     private lateinit var useCase: GetFromEncryptedSecureStore
     private val mockSecureStore: SecureStore = mock()
 

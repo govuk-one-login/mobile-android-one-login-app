@@ -58,18 +58,15 @@ class AppIntegrityImpl @Inject constructor(
         }
 
     private suspend fun isAttestationCallRequired(): Boolean {
-        val ssResult: Map<String, String>? =
-            getFromOpenSecureStore.invoke(
-                CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+        val ssResult: Map<String, String>? = getFromOpenSecureStore.invoke(
+            CLIENT_ATTESTATION_EXPIRY,
+            CLIENT_ATTESTATION
+        )
         val exp = ssResult?.get(CLIENT_ATTESTATION_EXPIRY)
         val attestation = ssResult?.get(CLIENT_ATTESTATION)
 
-        val result =
-            isAttestationExpired(exp) ||
-                attestation.isNullOrEmpty() ||
-                !appCheck.verifyAttestationJwk(attestation)
+        val result = isAttestationExpired(exp) || attestation.isNullOrEmpty() ||
+            !appCheck.verifyAttestationJwk(attestation)
 
         return featureFlags[AppIntegrityFeatureFlag.ENABLED] && result
     }

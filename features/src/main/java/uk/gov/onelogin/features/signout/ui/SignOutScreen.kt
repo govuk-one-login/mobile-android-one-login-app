@@ -63,8 +63,7 @@ internal fun SignOutBody(
     ModalDialog(
         ModalDialogParameters(
             title = stringResource(id = uiState.title),
-            header =
-            buildAnnotatedString {
+            header = buildAnnotatedString {
                 append(stringResource(id = uiState.header))
                 if (uiState == SignOutUIState.Wallet) {
                     appendLine()
@@ -73,12 +72,10 @@ internal fun SignOutBody(
                 }
             },
             bullets = uiState.bullets.map { stringResource(it) },
-            footer =
-            buildAnnotatedString {
+            footer = buildAnnotatedString {
                 append(stringResource(id = uiState.footer))
             },
-            buttonParams =
-            ModalDialogParameters.ButtonParameters(
+            buttonParams = ModalDialogParameters.ButtonParameters(
                 text = stringResource(id = uiState.button),
                 buttonType = uiState.buttonType,
                 isEnabled = true,

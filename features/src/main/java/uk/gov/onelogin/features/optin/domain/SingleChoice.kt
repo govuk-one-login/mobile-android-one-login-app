@@ -21,7 +21,6 @@ class SingleChoice {
     }
 
     enum class State {
-        PreChoice,
-        PostChoice
+        PreChoice, PostChoice
     }
 }

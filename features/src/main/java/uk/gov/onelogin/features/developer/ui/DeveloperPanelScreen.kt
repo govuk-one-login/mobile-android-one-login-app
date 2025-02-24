@@ -77,8 +77,7 @@ fun TabView(goBack: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     Column {
         CenterAlignedTopAppBar(
-            colors =
-            TopAppBarDefaults.topAppBarColors(
+            colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,
                 titleContentColor = Color.Gray
             ),
@@ -106,8 +105,7 @@ fun TabView(goBack: () -> Unit) {
             contentColor = Color.Gray,
             indicator = { tabPositions ->
                 SecondaryIndicator(
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .tabIndicatorOffset(tabPositions[pagerState.currentPage])
                         .fillMaxWidth(),
                     color = Color.Black

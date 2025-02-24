@@ -17,9 +17,8 @@ class FirebaseAnalyticsOptInSource @Inject constructor(
     override suspend fun update(state: AnalyticsOptInState) {
         withContext(dispatcher) {
             when (state) {
-                AnalyticsOptInState.No,
-                AnalyticsOptInState.None
-                -> analytics.setEnabled(false)
+                AnalyticsOptInState.No, AnalyticsOptInState.None -> analytics.setEnabled(false)
+
                 AnalyticsOptInState.Yes -> analytics.setEnabled(true)
             }
         }

@@ -32,10 +32,8 @@ fun SignInErrorScreen(
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
-            parameters =
-            ErrorPageParameters(
-                primaryButtonParameters =
-                ButtonParameters(
+            parameters = ErrorPageParameters(
+                primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
                         analyticsViewModel.trackButton()
@@ -43,12 +41,9 @@ fun SignInErrorScreen(
                     },
                     text = R.string.app_closeButton
                 ),
-                informationParameters =
-                InformationParameters(
-                    contentParameters =
-                    ContentParameters(
-                        resource =
-                        listOf(
+                informationParameters = InformationParameters(
+                    contentParameters = ContentParameters(
+                        resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_signInErrorTitle,
                                 text = intArrayOf(R.string.app_signInErrorBody)
@@ -56,8 +51,7 @@ fun SignInErrorScreen(
                         ),
                         headingSize = HeadingSize.H1()
                     ),
-                    iconParameters =
-                    IconParameters(
+                    iconParameters = IconParameters(
                         foreGroundColor = Color.Unspecified,
                         image = uk.gov.android.ui.components.R.drawable.ic_error
                     )

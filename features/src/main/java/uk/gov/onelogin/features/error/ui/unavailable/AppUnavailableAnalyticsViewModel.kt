@@ -32,29 +32,27 @@ class AppUnavailableAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        fun makeUnavailableViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_appUnavailableTitle),
-                    id = getEnglishString(R.string.app_unavailable_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-                    )
+        fun makeUnavailableViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_appUnavailableTitle),
+                id = getEnglishString(R.string.app_unavailable_page_id),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
-            }
+            )
+        }
 
-        fun makeBackEvent(context: Context) =
-            with(context) {
-                TrackEvent.Icon(
-                    text = getEnglishString(R.string.system_backButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-                    )
+        fun makeBackEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backButton),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
-            }
+            )
+        }
     }
 }

@@ -42,15 +42,13 @@ fun UpdateRequiredScreen(
 @Composable
 internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     LandingPage(
-        landingPageParameters =
-        LandingPageParameters(
+        landingPageParameters = LandingPageParameters(
             topIcon = UiR.drawable.ic_error,
             contentDescription = R.string.app_updateApp_ContentDescription,
             iconColor = MaterialTheme.colorScheme.onBackground,
             title = R.string.app_updateApp_Title,
             titleBottomPadding = smallPadding,
-            content =
-            listOf(
+            content = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(R.string.app_updateAppBody1)
                 ),

@@ -58,8 +58,7 @@ internal fun AppUnavailableBody() {
     // Update typography references when UI is updated
     val color = colorScheme.contentColorFor(colorScheme.background)
     Box(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(smallPadding),
         contentAlignment = Alignment.Center
@@ -70,8 +69,7 @@ internal fun AppUnavailableBody() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .padding(iconPadding)
                     .size(iconSize)
                     .testTag(ICON_TAG),
@@ -81,8 +79,7 @@ internal fun AppUnavailableBody() {
             )
             Text(
                 color = color,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .semantics { heading() },
                 style = MaterialTheme.typography.headlineLarge, // `displaySmall`
@@ -91,8 +88,7 @@ internal fun AppUnavailableBody() {
             )
             Text(
                 color = color,
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge, // `bodySmall`
                 text = stringResource(R.string.app_appUnavailableBody),

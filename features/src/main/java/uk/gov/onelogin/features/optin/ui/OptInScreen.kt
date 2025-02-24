@@ -76,8 +76,7 @@ internal fun OptInBody(
 @Composable
 private fun OptInHeader() {
     Text(
-        modifier =
-        Modifier
+        modifier = Modifier
             .semantics { heading() }
             .padding(horizontal = smallPadding)
             .padding(top = mediumPadding),
@@ -94,16 +93,14 @@ private fun OptInContent(
     url: String
 ) {
     Text(
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(all = smallPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.bodyLarge,
         text = stringResource(id = R.string.app_analyticsPermissionBody)
     )
     PrivacyNotice(
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(horizontal = smallPadding),
         style = MaterialTheme.typography.bodyLarge,
         privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),
@@ -118,10 +115,8 @@ private fun OptInButtons(
     onDoNotShare: () -> Unit
 ) {
     GdsButton(
-        buttonParameters =
-        ButtonParameters(
-            modifier =
-            Modifier
+        buttonParameters = ButtonParameters(
+            modifier = Modifier
                 .padding(horizontal = smallPadding)
                 .padding(top = xsmallPadding)
                 .fillMaxWidth(),
@@ -135,8 +130,7 @@ private fun OptInButtons(
     GdsButton(
         buttonParameters =
         ButtonParameters(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(horizontal = smallPadding, vertical = xsmallPadding)
                 .fillMaxWidth(),
             text = stringResource(R.string.app_doNotShareAnalytics),

@@ -37,38 +37,34 @@ class GenericErrorAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        internal fun makeScreenEvent(context: Context) =
-            with(context) {
-                ViewEvent.Error(
-                    name = getEnglishString(R.string.app_somethingWentWrongErrorTitle),
-                    id = getEnglishString(R.string.generic_error_screen_id),
-                    endpoint = "",
-                    reason = getEnglishString(R.string.generic_error_reason),
-                    status = "",
-                    params = requiredParams
-                )
-            }
-
-        internal fun makeButtonEvent(context: Context) =
-            with(context) {
-                TrackEvent.Button(
-                    text = getEnglishString(R.string.app_closeButton),
-                    params = requiredParams
-                )
-            }
-
-        internal fun makeBackEvent(context: Context) =
-            with(context) {
-                TrackEvent.Icon(
-                    text = getEnglishString(R.string.system_backButton),
-                    params = requiredParams
-                )
-            }
-
-        private val requiredParams =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.ERROR
+        internal fun makeScreenEvent(context: Context) = with(context) {
+            ViewEvent.Error(
+                name = getEnglishString(R.string.app_somethingWentWrongErrorTitle),
+                id = getEnglishString(R.string.generic_error_screen_id),
+                endpoint = "",
+                reason = getEnglishString(R.string.generic_error_reason),
+                status = "",
+                params = requiredParams
             )
+        }
+
+        internal fun makeButtonEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.app_closeButton),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeBackEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backButton),
+                params = requiredParams
+            )
+        }
+
+        private val requiredParams = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel3 = TaxonomyLevel3.ERROR
+        )
     }
 }

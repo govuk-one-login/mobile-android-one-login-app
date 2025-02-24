@@ -33,8 +33,7 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
             .padding(mediumPadding)
     ) {
         GdsHeading(
-            headingParameters =
-            HeadingParameters(
+            headingParameters = HeadingParameters(
                 size = HeadingSize.H2(),
                 text = R.string.app_developer_features_title
             )

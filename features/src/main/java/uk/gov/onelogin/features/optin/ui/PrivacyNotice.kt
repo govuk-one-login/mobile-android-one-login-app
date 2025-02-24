@@ -47,8 +47,7 @@ fun PrivacyNotice(
     onPrivacyNotice: () -> Unit
 ) {
     TextWithLink(
-        modifier =
-        modifier.then(
+        modifier = modifier.then(
             Modifier
                 .minimumInteractiveComponentSize()
                 .semantics {
@@ -62,8 +61,7 @@ fun PrivacyNotice(
                 .testTag(NOTICE_TAG)
         ),
         text = privacyNoticeString,
-        linkText =
-        buildAnnotatedString {
+        linkText = buildAnnotatedString {
             privacyNoticeString?.let {
                 append(WHITE_SPACE)
             }
@@ -74,14 +72,12 @@ fun PrivacyNotice(
             appendInlineContent(ICON_KEY)
         },
         style = style,
-        inlineContent =
-        mapOf(
-            ICON_KEY to
-                InlineTextContent(
-                    Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
-                ) {
-                    LinkOut()
-                }
+        inlineContent = mapOf(
+            ICON_KEY to InlineTextContent(
+                Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
+            ) {
+                LinkOut()
+            }
         )
     ) {
         onPrivacyNotice()
@@ -93,8 +89,7 @@ private fun LinkOut() {
     Image(
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
         painter = painterResource(id = R.drawable.link_out),
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .testTag(ICON_TAG),
         contentDescription = null

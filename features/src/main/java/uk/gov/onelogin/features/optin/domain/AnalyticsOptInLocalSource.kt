@@ -15,12 +15,11 @@ class AnalyticsOptInLocalSource @Inject constructor(
     @IODispatcherQualifier
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : OptInLocalSource {
-    override suspend fun getState(): AnalyticsOptInState =
-        withContext(dispatcher) {
-            preferences.getInt(OPT_IN_KEY, DEFAULT_ORDINAL).let { ordinal ->
-                AnalyticsOptInState.entries[ordinal]
-            }
+    override suspend fun getState(): AnalyticsOptInState = withContext(dispatcher) {
+        preferences.getInt(OPT_IN_KEY, DEFAULT_ORDINAL).let { ordinal ->
+            AnalyticsOptInState.entries[ordinal]
         }
+    }
 
     override suspend fun update(state: AnalyticsOptInState) {
         withContext(dispatcher) {

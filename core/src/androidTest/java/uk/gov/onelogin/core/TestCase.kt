@@ -2,7 +2,7 @@ package uk.gov.onelogin.core
 
 import android.content.Context
 import android.content.res.Resources
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -10,7 +10,7 @@ import org.junit.Rule
 
 abstract class TestCase {
     @get:Rule(order = 1)
-    val composeTestRule = createAndroidComposeRule<TestActivity>()
+    val composeTestRule = createComposeRule()
 
     protected val context: Context = ApplicationProvider.getApplicationContext()
 

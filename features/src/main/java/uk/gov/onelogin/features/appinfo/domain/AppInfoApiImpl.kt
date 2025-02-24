@@ -26,24 +26,22 @@ class AppInfoApiImpl @Inject constructor(
             return ApiResponse.Offline
         }
         val endpoint = context.getString(R.string.appInfoEndpoint)
-        val request =
-            ApiRequest.Get(
-                url = context.getString(R.string.appInfoUrl, endpoint),
-                headers =
-                listOf(
-                    "Cache-Control" to "no-store",
-                    "Content-Type" to "application/json",
-                    "Strict-Transport-Security" to "max-age=31536000",
-                    "X-Content-Type-Options" to "nosniff",
-                    "X-Frame-Options" to "DENY"
-                )
+        val request = ApiRequest.Get(
+            url = context.getString(R.string.appInfoUrl, endpoint),
+            headers =
+            listOf(
+                "Cache-Control" to "no-store",
+                "Content-Type" to "application/json",
+                "Strict-Transport-Security" to "max-age=31536000",
+                "X-Content-Type-Options" to "nosniff",
+                "X-Frame-Options" to "DENY"
             )
+        )
         return when (val response = httpClient.makeRequest(request)) {
             is ApiResponse.Success<*> ->
                 try {
-                    val decodedResponse =
-                        jsonDecoder
-                            .decodeFromString<AppInfoData>(response.response.toString())
+                    val decodedResponse = jsonDecoder
+                        .decodeFromString<AppInfoData>(response.response.toString())
                     Log.d("AppInfoRemote", "$decodedResponse")
                     ApiResponse.Success(decodedResponse)
                 } catch (e: SerializationException) {

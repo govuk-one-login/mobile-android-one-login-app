@@ -51,8 +51,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text =
-                    buildAnnotatedString {
+                    text = buildAnnotatedString {
                         append("App flavor: ")
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append(BuildConfig.FLAVOR)

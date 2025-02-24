@@ -22,11 +22,10 @@ class AvailableFeatures(
     override operator fun iterator() = this.features.iterator()
 
     operator fun plus(flags: Iterable<FeatureFlag>): AvailableFeatures {
-        val availableFlags =
-            mutableSetOf<FeatureFlag>().apply {
-                addAll(features)
-                addAll(flags)
-            }
+        val availableFlags = mutableSetOf<FeatureFlag>().apply {
+            addAll(features)
+            addAll(flags)
+        }
 
         return AvailableFeatures(availableFlags)
     }

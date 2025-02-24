@@ -9,15 +9,14 @@ interface ResultCollectionUtil {
         map { async { it.invoke() } }.awaitAll()
     }
 
-    fun List<Result<Unit>>.combineResults(): Result<Unit> =
-        all { result -> result.isSuccess }
-            .let { isSuccessful ->
-                if (isSuccessful) {
-                    Result.success(Unit)
-                } else {
-                    Result.failure(Failure(throwables))
-                }
+    fun List<Result<Unit>>.combineResults(): Result<Unit> = all { result -> result.isSuccess }
+        .let { isSuccessful ->
+            if (isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Failure(throwables))
             }
+        }
 
     val <T> List<Result<T>>.throwables: List<Throwable>
         get() = filter { it.isFailure }.mapNotNull { it.exceptionOrNull() }

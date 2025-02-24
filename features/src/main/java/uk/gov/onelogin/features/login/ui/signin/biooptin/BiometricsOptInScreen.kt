@@ -41,15 +41,13 @@ fun BiometricsOptInScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(smallPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             Column(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxSize()
                     .weight(1F),
                 verticalArrangement = Arrangement.Center
@@ -77,8 +75,7 @@ private fun Content() {
     ).generate()
     GdsContent(
         ContentParameters(
-            resource =
-            listOf(
+            resource = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(
                         R.string.app_enableBiometricsBody1
@@ -89,8 +86,7 @@ private fun Content() {
     )
     GdsContent(
         ContentParameters(
-            resource =
-            listOf(
+            resource = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(R.string.app_enableBiometricsBody2)
                 )
@@ -99,8 +95,7 @@ private fun Content() {
     )
     GdsContent(
         ContentParameters(
-            resource =
-            listOf(
+            resource = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(R.string.app_enableBiometricsBody3)
                 )

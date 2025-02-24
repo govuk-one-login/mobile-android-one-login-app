@@ -36,8 +36,7 @@ fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier =
-        Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         AuthTokensSection(viewModel)
@@ -63,8 +62,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(16.dp)
     )
     HorizontalDivider()
@@ -76,8 +74,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(16.dp)
     )
     HorizontalDivider()
@@ -89,8 +86,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.refreshToken ?: "No refresh token set!",
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(
                 all = 16.dp
             )
@@ -146,8 +142,7 @@ private fun ButtonRow(
     ) {
         if (!buttonLoading) {
             GdsButton(
-                buttonParameters =
-                ButtonParameters(
+                buttonParameters = ButtonParameters(
                     modifier = Modifier.padding(bottom = 8.dp),
                     text = stringResource(buttonText),
                     buttonType = ButtonType.PRIMARY(),
@@ -164,8 +159,7 @@ private fun ButtonRow(
         }
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text =
-            buildAnnotatedString {
+            text = buildAnnotatedString {
                 append("Api response: ")
                 withStyle(
                     style =

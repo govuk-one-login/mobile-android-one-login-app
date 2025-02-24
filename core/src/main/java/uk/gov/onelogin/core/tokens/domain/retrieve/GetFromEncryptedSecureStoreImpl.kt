@@ -19,32 +19,29 @@ class GetFromEncryptedSecureStoreImpl @Inject constructor(
         vararg key: String,
         callback: (LocalAuthStatus) -> Unit
     ) {
-        val authPromptConfig =
-            AuthenticatorPromptConfiguration(
-                title = context.getString(R.string.app_authenticationDialogueTitle)
-            )
+        val authPromptConfig = AuthenticatorPromptConfiguration(
+            title = context.getString(R.string.app_authenticationDialogueTitle)
+        )
 
-        val result =
-            secureStore.retrieveWithAuthentication(
-                key = key,
-                authPromptConfig = authPromptConfig,
-                context = context
-            )
+        val result = secureStore.retrieveWithAuthentication(
+            key = key,
+            authPromptConfig = authPromptConfig,
+            context = context
+        )
 
         when (result) {
             is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
 
             is RetrievalEvent.Failed -> {
-                val localAuthStatus =
-                    when (result.type) {
-                        SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
+                val localAuthStatus = when (result.type) {
+                    SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
 
-                        SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
-                            LocalAuthStatus.UserCancelled
+                    SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
+                        LocalAuthStatus.UserCancelled
 
-                        SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
-                        SecureStoreErrorType.NOT_FOUND -> LocalAuthStatus.SecureStoreError
-                    }
+                    SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
+                    SecureStoreErrorType.NOT_FOUND -> LocalAuthStatus.SecureStoreError
+                }
                 callback(localAuthStatus)
             }
         }

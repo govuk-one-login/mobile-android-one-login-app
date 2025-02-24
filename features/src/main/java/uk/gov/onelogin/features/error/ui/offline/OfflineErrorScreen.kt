@@ -32,10 +32,8 @@ fun OfflineErrorScreen(
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         ErrorPage(
-            parameters =
-            ErrorPageParameters(
-                primaryButtonParameters =
-                ButtonParameters(
+            parameters = ErrorPageParameters(
+                primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = {
                         analyticsViewModel.trackButton()
@@ -43,10 +41,8 @@ fun OfflineErrorScreen(
                     },
                     text = R.string.app_tryAgainButton
                 ),
-                informationParameters =
-                InformationParameters(
-                    contentParameters =
-                    ContentParameters(
+                informationParameters = InformationParameters(
+                    contentParameters = ContentParameters(
                         resource =
                         listOf(
                             GdsContentText.GdsContentTextString(
@@ -56,8 +52,7 @@ fun OfflineErrorScreen(
                         ),
                         headingSize = HeadingSize.H1()
                     ),
-                    iconParameters =
-                    IconParameters(
+                    iconParameters = IconParameters(
                         foreGroundColor = Color.Unspecified,
                         image = uk.gov.android.ui.components.R.drawable.ic_error
                     )

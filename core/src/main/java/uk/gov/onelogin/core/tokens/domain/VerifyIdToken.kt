@@ -41,10 +41,7 @@ class VerifyIdTokenImpl @Inject constructor(
     ): Boolean {
         var verified = false
 
-        val response =
-            httpClient.makeRequest(
-                ApiRequest.Get(jwksUrl)
-            )
+        val response = httpClient.makeRequest(ApiRequest.Get(jwksUrl))
 
         if (response is ApiResponse.Success<*>) {
             try {

@@ -84,13 +84,10 @@ internal fun WelcomeBody(
     onTopIconClick: () -> Unit = { }
 ) {
     LandingPage(
-        landingPageParameters =
-        LandingPageParameters(
-            content =
-            listOf(
+        landingPageParameters = LandingPageParameters(
+            content = listOf(
                 GdsContentText.GdsContentTextString(
-                    text =
-                    intArrayOf(
+                    text = intArrayOf(
                         R.string.app_signInBody
                     )
                 )

@@ -37,37 +37,33 @@ class HomeScreenAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        internal fun makeScreenEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_home),
-                    id = getEnglishString(R.string.home_page_id),
-                    params = requiredParams
-                )
-            }
-
-        internal fun makeCardLinkEvent(context: Context) =
-            with(context) {
-                TrackEvent.Link(
-                    isExternal = true,
-                    domain = getEnglishString(R.string.app_oneLoginCardLinkUrl),
-                    text = getEnglishString(R.string.app_oneLoginCardLink),
-                    params = requiredParams
-                )
-            }
-
-        internal fun makeBackButtonEvent(context: Context) =
-            with(context) {
-                TrackEvent.Icon(
-                    text = getEnglishString(R.string.system_backButton),
-                    params = requiredParams
-                )
-            }
-
-        private val requiredParams =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.HOME,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        internal fun makeScreenEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_home),
+                id = getEnglishString(R.string.home_page_id),
+                params = requiredParams
             )
+        }
+
+        internal fun makeCardLinkEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = true,
+                domain = getEnglishString(R.string.app_oneLoginCardLinkUrl),
+                text = getEnglishString(R.string.app_oneLoginCardLink),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeBackButtonEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backButton),
+                params = requiredParams
+            )
+        }
+
+        private val requiredParams = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.HOME,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
     }
 }

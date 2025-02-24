@@ -107,12 +107,10 @@ private fun handleLogin(
 @Composable
 internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
     LandingPage(
-        landingPageParameters =
-        LandingPageParameters(
+        landingPageParameters = LandingPageParameters(
             title = R.string.app_youveBeenSignedOutTitle,
             titleBottomPadding = smallPadding,
-            content =
-            listOf(
+            content = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(R.string.app_youveBeenSignedOutBody1)
                 ),

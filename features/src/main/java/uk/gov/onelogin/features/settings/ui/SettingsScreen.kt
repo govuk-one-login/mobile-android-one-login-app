@@ -64,8 +64,7 @@ fun SettingsScreen(viewModel: SettingsScreenViewModel = hiltViewModel()) {
         title = R.string.app_settingsTitle
     ) { paddingValues ->
         Column(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -195,16 +194,14 @@ private fun ExternalLinkRow(
     onClick: () -> Unit = { }
 ) {
     Box(
-        modifier =
-        Modifier
+        modifier = Modifier
             .clickable(onClick = onClick)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth()
     ) {
         Column {
             Text(
-                modifier =
-                Modifier
+                modifier = Modifier
                     .padding(horizontal = smallPadding)
                     .padding(top = smallPadding)
                     .padding(bottom = if (description == null) smallPadding else 4.dp),
@@ -213,8 +210,7 @@ private fun ExternalLinkRow(
             )
             description?.let {
                 Text(
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .padding(
                             start = smallPadding,
                             bottom = smallPadding,
@@ -229,8 +225,7 @@ private fun ExternalLinkRow(
         Icon(
             painter = painterResource(id = icon),
             contentDescription = "",
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(end = smallPadding, top = smallPadding)
                 .size(24.dp)
                 .align(alignment = Alignment.TopEnd)
@@ -246,8 +241,7 @@ internal fun PreferenceToggleRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-        Modifier
+        modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
@@ -272,8 +266,7 @@ internal fun PreferenceToggleRow(
         Switch(
             checked = checked,
             onCheckedChange = { onToggle() },
-            modifier =
-            Modifier
+            modifier = Modifier
                 .testTag(stringResource(id = R.string.optInSwitchTestTag))
                 .clearAndSetSemantics { }
         )
@@ -286,8 +279,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(top = mediumPadding)
             .height(56.dp)
             .fillMaxWidth()
@@ -297,8 +289,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
             }
     ) {
         Text(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(all = smallPadding)
                 .height(24.dp),
             style = MaterialTheme.typography.bodyMedium,

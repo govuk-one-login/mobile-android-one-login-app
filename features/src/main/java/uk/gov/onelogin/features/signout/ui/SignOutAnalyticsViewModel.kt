@@ -48,62 +48,57 @@ class SignOutAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        fun onPrimaryEvent(context: Context) =
-            with(context) {
-                TrackEvent.Button(
-                    text = getEnglishString(R.string.app_signOutAndDeleteAppDataButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                        taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                    )
-                )
-            }
-
-        fun onCloseIcon() =
-            TrackEvent.Icon(
-                text = "back",
+        fun onPrimaryEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.app_signOutAndDeleteAppDataButton),
                 params =
                 RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
                     taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
                 )
             )
+        }
 
-        fun onBackPressed() =
-            TrackEvent.Icon(
-                text = "back - system",
+        fun onCloseIcon() = TrackEvent.Icon(
+            text = "back",
+            params =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
+                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+            )
+        )
+
+        fun onBackPressed() = TrackEvent.Icon(
+            text = "back - system",
+            params =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
+                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+            )
+        )
+
+        fun makeSignOutWalletViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_signOutConfirmationTitle),
+                id = getEnglishString(R.string.sign_out_wallet_page_id),
                 params =
                 RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
                     taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
                 )
             )
+        }
 
-        fun makeSignOutWalletViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_signOutConfirmationTitle),
-                    id = getEnglishString(R.string.sign_out_wallet_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                        taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                    )
+        fun makeSignOutNoWalletViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_signOutConfirmationTitle),
+                id = getEnglishString(R.string.sign_out_no_wallet_page_id),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
+                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
                 )
-            }
-
-        fun makeSignOutNoWalletViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_signOutConfirmationTitle),
-                    id = getEnglishString(R.string.sign_out_no_wallet_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                        taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                    )
-                )
-            }
+            )
+        }
     }
 }

@@ -39,43 +39,40 @@ class UpdateRequiredAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        fun makeUpdateEvent(context: Context) =
-            with(context) {
-                TrackEvent.Link(
-                    isExternal = true,
-                    domain = AppInfoUtils.GOOGLE_PLAY_URL.domain,
-                    text = getEnglishString(R.string.app_updateAppButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-                    )
+        fun makeUpdateEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = true,
+                domain = AppInfoUtils.GOOGLE_PLAY_URL.domain,
+                text = getEnglishString(R.string.app_updateAppButton),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
-            }
+            )
+        }
 
-        fun makeUpdateRequiredViewEvent(context: Context) =
-            with(context) {
-                ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_updateApp_Title),
-                    id = getEnglishString(R.string.update_required_page_id),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-                    )
+        fun makeUpdateRequiredViewEvent(context: Context) = with(context) {
+            ViewEvent.Screen(
+                name = getEnglishString(R.string.app_updateApp_Title),
+                id = getEnglishString(R.string.update_required_page_id),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
-            }
+            )
+        }
 
-        fun makeBackEvent(context: Context) =
-            with(context) {
-                TrackEvent.Icon(
-                    text = getEnglishString(R.string.system_backButton),
-                    params =
-                    RequiredParameters(
-                        taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-                    )
+        fun makeBackEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backButton),
+                params =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
                 )
-            }
+            )
+        }
     }
 }

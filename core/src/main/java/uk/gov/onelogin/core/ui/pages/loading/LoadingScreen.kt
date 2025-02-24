@@ -52,14 +52,12 @@ fun LoadingBody() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .testTag(LOADING_SCREEN_BOX)
     ) {
         CircularProgressIndicator(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .width(64.dp)
                 .padding(bottom = mediumPadding)
                 .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
@@ -67,8 +65,7 @@ fun LoadingBody() {
             trackColor = colorScheme.secondary
         )
         Text(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .semantics { heading() }
                 .padding(top = largePadding)
                 .testTag(LOADING_SCREEN_TEXT),

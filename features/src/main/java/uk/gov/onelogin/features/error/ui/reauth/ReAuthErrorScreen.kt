@@ -44,29 +44,25 @@ import uk.gov.onelogin.features.error.ui.reauth.ErrorInformation.Companion.listC
 fun ReAuthErrorScreen(viewModel: ReAuthErrorViewModel = hiltViewModel()) {
     GdsTheme {
         ConstraintLayout(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .padding(horizontal = smallPadding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             val (content, button) = createRefs()
             Content(
-                parameters =
-                ErrorInformation(
+                parameters = ErrorInformation(
                     title = R.string.app_dataDeletedErrorTitle,
                     intro = R.string.app_dataDeletedErrorBody1,
                     content = R.string.app_dataDeletedErrorBody2,
-                    bulletList =
-                    listOf(
+                    bulletList = listOf(
                         R.string.app_dataDeletedErrorBullet1,
                         R.string.app_dataDeletedErrorBullet2,
                         R.string.app_dataDeletedErrorBullet3
                     ),
                     instruction = R.string.app_dataDeletedErrorBody3
                 ),
-                modifier =
-                Modifier
+                modifier = Modifier
                     .constrainAs(content) {
                         top.linkTo(parent.top)
                         bottom.linkTo(button.top)
@@ -75,13 +71,11 @@ fun ReAuthErrorScreen(viewModel: ReAuthErrorViewModel = hiltViewModel()) {
                     }
             )
             GdsButton(
-                buttonParameters =
-                ButtonParameters(
+                buttonParameters = ButtonParameters(
                     buttonType = uk.gov.android.ui.components.m3.buttons.ButtonType.PRIMARY(),
                     onClick = { viewModel.navigateToSignIn() },
                     text = stringResource(R.string.app_SignInWithGovUKOneLoginButton),
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .padding(bottom = smallPadding)
                         .fillMaxWidth()
                         .height(buttonHeight)
@@ -110,13 +104,11 @@ private fun Content(
             modifier = modifier
         ) {
             GdsIcon(
-                parameters =
-                IconParameters(
+                parameters = IconParameters(
                     image = UiR.drawable.ic_error,
                     backGroundColor = MaterialTheme.colorScheme.background,
                     foreGroundColor = MaterialTheme.colorScheme.onBackground,
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .padding(bottom = smallPadding)
                         .semantics { contentDescription = iconContentDescription }
                 )
@@ -124,10 +116,8 @@ private fun Content(
             Introduction()
             ContentList()
             GdsContent(
-                contentParameters =
-                ContentParameters(
-                    resource =
-                    listOf(
+                contentParameters = ContentParameters(
+                    resource = listOf(
                         GdsContentText.GdsContentTextString(
                             intArrayOf(instruction)
                         )
@@ -145,8 +135,7 @@ private fun ErrorInformation.ContentList() {
     GdsContent(
         contentParameters =
         ContentParameters(
-            resource =
-            listOf(
+            resource = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(content)
                 )
@@ -156,12 +145,10 @@ private fun ErrorInformation.ContentList() {
         )
     )
     GdsBulletList(
-        bulletListParameters =
-        BulletListParameters(
+        bulletListParameters = BulletListParameters(
             indent = bulletPointIndentation,
             textModifier = Modifier.padding(start = bulletPointTextPadding),
-            contentText =
-            GdsContentText.GdsContentTextString(
+            contentText = GdsContentText.GdsContentTextString(
                 text = bulletList.toIntArray()
             )
         )
@@ -177,10 +164,8 @@ private fun ErrorInformation.Introduction() {
         padding = PaddingValues(bottom = smallPadding)
     ).generate()
     GdsContent(
-        contentParameters =
-        ContentParameters(
-            resource =
-            listOf(
+        contentParameters = ContentParameters(
+            resource = listOf(
                 GdsContentText.GdsContentTextString(
                     intArrayOf(intro)
                 )

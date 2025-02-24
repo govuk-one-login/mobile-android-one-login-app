@@ -25,8 +25,7 @@ import uk.gov.android.ui.theme.smallPadding
 fun EmailSection(email: String) {
     HorizontalDivider()
     Row(
-        modifier =
-        Modifier
+        modifier = Modifier
             .padding(top = smallPadding)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth(),
@@ -40,13 +39,11 @@ fun EmailSection(email: String) {
         )
         Text(
             style = MaterialTheme.typography.bodyMedium,
-            text =
-            buildAnnotatedString {
+            text = buildAnnotatedString {
                 append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
                 appendLine()
                 withStyle(
-                    style =
-                    SpanStyle(
+                    style = SpanStyle(
                         fontSize = MaterialTheme.typography.bodySmall.fontSize,
                         color = MaterialTheme.colorScheme.surface
                     )

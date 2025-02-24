@@ -20,20 +20,15 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
     GdsTheme {
         ErrorPage(
-            parameters =
-            ErrorPageParameters(
-                primaryButtonParameters =
-                ButtonParameters(
+            parameters = ErrorPageParameters(
+                primaryButtonParameters = ButtonParameters(
                     buttonType = ButtonType.PRIMARY(),
                     onClick = onExitAppClicked,
                     text = R.string.app_exitButton
                 ),
-                informationParameters =
-                InformationParameters(
-                    contentParameters =
-                    ContentParameters(
-                        resource =
-                        listOf(
+                informationParameters = InformationParameters(
+                    contentParameters = ContentParameters(
+                        resource = listOf(
                             GdsContentText.GdsContentTextString(
                                 subTitle = R.string.app_signOutErrorTitle,
                                 text =
@@ -44,8 +39,7 @@ fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
                         ),
                         headingSize = HeadingSize.H1()
                     ),
-                    iconParameters =
-                    IconParameters(
+                    iconParameters = IconParameters(
                         foreGroundColor = Color.Unspecified,
                         image = uk.gov.android.ui.components.R.drawable.ic_error
                     )
