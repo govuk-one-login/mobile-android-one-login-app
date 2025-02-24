@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.biooptin
+package uk.gov.onelogin.core.biometrics.domain
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,8 +15,9 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandlerImpl.Companion.BIO_PREF
-import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandlerImpl.Companion.SHARED_PREFS_ID
+import uk.gov.onelogin.core.biometrics.data.BiometricPreference
+import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandlerImpl.Companion.BIO_PREF
+import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandlerImpl.Companion.SHARED_PREFS_ID
 
 class BiometricPreferenceHandlerTest {
     private val mockContext: FragmentActivity = mock()
@@ -53,21 +54,23 @@ class BiometricPreferenceHandlerTest {
     }
 
     @Test
-    fun `check clear preference`() = runTest {
-        val result = bioPrefHandler.clean()
+    fun `check clear preference`() =
+        runTest {
+            val result = bioPrefHandler.clean()
 
-        verify(mockEditor).clear()
-        verify(mockEditor).commit()
-        assertEquals(Result.success(Unit), result)
-    }
+            verify(mockEditor).clear()
+            verify(mockEditor).commit()
+            assertEquals(Result.success(Unit), result)
+        }
 
     companion object {
         @JvmStatic
-        fun getBioPrefArgs(): Stream<Arguments> = Stream.of(
-            Arguments.of(BiometricPreference.BIOMETRICS),
-            Arguments.of(BiometricPreference.PASSCODE),
-            Arguments.of(BiometricPreference.NONE),
-            Arguments.of(null)
-        )
+        fun getBioPrefArgs(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(BiometricPreference.BIOMETRICS),
+                Arguments.of(BiometricPreference.PASSCODE),
+                Arguments.of(BiometricPreference.NONE),
+                Arguments.of(null)
+            )
     }
 }

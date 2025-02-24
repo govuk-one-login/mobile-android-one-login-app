@@ -1,4 +1,4 @@
-package uk.gov.onelogin.credentialchecker
+package uk.gov.onelogin.core.biometrics.data
 
 import androidx.biometric.BiometricManager
 import java.util.stream.Stream
@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 class BiometricStatusTest {
-
     @Test
     fun success() {
         val status = BiometricStatus.SUCCESS
@@ -67,27 +66,28 @@ class BiometricStatusTest {
 
     companion object {
         @JvmStatic
-        fun biometricStatusArgs(): Stream<Arguments> = Stream.of(
-            Arguments.of(
-                BiometricManager.BIOMETRIC_SUCCESS,
-                BiometricStatus.SUCCESS
-            ),
-            Arguments.of(
-                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
-                BiometricStatus.NO_HARDWARE
-            ),
-            Arguments.of(
-                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
-                BiometricStatus.HARDWARE_UNAVAILABLE
-            ),
-            Arguments.of(
-                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
-                BiometricStatus.NOT_ENROLLED
-            ),
-            Arguments.of(
-                BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED,
-                BiometricStatus.UNKNOWN
+        fun biometricStatusArgs(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(
+                    BiometricManager.BIOMETRIC_SUCCESS,
+                    BiometricStatus.SUCCESS
+                ),
+                Arguments.of(
+                    BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE,
+                    BiometricStatus.NO_HARDWARE
+                ),
+                Arguments.of(
+                    BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE,
+                    BiometricStatus.HARDWARE_UNAVAILABLE
+                ),
+                Arguments.of(
+                    BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED,
+                    BiometricStatus.NOT_ENROLLED
+                ),
+                Arguments.of(
+                    BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED,
+                    BiometricStatus.UNKNOWN
+                )
             )
-        )
     }
 }

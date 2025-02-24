@@ -1,10 +1,9 @@
-package uk.gov.onelogin.login.biooptin
+package uk.gov.onelogin.core.biometrics.data
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BiometricPreferenceTest {
-
     @Test
     fun biometrics() {
         val preference = BiometricPreference.BIOMETRICS

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.credentialChecker
+package uk.gov.onelogin.core.biometrics.domain
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -6,9 +6,7 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import uk.gov.onelogin.credentialchecker.BiometricManager
-import uk.gov.onelogin.credentialchecker.BiometricManagerImpl
-import uk.gov.onelogin.credentialchecker.BiometricStatus
+import uk.gov.onelogin.core.biometrics.data.BiometricStatus
 
 class BiometricManagerTest {
     private lateinit var manager: BiometricManager

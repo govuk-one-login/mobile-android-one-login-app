@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.biooptin
+package uk.gov.onelogin.core.biometrics.data
 
 enum class BiometricPreference {
     BIOMETRICS,
