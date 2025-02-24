@@ -1,8 +1,7 @@
-package uk.gov.onelogin.login.usecase
+package uk.gov.onelogin.features.login.domain.signin.loginredirect
 
 import android.content.Intent
 import kotlin.test.assertEquals
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -13,13 +12,11 @@ import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AttestationResult
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
 @Suppress("MaxLineLength")
-@OptIn(ExperimentalCoroutinesApi::class)
 class HandleLoginRedirectTest {
-
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockLoginSession: LoginSession = mock()
     private val mockIntent: Intent = mock()
@@ -28,13 +25,14 @@ class HandleLoginRedirectTest {
     private val testAttestation = "testAttestation"
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
-    private val tokenResponse = TokenResponse(
-        "testType",
-        testAccessToken,
-        1L,
-        testIdToken,
-        "testRefreshToken"
-    )
+    private val tokenResponse =
+        TokenResponse(
+            "testType",
+            testAccessToken,
+            1L,
+            testIdToken,
+            "testRefreshToken"
+        )
 
     private val handleLoginRedirect = HandleLoginRedirectImpl(mockAppIntegrity, mockLoginSession)
 
@@ -58,26 +56,27 @@ class HandleLoginRedirectTest {
         }
 
     @Test
-    fun `handle() should call onFailure when getProofOfPossession returns Failure`() = runTest {
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
-        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(
-            SignedPoP.Failure(
-                "test",
-                Error("error")
+    fun `handle() should call onFailure when getProofOfPossession returns Failure`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(
+                SignedPoP.Failure(
+                    "test",
+                    Error("error")
+                )
             )
-        )
 
-        // When
-        handleLoginRedirect.handle(
-            mockIntent,
-            {
-                assertEquals("error", it?.message)
-            },
-            { }
-        )
+            // When
+            handleLoginRedirect.handle(
+                mockIntent,
+                {
+                    assertEquals("error", it?.message)
+                },
+                { }
+            )
 
-        verifyNoInteractions(mockLoginSession)
-    }
+            verifyNoInteractions(mockLoginSession)
+        }
 
     @Test
     fun `onSuccess, savedAttestation is null and attestation and PoP are successful`() =

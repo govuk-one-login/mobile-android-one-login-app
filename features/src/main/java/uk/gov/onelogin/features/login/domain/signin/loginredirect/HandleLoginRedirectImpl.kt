@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.usecase
+package uk.gov.onelogin.features.login.domain.signin.loginredirect
 
 import android.content.Intent
 import javax.inject.Inject
@@ -6,18 +6,12 @@ import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.appcheck.AppIntegrity
-import uk.gov.onelogin.appcheck.AttestationResult
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
-fun interface HandleLoginRedirect {
-    suspend fun handle(
-        intent: Intent,
-        onFailure: (Throwable?) -> Unit,
-        onSuccess: (TokenResponse) -> Unit
-    )
-}
-
-class HandleLoginRedirectImpl @Inject constructor(
+class HandleLoginRedirectImpl
+@Inject
+constructor(
     private val appIntegrity: AppIntegrity,
     private val loginSession: LoginSession
 ) : HandleLoginRedirect {
@@ -95,7 +89,8 @@ class HandleLoginRedirectImpl @Inject constructor(
                 is SignedPoP.Success ->
                     try {
                         onSuccess(popResult.popJwt)
-                    } catch (e: Throwable) { // handle both Error and Exception types.
+                    } catch (e: Throwable) {
+                        // handle both Error and Exception types.
                         // Includes AuthenticationError
                         onFailure(e)
                     }
@@ -106,7 +101,8 @@ class HandleLoginRedirectImpl @Inject constructor(
         } else {
             try {
                 onSuccess("")
-            } catch (e: Throwable) { // handle both Error and Exception types.
+            } catch (e: Throwable) {
+                // handle both Error and Exception types.
                 // Includes AuthenticationError
                 onFailure(e)
             }

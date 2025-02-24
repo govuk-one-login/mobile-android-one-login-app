@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.authentication
+package uk.gov.onelogin.login
 
 import android.content.Context
 import dagger.Module

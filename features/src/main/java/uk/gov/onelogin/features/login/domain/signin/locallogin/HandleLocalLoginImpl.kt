@@ -1,29 +1,24 @@
-package uk.gov.onelogin.login.usecase
+package uk.gov.onelogin.features.login.domain.signin.locallogin
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.login.biooptin.BiometricPreference
-import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.tokens.Keys
-import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
-import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
-import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
+import uk.gov.onelogin.core.biometrics.data.BiometricPreference
+import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
-fun interface HandleLocalLogin {
-    suspend operator fun invoke(
-        fragmentActivity: FragmentActivity,
-        callback: (LocalAuthStatus) -> Unit
-    )
-}
-
-class HandleLocalLoginImpl @Inject constructor(
+class HandleLocalLoginImpl
+@Inject
+constructor(
     private val getTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,
-    private val getFromTokenSecureStore: GetFromTokenSecureStore,
+    private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
     private val bioPrefHandler: BiometricPreferenceHandler
 ) : HandleLocalLogin {
     override suspend fun invoke(
@@ -31,11 +26,15 @@ class HandleLocalLoginImpl @Inject constructor(
         callback: (LocalAuthStatus) -> Unit
     ) {
         if (!isAccessTokenExpired() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
-            getFromTokenSecureStore(fragmentActivity, Keys.ACCESS_TOKEN_KEY, Keys.ID_TOKEN_KEY) {
+            getFromEncryptedSecureStore(
+                fragmentActivity,
+                AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
+                AuthTokenStoreKeys.ID_TOKEN_KEY
+            ) {
                 if (it is LocalAuthStatus.Success) {
                     // These should never be returned null - secure store checks for all values to not be null
-                    val accessToken = it.payload[Keys.ACCESS_TOKEN_KEY]
-                    val idToken = it.payload[Keys.ID_TOKEN_KEY]
+                    val accessToken = it.payload[AuthTokenStoreKeys.ACCESS_TOKEN_KEY]
+                    val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
                     if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
                         tokenRepository.setTokenResponse(
                             TokenResponse(

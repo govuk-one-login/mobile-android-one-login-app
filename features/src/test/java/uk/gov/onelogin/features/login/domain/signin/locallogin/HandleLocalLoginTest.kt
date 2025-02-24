@@ -1,4 +1,4 @@
-package uk.gov.onelogin.login.usecase
+package uk.gov.onelogin.features.login.domain.signin.locallogin
 
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.runBlocking
@@ -12,30 +12,31 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.login.biooptin.BiometricPreference
-import uk.gov.onelogin.login.biooptin.BiometricPreferenceHandler
-import uk.gov.onelogin.login.state.LocalAuthStatus
-import uk.gov.onelogin.repositiories.TokenRepository
-import uk.gov.onelogin.tokens.Keys
-import uk.gov.onelogin.tokens.usecases.GetFromTokenSecureStore
-import uk.gov.onelogin.tokens.usecases.GetTokenExpiry
-import uk.gov.onelogin.tokens.usecases.IsAccessTokenExpired
+import uk.gov.onelogin.core.biometrics.data.BiometricPreference
+import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 class HandleLocalLoginTest {
     private val mockActivity: FragmentActivity = mock()
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockTokenRepository: TokenRepository = mock()
-    private val mockGetFromTokenSecureStore: GetFromTokenSecureStore = mock()
+    private val mockGetFromEncryptedSecureStore: GetFromEncryptedSecureStore = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
 
-    private val useCase = HandleLocalLoginImpl(
-        mockGetTokenExpiry,
-        mockTokenRepository,
-        mockIsAccessTokenExpired,
-        mockGetFromTokenSecureStore,
-        mockBioPrefHandler
-    )
+    private val useCase =
+        HandleLocalLoginImpl(
+            mockGetTokenExpiry,
+            mockTokenRepository,
+            mockIsAccessTokenExpired,
+            mockGetFromEncryptedSecureStore,
+            mockBioPrefHandler
+        )
 
     @Test
     fun tokenExpiredAndNotNull_reAuthLogin() {
@@ -73,16 +74,17 @@ class HandleLocalLoginTest {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(unexpiredTime)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
         wheneverBlocking {
-            mockGetFromTokenSecureStore.invoke(
+            mockGetFromEncryptedSecureStore.invoke(
                 context = any(),
-                ArgumentMatchers.contains(Keys.ID_TOKEN_KEY),
+                ArgumentMatchers.contains(AuthTokenStoreKeys.ID_TOKEN_KEY),
                 callback = any()
             )
         }.thenAnswer {
             (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(
                 LocalAuthStatus.Success(
-                    payload = mapOf(
-                        Keys.ACCESS_TOKEN_KEY to "accessToken"
+                    payload =
+                    mapOf(
+                        AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken"
                     )
                 )
             )
@@ -114,7 +116,7 @@ class HandleLocalLoginTest {
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
 
         runBlocking {
-            whenever(mockGetFromTokenSecureStore(any(), any(), callback = any())).thenAnswer {
+            whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
             }
 
@@ -130,10 +132,11 @@ class HandleLocalLoginTest {
     fun goodLogin() {
         val accessToken = "Token"
         val idToken = "IdToken"
-        val tokenResponse = mapOf(
-            Pair(Keys.ACCESS_TOKEN_KEY, accessToken),
-            Pair(Keys.ID_TOKEN_KEY, idToken)
-        )
+        val tokenResponse =
+            mapOf(
+                Pair(AuthTokenStoreKeys.ACCESS_TOKEN_KEY, accessToken),
+                Pair(AuthTokenStoreKeys.ID_TOKEN_KEY, idToken)
+            )
 
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
@@ -141,7 +144,7 @@ class HandleLocalLoginTest {
 
         runBlocking {
             whenever(
-                mockGetFromTokenSecureStore(
+                mockGetFromEncryptedSecureStore(
                     context = any(),
                     ArgumentMatchers.any(),
                     callback = any()
