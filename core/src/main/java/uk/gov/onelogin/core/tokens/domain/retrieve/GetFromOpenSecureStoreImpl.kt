@@ -6,9 +6,7 @@ import javax.inject.Named
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 
-class GetFromOpenSecureStoreImpl
-@Inject
-constructor(
+class GetFromOpenSecureStoreImpl @Inject constructor(
     @Named("Open")
     private val secureStore: SecureStore
 ) : GetFromOpenSecureStore {

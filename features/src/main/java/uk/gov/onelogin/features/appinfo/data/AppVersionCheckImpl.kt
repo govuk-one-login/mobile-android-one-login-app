@@ -8,9 +8,7 @@ import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppVersionCheck
 import uk.gov.onelogin.features.appinfo.domain.BuildConfigVersion
 
-class AppVersionCheckImpl
-@Inject
-constructor(
+class AppVersionCheckImpl @Inject constructor(
     private val utils: AppInfoUtils,
     @BuildConfigVersion
     private val appVersion: String

@@ -22,9 +22,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 
 @HiltViewModel
-class SplashScreenViewModel
-@Inject
-constructor(
+class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLocalLogin: HandleLocalLogin,
     private val appInfoService: AppInfoService

@@ -7,9 +7,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 
 @HiltViewModel
-class ReAuthErrorViewModel
-@Inject
-constructor(
+class ReAuthErrorViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
     fun navigateToSignIn() {

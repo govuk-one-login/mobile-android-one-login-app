@@ -6,9 +6,7 @@ import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 
-class SaveToEncryptedSecureStoreImpl
-@Inject
-constructor(
+class SaveToEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore
 ) : SaveToEncryptedSecureStore {

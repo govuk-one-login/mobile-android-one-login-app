@@ -5,9 +5,7 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.extractPersistentIdFromIdToken
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
-class SaveTokensImpl
-@Inject
-constructor(
+class SaveTokensImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveToEncryptedSecureStore: SaveToEncryptedSecureStore,
     private val saveToOpenSecureStore: SaveToOpenSecureStore

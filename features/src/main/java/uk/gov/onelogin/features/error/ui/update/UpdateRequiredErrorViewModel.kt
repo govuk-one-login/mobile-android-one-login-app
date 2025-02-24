@@ -10,9 +10,7 @@ import javax.inject.Inject
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
 @HiltViewModel
-class UpdateRequiredErrorViewModel
-@Inject
-constructor(
+class UpdateRequiredErrorViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context
 ) : ViewModel() {

@@ -11,9 +11,7 @@ import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 
 @HiltViewModel
-class FeaturesScreenViewModel
-@Inject
-constructor(
+class FeaturesScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val availableFeatures: AvailableFeatures
 ) : ViewModel() {

@@ -7,9 +7,7 @@ fun interface IsAccessTokenExpired {
     operator fun invoke(): Boolean
 }
 
-class IsAccessTokenExpiredImpl
-@Inject
-constructor(
+class IsAccessTokenExpiredImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry
 ) : IsAccessTokenExpired {
     override fun invoke(): Boolean {

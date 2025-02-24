@@ -14,9 +14,7 @@ interface HelloWorldApiCall {
     suspend fun errorPath(): String
 }
 
-class HelloWorldApiCallImpl
-@Inject
-constructor(
+class HelloWorldApiCallImpl @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val httpClient: GenericHttpClient

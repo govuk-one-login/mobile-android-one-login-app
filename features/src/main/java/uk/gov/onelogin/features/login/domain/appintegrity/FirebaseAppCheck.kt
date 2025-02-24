@@ -11,9 +11,7 @@ import kotlinx.coroutines.tasks.await
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 
-class FirebaseAppCheck
-@Inject
-constructor(
+class FirebaseAppCheck @Inject constructor(
     appCheckFactory: AppCheckProviderFactory,
     context: Context
 ) : AppChecker {

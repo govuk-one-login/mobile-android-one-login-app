@@ -6,9 +6,7 @@ import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 
-class AppInfoServiceImpl
-@Inject
-constructor(
+class AppInfoServiceImpl @Inject constructor(
     private val remoteSource: AppInfoRemoteSource,
     private val localSource: AppInfoLocalSource,
     private val appVersionCheck: AppVersionCheck

@@ -13,9 +13,7 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
-class AppInfoApiImpl
-@Inject
-constructor(
+class AppInfoApiImpl @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val httpClient: GenericHttpClient,

@@ -17,9 +17,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 
 @HiltViewModel
-class AppIntegrityTabViewModel
-@Inject
-constructor(
+class AppIntegrityTabViewModel @Inject constructor(
     private val firebaseAppCheck: AppChecker,
     private val appCheck: AppIntegrityManager,
     private val appIntegrity: AppIntegrity,

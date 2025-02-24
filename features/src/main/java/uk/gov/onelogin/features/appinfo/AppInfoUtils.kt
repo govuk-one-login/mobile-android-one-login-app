@@ -24,9 +24,7 @@ fun interface AppInfoUtils {
     }
 }
 
-class AppInfoUtilsImpl
-@Inject
-constructor() : AppInfoUtils {
+class AppInfoUtilsImpl @Inject constructor() : AppInfoUtils {
     override fun getComparableAppVersion(version: String): List<Int> {
         val cleanVersion =
             pattern.find(version)?.value

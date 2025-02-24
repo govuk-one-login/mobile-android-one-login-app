@@ -6,9 +6,7 @@ import javax.inject.Inject
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
 
-class SaveTokenExpiryImpl
-@Inject
-constructor(
+class SaveTokenExpiryImpl @Inject constructor(
     @ApplicationContext
     context: Context
 ) : SaveTokenExpiry {

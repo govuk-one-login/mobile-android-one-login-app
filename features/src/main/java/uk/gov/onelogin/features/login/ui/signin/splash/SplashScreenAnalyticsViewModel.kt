@@ -16,9 +16,7 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @HiltViewModel
-class SplashScreenAnalyticsViewModel
-@Inject
-constructor(
+class SplashScreenAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {

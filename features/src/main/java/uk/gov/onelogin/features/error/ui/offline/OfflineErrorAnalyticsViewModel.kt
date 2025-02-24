@@ -16,9 +16,7 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @HiltViewModel
-class OfflineErrorAnalyticsViewModel
-@Inject
-constructor(
+class OfflineErrorAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {

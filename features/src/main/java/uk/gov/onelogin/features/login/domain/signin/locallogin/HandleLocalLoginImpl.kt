@@ -12,9 +12,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
-class HandleLocalLoginImpl
-@Inject
-constructor(
+class HandleLocalLoginImpl @Inject constructor(
     private val getTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,

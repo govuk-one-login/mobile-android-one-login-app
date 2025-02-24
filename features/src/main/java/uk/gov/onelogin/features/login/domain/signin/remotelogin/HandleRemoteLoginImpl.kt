@@ -15,9 +15,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
 @Suppress("LongParameterList")
-class HandleRemoteLoginImpl
-@Inject
-constructor(
+class HandleRemoteLoginImpl @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val localeUtils: LocaleUtils,

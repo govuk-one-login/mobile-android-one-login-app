@@ -55,11 +55,11 @@ import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
-    analyticsViewModel: SplashScreenAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: SplashScreenAnalyticsViewModel = hiltViewModel(),
+    optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
-    val optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
     val loading = viewModel.loading.collectAsState()
     val unlock = viewModel.showUnlock.collectAsState()
 

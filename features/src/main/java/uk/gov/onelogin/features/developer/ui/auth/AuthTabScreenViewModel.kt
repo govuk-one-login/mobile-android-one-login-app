@@ -13,9 +13,7 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 
 @HiltViewModel
-class AuthTabScreenViewModel
-@Inject
-constructor(
+class AuthTabScreenViewModel @Inject constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
     private val tokenRepository: TokenRepository,
     getEmail: GetEmail

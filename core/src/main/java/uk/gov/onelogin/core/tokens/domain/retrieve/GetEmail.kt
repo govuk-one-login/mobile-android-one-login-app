@@ -13,9 +13,7 @@ fun interface GetEmail {
     operator fun invoke(): String?
 }
 
-class GetEmailImpl
-@Inject
-constructor(
+class GetEmailImpl @Inject constructor(
     val tokenRepository: TokenRepository
 ) : GetEmail {
     override fun invoke(): String? {

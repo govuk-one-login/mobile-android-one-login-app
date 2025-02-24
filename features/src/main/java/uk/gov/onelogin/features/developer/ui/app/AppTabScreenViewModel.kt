@@ -10,9 +10,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.BuildConfigVersion
 
 @HiltViewModel
-class AppTabScreenViewModel
-@Inject
-constructor(
+class AppTabScreenViewModel @Inject constructor(
     private val appInfoLocalSource: AppInfoLocalSource,
     @BuildConfigVersion
     val version: String

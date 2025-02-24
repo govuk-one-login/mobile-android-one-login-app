@@ -22,9 +22,7 @@ interface OptInRepository : Cleaner {
 }
 
 @Suppress("MemberVisibilityCanBePrivate")
-class AnalyticsOptInRepository
-@Inject
-constructor(
+class AnalyticsOptInRepository @Inject constructor(
     private val localSource: OptInLocalSource,
     private val remoteSource: OptInRemoteSource
 ) : OptInRepository {

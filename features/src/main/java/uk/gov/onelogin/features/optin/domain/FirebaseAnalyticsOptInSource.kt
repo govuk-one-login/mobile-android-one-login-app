@@ -9,9 +9,7 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
 import uk.gov.onelogin.features.optin.ui.IODispatcherQualifier
 
-class FirebaseAnalyticsOptInSource
-@Inject
-constructor(
+class FirebaseAnalyticsOptInSource @Inject constructor(
     private val analytics: AnalyticsLogger,
     @IODispatcherQualifier
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO

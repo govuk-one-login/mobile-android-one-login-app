@@ -11,12 +11,10 @@ import kotlinx.coroutines.launch
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
-import uk.gov.onelogin.core.tokens.utils.Keys
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 @HiltViewModel
-class TokenTabScreenViewModel
-@Inject
-constructor(
+class TokenTabScreenViewModel @Inject constructor(
     private val saveTokenExpiry: SaveTokenExpiry,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getPersistentId: GetPersistentId
@@ -38,7 +36,7 @@ constructor(
     fun resetPersistentId() {
         viewModelScope.launch {
             saveToOpenSecureStore.save(
-                Keys.PERSISTENT_ID_KEY,
+                AuthTokenStoreKeys.PERSISTENT_ID_KEY,
                 ""
             )
             setPersistentId()

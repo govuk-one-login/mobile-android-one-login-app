@@ -21,9 +21,7 @@ fun interface VerifyIdToken {
 }
 
 @Suppress("TooGenericExceptionCaught")
-class VerifyIdTokenImpl
-@Inject
-constructor(
+class VerifyIdTokenImpl @Inject constructor(
     private val httpClient: GenericHttpClient,
     private val verifier: JwtVerifier
 ) : VerifyIdToken {

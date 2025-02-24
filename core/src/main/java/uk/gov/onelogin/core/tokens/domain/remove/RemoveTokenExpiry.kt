@@ -9,9 +9,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
 
 interface RemoveTokenExpiry : Cleaner
 
-class RemoveTokenExpiryImpl
-@Inject
-constructor(
+class RemoveTokenExpiryImpl @Inject constructor(
     @ApplicationContext
     context: Context
 ) : RemoveTokenExpiry {

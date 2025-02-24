@@ -8,9 +8,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 
-class NavigatorImpl
-@Inject
-constructor() : Navigator {
+class NavigatorImpl @Inject constructor() : Navigator {
     private var navController: NavHostController? = null
         get() {
             if (field == null) Log.w(this::class.simpleName, "Navigator not initialised")

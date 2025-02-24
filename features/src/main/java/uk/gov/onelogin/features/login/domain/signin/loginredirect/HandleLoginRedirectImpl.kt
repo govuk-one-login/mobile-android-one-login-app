@@ -9,9 +9,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
-class HandleLoginRedirectImpl
-@Inject
-constructor(
+class HandleLoginRedirectImpl @Inject constructor(
     private val appIntegrity: AppIntegrity,
     private val loginSession: LoginSession
 ) : HandleLoginRedirect {

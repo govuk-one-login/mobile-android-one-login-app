@@ -11,9 +11,7 @@ import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 
-class AppInfoLocalSourceImpl
-@Inject
-constructor(
+class AppInfoLocalSourceImpl @Inject constructor(
     private val sharedPrefs: SharedPreferences,
     private val featureFlagSetter: FeatureFlagSetter
 ) : AppInfoLocalSource {

@@ -7,9 +7,7 @@ import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApi
 import uk.gov.onelogin.features.appinfo.domain.AppInfoRemoteSource
 
-class AppInfoRemoteSourceImpl
-@Inject
-constructor(
+class AppInfoRemoteSourceImpl @Inject constructor(
     private val appInfoApi: AppInfoApi
 ) : AppInfoRemoteSource {
     override suspend fun get(): AppInfoRemoteState {

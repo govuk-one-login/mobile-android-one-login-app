@@ -15,9 +15,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.BiometricPrefsMapper
 import uk.gov.onelogin.core.tokens.utils.DefaultDispatcher
 
-class AutoInitialiseSecureStoreImpl
-@Inject
-constructor(
+class AutoInitialiseSecureStoreImpl @Inject constructor(
     private val biometricPreferenceHandler: BiometricPreferenceHandler,
     private val saveTokens: SaveTokens,
     @Named("Token")

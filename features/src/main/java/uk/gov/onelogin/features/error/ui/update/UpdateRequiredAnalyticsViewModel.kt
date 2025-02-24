@@ -18,9 +18,7 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
 @HiltViewModel
-class UpdateRequiredAnalyticsViewModel
-@Inject
-constructor(
+class UpdateRequiredAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {

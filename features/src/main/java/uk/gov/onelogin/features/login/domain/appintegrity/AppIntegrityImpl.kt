@@ -16,9 +16,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.SECURE_STORE_ERROR
 
-class AppIntegrityImpl
-@Inject
-constructor(
+class AppIntegrityImpl @Inject constructor(
     private val context: Context,
     private val featureFlags: FeatureFlags,
     private val appCheck: AppIntegrityManager,

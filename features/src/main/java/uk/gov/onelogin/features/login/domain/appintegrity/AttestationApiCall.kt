@@ -12,9 +12,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
 
-class AttestationApiCall
-@Inject
-constructor(
+class AttestationApiCall @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val httpClient: GenericHttpClient

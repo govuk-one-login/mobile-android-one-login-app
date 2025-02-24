@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 interface RemoveAllSecureStoreData : Cleaner
 
-class RemoveAllSecureStoreDataImpl
-@Inject
-constructor(
+class RemoveAllSecureStoreDataImpl @Inject constructor(
     @Named("Token")
     private val tokenSecureStore: SecureStore
 ) : RemoveAllSecureStoreData {

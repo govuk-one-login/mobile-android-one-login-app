@@ -10,9 +10,7 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import uk.gov.onelogin.features.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.features.optin.ui.IODispatcherQualifier
 
-class AnalyticsOptInLocalSource
-@Inject
-constructor(
+class AnalyticsOptInLocalSource @Inject constructor(
     private val preferences: SharedPreferences,
     @IODispatcherQualifier
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO

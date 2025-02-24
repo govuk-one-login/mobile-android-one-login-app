@@ -10,9 +10,7 @@ import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguratio
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
-class GetFromEncryptedSecureStoreImpl
-@Inject
-constructor(
+class GetFromEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore
 ) : GetFromEncryptedSecureStore {
