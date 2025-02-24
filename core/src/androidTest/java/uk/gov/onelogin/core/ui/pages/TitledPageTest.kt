@@ -1,14 +1,12 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.pages
 
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Test
-import uk.gov.android.onelogin.R
-import uk.gov.onelogin.TestCase
+import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.core.TestCase
 
-@HiltAndroidTest
 class TitledPageTest : TestCase() {
     @Test
     fun titlePageDisplayed() {

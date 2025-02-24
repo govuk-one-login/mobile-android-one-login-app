@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.loading
+package uk.gov.onelogin.core.ui.pages.loading
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -21,24 +21,24 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
-import uk.gov.onelogin.core.meta.ExcludeFromJacocoGeneratedReport
-import uk.gov.onelogin.core.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun LoadingScreen(
+    analyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
     backHandler: () -> Unit
 ) {
-    val analytics: LoadingScreenAnalyticsViewModel = hiltViewModel()
     BackHandler(true) {
-        analytics.trackBackButton()
+        analyticsViewModel.trackBackButton()
         backHandler()
     }
     LaunchedEffect(Unit) {
-        analytics.trackLoadingScreenEvent()
+        analyticsViewModel.trackLoadingScreenEvent()
     }
 
     GdsTheme {
@@ -52,12 +52,14 @@ fun LoadingBody() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxSize()
             .testTag(LOADING_SCREEN_BOX)
     ) {
         CircularProgressIndicator(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .width(64.dp)
                 .padding(bottom = mediumPadding)
                 .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
@@ -65,7 +67,8 @@ fun LoadingBody() {
             trackColor = colorScheme.secondary
         )
         Text(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .semantics { heading() }
                 .padding(top = largePadding)
                 .testTag(LOADING_SCREEN_TEXT),
@@ -87,4 +90,4 @@ internal fun LoadingPreview() {
 
 internal const val LOADING_SCREEN_BOX = "loadingScreen_box"
 internal const val LOADING_SCREEN_TEXT = "loadingScreen_text"
-internal const val LOADING_SCREEN_PROGRESS_INDICATOR = "loadingScreen_progressIndicator"
+const val LOADING_SCREEN_PROGRESS_INDICATOR = "loadingScreen_progressIndicator"

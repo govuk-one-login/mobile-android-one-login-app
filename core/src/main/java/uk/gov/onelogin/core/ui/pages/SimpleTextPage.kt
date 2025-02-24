@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.pages
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box

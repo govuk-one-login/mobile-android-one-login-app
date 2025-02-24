@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.components
 
 import androidx.compose.ui.graphics.Color
 

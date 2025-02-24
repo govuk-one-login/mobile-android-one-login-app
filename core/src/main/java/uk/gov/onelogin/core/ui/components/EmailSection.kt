@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,14 +18,15 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.smallPadding
 
 @Composable
 fun EmailSection(email: String) {
     HorizontalDivider()
     Row(
-        modifier = Modifier
+        modifier =
+        Modifier
             .padding(top = smallPadding)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth(),
@@ -39,11 +40,13 @@ fun EmailSection(email: String) {
         )
         Text(
             style = MaterialTheme.typography.bodyMedium,
-            text = buildAnnotatedString {
+            text =
+            buildAnnotatedString {
                 append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
                 appendLine()
                 withStyle(
-                    style = SpanStyle(
+                    style =
+                    SpanStyle(
                         fontSize = MaterialTheme.typography.bodySmall.fontSize,
                         color = MaterialTheme.colorScheme.surface
                     )

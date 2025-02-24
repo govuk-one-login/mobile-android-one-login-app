@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.components
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.text.BasicText
@@ -33,30 +33,32 @@ fun TextWithLink(
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onClick: (Int) -> Unit
 ) {
-    val annotatedString = buildAnnotatedString {
-        text?.let {
-            append(it)
+    val annotatedString =
+        buildAnnotatedString {
+            text?.let {
+                append(it)
+            }
+            pushStringAnnotation(tag = "URL", annotation = "")
+            append(linkText)
+            pop()
         }
-        pushStringAnnotation(tag = "URL", annotation = "")
-        append(linkText)
-        pop()
-    }
 
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    val pressIndicator = Modifier.pointerInput(onClick) {
-        detectTapGestures { pos ->
-            layoutResult.value?.let { layoutResult ->
-                val offset = layoutResult.getOffsetForPosition(pos)
-                annotatedString.getStringAnnotations(
-                    tag = "URL",
-                    start = offset - 1,
-                    end = offset - 1
-                )
-                    .firstOrNull()?.let { onClick(offset) }
+    val pressIndicator =
+        Modifier.pointerInput(onClick) {
+            detectTapGestures { pos ->
+                layoutResult.value?.let { layoutResult ->
+                    val offset = layoutResult.getOffsetForPosition(pos)
+                    annotatedString.getStringAnnotations(
+                        tag = "URL",
+                        start = offset - 1,
+                        end = offset - 1
+                    )
+                        .firstOrNull()?.let { onClick(offset) }
+                }
             }
         }
-    }
 
     BasicText(
         text = annotatedString,

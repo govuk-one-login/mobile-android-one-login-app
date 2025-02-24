@@ -1,4 +1,4 @@
-package uk.gov.onelogin.core.meta
+package uk.gov.onelogin.core.ui.meta
 
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark

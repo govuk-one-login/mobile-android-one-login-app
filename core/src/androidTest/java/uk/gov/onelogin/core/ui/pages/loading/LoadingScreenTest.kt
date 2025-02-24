@@ -1,21 +1,30 @@
-package uk.gov.onelogin.ui.loading
+package uk.gov.onelogin.core.ui.pages.loading
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.espresso.Espresso
-import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
+import org.junit.Before
 import org.junit.Test
-import uk.gov.onelogin.TestCase
+import org.mockito.kotlin.mock
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.onelogin.core.TestCase
 
-@HiltAndroidTest
 class LoadingScreenTest : TestCase() {
+    private lateinit var analytics: AnalyticsLogger
+    private lateinit var viewModel: LoadingScreenAnalyticsViewModel
     private var onBackPress = 0
+
+    @Before
+    fun setup() {
+        analytics = mock()
+        viewModel = LoadingScreenAnalyticsViewModel(context, analytics)
+    }
 
     @Test
     fun verifyComponents() {
         composeTestRule.setContent {
-            LoadingScreen { onBackPress++ }
+            LoadingScreen(viewModel) { onBackPress++ }
         }
 
         composeTestRule.onNodeWithTag(LOADING_SCREEN_BOX).assertIsDisplayed()

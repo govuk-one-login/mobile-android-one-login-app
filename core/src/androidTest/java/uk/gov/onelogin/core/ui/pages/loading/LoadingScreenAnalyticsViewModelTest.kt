@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.loading
+package uk.gov.onelogin.core.ui.pages.loading
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -28,10 +28,11 @@ class LoadingScreenAnalyticsViewModelTest {
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
         logger = mock()
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
         name = context.getString(R.string.app_loadingBody)
         id = context.getString(R.string.app_loading_page_id)
         nativeBackBtn = context.getEnglishString(R.string.system_backButton)
@@ -40,11 +41,12 @@ class LoadingScreenAnalyticsViewModelTest {
 
     @Test
     fun trackLoadingScreenViewEvent() {
-        val event = ViewEvent.Screen(
-            name = name,
-            id = id,
-            params = requiredParameters
-        )
+        val event =
+            ViewEvent.Screen(
+                name = name,
+                id = id,
+                params = requiredParameters
+            )
 
         viewModel.trackLoadingScreenEvent()
 
@@ -53,10 +55,11 @@ class LoadingScreenAnalyticsViewModelTest {
 
     @Test
     fun trackBackEvent() {
-        val event = TrackEvent.Icon(
-            text = nativeBackBtn,
-            params = requiredParameters
-        )
+        val event =
+            TrackEvent.Icon(
+                text = nativeBackBtn,
+                params = requiredParameters
+            )
 
         viewModel.trackBackButton()
 

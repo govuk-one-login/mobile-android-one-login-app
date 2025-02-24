@@ -1,9 +1,8 @@
-package uk.gov.onelogin.ui.components
+package uk.gov.onelogin.core.ui.components
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.click
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.text.AnnotatedString
@@ -11,16 +10,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Rule
 import org.junit.Test
-import uk.gov.onelogin.e2e.controller.TestCase
+import uk.gov.onelogin.core.TestCase
 
-@HiltAndroidTest
 class TextWithLinkTest : TestCase() {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
     @Test
     fun testOnlyLinkTextClickOnLink() {
         var clickIndex = -1
@@ -70,11 +63,12 @@ class TextWithLinkTest : TestCase() {
     @Test
     fun testLinkWithNormalTextClickOnNormalText() {
         var clicked = false
-        val annotatedString = buildAnnotatedString {
-            withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                append("Click Me")
+        val annotatedString =
+            buildAnnotatedString {
+                withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                    append("Click Me")
+                }
             }
-        }
         composeTestRule.setContent {
             TextWithLink(
                 text = "Normal Text",
@@ -99,11 +93,12 @@ class TextWithLinkTest : TestCase() {
     @Test
     fun testLinkWithNormalTextClickOnLinkText() {
         var clicked = false
-        val annotatedString = buildAnnotatedString {
-            withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                append("Click Me")
+        val annotatedString =
+            buildAnnotatedString {
+                withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                    append("Click Me")
+                }
             }
-        }
         composeTestRule.setContent {
             TextWithLink(
                 text = "Normal Text",
