@@ -11,9 +11,9 @@ object TestUtils {
             AppInfoData.AppInfo(
                 minimumVersion = "1.0.0",
                 releaseFlags = AppInfoData.ReleaseFlags(
-                    true,
-                    true,
-                    true
+                    walletVisibleViaDeepLink = true,
+                    walletVisibleIfExists = true,
+                    walletVisibleToAll = true
                 ),
                 available = true,
                 featureFlags = AppInfoData.FeatureFlags(true)

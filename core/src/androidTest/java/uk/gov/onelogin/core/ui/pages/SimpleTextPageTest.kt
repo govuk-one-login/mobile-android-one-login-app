@@ -9,7 +9,7 @@ import uk.gov.onelogin.core.TestCase
 class SimpleTextPageTest : TestCase() {
     @Test
     fun testSimpleTextPage() {
-        val testText = "OneLogin"
+        val testText = "One Login"
         composeTestRule.setContent {
             SimpleTextPage(text = R.string.app_name)
         }
