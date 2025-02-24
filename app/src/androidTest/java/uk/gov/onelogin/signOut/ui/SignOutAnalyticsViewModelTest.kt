@@ -14,7 +14,8 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
-import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.TrackEventTestCase
+import uk.gov.onelogin.executeTrackEventTestCase
 
 class SignOutAnalyticsViewModelTest {
     private lateinit var buttonText: String
@@ -54,56 +55,48 @@ class SignOutAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackSignOutLogsTrackCloseIcon() {
-        // Given a TrackEvent.Link
-        val event = TrackEvent.Icon(
-            text = "back",
-            params = requiredParameters
-        )
-        // When tracking re-auth
-        viewModel.trackCloseIcon()
-        // Then log a TrackEvent to the AnalyticsLogger
-        verify(logger).logEventV3Dot1(event)
+    fun trackIcons() {
+        listOf(
+            TrackEventTestCase.Icon(
+                trackFunction = {
+                    viewModel.trackCloseIcon()
+                },
+                text = "back"
+            ),
+            TrackEventTestCase.Icon(
+                trackFunction = {
+                    viewModel.trackBackPressed()
+                },
+                text = "back - system"
+            )
+        ).forEach {
+            val result = executeTrackEventTestCase(it, requiredParameters)
+
+            verify(logger).logEventV3Dot1(result)
+        }
     }
 
     @Test
-    fun trackSignOutLogsTrackBackPressed() {
-        // Given a TrackEvent.Link
-        val event = TrackEvent.Icon(
-            text = "back - system",
-            params = requiredParameters
-        )
-        // When tracking re-auth
-        viewModel.trackBackPressed()
-        // Then log a TrackEvent to the AnalyticsLogger
-        verify(logger).logEventV3Dot1(event)
-    }
+    fun trackScreens() {
+        listOf(
+            TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackSignOutView(SignOutUIState.Wallet)
+                },
+                name = name,
+                id = walletId
+            ),
+            TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackSignOutView(SignOutUIState.NoWallet)
+                },
+                name = name,
+                id = noWalletId
+            )
+        ).forEach {
+            val result = executeTrackEventTestCase(it, requiredParameters)
 
-    @Test
-    fun trackSignOutWalletViewLogsViewEventScreen() {
-        // Given a ViewEvent.Screen
-        val event = ViewEvent.Screen(
-            name = name,
-            id = walletId,
-            params = requiredParameters
-        )
-        // When tracking the signed out info screen view
-        viewModel.trackSignOutView(SignOutUIState.Wallet)
-        // Then log a ScreenView to the AnalyticsLogger
-        verify(logger).logEventV3Dot1(event)
-    }
-
-    @Test
-    fun trackSignOutViewLogsViewEventScreen() {
-        // Given a ViewEvent.Screen
-        val event = ViewEvent.Screen(
-            name = name,
-            id = noWalletId,
-            params = requiredParameters
-        )
-        // When tracking the signed out info screen view
-        viewModel.trackSignOutView(SignOutUIState.NoWallet)
-        // Then log a ScreenView to the AnalyticsLogger
-        verify(logger).logEventV3Dot1(event)
+            verify(logger).logEventV3Dot1(result)
+        }
     }
 }

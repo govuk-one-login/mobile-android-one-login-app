@@ -13,8 +13,9 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
-import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.TrackEventTestCase
+import uk.gov.onelogin.executeTrackEventTestCase
 
 class BioOptInAnalyticsViewModelTest {
     private lateinit var name: String
@@ -54,26 +55,24 @@ class BioOptInAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackBiometricsButton() {
-        val event = TrackEvent.Button(
-            text = biometricsBtn,
-            params = requiredParameters
-        )
+    fun trackButtons() {
+        listOf(
+            TrackEventTestCase.Button(
+                trackFunction = {
+                    viewModel.trackBiometricsButton()
+                },
+                text = biometricsBtn
+            ),
+            TrackEventTestCase.Button(
+                trackFunction = {
+                    viewModel.trackPasscodeButton()
+                },
+                text = passcodeBtn
+            )
+        ).forEach {
+            val result = executeTrackEventTestCase(it, requiredParameters)
 
-        viewModel.trackBiometricsButton()
-
-        verify(logger).logEventV3Dot1(event)
-    }
-
-    @Test
-    fun trackPasscodeButton() {
-        val event = TrackEvent.Button(
-            text = passcodeBtn,
-            params = requiredParameters
-        )
-
-        viewModel.trackPasscodeButton()
-
-        verify(logger).logEventV3Dot1(event)
+            verify(logger).logEventV3Dot1(result)
+        }
     }
 }
