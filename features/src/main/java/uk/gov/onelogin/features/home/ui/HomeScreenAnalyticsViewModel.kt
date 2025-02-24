@@ -1,11 +1,11 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.features.home.ui
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -37,33 +37,37 @@ class HomeScreenAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        internal fun makeScreenEvent(context: Context) = with(context) {
-            ViewEvent.Screen(
-                name = getEnglishString(R.string.app_home),
-                id = getEnglishString(R.string.home_page_id),
-                params = requiredParams
-            )
-        }
+        internal fun makeScreenEvent(context: Context) =
+            with(context) {
+                ViewEvent.Screen(
+                    name = getEnglishString(R.string.app_home),
+                    id = getEnglishString(R.string.home_page_id),
+                    params = requiredParams
+                )
+            }
 
-        internal fun makeCardLinkEvent(context: Context) = with(context) {
-            TrackEvent.Link(
-                isExternal = true,
-                domain = getEnglishString(R.string.app_oneLoginCardLinkUrl),
-                text = getEnglishString(R.string.app_oneLoginCardLink),
-                params = requiredParams
-            )
-        }
+        internal fun makeCardLinkEvent(context: Context) =
+            with(context) {
+                TrackEvent.Link(
+                    isExternal = true,
+                    domain = getEnglishString(R.string.app_oneLoginCardLinkUrl),
+                    text = getEnglishString(R.string.app_oneLoginCardLink),
+                    params = requiredParams
+                )
+            }
 
-        internal fun makeBackButtonEvent(context: Context) = with(context) {
-            TrackEvent.Icon(
-                text = getEnglishString(R.string.system_backButton),
-                params = requiredParams
-            )
-        }
+        internal fun makeBackButtonEvent(context: Context) =
+            with(context) {
+                TrackEvent.Icon(
+                    text = getEnglishString(R.string.system_backButton),
+                    params = requiredParams
+                )
+            }
 
-        private val requiredParams = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.HOME,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
+        private val requiredParams =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.HOME,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
     }
 }

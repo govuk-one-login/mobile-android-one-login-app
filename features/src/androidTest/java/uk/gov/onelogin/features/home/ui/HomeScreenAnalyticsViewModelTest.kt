@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.features.home.ui
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -29,10 +29,11 @@ class HomeScreenAnalyticsViewModelTest {
     @Before
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.HOME,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.HOME,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
         logger = mock()
         domain = context.getEnglishString(R.string.app_oneLoginCardLinkUrl)
         linkText = context.getEnglishString(R.string.app_oneLoginCardLink)
@@ -45,11 +46,12 @@ class HomeScreenAnalyticsViewModelTest {
     @Test
     fun trackScreen() {
         // Given a ViewEvent.Screen
-        val event = ViewEvent.Screen(
-            name = name,
-            id = id,
-            params = requiredParameters
-        )
+        val event =
+            ViewEvent.Screen(
+                name = name,
+                id = id,
+                params = requiredParameters
+            )
         // When tracking the home screen
         viewModel.trackScreen()
         // Then log a ScreenView to the AnalyticsLogger
@@ -59,12 +61,13 @@ class HomeScreenAnalyticsViewModelTest {
     @Test
     fun trackEventLink() {
         // Given a TrackEvent.Link
-        val event = TrackEvent.Link(
-            isExternal = true,
-            domain = domain,
-            text = linkText,
-            params = requiredParameters
-        )
+        val event =
+            TrackEvent.Link(
+                isExternal = true,
+                domain = domain,
+                text = linkText,
+                params = requiredParameters
+            )
         // When tracking redirect to "Using your ..." web page
         viewModel.trackLink()
         // Then log a TrackEvent to the AnalyticsLogger
@@ -74,10 +77,11 @@ class HomeScreenAnalyticsViewModelTest {
     @Test
     fun trackBackButton() {
         // Given a TrackEvent.Icon
-        val event = TrackEvent.Icon(
-            text = back,
-            params = requiredParameters
-        )
+        val event =
+            TrackEvent.Icon(
+                text = back,
+                params = requiredParameters
+            )
         // When tracking the hardware back button
         viewModel.trackBackButton()
         // Then log a TrackEvent to the AnalyticsLogger

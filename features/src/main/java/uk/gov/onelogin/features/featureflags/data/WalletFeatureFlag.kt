@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features
+package uk.gov.onelogin.features.featureflags.data
 
 import uk.gov.android.featureflags.FeatureFlag
 

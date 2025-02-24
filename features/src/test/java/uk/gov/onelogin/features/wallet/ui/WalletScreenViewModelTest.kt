@@ -1,4 +1,4 @@
-package uk.gov.onelogin.wallet
+package uk.gov.onelogin.features.wallet.ui
 
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -8,7 +8,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.WalletFeatureFlag
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 class WalletScreenViewModelTest {
     private val walletSdk: WalletSdk = mock()

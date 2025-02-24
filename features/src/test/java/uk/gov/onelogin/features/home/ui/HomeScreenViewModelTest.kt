@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.features.home.ui
 
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -12,9 +12,9 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.extensions.CoroutinesTestExtension
-import uk.gov.onelogin.extensions.InstantExecutorExtension
-import uk.gov.onelogin.navigation.Navigator
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)

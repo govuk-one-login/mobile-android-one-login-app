@@ -33,9 +33,7 @@ import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogi
 
 @HiltViewModel
 @Suppress("LongParameterList")
-class WelcomeScreenViewModel
-@Inject
-constructor(
+class WelcomeScreenViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val credChecker: CredentialChecker,

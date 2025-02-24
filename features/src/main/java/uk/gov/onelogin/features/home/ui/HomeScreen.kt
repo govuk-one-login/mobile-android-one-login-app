@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.features.home.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -19,20 +19,20 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.onelogin.R
+import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
-import uk.gov.onelogin.ui.components.TitledPage
 
 @Composable
 @Preview
 fun HomeScreen(
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel(),
+    analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
 ) {
-    val analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
     val httpClient = viewModel.httpClient
     val analyticsLogger = viewModel.analyticsLogger
     val criOrchestratorComponent = rememberCriOrchestrator(httpClient, analyticsLogger)
@@ -79,7 +79,6 @@ fun HomeScreen(
                     .padding(top = smallPadding)
                     .testTag(stringResource(R.string.yourServicesCardTestTag))
             )
-
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
                     onClick = { viewModel.openDevPanel() }

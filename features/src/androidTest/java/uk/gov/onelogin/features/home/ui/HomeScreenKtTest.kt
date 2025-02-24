@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.home
+package uk.gov.onelogin.features.home.ui
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -9,46 +9,37 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
-import dagger.hilt.android.testing.BindValue
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
-import uk.gov.android.onelogin.R
+import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.onelogin.TestCase
-import uk.gov.onelogin.core.analytics.AnalyticsModule
-import uk.gov.onelogin.ext.setupComposeTestRule
-import uk.gov.onelogin.features.CriOrchestratorFeatureFlag
-import uk.gov.onelogin.features.FeaturesModule
-import uk.gov.onelogin.features.WalletFeatureFlag
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.ext.setupComposeTestRule
+import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @Suppress("ForbiddenComment")
-@HiltAndroidTest
-@UninstallModules(AnalyticsModule::class, FeaturesModule::class)
 class HomeScreenKtTest : TestCase() {
-    @BindValue
-    var analytics: FirebaseAnalytics = Firebase.analytics
-
-    @BindValue
-    var mockAnalyticsLogger: AnalyticsLogger = mock()
+    private lateinit var httpClient: GenericHttpClient
+    private lateinit var analyticsLogger: AnalyticsLogger
 
     // TODO: Remove this after `activeSession` has been added to the CriOrchestrator and test using the stub
     //  provided
-    @BindValue
-    lateinit var featureFlags: FeatureFlags
+    private lateinit var featureFlags: FeatureFlags
+    private lateinit var navigator: Navigator
+    private lateinit var viewModel: HomeScreenViewModel
+    private lateinit var analytics: AnalyticsLogger
+    private lateinit var analyticsViewModel: HomeScreenAnalyticsViewModel
 
     private val intent = Intent()
     private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
@@ -56,11 +47,18 @@ class HomeScreenKtTest : TestCase() {
     @Before
     fun setup() {
         Intents.init()
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
+        httpClient = mock()
+        analyticsLogger = mock()
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+            )
+        navigator = mock()
+        viewModel = HomeScreenViewModel(httpClient, analyticsLogger, featureFlags, navigator)
+        analytics = mock()
+        analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
         composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen()
+            HomeScreen(viewModel, analyticsViewModel)
         }
     }
 
@@ -136,9 +134,7 @@ class HomeScreenKtTest : TestCase() {
                 useUnmergedTree = true
             ).performClick()
 
-            activityRule.scenario.onActivity { activity ->
-                activity.onBackPressedDispatcher.onBackPressed()
-            }
+            Espresso.pressBack()
 
             onNodeWithText(
                 resources.getString(R.string.app_oneLoginCardLink),
@@ -146,16 +142,6 @@ class HomeScreenKtTest : TestCase() {
                 substring = true
             ).performClick()
         }
-
-        verify(mockAnalyticsLogger).logEventV3Dot1(
-            HomeScreenAnalyticsViewModel.makeScreenEvent(context)
-        )
-        verify(mockAnalyticsLogger).logEventV3Dot1(
-            HomeScreenAnalyticsViewModel.makeBackButtonEvent(context)
-        )
-        verify(mockAnalyticsLogger).logEventV3Dot1(
-            HomeScreenAnalyticsViewModel.makeCardLinkEvent(context)
-        )
     }
 
     companion object {

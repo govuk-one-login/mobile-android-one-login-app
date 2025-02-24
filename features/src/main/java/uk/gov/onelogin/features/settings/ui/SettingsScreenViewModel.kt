@@ -1,4 +1,4 @@
-package uk.gov.onelogin.ui.settings
+package uk.gov.onelogin.features.settings.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.navigation.Navigator
-import uk.gov.onelogin.optin.domain.repository.OptInRepository
-import uk.gov.onelogin.signOut.SignOutRoutes
-import uk.gov.onelogin.tokens.usecases.GetEmail
+import uk.gov.onelogin.core.navigation.data.SignOutRoutes
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.features.optin.data.OptInRepository
 
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.wallet
+package uk.gov.onelogin.features.wallet.ui
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.WalletFeatureFlag
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @HiltViewModel
 class WalletScreenViewModel @Inject constructor(
