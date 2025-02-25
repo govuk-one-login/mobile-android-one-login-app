@@ -9,7 +9,6 @@ import androidx.test.core.app.ApplicationProvider
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -106,7 +105,6 @@ class SignedOutInfoScreenTest : TestCase() {
             shouldTryAgainCalled = false
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun verifyScreenDisplayed() {
         composeTestRule.setContent {
@@ -120,7 +118,6 @@ class SignedOutInfoScreenTest : TestCase() {
         }
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun opensWebLoginViaCustomTab() =
         runBlocking {
@@ -136,7 +133,6 @@ class SignedOutInfoScreenTest : TestCase() {
             verify(handleLoginRedirect).handle(any(), any(), any())
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun noPersistentId_OpensSignInScreen() =
         runBlocking {
@@ -152,7 +148,6 @@ class SignedOutInfoScreenTest : TestCase() {
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun shouldTryAgainCalledOnPageLoad() {
         composeTestRule.setContent {
@@ -169,7 +164,6 @@ class SignedOutInfoScreenTest : TestCase() {
         assertTrue(shouldTryAgainCalled)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit =
         runBlocking {
@@ -190,7 +184,6 @@ class SignedOutInfoScreenTest : TestCase() {
             verify(handleLoginRedirect).handle(any(), any(), any())
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun loginFiresAutomaticallyButOffline() =
         runBlocking {
@@ -209,7 +202,6 @@ class SignedOutInfoScreenTest : TestCase() {
             itOpensErrorScreen()
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun opensNetworkErrorScreen() {
         givenWeAreOffline()
@@ -219,7 +211,6 @@ class SignedOutInfoScreenTest : TestCase() {
         itOpensErrorScreen()
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun screenViewAnalyticsLogOnResume() {
         val context: Context = ApplicationProvider.getApplicationContext()
@@ -231,7 +222,6 @@ class SignedOutInfoScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(event)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun reAuthAnalyticsLogOnSignInButton() {
         val context: Context = ApplicationProvider.getApplicationContext()
@@ -244,7 +234,6 @@ class SignedOutInfoScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(event)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun loadingScreenDisplaysOnButtonClick() {
         whenever(onlineChecker.isOnline()).thenReturn(true)
@@ -270,12 +259,5 @@ class SignedOutInfoScreenTest : TestCase() {
 
     private fun itOpensErrorScreen() {
         verify(navigator).navigate(ErrorRoutes.Offline)
-    }
-
-    @Test
-    fun previewTest() {
-        composeTestRule.setContent {
-            SignedOutInfoPreview()
-        }
     }
 }

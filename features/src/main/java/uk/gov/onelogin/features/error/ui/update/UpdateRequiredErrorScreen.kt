@@ -4,9 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.PreviewFontScale
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -19,6 +16,8 @@ import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.navigation.domain.closeApp
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun UpdateRequiredScreen(
@@ -63,9 +62,8 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     )
 }
 
-@PreviewLightDark
-@PreviewFontScale
-@PreviewScreenSizes
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
 @Composable
 internal fun UpdateRequiredPreview() {
     GdsTheme {

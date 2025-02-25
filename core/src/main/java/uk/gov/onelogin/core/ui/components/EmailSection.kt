@@ -13,17 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun EmailSection(email: String) {
-    HorizontalDivider()
+    HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
     Row(
         modifier = Modifier
             .padding(top = smallPadding)
@@ -33,7 +35,8 @@ fun EmailSection(email: String) {
         horizontalArrangement = Arrangement.Start
     ) {
         Image(
-            modifier = Modifier.padding(smallPadding),
+            modifier = Modifier.padding(smallPadding)
+                .testTag(IMAGE_TEST_TAG),
             painter = painterResource(id = R.drawable.ic_profile),
             contentDescription = null
         )
@@ -55,8 +58,12 @@ fun EmailSection(email: String) {
     }
 }
 
-@Preview
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
 @Composable
-fun EmailSectionPreview() {
+internal fun EmailSectionPreview() {
     EmailSection("mock@email.com")
 }
+
+internal const val DIVIDER_TEST_TAG = "divider_test_tag"
+internal const val IMAGE_TEST_TAG = "image_test_tag"

@@ -9,19 +9,20 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
@@ -32,15 +33,19 @@ import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsView
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenPreview
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.login.ui.signin.splash.UnlockScreenPreview
+import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
+import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 
-class SplashScreenTest : TestCase() {
+class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var handleLocalLogin: HandleLocalLogin
     private lateinit var navigator: Navigator
     private lateinit var appInfoService: AppInfoService
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
+    private var repository: OptInRepository = mock()
+    private lateinit var optInViewModel: OptInRequirementViewModel
 
     private lateinit var splashIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
@@ -50,6 +55,7 @@ class SplashScreenTest : TestCase() {
 
     @Before
     fun setUp() {
+        whenever(repository.isOptInPreferenceRequired()).thenReturn(MutableStateFlow(false))
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
@@ -61,6 +67,7 @@ class SplashScreenTest : TestCase() {
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
+        optInViewModel = OptInRequirementViewModel(repository)
         wheneverBlocking { appInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(TestUtils.appInfoData))
 
@@ -74,12 +81,11 @@ class SplashScreenTest : TestCase() {
         loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun verifySplashScreen() {
         // Given
         composeTestRule.setContent {
-            SplashScreen(viewModel, analyticsViewModel)
+            SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
 
         // Then
@@ -87,7 +93,6 @@ class SplashScreenTest : TestCase() {
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun testUnlockButton() {
         wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
@@ -96,7 +101,7 @@ class SplashScreenTest : TestCase() {
 
         // Given
         composeTestRule.setContent {
-            SplashScreen(viewModel, analyticsViewModel)
+            SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
         composeTestRule.waitUntil(15000) {
             composeTestRule.onNode(unlockButton).isDisplayed()
