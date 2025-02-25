@@ -101,11 +101,10 @@ class WelcomeScreenViewModel @Inject constructor(
         tokens: TokenResponse,
         isReAuth: Boolean
     ) {
-        val jwksUrl =
-            context.getString(
-                R.string.stsUrl,
-                context.getString(R.string.jwksEndpoint)
-            )
+        val jwksUrl = context.getString(
+            R.string.stsUrl,
+            context.getString(R.string.jwksEndpoint)
+        )
 
         if (!verifyIdToken(tokens.idToken, jwksUrl)) {
             navigator.navigate(LoginRoutes.SignInError, true)
