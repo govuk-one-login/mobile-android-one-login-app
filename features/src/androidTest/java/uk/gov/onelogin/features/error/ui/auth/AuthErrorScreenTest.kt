@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.reauth
+package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
@@ -13,8 +13,8 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.TestCase
 
-class ReAuthErrorScreenTest : TestCase() {
-    private lateinit var viewModel: ReAuthErrorViewModel
+class AuthErrorScreenTest : TestCase() {
+    private lateinit var viewModel: AuthErrorViewModel
     private val navigator: Navigator = mock()
     private val title = hasText(resources.getString(R.string.app_dataDeletedErrorTitle))
     private val intro = hasText(resources.getString(R.string.app_dataDeletedErrorBody1))
@@ -27,9 +27,9 @@ class ReAuthErrorScreenTest : TestCase() {
 
     @Before
     fun setup() {
-        viewModel = ReAuthErrorViewModel(navigator)
+        viewModel = AuthErrorViewModel(navigator)
         composeTestRule.setContent {
-            ReAuthErrorScreen(viewModel)
+            AuthErrorScreen(viewModel)
         }
     }
 

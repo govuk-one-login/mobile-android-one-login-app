@@ -18,7 +18,7 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
-class UpdateRequiredAnalyticsViewModelTest {
+class ErrorUpdateRequiredAnalyticsViewModelTest {
     private lateinit var domain: String
     private lateinit var buttonText: String
     private lateinit var name: String
@@ -26,7 +26,7 @@ class UpdateRequiredAnalyticsViewModelTest {
     private lateinit var iconText: String
     private lateinit var logger: AnalyticsLogger
     private lateinit var requiredParameters: RequiredParameters
-    private lateinit var viewModel: UpdateRequiredAnalyticsViewModel
+    private lateinit var viewModel: ErrorUpdateRequiredAnalyticsViewModel
 
     @Before
     fun setUp() {
@@ -42,7 +42,7 @@ class UpdateRequiredAnalyticsViewModelTest {
         name = context.getEnglishString(R.string.app_updateApp_Title)
         id = context.getEnglishString(R.string.update_required_page_id)
         iconText = context.getEnglishString(R.string.system_backButton)
-        viewModel = UpdateRequiredAnalyticsViewModel(context, logger)
+        viewModel = ErrorUpdateRequiredAnalyticsViewModel(context, logger)
     }
 
     @Test

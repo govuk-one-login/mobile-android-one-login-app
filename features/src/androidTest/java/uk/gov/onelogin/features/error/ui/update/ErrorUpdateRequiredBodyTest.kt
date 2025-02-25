@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
 
-class UpdateRequiredBodyTest {
+class ErrorUpdateRequiredBodyTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 

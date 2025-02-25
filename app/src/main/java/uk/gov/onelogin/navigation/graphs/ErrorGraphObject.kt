@@ -13,7 +13,7 @@ import uk.gov.onelogin.features.error.ui.SignOutErrorScreen
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableScreen
-import uk.gov.onelogin.features.error.ui.update.UpdateRequiredScreen
+import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 
 object ErrorGraphObject {
     const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
@@ -59,7 +59,7 @@ object ErrorGraphObject {
                     // Close/ terminate the app
                     context.finishAndRemoveTask()
                 }
-                UpdateRequiredScreen()
+                ErrorUpdateRequiredScreen()
             }
             composable(
                 route = ErrorRoutes.Unavailable.getRoute()

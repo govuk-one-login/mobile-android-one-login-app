@@ -20,9 +20,9 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
-fun UpdateRequiredScreen(
-    viewModel: UpdateRequiredErrorViewModel = hiltViewModel(),
-    analyticsViewModel: UpdateRequiredAnalyticsViewModel = hiltViewModel()
+fun ErrorUpdateRequiredScreen(
+    viewModel: ErrorUpdateRequiredErrorViewModel = hiltViewModel(),
+    analyticsViewModel: ErrorUpdateRequiredAnalyticsViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     UpdateRequiredBody(

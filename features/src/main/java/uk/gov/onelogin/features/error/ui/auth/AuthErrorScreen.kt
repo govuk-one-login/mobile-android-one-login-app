@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.reauth
+package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,12 +36,12 @@ import uk.gov.android.ui.components.m3.images.icon.GdsIcon
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.wallet.core.ui.theme.buttonHeight
-import uk.gov.onelogin.features.error.ui.reauth.ErrorInformation.Companion.bulletPointIndentation
-import uk.gov.onelogin.features.error.ui.reauth.ErrorInformation.Companion.bulletPointTextPadding
-import uk.gov.onelogin.features.error.ui.reauth.ErrorInformation.Companion.listContentPadding
+import uk.gov.onelogin.features.error.ui.auth.ErrorInformation.Companion.bulletPointIndentation
+import uk.gov.onelogin.features.error.ui.auth.ErrorInformation.Companion.bulletPointTextPadding
+import uk.gov.onelogin.features.error.ui.auth.ErrorInformation.Companion.listContentPadding
 
 @Composable
-fun ReAuthErrorScreen(viewModel: ReAuthErrorViewModel = hiltViewModel()) {
+fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
     GdsTheme {
         ConstraintLayout(
             modifier = Modifier
