@@ -21,8 +21,8 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun ErrorUpdateRequiredScreen(
-    viewModel: ErrorUpdateRequiredErrorViewModel = hiltViewModel(),
-    analyticsViewModel: ErrorUpdateRequiredAnalyticsViewModel = hiltViewModel()
+    viewModel: OutdatedAppErrorViewModel = hiltViewModel(),
+    analyticsViewModel: OutdatedAppErrorAnalyticsViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     UpdateRequiredBody(

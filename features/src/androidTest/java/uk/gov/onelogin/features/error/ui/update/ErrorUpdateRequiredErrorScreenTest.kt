@@ -32,15 +32,15 @@ class ErrorUpdateRequiredErrorScreenTest : TestCase() {
     private val intent = Intent()
     private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
     private lateinit var primaryButton: SemanticsMatcher
-    private lateinit var viewModel: ErrorUpdateRequiredErrorViewModel
+    private lateinit var viewModel: OutdatedAppErrorViewModel
     private lateinit var analytics: AnalyticsLogger
-    private lateinit var analyticsViewModel: ErrorUpdateRequiredAnalyticsViewModel
+    private lateinit var analyticsViewModel: OutdatedAppErrorAnalyticsViewModel
 
     @Before
     fun setup() {
-        viewModel = ErrorUpdateRequiredErrorViewModel(context)
+        viewModel = OutdatedAppErrorViewModel(context)
         analytics = mock()
-        analyticsViewModel = ErrorUpdateRequiredAnalyticsViewModel(context, analytics)
+        analyticsViewModel = OutdatedAppErrorAnalyticsViewModel(context, analytics)
         Intents.init()
         primaryButton = hasText(context.getString(R.string.app_updateAppButton))
     }
@@ -99,7 +99,7 @@ class ErrorUpdateRequiredErrorScreenTest : TestCase() {
                 analyticsViewModel = analyticsViewModel
             )
         }
-        val event = ErrorUpdateRequiredAnalyticsViewModel.makeUpdateRequiredViewEvent(context)
+        val event = OutdatedAppErrorAnalyticsViewModel.makeUpdateRequiredViewEvent(context)
 
         verify(analytics).logEventV3Dot1(event)
     }
@@ -112,7 +112,7 @@ class ErrorUpdateRequiredErrorScreenTest : TestCase() {
                 analyticsViewModel = analyticsViewModel
             )
         }
-        val event = ErrorUpdateRequiredAnalyticsViewModel.makeUpdateEvent(context)
+        val event = OutdatedAppErrorAnalyticsViewModel.makeUpdateEvent(context)
         intending(hasData(AppInfoUtils.GOOGLE_PLAY_URL)).respondWith(result)
         composeTestRule.onNode(primaryButton).performClick()
         verify(analytics).logEventV3Dot1(event)
@@ -126,7 +126,7 @@ class ErrorUpdateRequiredErrorScreenTest : TestCase() {
                 analyticsViewModel = analyticsViewModel
             )
         }
-        val event = ErrorUpdateRequiredAnalyticsViewModel.makeBackEvent(context)
+        val event = OutdatedAppErrorAnalyticsViewModel.makeBackEvent(context)
         composeTestRule.waitForIdle()
         try {
             Espresso.pressBack()
