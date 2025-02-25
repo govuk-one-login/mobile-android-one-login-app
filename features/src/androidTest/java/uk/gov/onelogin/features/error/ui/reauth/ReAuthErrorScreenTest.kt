@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.error.ui.reauth
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import org.junit.Before
 import org.junit.Test
@@ -15,11 +15,7 @@ import uk.gov.onelogin.features.TestCase
 
 class ReAuthErrorScreenTest : TestCase() {
     private lateinit var viewModel: ReAuthErrorViewModel
-    private val mockNavigator: Navigator = mock()
-    private val icon =
-        hasContentDescription(
-            resources.getString(R.string.app_dataDeletedError_ContentDescription)
-        )
+    private val navigator: Navigator = mock()
     private val title = hasText(resources.getString(R.string.app_dataDeletedErrorTitle))
     private val intro = hasText(resources.getString(R.string.app_dataDeletedErrorBody1))
     private val content = hasText(resources.getString(R.string.app_dataDeletedErrorBody2))
@@ -31,7 +27,7 @@ class ReAuthErrorScreenTest : TestCase() {
 
     @Before
     fun setup() {
-        viewModel = ReAuthErrorViewModel(mockNavigator)
+        viewModel = ReAuthErrorViewModel(navigator)
         composeTestRule.setContent {
             ReAuthErrorScreen(viewModel)
         }
@@ -40,7 +36,10 @@ class ReAuthErrorScreenTest : TestCase() {
     @Test
     fun reAuthErrorScreen() {
         composeTestRule.apply {
-            onNode(icon).assertIsDisplayed()
+            onNodeWithContentDescription(
+                context.getString(R.string.app_dataDeletedError_ContentDescription)
+            ).assertIsDisplayed()
+
             onNode(title).assertIsDisplayed()
             onNode(intro).assertIsDisplayed()
             onNode(content).assertIsDisplayed()
@@ -56,6 +55,6 @@ class ReAuthErrorScreenTest : TestCase() {
         composeTestRule.onNode(primary)
             .performClick()
 
-        verify(mockNavigator).navigate(LoginRoutes.Start, true)
+        verify(navigator).navigate(LoginRoutes.Start, true)
     }
 }
