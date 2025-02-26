@@ -217,7 +217,7 @@ class WelcomeScreenViewModelTest {
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
-            verify(mockNavigator).navigate(LoginRoutes.PasscodeInfo, true)
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
     @Suppress("UNCHECKED_CAST")

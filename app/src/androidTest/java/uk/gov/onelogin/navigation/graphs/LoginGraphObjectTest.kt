@@ -95,24 +95,6 @@ class LoginGraphObjectTest : TestCase() {
 
     @FlakyTest
     @Test
-    fun loginGraph_PasscodeInfo_Button() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.PasscodeInfo)
-        }
-
-        composeTestRule.apply {
-            onNodeWithText(
-                resources.getString(R.string.app_noPasscodePatternSetupTitle)
-            ).assertIsDisplayed()
-            onNodeWithText(resources.getString(R.string.app_continue)).performClick()
-            onNodeWithText(
-                resources.getString(R.string.app_home)
-            )
-        }
-    }
-
-    @FlakyTest
-    @Test
     fun loginGraph_Loading() {
         composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.Loading)
