@@ -36,6 +36,7 @@ import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRed
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
