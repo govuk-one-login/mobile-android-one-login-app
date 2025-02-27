@@ -6,10 +6,10 @@ import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 
-class SaveToEncryptedSecureStoreImpl @Inject constructor(
+class SaveToTokenSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore
-) : SaveToEncryptedSecureStore {
+) : SaveToTokenSecureStore {
     override suspend fun invoke(
         key: String,
         value: String

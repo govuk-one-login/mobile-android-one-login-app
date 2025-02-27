@@ -16,7 +16,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 class SaveTokensTest {
     private lateinit var saveTokens: SaveTokens
     private val mockTokenRepository: TokenRepository = mock()
-    private val mockSaveToEncryptedSecureStore: SaveToEncryptedSecureStore = mock()
+    private val mockSaveToTokenSecureStore: SaveToTokenSecureStore = mock()
     private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
 
     // encoded ID token with persistent ID in the body
@@ -27,7 +27,7 @@ class SaveTokensTest {
         saveTokens =
             SaveTokensImpl(
                 mockTokenRepository,
-                mockSaveToEncryptedSecureStore,
+                mockSaveToTokenSecureStore,
                 mockSaveToOpenSecureStore
             )
     }
@@ -48,11 +48,11 @@ class SaveTokensTest {
             saveTokens()
 
             runBlocking {
-                verify(mockSaveToEncryptedSecureStore).invoke(
+                verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
                     "access"
                 )
-                verify(mockSaveToEncryptedSecureStore).invoke(
+                verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
                     idToken
                 )
@@ -78,11 +78,11 @@ class SaveTokensTest {
 
             saveTokens()
             runBlocking {
-                verify(mockSaveToEncryptedSecureStore).invoke(
+                verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
                     "access"
                 )
-                verify(mockSaveToEncryptedSecureStore).invoke(
+                verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
                     "id"
                 )
@@ -100,7 +100,7 @@ class SaveTokensTest {
 
             saveTokens()
 
-            verifyNoInteractions(mockSaveToEncryptedSecureStore)
+            verifyNoInteractions(mockSaveToTokenSecureStore)
             verifyNoInteractions(mockSaveToOpenSecureStore)
         }
     }

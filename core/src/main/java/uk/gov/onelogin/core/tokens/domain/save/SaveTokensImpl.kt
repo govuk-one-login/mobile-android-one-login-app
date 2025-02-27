@@ -7,13 +7,13 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 class SaveTokensImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
-    private val saveToEncryptedSecureStore: SaveToEncryptedSecureStore,
+    private val saveToTokenSecureStore: SaveToTokenSecureStore,
     private val saveToOpenSecureStore: SaveToOpenSecureStore
 ) : SaveTokens {
     override suspend fun invoke() {
         val tokens = tokenRepository.getTokenResponse()
         tokens?.let { tokenResponse ->
-            saveToEncryptedSecureStore(
+            saveToTokenSecureStore(
                 key = AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
                 value = tokenResponse.accessToken
             )
@@ -24,7 +24,7 @@ class SaveTokensImpl @Inject constructor(
                         value = id
                     )
                 }
-            saveToEncryptedSecureStore(
+            saveToTokenSecureStore(
                 key = AuthTokenStoreKeys.ID_TOKEN_KEY,
                 value = tokenResponse.idToken
             )

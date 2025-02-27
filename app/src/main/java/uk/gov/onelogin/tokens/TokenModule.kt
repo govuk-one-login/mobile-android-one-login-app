@@ -16,10 +16,10 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentIdImpl
-import uk.gov.onelogin.core.tokens.domain.save.SaveToEncryptedSecureStore
-import uk.gov.onelogin.core.tokens.domain.save.SaveToEncryptedSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStoreImpl
+import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiryImpl
 
@@ -38,8 +38,8 @@ interface TokenModule {
 
     @Binds
     fun bindSaveToSecureStore(
-        saveToSecureStore: SaveToEncryptedSecureStoreImpl
-    ): SaveToEncryptedSecureStore
+        saveToSecureStore: SaveToTokenSecureStoreImpl
+    ): SaveToTokenSecureStore
 
     @Binds
     fun bindSaveToOpenSecureStore(

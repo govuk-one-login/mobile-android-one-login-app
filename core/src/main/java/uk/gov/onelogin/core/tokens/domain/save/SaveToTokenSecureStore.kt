@@ -1,6 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-fun interface SaveToEncryptedSecureStore {
+fun interface SaveToTokenSecureStore {
     /**
      * Use case for saving data into a secure store instance
      *
