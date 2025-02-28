@@ -98,17 +98,22 @@
     <string name="app_privacyNoticeLink">Darllenwch fwy am hyn yn hysbysiad preifatrwydd GOV.UK One Login</string>
     <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
     <string name="app_doNotShareAnalytics">Osgoi am y tro</string>
+
+    <!--  Update Required  -->
     <string name="app_updateApp_Title">Mae angen i chi ddiweddaru eich ap</string>
     <string name="app_updateAppBody1">Rydych yn defnyddio hen fersiwn o\'r ap GOV.UK One Login.</string>
     <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
     <string name="app_updateAppButton">Diweddaru Ap GOV.UK One Login</string>
+
+    <!--  Re-Auth Error  -->
     <string name="app_dataDeletedErrorTitle">Mae rhywbeth wedi mynd o\'i le</string>
-    <string name="app_dataDeletedErrorBody1">Rydym wedi dileu\'r wybodaeth yn eich ap GOV.UK One Login oherwydd nid oeddem yn gallu cadarnhau eich manylion mewngofnodi.</string>
-    <string name="app_dataDeletedErrorBody2">Mae hyn yn golygu:</string>
-    <string name="app_dataDeletedErrorBullet1">mae unrhyw ddogfennau a arbedwyd yn eich GOV.UK Wallet wedi cael eu dileu</string>
-    <string name="app_dataDeletedErrorBullet2">os oeddech chi\'n defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, mae hyn wedi\'i ddiffodd</string>
-    <string name="app_dataDeletedErrorBullet3">mae\'r ap wedi rhoi\'r gorau i rannu dadansoddeg am sut rydych yn ei ddefnyddio</string>
-    <string name="app_dataDeletedErrorBody3">Er mwyn parhau i ddefnyddio\'r ap, bydd angen i chi fewngofnodi. Yna byddwch yn gallu ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
+    <string name="app_dataDeletedButton">Mewngofnodi</string>
+    <string name="app_dataDeletedBody1_no_wallet">Ni allem gadarnhau eich manylion mewngofnodi.</string>
+    <string name="app_dataDeletedBody2_no_wallet">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae eich dewis o ddefnyddio biometreg i ddatgloi\'r ap wedi\'i ailosod.</string>
+    <string name="app_dataDeletedBody3_no_wallet">Mae angen i chi fewngofnodi a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap.</string>
+    <string name="app_dataDeletedBody1">Ni allem gadarnhau eich manylion mewngofnodi.</string>
+    <string name="app_dataDeletedBody2">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn eich GOV.UK  Wallet wedi\'u dileu ac mae eich dewisiadau ap wedi\'u hailosod.</string>
+    <string name="app_dataDeletedBody3">Mae angen i chi fewngofnodi eto a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu dogfennau at eich GOV.UK  Wallet.</string>
 
     <!-- Url  -->
     <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>

@@ -137,13 +137,14 @@
     
     <!-- Re-Auth Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
-    <string name="app_dataDeletedErrorBody1">We’ve deleted the information in your GOV.UK One Login app because we could not confirm your sign in details.</string>
-    <string name="app_dataDeletedErrorBody2">This means:</string>
-    <string name="app_dataDeletedErrorBullet1">any documents saved in your GOV.UK Wallet have been removed</string>
-    <string name="app_dataDeletedErrorBullet2">if you were using biometrics or your phone’s pin or pattern to unlock the app, this has been switched off</string>
-    <string name="app_dataDeletedErrorBullet3">the app has stopped sharing analytics about how you use it</string>
-    <string name="app_dataDeletedErrorBody3">To keep using the app, you’ll need to sign in. You’ll then be able to add your documents to your GOV.UK Wallet and set your preferences again.</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
+    <string name="app_dataDeletedButton">Sign in</string>
+    <string name="app_dataDeletedBody1_no_wallet">We could not confirm your sign in details.</string>
+    <string name="app_dataDeletedBody2_no_wallet">To keep your information secure, your preference for using biometrics to unlock the app has been reset.</string>
+    <string name="app_dataDeletedBody3_no_wallet">You need to sign in and set your preferences again to continue using the app.</string>
+    <string name="app_dataDeletedBody1">We could not confirm your sign in details.</string>
+    <string name="app_dataDeletedBody2">To keep your information secure, any documents in your GOV.UK Wallet have been removed and your app preferences have been reset.</string>
+    <string name="app_dataDeletedBody3">You need to sign in again and set your preferences again to continue using the app. You’ll then be able to add documents to you GOV.UK Wallet.</string>
 
     <!-- Analytics Values   -->
     <string name="system_backButton" translatable="false">back - system</string>
