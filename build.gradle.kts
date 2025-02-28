@@ -5,9 +5,15 @@ buildscript {
             libs.jacoco.ant,
             libs.jacoco.core,
             libs.jacoco.report,
+            libs.google.maven
         ).forEach {
             classpath(it)
         }
+    }
+
+    repositories {
+        google()
+        mavenCentral()
     }
 
     val localProperties = java.util.Properties()

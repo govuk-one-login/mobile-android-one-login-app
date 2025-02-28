@@ -16,6 +16,7 @@ plugins {
     id("uk.gov.jacoco.app-config")
     id("uk.gov.sonar.module-config")
     id("uk.gov.onelogin.emulator-config")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
@@ -187,7 +188,8 @@ dependencies {
         projects.features,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
-        libs.bundles.firebase
+        libs.bundles.firebase,
+        libs.oss.licences
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

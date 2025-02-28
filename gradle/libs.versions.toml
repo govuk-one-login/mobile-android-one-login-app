@@ -97,6 +97,8 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
+google-maven = { group = "com.google.android.gms", name = "oss-licenses-plugin", version = "0.10.6" }
+oss-licences = { group = "com.google.android.gms", name = "play-services-oss-licenses", version = "17.1.0"}
 
 # GDS
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }

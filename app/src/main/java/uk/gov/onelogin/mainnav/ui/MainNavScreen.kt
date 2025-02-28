@@ -1,7 +1,9 @@
 package uk.gov.onelogin.mainnav.ui
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -12,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +43,7 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
+    viewModel: MainNavViewModel = hiltViewModel(),
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
@@ -49,6 +53,7 @@ fun MainNavScreen(
         { analyticsViewModel.trackWalletTabButton() },
         { analyticsViewModel.trackSettingsTabButton() }
     )
+    val context: Context = LocalContext.current
     GdsTheme {
         LaunchedEffect(Unit) {
             walletScreenViewModel.checkWalletEnabled()
@@ -90,6 +95,11 @@ fun MainNavScreen(
                         MaterialTheme.colorScheme.background
                     }
                 ).generate()
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = { viewModel.openOSSLMenu(context) }) {
+                    Text("OSSL")
+                }
             }
         ) { paddingValues ->
             NavHost(
