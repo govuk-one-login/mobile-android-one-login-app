@@ -26,7 +26,6 @@ class GenericErrorScreenTest : TestCase() {
         analyticsLogger = mock()
         viewModel = GenericErrorAnalyticsViewModel(context, analyticsLogger)
         primaryClicked = false
-
     }
 
     @Test
