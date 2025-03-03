@@ -38,9 +38,9 @@
     <string name="app_signOutConfirmationBody3">Next time you sign in, you’ll be able to add your documents to your GOV.UK  Wallet and set your preferences again.</string>
     <string name="app_signOutAndDeleteAppDataButton">Sign out and delete information</string>
 
-    <string name="app_youveBeenSignedOutTitle">You’ve been signed out</string>
-    <string name="app_youveBeenSignedOutBody1">This is to keep the information in your GOV.UK One Login app secure.</string>
-    <string name="app_youveBeenSignedOutBody2">You need to sign in again to continue.</string>
+    <string name="app_youveBeenSignedOutTitle">You need to sign in again</string>
+    <string name="app_youveBeenSignedOutBody1">It’s been more than 30 minutes since you last signed in to the GOV.UK One Login app.</string>
+    <string name="app_youveBeenSignedOutBody2">Sign in again to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
     <string name="app_signOutConfirmationTitle_no_wallet">Are you sure you want to sign out?</string>
