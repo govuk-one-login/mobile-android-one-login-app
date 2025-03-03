@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.wallet.core.errors.GenericErrorScreenPreview
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.features.TestCase
 
@@ -61,7 +60,7 @@ class GenericErrorScreenTest : TestCase() {
     @Test
     fun preview() {
         composeTestRule.setContent {
-            GenericErrorScreenPreview()
+            GenericErrorPreview()
         }
     }
 }
