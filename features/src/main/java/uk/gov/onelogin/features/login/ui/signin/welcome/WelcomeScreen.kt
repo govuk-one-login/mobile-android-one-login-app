@@ -88,7 +88,12 @@ internal fun WelcomeBody(
             content = listOf(
                 GdsContentText.GdsContentTextString(
                     text = intArrayOf(
-                        R.string.app_signInBody
+                        R.string.app_signInBody1
+                    )
+                ),
+                GdsContentText.GdsContentTextString(
+                    text = intArrayOf(
+                        R.string.app_signInBody2
                     )
                 )
             ),

@@ -21,7 +21,8 @@ class WelcomeBodyTest {
     val composeTestRule = createComposeRule()
 
     private lateinit var title: SemanticsMatcher
-    private lateinit var subTitle: SemanticsMatcher
+    private lateinit var subTitle1: SemanticsMatcher
+    private lateinit var subTitle2: SemanticsMatcher
     private lateinit var primaryButton: SemanticsMatcher
     private lateinit var icon: SemanticsMatcher
 
@@ -31,7 +32,8 @@ class WelcomeBodyTest {
         val resources: Resources = context.resources
 
         title = hasText(resources.getString(R.string.app_signInTitle))
-        subTitle = hasText(resources.getString(R.string.app_signInBody))
+        subTitle1 = hasText(resources.getString(R.string.app_signInBody1))
+        subTitle2 = hasText(resources.getString(R.string.app_signInBody2))
         primaryButton = hasText(resources.getString(R.string.app_signInButton))
         icon = hasContentDescription(resources.getString(R.string.app_signInIconDescription))
     }
@@ -44,7 +46,8 @@ class WelcomeBodyTest {
         }
         // Then
         composeTestRule.onNode(title).assertIsDisplayed()
-        composeTestRule.onNode(subTitle).assertIsDisplayed()
+        composeTestRule.onNode(subTitle1).assertIsDisplayed()
+        composeTestRule.onNode(subTitle2).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).assertIsDisplayed()
         composeTestRule.onNode(icon).assertIsDisplayed()
     }
