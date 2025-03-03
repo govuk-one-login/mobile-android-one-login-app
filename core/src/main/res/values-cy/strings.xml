@@ -37,9 +37,9 @@
     <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, gallwch ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
-    <string name="app_youveBeenSignedOutTitle">Rydych wedi cael eich allgofnodi</string>
-    <string name="app_youveBeenSignedOutBody1">Mae hyn er mwyn cadw\'r wybodaeth yn eich ap GOV.UK One Login yn ddiogel.</string>
-    <string name="app_youveBeenSignedOutBody2">Mae angen i chi fewngofnodi eto i barhau.</string>
+    <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
+    <string name="app_youveBeenSignedOutBody1">Mae mwy na 30 munud wedi mynd heibio ers i chi fewngofnodi ddiwethaf i ap GOV.UK  One Login.</string>
+    <string name="app_youveBeenSignedOutBody2">Mewngofnodwch eto i barhau.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
     <string name="app_signOutConfirmationTitle_no_wallet">Ydych chi\'n siŵr eich bod eisiau allgofnodi?</string>
