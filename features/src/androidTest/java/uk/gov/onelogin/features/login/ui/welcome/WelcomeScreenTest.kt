@@ -56,7 +56,8 @@ class WelcomeScreenTest : TestCase() {
     private var shouldTryAgainCalled = false
 
     private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
-    private val signInSubTitle = hasText(resources.getString(R.string.app_signInBody))
+    private val signInSubTitle1 = hasText(resources.getString(R.string.app_signInBody1))
+    private val signInSubTitle2 = hasText(resources.getString(R.string.app_signInBody2))
     private val signInButton = hasText(resources.getString(R.string.app_signInButton))
     private val signInIcon =
         hasContentDescription(resources.getString(R.string.app_signInIconDescription))
@@ -106,7 +107,8 @@ class WelcomeScreenTest : TestCase() {
         }
 
         composeTestRule.onNode(signInTitle).assertIsDisplayed()
-        composeTestRule.onNode(signInSubTitle).assertIsDisplayed()
+        composeTestRule.onNode(signInSubTitle1).assertIsDisplayed()
+        composeTestRule.onNode(signInSubTitle2).assertIsDisplayed()
         composeTestRule.onNode(signInButton).assertIsDisplayed()
         composeTestRule.onNode(signInIcon).assertIsDisplayed()
     }
