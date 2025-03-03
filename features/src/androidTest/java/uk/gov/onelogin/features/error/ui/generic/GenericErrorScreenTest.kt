@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.wallet.core.errors.GenericErrorScreenPreview
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.features.TestCase
 
@@ -25,16 +26,18 @@ class GenericErrorScreenTest : TestCase() {
         analyticsLogger = mock()
         viewModel = GenericErrorAnalyticsViewModel(context, analyticsLogger)
         primaryClicked = false
+
+    }
+
+    @Test
+    fun genericErrorScreen() {
         composeTestRule.setContent {
             GenericErrorScreen(
                 analyticsViewModel = viewModel,
                 onClick = { primaryClicked = true }
             )
         }
-    }
 
-    @Test
-    fun genericErrorScreen() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).apply {
@@ -46,6 +49,20 @@ class GenericErrorScreenTest : TestCase() {
 
     @Test
     fun onBackClicked() {
+        composeTestRule.setContent {
+            GenericErrorScreen(
+                analyticsViewModel = viewModel,
+                onClick = { primaryClicked = true }
+            )
+        }
+
         Espresso.pressBack()
+    }
+
+    @Test
+    fun preview() {
+        composeTestRule.setContent {
+            GenericErrorScreenPreview()
+        }
     }
 }

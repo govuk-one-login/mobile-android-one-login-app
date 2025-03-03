@@ -96,4 +96,18 @@ class AuthErrorScreenTest : TestCase() {
 
         verify(navigator).navigate(LoginRoutes.Start, true)
     }
+
+    @Test
+    fun noWalletPreview() {
+        composeTestRule.setContent {
+            AuthErrorScreenNoWalletPreview()
+        }
+    }
+
+    @Test
+    fun preview() {
+        composeTestRule.setContent {
+            AuthErrorScreenPreview()
+        }
+    }
 }
