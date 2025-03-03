@@ -44,11 +44,4 @@ class AppUnavailableScreenTest : TestCase() {
 
         verify(analytics).logEventV3Dot1(event)
     }
-
-    @Test
-    fun previewTest() {
-        composeTestRule.setContent {
-            AppUnavailablePreview()
-        }
-    }
 }

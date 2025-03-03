@@ -19,15 +19,16 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.matcher.UriMatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
@@ -39,7 +40,7 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 
 class SettingsScreenTest : TestCase() {
-    private lateinit var optInRepository: OptInRepository
+    private val optInRepository: OptInRepository = mock()
     private lateinit var navigator: Navigator
     private lateinit var getEmail: GetEmail
     private lateinit var viewModel: SettingsScreenViewModel
@@ -62,7 +63,9 @@ class SettingsScreenTest : TestCase() {
 
     @Before
     fun setUp() {
-        optInRepository = mock()
+        whenever(optInRepository.isOptInPreferenceRequired())
+            .thenReturn(MutableStateFlow(false))
+        whenever(optInRepository.hasAnalyticsOptIn()).thenReturn(MutableStateFlow(false))
         navigator = mock()
         getEmail = mock()
         viewModel = SettingsScreenViewModel(optInRepository, navigator, getEmail)
@@ -97,7 +100,6 @@ class SettingsScreenTest : TestCase() {
         Intents.release()
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun yourDetailsGroupDisplayed() {
         composeTestRule.setContent {
@@ -109,7 +111,6 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun legalGroupDisplayed() {
         composeTestRule.setContent {
@@ -120,7 +121,6 @@ class SettingsScreenTest : TestCase() {
         composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun aboutTheAppSectionDisplayed() {
         composeTestRule.setContent {
@@ -131,7 +131,6 @@ class SettingsScreenTest : TestCase() {
         composeTestRule.onNode(aboutTheAppSubTitle).assertIsDisplayed()
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun toggleSwitchCallOnToggleClickEvent() {
         var optInState = false
@@ -146,7 +145,6 @@ class SettingsScreenTest : TestCase() {
         assert(optInState)
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() {
         var optInState = false
@@ -165,13 +163,8 @@ class SettingsScreenTest : TestCase() {
         assertTrue(privacyNoticeClicked)
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun signOutCta() {
-        val navigator: Navigator = mock()
-        val optInRepository: OptInRepository = mock()
-        val getEmail: GetEmail = mock()
-        val viewModel = SettingsScreenViewModel(optInRepository, navigator, getEmail)
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -180,17 +173,15 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignOutEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun openSourceLicensesCta() {
         composeTestRule.setContent {
-            SettingsScreen()
+            SettingsScreen(viewModel, analyticsViewModel)
         }
         composeTestRule.onNode(openSourceLicensesButton).performScrollTo().performClick()
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeOpenSourceEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun signInLaunchesBrowser() {
         // Given the SettingsScreen Composable
@@ -199,7 +190,6 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignInDetailsEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun helpLaunchesBrowser() {
         // Given the SettingsScreen Composable
@@ -208,7 +198,6 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeUsingOneLoginEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun contactLaunchesBrowser() {
         // Given the SettingsScreen Composable
@@ -217,7 +206,6 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeContactEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun privacyNoticeLaunchesBrowser() {
         // Given the SettingsScreen Composable
@@ -226,7 +214,6 @@ class SettingsScreenTest : TestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makePrivacyNoticeEvent(context))
     }
 
-    @Ignore("Will resolve - just checking the coverage")
     @Test
     fun accessibilityStatementLaunchesBrowser() {
         // Given the SettingsScreen Composable

@@ -15,8 +15,8 @@ import uk.gov.android.securestore.error.SecureStorageError
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(uk.gov.onelogin.core.extensions.CoroutinesTestExtension::class)
-class SaveToEncryptedSecureStoreTest {
-    private lateinit var useCase: SaveToEncryptedSecureStore
+class SaveToTokenSecureStoreTest {
+    private lateinit var useCase: SaveToTokenSecureStore
     private val mockSecureStore: SecureStore = mock()
 
     private val expectedStoreKey: String = "key"
@@ -24,7 +24,7 @@ class SaveToEncryptedSecureStoreTest {
 
     @BeforeEach
     fun setUp() {
-        useCase = SaveToEncryptedSecureStoreImpl(mockSecureStore)
+        useCase = SaveToTokenSecureStoreImpl(mockSecureStore)
     }
 
     @Test

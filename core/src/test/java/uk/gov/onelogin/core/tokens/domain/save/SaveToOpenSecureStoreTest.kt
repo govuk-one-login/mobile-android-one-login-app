@@ -13,9 +13,10 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(uk.gov.onelogin.core.extensions.CoroutinesTestExtension::class)
+@ExtendWith(CoroutinesTestExtension::class)
 class SaveToOpenSecureStoreTest {
     private lateinit var useCase: SaveToOpenSecureStore
     private val mockSecureStore: SecureStore = mock()

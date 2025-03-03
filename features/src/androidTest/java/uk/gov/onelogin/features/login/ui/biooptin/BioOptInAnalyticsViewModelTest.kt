@@ -13,8 +13,9 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
-import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.features.TestUtils
+import uk.gov.onelogin.features.TestUtils.executeTrackEventTestCase
 import uk.gov.onelogin.features.login.ui.signin.biooptin.BioOptInAnalyticsViewModel
 
 class BioOptInAnalyticsViewModelTest {
@@ -30,11 +31,10 @@ class BioOptInAnalyticsViewModelTest {
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
         logger = mock()
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
-            )
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS
+        )
         name = context.getEnglishString(R.string.app_enableBiometricsTitle)
         id = context.getEnglishString(R.string.bio_opt_in_screen_page_id)
         passcodeBtn = context.getEnglishString(R.string.app_enablePasscodeOrPatternButton)
@@ -44,12 +44,11 @@ class BioOptInAnalyticsViewModelTest {
 
     @Test
     fun trackBioOptInScreen() {
-        val event =
-            ViewEvent.Screen(
-                name = name,
-                id = id,
-                params = requiredParameters
-            )
+        val event = ViewEvent.Screen(
+            name = name,
+            id = id,
+            params = requiredParameters
+        )
 
         viewModel.trackBioOptInScreen()
 
@@ -57,28 +56,24 @@ class BioOptInAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackBiometricsButton() {
-        val event =
-            TrackEvent.Button(
-                text = biometricsBtn,
-                params = requiredParameters
+    fun trackButtons() {
+        listOf(
+            TestUtils.TrackEventTestCase.Button(
+                trackFunction = {
+                    viewModel.trackBiometricsButton()
+                },
+                text = biometricsBtn
+            ),
+            TestUtils.TrackEventTestCase.Button(
+                trackFunction = {
+                    viewModel.trackPasscodeButton()
+                },
+                text = passcodeBtn
             )
+        ).forEach {
+            val result = executeTrackEventTestCase(it, requiredParameters)
 
-        viewModel.trackBiometricsButton()
-
-        verify(logger).logEventV3Dot1(event)
-    }
-
-    @Test
-    fun trackPasscodeButton() {
-        val event =
-            TrackEvent.Button(
-                text = passcodeBtn,
-                params = requiredParameters
-            )
-
-        viewModel.trackPasscodeButton()
-
-        verify(logger).logEventV3Dot1(event)
+            verify(logger).logEventV3Dot1(result)
+        }
     }
 }

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.domain.appintegrity
+package uk.gov.onelogin.login.appintegrity
 
 import android.content.Context
 import com.google.firebase.Firebase

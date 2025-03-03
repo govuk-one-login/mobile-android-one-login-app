@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.reauth
+package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,7 +7,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 
 @HiltViewModel
-class ReAuthErrorViewModel @Inject constructor(
+class AuthErrorViewModel @Inject constructor(
     private val navigator: Navigator
 ) : ViewModel() {
     fun navigateToSignIn() {

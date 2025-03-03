@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.signout.ui
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -11,10 +12,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
+import org.mockito.AdditionalAnswers
+import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -30,13 +34,14 @@ import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
-class SignedOutInfoScreenTest : TestCase() {
+class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var credChecker: CredentialChecker
     private lateinit var biometricPreferenceHandler: BiometricPreferenceHandler
     private lateinit var tokenRepository: TokenRepository
@@ -54,6 +59,7 @@ class SignedOutInfoScreenTest : TestCase() {
     private lateinit var viewModel: SignedOutInfoViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
+    private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private var shouldTryAgainCalled = false
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
@@ -63,54 +69,56 @@ class SignedOutInfoScreenTest : TestCase() {
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
     @Before
-    fun setup() =
-        runBlocking {
-            credChecker = mock()
-            biometricPreferenceHandler = mock()
-            tokenRepository = mock()
-            autoInitialiseSecureStore = mock()
-            verifyIdToken = mock()
-            navigator = mock()
-            saveTokens = mock()
-            saveTokenExpiry = mock()
-            handleRemoteLogin = mock()
-            handleLoginRedirect = mock()
-            onlineChecker = mock()
-            loginViewModel =
-                WelcomeScreenViewModel(
-                    context,
-                    credChecker,
-                    biometricPreferenceHandler,
-                    tokenRepository,
-                    autoInitialiseSecureStore,
-                    verifyIdToken,
-                    navigator,
-                    saveTokens,
-                    saveTokenExpiry,
-                    handleRemoteLogin,
-                    handleLoginRedirect,
-                    onlineChecker
-                )
-            getPersistentId = mock()
-            signOutUseCase = mock()
-            viewModel =
-                SignedOutInfoViewModel(
-                    navigator,
-                    tokenRepository,
-                    saveTokens,
-                    getPersistentId,
-                    signOutUseCase
-                )
-            analytics = mock()
-            analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
-            shouldTryAgainCalled = false
-        }
+    fun setup() = runBlocking {
+        credChecker = mock()
+        biometricPreferenceHandler = mock()
+        tokenRepository = mock()
+        autoInitialiseSecureStore = mock()
+        verifyIdToken = mock()
+        navigator = mock()
+        saveTokens = mock()
+        saveTokenExpiry = mock()
+        handleRemoteLogin = mock()
+        handleLoginRedirect = mock()
+        onlineChecker = mock()
+        loginViewModel = WelcomeScreenViewModel(
+            context,
+            credChecker,
+            biometricPreferenceHandler,
+            tokenRepository,
+            autoInitialiseSecureStore,
+            verifyIdToken,
+            navigator,
+            saveTokens,
+            saveTokenExpiry,
+            handleRemoteLogin,
+            handleLoginRedirect,
+            onlineChecker
+        )
+        getPersistentId = mock()
+        signOutUseCase = mock()
+        viewModel = SignedOutInfoViewModel(
+            navigator,
+            tokenRepository,
+            saveTokens,
+            getPersistentId,
+            signOutUseCase
+        )
+        analytics = mock()
+        analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
+        loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
+        shouldTryAgainCalled = false
+    }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun verifyScreenDisplayed() {
         composeTestRule.setContent {
-            SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
 
         composeTestRule.apply {
@@ -120,39 +128,44 @@ class SignedOutInfoScreenTest : TestCase() {
         }
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
-    fun opensWebLoginViaCustomTab() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
+    fun opensWebLoginViaCustomTab() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-            composeTestRule.setContent {
-                SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
-            }
-
-            whenWeClickSignIn()
-
-            verify(handleRemoteLogin).login(any(), any())
-            verify(handleLoginRedirect).handle(any(), any(), any())
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
+        whenWeClickSignIn()
+
+        verify(handleRemoteLogin).login(any(), any())
+    }
+
     @Test
-    fun noPersistentId_OpensSignInScreen() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
+    fun noPersistentId_OpensSignInScreen() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
 
-            composeTestRule.setContent {
-                SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
-            }
-
-            whenWeClickSignIn()
-
-            verify(signOutUseCase).invoke(any())
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
+        whenWeClickSignIn()
+
+        verify(signOutUseCase).invoke(any())
+        verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+    }
+
     @Test
     fun shouldTryAgainCalledOnPageLoad() {
         composeTestRule.setContent {
@@ -160,6 +173,7 @@ class SignedOutInfoScreenTest : TestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
+                loadingAnalyticsViewModel,
                 shouldTryAgain = {
                     shouldTryAgainCalled = true
                     false
@@ -169,47 +183,44 @@ class SignedOutInfoScreenTest : TestCase() {
         assertTrue(shouldTryAgainCalled)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-            composeTestRule.setContent {
-                SignedOutInfoScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
-
-            verify(handleRemoteLogin).login(any(), any())
-            verify(handleLoginRedirect).handle(any(), any(), any())
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+                shouldTryAgain = {
+                    true
+                }
+            )
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
-    @Test
-    fun loginFiresAutomaticallyButOffline() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(false)
-            composeTestRule.setContent {
-                SignedOutInfoScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
+        verify(handleRemoteLogin).login(any(), any())
+    }
 
-            itOpensErrorScreen()
+    @Test
+    fun loginFiresAutomaticallyButOffline() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+                shouldTryAgain = {
+                    true
+                }
+            )
         }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
+        itOpensErrorScreen()
+    }
+
     @Test
     fun opensNetworkErrorScreen() {
         givenWeAreOffline()
@@ -219,42 +230,63 @@ class SignedOutInfoScreenTest : TestCase() {
         itOpensErrorScreen()
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun screenViewAnalyticsLogOnResume() {
         val context: Context = ApplicationProvider.getApplicationContext()
         val event = SignedOutInfoAnalyticsViewModel.makeSignedOutInfoViewEvent(context)
         composeTestRule.setContent {
-            SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
 
         verify(analytics).logEventV3Dot1(event)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
     @Test
     fun reAuthAnalyticsLogOnSignInButton() {
         val context: Context = ApplicationProvider.getApplicationContext()
         val event = SignedOutInfoAnalyticsViewModel.makeReAuthEvent(context)
         whenever(onlineChecker.isOnline()).thenReturn(true)
         composeTestRule.setContent {
-            SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
         whenWeClickSignIn()
         verify(analytics).logEventV3Dot1(event)
     }
 
-    @Ignore("Provisionally - I'll make this work on Monday")
+    @Ignore("Check if there is a way to get the loading screen show")
     @Test
     fun loadingScreenDisplaysOnButtonClick() {
         whenever(onlineChecker.isOnline()).thenReturn(true)
         composeTestRule.setContent {
-            SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
 
         whenWeClickSignIn()
 
-        composeTestRule.onNodeWithTag("loadingScreen_progressIndicator").assertIsDisplayed()
+        wheneverBlocking { handleRemoteLogin.login(any(), any()) }.thenAnswer(
+            AdditionalAnswers.answersWithDelay(
+                1000
+            ) { _: InvocationOnMock? -> null }
+        )
+
+        composeTestRule.waitUntil {
+            composeTestRule.onNodeWithTag("loadingScreen_progressIndicator").isDisplayed()
+        }
     }
 
     private fun whenWeClickSignIn() {
@@ -264,18 +296,16 @@ class SignedOutInfoScreenTest : TestCase() {
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
         composeTestRule.setContent {
-            SignedOutInfoScreen(loginViewModel, viewModel, analyticsViewModel)
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
         }
     }
 
     private fun itOpensErrorScreen() {
         verify(navigator).navigate(ErrorRoutes.Offline)
-    }
-
-    @Test
-    fun previewTest() {
-        composeTestRule.setContent {
-            SignedOutInfoPreview()
-        }
     }
 }

@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -18,7 +17,6 @@ import uk.gov.onelogin.features.TestCase
 import uk.gov.onelogin.features.login.ui.signin.biooptin.BioOptInAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.biooptin.BioOptInViewModel
 import uk.gov.onelogin.features.login.ui.signin.biooptin.BiometricsOptInScreen
-import uk.gov.onelogin.features.login.ui.signin.biooptin.BiometricsPreview
 
 class BioOptInScreenTest : TestCase() {
     private lateinit var biometricPreferenceHandler: BiometricPreferenceHandler
@@ -82,13 +80,5 @@ class BioOptInScreenTest : TestCase() {
         composeTestRule.onNode(secondaryButton).performClick()
 
         verify(navigator).navigate(MainNavRoutes.Start, true)
-    }
-
-    @Ignore("Provisionally - I'll make this work on Monday")
-    @Test
-    fun previewTest() {
-        composeTestRule.setContent {
-            BiometricsPreview()
-        }
     }
 }
