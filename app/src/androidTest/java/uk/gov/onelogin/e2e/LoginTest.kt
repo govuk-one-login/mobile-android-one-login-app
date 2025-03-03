@@ -326,8 +326,6 @@ class LoginTest : TestCase() {
 
         clickOptOut()
         clickLogin()
-        nodeWithTextExists(resources.getString(R.string.app_noPasscodePatternSetupTitle))
-        composeRule.onNodeWithText(resources.getString(R.string.app_continue))
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 

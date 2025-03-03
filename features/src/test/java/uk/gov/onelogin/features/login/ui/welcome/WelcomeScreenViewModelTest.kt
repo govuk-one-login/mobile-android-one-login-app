@@ -36,6 +36,7 @@ import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRed
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
@@ -85,7 +86,6 @@ class WelcomeScreenViewModelTest {
         whenever(mockContext.getString(any())).thenReturn("test")
     }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `handleIntent when data != null, device secure, no biometrics, verify id token success`() =
         runTest {
@@ -113,7 +113,6 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `when data != null, device secure, verify id token success, bio pref set to biometrics`() =
         runTest {
@@ -144,7 +143,6 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `handleIntent when data != null and device is secure with ok biometrics`() =
         runTest {
@@ -169,7 +167,6 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `when data != null and device is secure with ok biometrics and pref set to none`() =
         runTest {
@@ -195,7 +192,6 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `handleIntent when data != null and device is not secure`() =
         runTest {
@@ -217,10 +213,9 @@ class WelcomeScreenViewModelTest {
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
-            verify(mockNavigator).navigate(LoginRoutes.PasscodeInfo, true)
+            verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `handleIntent when data != null, device not secure and reauth is true`() =
         runTest {
@@ -245,7 +240,6 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockBioPrefHandler)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `handleIntent when data != null, device is secure and reauth is true`() =
         runTest {
@@ -306,7 +300,6 @@ class WelcomeScreenViewModelTest {
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 
-    @Suppress("UNCHECKED_CAST")
     @Test
     fun `When id token verification fails - displays sign in error screen`() =
         runTest {
