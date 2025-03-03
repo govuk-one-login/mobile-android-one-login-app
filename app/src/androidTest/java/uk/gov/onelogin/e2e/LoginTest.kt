@@ -302,7 +302,7 @@ class LoginTest : TestCase() {
             )
         )
         clickOptOut()
-        composeRule.onNodeWithText("Sign in").performClick()
+        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
         nodeWithTextExists("There was a problem signing you in")
     }
 
