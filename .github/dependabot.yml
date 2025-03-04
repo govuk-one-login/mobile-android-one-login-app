@@ -1,29 +1,29 @@
-# Set update schedule for GitHub actions and other package managers
-
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: github-actions
     directories:
-      - "/"
+      - /
       - "/config/actions/**"
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: sunday
     groups:
       github-actions:
-        applies-to: version-updates
         patterns:
           - "*"
 
-  - package-ecosystem: "bundler"
-    directory: "/"
+  - package-ecosystem: bundler
+    directory: /
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: sunday
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "gradle"
-    directory: "/"
+  - package-ecosystem: gradle
+    directory: /
     schedule:
-      interval: "weekly"
+      interval: weekly
+      day: sunday
     open-pull-requests-limit: 5
     groups:
       kotlin:
