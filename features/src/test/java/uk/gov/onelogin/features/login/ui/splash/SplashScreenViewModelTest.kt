@@ -59,7 +59,7 @@ class SplashScreenViewModelTest {
             viewModel.login(mockActivity)
 
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, false)
+            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
         }
 
     @Test

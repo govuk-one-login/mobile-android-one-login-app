@@ -40,7 +40,7 @@ class SplashScreenViewModel @Inject constructor(
                 callback = {
                     when (it) {
                         LocalAuthStatus.SecureStoreError ->
-                            nextScreen(LoginRoutes.SignInError)
+                            nextScreen(SignOutRoutes.Info)
 
                         LocalAuthStatus.ManualSignIn ->
                             nextScreen(LoginRoutes.Welcome)
@@ -71,6 +71,10 @@ class SplashScreenViewModel @Inject constructor(
 
     fun navigateToAnalyticsOptIn() {
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
+    fun navigateToSignOutError() {
+        navigator.navigate(ErrorRoutes.SignOut)
     }
 
     fun retrieveAppInfo(onSuccess: suspend CoroutineScope.() -> Unit) {

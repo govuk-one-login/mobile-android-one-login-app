@@ -86,6 +86,8 @@ fun SplashScreen(
                                 else ->
                                     if (!viewModel.showUnlock.value) {
                                         viewModel.login(context)
+                                    } else {
+                                        viewModel.navigateToSignOutError()
                                     }
                             }
                         }
