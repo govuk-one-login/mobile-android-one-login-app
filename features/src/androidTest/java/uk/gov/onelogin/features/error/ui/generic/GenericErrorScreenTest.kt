@@ -25,16 +25,17 @@ class GenericErrorScreenTest : TestCase() {
         analyticsLogger = mock()
         viewModel = GenericErrorAnalyticsViewModel(context, analyticsLogger)
         primaryClicked = false
+    }
+
+    @Test
+    fun genericErrorScreen() {
         composeTestRule.setContent {
             GenericErrorScreen(
                 analyticsViewModel = viewModel,
                 onClick = { primaryClicked = true }
             )
         }
-    }
 
-    @Test
-    fun genericErrorScreen() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).apply {
@@ -46,6 +47,20 @@ class GenericErrorScreenTest : TestCase() {
 
     @Test
     fun onBackClicked() {
+        composeTestRule.setContent {
+            GenericErrorScreen(
+                analyticsViewModel = viewModel,
+                onClick = { primaryClicked = true }
+            )
+        }
+
         Espresso.pressBack()
+    }
+
+    @Test
+    fun preview() {
+        composeTestRule.setContent {
+            GenericErrorPreview()
+        }
     }
 }

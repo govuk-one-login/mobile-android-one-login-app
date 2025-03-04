@@ -30,43 +30,52 @@ fun GenericErrorScreen(
             onClick()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        analyticsViewModel.trackButton()
-                        onClick()
-                    },
-                    text = R.string.app_closeButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource =
-                        listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_somethingWentWrongErrorTitle,
-                                text =
-                                intArrayOf(
-                                    R.string.app_somethingWentWrongErrorBody
-                                )
+        GenericErrorBody {
+            analyticsViewModel.trackButton()
+            onClick()
+        }
+    }
+}
+
+@Composable
+private fun GenericErrorBody(
+    primaryOnClick: () -> Unit = {}
+) {
+    ErrorPage(
+        parameters = ErrorPageParameters(
+            primaryButtonParameters = ButtonParameters(
+                buttonType = ButtonType.PRIMARY(),
+                onClick = primaryOnClick,
+                text = R.string.app_closeButton
+            ),
+            informationParameters = InformationParameters(
+                contentParameters = ContentParameters(
+                    resource =
+                    listOf(
+                        GdsContentText.GdsContentTextString(
+                            subTitle = R.string.app_somethingWentWrongErrorTitle,
+                            text =
+                            intArrayOf(
+                                R.string.app_somethingWentWrongErrorBody
                             )
-                        ),
-                        headingSize = HeadingSize.H1()
+                        )
                     ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
-                    )
+                    headingSize = HeadingSize.H1()
+                ),
+                iconParameters = IconParameters(
+                    foreGroundColor = Color.Unspecified,
+                    image = uk.gov.android.ui.components.R.drawable.ic_error
                 )
             )
         )
-    }
+    )
 }
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
 internal fun GenericErrorPreview() {
-    GenericErrorScreen()
+    GdsTheme {
+        GenericErrorBody()
+    }
 }
