@@ -1,5 +1,5 @@
 # Using this file:
-# `brew bundle --no-lock` in the root directory of the repository.
+# `brew bundle` in the root directory of the repository.
 
 # terminal programs
 brew "awscli" unless system "aws", "--version"

@@ -4,7 +4,7 @@
   not already installed:
 
   ```shell
-  brew bundle --file=$(git rev-parse --show-toplevel)/Brewfile --no-lock
+  brew bundle --file=$(git rev-parse --show-toplevel)/Brewfile
   ```
 
 Other dependencies exist within the preceding list of configuration files. 

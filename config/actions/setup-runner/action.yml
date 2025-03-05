@@ -43,7 +43,7 @@ runs:
     - name: Install brew dependencies
       run: |
         source ./config/shell/brewPath
-        brew bundle --no-lock
+        brew bundle
       shell: bash
 
     - name: Update
