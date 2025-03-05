@@ -25,6 +25,11 @@ object SignOutGraphObject {
             composable(
                 route = SignOutRoutes.Info.getRoute()
             ) {
+                // I have added this temporarily as it seems if you remove your passcode/ biometrics
+                // and press back it would take you back to the HomeScreen
+                BackHandler {
+                    // Nothing to do
+                }
                 SignedOutInfoScreen(
                     shouldTryAgain = {
                         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle

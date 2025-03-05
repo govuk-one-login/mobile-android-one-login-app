@@ -73,10 +73,6 @@ class SplashScreenViewModel @Inject constructor(
         navigator.navigate(LoginRoutes.AnalyticsOptIn)
     }
 
-    fun navigateToSignOutError() {
-        navigator.navigate(ErrorRoutes.SignOut)
-    }
-
     fun retrieveAppInfo(onSuccess: suspend CoroutineScope.() -> Unit) {
         viewModelScope.launch {
             _loading.emit(true)

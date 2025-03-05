@@ -14,6 +14,7 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.signout.domain.SignOutError
+import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCase
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @HiltViewModel
@@ -22,7 +23,8 @@ class SignedOutInfoViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveTokens: SaveTokens,
     private val getPersistentId: GetPersistentId,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val signOutReAuthUseCase: SignOutReAuthUseCase
 ) : ViewModel() {
     fun resetTokens() {
         tokenRepository.clearTokenResponse()
@@ -50,6 +52,7 @@ class SignedOutInfoViewModel @Inject constructor(
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
             } else {
+                signOutReAuthUseCase.resetBioPreferences()
                 callback()
             }
         }
