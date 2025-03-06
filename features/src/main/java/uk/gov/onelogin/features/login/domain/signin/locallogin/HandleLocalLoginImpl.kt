@@ -23,7 +23,7 @@ class HandleLocalLoginImpl @Inject constructor(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit
     ) {
-        if (!isAccessTokenExpired() && checkBiometrics() != null) {
+        if (!isAccessTokenExpired() && checkBiometrics() != BiometricPreference.NONE) {
             getFromEncryptedSecureStore(
                 fragmentActivity,
                 AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
