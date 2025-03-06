@@ -1,5 +1,5 @@
 package uk.gov.onelogin.core.biometrics.domain
 
-interface BioPreferencesUseCase {
+fun interface BioPreferencesUseCase {
     suspend fun reset()
 }
