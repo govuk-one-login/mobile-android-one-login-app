@@ -39,18 +39,14 @@ class MainActivityViewModel @Inject constructor(
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
-        if (checkBiometrics() != null && tokenRepository.getTokenResponse() != null) {
+        if (checkBiometrics() != BiometricPreference.NONE &&
+            tokenRepository.getTokenResponse() != null
+        ) {
             tokenRepository.clearTokenResponse()
             navigator.navigate(LoginRoutes.Start)
         }
     }
 
-    private fun checkBiometrics(): BiometricPreference? {
-        val pref = bioPrefHandler.getBioPref()
-        return if (pref == BiometricPreference.NONE) {
-            null
-        } else {
-            pref
-        }
-    }
+    private fun checkBiometrics() = bioPrefHandler.getBioPref()
+        ?: BiometricPreference.NONE
 }

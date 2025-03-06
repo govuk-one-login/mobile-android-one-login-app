@@ -57,12 +57,5 @@ class HandleLocalLoginImpl @Inject constructor(
         }
     }
 
-    private fun checkBiometrics(): BiometricPreference? {
-        val pref = bioPrefHandler.getBioPref()
-        return if (pref == BiometricPreference.NONE) {
-            null
-        } else {
-            pref
-        }
-    }
+    private fun checkBiometrics() = bioPrefHandler.getBioPref() ?: BiometricPreference.NONE
 }

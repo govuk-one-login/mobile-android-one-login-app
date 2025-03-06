@@ -12,6 +12,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
@@ -23,8 +25,6 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.signout.domain.SignOutError
-import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCase
-import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCaseImpl
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -37,7 +37,7 @@ class SignedOutInfoViewModelTest {
     private val signOutUseCase: SignOutUseCase = mock()
     private val biometricPreferenceHandler: BiometricPreferenceHandler = mock()
     private val credentialChecker: CredentialChecker = mock()
-    private val signOutReAuthUseCase: SignOutReAuthUseCase = SignOutReAuthUseCaseImpl(
+    private val bioPreferencesUseCase: BioPreferencesUseCase = BioPreferencesUseCaseImpl(
         biometricPreferenceHandler,
         credentialChecker
     )
@@ -49,7 +49,7 @@ class SignedOutInfoViewModelTest {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            signOutReAuthUseCase
+            bioPreferencesUseCase
         )
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -14,7 +15,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.signout.domain.SignOutError
-import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCase
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @HiltViewModel
@@ -24,7 +24,7 @@ class SignedOutInfoViewModel @Inject constructor(
     private val saveTokens: SaveTokens,
     private val getPersistentId: GetPersistentId,
     private val signOutUseCase: SignOutUseCase,
-    private val signOutReAuthUseCase: SignOutReAuthUseCase
+    private val bioPreferencesUseCase: BioPreferencesUseCase
 ) : ViewModel() {
     fun resetTokens() {
         tokenRepository.clearTokenResponse()
@@ -52,7 +52,7 @@ class SignedOutInfoViewModel @Inject constructor(
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
             } else {
-                signOutReAuthUseCase.resetBioPreferences()
+                bioPreferencesUseCase.reset()
                 callback()
             }
         }

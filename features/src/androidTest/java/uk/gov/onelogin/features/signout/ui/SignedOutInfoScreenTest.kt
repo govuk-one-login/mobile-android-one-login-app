@@ -23,6 +23,8 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
@@ -39,8 +41,6 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
-import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCase
-import uk.gov.onelogin.features.signout.domain.SignOutReAuthUseCaseImpl
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 class SignedOutInfoScreenTest : FragmentActivityTestCase() {
@@ -62,7 +62,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
-    private lateinit var signOutReAuthUseCase: SignOutReAuthUseCase
+    private lateinit var bioPreferencesUseCase: BioPreferencesUseCase
     private var shouldTryAgainCalled = false
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
@@ -84,7 +84,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
         onlineChecker = mock()
-        signOutReAuthUseCase = SignOutReAuthUseCaseImpl(
+        bioPreferencesUseCase = BioPreferencesUseCaseImpl(
             biometricPreferenceHandler,
             credChecker
         )
@@ -110,7 +110,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            signOutReAuthUseCase
+            bioPreferencesUseCase
         )
         analytics = mock()
         analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
