@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
@@ -77,6 +78,45 @@ class MainActivityViewModelTest {
         verify(mockTokenRepository).clearTokenResponse()
         // AND user navigates to the lock screen (splash screen)
         verify(mockNavigator).navigate(LoginRoutes.Start)
+    }
+
+    @Test
+    fun `lock screen with biometrics pref is null when app backgrounds`() {
+        // GIVEN we are logged in
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        // AND user Biometric enabled
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+
+        // WHEN app goes in the background
+        viewModel.onPause(owner = mockLifecycleOwner)
+
+        // AND user arrives to the same screen and no navigation is involved (splash screen)
+        verify(mockNavigator, never()).navigate(LoginRoutes.Start)
+
+        // GIVEN we are logged in
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        // AND user Biometric enabled
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(null)
+
+        // WHEN app goes in the background
+        viewModel.onPause(owner = mockLifecycleOwner)
+
+        // AND user arrives to the same screen and no navigation is involved (splash screen)
+        verify(mockNavigator, never()).navigate(LoginRoutes.Start)
+    }
+
+    @Test
+    fun `lock screen with biometrics pref is NONE when app backgrounds`() {
+        // GIVEN we are logged in
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        // AND user Biometric enabled
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+
+        // WHEN app goes in the background
+        viewModel.onPause(owner = mockLifecycleOwner)
+
+        // AND user arrives to the same screen and no navigation is involved (splash screen)
+        verify(mockNavigator, never()).navigate(LoginRoutes.Start)
     }
 
     @Test

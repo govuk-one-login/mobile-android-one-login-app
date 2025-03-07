@@ -98,7 +98,20 @@ class HandleLocalLoginTest {
     }
 
     @Test
-    fun bioPrefNone_refreshLogin() {
+    fun bioPrefNone_refreshLogin_biometricsNone() {
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetTokenExpiry()).thenReturn(null)
+        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+
+        runBlocking {
+            useCase(mockActivity) {
+                assertEquals(LocalAuthStatus.ManualSignIn, it)
+            }
+        }
+    }
+
+    @Test
+    fun bioPrefNone_refreshLogin_biometricsNull() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)

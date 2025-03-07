@@ -23,7 +23,7 @@ class HandleLocalLoginImpl @Inject constructor(
         fragmentActivity: FragmentActivity,
         callback: (LocalAuthStatus) -> Unit
     ) {
-        if (!isAccessTokenExpired() && bioPrefHandler.getBioPref() != BiometricPreference.NONE) {
+        if (!isAccessTokenExpired() && isLocalAuthEnabled()) {
             getFromEncryptedSecureStore(
                 fragmentActivity,
                 AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
@@ -55,5 +55,10 @@ class HandleLocalLoginImpl @Inject constructor(
                 callback(LocalAuthStatus.ReAuthSignIn)
             }
         }
+    }
+
+    private fun isLocalAuthEnabled(): Boolean {
+        val prefs = bioPrefHandler.getBioPref()
+        return !(prefs == BiometricPreference.NONE || prefs == null)
     }
 }

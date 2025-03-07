@@ -6,6 +6,6 @@ set -o errexit
 # Start sonar server
 echo "- Ensuring that all commands are available on the PATH..."
 if ! which "sonar"; then
-  echo "  - Cannot find ${TERMINAL_COMMAND} on the PATH! Have you performed 'brew bundle --no-lock'?"
+  echo "  - Cannot find ${TERMINAL_COMMAND} on the PATH! Have you performed 'brew bundle'?"
   exit 11
 fi

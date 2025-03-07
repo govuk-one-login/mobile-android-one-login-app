@@ -23,6 +23,8 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
@@ -60,6 +62,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
+    private lateinit var bioPreferencesUseCase: BioPreferencesUseCase
     private var shouldTryAgainCalled = false
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
@@ -81,6 +84,10 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
         onlineChecker = mock()
+        bioPreferencesUseCase = BioPreferencesUseCaseImpl(
+            biometricPreferenceHandler,
+            credChecker
+        )
         loginViewModel = WelcomeScreenViewModel(
             context,
             credChecker,
@@ -102,7 +109,8 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             tokenRepository,
             saveTokens,
             getPersistentId,
-            signOutUseCase
+            signOutUseCase,
+            bioPreferencesUseCase
         )
         analytics = mock()
         analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)

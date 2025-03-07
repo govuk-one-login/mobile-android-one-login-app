@@ -39,11 +39,16 @@ class MainActivityViewModel @Inject constructor(
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
-        if (bioPrefHandler.getBioPref() != BiometricPreference.NONE &&
+        if (isLocalAuthEnabled() &&
             tokenRepository.getTokenResponse() != null
         ) {
             tokenRepository.clearTokenResponse()
             navigator.navigate(LoginRoutes.Start)
         }
+    }
+
+    private fun isLocalAuthEnabled(): Boolean {
+        val prefs = bioPrefHandler.getBioPref()
+        return !(prefs == BiometricPreference.NONE || prefs == null)
     }
 }

@@ -40,7 +40,7 @@ class SplashScreenViewModel @Inject constructor(
                 callback = {
                     when (it) {
                         LocalAuthStatus.SecureStoreError ->
-                            nextScreen(LoginRoutes.SignInError)
+                            nextScreen(SignOutRoutes.Info)
 
                         LocalAuthStatus.ManualSignIn ->
                             nextScreen(LoginRoutes.Welcome)

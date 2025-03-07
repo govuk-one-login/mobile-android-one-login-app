@@ -66,9 +66,17 @@ class SignOutGraphObjectTest : TestCase() {
             navigator.navigate(SignOutRoutes.Info)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_youveBeenSignedOutTitle)
-        ).assertIsDisplayed()
+        composeTestRule.apply {
+            onNodeWithText(
+                resources.getString(R.string.app_youveBeenSignedOutTitle)
+            ).assertIsDisplayed()
+
+            back()
+
+            onNodeWithText(
+                resources.getString(R.string.app_youveBeenSignedOutTitle)
+            ).assertIsDisplayed()
+        }
     }
 
     @Test

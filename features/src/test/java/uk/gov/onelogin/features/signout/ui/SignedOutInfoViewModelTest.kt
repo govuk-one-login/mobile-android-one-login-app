@@ -12,6 +12,10 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
+import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
+import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -26,19 +30,26 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignedOutInfoViewModelTest {
-    private val mockTokenRepository: TokenRepository = mock()
-    private val mockSaveTokens: SaveTokens = mock()
-    private val mockNavigator: Navigator = mock()
-    private val mockGetPersistentId: GetPersistentId = mock()
-    private val mockSignOutUseCase: SignOutUseCase = mock()
+    private val tokenRepository: TokenRepository = mock()
+    private val saveTokens: SaveTokens = mock()
+    private val navigator: Navigator = mock()
+    private val getPersistentId: GetPersistentId = mock()
+    private val signOutUseCase: SignOutUseCase = mock()
+    private val biometricPreferenceHandler: BiometricPreferenceHandler = mock()
+    private val credentialChecker: CredentialChecker = mock()
+    private val bioPreferencesUseCase: BioPreferencesUseCase = BioPreferencesUseCaseImpl(
+        biometricPreferenceHandler,
+        credentialChecker
+    )
 
     private val viewModel by lazy {
         SignedOutInfoViewModel(
-            mockNavigator,
-            mockTokenRepository,
-            mockSaveTokens,
-            mockGetPersistentId,
-            mockSignOutUseCase
+            navigator,
+            tokenRepository,
+            saveTokens,
+            getPersistentId,
+            signOutUseCase,
+            bioPreferencesUseCase
         )
     }
 
@@ -46,7 +57,7 @@ class SignedOutInfoViewModelTest {
     fun `reset tokens calls use case`() {
         viewModel.resetTokens()
 
-        verify(mockTokenRepository).clearTokenResponse()
+        verify(tokenRepository).clearTokenResponse()
     }
 
     @Test
@@ -54,18 +65,18 @@ class SignedOutInfoViewModelTest {
         runTest {
             viewModel.saveTokens()
 
-            verify(mockSaveTokens).invoke()
+            verify(saveTokens).invoke()
         }
 
     @Test
     fun `navigator has back stack, reauth is true`() {
-        whenever(mockNavigator.hasBackStack()).thenReturn(true)
+        whenever(navigator.hasBackStack()).thenReturn(true)
         assertTrue(viewModel.shouldReAuth())
     }
 
     @Test
     fun `navigator has no back stack, reauth is false`() {
-        whenever(mockNavigator.hasBackStack()).thenReturn(false)
+        whenever(navigator.hasBackStack()).thenReturn(false)
         assertFalse(viewModel.shouldReAuth())
     }
 
@@ -74,12 +85,12 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             val activity: FragmentActivity = mock()
-            whenever(mockGetPersistentId.invoke()).thenReturn(null)
+            whenever(getPersistentId.invoke()).thenReturn(null)
 
             viewModel.checkPersistentId(activity) { callback = true }
 
-            verify(mockSignOutUseCase).invoke(activity)
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(signOutUseCase).invoke(activity)
+            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
 
     @Test
@@ -87,25 +98,43 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             val activity: FragmentActivity = mock()
-            whenever(mockGetPersistentId.invoke()).thenReturn("")
+            whenever(getPersistentId.invoke()).thenReturn("")
 
             viewModel.checkPersistentId(activity) { callback = true }
 
-            verify(mockSignOutUseCase).invoke(activity)
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(signOutUseCase).invoke(activity)
+            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
 
     @Test
-    fun `sign out usecase is not called when persistent id good`() =
+    fun `sign out usecase is not called when persistent id good and device secure`() =
         runTest {
             var callback = false
             val activity: FragmentActivity = mock()
-            whenever(mockGetPersistentId.invoke()).thenReturn("id")
+            whenever(getPersistentId.invoke()).thenReturn("id")
+            whenever(credentialChecker.isDeviceSecure()).thenReturn(true)
 
             viewModel.checkPersistentId(activity) { callback = true }
 
-            verifyNoInteractions(mockSignOutUseCase)
-            verifyNoInteractions(mockNavigator)
+            verifyNoInteractions(signOutUseCase)
+            verifyNoInteractions(navigator)
+            verifyNoInteractions(biometricPreferenceHandler)
+            assertTrue(callback)
+        }
+
+    @Test
+    fun `sign out usecase is not called when persistent id good and device unsecure`() =
+        runTest {
+            var callback = false
+            val activity: FragmentActivity = mock()
+            whenever(getPersistentId.invoke()).thenReturn("id")
+            whenever(credentialChecker.isDeviceSecure()).thenReturn(false)
+
+            viewModel.checkPersistentId(activity) { callback = true }
+
+            verifyNoInteractions(signOutUseCase)
+            verifyNoInteractions(navigator)
+            verify(biometricPreferenceHandler).clean()
             assertTrue(callback)
         }
 
@@ -114,13 +143,13 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             val activity: FragmentActivity = mock()
-            whenever(mockGetPersistentId.invoke()).thenReturn("")
-            whenever(mockSignOutUseCase.invoke(any())).thenThrow(SignOutError(Error()))
+            whenever(getPersistentId.invoke()).thenReturn("")
+            whenever(signOutUseCase.invoke(any())).thenThrow(SignOutError(Error()))
 
             viewModel.checkPersistentId(activity) { callback = true }
 
-            verify(mockSignOutUseCase).invoke(activity)
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            verify(signOutUseCase).invoke(activity)
+            verify(navigator).navigate(LoginRoutes.SignInError, true)
             assertFalse(callback)
         }
 }
