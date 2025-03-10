@@ -102,7 +102,6 @@ dependencies {
         libs.androidx.espresso.core,
         libs.androidx.test.ext.junit,
         libs.test.core.ktx,
-        libs.hilt.android.testing,
         libs.uiautomator,
         libs.mockito.kotlin,
         libs.mockito.android
@@ -116,9 +115,17 @@ dependencies {
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.junit.jupiter.engine,
+        libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
-        libs.classgraph
+        libs.classgraph,
+        libs.junit,
+        libs.roboelectric,
+        libs.androidx.compose.ui.junit4,
+        libs.androidx.espresso.core,
+        libs.androidx.navigation.testing,
+        libs.androidx.test.orchestrator,
+        libs.androidx.espresso.intents
     ).forEach(::testImplementation)
 
     listOf(

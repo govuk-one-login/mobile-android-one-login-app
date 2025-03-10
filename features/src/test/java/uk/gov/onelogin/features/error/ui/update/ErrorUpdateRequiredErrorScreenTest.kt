@@ -17,18 +17,21 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
-class ErrorUpdateRequiredErrorScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
     private val intent = Intent()
     private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
     private lateinit var primaryButton: SemanticsMatcher

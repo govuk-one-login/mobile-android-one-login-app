@@ -1,9 +1,11 @@
-package uk.gov.onelogin.features.error.ui.generic
+package uk.gov.onelogin.features.error.ui.signin
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
@@ -16,7 +18,8 @@ import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
-class GenericErrorAnalyticsViewModelTest {
+@RunWith(AndroidJUnit4::class)
+class SignInErrorAnalyticsViewModelTest {
     private lateinit var name: String
     private lateinit var id: String
     private lateinit var reason: String
@@ -24,24 +27,24 @@ class GenericErrorAnalyticsViewModelTest {
     private lateinit var backButton: String
     private lateinit var requiredParams: RequiredParameters
     private lateinit var analyticsLogger: AnalyticsLogger
-    private lateinit var viewModel: GenericErrorAnalyticsViewModel
+    private lateinit var viewModel: SignInErrorAnalyticsViewModel
 
     @Before
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        name = context.getEnglishString(R.string.app_somethingWentWrongErrorTitle)
-        id = context.getEnglishString(R.string.generic_error_screen_id)
-        reason = context.getEnglishString(R.string.generic_error_reason)
+        name = context.getEnglishString(R.string.app_signInErrorTitle)
+        id = context.getEnglishString(R.string.sign_in_error_screen_id)
+        reason = context.getEnglishString(R.string.sign_in_error_reason)
         button = context.getEnglishString(R.string.app_closeButton)
         backButton = context.getEnglishString(R.string.system_backButton)
         requiredParams =
             RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
                 taxonomyLevel3 = TaxonomyLevel3.ERROR
             )
         analyticsLogger = mock()
         viewModel =
-            GenericErrorAnalyticsViewModel(
+            SignInErrorAnalyticsViewModel(
                 context,
                 analyticsLogger
             )

@@ -3,14 +3,17 @@ package uk.gov.onelogin.features.error.ui
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 
-class SignOutErrorScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class SignOutErrorScreenTest : FragmentActivityTestCase() {
     private val errorTitle = hasText(resources.getString(R.string.app_signOutErrorTitle))
     private val errorBody = hasText(resources.getString(R.string.app_signOutErrorBody))
     private val primaryButton = hasText(resources.getString(R.string.app_exitButton))

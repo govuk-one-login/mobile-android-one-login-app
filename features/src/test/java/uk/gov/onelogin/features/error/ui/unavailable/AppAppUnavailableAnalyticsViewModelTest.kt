@@ -1,13 +1,14 @@
-package uk.gov.onelogin.features.error.ui.update
+package uk.gov.onelogin.features.error.ui.unavailable
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.analytics.extensions.domain
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -16,17 +17,15 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
-import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
-class OutdatedAppErrorAnalyticsViewModelTest {
-    private lateinit var domain: String
-    private lateinit var buttonText: String
+@RunWith(AndroidJUnit4::class)
+class AppAppUnavailableAnalyticsViewModelTest {
     private lateinit var name: String
     private lateinit var id: String
     private lateinit var iconText: String
     private lateinit var logger: AnalyticsLogger
     private lateinit var requiredParameters: RequiredParameters
-    private lateinit var viewModel: OutdatedAppErrorAnalyticsViewModel
+    private lateinit var viewModel: AppUnavailableAnalyticsViewModel
 
     @Before
     fun setUp() {
@@ -37,32 +36,14 @@ class OutdatedAppErrorAnalyticsViewModelTest {
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
             )
-        domain = AppInfoUtils.GOOGLE_PLAY_URL.domain
-        buttonText = context.getEnglishString(R.string.app_updateAppButton)
-        name = context.getEnglishString(R.string.app_updateApp_Title)
-        id = context.getEnglishString(R.string.update_required_page_id)
+        name = context.getEnglishString(R.string.app_appUnavailableTitle)
+        id = context.getEnglishString(R.string.app_unavailable_page_id)
         iconText = context.getEnglishString(R.string.system_backButton)
-        viewModel = OutdatedAppErrorAnalyticsViewModel(context, logger)
+        viewModel = AppUnavailableAnalyticsViewModel(context, logger)
     }
 
     @Test
-    fun trackAppUpdateLogsTrackEventLink() {
-        // Given a TrackEvent.Link
-        val event =
-            TrackEvent.Link(
-                isExternal = true,
-                domain = domain,
-                text = buttonText,
-                params = requiredParameters
-            )
-        // When tracking an app update
-        viewModel.trackAppUpdate()
-        // Then log a TrackEvent to the AnalyticsLogger
-        verify(logger).logEventV3Dot1(event)
-    }
-
-    @Test
-    fun trackSignOutViewLogsScreenView() {
+    fun trackAppUnavailableViewLogsScreenView() {
         // Given a ViewEvent.Screen
         val event =
             ViewEvent.Screen(
@@ -70,8 +51,8 @@ class OutdatedAppErrorAnalyticsViewModelTest {
                 id = id,
                 params = requiredParameters
             )
-        // When tracking the update required screen view
-        viewModel.trackUpdateRequiredView()
+        // When tracking the app unavailable screen view
+        viewModel.trackUnavailableView()
         // Then log a ScreenView to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
     }

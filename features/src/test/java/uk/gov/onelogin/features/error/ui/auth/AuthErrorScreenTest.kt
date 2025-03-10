@@ -4,7 +4,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.featureflags.FeatureFlags
@@ -12,10 +14,11 @@ import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
-class AuthErrorScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class AuthErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var viewModel: AuthErrorViewModel
     private val navigator: Navigator = mock()
     private lateinit var featureFlags: FeatureFlags

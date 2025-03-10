@@ -102,7 +102,6 @@ dependencies {
         libs.androidx.espresso.core,
         libs.androidx.test.ext.junit,
         libs.test.core.ktx,
-        libs.hilt.android.testing,
         libs.uiautomator,
         libs.mockito.kotlin
     ).forEach(::androidTestImplementation)

@@ -2,15 +2,18 @@ package uk.gov.onelogin.features.error.ui.unavailable
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoActivityResumedException
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 
-class AppUnavailableScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class AppUnavailableScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var viewModel: AppUnavailableAnalyticsViewModel
 

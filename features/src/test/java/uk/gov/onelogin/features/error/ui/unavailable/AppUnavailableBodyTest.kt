@@ -7,11 +7,14 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
 
+@RunWith(AndroidJUnit4::class)
 class AppUnavailableBodyTest {
     @get:Rule
     val composeTestRule = createComposeRule()

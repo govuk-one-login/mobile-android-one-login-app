@@ -4,14 +4,17 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 
-class GenericErrorScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class GenericErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var viewModel: GenericErrorAnalyticsViewModel
     private var primaryClicked = false
@@ -42,6 +45,7 @@ class GenericErrorScreenTest : TestCase() {
             assertIsDisplayed()
             performClick()
         }
+
         assert(primaryClicked)
     }
 
