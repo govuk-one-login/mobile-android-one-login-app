@@ -104,8 +104,7 @@ dependencies {
         libs.test.core.ktx,
         libs.hilt.android.testing,
         libs.uiautomator,
-        libs.mockito.kotlin,
-        libs.mockito.android
+        libs.mockito.kotlin
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -116,9 +115,16 @@ dependencies {
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.junit.jupiter.engine,
+        libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
-        libs.classgraph
+        libs.classgraph,
+        libs.junit,
+        libs.roboelectric,
+        libs.androidx.compose.ui.junit4,
+        libs.androidx.espresso.core,
+        libs.androidx.navigation.testing,
+        libs.androidx.test.orchestrator
     ).forEach(::testImplementation)
 
     listOf(
@@ -151,10 +157,6 @@ dependencies {
         libs.hilt.android.compiler,
         libs.hilt.compiler
     ).forEach(::kapt)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
 
 kapt {

@@ -10,9 +10,12 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
+import org.junit.runner.RunWith
 import uk.gov.onelogin.core.TestCase
 
+@RunWith(AndroidJUnit4::class)
 class TextWithLinkTest : TestCase() {
     @Test
     fun testOnlyLinkTextClickOnLink() {

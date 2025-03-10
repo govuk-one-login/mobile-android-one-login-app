@@ -1,10 +1,12 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import androidx.fragment.app.FragmentActivity
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
 import org.mockito.kotlin.mock
@@ -15,6 +17,7 @@ import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.onelogin.core.FragmentActivityTestCase
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
+@RunWith(AndroidJUnit4::class)
 class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
     private lateinit var useCase: GetFromEncryptedSecureStore
     private val mockSecureStore: SecureStore = mock()

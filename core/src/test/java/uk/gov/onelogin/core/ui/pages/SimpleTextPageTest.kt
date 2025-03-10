@@ -2,11 +2,14 @@ package uk.gov.onelogin.core.ui.pages
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
+import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.core.TestCase
+import uk.gov.onelogin.core.FragmentActivityTestCase
 
-class SimpleTextPageTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class SimpleTextPageTest : FragmentActivityTestCase() {
     @Test
     fun testSimpleTextPage() {
         val testText = "One Login"

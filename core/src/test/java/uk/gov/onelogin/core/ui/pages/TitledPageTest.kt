@@ -3,11 +3,14 @@ package uk.gov.onelogin.core.ui.pages
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
+import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.core.TestCase
+import uk.gov.onelogin.core.FragmentActivityTestCase
 
-class TitledPageTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class TitledPageTest : FragmentActivityTestCase() {
     @Test
     fun titlePageDisplayed() {
         composeTestRule.setContent {
@@ -18,7 +21,7 @@ class TitledPageTest : TestCase() {
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_homeTitle),
+                context.getString(R.string.app_homeTitle),
                 useUnmergedTree = true
             ).assertIsDisplayed()
 

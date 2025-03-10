@@ -3,14 +3,17 @@ package uk.gov.onelogin.core.ui.pages.loading
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.espresso.Espresso
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.core.TestCase
+import uk.gov.onelogin.core.FragmentActivityTestCase
 
-class LoadingScreenTest : TestCase() {
+@RunWith(AndroidJUnit4::class)
+class LoadingScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var viewModel: LoadingScreenAnalyticsViewModel
     private var onBackPress = 0

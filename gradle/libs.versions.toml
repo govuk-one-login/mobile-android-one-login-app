@@ -93,10 +93,13 @@ androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", v
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
+# Allows for JUnit4 (Robolectric tests) to be run at the same time with JUnit5 tests
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junitJupiter" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
+roboelectric = { group = "org.robolectric", name = "robolectric", version = "4.14.1" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }

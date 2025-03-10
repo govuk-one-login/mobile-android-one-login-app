@@ -6,14 +6,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import uk.gov.onelogin.core.FragmentActivityTestCase
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.NavControllerExtTest.LoginGraphObject.loginGraphTest
 
+@RunWith(AndroidJUnit4::class)
 class NavControllerExtTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
