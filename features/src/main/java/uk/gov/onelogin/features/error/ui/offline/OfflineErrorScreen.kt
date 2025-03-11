@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.HeadingSize
@@ -19,7 +18,6 @@ import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
 
 @Composable
-@Preview
 fun OfflineErrorScreen(
     analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel(),
     goBack: () -> Unit = {},

@@ -8,11 +8,6 @@
             android:permission="">
         </activity>
         <activity
-            android:name="uk.gov.onelogin.core.TestActivity"
-            android:exported="false"
-            android:permission="">
-        </activity>
-        <activity
             android:name="uk.gov.android.securestore.TestActivity"
             tools:node="remove" >
         </activity>

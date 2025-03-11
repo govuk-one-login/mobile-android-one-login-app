@@ -23,7 +23,7 @@ sealed class BottomNavDestination(
     )
     data object Settings : BottomNavDestination(
         key = "settings",
-        label = R.string.app_settingsTitle,
+        label = R.string.app_settings,
         icon = R.drawable.ic_settings
     )
 }

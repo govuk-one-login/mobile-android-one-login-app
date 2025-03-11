@@ -1,7 +1,7 @@
 import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
-val jvmVersion by extra(17)
+val jvmVersion by extra(21)
 
 plugins {
     id("kotlin-android")

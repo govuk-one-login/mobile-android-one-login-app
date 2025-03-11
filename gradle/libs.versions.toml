@@ -11,9 +11,12 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
 [versions]
+# Downgrade required - Android using 1.78.1, and 1.80 seems to have a breaking change, a class being momved to a different package
+# This creates errors when running androidTests - java.lang.NoClassDefFoundError:org.bouncycastle.asn1.ASN1ObjectIdentifier id_MLDSA44_ECDSA_brainpoolP256r1_SHA256
+bcutilJdk18on = "1.78.1"
 jose4j = "0.9.6"
 kotlin = "2.1.10"
-agp = "8.8.2"
+agp = "8.9.0"
 core-ktx = "1.13.1"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
@@ -21,7 +24,7 @@ appcompat = "1.7.0"
 lifecycle-runtime-compose = "2.8.7"
 ktlint = "12.2.0"
 hiltPlugin = "2.55"
-detekt = "1.23.7"
+detekt = "1.23.8"
 andoridxBrowser = "1.8.0"
 androidxBiometric = "1.1.0"
 androidxHilt = "1.2.0"
@@ -50,6 +53,7 @@ junitVersion = "4.13.2"
 material = "1.12.0"
 
 [libraries]
+bcutil-jdk18on = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bcutilJdk18on" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
@@ -93,10 +97,13 @@ androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", v
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junitJupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiter" }
+# Allows for JUnit4 (Robolectric tests) to be run at the same time with JUnit5 tests
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junitJupiter" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
+roboelectric = { group = "org.robolectric", name = "robolectric", version = "4.14.1" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android.wallet:wallet_sdk", version.ref = "wallet" }

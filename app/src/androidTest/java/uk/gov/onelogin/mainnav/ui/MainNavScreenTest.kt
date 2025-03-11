@@ -34,7 +34,7 @@ import uk.gov.onelogin.utils.TestCase
 class MainNavScreenTest : TestCase() {
     private val homeTab = hasText(resources.getString(R.string.app_home))
     private val walletTab = hasText(resources.getString(R.string.app_wallet))
-    private val settingsTab = hasText(resources.getString(R.string.app_settingsTitle))
+    private val settingsTab = hasText(resources.getString(R.string.app_settings))
 
     @BindValue
     val featureFlagSetter: FeatureFlagSetter = mock()

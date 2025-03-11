@@ -72,7 +72,7 @@ fun SettingsScreen(
         contactUrl = stringResource(R.string.app_contactUrl)
     )
 
-    TitledPage(title = R.string.app_settingsTitle) { paddingValues ->
+    TitledPage(title = R.string.app_settings) { paddingValues ->
         SettingsScreenContent(
             paddingValues = paddingValues,
             email = email,
