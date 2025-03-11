@@ -4,7 +4,7 @@ inputs:
   jdk-version:
     description: 'The Java Development Kit (JDK) version to use'
     required: false
-    default: '17'
+    default: '21'
   gradle-version:
     description: 'The version of gradle for the "gradle/gradle-build-action" step.'
     required: false
