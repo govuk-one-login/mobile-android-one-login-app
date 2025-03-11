@@ -36,8 +36,7 @@ else
   echo "Running instrumentation checks with environment variables (GitHub workflow)..."
   ./gradlew \
     :app:googleAtdPixel5Api30BuildDebugAndroidTest \
-    :core:googleAtdPixel5Api30BuildDebugAndroidTest \
-    :features:googleAtdPixel5Api30BuildDebugAndroidTest \
+    :app:googleAtdPixel5Api30ProductionDebugAndroidTest \
     --continue \
     --stacktrace \
     -Pandroid.experimental.androidTest.numManagedDeviceShards="${WORKER_COUNT}" \
