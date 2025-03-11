@@ -5,20 +5,16 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
-class AppUnavailableBodyTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
+class AppUnavailableBodyTest : FragmentActivityTestCase() {
     private lateinit var icon: SemanticsMatcher
     private lateinit var header: SemanticsMatcher
     private lateinit var content: SemanticsMatcher

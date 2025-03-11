@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <application>
         <activity
-            android:name="uk.gov.onelogin.core.TestActivity"
+            android:name="uk.gov.onelogin.features.TestActivity"
             android:exported="false"
             android:permission="">
         </activity>

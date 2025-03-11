@@ -5,22 +5,18 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
-class ErrorUpdateRequiredBodyTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
+class ErrorUpdateRequiredBodyTest : FragmentActivityTestCase() {
     private lateinit var title: SemanticsMatcher
     private lateinit var body1: SemanticsMatcher
     private lateinit var body2: SemanticsMatcher

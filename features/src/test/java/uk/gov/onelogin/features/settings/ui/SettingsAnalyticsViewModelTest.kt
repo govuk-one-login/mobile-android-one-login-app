@@ -2,8 +2,10 @@ package uk.gov.onelogin.features.settings.ui
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import uk.gov.android.onelogin.core.R
@@ -17,6 +19,7 @@ import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.TestUtils.executeTrackEventTestCase
 
+@RunWith(AndroidJUnit4::class)
 class SettingsAnalyticsViewModelTest {
     private lateinit var requiredParameters: RequiredParameters
     private lateinit var logger: AnalyticsLogger

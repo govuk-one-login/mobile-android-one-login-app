@@ -2,8 +2,10 @@ package uk.gov.onelogin.features.home.ui
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
@@ -16,6 +18,7 @@ import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
+@RunWith(AndroidJUnit4::class)
 class HomeScreenAnalyticsViewModelTest {
     private lateinit var domain: String
     private lateinit var linkText: String

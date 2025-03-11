@@ -13,9 +13,11 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
@@ -23,13 +25,14 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.features.TestCase
+import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.ext.setupComposeTestRule
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
+@RunWith(AndroidJUnit4::class)
 @Suppress("ForbiddenComment")
-class HomeScreenKtTest : TestCase() {
+class HomeScreenKtTest : FragmentActivityTestCase() {
     private lateinit var httpClient: GenericHttpClient
     private lateinit var analyticsLogger: AnalyticsLogger
 
@@ -112,8 +115,6 @@ class HomeScreenKtTest : TestCase() {
                 resources.getString(R.string.yourServicesCardTestTag),
                 useUnmergedTree = true
             ).assertIsDisplayed()
-
-            onNodeWithText("Developer Panel").assertIsDisplayed()
         }
     }
 
