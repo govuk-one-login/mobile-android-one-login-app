@@ -38,10 +38,7 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
                 isExternal = false,
                 domain = getEnglishString(R.string.baseStsUrl, "").domain,
                 text = getEnglishString(R.string.app_SignInWithGovUKOneLoginButton),
-                params = RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
-                )
+                params = requiredParams
             )
         }
 
@@ -49,11 +46,13 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_youveBeenSignedOutTitle),
                 id = getEnglishString(R.string.signed_out_info_page_id),
-                params = RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
-                )
+                params = requiredParams
             )
         }
+
+        private val requiredParams = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
+        )
     }
 }

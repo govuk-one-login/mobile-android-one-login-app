@@ -8,7 +8,7 @@
     <string name="app_closeButton">Close</string>
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
-    <string name="app_settingsTitle">Settings</string>
+    <string name="app_settings">Settings</string>
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
 

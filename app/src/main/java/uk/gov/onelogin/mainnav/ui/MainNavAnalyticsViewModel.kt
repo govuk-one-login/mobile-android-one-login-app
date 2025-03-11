@@ -52,7 +52,7 @@ class MainNavAnalyticsViewModel @Inject constructor(
 
         internal fun makeSettingsButtonEvent(context: Context) = with(context) {
             TrackEvent.Icon(
-                text = getEnglishString(R.string.app_settingsTitle),
+                text = getEnglishString(R.string.app_settings),
                 params = getRequiredParams(TaxonomyLevel2.SETTINGS)
             )
         }

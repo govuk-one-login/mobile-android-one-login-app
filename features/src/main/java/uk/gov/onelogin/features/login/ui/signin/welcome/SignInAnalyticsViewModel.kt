@@ -38,10 +38,7 @@ class SignInAnalyticsViewModel @Inject constructor(
                 isExternal = false,
                 domain = getEnglishString(R.string.baseStsUrl, "").domain,
                 text = getEnglishString(R.string.app_signInButton),
-                params = RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
-                )
+                params = requiredParams
             )
         }
 
@@ -49,11 +46,13 @@ class SignInAnalyticsViewModel @Inject constructor(
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signInTitle),
                 id = getEnglishString(R.string.sign_in_page_id),
-                params = RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
-                )
+                params = requiredParams
             )
         }
+
+        private val requiredParams = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+            taxonomyLevel3 = TaxonomyLevel3.SIGN_IN
+        )
     }
 }
