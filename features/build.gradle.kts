@@ -157,7 +157,8 @@ dependencies {
         libs.androidx.constraintlayout,
         libs.hilt.android,
         libs.androidx.compose.ui.tooling,
-        libs.androidx.compose.ui.tooling.preview
+        libs.androidx.compose.ui.tooling.preview,
+        libs.bundles.about.libraries
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

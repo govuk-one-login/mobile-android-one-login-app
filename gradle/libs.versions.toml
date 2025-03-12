@@ -9,6 +9,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
+oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 
 [versions]
 # Downgrade required - Android using 1.78.1, and 1.80 seems to have a breaking change, a class being momved to a different package
@@ -51,6 +52,7 @@ wallet = "1.38.0"
 cri-orchestrator = "0.9.2"
 junitVersion = "4.13.2"
 material = "1.12.0"
+aboutLibraries = "11.6.3"
 
 [libraries]
 bcutil-jdk18on = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bcutilJdk18on" }
@@ -128,6 +130,12 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+# OSSL
+aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
+aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
+aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
+
 [bundles]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
 gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging", "cri-orchestrator"]
+about-libraries = [ "aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3" ]
