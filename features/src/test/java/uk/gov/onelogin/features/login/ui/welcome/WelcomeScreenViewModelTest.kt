@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.welcome
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -15,6 +16,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.onelogin.core.biometrics.data.BiometricPreference
@@ -24,6 +26,7 @@ import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
+import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
@@ -35,12 +38,14 @@ import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private val mockContext: Context = mock()
+    private val mockFragmentActivity: FragmentActivity = mock()
     private val mockCredChecker: CredentialChecker = mock()
     private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
     private val mockTokenRepository: TokenRepository = mock()
@@ -52,6 +57,7 @@ class WelcomeScreenViewModelTest {
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
     private val mockHandleRemoteLogin: HandleRemoteLogin = mock()
     private val mockHandleLoginRedirect: HandleLoginRedirect = mock()
+    private val mockSignOutUseCase: SignOutUseCase = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -63,6 +69,14 @@ class WelcomeScreenViewModelTest {
             testIdToken,
             "testRefreshToken"
         )
+    private val accessDeniedError = AuthenticationError(
+        "access_denied",
+        AuthenticationError.ErrorType.ACCESS_DENIED
+    )
+    private val oauthError = AuthenticationError(
+        "oauth_error",
+        AuthenticationError.ErrorType.OAUTH
+    )
 
     private val viewModel =
         WelcomeScreenViewModel(
@@ -77,6 +91,7 @@ class WelcomeScreenViewModelTest {
             mockSaveTokenExpiry,
             mockHandleRemoteLogin,
             mockHandleLoginRedirect,
+            mockSignOutUseCase,
             mockOnlineChecker
         )
 
@@ -103,7 +118,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -133,7 +149,8 @@ class WelcomeScreenViewModelTest {
 
             // re-authenticate is false by default
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -159,7 +176,10 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -184,7 +204,10 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
             whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -207,7 +230,10 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verifyNoInteractions(mockSaveTokens)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
@@ -231,7 +257,11 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(mockIntent, true)
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -255,7 +285,11 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(mockIntent, true)
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -265,12 +299,67 @@ class WelcomeScreenViewModelTest {
         }
 
     @Test
+    fun `handleIntent when data != null && access_denied, device is secure and reauth is true`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(accessDeniedError)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                fragmentActivity = mockFragmentActivity
+            )
+
+            verify(mockSignOutUseCase).invoke(mockFragmentActivity)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
+        }
+
+    @Test
+    fun `handleIntent when data != null && oauth_error, device is secure and reauth is true`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(oauthError)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                fragmentActivity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSignOutUseCase)
+            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+        }
+
+    @Test
     fun `handleIntent when data == null`() =
         runTest {
             val mockIntent: Intent = mock()
             whenever(mockIntent.data).thenReturn(null)
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
@@ -291,7 +380,10 @@ class WelcomeScreenViewModelTest {
                     (it.arguments[1] as (error: Throwable?) -> Unit).invoke(Throwable())
                 }
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
@@ -314,7 +406,10 @@ class WelcomeScreenViewModelTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(false)
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
