@@ -11,10 +11,6 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
 [versions]
-# Downgrade required - Android using 1.78.1, and 1.80 seems to have a breaking change, a class being momved to a different package
-# This creates errors when running androidTests - java.lang.NoClassDefFoundError:org.bouncycastle.asn1.ASN1ObjectIdentifier id_MLDSA44_ECDSA_brainpoolP256r1_SHA256
-bcutilJdk18on = "1.78.1"
-bcutilJdk18onUpdated = "1.80"
 jose4j = "0.9.6"
 kotlin = "2.1.10"
 agp = "8.9.0"
