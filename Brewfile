@@ -23,7 +23,6 @@ brew "vale" unless system "vale", "--version"
 # casks (binary apps, such as from installers)
 cask "android-commandlinetools" unless system "which", "avdmanager", "lint", "retrace", "sdkmanager", "apkanalyzer", "screenshot2"
 cask "android-platform-tools" unless system "which", "adb", "etc1tool", "fastboot", "hprof-conv", "make_f2fs", "make_f2fs_casefold", "mke2fs"
-cask "android-studio" unless system "mdfind", "-name", "Android Studio.app"
 cask "android-file-transfer" unless system "mdfind", "-name", "Android File Transfer.app"
 cask "docker" unless system "mdfind", "-name", "Docker.app"
 cask "git-credential-manager" unless system "git-credential-manager", "--version"
