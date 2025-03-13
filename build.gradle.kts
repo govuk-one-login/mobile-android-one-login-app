@@ -78,6 +78,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.crashlytics) apply false
+    alias(libs.plugins.oss.licence.about.libraries) apply false
     id("uk.gov.sonar.root-config")
 }
 
