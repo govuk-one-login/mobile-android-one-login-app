@@ -25,14 +25,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.onelogin.features.home.ui.HomeScreen
-import uk.gov.onelogin.features.settings.ui.SettingsScreen
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
+import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
 
@@ -97,15 +95,7 @@ fun MainNavScreen(
                 startDestination = BottomNavDestination.Home.key,
                 modifier = Modifier.padding(paddingValues)
             ) {
-                composable(BottomNavDestination.Home.key) {
-                    HomeScreen()
-                }
-                composable(BottomNavDestination.Wallet.key) {
-                    walletScreenViewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
-                }
-                composable(BottomNavDestination.Settings.key) {
-                    SettingsScreen()
-                }
+                bottomGraph()
             }
         }
     }
