@@ -8,6 +8,7 @@ import java.io.StringReader
 import org.gradle.kotlin.dsl.configure
 import uk.gov.onelogin.emulator.SystemImageSource
 import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_ATD
+import uk.gov.onelogin.emulator.SystemImageSource.AOSP_ATD
 import uk.gov.extensions.BaseExtensions.generateDeviceConfigurations
 import uk.gov.extensions.BaseExtensions.generateGetHardwareProfilesTask
 
@@ -16,7 +17,7 @@ plugins {
 }
 
 private val _systemImageSources = listOf(
-    GOOGLE_ATD
+    AOSP_ATD
 )
 val managedDeviceHardwareProfiles: Provider<List<String>> by rootProject.extra(
     rootProject.provider {
