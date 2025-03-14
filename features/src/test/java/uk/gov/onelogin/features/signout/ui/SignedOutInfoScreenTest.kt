@@ -86,6 +86,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
+        signOutUseCase = mock()
         onlineChecker = mock()
         bioPreferencesUseCase = BioPreferencesUseCaseImpl(
             biometricPreferenceHandler,
@@ -103,6 +104,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             saveTokenExpiry,
             handleRemoteLogin,
             handleLoginRedirect,
+            signOutUseCase,
             onlineChecker
         )
         getPersistentId = mock()

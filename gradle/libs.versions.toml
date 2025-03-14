@@ -11,9 +11,6 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 
 [versions]
-# Downgrade required - Android using 1.78.1, and 1.80 seems to have a breaking change, a class being momved to a different package
-# This creates errors when running androidTests - java.lang.NoClassDefFoundError:org.bouncycastle.asn1.ASN1ObjectIdentifier id_MLDSA44_ECDSA_brainpoolP256r1_SHA256
-bcutilJdk18on = "1.78.1"
 jose4j = "0.9.6"
 kotlin = "2.1.10"
 agp = "8.9.0"
@@ -53,7 +50,6 @@ junitVersion = "4.13.2"
 material = "1.12.0"
 
 [libraries]
-bcutil-jdk18on = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bcutilJdk18on" }
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
@@ -114,7 +110,7 @@ pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 componentsv2 = { group = "uk.gov.android", name = "componentsv2", version.ref = "govuk-ui" }
 patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
-authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.13.4" }
+authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.15.0" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.8.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
 logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }

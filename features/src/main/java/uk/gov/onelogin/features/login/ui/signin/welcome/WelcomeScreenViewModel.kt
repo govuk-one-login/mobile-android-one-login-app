@@ -4,14 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
@@ -22,6 +25,7 @@ import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
+import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
@@ -30,6 +34,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @HiltViewModel
 @Suppress("LongParameterList")
@@ -46,6 +51,7 @@ class WelcomeScreenViewModel @Inject constructor(
     private val saveTokenExpiry: SaveTokenExpiry,
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
+    private val signOutUseCase: SignOutUseCase,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
@@ -64,7 +70,8 @@ class WelcomeScreenViewModel @Inject constructor(
 
     fun handleActivityResult(
         intent: Intent,
-        isReAuth: Boolean = false
+        isReAuth: Boolean = false,
+        fragmentActivity: FragmentActivity
     ) {
         if (intent.data == null) return
 
@@ -79,9 +86,29 @@ class WelcomeScreenViewModel @Inject constructor(
                 },
                 onFailure = {
                     Log.e(tag, it?.message, it)
-                    navigator.navigate(LoginRoutes.SignInError, true)
+                    handleLoginErrors(it, fragmentActivity)
                 }
             )
+        }
+    }
+
+    private fun CoroutineScope.handleLoginErrors(
+        it: Throwable?,
+        fragmentActivity: FragmentActivity
+    ) {
+        this.launch {
+            when (it) {
+                is AuthenticationError -> {
+                    when (it.type) {
+                        AuthenticationError.ErrorType.ACCESS_DENIED -> {
+                            signOutUseCase.invoke(fragmentActivity)
+                            navigator.navigate(SignOutRoutes.ReAuthError)
+                        }
+                        else -> navigator.navigate(LoginRoutes.SignInError, true)
+                    }
+                }
+                else -> navigator.navigate(LoginRoutes.SignInError, true)
+            }
         }
     }
 

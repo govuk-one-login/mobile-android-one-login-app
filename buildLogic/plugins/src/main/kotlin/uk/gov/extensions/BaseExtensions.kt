@@ -66,6 +66,7 @@ object BaseExtensions {
                         this.apiLevel = apiLevel
                         // To include Google services, use "google"
                         this.systemImageSource = source.image
+                        this.require64Bit = false
                     }
                 }
             }

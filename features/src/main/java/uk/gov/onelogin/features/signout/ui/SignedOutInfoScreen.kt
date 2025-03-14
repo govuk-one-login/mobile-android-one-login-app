@@ -46,7 +46,8 @@ fun SignedOutInfoScreen(
                 result.data?.let { intent ->
                     loginViewModel.handleActivityResult(
                         intent = intent,
-                        isReAuth = signOutViewModel.shouldReAuth()
+                        isReAuth = signOutViewModel.shouldReAuth(),
+                        fragmentActivity = activity
                     )
                     signOutViewModel.saveTokens()
                 }
