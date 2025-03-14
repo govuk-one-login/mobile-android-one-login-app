@@ -33,7 +33,7 @@ class OsslScreenAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.LICENCES
             )
         logger = mock()
         name = context.getEnglishString(R.string.app_osslTitle)

@@ -72,7 +72,7 @@ class OsslAnalyticsViewModel @Inject constructor(
 
         private val requiredParams = RequiredParameters(
             taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            taxonomyLevel3 = TaxonomyLevel3.LICENCES
         )
     }
 }
