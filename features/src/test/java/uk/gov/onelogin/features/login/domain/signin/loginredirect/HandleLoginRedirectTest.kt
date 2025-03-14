@@ -10,6 +10,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
@@ -33,6 +34,14 @@ class HandleLoginRedirectTest {
             testIdToken,
             "testRefreshToken"
         )
+    private val accessDeniedError = AuthenticationError(
+        "access_denied",
+        AuthenticationError.ErrorType.ACCESS_DENIED
+    )
+    private val oauthError = AuthenticationError(
+        "oauth_error",
+        AuthenticationError.ErrorType.OAUTH
+    )
 
     private val handleLoginRedirect = HandleLoginRedirectImpl(mockAppIntegrity, mockLoginSession)
 
@@ -166,6 +175,44 @@ class HandleLoginRedirectTest {
                 {
                     assertEquals(tokenResponse, it)
                 }
+            )
+        }
+
+    @Test
+    fun `onFailure, handleLoginFinalise returns access_denied`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success(""))
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+            whenever(mockLoginSession.finalise(any(), any(), any())).thenThrow(accessDeniedError)
+
+            // When
+            handleLoginRedirect.handle(
+                mockIntent,
+                {
+                    assertEquals("access_denied", it?.message)
+                },
+                { }
+            )
+        }
+
+    @Test
+    fun `onFailure, handleLoginFinalise returns oauth_error`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success(""))
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+            whenever(mockLoginSession.finalise(any(), any(), any())).thenThrow(oauthError)
+
+            // When
+            handleLoginRedirect.handle(
+                mockIntent,
+                {
+                    assertEquals("oauth_error", it?.message)
+                },
+                { }
             )
         }
 }

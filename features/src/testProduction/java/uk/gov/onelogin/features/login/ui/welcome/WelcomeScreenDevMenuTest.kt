@@ -26,6 +26,7 @@ import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogi
 import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
@@ -39,6 +40,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
+    private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var viewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -60,6 +62,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
+        signOutUseCase = mock()
         onlineChecker = mock()
         viewModel =
             WelcomeScreenViewModel(
@@ -74,6 +77,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 saveTokenExpiry,
                 handleRemoteLogin,
                 handleLoginRedirect,
+                signOutUseCase,
                 onlineChecker
             )
         analytics = mock()
