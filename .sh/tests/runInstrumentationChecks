@@ -26,7 +26,7 @@ if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
   echo "Running instrumentation checks without environment variables (local development)..."
   ./gradlew \
-    :app:googleAtdPixel5Api30BuildDebugAndroidTest \
+    :app:aospAtdPixel5Api30BuildDebugAndroidTest \
     --continue \
     --max-workers="${WORKER_COUNT}" \
     --stacktrace \
@@ -35,7 +35,7 @@ then
 else
   echo "Running instrumentation checks with environment variables (GitHub workflow)..."
   ./gradlew \
-    :app:googleAtdPixel5Api30BuildDebugAndroidTest \
+    :app:aospAtdPixel5Api30BuildDebugAndroidTest \
     --continue \
     --stacktrace \
     -Pandroid.experimental.androidTest.numManagedDeviceShards="${WORKER_COUNT}" \
