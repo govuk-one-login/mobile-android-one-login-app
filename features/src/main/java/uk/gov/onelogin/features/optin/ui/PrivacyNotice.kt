@@ -85,7 +85,7 @@ fun PrivacyNotice(
 
 @Composable
 private fun LinkOut() {
-    val description = stringResource(R.string.app_privacyNoticeLinkIconContentDescription)
+    val description = stringResource(R.string.app_openLinkExternally)
     Image(
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
         painter = painterResource(id = R.drawable.link_out),

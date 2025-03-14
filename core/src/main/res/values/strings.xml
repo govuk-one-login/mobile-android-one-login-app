@@ -121,7 +121,6 @@
     <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
     <string name="app_analyticsPermissionBody">You can help the GOV.UK One Login team make improvements by sharing analytics about how you use the app.\n\nThese analytics are anonymous. They show us what is and is not working, and help make the app better.\n\nYou can stop sharing these analytics any time by changing your app settings.</string>
     <string name="app_privacyNoticeLink">Read more about this in the GOV.UK One Login privacy notice</string>
-    <string name="app_privacyNoticeLinkIconContentDescription">Opens in web browser</string>
     <string name="app_shareAnalyticsButton">Share analytics</string>
     <string name="app_doNotShareAnalytics">Skip for now</string>
 
@@ -153,4 +152,7 @@
     <string name="app_oneLoginCardTitle" translatable="false">Using your GOV.UK One Login</string>
     <string name="app_oneLoginCardBody" translatable="false">Sign in to your GOV.UK One Login and read about the services you can use with it.</string>
     <string name="app_oneLoginCardLink" translatable="false">Go to the GOV.UK website</string>
+
+    <!-- Accessibility -->
+    <string name="app_openLinkExternally">Opens in web browser</string>
 </resources>
