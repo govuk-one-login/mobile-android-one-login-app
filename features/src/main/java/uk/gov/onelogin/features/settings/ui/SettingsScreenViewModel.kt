@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
@@ -36,6 +37,10 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun goToSignOut() {
         navigator.navigate(SignOutRoutes.Start)
+    }
+
+    fun goToOssl() {
+        navigator.navigate(SettingsRoutes.Ossl)
     }
 
     fun toggleOptInPreference() {

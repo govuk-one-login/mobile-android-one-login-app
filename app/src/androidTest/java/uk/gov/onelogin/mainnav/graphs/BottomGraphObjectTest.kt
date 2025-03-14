@@ -14,15 +14,8 @@ import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 import uk.gov.onelogin.utils.TestCase
 
-// @UninstallModules(WalletModule::class)
 @HiltAndroidTest
 class BottomGraphObjectTest : TestCase() {
-//    @BindValue
-//    val walletSdk: WalletSdk = mock()
-//
-//    @BindValue
-//    val useCase: DeleteWalletDataUseCase = mock()
-
     @Before
     fun setup() {
         hiltRule.inject()
