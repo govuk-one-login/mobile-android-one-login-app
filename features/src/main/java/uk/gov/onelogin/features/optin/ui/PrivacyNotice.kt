@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.optin.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.InlineTextContent
@@ -15,6 +14,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -57,7 +57,6 @@ fun PrivacyNotice(
                         true
                     }
                 }
-                .focusable()
                 .testTag(NOTICE_TAG)
         ),
         text = privacyNoticeString,
@@ -86,11 +85,13 @@ fun PrivacyNotice(
 
 @Composable
 private fun LinkOut() {
+    val description = stringResource(R.string.app_privacyNoticeLinkIconContentDescription)
     Image(
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
         painter = painterResource(id = R.drawable.link_out),
         modifier = Modifier
             .fillMaxSize()
+            .semantics { contentDescription = description }
             .testTag(ICON_TAG),
         contentDescription = null
     )

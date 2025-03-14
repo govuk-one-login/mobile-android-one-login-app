@@ -92,6 +92,7 @@
     <string name="app_analyticsPermissionTitle">Helpu i wella\'r ap drwy rannu dadansoddi</string>
     <string name="app_analyticsPermissionBody">Gallwch helpu\'r tim GOV.UK One Login i wneud gwelliannau drwy rannu dadansoddeg am sut rydych yn defnyddio\'r ap.\n\nMae\'r dadansoddeg yn ddi-enw. Maent yn dangos i ni beth sydd yn a beth sydd ddim yn gweithio, ac yn helpu i wneud yr ap yn well.\n\nGallwch stopio rhannu\'r dadansoddiadau hyn ar unrhyw bryd trwy newid gosodiadau eich ap.</string>
     <string name="app_privacyNoticeLink">Darllenwch fwy am hyn yn hysbysiad preifatrwydd GOV.UK One Login</string>
+    <string name="app_privacyNoticeLinkIconContentDescription">Agor mewn porwr gwe</string>
     <string name="app_shareAnalyticsButton">Rhannu dadansoddeg</string>
     <string name="app_doNotShareAnalytics">Osgoi am y tro</string>
 
