@@ -60,49 +60,53 @@ fun ErrorUpdateRequiredScreen(
 internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     val buttonText = stringResource(R.string.app_updateAppButton)
     val buttonAccessibilityDesc = stringResource(R.string.app_openGooglePlayStore)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(mediumPadding),
-        verticalArrangement = Arrangement.Center
-    ) {
+    GdsTheme {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
-                .padding(bottom = smallPadding)
+                .fillMaxSize()
+                .padding(mediumPadding),
+            verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                painter = painterResource(UiR.drawable.ic_error),
-                contentDescription = stringResource(R.string.app_updateApp_ContentDescription),
-                modifier = Modifier.padding(mediumPadding)
-            )
-            GdsHeading(
-                text = stringResource(R.string.app_updateApp_Title),
-                modifier = Modifier.padding(bottom = smallPadding),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = stringResource(R.string.app_updateAppBody1),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = stringResource(R.string.app_updateAppBody2),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyLarge
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f)
+                    .padding(bottom = smallPadding)
+            ) {
+                Image(
+                    painter = painterResource(UiR.drawable.ic_error),
+                    contentDescription = stringResource(R.string.app_updateApp_ContentDescription),
+                    modifier = Modifier.padding(mediumPadding)
+                )
+                GdsHeading(
+                    text = stringResource(R.string.app_updateApp_Title),
+                    modifier = Modifier.padding(bottom = smallPadding),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.app_updateAppBody1),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = stringResource(R.string.app_updateAppBody2),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            GdsButton(
+                text = buttonText,
+                buttonType = ButtonType.Primary,
+                onClick = onPrimary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = buttonText + buttonAccessibilityDesc
+                    }
             )
         }
-        GdsButton(
-            text = stringResource(R.string.app_updateAppButton),
-            buttonType = ButtonType.Primary,
-            onClick = onPrimary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = buttonText + buttonAccessibilityDesc }
-        )
     }
 }
 
