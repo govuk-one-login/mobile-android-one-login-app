@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class InMemoryFeatureFlagsTest {
-
     @Test
     fun `flags may have features added in an immutable way`() {
         val updateByFlag =
