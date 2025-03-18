@@ -22,6 +22,7 @@ class OsslAnalyticsViewModel @Inject constructor(
 ) : ViewModel() {
     private val screenEvent = makeScreenEvent(context)
     private val backButtonEvent = makeBackButtonEvent(context)
+    private val backIconEvent = makeBackIconEvent(context)
 
     fun trackScreen() {
         analyticsLogger.logEventV3Dot1(screenEvent)
@@ -35,6 +36,10 @@ class OsslAnalyticsViewModel @Inject constructor(
                 licenseTitle
             )
         )
+    }
+
+    fun trackBackIcon() {
+        analyticsLogger.logEventV3Dot1(backIconEvent)
     }
 
     fun trackBackButton() {
@@ -66,6 +71,13 @@ class OsslAnalyticsViewModel @Inject constructor(
         internal fun makeBackButtonEvent(context: Context) = with(context) {
             TrackEvent.Icon(
                 text = getEnglishString(R.string.system_backButton),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeBackIconEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backIcon),
                 params = requiredParams
             )
         }

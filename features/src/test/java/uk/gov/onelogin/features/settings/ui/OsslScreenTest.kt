@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -15,6 +16,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.UriMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -97,5 +99,22 @@ class OsslScreenTest : FragmentActivityTestCase() {
         verify(analyticsLogger).logEventV3Dot1(
             OsslAnalyticsViewModel.makeBackButtonEvent(context)
         )
+    }
+
+    @Test
+    fun backIconAnalytics() {
+        var backClicked = false
+
+        composeTestRule.setContent {
+            OsslScreen(analyticsViewModel) {
+                backClicked = true
+            }
+        }
+
+        composeTestRule.onNodeWithContentDescription(
+            resources.getString(R.string.app_back_icon)
+        ).performClick()
+
+        assertTrue(backClicked)
     }
 }

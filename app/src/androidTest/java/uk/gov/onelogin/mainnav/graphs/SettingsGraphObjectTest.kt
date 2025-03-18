@@ -24,7 +24,7 @@ class SettingsGraphObjectTest : TestCase() {
                 navController = navController,
                 startDestination = SettingsRoutes.Ossl.getRoute()
             ) {
-                settingsGraph()
+                settingsGraph(navController)
             }
         }
     }

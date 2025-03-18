@@ -117,4 +117,7 @@
     <string name="app_manageSignInDetailsUrl">https://www.gov.uk/defnyddio-eich-gov-uk-one-login</string>
     <string name="app_helpUrl">http://gov.uk/one-login/app-help/cy</string>
     <string name="app_contactUrl">https://home.account.gov.uk/contact-gov-uk-one-login?lng=cy</string>
+
+    <!--  OSSL  -->
+    <string name="app_osslTitle">Trwyddedau ffynhonnell agored</string>
 </resources>

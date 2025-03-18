@@ -22,7 +22,8 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 class OsslScreenAnalyticsViewModelTest {
     private lateinit var name: String
     private lateinit var id: String
-    private lateinit var back: String
+    private lateinit var backButton: String
+    private lateinit var backIcon: String
     private lateinit var requiredParameters: RequiredParameters
     private lateinit var logger: AnalyticsLogger
     private lateinit var viewModel: OsslAnalyticsViewModel
@@ -38,7 +39,8 @@ class OsslScreenAnalyticsViewModelTest {
         logger = mock()
         name = context.getEnglishString(R.string.app_osslTitle)
         id = context.getEnglishString(R.string.ossl_page_id)
-        back = context.getEnglishString(R.string.system_backButton)
+        backButton = context.getEnglishString(R.string.system_backButton)
+        backIcon = context.getEnglishString(R.string.system_backIcon)
         viewModel = OsslAnalyticsViewModel(context, logger)
     }
 
@@ -83,11 +85,25 @@ class OsslScreenAnalyticsViewModelTest {
         // Given a TrackEvent.Icon
         val event =
             TrackEvent.Icon(
-                text = back,
+                text = backButton,
                 params = requiredParameters
             )
         // When tracking the hardware back button
         viewModel.trackBackButton()
+        // Then log a TrackEvent to the AnalyticsLogger
+        verify(logger).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun trackBackIcon() {
+        // Given a TrackEvent.Icon
+        val event =
+            TrackEvent.Icon(
+                text = backIcon,
+                params = requiredParameters
+            )
+        // When tracking the hardware back button
+        viewModel.trackBackIcon()
         // Then log a TrackEvent to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
     }

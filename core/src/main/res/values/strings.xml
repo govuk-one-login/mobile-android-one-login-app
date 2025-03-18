@@ -9,6 +9,8 @@
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_settings">Settings</string>
+
+    <string name="app_back_icon" translatable="false">Back Icon</string>
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
 
@@ -143,7 +145,8 @@
     <string name="app_dataDeletedBody3">You need to sign in again and set your preferences again to continue using the app. You’ll then be able to add documents to you GOV.UK Wallet.</string>
 
     <!-- Analytics Values   -->
-    <string name="system_backButton" translatable="false">back - system</string>
+    <string name="system_backButton" translatable="false">Back - System</string>
+    <string name="system_backIcon" translatable="false">Back</string>
     <string name="generic_error_reason" translatable="false">generic error</string>
     <string name="sign_in_error_reason" translatable="false">sign in error</string>
     <string name="network_error_reason" translatable="false">network error</string>
@@ -154,5 +157,5 @@
     <string name="app_oneLoginCardLink" translatable="false">Go to the GOV.UK website</string>
 
     <!--  OSSL  -->
-    <string name="app_osslTitle" translatable="false">Licenses</string>
+    <string name="app_osslTitle">Open source licenses</string>
 </resources>
