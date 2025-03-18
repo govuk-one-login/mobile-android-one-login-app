@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -430,5 +433,21 @@ class WelcomeScreenViewModelTest {
         viewModel.navigateToOfflineError()
 
         verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
+    }
+
+    @Test
+    fun `check abort login works as expected`() = runTest {
+        val mockIntent: Intent = mock()
+
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                runBlocking {
+                    delay(10000)
+                    assert(viewModel.loading.value)
+                    viewModel.abortLogin(any())
+                }
+            }
+
+        assertFalse(viewModel.loading.value)
     }
 }

@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.optin.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
     val uriHandler = LocalUriHandler.current
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
+    BackHandler(enabled = true) { viewModel.goToSignIn() }
     GdsTheme {
         OptInBody(
             uiState = state.value,

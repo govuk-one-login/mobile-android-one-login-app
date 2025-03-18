@@ -1,5 +1,7 @@
 package uk.gov.onelogin.features.login.ui.signin.biooptin
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +39,14 @@ fun BiometricsOptInScreen(
     viewModel: BioOptInViewModel = hiltViewModel(),
     analyticsViewModel: BioOptInAnalyticsViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current as Activity
     LaunchedEffect(Unit) { analyticsViewModel.trackBioOptInScreen() }
+    BackHandler {
+        // Log GA4 event
+        analyticsViewModel.trackBackButton()
+        // Close app
+        context.finishAndRemoveTask()
+    }
     GdsTheme {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -11,6 +11,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -83,5 +84,23 @@ class BioOptInScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(secondaryButton).performClick()
 
         verify(navigator).navigate(MainNavRoutes.Start, true)
+    }
+
+    @Test
+    fun testBackButton() {
+        composeTestRule.setContent {
+            BiometricsOptInScreen(viewModel, analyticsViewModel)
+        }
+        composeTestRule.apply {
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+            }
+
+            activityRule.scenario.onActivity { activity ->
+                assert(activity.isFinishing)
+            }
+        }
+
+        verify(analytics).logEventV3Dot1(BioOptInAnalyticsViewModel.makeBackButtonEvent(context))
     }
 }

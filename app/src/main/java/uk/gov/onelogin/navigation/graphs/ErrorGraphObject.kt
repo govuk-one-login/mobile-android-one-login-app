@@ -3,7 +3,6 @@ package uk.gov.onelogin.navigation.graphs
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -31,7 +30,7 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.SignOut.getRoute()
             ) {
-                val context = LocalContext.current as FragmentActivity
+                val context = LocalContext.current as Activity
                 SignOutErrorScreen {
                     context.finishAndRemoveTask()
                 }

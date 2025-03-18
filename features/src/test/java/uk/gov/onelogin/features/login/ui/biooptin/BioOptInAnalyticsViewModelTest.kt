@@ -26,6 +26,7 @@ class BioOptInAnalyticsViewModelTest {
     private lateinit var id: String
     private lateinit var passcodeBtn: String
     private lateinit var biometricsBtn: String
+    private lateinit var backBtn: String
     private lateinit var requiredParameters: RequiredParameters
     private lateinit var logger: AnalyticsLogger
     private lateinit var viewModel: BioOptInAnalyticsViewModel
@@ -42,6 +43,7 @@ class BioOptInAnalyticsViewModelTest {
         id = context.getEnglishString(R.string.bio_opt_in_screen_page_id)
         passcodeBtn = context.getEnglishString(R.string.app_enablePasscodeOrPatternButton)
         biometricsBtn = context.getEnglishString(R.string.app_enableBiometricsButton)
+        backBtn = context.getEnglishString(R.string.system_backButton)
         viewModel = BioOptInAnalyticsViewModel(context, logger)
     }
 
@@ -72,11 +74,30 @@ class BioOptInAnalyticsViewModelTest {
                     viewModel.trackPasscodeButton()
                 },
                 text = passcodeBtn
+            ),
+            TestUtils.TrackEventTestCase.Button(
+                trackFunction = {
+                    viewModel.trackBackButton()
+                },
+                text = backBtn
             )
         ).forEach {
             val result = executeTrackEventTestCase(it, requiredParameters)
 
             verify(logger).logEventV3Dot1(result)
         }
+    }
+
+    @Test
+    fun trackBackButton() {
+        val event = ViewEvent.Screen(
+            name = name,
+            id = id,
+            params = requiredParameters
+        )
+
+        viewModel.trackBioOptInScreen()
+
+        verify(logger).logEventV3Dot1(event)
     }
 }
