@@ -86,6 +86,7 @@ android {
             isReturnDefaultValues = true
             isIncludeAndroidResources = true
         }
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 }
 
@@ -105,4 +106,6 @@ dependencies {
         libs.androidx.test.ext.junit,
         libs.androidx.espresso.core
     ).forEach(::androidTestImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.launcher)
 }
