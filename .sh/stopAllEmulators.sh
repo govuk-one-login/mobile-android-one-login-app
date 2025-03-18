@@ -6,3 +6,4 @@ do
   # Close the device; ignoring standard output
   adb -s "$DEVICE" emu kill > /dev/null 2>&1
 done
+./gradlew cleanManagedDevices
