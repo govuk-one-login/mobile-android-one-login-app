@@ -166,6 +166,7 @@ private fun YourDetailsSection(
     ExternalLinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally,
         description = stringResource(
             id = R.string.app_settingSignInDetailsFootnote
         )
@@ -180,11 +181,19 @@ private fun LegalSection(
     onAccessibilityStatementClick: () -> Unit,
     onOpenSourceLicensesClick: () -> Unit
 ) {
-    ExternalLinkRow(R.string.app_privacyNoticeLink2, R.drawable.external_link_icon) {
+    ExternalLinkRow(
+        title = R.string.app_privacyNoticeLink2,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally
+    ) {
         onPrivacyNoticeClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(R.string.app_accessibilityStatement, R.drawable.external_link_icon) {
+    ExternalLinkRow(
+        title = R.string.app_accessibilityStatement,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally
+    ) {
         onAccessibilityStatementClick()
     }
     HorizontalDivider()
@@ -200,15 +209,17 @@ private fun HelpAndFeedbackSection(
 ) {
     HeadingRow(R.string.app_settingsSubtitle1)
     ExternalLinkRow(
-        R.string.app_appGuidanceLink,
-        R.drawable.external_link_icon
+        title = R.string.app_appGuidanceLink,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally
     ) {
         onHelpClick()
     }
     HorizontalDivider()
     ExternalLinkRow(
-        R.string.app_contactLink,
-        R.drawable.external_link_icon
+        title = R.string.app_contactLink,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally
     ) {
         onContactClick()
     }
@@ -221,23 +232,29 @@ internal fun AboutTheAppSection(
     onPrivacyNoticeClick: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle2)
-    PreferenceToggleRow(
-        title = R.string.app_settingsAnalyticsToggle,
-        checked = optInState,
-        onToggle = { onToggle() }
-    )
-    PrivacyNotice(
-        Modifier
-            .padding(smallPadding),
-        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.surface),
-        privacyNoticeString = stringResource(
-            id = R.string.app_settingsAnalyticsToggleFootnote
-        ),
-        privacyNoticeLink = stringResource(
-            id = R.string.app_settingsAnalyticsToggleFootnoteLink
-        )
+    Column(
+        modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
-        onPrivacyNoticeClick()
+        PreferenceToggleRow(
+            title = R.string.app_settingsAnalyticsToggle,
+            checked = optInState,
+            onToggle = { onToggle() }
+        )
+        PrivacyNotice(
+            Modifier
+                .padding(smallPadding),
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.surface
+            ),
+            privacyNoticeString = stringResource(
+                id = R.string.app_settingsAnalyticsToggleFootnote
+            ),
+            privacyNoticeLink = stringResource(
+                id = R.string.app_settingsAnalyticsToggleFootnoteLink
+            )
+        ) {
+            onPrivacyNoticeClick()
+        }
     }
 }
 
@@ -259,6 +276,7 @@ private fun ExternalLinkRow(
     @androidx.annotation.StringRes title: Int,
     @DrawableRes icon: Int,
     description: String? = null,
+    contentDescription: Int? = null,
     onClick: () -> Unit = { }
 ) {
     Box(
@@ -266,6 +284,7 @@ private fun ExternalLinkRow(
             .clickable(onClick = onClick)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth()
+            .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Text(
@@ -292,7 +311,7 @@ private fun ExternalLinkRow(
         }
         Icon(
             painter = painterResource(id = icon),
-            contentDescription = "",
+            contentDescription = contentDescription?.let { stringResource(it) } ?: "",
             modifier = Modifier
                 .padding(end = smallPadding, top = smallPadding)
                 .size(24.dp)
