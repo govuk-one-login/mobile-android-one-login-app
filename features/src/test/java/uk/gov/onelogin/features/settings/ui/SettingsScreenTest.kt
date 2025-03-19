@@ -129,9 +129,16 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
-        composeTestRule.onNode(aboutTheAppSwitch).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(aboutTheAppPrivacyLink).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(aboutTheAppSubTitle).assertIsDisplayed()
+        composeTestRule.apply {
+            onNode(aboutTheAppSwitch, useUnmergedTree = true)
+                .performScrollTo()
+                .assertIsDisplayed()
+            onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
+                .performScrollTo()
+                .assertIsDisplayed()
+            onNode(aboutTheAppSubTitle, useUnmergedTree = true)
+                .assertIsDisplayed()
+        }
     }
 
     @Test

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.optin.ui
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,7 +37,7 @@ fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
         OptInBody(
             uiState = state.value,
             onPrivacyNotice = { uri ->
-                uriHandler.openUri(uri.toString())
+                uriHandler.openUri(uri)
             },
             onShare = {
                 viewModel.optIn()
@@ -55,7 +54,7 @@ fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
 @Composable
 internal fun OptInBody(
     uiState: OptInUIState,
-    onPrivacyNotice: (Uri) -> Unit,
+    onPrivacyNotice: (String) -> Unit,
     onShare: () -> Unit,
     onDoNotShare: () -> Unit
 ) {
@@ -89,7 +88,7 @@ private fun OptInHeader() {
 
 @Composable
 private fun OptInContent(
-    onPrivacyNotice: (Uri) -> Unit,
+    onPrivacyNotice: (String) -> Unit,
     url: String
 ) {
     Text(
@@ -101,10 +100,11 @@ private fun OptInContent(
     )
     PrivacyNotice(
         modifier = Modifier
-            .padding(horizontal = smallPadding),
+            .padding(horizontal = smallPadding)
+            .semantics(mergeDescendants = true) {},
         style = MaterialTheme.typography.bodyLarge,
         privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),
-        onPrivacyNotice = { onPrivacyNotice(Uri.parse(url)) }
+        onPrivacyNotice = { onPrivacyNotice(url) }
     )
 }
 
