@@ -30,11 +30,6 @@ runs:
          .sh/stopAllEmulators.sh
        shell: bash
 
-    - name: clean devices
-      run: |
-        ./gradlew cleanManagedDevices
-      shell: bash
-
     - name: Run Gradle managed device test suites
       env:
         BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
