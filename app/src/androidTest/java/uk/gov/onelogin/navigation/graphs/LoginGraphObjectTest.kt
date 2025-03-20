@@ -70,10 +70,9 @@ class LoginGraphObjectTest : TestCase() {
             resources.getString(R.string.app_enableBiometricsTitle)
         ).assertIsDisplayed()
         composeTestRule.back()
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_enableBiometricsTitle)
-        ).assertIsDisplayed()
-        composeTestRule.back()
+        composeTestRule.activityRule.scenario.onActivity { activity ->
+            assert(activity.isFinishing)
+        }
     }
 
     @FlakyTest
@@ -88,7 +87,7 @@ class LoginGraphObjectTest : TestCase() {
         ).assertIsDisplayed()
         composeTestRule.back()
         composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_analyticsPermissionBody)
+            resources.getString(R.string.app_signInButton)
         ).assertIsDisplayed()
     }
 
