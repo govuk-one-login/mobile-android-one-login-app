@@ -53,7 +53,7 @@ fun OsslScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                analyticsViewModel.trackBackButton()
+                                analyticsViewModel.trackBackIcon()
                                 onBackBehaviour()
                             }
                         ) {

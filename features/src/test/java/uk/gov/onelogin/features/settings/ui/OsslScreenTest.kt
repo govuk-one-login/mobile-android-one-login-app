@@ -90,8 +90,12 @@ class OsslScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun backButtonAnalytics() {
+        var backClicked = false
+
         composeTestRule.setContent {
-            OsslScreen(analyticsViewModel)
+            OsslScreen(analyticsViewModel) {
+                backClicked = true
+            }
         }
 
         Espresso.pressBack()
@@ -99,6 +103,7 @@ class OsslScreenTest : FragmentActivityTestCase() {
         verify(analyticsLogger).logEventV3Dot1(
             OsslAnalyticsViewModel.makeBackButtonEvent(context)
         )
+        assertTrue(backClicked)
     }
 
     @Test
@@ -115,6 +120,9 @@ class OsslScreenTest : FragmentActivityTestCase() {
             resources.getString(R.string.app_back_icon)
         ).performClick()
 
+        verify(analyticsLogger).logEventV3Dot1(
+            OsslAnalyticsViewModel.makeBackIconEvent(context)
+        )
         assertTrue(backClicked)
     }
 }

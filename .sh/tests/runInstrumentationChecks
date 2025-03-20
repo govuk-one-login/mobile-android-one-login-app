@@ -21,8 +21,6 @@ then
   WORKER_COUNT=3
 fi
 
-
-
 # INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
 if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
