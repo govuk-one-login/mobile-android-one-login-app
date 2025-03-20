@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
@@ -66,6 +67,13 @@ class SettingsScreenViewModelTest {
         viewModel.goToSignOut()
 
         verify(mockNavigator).navigate(SignOutRoutes.Start, false)
+    }
+
+    @Test
+    fun `goToOssl() correctly navigates to open source licence page`() {
+        viewModel.goToOssl()
+
+        verify(mockNavigator).navigate(SettingsRoutes.Ossl, false)
     }
 
     @Test

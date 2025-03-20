@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
+import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.errorGraph
 import uk.gov.onelogin.navigation.graphs.LoginGraphObject.loginGraph
 import uk.gov.onelogin.navigation.graphs.MainNavGraph.mainNavRoutesFlow
@@ -32,6 +33,7 @@ fun OneLoginApp(
             errorGraph(navController)
             signOutGraph(navController)
             developerFlowRoutes(navController)
+            settingsGraph(navController)
         }
     }
 

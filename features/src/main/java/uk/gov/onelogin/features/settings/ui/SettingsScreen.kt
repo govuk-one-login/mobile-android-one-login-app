@@ -138,6 +138,7 @@ private fun SettingsScreenContent(
             },
             onOpenSourceLicensesClick = {
                 analyticsViewModel.trackOpenSourceButton()
+                viewModel.goToOssl()
             }
         )
         SignOutRow(

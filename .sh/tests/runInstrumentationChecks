@@ -24,6 +24,9 @@ fi
 # INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
 if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
+  echo "Cleaning devices"
+  ./gradlew \
+    cleanManagedDevices
   echo "Running instrumentation checks without environment variables (local development)..."
   ./gradlew \
     :app:aospAtdPixel5Api30BuildDebugAndroidTest \
@@ -33,6 +36,11 @@ then
     -Pandroid.experimental.androidTest.numManagedDeviceShards="${WORKER_COUNT}" \
     -Pandroid.testoptions.manageddevices.emulator.gpu=swiftshader_indirect
 else
+  echo "Cleaning devices"
+  ./gradlew \
+    cleanManagedDevices \
+    -PversionCode="${INPUT_VERSION_CODE}" \
+    -PversionName="${INPUT_VERSION_NAME}"
   echo "Running instrumentation checks with environment variables (GitHub workflow)..."
   ./gradlew \
     :app:aospAtdPixel5Api30BuildDebugAndroidTest \

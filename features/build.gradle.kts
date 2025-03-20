@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.oss.licence.about.libraries)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.library-config")
@@ -66,14 +67,10 @@ android {
                 if (environment != "production") {
                     suffix = ".$environment"
                 }
-
-                val packageName = "${project.android.namespace}$suffix"
-
                 manifestPlaceholders["flavorSuffix"] = suffix
             }
         }
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -157,7 +154,8 @@ dependencies {
         libs.androidx.constraintlayout,
         libs.hilt.android,
         libs.androidx.compose.ui.tooling,
-        libs.androidx.compose.ui.tooling.preview
+        libs.androidx.compose.ui.tooling.preview,
+        libs.bundles.about.libraries
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

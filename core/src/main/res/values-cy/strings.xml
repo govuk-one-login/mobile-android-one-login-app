@@ -118,6 +118,9 @@
     <string name="app_helpUrl">http://gov.uk/one-login/app-help/cy</string>
     <string name="app_contactUrl">https://home.account.gov.uk/contact-gov-uk-one-login?lng=cy</string>
 
+    <!--  OSSL  -->
+    <string name="app_osslTitle">Trwyddedau ffynhonnell agored</string>
+
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Agor mewn porwr gwe</string>
     <string name="app_openGooglePlayStore">Yn agor yn y Google Play Store</string>

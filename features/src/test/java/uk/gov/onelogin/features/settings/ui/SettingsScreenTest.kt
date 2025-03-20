@@ -34,6 +34,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
@@ -189,6 +190,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             SettingsScreen(viewModel, analyticsViewModel)
         }
         composeTestRule.onNode(openSourceLicensesButton).performScrollTo().performClick()
+        verify(navigator).navigate(SettingsRoutes.Ossl)
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeOpenSourceEvent(context))
     }
 
