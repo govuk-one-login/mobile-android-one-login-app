@@ -30,6 +30,7 @@ class BioOptInAnalyticsViewModel @Inject constructor(
             context,
             R.string.app_enablePasscodeOrPatternButton
         )
+    private val backBtnEvent = makeBackButtonEvent(context)
 
     fun trackBioOptInScreen() {
         analyticsLogger.logEventV3Dot1(screenEvent)
@@ -41,6 +42,10 @@ class BioOptInAnalyticsViewModel @Inject constructor(
 
     fun trackPasscodeButton() {
         analyticsLogger.logEventV3Dot1(passcodeBtnEvent)
+    }
+
+    fun trackBackButton() {
+        analyticsLogger.logEventV3Dot1(backBtnEvent)
     }
 
     companion object {
@@ -55,6 +60,13 @@ class BioOptInAnalyticsViewModel @Inject constructor(
         internal fun makeButtonEvent(context: Context, text: Int) = with(context) {
             TrackEvent.Button(
                 text = getEnglishString(text),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeBackButtonEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.system_backButton),
                 params = requiredParams
             )
         }

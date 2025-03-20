@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -90,6 +91,11 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun abortLogin(launcher: ActivityResultLauncher<Intent>) {
+        _loading.value = false
+        onPrimary(launcher).cancel()
     }
 
     private fun CoroutineScope.handleLoginErrors(

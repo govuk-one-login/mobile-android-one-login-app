@@ -21,6 +21,7 @@ import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
@@ -159,5 +160,25 @@ class SplashScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(splashIcon).assertIsDisplayed()
         composeTestRule.onNode(loadingText).assertIsDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
+    }
+
+    @Test
+    fun testBackButton() {
+        composeTestRule.setContent {
+            SplashScreen(viewModel, analyticsViewModel, optInViewModel)
+        }
+        composeTestRule.apply {
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+            }
+
+            activityRule.scenario.onActivity { activity ->
+                assert(activity.isFinishing)
+            }
+        }
+
+        verify(analytics).logEventV3Dot1(
+            SplashScreenAnalyticsViewModel.makeBackEvent(context, false)
+        )
     }
 }

@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.login.ui.signin.welcome
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,10 +60,13 @@ fun WelcomeScreen(
     )
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
-            // Nothing to do
+            viewModel.abortLogin(launcher)
         }
     }
 
+    BackHandler(enabled = true) {
+        context.finishAndRemoveTask()
+    }
     LaunchedEffect(key1 = Unit) {
         if (!shouldTryAgain()) return@LaunchedEffect
         if (viewModel.onlineChecker.isOnline()) {

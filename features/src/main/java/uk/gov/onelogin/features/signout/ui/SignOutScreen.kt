@@ -27,11 +27,11 @@ fun SignOutScreen(
 ) {
     val loading by viewModel.loadingState.collectAsState()
     // Needed for deleteWalletData
-    val fragmentActivity = LocalContext.current as FragmentActivity
+    val context = LocalContext.current as FragmentActivity
 
     if (loading) {
         LoadingScreen(loadingAnalyticsViewModel) {
-            fragmentActivity.finish()
+            context.finishAndRemoveTask()
         }
     } else {
         SignOutBody(
@@ -42,7 +42,7 @@ fun SignOutScreen(
             },
             onPrimary = {
                 analyticsViewModel.trackPrimary()
-                viewModel.signOut(fragmentActivity)
+                viewModel.signOut(context)
             }
         )
         analyticsViewModel.trackSignOutView(viewModel.uiState)

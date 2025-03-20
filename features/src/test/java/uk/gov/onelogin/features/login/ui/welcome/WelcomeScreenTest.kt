@@ -228,6 +228,29 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         verify(analytics).logEventV3Dot1(event)
     }
 
+    @Test
+    fun testBackButton() {
+        composeTestRule.setContent {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
+            WelcomeScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsVM,
+                shouldTryAgain = {
+                    shouldTryAgainCalled = true
+                    false
+                }
+            )
+        }
+
+        composeTestRule.apply {
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+                assert(activity.isFinishing)
+            }
+        }
+    }
+
     private fun whenWeClickSignIn() {
         composeTestRule.onNode(signInButton).performClick()
     }

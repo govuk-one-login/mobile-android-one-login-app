@@ -115,6 +115,20 @@ class OptInScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
+    fun testBackButton() {
+        // Given the OptOutScreen Composable
+        composeTestRule.setContent {
+            OptInScreen(viewModel)
+        }
+
+        composeTestRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
+
+        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+    }
+
+    @Test
     fun previewTest() {
         composeTestRule.setContent {
             OptInPreview()

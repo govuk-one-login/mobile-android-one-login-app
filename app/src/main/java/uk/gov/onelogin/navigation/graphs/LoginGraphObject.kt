@@ -85,9 +85,6 @@ object LoginGraphObject {
             composable(
                 route = LoginRoutes.AnalyticsOptIn.getRoute()
             ) {
-                BackHandler(true) {
-                    // do nothing
-                }
                 OptInScreen()
             }
         }
