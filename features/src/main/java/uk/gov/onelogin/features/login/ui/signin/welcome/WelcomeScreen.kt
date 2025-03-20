@@ -64,8 +64,8 @@ fun WelcomeScreen(
         }
     }
 
-    BackHandler(enabled = false) {
-        // Nothing to do
+    BackHandler(enabled = true) {
+        context.finishAndRemoveTask()
     }
     LaunchedEffect(key1 = Unit) {
         if (!shouldTryAgain()) return@LaunchedEffect

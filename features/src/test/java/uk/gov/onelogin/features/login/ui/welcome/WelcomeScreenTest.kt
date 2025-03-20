@@ -246,9 +246,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         composeTestRule.apply {
             activityRule.scenario.onActivity { activity ->
                 activity.onBackPressedDispatcher.onBackPressed()
+                assert(activity.isFinishing)
             }
-
-            composeTestRule.onNode(signInButton).assertIsDisplayed()
         }
     }
 
