@@ -55,8 +55,9 @@ class StsAuthenticationProvider(
             if (response is ApiResponse.Success<*>) {
                 try {
                     val tokenResponseString: String = response.response.toString()
-                    val tokenApiResponse: TokenApiResponse = Json { ignoreUnknownKeys }
-                        .decodeFromString(tokenResponseString)
+                    val tokenApiResponse: TokenApiResponse = Json.decodeFromString(
+                        tokenResponseString
+                    )
                     AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
                     Log.e(this::class.java.simpleName, e.message, e)

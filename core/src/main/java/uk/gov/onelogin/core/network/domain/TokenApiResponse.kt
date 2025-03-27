@@ -9,6 +9,8 @@ import kotlinx.serialization.json.JsonNames
 data class TokenApiResponse(
     @JsonNames("access_token")
     val token: String,
+    @JsonNames("issued_token_type")
+    val issuedTokenType: String,
     @JsonNames("token_type")
     val tokenType: String,
     @JsonNames("expires_in")
