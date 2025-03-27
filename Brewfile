@@ -15,7 +15,5 @@ brew "rbenv" unless system "rbenv", "--version"
 brew "rbenv-bundler" unless system "which", "rbenv-bundler"
 brew "ruby-build" unless system "ruby-build", "--version"
 brew "shellcheck" unless system "shellcheck", "--version"
-brew "sonarqube-lts" unless system "which", "sonar"
-brew "vale" unless system "vale", "--version"
 
 # casks (binary apps, such as from installers) - if needed/ required
