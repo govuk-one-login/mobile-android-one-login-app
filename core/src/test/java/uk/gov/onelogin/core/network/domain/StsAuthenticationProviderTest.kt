@@ -113,7 +113,6 @@ class StsAuthenticationProviderTest {
                 ApiResponse.Success(
                     "{\n" +
                         "    \"access_token\": \"token\",\n" +
-                        "    \"issued_token_type\": \"urn:ietf:params:oauth:token-type:token\",\n" +
                         "    \"token_type\": \"Bearer\",\n" +
                         "    \"expires_in\": 180\n" +
                         "}"

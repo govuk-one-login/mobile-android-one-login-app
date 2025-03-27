@@ -11,8 +11,7 @@ class TokenApiResponseTest {
             TokenApiResponse(
                 token = "test_token",
                 tokenType = "Bearer",
-                expiresIn = 3600,
-                issuedTokenType = "text_token_type"
+                expiresIn = 3600
             )
 
         val jsonString = Json.encodeToString(TokenApiResponse.serializer(), tokenApiResponse)
