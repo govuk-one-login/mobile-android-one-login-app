@@ -2,7 +2,6 @@
 <resources>
     <!-- Navigation -->
     <string name="app_continue">Parhau</string>
-    <string name="app_tryAgainButton">Rhowch gynnig arall</string>
     <string name="app_closeButton">Cau</string>
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
@@ -66,12 +65,15 @@
     <string name="app_appUnavailableBody">Ni allwch ddefnyddio\'r ap GOV.UK One Login ar hyn o bryd.\n\nRhowch gynnig arall yn nes ymlaen.</string>
 
     <!-- Errors Generic-->
-    <string name="app_somethingWentWrongErrorTitle">Aeth rhywbeth o\'i le</string>
-    <string name="app_somethingWentWrongErrorBody">Rhowch gynnig arall yn nes ymlaen.</string>
+    <string name="app_genericErrorPage">Mae\'n ddrwg gennym, mae yna broblem</string>
+    <string name="app_genericErrorPageBody">Rhowch gynnig arall yn nes ymlaen.</string>
+    <string name="app_genericErrorPageButton">Ewch yn ôl i roi cynnig eto</string>
 
     <!-- Errors Offline-->
-    <string name="app_networkErrorTitle">Mae\'n ymddangos nad ydych ar-lein</string>
-    <string name="app_networkErrorBody">Nid yw GOV.UK One Login ar gael os nad ydych ar-lein. Ailgysylltwch â\'r rhyngrwyd a rhoi cynnig arall</string>
+    <string name="app_networkErrorTitle">Nid ydych wedi\'ch cysylltu â\'r rhyngrwyd</string>
+    <string name="app_networkErrorBody1">Mae angen i chi gael cysylltiad rhyngrwyd i ddefnyddio GOV.UK One Login.</string>
+    <string name="app_networkErrorBody2">Ailgysylltwch â\'r rhyngrwyd a rhoi cynnig eto.</string>
+    <string name="app_tryAgainButton">Ewch yn ôl i roi cynnig eto</string>
 
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">Roedd problem wrth eich allgofnodi</string>

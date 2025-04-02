@@ -16,6 +16,8 @@ import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
 import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun OfflineErrorScreen(
@@ -29,33 +31,52 @@ fun OfflineErrorScreen(
             goBack()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        analyticsViewModel.trackButton()
-                        onRetryClick()
-                    },
-                    text = R.string.app_tryAgainButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource =
-                        listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_networkErrorTitle,
-                                text = intArrayOf(R.string.app_networkErrorBody)
-                            )
+        OfflineErrorBody {
+            analyticsViewModel.trackButton()
+            onRetryClick()
+        }
+    }
+}
+
+@Composable
+private fun OfflineErrorBody(
+    onPrimary: () -> Unit = {}
+) {
+    ErrorPage(
+        parameters = ErrorPageParameters(
+            primaryButtonParameters = ButtonParameters(
+                buttonType = ButtonType.PRIMARY(),
+                onClick = onPrimary,
+                text = R.string.app_tryAgainButton
+            ),
+            informationParameters = InformationParameters(
+                contentParameters = ContentParameters(
+                    resource =
+                    listOf(
+                        GdsContentText.GdsContentTextString(
+                            subTitle = R.string.app_networkErrorTitle,
+                            text = intArrayOf(R.string.app_networkErrorBody1)
                         ),
-                        headingSize = HeadingSize.H1()
+                        GdsContentText.GdsContentTextString(
+                            text = intArrayOf(R.string.app_networkErrorBody2)
+                        )
                     ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
-                    )
+                    headingSize = HeadingSize.H1()
+                ),
+                iconParameters = IconParameters(
+                    foreGroundColor = Color.Unspecified,
+                    image = uk.gov.android.ui.components.R.drawable.ic_error
                 )
             )
         )
+    )
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun OfflineErrorPreview() {
+    GdsTheme {
+        OfflineErrorBody()
     }
 }

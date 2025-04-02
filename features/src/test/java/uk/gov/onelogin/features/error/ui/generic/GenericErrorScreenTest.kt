@@ -19,9 +19,9 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var viewModel: GenericErrorAnalyticsViewModel
     private var primaryClicked = false
 
-    private val errorTitle = hasText(resources.getString(R.string.app_somethingWentWrongErrorTitle))
-    private val errorBody = hasText(resources.getString(R.string.app_somethingWentWrongErrorBody))
-    private val primaryButton = hasText(resources.getString(R.string.app_closeButton))
+    private val errorTitle = hasText(resources.getString(R.string.app_genericErrorPage))
+    private val errorBody = hasText(resources.getString(R.string.app_genericErrorPageBody))
+    private val primaryButton = hasText(resources.getString(R.string.app_genericErrorPageButton))
 
     @Before
     fun setUp() {

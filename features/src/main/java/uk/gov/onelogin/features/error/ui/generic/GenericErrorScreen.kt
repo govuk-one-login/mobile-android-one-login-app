@@ -46,17 +46,17 @@ private fun GenericErrorBody(
             primaryButtonParameters = ButtonParameters(
                 buttonType = ButtonType.PRIMARY(),
                 onClick = primaryOnClick,
-                text = R.string.app_closeButton
+                text = R.string.app_genericErrorPageButton
             ),
             informationParameters = InformationParameters(
                 contentParameters = ContentParameters(
                     resource =
                     listOf(
                         GdsContentText.GdsContentTextString(
-                            subTitle = R.string.app_somethingWentWrongErrorTitle,
+                            subTitle = R.string.app_genericErrorPage,
                             text =
                             intArrayOf(
-                                R.string.app_somethingWentWrongErrorBody
+                                R.string.app_genericErrorPageBody
                             )
                         )
                     ),

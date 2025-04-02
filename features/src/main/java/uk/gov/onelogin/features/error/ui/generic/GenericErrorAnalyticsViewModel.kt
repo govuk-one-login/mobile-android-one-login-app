@@ -39,7 +39,7 @@ class GenericErrorAnalyticsViewModel @Inject constructor(
     companion object {
         internal fun makeScreenEvent(context: Context) = with(context) {
             ViewEvent.Error(
-                name = getEnglishString(R.string.app_somethingWentWrongErrorTitle),
+                name = getEnglishString(R.string.app_genericErrorPage),
                 id = getEnglishString(R.string.generic_error_screen_id),
                 endpoint = "",
                 reason = getEnglishString(R.string.generic_error_reason),

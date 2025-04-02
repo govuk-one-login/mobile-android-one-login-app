@@ -32,7 +32,7 @@ class GenericErrorAnalyticsViewModelTest {
     @Before
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        name = context.getEnglishString(R.string.app_somethingWentWrongErrorTitle)
+        name = context.getEnglishString(R.string.app_genericErrorPage)
         id = context.getEnglishString(R.string.generic_error_screen_id)
         reason = context.getEnglishString(R.string.generic_error_reason)
         button = context.getEnglishString(R.string.app_closeButton)
