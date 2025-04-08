@@ -28,6 +28,7 @@ import uk.gov.android.ui.components.R as UiR
 import uk.gov.android.ui.componentsv2.button.ButtonType
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -83,7 +84,7 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
                 GdsHeading(
                     text = stringResource(R.string.app_updateApp_Title),
                     modifier = Modifier.padding(bottom = smallPadding),
-                    textAlign = TextAlign.Center
+                    textAlign = GdsHeadingAlignment.CenterAligned
                 )
                 Text(
                     text = stringResource(R.string.app_updateAppBody1),
