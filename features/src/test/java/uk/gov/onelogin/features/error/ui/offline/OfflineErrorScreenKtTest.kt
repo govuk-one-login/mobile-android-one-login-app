@@ -22,7 +22,8 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
     private var retryClicked = false
 
     private val errorTitle = hasText(resources.getString(R.string.app_networkErrorTitle))
-    private val errorBody = hasText(resources.getString(R.string.app_networkErrorBody))
+    private val errorBody1 = hasText(resources.getString(R.string.app_networkErrorBody1))
+    private val errorBody2 = hasText(resources.getString(R.string.app_networkErrorBody2))
     private val tryAgainButton = hasText(resources.getString(R.string.app_tryAgainButton))
 
     @Before
@@ -41,7 +42,8 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
     @Test
     fun offlineErrorScreen() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
-        composeTestRule.onNode(errorBody).assertIsDisplayed()
+        composeTestRule.onNode(errorBody1).assertIsDisplayed()
+        composeTestRule.onNode(errorBody2).assertIsDisplayed()
         composeTestRule.onNode(tryAgainButton).apply {
             assertIsDisplayed()
             performClick()

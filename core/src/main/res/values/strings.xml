@@ -4,7 +4,6 @@
 
     <!-- Navigation -->
     <string name="app_continue">Continue</string>
-    <string name="app_tryAgainButton">Try again</string>
     <string name="app_closeButton">Close</string>
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
@@ -74,12 +73,15 @@
     <string name="app_appUnavailableBody">You cannot use the GOV.UK One Login app at the moment.\n\nTry again later.</string>
 
     <!-- Errors Generic -->
-    <string name="app_somethingWentWrongErrorTitle">Something went wrong</string>
-    <string name="app_somethingWentWrongErrorBody">Try again later.</string>
+    <string name="app_genericErrorPage">Sorry, there’s a problem</string>
+    <string name="app_genericErrorPageBody">Try again later.</string>
+    <string name="app_genericErrorPageButton">Go back and try again</string>
 
     <!-- Errors Offline -->
-    <string name="app_networkErrorTitle">You appear to be offline</string>
-    <string name="app_networkErrorBody">GOV.UK One Login is not available offline. Reconnect to the internet and try again</string>
+    <string name="app_networkErrorTitle">You are not connected to the internet</string>
+    <string name="app_networkErrorBody1">You need to have an internet connection to use GOV.UK One Login.</string>
+    <string name="app_networkErrorBody2">Reconnect to the internet and try again.</string>
+    <string name="app_tryAgainButton">Go back and try again</string>
 
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">There was a problem signing you out</string>

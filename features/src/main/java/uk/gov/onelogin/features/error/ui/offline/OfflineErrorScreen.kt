@@ -3,19 +3,17 @@ package uk.gov.onelogin.features.error.ui.offline
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.components.buttons.ButtonParameters
-import uk.gov.android.ui.components.buttons.ButtonType
-import uk.gov.android.ui.components.content.ContentParameters
-import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.components.images.icon.IconParameters
-import uk.gov.android.ui.components.information.InformationParameters
-import uk.gov.android.ui.pages.errors.ErrorPage
-import uk.gov.android.ui.pages.errors.ErrorPageParameters
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
+import uk.gov.android.ui.patterns.errorscreen.ErrorScreen
+import uk.gov.android.ui.patterns.errorscreen.ErrorScreenIcon
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun OfflineErrorScreen(
@@ -29,33 +27,41 @@ fun OfflineErrorScreen(
             goBack()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        analyticsViewModel.trackButton()
-                        onRetryClick()
-                    },
-                    text = R.string.app_tryAgainButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource =
-                        listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_networkErrorTitle,
-                                text = intArrayOf(R.string.app_networkErrorBody)
-                            )
-                        ),
-                        headingSize = HeadingSize.H1()
-                    ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
-                    )
-                )
+        OfflineErrorBody {
+            analyticsViewModel.trackButton()
+            onRetryClick()
+        }
+    }
+}
+
+@Composable
+private fun OfflineErrorBody(
+    onPrimary: () -> Unit = {}
+) {
+    ErrorScreen(
+        icon = ErrorScreenIcon.ErrorIcon,
+        title = stringResource(R.string.app_networkErrorTitle),
+        body = persistentListOf(
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_networkErrorBody1)
+            ),
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_networkErrorBody2)
             )
+        ),
+        primaryButton =
+        CentreAlignedScreenButton(
+            text = stringResource(R.string.app_genericErrorPageButton),
+            onClick = onPrimary
         )
+    )
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun OfflineErrorPreview() {
+    GdsTheme {
+        OfflineErrorBody()
     }
 }

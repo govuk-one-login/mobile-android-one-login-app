@@ -65,7 +65,7 @@ class ErrorGraphObjectTest : TestCase() {
             navController.setCurrentDestination(ErrorRoutes.Generic.getRoute())
         }
         composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_somethingWentWrongErrorTitle)
+            resources.getString(R.string.app_genericErrorPage)
         ).assertExists()
     }
 
