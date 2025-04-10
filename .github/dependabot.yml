@@ -17,6 +17,13 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+      groups:
+        bundler-minor-versions:
+          patterns:
+            - "*"
+          update-types:
+            - minor
+            - patch
     open-pull-requests-limit: 5
 
   - package-ecosystem: gradle
@@ -30,3 +37,6 @@ updates:
         patterns:
           - "org.jetbrains.kotlin*"
           - "com.google.devtools.ksp*"
+        update-types:
+          - minor
+          - patch
