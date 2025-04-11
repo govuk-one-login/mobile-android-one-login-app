@@ -67,13 +67,10 @@ android {
                     suffix = ".$environment"
                 }
 
-                val packageName = "${project.android.namespace}$suffix"
-
                 manifestPlaceholders["flavorSuffix"] = suffix
             }
         }
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()

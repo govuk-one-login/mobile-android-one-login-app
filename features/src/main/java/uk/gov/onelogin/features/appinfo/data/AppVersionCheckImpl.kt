@@ -1,7 +1,7 @@
 package uk.gov.onelogin.features.appinfo.data
 
-import android.util.Log
 import javax.inject.Inject
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -11,7 +11,8 @@ import uk.gov.onelogin.features.appinfo.domain.BuildConfigVersion
 class AppVersionCheckImpl @Inject constructor(
     private val utils: AppInfoUtils,
     @BuildConfigVersion
-    private val appVersion: String
+    private val appVersion: String,
+    private val logger: Logger
 ) : AppVersionCheck {
     override fun compareVersions(data: AppInfoData): AppInfoServiceState {
         val updatedVersion = data.apps.android.minimumVersion
@@ -37,7 +38,7 @@ class AppVersionCheckImpl @Inject constructor(
                 }
             }
         } catch (e: AppInfoUtils.AppError) {
-            Log.e(TAG, e.toString())
+            logger.error(TAG, e.toString(), e)
             result = AppInfoServiceState.Unavailable
         }
         return result

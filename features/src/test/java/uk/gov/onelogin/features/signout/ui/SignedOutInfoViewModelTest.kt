@@ -12,6 +12,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
 import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
@@ -37,6 +38,7 @@ class SignedOutInfoViewModelTest {
     private val signOutUseCase: SignOutUseCase = mock()
     private val biometricPreferenceHandler: BiometricPreferenceHandler = mock()
     private val credentialChecker: CredentialChecker = mock()
+    private val logger = SystemLogger()
     private val bioPreferencesUseCase: BioPreferencesUseCase = BioPreferencesUseCaseImpl(
         biometricPreferenceHandler,
         credentialChecker
@@ -49,7 +51,8 @@ class SignedOutInfoViewModelTest {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            bioPreferencesUseCase
+            bioPreferencesUseCase,
+            logger
         )
     }
 
@@ -144,12 +147,13 @@ class SignedOutInfoViewModelTest {
             var callback = false
             val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn("")
-            whenever(signOutUseCase.invoke(any())).thenThrow(SignOutError(Error()))
+            whenever(signOutUseCase.invoke(any())).thenThrow(SignOutError(Error("test")))
 
             viewModel.checkPersistentId(activity) { callback = true }
 
             verify(signOutUseCase).invoke(activity)
             verify(navigator).navigate(LoginRoutes.SignInError, true)
             assertFalse(callback)
+            assertTrue(logger.contains("java.lang.Error: test"))
         }
 }

@@ -12,6 +12,7 @@ import uk.gov.android.authentication.json.jwt.JwtVerifier
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
 
@@ -19,6 +20,7 @@ class VerifyIdTokenTest {
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
+    private val logger = SystemLogger()
 
     // the header of the web token contains a 'kid' for one of the keys below
     private val idToken =
@@ -69,6 +71,7 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
+        assertTrue(logger.size == 0)
     }
 
     @Test
@@ -79,6 +82,7 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
+        assertTrue(logger.size == 0)
     }
 
     @Test
@@ -89,6 +93,7 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
+        assertTrue(logger.contains("java.lang.IllegalArgumentException: fail"))
     }
 
     @Test
@@ -99,6 +104,7 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken("not an id token", "testUrl")
         assertFalse(result)
+        assertTrue(logger.contains("java.lang.IndexOutOfBoundsException: Index: 1, Size: 1"))
     }
 
     @Test
@@ -109,6 +115,13 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
+        assertTrue(
+            logger.contains(
+                "kotlinx.serialization.json.internal.JsonDecodingException: " +
+                    "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
+                    "instead at path: \$\nJSON input: not a json"
+            )
+        )
     }
 
     @Test
@@ -119,6 +132,7 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertTrue(result)
+        assertTrue(logger.size == 0)
     }
 
     @Test
@@ -129,6 +143,12 @@ class VerifyIdTokenTest {
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
+        assertTrue(
+            logger.contains(
+                "java.lang.IllegalArgumentException: Element class " +
+                    "kotlinx.serialization.json.JsonLiteral is not a JsonObject"
+            )
+        )
     }
 
     private fun setupHttpStub(response: ApiResponse) {
@@ -138,7 +158,8 @@ class VerifyIdTokenTest {
     private fun buildVerifyToken() {
         verifyIdToken = VerifyIdTokenImpl(
             stubHttpClient,
-            stubVerifier
+            stubVerifier,
+            logger
         )
     }
 }

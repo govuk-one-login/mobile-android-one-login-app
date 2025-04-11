@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.appinfo.data
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
 import javax.inject.Inject
 import kotlinx.serialization.SerializationException
@@ -39,7 +38,6 @@ class AppInfoLocalSourceImpl @Inject constructor(
     private fun decodeAppInfoData(result: String): AppInfoLocalState {
         return try {
             val decodedResult = Json.decodeFromString<AppInfoData>(result)
-            Log.d("AppInfoLocal", "$decodedResult")
             AppInfoLocalState.Success(decodedResult)
         } catch (e: SerializationException) {
             AppInfoLocalState.Failure(reason = APP_INFO_ILLEGAL_ARG_ERROR, exp = e)

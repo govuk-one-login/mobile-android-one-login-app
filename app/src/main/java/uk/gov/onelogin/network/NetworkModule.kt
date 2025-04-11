@@ -17,6 +17,7 @@ import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.network.domain.StsAuthenticationProvider
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -53,6 +54,7 @@ object NetworkModule {
         return userAgentGenerator
     }
 
+    @Suppress("LongParameterList")
     @Provides
     fun provideHttpClient(
         @ApplicationContext
@@ -60,7 +62,8 @@ object NetworkModule {
         userAgentGenerator: UserAgentGenerator,
         tokenRepository: TokenRepository,
         isAccessTokenExpired: IsAccessTokenExpired,
-        navigator: Navigator
+        navigator: Navigator,
+        logger: Logger
     ): GenericHttpClient {
         val client = KtorHttpClient(userAgentGenerator)
         val endpoint = context.getString(R.string.tokenExchangeEndpoint)
@@ -70,7 +73,8 @@ object NetworkModule {
             tokenRepository,
             isAccessTokenExpired,
             client,
-            navigator
+            navigator,
+            logger
         )
         client.setAuthenticationProvider(authProvider)
         return client

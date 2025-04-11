@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,6 +23,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.biometrics.data.BiometricPreference
 import uk.gov.onelogin.core.biometrics.data.BiometricStatus
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
@@ -61,6 +63,7 @@ class WelcomeScreenViewModelTest {
     private val mockHandleRemoteLogin: HandleRemoteLogin = mock()
     private val mockHandleLoginRedirect: HandleLoginRedirect = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
+    private val logger = SystemLogger()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -95,6 +98,7 @@ class WelcomeScreenViewModelTest {
             mockHandleRemoteLogin,
             mockHandleLoginRedirect,
             mockSignOutUseCase,
+            logger,
             mockOnlineChecker
         )
 
@@ -325,6 +329,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSignOutUseCase).invoke(mockFragmentActivity)
             verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
+            assertThat("logger has log", logger.contains("access_denied"))
         }
 
     @Test
@@ -351,6 +356,7 @@ class WelcomeScreenViewModelTest {
 
             verifyNoInteractions(mockSignOutUseCase)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            assertThat("logger has log", logger.contains("oauth_error"))
         }
 
     @Test
@@ -393,6 +399,32 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockBioPrefHandler)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            assertThat("logger has log", logger.size == 1)
+        }
+
+    @Test
+    fun `When login redirect fails, null throwable - it displays sign in error screen`() =
+        runTest {
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: Throwable?) -> Unit).invoke(null)
+                }
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                fragmentActivity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockSaveTokenExpiry)
+            verifyNoInteractions(mockTokenRepository)
+            verifyNoInteractions(mockBioPrefHandler)
+            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            assertThat("logger has no log", logger.size == 0)
         }
 
     @Test

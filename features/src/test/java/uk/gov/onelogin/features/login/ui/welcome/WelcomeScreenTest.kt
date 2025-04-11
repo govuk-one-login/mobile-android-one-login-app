@@ -20,6 +20,7 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
@@ -57,6 +58,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
     private lateinit var loadingAnalyticsVM: LoadingScreenAnalyticsViewModel
+    private val logger = SystemLogger()
 
     private var shouldTryAgainCalled = false
 
@@ -95,6 +97,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
                 handleRemoteLogin,
                 handleLoginRedirect,
                 signOutUseCase,
+                logger,
                 onlineChecker
             )
         analytics = mock()

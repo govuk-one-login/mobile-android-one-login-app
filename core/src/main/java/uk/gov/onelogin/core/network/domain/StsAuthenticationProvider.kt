@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.network.domain
 
-import android.util.Log
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
@@ -10,6 +9,7 @@ import uk.gov.android.network.api.ApiResponseException
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -20,7 +20,8 @@ class StsAuthenticationProvider(
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,
     private val httpClient: GenericHttpClient,
-    private val navigator: Navigator
+    private val navigator: Navigator,
+    private val logger: Logger
 ) : AuthenticationProvider {
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
@@ -59,7 +60,7 @@ class StsAuthenticationProvider(
                         .decodeFromString(tokenResponseString)
                     AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
-                    Log.e(this::class.java.simpleName, e.message, e)
+                    logger.error(this::class.java.simpleName, e.message.toString(), e)
                     AuthenticationResponse.Failure(e)
                 }
             } else {

@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 
 class GetEmailImplTest {
     private val expectedEmail = "email@mail.com"
@@ -20,8 +22,9 @@ class GetEmailImplTest {
             "ZRrHA1JJJW8opsbCGfG_HACGpVUMN_a9IV7pAx_Zmeo"
     private val tokenResponse: TokenResponse = mock()
     private val tokenRepository: TokenRepository = mock()
+    private val verifyIdToken: VerifyIdToken = mock()
 
-    val sut = GetEmailImpl(tokenRepository)
+    val sut = GetEmailImpl(tokenRepository, verifyIdToken)
 
     @BeforeEach
     fun setUp() {
@@ -34,6 +37,7 @@ class GetEmailImplTest {
         // Given id token contains email
         whenever(tokenResponse.idToken).thenReturn(idTokenWithEmail)
         whenever(tokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        whenever(verifyIdToken.extractEmailFromIdToken(any())).thenReturn(expectedEmail)
 
         val emailResponse = sut.invoke()
         assertEquals(expectedEmail, emailResponse)

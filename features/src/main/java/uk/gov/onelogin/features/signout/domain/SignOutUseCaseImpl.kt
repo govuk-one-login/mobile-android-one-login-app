@@ -21,4 +21,4 @@ class SignOutUseCaseImpl @Inject constructor(
     }
 }
 
-data class SignOutError(val error: Throwable) : Error()
+data class SignOutError(val error: Throwable) : Error(error)
