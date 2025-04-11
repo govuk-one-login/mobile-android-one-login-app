@@ -63,20 +63,6 @@ class LoginGraphObjectTest : TestCase() {
 
     @FlakyTest
     @Test
-    fun loginGraph_BioOptInScreen() {
-        composeTestRule.setActivity { navigator.navigate(LoginRoutes.BioOptIn) }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_enableBiometricsTitle)
-        ).assertIsDisplayed()
-        composeTestRule.back()
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            assert(activity.isFinishing)
-        }
-    }
-
-    @FlakyTest
-    @Test
     fun loginGraph_AnalyticsOptInScreen() {
         composeTestRule.setActivity {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)

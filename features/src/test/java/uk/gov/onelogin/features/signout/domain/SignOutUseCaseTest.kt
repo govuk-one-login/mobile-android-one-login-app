@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
@@ -32,7 +32,7 @@ class SignOutUseCaseTest {
             // Given
             val removeAllSecureStoreData: RemoveAllSecureStoreData = mock()
             val removeTokenExpiry: RemoveTokenExpiry = mock()
-            val bioPrefHandler: BiometricPreferenceHandler = mock()
+            val bioPrefHandler: LocalAuthPreferenceRepo = mock()
             // When we call sign out use case
             useCase =
                 SignOutUseCaseImpl(

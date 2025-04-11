@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,12 +16,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.data.BiometricStatus
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -40,8 +41,8 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 class WelcomeScreenViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
-    private val credChecker: CredentialChecker,
-    private val bioPrefHandler: BiometricPreferenceHandler,
+    private val localAuthManager: LocalAuthManager,
+    private val deviceBiometricsManager: DeviceBiometricsManager,
     private val tokenRepository: TokenRepository,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
     private val verifyIdToken: VerifyIdToken,
@@ -69,7 +70,8 @@ class WelcomeScreenViewModel @Inject constructor(
 
     fun handleActivityResult(
         intent: Intent,
-        isReAuth: Boolean = false
+        isReAuth: Boolean = false,
+        activity: FragmentActivity
     ) {
         if (intent.data == null) return
 
@@ -79,7 +81,7 @@ class WelcomeScreenViewModel @Inject constructor(
                 intent,
                 onSuccess = {
                     viewModelScope.launch {
-                        handleTokens(it, isReAuth)
+                        handleTokens(it, isReAuth, activity)
                     }
                 },
                 onFailure = {
@@ -126,7 +128,8 @@ class WelcomeScreenViewModel @Inject constructor(
 
     private suspend fun handleTokens(
         tokens: TokenResponse,
-        isReAuth: Boolean
+        isReAuth: Boolean,
+        activity: FragmentActivity
     ) {
         val jwksUrl = context.getString(
             R.string.stsUrl,
@@ -136,49 +139,57 @@ class WelcomeScreenViewModel @Inject constructor(
         if (!verifyIdToken(tokens.idToken, jwksUrl)) {
             navigator.navigate(LoginRoutes.SignInError, true)
         } else {
-            checkLocalAuthRoute(tokens, isReAuth)
+            checkLocalAuthRoute(tokens, isReAuth, activity)
         }
     }
 
     private suspend fun checkLocalAuthRoute(
         tokens: TokenResponse,
-        isReAuth: Boolean
+        isReAuth: Boolean,
+        activity: FragmentActivity
     ) {
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)
 
-        when {
-            isReAuth -> {
-                if (credChecker.isDeviceSecure()) {
-                    saveTokens()
-                }
-                navigator.goBack()
-            }
+        localAuthManager.enforceAndSet(
+            false,
+            activity = activity,
+            callbackHandler = object : LocalAuthManagerCallbackHandler {
+                override fun onSuccess(backButtonPressed: Boolean) {
+                    val pref = localAuthManager.localAuthPreference
+                    println("$pref")
+                    when {
+                        isReAuth -> {
+                            if (pref is LocalAuthPreference.Enabled) {
+                                viewModelScope.launch {
+                                    println("Saving tokens")
+                                    saveTokens()
+                                    navigator.goBack()
+                                }
+                            } else {
+                                navigator.goBack()
+                            }
+                        }
 
-            !credChecker.isDeviceSecure() -> {
-                bioPrefHandler.setBioPref(BiometricPreference.NONE)
-                navigator.navigate(MainNavRoutes.Start, true)
-            }
+                        // The localAuthPref has not been set yet - so this needs to check the
+                        // device is secure
+                        !deviceBiometricsManager.isDeviceSecure() -> {
+                            navigator.navigate(MainNavRoutes.Start, true)
+                        }
 
-            shouldSeeBiometricOptIn() ->
-                navigator.navigate(LoginRoutes.BioOptIn, true)
+                        else -> {
+                            viewModelScope.launch {
+                                autoInitialiseSecureStore.initialise()
+                                navigator.navigate(MainNavRoutes.Start, true)
+                            }
+                        }
+                    }
+                }
 
-            else -> {
-                if (bioPrefHandler.getBioPref() != BiometricPreference.BIOMETRICS) {
-                    bioPrefHandler.setBioPref(BiometricPreference.PASSCODE)
+                override fun onFailure(backButtonPressed: Boolean) {
+                    navigator.navigate(MainNavRoutes.Start, true)
                 }
-                viewModelScope.launch {
-                    autoInitialiseSecureStore.initialise()
-                }
-                navigator.navigate(MainNavRoutes.Start, true)
             }
-        }
+        )
     }
-
-    private fun shouldSeeBiometricOptIn() =
-        credChecker.biometricStatus() == BiometricStatus.SUCCESS &&
-            (
-                bioPrefHandler.getBioPref() == null ||
-                    bioPrefHandler.getBioPref() == BiometricPreference.NONE
-                )
 }

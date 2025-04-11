@@ -9,7 +9,6 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.features.error.ui.signin.SignInErrorScreen
-import uk.gov.onelogin.features.login.ui.signin.biooptin.BiometricsOptInScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
 import uk.gov.onelogin.features.optin.ui.OptInScreen
@@ -30,6 +29,7 @@ object LoginGraphObject {
                 val comingFromLockScreen = navController.hasPreviousBackStack()
                 BackHandler(enabled = comingFromLockScreen) {
                     // do nothing if coming from Lock Screen
+                    println("here is me")
                 }
                 SplashScreen()
             }
@@ -51,15 +51,6 @@ object LoginGraphObject {
                 route = LoginRoutes.Loading.getRoute()
             ) {
                 LoadingScreen {}
-            }
-
-            composable(
-                route = LoginRoutes.BioOptIn.getRoute()
-            ) {
-                BackHandler(true) {
-                    // do nothing
-                }
-                BiometricsOptInScreen()
             }
 
             composable(

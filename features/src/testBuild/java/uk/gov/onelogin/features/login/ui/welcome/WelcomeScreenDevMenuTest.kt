@@ -11,8 +11,7 @@ import org.mockito.kotlin.verify
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
@@ -31,7 +30,7 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @RunWith(AndroidJUnit4::class)
 class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var credChecker: CredentialChecker
-    private lateinit var biometricPreferenceHandler: BiometricPreferenceHandler
+    private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepo
     private lateinit var tokenRepository: TokenRepository
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
@@ -53,7 +52,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     @Before
     fun setup() {
         credChecker = mock()
-        biometricPreferenceHandler = mock()
+        localAuthPreferenceRepo = mock()
         tokenRepository = mock()
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
@@ -68,7 +67,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
             WelcomeScreenViewModel(
                 context,
                 credChecker,
-                biometricPreferenceHandler,
+                localAuthPreferenceRepo,
                 tokenRepository,
                 autoInitialiseSecureStore,
                 verifyIdToken,

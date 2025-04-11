@@ -11,8 +11,6 @@ sealed class LoginRoutes(private val route: String) : NavRoute {
 
     data object Loading : LoginRoutes("/login/loading")
 
-    data object BioOptIn : LoginRoutes("/login/bio_opt_in")
-
     data object SignInError : LoginRoutes("/login/sign_in_error")
 
     data object AnalyticsOptIn : LoginRoutes("/login/analytics_opt_in")

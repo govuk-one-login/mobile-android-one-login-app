@@ -12,8 +12,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
@@ -26,7 +26,7 @@ class HandleLocalLoginTest {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockGetFromEncryptedSecureStore: GetFromEncryptedSecureStore = mock()
-    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val mockBioPrefHandler: LocalAuthManager = mock()
     private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
 
     private val useCase =
@@ -42,7 +42,8 @@ class HandleLocalLoginTest {
     fun tokenExpiredAndNotNull_reAuthLogin() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
         whenever(mockGetTokenExpiry.invoke()).thenReturn(1)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
         runBlocking {
             useCase(
@@ -57,7 +58,8 @@ class HandleLocalLoginTest {
     fun tokenExpiredAndNull_refreshLogin() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
         whenever(mockGetTokenExpiry.invoke()).thenReturn(null)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
         runBlocking {
             useCase(
@@ -72,7 +74,8 @@ class HandleLocalLoginTest {
     fun idTokenNull_refreshLogin() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry.invoke()).thenReturn(unexpiredTime)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
         wheneverBlocking {
             mockGetFromEncryptedSecureStore.invoke(
                 context = any(),
@@ -101,7 +104,7 @@ class HandleLocalLoginTest {
     fun bioPrefNone_refreshLogin_biometricsNone() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry()).thenReturn(null)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+        whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         runBlocking {
             useCase(mockActivity) {
@@ -114,7 +117,7 @@ class HandleLocalLoginTest {
     fun bioPrefNone_refreshLogin_biometricsNull() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetTokenExpiry()).thenReturn(null)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+        whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         runBlocking {
             useCase(mockActivity) {
@@ -126,7 +129,8 @@ class HandleLocalLoginTest {
     @Test
     fun nonSuccessResponseFromGetFromSecureStore() {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
         runBlocking {
             whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
@@ -153,7 +157,8 @@ class HandleLocalLoginTest {
 
         whenever(mockGetTokenExpiry()).thenReturn(unexpiredTime)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.PASSCODE)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
         runBlocking {
             whenever(

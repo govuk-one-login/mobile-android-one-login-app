@@ -36,18 +36,9 @@ class NavControllerExtTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun hasPreviousBackStackTrueForAddedBackStack() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(LoginRoutes.BioOptIn.getRoute())
-        }
-        assertTrue(navController.hasPreviousBackStack())
-    }
-
-    @Test
     fun closeAppPopsAllBackStack() {
         composeTestRule.runOnUiThread {
             // Fill up backstack
-            navController.setCurrentDestination(LoginRoutes.BioOptIn.getRoute())
             navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
             navController.setCurrentDestination(LoginRoutes.SignInError.getRoute())
             navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
@@ -68,8 +59,6 @@ class NavControllerExtTest : FragmentActivityTestCase() {
                 composable(route = LoginRoutes.Welcome.getRoute()) {}
 
                 composable(route = LoginRoutes.Loading.getRoute()) {}
-
-                composable(route = LoginRoutes.BioOptIn.getRoute()) {}
 
                 composable(route = LoginRoutes.SignInError.getRoute()) {}
 

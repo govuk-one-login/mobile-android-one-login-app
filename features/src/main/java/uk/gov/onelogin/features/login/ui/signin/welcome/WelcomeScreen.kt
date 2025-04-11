@@ -39,7 +39,7 @@ fun WelcomeScreen(
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { intent ->
-                    viewModel.handleActivityResult(intent = intent)
+                    viewModel.handleActivityResult(intent = intent, activity = context)
                 }
             }
         }

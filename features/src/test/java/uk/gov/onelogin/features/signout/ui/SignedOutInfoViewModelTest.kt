@@ -10,10 +10,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
-import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -33,10 +32,10 @@ class SignedOutInfoViewModelTest {
     private val navigator: Navigator = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val signOutUseCase: SignOutUseCase = mock()
-    private val biometricPreferenceHandler: BiometricPreferenceHandler = mock()
+    private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
     private val credentialChecker: CredentialChecker = mock()
-    private val bioPreferencesUseCase: BioPreferencesUseCase = BioPreferencesUseCaseImpl(
-        biometricPreferenceHandler,
+    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase = LocalAuthPrefResetUseCaseImpl(
+        localAuthPreferenceRepo,
         credentialChecker
     )
 
@@ -47,7 +46,7 @@ class SignedOutInfoViewModelTest {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            bioPreferencesUseCase
+            localAuthPrefResetUseCase
         )
     }
 
@@ -113,7 +112,7 @@ class SignedOutInfoViewModelTest {
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
-            verifyNoInteractions(biometricPreferenceHandler)
+            verifyNoInteractions(localAuthPreferenceRepo)
             assertTrue(callback)
         }
 
@@ -128,7 +127,7 @@ class SignedOutInfoViewModelTest {
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
-            verify(biometricPreferenceHandler).clean()
+            verify(localAuthPreferenceRepo).clean()
             assertTrue(callback)
         }
 

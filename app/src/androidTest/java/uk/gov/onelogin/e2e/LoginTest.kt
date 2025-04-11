@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
+import androidx.biometric.BiometricManager
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.isDisplayed
@@ -46,19 +47,18 @@ import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.authentication.localauth.R as LocalAuthR
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.appcheck.AppCheckerModule
 import uk.gov.onelogin.appinfo.AppInfoApiModule
-import uk.gov.onelogin.biometrics.DeviceCredentialCheckerModule
-import uk.gov.onelogin.core.biometrics.data.BiometricStatus
-import uk.gov.onelogin.core.biometrics.domain.BiometricManager
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
@@ -71,12 +71,13 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
+import uk.gov.onelogin.login.localauth.BiometricModule
 import uk.gov.onelogin.utils.TestUtils
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    DeviceCredentialCheckerModule::class,
+    BiometricModule::class,
     AppInfoApiModule::class,
     AppCheckerModule::class,
     AppIntegrityModule::class
@@ -86,7 +87,7 @@ class LoginTest : TestCase() {
     val mockLoginSession: LoginSession = mock()
 
     @BindValue
-    val mockCredChecker: CredentialChecker = mock()
+    val mockCredChecker: DeviceBiometricsManager = mock()
 
     @BindValue
     val mockBiometricManager: BiometricManager = mock()
@@ -340,15 +341,17 @@ class LoginTest : TestCase() {
             .thenReturn(SignedPoP.Success("Success"))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+        whenever(mockCredChecker.getCredentialStatus()).thenReturn(DeviceBiometricsStatus.SUCCESS)
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
         clickOptOut()
         clickLogin()
 
-        nodeWithTextExists(resources.getString(R.string.app_enableBiometricsTitle))
-        composeRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsButton))
+        nodeWithTextExists(resources.getString(LocalAuthR.string.bio_opt_in_title))
+        composeRule
+            .onNodeWithText(resources.getString(LocalAuthR.string.bio_opt_in_passcode_button))
+            .performClick()
         nodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
@@ -363,7 +366,7 @@ class LoginTest : TestCase() {
             .thenReturn(SignedPoP.Success("Success"))
         mockGoodLogin()
         whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+        whenever(mockCredChecker.getCredentialStatus()).thenReturn(DeviceBiometricsStatus.UNKNOWN)
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
