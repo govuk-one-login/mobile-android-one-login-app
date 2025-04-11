@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.domain
 
-import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
@@ -11,10 +10,10 @@ class SignOutUseCaseImpl @Inject constructor(
     private val deleteWalletData: DeleteWalletDataUseCase
 ) : SignOutUseCase {
     @Throws(SignOutError::class)
-    override suspend fun invoke(activityFragment: FragmentActivity) {
+    override suspend fun invoke() {
         try {
             cleaner.clean()
-            deleteWalletData.invoke(activityFragment)
+            deleteWalletData.invoke()
         } catch (e: Throwable) {
             throw SignOutError(e)
         }

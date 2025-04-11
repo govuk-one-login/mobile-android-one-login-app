@@ -1,18 +1,17 @@
 package uk.gov.onelogin.features.wallet.domain
 
-import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
 import uk.gov.android.wallet.sdk.WalletSdk
 
 fun interface DeleteWalletDataUseCase {
-    suspend fun invoke(activityFragment: FragmentActivity)
+    suspend fun invoke()
 }
 
 class DeleteWalletDataUseCaseImpl @Inject constructor(
     private val walletSdk: WalletSdk
 ) : DeleteWalletDataUseCase {
-    override suspend fun invoke(activityFragment: FragmentActivity) {
-        val deleteResult = walletSdk.deleteWalletData(activityFragment)
+    override suspend fun invoke() {
+        val deleteResult = walletSdk.deleteWalletData()
         if (!deleteResult) throw DeleteWalletDataError()
     }
 

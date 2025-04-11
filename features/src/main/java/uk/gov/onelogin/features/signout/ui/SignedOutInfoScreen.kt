@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
-import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -37,7 +35,6 @@ fun SignedOutInfoScreen(
     shouldTryAgain: () -> Boolean = { false }
 ) {
     val loading by loginViewModel.loading.collectAsState()
-    val activity = LocalContext.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -46,8 +43,7 @@ fun SignedOutInfoScreen(
                 result.data?.let { intent ->
                     loginViewModel.handleActivityResult(
                         intent = intent,
-                        isReAuth = signOutViewModel.shouldReAuth(),
-                        fragmentActivity = activity
+                        isReAuth = signOutViewModel.shouldReAuth()
                     )
                     signOutViewModel.saveTokens()
                 }
@@ -62,8 +58,7 @@ fun SignedOutInfoScreen(
         handleLogin(
             loginViewModel,
             signOutViewModel,
-            launcher,
-            activity
+            launcher
         )
     }
 
@@ -75,8 +70,7 @@ fun SignedOutInfoScreen(
             handleLogin(
                 loginViewModel,
                 signOutViewModel,
-                launcher,
-                activity
+                launcher
             )
         }
     }
@@ -93,11 +87,10 @@ fun SignedOutInfoScreen(
 private fun handleLogin(
     loginViewModel: WelcomeScreenViewModel,
     signOutViewModel: SignedOutInfoViewModel,
-    launcher: ActivityResultLauncher<Intent>,
-    activity: FragmentActivity
+    launcher: ActivityResultLauncher<Intent>
 ) {
     if (loginViewModel.onlineChecker.isOnline()) {
-        signOutViewModel.checkPersistentId(activity) {
+        signOutViewModel.checkPersistentId {
             loginViewModel.onPrimary(launcher)
         }
     } else {

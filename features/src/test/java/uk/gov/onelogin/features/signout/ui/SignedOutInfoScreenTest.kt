@@ -175,7 +175,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
         whenWeClickSignIn()
 
-        verify(signOutUseCase).invoke(any())
+        verify(signOutUseCase).invoke()
         verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
     }
 
