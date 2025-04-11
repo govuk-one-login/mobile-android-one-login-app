@@ -37,7 +37,7 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
             Text(
                 text =
                 buildAnnotatedString {
-                    appendBold("App Check")
+                    AppendBold("App Check")
                 }
             )
         }
@@ -131,7 +131,7 @@ private fun DataItem(
 }
 
 @Composable
-private fun AnnotatedString.Builder.appendBold(token: String) {
+private fun AnnotatedString.Builder.AppendBold(token: String) {
     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
         append(token)
     }
