@@ -39,7 +39,6 @@ class MainActivityViewModel @Inject constructor(
 
     override fun onPause(owner: LifecycleOwner) {
         super.onPause(owner)
-        println("OnPause was called")
         if (isLocalAuthEnabled() &&
             tokenRepository.getTokenResponse() != null
         ) {
