@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.signout.ui
 
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,11 +33,11 @@ class SignOutViewModel @Inject constructor(
             SignOutUIState.NoWallet
         }
 
-    fun signOut(activityFragment: FragmentActivity) {
+    fun signOut() {
         _loadingState.value = true
         viewModelScope.launch {
             try {
-                signOutUseCase.invoke(activityFragment)
+                signOutUseCase.invoke()
                 navigator.navigate(LoginRoutes.Root, true)
             } catch (e: SignOutError) {
                 Log.e(this::class.simpleName, e.message, e)

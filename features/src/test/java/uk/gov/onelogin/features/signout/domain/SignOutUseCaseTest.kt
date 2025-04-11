@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.domain
 
-import androidx.fragment.app.FragmentActivity
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +23,6 @@ import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Compan
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignOutUseCaseTest {
-    private val activityFragment: FragmentActivity = mock()
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
     private lateinit var useCase: SignOutUseCase
 
@@ -46,19 +44,19 @@ class SignOutUseCaseTest {
                     ),
                     deleteWalletData
                 )
-            useCase.invoke(activityFragment)
+            useCase.invoke()
             // Then it clears all the required data
             verify(removeTokenExpiry).clean()
             verify(removeAllSecureStoreData).clean()
             verify(bioPrefHandler).clean()
-            verify(deleteWalletData).invoke(activityFragment)
+            verify(deleteWalletData).invoke()
         }
 
     @Test
     fun `sign out delete wallet data error`() =
         runTest {
             // When invoking the sign out use case
-            whenever(deleteWalletData.invoke(activityFragment)).then {
+            whenever(deleteWalletData.invoke()).then {
                 throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
             }
 
@@ -74,7 +72,7 @@ class SignOutUseCaseTest {
             // Then throw SignOutError
             val exception =
                 assertThrows<SignOutError> {
-                    useCase.invoke(activityFragment)
+                    useCase.invoke()
                 }
             assertTrue(exception.error.message!!.contains(DELETE_WALLET_DATA_ERROR))
         }
@@ -98,7 +96,7 @@ class SignOutUseCaseTest {
             // Then throw SignOutError
             val exception =
                 assertThrows<SignOutError> {
-                    useCase.invoke(activityFragment)
+                    useCase.invoke()
                 }
             assertTrue(exception.error.message!!.contains(errorMessage))
         }
