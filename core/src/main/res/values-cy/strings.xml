@@ -80,13 +80,6 @@
     <string name="app_signOutErrorBody">Gallwch orfodi allgofnodi trwy ddileu\'r ap o\'ch dyfais.</string>
     <string name="app_exitButton">Gadael</string>
 
-    <!-- Biometric Opt-In -->
-    <string name="app_enableBiometricsTitle">Datgloi\'r ap gyda biometreg</string>
-    <string name="app_enableBiometricsBody1">Gallwch ddatgloi\'r ap gyda\'ch wyneb, olion bysedd neu iris o fewn 30 munud o fewngofnodi gyda GOV.UK One Login.</string>
-    <string name="app_enableBiometricsBody2">Os nad ydych am ddefnyddio\'ch biometreg, gallwch ddatgloi\'r ap gyda pin neu batrwm eich ffôn yn lle hynny.</string>
-    <string name="app_enableBiometricsBody3">Efallai y bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap.</string>
-    <string name="app_enableBiometricsButton">Defnyddio biometreg</string>
-    <string name="app_enablePasscodeOrPatternButton">Defnyddio pin neu batrwm yn lle hynny</string>
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>
 
