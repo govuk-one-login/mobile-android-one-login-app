@@ -17,13 +17,13 @@ updates:
     schedule:
       interval: weekly
       day: sunday
-      groups:
-        bundler-minor-versions:
-          patterns:
-            - "*"
-          update-types:
-            - minor
-            - patch
+    groups:
+      bundler-minor-versions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
     open-pull-requests-limit: 5
 
   - package-ecosystem: gradle

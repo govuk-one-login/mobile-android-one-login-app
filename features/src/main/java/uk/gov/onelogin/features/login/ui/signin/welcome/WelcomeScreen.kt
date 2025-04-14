@@ -2,13 +2,13 @@ package uk.gov.onelogin.features.login.ui.signin.welcome
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -32,14 +32,14 @@ fun WelcomeScreen(
     shouldTryAgain: () -> Boolean = { false }
 ) {
     val loading = viewModel.loading.collectAsState()
-    val context = LocalContext.current as FragmentActivity
+    val context = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { intent ->
-                    viewModel.handleActivityResult(intent = intent, fragmentActivity = context)
+                    viewModel.handleActivityResult(intent = intent)
                 }
             }
         }

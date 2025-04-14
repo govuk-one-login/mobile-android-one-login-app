@@ -1,13 +1,11 @@
 package uk.gov.onelogin.features.signout.ui
 
-import androidx.fragment.app.FragmentActivity
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
@@ -87,12 +85,11 @@ class SignedOutInfoViewModelTest {
     fun `sign out usecase is called when persistent id is null`() =
         runTest {
             var callback = false
-            val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn(null)
 
-            viewModel.checkPersistentId(activity) { callback = true }
+            viewModel.checkPersistentId { callback = true }
 
-            verify(signOutUseCase).invoke(activity)
+            verify(signOutUseCase).invoke()
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
 
@@ -100,12 +97,11 @@ class SignedOutInfoViewModelTest {
     fun `sign out usecase is called when persistent id is empty`() =
         runTest {
             var callback = false
-            val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn("")
 
-            viewModel.checkPersistentId(activity) { callback = true }
+            viewModel.checkPersistentId { callback = true }
 
-            verify(signOutUseCase).invoke(activity)
+            verify(signOutUseCase).invoke()
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
 
@@ -113,11 +109,10 @@ class SignedOutInfoViewModelTest {
     fun `sign out usecase is not called when persistent id good and device secure`() =
         runTest {
             var callback = false
-            val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn("id")
             whenever(credentialChecker.isDeviceSecure()).thenReturn(true)
 
-            viewModel.checkPersistentId(activity) { callback = true }
+            viewModel.checkPersistentId { callback = true }
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
@@ -129,11 +124,10 @@ class SignedOutInfoViewModelTest {
     fun `sign out usecase is not called when persistent id good and device unsecure`() =
         runTest {
             var callback = false
-            val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn("id")
             whenever(credentialChecker.isDeviceSecure()).thenReturn(false)
 
-            viewModel.checkPersistentId(activity) { callback = true }
+            viewModel.checkPersistentId { callback = true }
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
@@ -145,13 +139,12 @@ class SignedOutInfoViewModelTest {
     fun `sign out usecase throws`() =
         runTest {
             var callback = false
-            val activity: FragmentActivity = mock()
             whenever(getPersistentId.invoke()).thenReturn("")
-            whenever(signOutUseCase.invoke(any())).thenThrow(SignOutError(Error("test")))
+            whenever(signOutUseCase.invoke()).thenThrow(SignOutError(Error("test")))
 
-            viewModel.checkPersistentId(activity) { callback = true }
+            viewModel.checkPersistentId { callback = true }
 
-            verify(signOutUseCase).invoke(activity)
+            verify(signOutUseCase).invoke()
             verify(navigator).navigate(LoginRoutes.SignInError, true)
             assertFalse(callback)
             assertTrue(logger.contains("java.lang.Error: test"))

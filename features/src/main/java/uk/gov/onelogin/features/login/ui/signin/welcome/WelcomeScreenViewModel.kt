@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.login.ui.signin.welcome
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -71,8 +70,7 @@ class WelcomeScreenViewModel @Inject constructor(
 
     fun handleActivityResult(
         intent: Intent,
-        isReAuth: Boolean = false,
-        fragmentActivity: FragmentActivity
+        isReAuth: Boolean = false
     ) {
         if (intent.data == null) return
 
@@ -89,7 +87,7 @@ class WelcomeScreenViewModel @Inject constructor(
                     it?.let {
                         logger.error(tag, it.message.toString(), it)
                     }
-                    handleLoginErrors(it, fragmentActivity)
+                    handleLoginErrors(it)
                 }
             )
         }
@@ -100,16 +98,13 @@ class WelcomeScreenViewModel @Inject constructor(
         onPrimary(launcher).cancel()
     }
 
-    private fun CoroutineScope.handleLoginErrors(
-        it: Throwable?,
-        fragmentActivity: FragmentActivity
-    ) {
+    private fun CoroutineScope.handleLoginErrors(it: Throwable?) {
         this.launch {
             when (it) {
                 is AuthenticationError -> {
                     when (it.type) {
                         AuthenticationError.ErrorType.ACCESS_DENIED -> {
-                            signOutUseCase.invoke(fragmentActivity)
+                            signOutUseCase.invoke()
                             navigator.navigate(SignOutRoutes.ReAuthError)
                         }
                         else -> navigator.navigate(LoginRoutes.SignInError, true)

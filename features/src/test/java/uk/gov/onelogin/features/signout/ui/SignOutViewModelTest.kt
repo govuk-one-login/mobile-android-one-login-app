@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.ui
 
-import androidx.fragment.app.FragmentActivity
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -29,7 +28,6 @@ class SignOutViewModelTest {
     private lateinit var viewModel: SignOutViewModel
 
     private val mockNavigator: Navigator = mock()
-    private val mockActivity: FragmentActivity = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
     private val featureFlags: FeatureFlags = mock()
     private val logger = SystemLogger()
@@ -49,9 +47,9 @@ class SignOutViewModelTest {
     @Test
     fun `sign out use case does not throw`() =
         runTest {
-            viewModel.signOut(mockActivity)
+            viewModel.signOut()
 
-            verify(mockSignOutUseCase).invoke(mockActivity)
+            verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(LoginRoutes.Root, true)
             assertThat("logger has no logs", logger.size == 0)
         }
@@ -59,13 +57,13 @@ class SignOutViewModelTest {
     @Test
     fun `sign out use case does throw`() =
         runTest {
-            whenever(mockSignOutUseCase.invoke(mockActivity)).thenThrow(
+            whenever(mockSignOutUseCase.invoke()).thenThrow(
                 SignOutError(Exception("test"))
             )
 
-            viewModel.signOut(mockActivity)
+            viewModel.signOut()
 
-            verify(mockSignOutUseCase).invoke(mockActivity)
+            verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
             assertThat("logger has log", logger.contains("java.lang.Exception: test"))
         }

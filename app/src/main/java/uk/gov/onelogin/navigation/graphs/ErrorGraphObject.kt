@@ -2,7 +2,7 @@ package uk.gov.onelogin.navigation.graphs
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.LocalActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -30,7 +30,7 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.SignOut.getRoute()
             ) {
-                val context = LocalContext.current as Activity
+                val context = LocalActivity.current as Activity
                 SignOutErrorScreen {
                     context.finishAndRemoveTask()
                 }
@@ -53,7 +53,7 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.UpdateRequired.getRoute()
             ) {
-                val context = LocalContext.current as Activity
+                val context = LocalActivity.current as Activity
                 BackHandler(enabled = true) {
                     // Close/ terminate the app
                     context.finishAndRemoveTask()

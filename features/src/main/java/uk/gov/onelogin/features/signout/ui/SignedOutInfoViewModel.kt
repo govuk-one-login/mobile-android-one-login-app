@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.ui
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,13 +40,12 @@ class SignedOutInfoViewModel @Inject constructor(
     fun shouldReAuth() = navigator.hasBackStack()
 
     fun checkPersistentId(
-        activity: FragmentActivity,
         callback: () -> Unit
     ) {
         viewModelScope.launch {
             if (getPersistentId().isNullOrEmpty()) {
                 try {
-                    signOutUseCase.invoke(activity)
+                    signOutUseCase.invoke()
                     navigator.navigate(SignOutRoutes.ReAuthError, true)
                 } catch (error: SignOutError) {
                     logger.error(

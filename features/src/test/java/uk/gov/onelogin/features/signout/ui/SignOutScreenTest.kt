@@ -13,7 +13,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -107,7 +106,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
         composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
-        verify(signOutUseCase).invoke(any())
+        verify(signOutUseCase).invoke()
         verify(navigator).navigate(LoginRoutes.Root, true)
     }
 
@@ -120,10 +119,10 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
-        whenever(signOutUseCase.invoke(any()))
+        whenever(signOutUseCase.invoke())
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
-        verify(signOutUseCase).invoke(any())
+        verify(signOutUseCase).invoke()
         verify(navigator).navigate(ErrorRoutes.SignOut, true)
     }
 
