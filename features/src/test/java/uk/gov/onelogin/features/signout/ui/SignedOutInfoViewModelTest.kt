@@ -7,9 +7,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerImpl
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -33,11 +38,18 @@ class SignedOutInfoViewModelTest {
     private val getPersistentId: GetPersistentId = mock()
     private val signOutUseCase: SignOutUseCase = mock()
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
-    private val credentialChecker: CredentialChecker = mock()
-    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase = LocalAuthPrefResetUseCaseImpl(
-        localAuthPreferenceRepo,
-        credentialChecker
+    private val deviceBiometricsManager: DeviceBiometricsManager = mock()
+    private val analyticsLogger: AnalyticsLogger = mock()
+    private val credentialChecker: LocalAuthManager = LocalAuthManagerImpl(
+        localAuthPrefRepo = localAuthPreferenceRepo,
+        deviceBiometricsManager = deviceBiometricsManager,
+        analyticsLogger = analyticsLogger
     )
+    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase =
+        LocalAuthPrefResetUseCaseImpl(
+            localAuthPreferenceRepo,
+            credentialChecker
+        )
 
     private val viewModel by lazy {
         SignedOutInfoViewModel(
@@ -106,13 +118,12 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(credentialChecker.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
 
             viewModel.checkPersistentId { callback = true }
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
-            verifyNoInteractions(localAuthPreferenceRepo)
             assertTrue(callback)
         }
 
@@ -121,7 +132,7 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(credentialChecker.isDeviceSecure()).thenReturn(false)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
 
             viewModel.checkPersistentId { callback = true }
 

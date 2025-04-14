@@ -8,6 +8,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerImpl
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -29,8 +32,9 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
-    private lateinit var credChecker: CredentialChecker
     private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepo
+    private lateinit var deviceBiometricsManager: DeviceBiometricsManager
+    private lateinit var localAuthManager: LocalAuthManager
     private lateinit var tokenRepository: TokenRepository
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
@@ -51,8 +55,8 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
 
     @Before
     fun setup() {
-        credChecker = mock()
         localAuthPreferenceRepo = mock()
+        deviceBiometricsManager = mock()
         tokenRepository = mock()
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
@@ -63,11 +67,17 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         handleLoginRedirect = mock()
         signOutUseCase = mock()
         onlineChecker = mock()
+        analytics = mock()
+        localAuthManager = LocalAuthManagerImpl(
+            localAuthPreferenceRepo,
+            deviceBiometricsManager,
+            analytics
+        )
         viewModel =
             WelcomeScreenViewModel(
                 context,
-                credChecker,
-                localAuthPreferenceRepo,
+                localAuthManager,
+                deviceBiometricsManager,
                 tokenRepository,
                 autoInitialiseSecureStore,
                 verifyIdToken,
@@ -79,7 +89,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 signOutUseCase,
                 onlineChecker
             )
-        analytics = mock()
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
         composeTestRule.setContent {

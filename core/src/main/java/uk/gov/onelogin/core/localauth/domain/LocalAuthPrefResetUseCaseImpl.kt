@@ -1,8 +1,8 @@
 package uk.gov.onelogin.core.localauth.domain
 
+import javax.inject.Inject
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
-import javax.inject.Inject
 
 class LocalAuthPrefResetUseCaseImpl @Inject constructor(
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo,

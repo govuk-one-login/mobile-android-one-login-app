@@ -21,6 +21,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerImpl
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -46,8 +49,9 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class SignedOutInfoScreenTest : FragmentActivityTestCase() {
-    private lateinit var credChecker: CredentialChecker
     private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepo
+    private lateinit var deviceBiometricsManager: DeviceBiometricsManager
+    private lateinit var localAuthManager: LocalAuthManager
     private lateinit var tokenRepository: TokenRepository
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
@@ -75,8 +79,8 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
     @Before
     fun setup() = runBlocking {
-        credChecker = mock()
         localAuthPreferenceRepo = mock()
+        deviceBiometricsManager = mock()
         tokenRepository = mock()
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
@@ -87,14 +91,20 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         handleLoginRedirect = mock()
         signOutUseCase = mock()
         onlineChecker = mock()
+        analytics = mock()
+        localAuthManager = LocalAuthManagerImpl(
+            localAuthPreferenceRepo,
+            deviceBiometricsManager,
+            analytics
+        )
         localAuthPrefResetUseCase = LocalAuthPrefResetUseCaseImpl(
             localAuthPreferenceRepo,
-            credChecker
+            localAuthManager
         )
         loginViewModel = WelcomeScreenViewModel(
             context,
-            credChecker,
-            localAuthPreferenceRepo,
+            localAuthManager,
+            deviceBiometricsManager,
             tokenRepository,
             autoInitialiseSecureStore,
             verifyIdToken,
@@ -116,7 +126,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             signOutUseCase,
             localAuthPrefResetUseCase
         )
-        analytics = mock()
         analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
         shouldTryAgainCalled = false

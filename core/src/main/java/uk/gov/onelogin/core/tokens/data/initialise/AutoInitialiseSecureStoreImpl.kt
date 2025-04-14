@@ -12,8 +12,8 @@ import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
-import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper
 import uk.gov.onelogin.core.tokens.utils.DefaultDispatcher
+import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper
 
 class AutoInitialiseSecureStoreImpl @Inject constructor(
     private val localAuthManager: LocalAuthManager,

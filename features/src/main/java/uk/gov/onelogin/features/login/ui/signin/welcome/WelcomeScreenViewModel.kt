@@ -162,7 +162,6 @@ class WelcomeScreenViewModel @Inject constructor(
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {
                                 viewModelScope.launch {
-                                    println("Saving tokens")
                                     saveTokens()
                                     navigator.goBack()
                                 }

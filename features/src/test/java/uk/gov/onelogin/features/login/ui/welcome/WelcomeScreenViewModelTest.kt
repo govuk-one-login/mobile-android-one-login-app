@@ -27,6 +27,7 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -56,10 +57,11 @@ class WelcomeScreenViewModelTest {
     private val mockFragmentActivity: FragmentActivity = mock()
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepository = mock()
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
-    private val mockLocalAuthManager: LocalAuthManager = LocalAuthManagerImpl(
+    private val analyticsLogger: AnalyticsLogger = mock()
+    private val localAuthManager: LocalAuthManager = LocalAuthManagerImpl(
         localAuthPreferenceRepo,
-        deviceBiometricsManager
-
+        deviceBiometricsManager,
+        analyticsLogger
     )
 >>>>>>> 5c756579 (feat: Amend the login logic to use `LocalAuthManager`)
     private val mockTokenRepository: TokenRepository = mock()
@@ -95,7 +97,8 @@ class WelcomeScreenViewModelTest {
     private val viewModel =
         WelcomeScreenViewModel(
             mockContext,
-            mockLocalAuthManager,
+            localAuthManager,
+            deviceBiometricsManager,
             mockTokenRepository,
             mockAutoInitialiseSecureStore,
             mockVerifyIdToken,
@@ -269,6 +272,9 @@ class WelcomeScreenViewModelTest {
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Disabled))
 
             viewModel.handleActivityResult(
                 mockIntent,
@@ -279,7 +285,6 @@ class WelcomeScreenViewModelTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockNavigator).goBack()
             verifyNoInteractions(mockSaveTokens)
-            verifyNoInteractions(mockLocalAuthManager)
         }
 
     @Test
@@ -296,6 +301,9 @@ class WelcomeScreenViewModelTest {
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(false)))
 
             viewModel.handleActivityResult(
                 mockIntent,
@@ -306,7 +314,6 @@ class WelcomeScreenViewModelTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockNavigator).goBack()
             verify(mockSaveTokens).invoke()
-            verifyNoInteractions(mockLocalAuthManager)
         }
 
     @Test
@@ -372,7 +379,6 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockLocalAuthManager)
             verifyNoInteractions(mockNavigator)
         }
 
@@ -395,7 +401,6 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockLocalAuthManager)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 
@@ -420,7 +425,6 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockLocalAuthManager)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 

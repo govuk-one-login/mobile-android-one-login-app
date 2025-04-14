@@ -71,13 +71,13 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
-import uk.gov.onelogin.login.localauth.BiometricModule
+import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
 
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    BiometricModule::class,
+    BiometricsModule::class,
     AppInfoApiModule::class,
     AppCheckerModule::class,
     AppIntegrityModule::class

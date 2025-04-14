@@ -24,6 +24,7 @@ class StsAuthenticationProvider(
 ) : AuthenticationProvider {
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
+        val jsonDecoder = Json { ignoreUnknownKeys = true }
         if (isAccessTokenExpired()) {
             navigator.navigate(SignOutRoutes.Info)
             return AuthenticationResponse.Failure(ApiResponseException("Access token expired"))
@@ -55,7 +56,7 @@ class StsAuthenticationProvider(
             if (response is ApiResponse.Success<*>) {
                 try {
                     val tokenResponseString: String = response.response.toString()
-                    val tokenApiResponse: TokenApiResponse = Json { ignoreUnknownKeys = true }
+                    val tokenApiResponse: TokenApiResponse = jsonDecoder
                         .decodeFromString(tokenResponseString)
                     AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {

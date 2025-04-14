@@ -3,9 +3,9 @@ package uk.gov.onelogin.core.localauth.domain
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
-import javax.inject.Inject
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 
 interface LocalAuthPreferenceRepo : LocalAuthPreferenceRepository, Cleaner
