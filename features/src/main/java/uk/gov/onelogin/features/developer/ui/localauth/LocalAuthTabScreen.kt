@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.developer.ui.localauth
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,13 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun LocalAuthTabScreen(viewModel: LocalAuthTabScreenViewModel = hiltViewModel()) {
-    val activity = LocalContext.current as FragmentActivity
+    val activity = LocalActivity.current as FragmentActivity
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

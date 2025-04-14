@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.signout.ui
 
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -35,6 +37,7 @@ fun SignedOutInfoScreen(
     shouldTryAgain: () -> Boolean = { false }
 ) {
     val loading by loginViewModel.loading.collectAsState()
+    val activity = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -43,7 +46,8 @@ fun SignedOutInfoScreen(
                 result.data?.let { intent ->
                     loginViewModel.handleActivityResult(
                         intent = intent,
-                        isReAuth = signOutViewModel.shouldReAuth()
+                        isReAuth = signOutViewModel.shouldReAuth(),
+                        activity = activity
                     )
                     signOutViewModel.saveTokens()
                 }

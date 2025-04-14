@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.welcome
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import kotlin.test.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -50,10 +51,6 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private val mockContext: Context = mock()
-<<<<<<< HEAD
-    private val mockCredChecker: CredentialChecker = mock()
-    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
-=======
     private val mockFragmentActivity: FragmentActivity = mock()
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepository = mock()
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
@@ -63,7 +60,6 @@ class WelcomeScreenViewModelTest {
         deviceBiometricsManager,
         analyticsLogger
     )
->>>>>>> 5c756579 (feat: Amend the login logic to use `LocalAuthManager`)
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockVerifyIdToken: VerifyIdToken = mock()
@@ -135,7 +131,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -168,7 +165,8 @@ class WelcomeScreenViewModelTest {
 
             // re-authenticate is false by default
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -196,7 +194,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
@@ -224,7 +223,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(LocalAuthPreference.Disabled)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
@@ -248,7 +248,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
@@ -278,7 +279,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
@@ -307,7 +309,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
@@ -334,7 +337,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSignOutUseCase).invoke()
@@ -359,7 +363,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSignOutUseCase)
@@ -373,7 +378,8 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(null)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
@@ -395,7 +401,8 @@ class WelcomeScreenViewModelTest {
                 }
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
@@ -419,7 +426,8 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(false)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
