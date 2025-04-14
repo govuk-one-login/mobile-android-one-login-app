@@ -21,6 +21,7 @@ import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -44,6 +45,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     private lateinit var title: SemanticsMatcher
     private lateinit var button: SemanticsMatcher
     private lateinit var closeButton: SemanticsMatcher
+    private val logger = SystemLogger()
 
     @Before
     fun setup() {
@@ -62,7 +64,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
@@ -79,7 +81,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
@@ -96,7 +98,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
@@ -113,7 +115,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
@@ -129,7 +131,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
@@ -144,7 +146,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
         )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags)
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }

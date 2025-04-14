@@ -1,11 +1,11 @@
 package uk.gov.onelogin.features.signout.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -16,6 +16,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class SignedOutInfoViewModel @Inject constructor(
     private val navigator: Navigator,
@@ -23,7 +24,8 @@ class SignedOutInfoViewModel @Inject constructor(
     private val saveTokens: SaveTokens,
     private val getPersistentId: GetPersistentId,
     private val signOutUseCase: SignOutUseCase,
-    private val bioPreferencesUseCase: BioPreferencesUseCase
+    private val bioPreferencesUseCase: BioPreferencesUseCase,
+    private val logger: Logger
 ) : ViewModel() {
     fun resetTokens() {
         tokenRepository.clearTokenResponse()
@@ -46,7 +48,11 @@ class SignedOutInfoViewModel @Inject constructor(
                     signOutUseCase.invoke()
                     navigator.navigate(SignOutRoutes.ReAuthError, true)
                 } catch (error: SignOutError) {
-                    Log.e(this::class.simpleName, error.message, error)
+                    logger.error(
+                        this@SignedOutInfoViewModel::class.java.simpleName,
+                        error.message.toString(),
+                        error
+                    )
                     navigator.navigate(LoginRoutes.SignInError, true)
                 }
             } else {

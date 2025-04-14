@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.login.ui.signin.welcome
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +16,7 @@ import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.biometrics.data.BiometricPreference
 import uk.gov.onelogin.core.biometrics.data.BiometricStatus
 import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
@@ -51,6 +51,7 @@ class WelcomeScreenViewModel @Inject constructor(
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
     private val signOutUseCase: SignOutUseCase,
+    private val logger: Logger,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
@@ -83,7 +84,9 @@ class WelcomeScreenViewModel @Inject constructor(
                     }
                 },
                 onFailure = {
-                    Log.e(tag, it?.message, it)
+                    it?.let {
+                        logger.error(tag, it.message.toString(), it)
+                    }
                     handleLoginErrors(it)
                 }
             )

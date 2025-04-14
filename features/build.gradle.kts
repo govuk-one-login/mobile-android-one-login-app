@@ -122,7 +122,8 @@ dependencies {
         libs.androidx.espresso.core,
         libs.androidx.navigation.testing,
         libs.androidx.test.orchestrator,
-        libs.androidx.espresso.intents
+        libs.androidx.espresso.intents,
+        libs.logging.test
     ).forEach(::testImplementation)
 
     listOf(

@@ -8,11 +8,13 @@ import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguration
 import uk.gov.android.securestore.error.SecureStoreErrorType
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
 class GetFromEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
-    private val secureStore: SecureStore
+    private val secureStore: SecureStore,
+    private val logger: Logger
 ) : GetFromEncryptedSecureStore {
     override suspend fun invoke(
         context: FragmentActivity,
@@ -33,6 +35,12 @@ class GetFromEncryptedSecureStoreImpl @Inject constructor(
             is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
 
             is RetrievalEvent.Failed -> {
+                logger.error(
+                    this::class.simpleName.toString(),
+                    "Secure store retrieval failed: " +
+                        "\ntype - ${result.type}" +
+                        "\nreason - ${result.reason}"
+                )
                 val localAuthStatus = when (result.type) {
                     SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
 

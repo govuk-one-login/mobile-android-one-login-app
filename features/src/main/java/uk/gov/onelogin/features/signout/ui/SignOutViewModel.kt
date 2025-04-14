@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -21,7 +21,8 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 class SignOutViewModel @Inject constructor(
     private val navigator: Navigator,
     private val signOutUseCase: SignOutUseCase,
-    private val featureFlags: FeatureFlags
+    private val featureFlags: FeatureFlags,
+    private val logger: Logger
 ) : ViewModel() {
     private val _loadingState = MutableStateFlow(false)
     val loadingState = _loadingState.asStateFlow()
@@ -40,7 +41,7 @@ class SignOutViewModel @Inject constructor(
                 signOutUseCase.invoke()
                 navigator.navigate(LoginRoutes.Root, true)
             } catch (e: SignOutError) {
-                Log.e(this::class.simpleName, e.message, e)
+                logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
                 navigator.navigate(ErrorRoutes.SignOut, true)
             }
         }

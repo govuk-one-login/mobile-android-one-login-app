@@ -1,17 +1,24 @@
 package uk.gov.onelogin.features.navigation.domain
 
-import android.util.Log
 import androidx.navigation.NavHostController
 import javax.inject.Inject
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 
-class NavigatorImpl @Inject constructor() : Navigator {
+class NavigatorImpl @Inject constructor(
+    private val logger: Logger
+) : Navigator {
     private var navController: NavHostController? = null
         get() {
-            if (field == null) Log.w(this::class.simpleName, "Navigator not initialised")
+            if (field == null) {
+                logger.error(
+                    this::class.java.simpleName,
+                    "Navigator not initialised"
+                )
+            }
             return field
         }
 
@@ -23,7 +30,7 @@ class NavigatorImpl @Inject constructor() : Navigator {
         route: NavRoute,
         popUpToInclusive: Boolean
     ) {
-        Log.d("Navigator", "Navigating to: ${route.getRoute()}")
+        logger.debug("Navigator", "Navigating to: ${route.getRoute()}")
         navController?.let { controller ->
             if (popUpToInclusive) {
                 controller.navigate(route.getRoute()) {

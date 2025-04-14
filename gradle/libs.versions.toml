@@ -116,7 +116,8 @@ theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version = "0.17.0" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.8.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
-logging = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
+logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
+logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }
 
 # Firebase
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -134,5 +135,5 @@ aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3",
 
 [bundles]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
-gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging", "cri-orchestrator"]
+gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator"]
 about-libraries = [ "aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3" ]
