@@ -401,10 +401,7 @@ class WelcomeScreenViewModelTest {
                     (it.arguments[1] as (error: Throwable?) -> Unit).invoke(null)
                 }
 
-            viewModel.handleActivityResult(
-                mockIntent,
-                fragmentActivity = mockFragmentActivity
-            )
+            viewModel.handleActivityResult(mockIntent)
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)

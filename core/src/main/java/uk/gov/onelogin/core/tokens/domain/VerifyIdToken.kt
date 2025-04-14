@@ -85,7 +85,6 @@ class VerifyIdTokenImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            println("here")
             logger.error(this::class.java.simpleName, e.toString(), e)
         }
         return null
