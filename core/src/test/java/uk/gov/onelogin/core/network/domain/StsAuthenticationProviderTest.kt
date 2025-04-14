@@ -13,6 +13,7 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -22,6 +23,7 @@ class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
     private val mockNavigator: Navigator = mock()
+    private val logger = SystemLogger()
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var provider: AuthenticationProvider
 
@@ -78,6 +80,7 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken("scope")
 
             assertThat("response is Failure", response is AuthenticationResponse.Failure)
+            assertThat("logger has a log", logger.size == 1)
         }
 
     @Test
@@ -148,7 +151,8 @@ class StsAuthenticationProviderTest {
                 mockTokenRepository,
                 mockIsAccessTokenExpired,
                 stubHttpClient,
-                mockNavigator
+                mockNavigator,
+                logger
             )
     }
 }

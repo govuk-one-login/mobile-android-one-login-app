@@ -15,6 +15,7 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -40,6 +41,7 @@ class SignedOutInfoViewModelTest {
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
     private val analyticsLogger: AnalyticsLogger = mock()
+    private val logger = SystemLogger()
     private val credentialChecker: LocalAuthManager = LocalAuthManagerImpl(
         localAuthPrefRepo = localAuthPreferenceRepo,
         deviceBiometricsManager = deviceBiometricsManager,
@@ -58,7 +60,8 @@ class SignedOutInfoViewModelTest {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            localAuthPrefResetUseCase
+            localAuthPrefResetUseCase,
+            logger
         )
     }
 
@@ -147,12 +150,13 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             whenever(getPersistentId.invoke()).thenReturn("")
-            whenever(signOutUseCase.invoke()).thenThrow(SignOutError(Error()))
+            whenever(signOutUseCase.invoke()).thenThrow(SignOutError(Error("test")))
 
             viewModel.checkPersistentId { callback = true }
 
             verify(signOutUseCase).invoke()
             verify(navigator).navigate(LoginRoutes.SignInError, true)
             assertFalse(callback)
+            assertTrue(logger.contains("java.lang.Error: test"))
         }
 }

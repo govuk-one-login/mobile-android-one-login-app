@@ -1,14 +1,15 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-import android.util.Log
 import javax.inject.Inject
 import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.logging.api.Logger
 
 class SaveToTokenSecureStoreImpl @Inject constructor(
     @Named("Token")
-    private val secureStore: SecureStore
+    private val secureStore: SecureStore,
+    private val logger: Logger
 ) : SaveToTokenSecureStore {
     override suspend fun invoke(
         key: String,
@@ -20,7 +21,7 @@ class SaveToTokenSecureStoreImpl @Inject constructor(
                 value = value
             )
         } catch (e: SecureStorageError) {
-            Log.e(this::class.simpleName, e.message, e)
+            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
         }
     }
 }

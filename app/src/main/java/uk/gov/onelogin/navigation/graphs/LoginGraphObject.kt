@@ -29,7 +29,6 @@ object LoginGraphObject {
                 val comingFromLockScreen = navController.hasPreviousBackStack()
                 BackHandler(enabled = comingFromLockScreen) {
                     // do nothing if coming from Lock Screen
-                    println("here is me")
                 }
                 SplashScreen()
             }

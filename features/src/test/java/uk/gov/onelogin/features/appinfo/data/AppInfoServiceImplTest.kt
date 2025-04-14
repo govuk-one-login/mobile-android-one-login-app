@@ -2,10 +2,12 @@ package uk.gov.onelogin.features.appinfo.data
 
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
@@ -19,6 +21,7 @@ class AppInfoServiceImplTest {
     private val remoteSource: AppInfoRemoteSource = mock()
     private val localSource: AppInfoLocalSource = mock()
     private val appVersionCheck: AppVersionCheck = mock()
+    private val logger = SystemLogger()
     private val data = TestUtils.appInfoData
     private val dataAppUnavailable = TestUtils.appInfoDataAppUnavailable
     private val localSourceErrorMsg = AppInfoLocalSourceImpl.APP_INFO_LOCAL_SOURCE_ERROR
@@ -28,7 +31,8 @@ class AppInfoServiceImplTest {
         AppInfoServiceImpl(
             remoteSource,
             localSource,
-            appVersionCheck
+            appVersionCheck,
+            logger
         )
 
     @Test
@@ -40,6 +44,7 @@ class AppInfoServiceImplTest {
                 .thenReturn(AppInfoServiceState.Successful(data))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
+            assertTrue(logger.size == 0)
         }
 
     @Test
@@ -51,6 +56,7 @@ class AppInfoServiceImplTest {
                 .thenReturn(AppInfoServiceState.Successful(data))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
+            assertTrue(logger.size == 0)
         }
 
     @Test
@@ -60,6 +66,7 @@ class AppInfoServiceImplTest {
             whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure("Error"))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Offline, result)
+            assertTrue(logger.size == 0)
         }
 
     @Test
@@ -73,6 +80,7 @@ class AppInfoServiceImplTest {
                 .thenReturn(AppInfoServiceState.Successful(data))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
+            assertTrue(logger.contains(remoteSourceErrorMsg))
         }
 
     @Test
@@ -84,6 +92,7 @@ class AppInfoServiceImplTest {
             whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure(localSourceErrorMsg))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Unavailable, result)
+            assertTrue(logger.contains(remoteSourceErrorMsg))
         }
 
     @Test
@@ -95,6 +104,7 @@ class AppInfoServiceImplTest {
                 .thenReturn(AppInfoServiceState.UpdateRequired)
             val result = sut.get()
             assertEquals(AppInfoServiceState.UpdateRequired, result)
+            assertTrue(logger.size == 0)
         }
 
     @Test
@@ -104,5 +114,6 @@ class AppInfoServiceImplTest {
             whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(dataAppUnavailable))
             val result = sut.get()
             assertEquals(AppInfoServiceState.Unavailable, result)
+            assertTrue(logger.size == 0)
         }
 }

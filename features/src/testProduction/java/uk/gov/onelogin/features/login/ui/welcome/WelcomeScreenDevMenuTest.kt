@@ -13,6 +13,7 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
@@ -46,6 +47,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
+    private val logger = SystemLogger()
 
     private val signInIcon =
         hasContentDescription(resources.getString(R.string.app_signInIconDescription))
@@ -78,6 +80,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 handleRemoteLogin,
                 handleLoginRedirect,
                 signOutUseCase,
+                logger,
                 onlineChecker
             )
         analytics = mock()

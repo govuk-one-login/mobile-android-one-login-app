@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.appinfo.domain
 
 import android.content.Context
-import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.serialization.SerializationException
@@ -42,11 +41,11 @@ class AppInfoApiImpl @Inject constructor(
                 try {
                     val decodedResponse = jsonDecoder
                         .decodeFromString<AppInfoData>(response.response.toString())
-                    Log.d("AppInfoRemote", "$decodedResponse")
                     ApiResponse.Success(decodedResponse)
                 } catch (e: SerializationException) {
                     ApiResponse.Failure(1, e)
                 }
+
             else -> response
         }
     }

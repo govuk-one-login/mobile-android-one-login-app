@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain
 
-import android.util.Log
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.PaddingOption
@@ -12,18 +11,23 @@ import uk.gov.android.authentication.json.jwt.JwtVerifier
 import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.logging.api.Logger
 
-fun interface VerifyIdToken {
+interface VerifyIdToken {
     suspend operator fun invoke(
         idToken: String,
         jwksUrl: String
     ): Boolean
+
+    fun extractEmailFromIdToken(idToken: String): String?
+    fun extractPersistentIdFromIdToken(idToken: String): String?
 }
 
 @Suppress("TooGenericExceptionCaught")
 class VerifyIdTokenImpl @Inject constructor(
     private val httpClient: GenericHttpClient,
-    private val verifier: JwtVerifier
+    private val verifier: JwtVerifier,
+    private val logger: Logger
 ) : VerifyIdToken {
     override suspend fun invoke(
         idToken: String,
@@ -33,7 +37,8 @@ class VerifyIdTokenImpl @Inject constructor(
         return verified
     }
 
-    private fun isEmailValid(idToken: String): Boolean = idToken.extractEmailFromIdToken() != null
+    private fun isEmailValid(idToken: String): Boolean =
+        extractEmailFromIdToken(idToken) != null
 
     private suspend fun isIdTokenValid(
         jwksUrl: String,
@@ -47,7 +52,7 @@ class VerifyIdTokenImpl @Inject constructor(
             try {
                 verified = useJwksResponseToVerify(response.response.toString(), idToken)
             } catch (e: Exception) {
-                Log.e(this::class.simpleName, e.message, e)
+                logger.error(this::class.java.simpleName, e.toString(), e)
             }
         }
         return verified
@@ -80,7 +85,7 @@ class VerifyIdTokenImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e(this::class.simpleName, e.message, e)
+            logger.error(this::class.java.simpleName, e.toString(), e)
         }
         return null
     }
@@ -94,41 +99,41 @@ class VerifyIdTokenImpl @Inject constructor(
             // the kid returned here will be surrounded by double quotes
             return data.jsonObject["kid"].toString()
         } catch (e: Exception) {
-            Log.e(this::class.simpleName, e.message, e)
+            logger.error(this::class.java.simpleName, e.toString(), e)
             return null
         }
     }
-}
 
-@OptIn(ExperimentalEncodingApi::class)
-@Suppress("TooGenericExceptionCaught")
-fun String.extractEmailFromIdToken(): String? {
-    try {
-        val bodyEncoded = this.split(".")[1]
-        val body = String(Base64.withPadding(PaddingOption.PRESENT_OPTIONAL).decode(bodyEncoded))
-        val data = Json.parseToJsonElement(body)
-        val email = data.jsonObject["email"]
-        println(email)
-        val stripEmail = email?.toString()?.removeSurrounding("\"")
-        return stripEmail
-    } catch (e: Exception) {
-        Log.e(this::class.simpleName, e.message, e)
-        return null
+    @OptIn(ExperimentalEncodingApi::class)
+    @Suppress("TooGenericExceptionCaught")
+    override fun extractEmailFromIdToken(idToken: String): String? {
+        try {
+            val bodyEncoded = idToken.split(".")[1]
+            val body =
+                String(Base64.withPadding(PaddingOption.PRESENT_OPTIONAL).decode(bodyEncoded))
+            val data = Json.parseToJsonElement(body)
+            val email = data.jsonObject["email"]
+            val stripEmail = email?.toString()?.removeSurrounding("\"")
+            return stripEmail
+        } catch (e: Exception) {
+            logger.error(this::class.java.simpleName, e.toString(), e)
+            return null
+        }
     }
-}
 
-@OptIn(ExperimentalEncodingApi::class)
-@Suppress("TooGenericExceptionCaught")
-fun String.extractPersistentIdFromIdToken(): String? {
-    try {
-        val bodyEncoded = this.split(".")[1]
-        val body = String(Base64.withPadding(PaddingOption.ABSENT).decode(bodyEncoded))
-        val data = Json.parseToJsonElement(body)
-        val id = data.jsonObject["persistent_id"]
-        val stripEmail = id?.toString()?.removeSurrounding("\"")
-        return stripEmail
-    } catch (e: Exception) {
-        Log.e(this::class.simpleName, e.message, e)
-        return null
+    @OptIn(ExperimentalEncodingApi::class)
+    @Suppress("TooGenericExceptionCaught")
+    override fun extractPersistentIdFromIdToken(idToken: String): String? {
+        try {
+            val bodyEncoded = idToken.split(".")[1]
+            val body = String(Base64.withPadding(PaddingOption.ABSENT).decode(bodyEncoded))
+            val data = Json.parseToJsonElement(body)
+            val id = data.jsonObject["persistent_id"]
+            val stripEmail = id?.toString()?.removeSurrounding("\"")
+            return stripEmail
+        } catch (e: Exception) {
+            logger.error(this::class.java.simpleName, e.toString(), e)
+            return null
+        }
     }
 }

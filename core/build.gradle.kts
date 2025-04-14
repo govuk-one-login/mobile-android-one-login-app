@@ -67,13 +67,10 @@ android {
                     suffix = ".$environment"
                 }
 
-                val packageName = "${project.android.namespace}$suffix"
-
                 manifestPlaceholders["flavorSuffix"] = suffix
             }
         }
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -123,7 +120,8 @@ dependencies {
         libs.androidx.compose.ui.junit4,
         libs.androidx.espresso.core,
         libs.androidx.navigation.testing,
-        libs.androidx.test.orchestrator
+        libs.androidx.test.orchestrator,
+        libs.logging.test
     ).forEach(::testImplementation)
 
     listOf(

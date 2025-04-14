@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.signout.ui
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -10,6 +11,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -28,6 +30,7 @@ class SignOutViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
     private val featureFlags: FeatureFlags = mock()
+    private val logger = SystemLogger()
 
     @BeforeEach
     fun setup() {
@@ -35,7 +38,8 @@ class SignOutViewModelTest {
             SignOutViewModel(
                 mockNavigator,
                 mockSignOutUseCase,
-                featureFlags
+                featureFlags,
+                logger
             )
         whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
     }
@@ -47,17 +51,21 @@ class SignOutViewModelTest {
 
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(LoginRoutes.Root, true)
+            assertThat("logger has no logs", logger.size == 0)
         }
 
     @Test
     fun `sign out use case does throw`() =
         runTest {
-            whenever(mockSignOutUseCase.invoke()).thenThrow(SignOutError(Exception()))
+            whenever(mockSignOutUseCase.invoke()).thenThrow(
+                SignOutError(Exception("test"))
+            )
 
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
+            assertThat("logger has log", logger.contains("java.lang.Exception: test"))
         }
 
     @Test

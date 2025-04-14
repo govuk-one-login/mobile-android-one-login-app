@@ -12,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
@@ -20,10 +21,11 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 class RemoveAllSecureStoreDataTest {
     private lateinit var useCase: RemoveAllSecureStoreData
     private val mockSecureStore: SecureStore = mock()
+    private val logger = SystemLogger()
 
     @BeforeEach
     fun setUp() {
-        useCase = RemoveAllSecureStoreDataImpl(mockSecureStore)
+        useCase = RemoveAllSecureStoreDataImpl(mockSecureStore, logger)
     }
 
     @Test
@@ -38,6 +40,7 @@ class RemoveAllSecureStoreDataTest {
                 AuthTokenStoreKeys.ID_TOKEN_KEY
             )
             assertEquals(Result.success(Unit), result)
+            assertEquals(0, logger.size)
         }
 
     @Test
@@ -53,5 +56,6 @@ class RemoveAllSecureStoreDataTest {
             assertTrue(result.isFailure)
             assertTrue(result.exceptionOrNull() is SecureStorageError)
             assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
+            assertTrue(logger.contains("java.lang.Exception: something went wrong"))
         }
 }
