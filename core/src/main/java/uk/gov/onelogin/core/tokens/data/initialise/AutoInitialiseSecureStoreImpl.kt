@@ -27,7 +27,6 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
 ) : AutoInitialiseSecureStore {
     override suspend fun initialise() {
         val localAuthPref = localAuthManager.localAuthPreference
-        println("Bio Pref: $localAuthPref")
         if (localAuthPref == null || localAuthPref == LocalAuthPreference.Disabled) return
         val configuration = SecureStorageConfiguration(
             AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,

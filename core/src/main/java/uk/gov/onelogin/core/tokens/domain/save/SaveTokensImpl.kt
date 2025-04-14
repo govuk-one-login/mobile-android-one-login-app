@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-import android.util.Log
 import javax.inject.Inject
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.extractPersistentIdFromIdToken
@@ -13,8 +12,6 @@ class SaveTokensImpl @Inject constructor(
 ) : SaveTokens {
     override suspend fun invoke() {
         val tokens = tokenRepository.getTokenResponse()
-        Log.d("SaveToken", "$tokens")
-        println("Hello Save Token")
         tokens?.let { tokenResponse ->
             saveToTokenSecureStore(
                 key = AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
