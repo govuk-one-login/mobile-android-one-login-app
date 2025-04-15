@@ -88,14 +88,6 @@
     <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
     <string name="app_exitButton">Exit</string>
 
-    <!-- Biometric Opt-In -->
-    <string name="app_enableBiometricsTitle">Unlock the app with biometrics</string>
-    <string name="app_enableBiometricsBody1">You can unlock the app with your face, fingerprint or iris within 30 minutes of signing in with GOV.UK One Login.</string>
-    <string name="app_enableBiometricsBody2">If you do not want to use your biometrics, you can unlock the app with your phone’s pin or pattern instead.</string>
-    <string name="app_enableBiometricsBody3">Anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern might be able to access your app.</string>
-    <string name="app_enableBiometricsButton">Use biometrics</string>
-    <string name="app_enablePasscodeOrPatternButton">Use pin or pattern instead</string>
-
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
     <string name="app_homeTitle">Home</string>
@@ -109,6 +101,7 @@
     <string name="app_developer_tab_app" translatable="false">App</string>
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
+    <string name="app_developer_tab_local_auth" translatable="false">Local Auth</string>
     <string name="app_developer_tab_app_integrity" translatable="false">AppIntegrity</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>

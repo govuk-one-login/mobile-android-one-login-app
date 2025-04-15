@@ -13,8 +13,8 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -28,7 +28,7 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 class MainActivityViewModelTest {
     private val mockContext: Context = mock()
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
-    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val localAuthManager: LocalAuthManager = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
@@ -50,7 +50,7 @@ class MainActivityViewModelTest {
     fun setup() {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
-            mockBioPrefHandler,
+            localAuthManager,
             mockTokenRepository,
             mockNavigator,
             mockAutoInitialiseSecureStore
@@ -69,7 +69,7 @@ class MainActivityViewModelTest {
         // GIVEN we are logged in
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
         // AND user Biometric enabled
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+        whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Enabled(true))
 
         // WHEN app goes in the background
         viewModel.onPause(owner = mockLifecycleOwner)
@@ -85,7 +85,7 @@ class MainActivityViewModelTest {
         // GIVEN we are logged in
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
         // AND user Biometric enabled
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+        whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         // WHEN app goes in the background
         viewModel.onPause(owner = mockLifecycleOwner)
@@ -96,7 +96,7 @@ class MainActivityViewModelTest {
         // GIVEN we are logged in
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
         // AND user Biometric enabled
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(null)
+        whenever(localAuthManager.localAuthPreference).thenReturn(null)
 
         // WHEN app goes in the background
         viewModel.onPause(owner = mockLifecycleOwner)
@@ -110,7 +110,7 @@ class MainActivityViewModelTest {
         // GIVEN we are logged in
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
         // AND user Biometric enabled
-        whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+        whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         // WHEN app goes in the background
         viewModel.onPause(owner = mockLifecycleOwner)

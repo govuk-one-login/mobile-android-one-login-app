@@ -44,6 +44,7 @@ import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
 import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
 import uk.gov.onelogin.features.developer.ui.features.FeaturesScreen
+import uk.gov.onelogin.features.developer.ui.localauth.LocalAuthTabScreen
 import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 
 @Suppress("LongMethod")
@@ -55,6 +56,9 @@ fun TabView(goBack: () -> Unit) {
             TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
             TabItem(R.string.app_developer_tab_auth, Icons.Filled.AccountBox) {
                 AuthTabScreen()
+            },
+            TabItem(R.string.app_developer_tab_local_auth, Icons.Filled.Lock) {
+                LocalAuthTabScreen()
             },
             TabItem(R.string.app_developer_tab_tokens, Icons.Filled.LocationOn) {
                 TokenTabScreen()
@@ -70,7 +74,7 @@ fun TabView(goBack: () -> Unit) {
             },
             TabItem(
                 R.string.app_developer_tab_secure_store,
-                Icons.Filled.Lock
+                Icons.Filled.AccountBox
             ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
         )
     val pagerState = rememberPagerState { tabs.size }

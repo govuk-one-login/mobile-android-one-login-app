@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -18,7 +18,7 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val analyticsOptInRepo: AnalyticsOptInRepository,
-    private val bioPrefHandler: BiometricPreferenceHandler,
+    private val localAuthManager: LocalAuthManager,
     private val tokenRepository: TokenRepository,
     private val navigator: Navigator,
     autoInitialiseSecureStore: AutoInitialiseSecureStore
@@ -48,7 +48,7 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun isLocalAuthEnabled(): Boolean {
-        val prefs = bioPrefHandler.getBioPref()
-        return !(prefs == BiometricPreference.NONE || prefs == null)
+        val prefs = localAuthManager.localAuthPreference
+        return !(prefs == LocalAuthPreference.Disabled || prefs == null)
     }
 }

@@ -6,17 +6,17 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
-import uk.gov.onelogin.core.tokens.utils.BiometricPrefsMapper
 import uk.gov.onelogin.core.tokens.utils.DefaultDispatcher
+import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper
 
 class AutoInitialiseSecureStoreImpl @Inject constructor(
-    private val biometricPreferenceHandler: BiometricPreferenceHandler,
+    private val localAuthManager: LocalAuthManager,
     private val saveTokens: SaveTokens,
     @Named("Token")
     private val secureStore: SecureStore,
@@ -26,11 +26,11 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
     private val coroutineContext: CoroutineDispatcher
 ) : AutoInitialiseSecureStore {
     override suspend fun initialise() {
-        val bioPref = biometricPreferenceHandler.getBioPref()
-        if (bioPref == null || bioPref == BiometricPreference.NONE) return
+        val localAuthPref = localAuthManager.localAuthPreference
+        if (localAuthPref == null || localAuthPref == LocalAuthPreference.Disabled) return
         val configuration = SecureStorageConfiguration(
             AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-            BiometricPrefsMapper.mapAccessControlLevel(bioPref)
+            LocalAuthPrefsMapper.mapAccessControlLevel(localAuthPref)
         )
         withContext(coroutineContext) {
             secureStore.init(context, configuration)

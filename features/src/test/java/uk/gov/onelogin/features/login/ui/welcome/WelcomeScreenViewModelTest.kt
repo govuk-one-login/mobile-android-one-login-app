@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.welcome
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.fragment.app.FragmentActivity
 import kotlin.test.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -21,12 +22,15 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerImpl
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
+import uk.gov.android.localauth.preference.LocalAuthPreference
+import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.testdouble.SystemLogger
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.data.BiometricStatus
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -49,8 +53,15 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private val mockContext: Context = mock()
-    private val mockCredChecker: CredentialChecker = mock()
-    private val mockBioPrefHandler: BiometricPreferenceHandler = mock()
+    private val mockFragmentActivity: FragmentActivity = mock()
+    private val localAuthPreferenceRepo: LocalAuthPreferenceRepository = mock()
+    private val deviceBiometricsManager: DeviceBiometricsManager = mock()
+    private val analyticsLogger: AnalyticsLogger = mock()
+    private val localAuthManager: LocalAuthManager = LocalAuthManagerImpl(
+        localAuthPreferenceRepo,
+        deviceBiometricsManager,
+        analyticsLogger
+    )
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockVerifyIdToken: VerifyIdToken = mock()
@@ -85,8 +96,7 @@ class WelcomeScreenViewModelTest {
     private val viewModel =
         WelcomeScreenViewModel(
             mockContext,
-            mockCredChecker,
-            mockBioPrefHandler,
+            localAuthManager,
             mockTokenRepository,
             mockAutoInitialiseSecureStore,
             mockVerifyIdToken,
@@ -113,8 +123,9 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.UNKNOWN)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -123,12 +134,14 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
-            verify(mockBioPrefHandler).setBioPref(BiometricPreference.PASSCODE)
+            verify(localAuthPreferenceRepo)
+                .setLocalAuthPref(LocalAuthPreference.Enabled(false))
             verify(mockAutoInitialiseSecureStore, times(1)).initialise()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
@@ -140,9 +153,11 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
-            whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.BIOMETRICS)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.SUCCESS)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn(LocalAuthPreference.Enabled(true))
             // Login redirect fires `onSuccess`
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
@@ -153,12 +168,13 @@ class WelcomeScreenViewModelTest {
 
             // re-authenticate is false by default
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
-            verify(mockBioPrefHandler, times(0)).setBioPref(any())
+            verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
             verify(mockAutoInitialiseSecureStore, times(1)).initialise()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
@@ -170,8 +186,9 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.SUCCESS)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -180,13 +197,13 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
-            verify(mockBioPrefHandler, times(0)).setBioPref(any())
-            verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
+            verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
 
     @Test
@@ -196,24 +213,26 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-            whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.SUCCESS)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
-            whenever(mockBioPrefHandler.getBioPref()).thenReturn(BiometricPreference.NONE)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn(LocalAuthPreference.Disabled)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
-            verify(mockBioPrefHandler, times(0)).setBioPref(any())
-            verify(mockNavigator).navigate(LoginRoutes.BioOptIn, true)
+            verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
 
     @Test
@@ -223,7 +242,7 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -232,13 +251,14 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(true)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
-            verify(mockBioPrefHandler).setBioPref(BiometricPreference.NONE)
+            verify(localAuthPreferenceRepo).setLocalAuthPref(LocalAuthPreference.Disabled)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -249,24 +269,27 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Disabled))
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockNavigator).goBack()
             verifyNoInteractions(mockSaveTokens)
-            verifyNoInteractions(mockBioPrefHandler)
         }
 
     @Test
@@ -276,24 +299,27 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(false)))
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockNavigator).goBack()
             verify(mockSaveTokens).invoke()
-            verifyNoInteractions(mockBioPrefHandler)
         }
 
     @Test
@@ -303,7 +329,7 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
@@ -314,7 +340,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verify(mockSignOutUseCase).invoke()
@@ -329,7 +356,7 @@ class WelcomeScreenViewModelTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
@@ -340,7 +367,8 @@ class WelcomeScreenViewModelTest {
 
             viewModel.handleActivityResult(
                 mockIntent,
-                true
+                true,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSignOutUseCase)
@@ -355,13 +383,13 @@ class WelcomeScreenViewModelTest {
             whenever(mockIntent.data).thenReturn(null)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockBioPrefHandler)
             verifyNoInteractions(mockNavigator)
         }
 
@@ -378,13 +406,13 @@ class WelcomeScreenViewModelTest {
                 }
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockBioPrefHandler)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
             assertThat("logger has log", logger.size == 1)
         }
@@ -401,12 +429,11 @@ class WelcomeScreenViewModelTest {
                     (it.arguments[1] as (error: Throwable?) -> Unit).invoke(null)
                 }
 
-            viewModel.handleActivityResult(mockIntent)
+            viewModel.handleActivityResult(mockIntent, activity = mockFragmentActivity)
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockBioPrefHandler)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
             assertThat("logger has no log", logger.size == 0)
         }
@@ -426,13 +453,13 @@ class WelcomeScreenViewModelTest {
                 .thenReturn(false)
 
             viewModel.handleActivityResult(
-                mockIntent
+                mockIntent,
+                activity = mockFragmentActivity
             )
 
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockBioPrefHandler)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 

@@ -8,7 +8,6 @@ import androidx.navigation.navigation
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,18 +35,9 @@ class NavControllerExtTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun hasPreviousBackStackTrueForAddedBackStack() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(LoginRoutes.BioOptIn.getRoute())
-        }
-        assertTrue(navController.hasPreviousBackStack())
-    }
-
-    @Test
     fun closeAppPopsAllBackStack() {
         composeTestRule.runOnUiThread {
             // Fill up backstack
-            navController.setCurrentDestination(LoginRoutes.BioOptIn.getRoute())
             navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
             navController.setCurrentDestination(LoginRoutes.SignInError.getRoute())
             navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
@@ -68,8 +58,6 @@ class NavControllerExtTest : FragmentActivityTestCase() {
                 composable(route = LoginRoutes.Welcome.getRoute()) {}
 
                 composable(route = LoginRoutes.Loading.getRoute()) {}
-
-                composable(route = LoginRoutes.BioOptIn.getRoute()) {}
 
                 composable(route = LoginRoutes.SignInError.getRoute()) {}
 

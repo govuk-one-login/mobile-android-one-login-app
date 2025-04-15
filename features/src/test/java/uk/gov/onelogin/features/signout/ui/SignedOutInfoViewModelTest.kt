@@ -7,14 +7,18 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.LocalAuthManagerImpl
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.testdouble.SystemLogger
-import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCase
-import uk.gov.onelogin.core.biometrics.domain.BioPreferencesUseCaseImpl
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -34,13 +38,20 @@ class SignedOutInfoViewModelTest {
     private val navigator: Navigator = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val signOutUseCase: SignOutUseCase = mock()
-    private val biometricPreferenceHandler: BiometricPreferenceHandler = mock()
-    private val credentialChecker: CredentialChecker = mock()
+    private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
+    private val deviceBiometricsManager: DeviceBiometricsManager = mock()
+    private val analyticsLogger: AnalyticsLogger = mock()
     private val logger = SystemLogger()
-    private val bioPreferencesUseCase: BioPreferencesUseCase = BioPreferencesUseCaseImpl(
-        biometricPreferenceHandler,
-        credentialChecker
+    private val credentialChecker: LocalAuthManager = LocalAuthManagerImpl(
+        localAuthPrefRepo = localAuthPreferenceRepo,
+        deviceBiometricsManager = deviceBiometricsManager,
+        analyticsLogger = analyticsLogger
     )
+    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase =
+        LocalAuthPrefResetUseCaseImpl(
+            localAuthPreferenceRepo,
+            credentialChecker
+        )
 
     private val viewModel by lazy {
         SignedOutInfoViewModel(
@@ -49,7 +60,7 @@ class SignedOutInfoViewModelTest {
             saveTokens,
             getPersistentId,
             signOutUseCase,
-            bioPreferencesUseCase,
+            localAuthPrefResetUseCase,
             logger
         )
     }
@@ -110,13 +121,12 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(credentialChecker.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
 
             viewModel.checkPersistentId { callback = true }
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
-            verifyNoInteractions(biometricPreferenceHandler)
             assertTrue(callback)
         }
 
@@ -125,13 +135,13 @@ class SignedOutInfoViewModelTest {
         runTest {
             var callback = false
             whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(credentialChecker.isDeviceSecure()).thenReturn(false)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
 
             viewModel.checkPersistentId { callback = true }
 
             verifyNoInteractions(signOutUseCase)
             verifyNoInteractions(navigator)
-            verify(biometricPreferenceHandler).clean()
+            verify(localAuthPreferenceRepo).clean()
             assertTrue(callback)
         }
 

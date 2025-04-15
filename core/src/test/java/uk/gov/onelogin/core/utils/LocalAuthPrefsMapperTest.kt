@@ -5,15 +5,15 @@ import kotlin.test.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.securestore.AccessControlLevel
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.tokens.utils.BiometricPrefsMapper.mapAccessControlLevel
+import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper.mapAccessControlLevel
 
-class BiometricPrefsMapperTest {
+class LocalAuthPrefsMapperTest {
     @ParameterizedTest
     @MethodSource("args")
     fun checkACLMappings(
-        input: BiometricPreference,
+        input: LocalAuthPreference,
         output: AccessControlLevel
     ) {
         val result = mapAccessControlLevel(input)
@@ -26,11 +26,11 @@ class BiometricPrefsMapperTest {
         fun args(): Stream<Arguments> =
             Stream.of(
                 Arguments.of(
-                    BiometricPreference.BIOMETRICS,
+                    LocalAuthPreference.Enabled(true),
                     AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
                 ),
-                Arguments.of(BiometricPreference.PASSCODE, AccessControlLevel.PASSCODE),
-                Arguments.of(BiometricPreference.NONE, AccessControlLevel.OPEN)
+                Arguments.of(LocalAuthPreference.Enabled(false), AccessControlLevel.PASSCODE),
+                Arguments.of(LocalAuthPreference.Disabled, AccessControlLevel.OPEN)
             )
     }
 }

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.core.biometrics.domain
+package uk.gov.onelogin.core.localauth.domain
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -15,40 +15,41 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandlerImpl.Companion.BIO_PREF
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandlerImpl.Companion.SHARED_PREFS_ID
+import uk.gov.android.localauth.preference.LocalAuthPreference
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.LOCAL_AUTH_PREF
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.SHARED_PREFS_ID
 
-class BiometricPreferenceHandlerTest {
+class LocalAuthPreferenceRepoTest {
     private val mockContext: FragmentActivity = mock()
     private val mockSharedPreferences: SharedPreferences = mock()
     private val mockEditor: SharedPreferences.Editor = mock()
 
-    private lateinit var bioPrefHandler: BiometricPreferenceHandlerImpl
+    private lateinit var bioPrefHandler: LocalAuthPreferenceRepositoryImpl
 
     @BeforeEach
     fun setUp() {
         whenever(mockContext.getSharedPreferences(eq(SHARED_PREFS_ID), eq(Context.MODE_PRIVATE)))
             .thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
-        bioPrefHandler = BiometricPreferenceHandlerImpl(mockContext)
+        bioPrefHandler = LocalAuthPreferenceRepositoryImpl(mockContext)
     }
 
     @Test
     fun `check setting bio pref`() {
-        bioPrefHandler.setBioPref(BiometricPreference.BIOMETRICS)
+        bioPrefHandler.setLocalAuthPref(LocalAuthPreference.Enabled(true))
 
-        verify(mockEditor).putString(BIO_PREF, BiometricPreference.BIOMETRICS.name)
+        verify(mockEditor)
+            .putString(LOCAL_AUTH_PREF, LocalAuthPreference.Enabled(true).toString())
         verify(mockEditor).apply()
     }
 
     @ParameterizedTest
     @MethodSource("getBioPrefArgs")
-    fun `check getting bio pref`(sharedPrefReturn: BiometricPreference?) {
-        whenever(mockSharedPreferences.getString(eq(BIO_PREF), eq(null))).thenReturn(
-            sharedPrefReturn?.name
+    fun `check getting bio pref`(sharedPrefReturn: LocalAuthPreference?) {
+        whenever(mockSharedPreferences.getString(eq(LOCAL_AUTH_PREF), eq(null))).thenReturn(
+            sharedPrefReturn?.toString()
         )
-        val bioPref = bioPrefHandler.getBioPref()
+        val bioPref = bioPrefHandler.getLocalAuthPref()
 
         assertEquals(sharedPrefReturn, bioPref)
     }
@@ -67,9 +68,9 @@ class BiometricPreferenceHandlerTest {
         @JvmStatic
         fun getBioPrefArgs(): Stream<Arguments> =
             Stream.of(
-                Arguments.of(BiometricPreference.BIOMETRICS),
-                Arguments.of(BiometricPreference.PASSCODE),
-                Arguments.of(BiometricPreference.NONE),
+                Arguments.of(LocalAuthPreference.Enabled(true)),
+                Arguments.of(LocalAuthPreference.Enabled(false)),
+                Arguments.of(LocalAuthPreference.Disabled),
                 Arguments.of(null)
             )
     }

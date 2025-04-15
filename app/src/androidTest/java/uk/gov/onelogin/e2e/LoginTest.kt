@@ -11,10 +11,15 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
+import androidx.biometric.BiometricManager
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
@@ -46,19 +51,20 @@ import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.authentication.localauth.R as LocalAuthR
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
+import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.appcheck.AppCheckerModule
 import uk.gov.onelogin.appinfo.AppInfoApiModule
-import uk.gov.onelogin.biometrics.DeviceCredentialCheckerModule
-import uk.gov.onelogin.core.biometrics.data.BiometricStatus
-import uk.gov.onelogin.core.biometrics.domain.BiometricManager
-import uk.gov.onelogin.core.biometrics.domain.CredentialChecker
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
@@ -71,12 +77,14 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
+import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
 
+@Suppress("SwallowedException")
 @HiltAndroidTest
 @UninstallModules(
     LoginSessionModule::class,
-    DeviceCredentialCheckerModule::class,
+    BiometricsModule::class,
     AppInfoApiModule::class,
     AppCheckerModule::class,
     AppIntegrityModule::class
@@ -86,10 +94,10 @@ class LoginTest : TestCase() {
     val mockLoginSession: LoginSession = mock()
 
     @BindValue
-    val mockCredChecker: CredentialChecker = mock()
+    lateinit var mockDeviceBiometricManager: DeviceBiometricsManager
 
     @BindValue
-    val mockBiometricManager: BiometricManager = mock()
+    lateinit var mockBiometricManager: BiometricManager
 
     @BindValue
     val mockAppInfoService: AppInfoService = mock()
@@ -105,6 +113,9 @@ class LoginTest : TestCase() {
 
     @Inject
     lateinit var navigator: Navigator
+
+    @BindValue
+    lateinit var mockLocalAuthRepo: LocalAuthPreferenceRepo
 
     @BindValue
     val mockAppIntegrity: AppIntegrity = mock()
@@ -143,6 +154,9 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        mockDeviceBiometricManager = mock()
+        mockBiometricManager = mock()
+        mockLocalAuthRepo = LocalAuthPreferenceRepositoryImpl(context)
         ArchTaskExecutor.getInstance()
             .setDelegate(object : TaskExecutor() {
                 override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
@@ -151,7 +165,6 @@ class LoginTest : TestCase() {
 
                 override fun isMainThread(): Boolean = true
             })
-
         hiltRule.inject()
         deletePersistentId()
     }
@@ -177,7 +190,16 @@ class LoginTest : TestCase() {
                 idToken = ""
             )
         )
+
         startApp()
+
+        composeRule.apply {
+            onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
+                .clickIfExisting()
+            onNodeWithText(context.getString(R.string.app_dataDeletedButton))
+                .clickIfExisting()
+        }
+
         clickOptOut()
         clickLogin()
 
@@ -309,14 +331,15 @@ class LoginTest : TestCase() {
     @FlakyTest
     @Test
     fun handleActivityResultWithDataUnsecured() {
+        deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
+        whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(false)
         mockGoodLogin()
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(false)
         setupActivityForResult(
             Intent(
                 Intent.ACTION_VIEW,
@@ -324,9 +347,17 @@ class LoginTest : TestCase() {
             )
         )
 
+        composeRule.apply {
+            onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
+                .clickIfExisting()
+            onNodeWithText(context.getString(R.string.app_dataDeletedButton))
+                .clickIfExisting()
+        }
+
         clickOptOut()
         clickLogin()
-        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
+
+        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @FlakyTest
@@ -338,40 +369,55 @@ class LoginTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
+        whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(true)
+        whenever(mockDeviceBiometricManager.getCredentialStatus())
+            .thenReturn(DeviceBiometricsStatus.SUCCESS)
         mockGoodLogin()
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.SUCCESS)
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
         clickOptOut()
         clickLogin()
 
-        nodeWithTextExists(resources.getString(R.string.app_enableBiometricsTitle))
-        composeRule.onNodeWithText(resources.getString(R.string.app_enableBiometricsButton))
-        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        composeRule.apply {
+            nodeWithTextExists(resources.getString(LocalAuthR.string.bio_opt_in_title))
+
+            onNodeWithText(
+                resources.getString(LocalAuthR.string.bio_opt_in_passcode_button)
+            ).performClick()
+        }
+        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @FlakyTest
     @Test
     fun handleActivityResultWithDataPasscode() {
+        deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(data))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
+        whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(true)
+        whenever(mockDeviceBiometricManager.getCredentialStatus())
+            .thenReturn(DeviceBiometricsStatus.NOT_ENROLLED)
         mockGoodLogin()
-        whenever(mockCredChecker.isDeviceSecure()).thenReturn(true)
-        whenever(mockCredChecker.biometricStatus()).thenReturn(BiometricStatus.UNKNOWN)
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
 
+        composeRule.apply {
+            onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
+                .clickIfExisting()
+            onNodeWithText(context.getString(R.string.app_dataDeletedButton))
+                .clickIfExisting()
+        }
+
         clickOptOut()
         clickLogin()
 
-        nodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     private fun setupActivityForResult(returnedIntent: Intent) {
@@ -446,8 +492,24 @@ class LoginTest : TestCase() {
     }
 
     private fun nodeWithTextExists(text: String) {
-        composeRule.waitForIdle()
-        composeRule.onNodeWithText(text).isDisplayed()
+        composeRule.waitUntil(5000) {
+            composeRule.onNodeWithText(text).isDisplayed()
+        }
+    }
+
+    private fun allNodeWithTextExists(text: String) {
+        composeRule.waitUntil(5000) {
+            composeRule.onAllNodesWithText(text).onFirst().isDisplayed()
+        }
+    }
+
+    private fun SemanticsNodeInteraction.clickIfExisting() {
+        try {
+            assertIsDisplayed()
+            performClick()
+        } catch (e: AssertionError) {
+            // Nothing to do, just let it continue if this does not exist
+        }
     }
 
     private fun mockGoodLogin() {

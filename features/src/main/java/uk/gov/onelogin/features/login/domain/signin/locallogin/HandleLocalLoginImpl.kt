@@ -3,8 +3,8 @@ package uk.gov.onelogin.features.login.domain.signin.locallogin
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.onelogin.core.biometrics.data.BiometricPreference
-import uk.gov.onelogin.core.biometrics.domain.BiometricPreferenceHandler
+import uk.gov.android.localauth.LocalAuthManager
+import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
@@ -17,7 +17,7 @@ class HandleLocalLoginImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val isAccessTokenExpired: IsAccessTokenExpired,
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
-    private val bioPrefHandler: BiometricPreferenceHandler
+    private val localAuthManager: LocalAuthManager
 ) : HandleLocalLogin {
     override suspend fun invoke(
         fragmentActivity: FragmentActivity,
@@ -58,7 +58,7 @@ class HandleLocalLoginImpl @Inject constructor(
     }
 
     private fun isLocalAuthEnabled(): Boolean {
-        val prefs = bioPrefHandler.getBioPref()
-        return !(prefs == BiometricPreference.NONE || prefs == null)
+        val prefs = localAuthManager.localAuthPreference
+        return !(prefs == LocalAuthPreference.Disabled || prefs == null)
     }
 }

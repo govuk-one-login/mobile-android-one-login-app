@@ -13,13 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.GdsHeading
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -32,11 +31,9 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
             .fillMaxSize()
             .padding(mediumPadding)
     ) {
-        GdsHeading(
-            headingParameters = HeadingParameters(
-                size = HeadingSize.H2(),
-                text = R.string.app_developer_features_title
-            )
+        Text(
+            text = stringResource(R.string.app_developer_features_title),
+            style = TextStyle(fontWeight = FontWeight.Bold)
         )
         LazyColumn {
             availableFeatures.forEach { feature ->
