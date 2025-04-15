@@ -16,7 +16,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.preference.LocalAuthPreference
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.BIO_PREF
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.LOCAL_AUTH_PREF
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.SHARED_PREFS_ID
 
 class LocalAuthPreferenceRepoTest {
@@ -39,14 +39,14 @@ class LocalAuthPreferenceRepoTest {
         bioPrefHandler.setLocalAuthPref(LocalAuthPreference.Enabled(true))
 
         verify(mockEditor)
-            .putString(BIO_PREF, LocalAuthPreference.Enabled(true).toString())
+            .putString(LOCAL_AUTH_PREF, LocalAuthPreference.Enabled(true).toString())
         verify(mockEditor).apply()
     }
 
     @ParameterizedTest
     @MethodSource("getBioPrefArgs")
     fun `check getting bio pref`(sharedPrefReturn: LocalAuthPreference?) {
-        whenever(mockSharedPreferences.getString(eq(BIO_PREF), eq(null))).thenReturn(
+        whenever(mockSharedPreferences.getString(eq(LOCAL_AUTH_PREF), eq(null))).thenReturn(
             sharedPrefReturn?.toString()
         )
         val bioPref = bioPrefHandler.getLocalAuthPref()

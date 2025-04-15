@@ -21,13 +21,13 @@ class LocalAuthPreferenceRepositoryImpl @Inject constructor(
 
     override fun setLocalAuthPref(pref: LocalAuthPreference) {
         with(sharedPrefs.edit()) {
-            putString(BIO_PREF, pref.toString())
+            putString(LOCAL_AUTH_PREF, pref.toString())
             apply()
         }
     }
 
     override fun getLocalAuthPref(): LocalAuthPreference? {
-        return when (sharedPrefs.getString(BIO_PREF, null)) {
+        return when (sharedPrefs.getString(LOCAL_AUTH_PREF, null)) {
             LocalAuthPreference.Enabled(true).toString() -> LocalAuthPreference.Enabled(true)
             LocalAuthPreference.Enabled(false).toString() -> LocalAuthPreference.Enabled(false)
             LocalAuthPreference.Disabled.toString() -> LocalAuthPreference.Disabled
@@ -45,9 +45,9 @@ class LocalAuthPreferenceRepositoryImpl @Inject constructor(
 
     companion object {
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        const val SHARED_PREFS_ID = "bio_shared_prefs"
+        const val SHARED_PREFS_ID = "local_auth_shared_prefs"
 
         @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-        const val BIO_PREF = "bio_pref"
+        const val LOCAL_AUTH_PREF = "local_auth_pref"
     }
 }

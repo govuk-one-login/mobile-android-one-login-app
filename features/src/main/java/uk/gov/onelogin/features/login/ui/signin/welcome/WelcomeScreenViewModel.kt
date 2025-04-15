@@ -160,7 +160,6 @@ class WelcomeScreenViewModel @Inject constructor(
             callbackHandler = object : LocalAuthManagerCallbackHandler {
                 override fun onSuccess(backButtonPressed: Boolean) {
                     val pref = localAuthManager.localAuthPreference
-                    println("$pref")
                     when {
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {

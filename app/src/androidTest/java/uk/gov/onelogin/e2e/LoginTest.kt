@@ -509,7 +509,6 @@ class LoginTest : TestCase() {
             performClick()
         } catch (e: AssertionError) {
             // Nothing to do, just let it continue if this does not exist
-            println("New login state")
         }
     }
 
