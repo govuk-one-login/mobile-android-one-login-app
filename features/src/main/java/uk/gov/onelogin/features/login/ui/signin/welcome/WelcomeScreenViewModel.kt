@@ -17,7 +17,6 @@ import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
-import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
@@ -42,7 +41,6 @@ class WelcomeScreenViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
     private val localAuthManager: LocalAuthManager,
-    private val deviceBiometricsManager: DeviceBiometricsManager,
     private val tokenRepository: TokenRepository,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
     private val verifyIdToken: VerifyIdToken,
@@ -170,12 +168,6 @@ class WelcomeScreenViewModel @Inject constructor(
                             } else {
                                 navigator.goBack()
                             }
-                        }
-
-                        // The localAuthPref has not been set yet - so this needs to check the
-                        // device is secure
-                        !deviceBiometricsManager.isDeviceSecure() -> {
-                            navigator.navigate(MainNavRoutes.Start, true)
                         }
 
                         else -> {

@@ -106,7 +106,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         loginViewModel = WelcomeScreenViewModel(
             context,
             localAuthManager,
-            deviceBiometricsManager,
             tokenRepository,
             autoInitialiseSecureStore,
             verifyIdToken,

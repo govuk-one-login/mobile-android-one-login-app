@@ -97,7 +97,6 @@ class WelcomeScreenViewModelTest {
         WelcomeScreenViewModel(
             mockContext,
             localAuthManager,
-            deviceBiometricsManager,
             mockTokenRepository,
             mockAutoInitialiseSecureStore,
             mockVerifyIdToken,

@@ -96,7 +96,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreenViewModel(
                 context,
                 localAuthManager,
-                deviceBiometricsManager,
                 tokenRepository,
                 autoInitialiseSecureStore,
                 verifyIdToken,
