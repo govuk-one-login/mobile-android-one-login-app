@@ -114,7 +114,6 @@ dependencies {
         libs.mockito.kotlin,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
-        libs.junit.jupiter.engine,
         libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
@@ -128,6 +127,8 @@ dependencies {
         libs.androidx.espresso.intents,
         libs.logging.test
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.orchestrator
@@ -159,7 +160,9 @@ dependencies {
         libs.hilt.android,
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.tooling.preview,
-        libs.bundles.about.libraries
+        libs.bundles.about.libraries,
+        libs.uk.gov.idcheck.sdk,
+        libs.uk.gov.idcheck.repositories.api
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

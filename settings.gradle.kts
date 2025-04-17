@@ -1,4 +1,5 @@
 import org.gradle.api.internal.provider.MissingValueException
+import java.net.URI
 
 pluginManagement {
     //includeBuild("buildLogic")
@@ -21,6 +22,14 @@ dependencyResolutionManagement {
             "https://maven.pkg.github.com/govuk-one-login/mobile-android-authentication",
             setupGithubCredentials()
         )
+        maven(
+            // imposter maven repository
+            "https://s3-eu-west-1.amazonaws.com/gatehillsoftware-maven/releases/"
+        )
+        maven {
+            url = URI.create("https://raw.githubusercontent.com/iProov/android/master/maven/")
+        }
+        maven { url = URI.create("https://jitpack.io") }
     }
 }
 

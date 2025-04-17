@@ -13,7 +13,7 @@ import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 @HiltViewModel
 class FeaturesScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
-    private val availableFeatures: AvailableFeatures
+    private val availableFeatures: AvailableFeatures,
 ) : ViewModel() {
     private val _featureList = mutableStateOf(createMap())
     val featureList: State<Map<FeatureFlag, Boolean>>

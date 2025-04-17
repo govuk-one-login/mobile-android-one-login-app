@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="backendAsyncUrl" translatable="false">https://sessions.review-b-async.staging.account.gov.uk</string>
+</resources>

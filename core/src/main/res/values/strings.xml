@@ -157,4 +157,7 @@
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Opens in web browser</string>
     <string name="app_openGooglePlayStore">Opens in Google Play Store</string>
+
+    <!-- Cri Orchestrator Temporary -->
+    <string name="app_cri_orchestrator_placeholder" translatable="false">Placeholder</string>
 </resources>

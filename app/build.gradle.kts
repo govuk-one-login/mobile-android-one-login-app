@@ -133,7 +133,10 @@ android {
     }
 
     packaging {
-        resources.excludes.add("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
+        resources.excludes += setOf(
+            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+            "META-INF/LICENSE.md"
+        )
     }
 }
 
@@ -196,7 +199,8 @@ dependencies {
         libs.runtime.livedata,
         platform(libs.firebase.bom),
         libs.bundles.firebase,
-        libs.androidx.biometric
+        libs.androidx.biometric,
+        libs.bundles.cri.orchestrator.temporary
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {
@@ -220,8 +224,6 @@ dependencies {
         libs.mockito.kotlin,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
-        libs.junit.jupiter.engine,
-        libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
         libs.classgraph,
@@ -229,6 +231,8 @@ dependencies {
         libs.junit,
         libs.androidx.test.ext.junit
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.orchestrator

@@ -111,7 +111,6 @@ dependencies {
         libs.mockito.kotlin,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
-        libs.junit.jupiter.engine,
         libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
@@ -124,6 +123,8 @@ dependencies {
         libs.androidx.test.orchestrator,
         libs.logging.test
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.orchestrator
