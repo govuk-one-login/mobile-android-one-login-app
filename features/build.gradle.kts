@@ -57,13 +57,16 @@ android {
         listOf(
             "build",
             "staging",
+            "integration",
             "production"
         ).forEach { environment ->
             create(environment) {
                 var suffix = ""
 
                 dimension = "env"
-
+                if (environment == "integration") {
+                    matchingFallbacks.add("production")
+                }
                 if (environment != "production") {
                     suffix = ".$environment"
                 }
