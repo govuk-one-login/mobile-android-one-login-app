@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238101516688",
+    "project_id": "mobile-one-login-integration",
+    "storage_bucket": "mobile-one-login-integration.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238101516688:android:2e2f339ffcef04056a6315",
+        "android_client_info": {
+          "package_name": "uk.gov.onelogin.integration"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4b_CuLkFzayX84oCoj7tfjGbAxNV5pJQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -56,6 +56,7 @@ android {
         listOf(
             "build",
             "staging",
+            "integration",
             "production"
         ).forEach { environment ->
             create(environment) {
