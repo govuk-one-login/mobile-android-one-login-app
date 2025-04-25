@@ -72,7 +72,7 @@ class MainActivityViewModelTest {
         whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Enabled(true))
 
         // WHEN app goes in the background
-        viewModel.onPause(owner = mockLifecycleOwner)
+        viewModel.onStop(owner = mockLifecycleOwner)
 
         // THEN token is removed from runtime memory
         verify(mockTokenRepository).clearTokenResponse()
@@ -88,7 +88,7 @@ class MainActivityViewModelTest {
         whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         // WHEN app goes in the background
-        viewModel.onPause(owner = mockLifecycleOwner)
+        viewModel.onStop(owner = mockLifecycleOwner)
 
         // AND user arrives to the same screen and no navigation is involved (splash screen)
         verify(mockNavigator, never()).navigate(LoginRoutes.Start)
@@ -99,7 +99,7 @@ class MainActivityViewModelTest {
         whenever(localAuthManager.localAuthPreference).thenReturn(null)
 
         // WHEN app goes in the background
-        viewModel.onPause(owner = mockLifecycleOwner)
+        viewModel.onStop(owner = mockLifecycleOwner)
 
         // AND user arrives to the same screen and no navigation is involved (splash screen)
         verify(mockNavigator, never()).navigate(LoginRoutes.Start)
@@ -113,7 +113,7 @@ class MainActivityViewModelTest {
         whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
         // WHEN app goes in the background
-        viewModel.onPause(owner = mockLifecycleOwner)
+        viewModel.onStop(owner = mockLifecycleOwner)
 
         // AND user arrives to the same screen and no navigation is involved (splash screen)
         verify(mockNavigator, never()).navigate(LoginRoutes.Start)
