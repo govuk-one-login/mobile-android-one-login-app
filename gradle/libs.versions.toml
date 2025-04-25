@@ -14,7 +14,7 @@ oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", versi
 [versions]
 jose4j = "0.9.6"
 kotlin = "2.1.20"
-agp = "8.9.1"
+agp = "8.9.2"
 core-ktx = "1.16.0"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
