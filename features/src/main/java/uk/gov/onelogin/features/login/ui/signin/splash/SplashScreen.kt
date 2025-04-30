@@ -85,15 +85,7 @@ fun SplashScreen(
                 repeatOnLifecycle(Lifecycle.State.RESUMED) {
                     viewModel.retrieveAppInfo {
                         optInRequirementViewModel.isOptInRequired.collectLatest { isRequired ->
-                            when {
-                                isRequired -> viewModel.navigateToAnalyticsOptIn()
-                                else ->
-                                    if (!viewModel.showUnlock.value) {
-                                        viewModel.login(context)
-                                    } else {
-                                        Log.e("SplashScreen", "showUnlock true. Do nothing")
-                                    }
-                            }
+                            handleOptInRequired(isRequired, viewModel, context)
                         }
                     }
                 }
@@ -102,6 +94,22 @@ fun SplashScreen(
                 lifecycleOwner.lifecycle.removeObserver(viewModel)
             }
         }
+    }
+}
+
+private fun handleOptInRequired(
+    isRequired: Boolean,
+    viewModel: SplashScreenViewModel,
+    context: FragmentActivity
+) {
+    when {
+        isRequired -> viewModel.navigateToAnalyticsOptIn()
+        else ->
+            if (!viewModel.showUnlock.value) {
+                viewModel.login(context)
+            } else {
+                Log.e("SplashScreen", "showUnlock true. Do nothing")
+            }
     }
 }
 
