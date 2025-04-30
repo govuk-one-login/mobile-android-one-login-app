@@ -11,7 +11,7 @@ val kotlinGradleVersion by rootProject.extra("2.0.0")
 dependencies {
     listOf(
         "com.android.tools.build:gradle:$gradleVersion",
-        "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.1.20-1.0.32",
+        "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:2.1.20-2.0.0",
         "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin:$dokkaVersion",
         "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradleVersion",
         "org.jetbrains.dokka:android-documentation-plugin:$dokkaVersion",

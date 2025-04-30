@@ -46,8 +46,8 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
+    override fun onStop(owner: LifecycleOwner) {
+        super.onStop(owner)
         if (isLocalAuthEnabled() &&
             tokenRepository.getTokenResponse() != null
         ) {
