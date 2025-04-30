@@ -19,12 +19,12 @@ class WalletScreenViewModel @Inject constructor(
     private val _walletEnabled = mutableStateOf(false)
     val walletEnabled: State<Boolean> = _walletEnabled
 
-    private val _hasWalletDeeplink = mutableStateOf(false)
-    val hasWalletDeeplink: State<Boolean> = _hasWalletDeeplink
+    private val _walletDeeplink = mutableStateOf("")
+    val walletDeeplink: State<String> = _walletDeeplink
 
     fun checkWalletEnabled() {
         _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
-        _hasWalletDeeplink.value = walletRepository.getCredential().isNotEmpty()
+        _walletDeeplink.value = walletRepository.getCredential()
     }
 
     fun getCredential(): String {

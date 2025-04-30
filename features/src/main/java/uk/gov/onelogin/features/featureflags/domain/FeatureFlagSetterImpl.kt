@@ -32,7 +32,9 @@ class FeatureFlagSetterImpl @Inject constructor(
         if (appInfo.releaseFlags.walletVisibleToAll) {
             (featureFlags as InMemoryFeatureFlags).plusAssign(setOf(WalletFeatureFlag.ENABLED))
         } else {
-            if (BuildConfig.FLAVOR != "build") {
+            // Temporary fix to enable WalletFeatureFlag by default for build and staging envs
+            // Can be removed once walletVisibleToAll is set to true in appInfo API
+            if (BuildConfig.FLAVOR != "build" && BuildConfig.FLAVOR != "staging") {
                 (featureFlags as InMemoryFeatureFlags).minusAssign(setOf(WalletFeatureFlag.ENABLED))
             }
         }

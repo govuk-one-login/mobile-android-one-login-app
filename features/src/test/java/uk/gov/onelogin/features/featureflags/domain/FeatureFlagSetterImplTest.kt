@@ -72,7 +72,9 @@ class FeatureFlagSetterImplTest {
         verify(featureFlags, times(0)).plusAssign(setOf(AppIntegrityFeatureFlag.ENABLED))
         verify(featureFlags).minusAssign(setOf(AppIntegrityFeatureFlag.ENABLED))
         verify(featureFlags, times(0)).plusAssign(setOf(WalletFeatureFlag.ENABLED))
-        if (BuildConfig.FLAVOR != "build") {
+        // Temporary fix to enable WalletFeatureFlag by default for build and staging envs
+        // Can be removed once walletVisibleToAll is set to true in appInfo API
+        if (BuildConfig.FLAVOR != "build" && BuildConfig.FLAVOR != "staging") {
             verify(featureFlags).minusAssign(setOf(WalletFeatureFlag.ENABLED))
         }
     }

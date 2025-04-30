@@ -48,28 +48,30 @@ class WalletScreenViewModelTest {
 
     @Test
     fun `wallet has deeplink`() {
+        val credential = "credential"
         // Test initial state
-        assertFalse(sut.hasWalletDeeplink.value)
+        assertEquals("", sut.walletDeeplink.value)
 
         // WHEN
-        whenever(walletRepository.getCredential()).thenReturn("credential")
+        whenever(walletRepository.getCredential()).thenReturn(credential)
         sut.checkWalletEnabled()
 
         // THEN
-        assertTrue(sut.hasWalletDeeplink.value)
+        assertEquals(credential, sut.walletDeeplink.value)
     }
 
     @Test
     fun `wallet has no deeplink`() {
+        val credential = ""
         // Test initial state
-        assertFalse(sut.hasWalletDeeplink.value)
+        assertEquals("", sut.walletDeeplink.value)
 
         // WHEN
-        whenever(walletRepository.getCredential()).thenReturn("")
+        whenever(walletRepository.getCredential()).thenReturn(credential)
         sut.checkWalletEnabled()
 
         // THEN
-        assertFalse(sut.hasWalletDeeplink.value)
+        assertEquals(credential, sut.walletDeeplink.value)
     }
 
     @Test
