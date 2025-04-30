@@ -92,7 +92,11 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = BottomNavDestination.Home.key,
+                startDestination = if (walletScreenViewModel.hasWalletDeeplink.value) {
+                    BottomNavDestination.Wallet.key
+                } else {
+                    BottomNavDestination.Home.key
+                },
                 modifier = Modifier.padding(paddingValues)
             ) {
                 bottomGraph()

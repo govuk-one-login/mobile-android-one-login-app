@@ -7,5 +7,5 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun WalletScreen(
     viewModel: WalletScreenViewModel = hiltViewModel()
 ) {
-    viewModel.walletSdk.WalletApp(deeplink = "", adminEnabled = false)
+    viewModel.walletSdk.WalletApp(deeplink = viewModel.getCredential(), adminEnabled = false)
 }

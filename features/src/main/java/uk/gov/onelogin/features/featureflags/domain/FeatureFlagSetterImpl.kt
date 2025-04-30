@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.featureflags.domain
 import javax.inject.Inject
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
+import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -31,7 +32,9 @@ class FeatureFlagSetterImpl @Inject constructor(
         if (appInfo.releaseFlags.walletVisibleToAll) {
             (featureFlags as InMemoryFeatureFlags).plusAssign(setOf(WalletFeatureFlag.ENABLED))
         } else {
-            (featureFlags as InMemoryFeatureFlags).minusAssign(setOf(WalletFeatureFlag.ENABLED))
+            if (BuildConfig.FLAVOR != "build") {
+                (featureFlags as InMemoryFeatureFlags).minusAssign(setOf(WalletFeatureFlag.ENABLED))
+            }
         }
     }
 }
