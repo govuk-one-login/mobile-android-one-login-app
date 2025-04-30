@@ -22,14 +22,14 @@ class EmailSectionTest : FragmentActivityTestCase() {
         composeTestRule.apply {
             onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
 
-            onNodeWithTag(IMAGE_TEST_TAG).assertIsDisplayed()
+            onNodeWithTag(IMAGE_TEST_TAG, useUnmergedTree = true).assertIsDisplayed()
 
             onNodeWithText(
                 context.getString(R.string.app_settingsSignInDetailsTile),
                 substring = true
             ).assertIsDisplayed()
 
-            onNodeWithText(email, substring = true).assertIsDisplayed()
+            onNodeWithText(email, substring = true, useUnmergedTree = true).assertIsDisplayed()
         }
     }
 }
