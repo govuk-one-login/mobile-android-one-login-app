@@ -101,10 +101,11 @@
     <string name="app_developer_tab_app" translatable="false">App</string>
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
+    <string name="app_developer_tab_app_integrity" translatable="false">App Integrity</string>
     <string name="app_developer_tab_local_auth" translatable="false">Local Auth</string>
-    <string name="app_developer_tab_app_integrity" translatable="false">AppIntegrity</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
+    <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>

@@ -21,7 +21,7 @@ object IproovApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesFinishIProovActivity(
-            finishIProovActivityImpl: FinishIProovActivityImpl,
+            finishIProovActivityImpl: FinishIProovActivityImpl
         ): FinishIProovActivity = finishIProovActivityImpl
     }
 
@@ -31,7 +31,7 @@ object IproovApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetIproovTokenFromReadId(
-            getIproovTokenFromReadId: GetIproovTokenFromReadIdImpl,
+            getIproovTokenFromReadId: GetIproovTokenFromReadIdImpl
         ): GetIproovTokenFromReadId = getIproovTokenFromReadId
     }
 
@@ -50,7 +50,7 @@ object IproovApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesUnregisterListener(
-            unregisterListener: UnregisterListenerImpl,
+            unregisterListener: UnregisterListenerImpl
         ): UnregisterListener = unregisterListener
     }
 }

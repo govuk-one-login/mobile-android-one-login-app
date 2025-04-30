@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.idcheck.iproov.api.FaceScanner
 import uk.gov.idcheck.repositories.api.offboarding.OffBoardingSession
 import uk.gov.idcheck.sdk.face.veriff.VeriffInteractor
@@ -25,7 +26,6 @@ import uk.gov.idcheck.sdk.session.IdCheckSdkSessionRepository
 import uk.gov.idcheck.sdk.usecases.ValidateVerifyToken
 import uk.gov.idcheck.sdk.usecases.veriff.StartVeriff
 import uk.gov.idcheck.sdk.usecases.veriff.StartVeriffImpl
-import javax.inject.Singleton
 
 object IdCheckSdkHiltConfig {
     @Module
@@ -63,7 +63,7 @@ object IdCheckSdkHiltConfig {
             @Provides
             @ActivityRetainedScoped
             fun providesIdCheckSessionRepository(
-                repository: IdCheckSdkSessionRepository,
+                repository: IdCheckSdkSessionRepository
             ): IdCheckSdkSession.Repository = repository
         }
 
@@ -84,7 +84,7 @@ object IdCheckSdkHiltConfig {
             @Provides
             @ViewModelScoped
             fun providesIdCheckSessionReader(
-                repository: IdCheckSdkSession.Repository,
+                repository: IdCheckSdkSession.Repository
             ): IdCheckSdkSession.Reader = repository
 
             /**
@@ -96,7 +96,7 @@ object IdCheckSdkHiltConfig {
             @Provides
             @ViewModelScoped
             fun providesIdCheckSessionWriter(
-                repository: IdCheckSdkSession.Repository,
+                repository: IdCheckSdkSession.Repository
             ): IdCheckSdkSession.Writer = repository
         }
     }
@@ -119,7 +119,7 @@ object IdCheckSdkHiltConfig {
         @Singleton
         fun providesNfcManager(
             @ApplicationContext
-            context: Context,
+            context: Context
         ): NfcManager = context.getSystemService(Context.NFC_SERVICE) as NfcManager
     }
 

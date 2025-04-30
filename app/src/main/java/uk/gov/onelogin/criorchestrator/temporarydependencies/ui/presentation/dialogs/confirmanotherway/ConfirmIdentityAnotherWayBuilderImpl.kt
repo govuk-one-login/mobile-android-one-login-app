@@ -25,18 +25,22 @@ object ConfirmIdentityAnotherWayBuilderImpl : ConfirmIdentityAnotherWayBuilder {
         analyticsScreenName: String,
         section: String,
         webHandbackUrl: String,
-        isSdkActivity: Boolean,
+        isSdkActivity: Boolean
     ): ConfirmIdentityAnotherWayNavModel =
         ConfirmIdentityAnotherWayNavModel(
             analyticsScreenName = analyticsScreenName,
             section = section,
             fullAppName = context.getString(uk.gov.android.onelogin.core.R.string.app_name),
             title =
-                context.getString(uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder),
+            context.getString(
+                uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
+            ),
             content =
-                context.getString(uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder),
+            context.getString(
+                uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
+            ),
             webHandbackUrl = webHandbackUrl,
-            isSdkActivity = isSdkActivity,
+            isSdkActivity = isSdkActivity
         )
 
     /**
@@ -47,18 +51,18 @@ object ConfirmIdentityAnotherWayBuilderImpl : ConfirmIdentityAnotherWayBuilder {
      */
     override fun buildAbortNavModel(
         context: Context,
-        section: String,
+        section: String
     ): ConfirmationAbortedNavModel =
         ConfirmationAbortedNavModel(
             section = section,
             additionalInfoText =
-                context.getString(
-                    uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
-                ),
+            context.getString(
+                uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
+            ),
             substringToColour =
-                context.getString(
-                    uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
-                ),
-            intentToStart = Intent(context, MainActivity::class.java),
+            context.getString(
+                uk.gov.android.onelogin.core.R.string.app_cri_orchestrator_placeholder
+            ),
+            intentToStart = Intent(context, MainActivity::class.java)
         )
 }

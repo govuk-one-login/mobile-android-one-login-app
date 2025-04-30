@@ -8,15 +8,15 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.idcheck.network.api.backend.BackendApi
+import uk.gov.idcheck.network.api.biotoken.BioTokenApi
 import uk.gov.idcheck.network.api.txma.TxmaApi
 import uk.gov.idcheck.network.api.usecases.GetBioTokenV2FromApi
 import uk.gov.idcheck.network.impl.backend.BackendApiImpl
+import uk.gov.idcheck.network.impl.biotoken.BioTokenV2Api
 import uk.gov.idcheck.network.impl.txma.TxmaApiImpl
 import uk.gov.idcheck.network.impl.usecases.GetBioTokenV2FromApiImpl
-import javax.inject.Singleton
-import uk.gov.idcheck.network.api.biotoken.BioTokenApi
-import uk.gov.idcheck.network.impl.biotoken.BioTokenV2Api
 
 object NetworkImplHiltConfig {
     @InstallIn(SingletonComponent::class)
@@ -46,7 +46,7 @@ object NetworkImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetBioTokenV2FromApi(
-            getBioTokenV2FromApi: GetBioTokenV2FromApiImpl,
+            getBioTokenV2FromApi: GetBioTokenV2FromApiImpl
         ): GetBioTokenV2FromApi = getBioTokenV2FromApi
     }
 

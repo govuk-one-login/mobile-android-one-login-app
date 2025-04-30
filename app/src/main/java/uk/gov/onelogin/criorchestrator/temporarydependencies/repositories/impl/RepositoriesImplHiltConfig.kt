@@ -7,6 +7,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
+import javax.inject.Inject
 import uk.gov.idcheck.repositories.api.chipDocument.image.ChippedDocImageSession
 import uk.gov.idcheck.repositories.api.chipDocument.nfc.ChippedDocNfcSession
 import uk.gov.idcheck.repositories.api.driving.DrivingSession
@@ -40,7 +41,6 @@ import uk.gov.idcheck.repositories.impl.usecases.ResetAppImpl
 import uk.gov.idcheck.repositories.impl.vendor.VendorSessionRepository
 import uk.gov.idcheck.repositories.impl.webhandover.WebHandoverRepository
 import uk.gov.idcheck.repositories.impl.webhandover.sessionid.ValidSessionIdImpl
-import javax.inject.Inject
 
 object RepositoriesImplHiltConfig {
     @InstallIn(ViewModelComponent::class)
@@ -90,7 +90,7 @@ object RepositoriesImplHiltConfig {
             @ActivityRetainedScoped
             @Provides
             fun providesWebHandoverSessionRepository(
-                repository: WebHandoverRepository,
+                repository: WebHandoverRepository
             ): WebHandoverSession.Repository = repository
 
             /**
@@ -104,7 +104,7 @@ object RepositoriesImplHiltConfig {
             @ActivityRetainedScoped
             @Provides
             fun providesWebHandoverSessionReader(
-                repository: WebHandoverSession.Repository,
+                repository: WebHandoverSession.Repository
             ): WebHandoverSession.Reader = repository
         }
 
@@ -129,7 +129,7 @@ object RepositoriesImplHiltConfig {
             @Provides
             @ViewModelScoped
             fun providesWebHandoverSessionWriter(
-                repository: WebHandoverSession.Repository,
+                repository: WebHandoverSession.Repository
             ): WebHandoverSession.Writer = repository
         }
     }
@@ -153,7 +153,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesDrivingSessionRepository(
-            repository: DrivingSessionRepository,
+            repository: DrivingSessionRepository
         ): DrivingSession.Repository = repository
     }
 
@@ -178,7 +178,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesDrivingSessionReader(
-            repository: DrivingSession.Repository,
+            repository: DrivingSession.Repository
         ): DrivingSession.Reader = repository
 
         /**
@@ -194,7 +194,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesDrivingSessionWriter(
-            repository: DrivingSession.Repository,
+            repository: DrivingSession.Repository
         ): DrivingSession.Writer = repository
     }
 
@@ -240,7 +240,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesSetFaceScanAttemptsRemaining(
-            writer: FaceSession.Writer,
+            writer: FaceSession.Writer
         ): SetFaceScanAttemptsRemaining =
             SetFaceScanAttemptsRemaining { attemptsLeft ->
                 writer.updateFaceScanAttemptsRemaining(attemptsLeft)
@@ -249,7 +249,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesResetFaceScanRepository(
-            repository: FaceSession.Repository,
+            repository: FaceSession.Repository
         ): ResetFaceScanRepository =
             ResetFaceScanRepository {
                 repository.resetRepository()
@@ -275,7 +275,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesFaceSessionRepository(
-            repository: FaceSessionRepository,
+            repository: FaceSessionRepository
         ): FaceSession.Repository = repository
     }
 
@@ -324,7 +324,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetConfirmIdentityAttemptsRemaining(
-            reader: OffBoardingSession.Reader,
+            reader: OffBoardingSession.Reader
         ): GetConfirmIdentityAttemptsRemaining =
             GetConfirmIdentityAttemptsRemaining {
                 reader.getConfirmIdentityAttemptsRemaining()
@@ -333,7 +333,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesSetConfirmIdentityAttemptsRemaining(
-            writer: OffBoardingSession.Writer,
+            writer: OffBoardingSession.Writer
         ): SetConfirmIdentityAttemptsRemaining =
             SetConfirmIdentityAttemptsRemaining { attemptsLeft ->
                 writer.setConfirmIdentityAttemptsRemaining(attemptsLeft)
@@ -359,7 +359,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesOffBoardingSessionRepository(
-            repository: OffBoardingSessionRepository,
+            repository: OffBoardingSessionRepository
         ): OffBoardingSession.Repository = repository
     }
 
@@ -384,7 +384,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesOffBoardingSessionReader(
-            repository: OffBoardingSession.Repository,
+            repository: OffBoardingSession.Repository
         ): OffBoardingSession.Reader = repository
 
         /**
@@ -400,7 +400,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesOffBoardingSessionWriter(
-            repository: OffBoardingSession.Repository,
+            repository: OffBoardingSession.Repository
         ): OffBoardingSession.Writer = repository
     }
 
@@ -418,7 +418,7 @@ object RepositoriesImplHiltConfig {
             faceSessionRepository: FaceSession.Repository,
             offBoardingSessionRepository: OffBoardingSession.Repository,
             vendorSessionRepository: VendorSession.Repository,
-            webHandoverSessionRepository: WebHandoverSession.Repository,
+            webHandoverSessionRepository: WebHandoverSession.Repository
         ): Iterable<RepositoryResetter> =
             listOf(
                 chippedDocImageSession,
@@ -427,7 +427,7 @@ object RepositoriesImplHiltConfig {
                 faceSessionRepository,
                 offBoardingSessionRepository,
                 vendorSessionRepository,
-                webHandoverSessionRepository,
+                webHandoverSessionRepository
             )
     }
 
@@ -476,7 +476,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesReadIdSessionRepository(
-            repository: VendorSessionRepository,
+            repository: VendorSessionRepository
         ): ReadIdSession.Repository = repository
 
         /**
@@ -490,7 +490,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesReadIdSessionReader(
-            repository: ReadIdSession.Repository,
+            repository: ReadIdSession.Repository
         ): ReadIdSession.Reader = repository
     }
 
@@ -515,7 +515,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesReadIdSessionWriter(
-            repository: ReadIdSession.Repository,
+            repository: ReadIdSession.Repository
         ): ReadIdSession.Writer = repository
     }
 
@@ -538,7 +538,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesVendorSessionRepository(
-            repository: VendorSessionRepository,
+            repository: VendorSessionRepository
         ): VendorSession.Repository = repository
 
         /**
@@ -552,7 +552,7 @@ object RepositoriesImplHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesVendorSessionReader(
-            repository: VendorSession.Repository,
+            repository: VendorSession.Repository
         ): VendorSession.Reader = repository
     }
 
@@ -577,7 +577,7 @@ object RepositoriesImplHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesVendorSessionWriter(
-            repository: VendorSession.Repository,
+            repository: VendorSession.Repository
         ): VendorSession.Writer = repository
     }
 

@@ -6,14 +6,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.idcheck.features.api.permissions.ActivityPermissionConditions
 import uk.gov.idcheck.features.api.permissions.PermissionConditions
-import javax.inject.Singleton
 
 object FeaturesApiHiltConfig {
     @Module
     @InstallIn(
-        SingletonComponent::class,
+        SingletonComponent::class
     )
     object FeatureFlagsModule {
         @Provides
@@ -27,7 +27,7 @@ object FeaturesApiHiltConfig {
         @Provides
         @ActivityScoped
         fun providesPermissionConditions(
-            conditions: ActivityPermissionConditions,
+            conditions: ActivityPermissionConditions
         ): PermissionConditions = conditions
     }
 }

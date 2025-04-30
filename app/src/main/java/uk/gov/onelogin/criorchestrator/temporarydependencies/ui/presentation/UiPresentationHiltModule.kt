@@ -16,6 +16,7 @@ import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.android.scopes.FragmentScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.idcheck.features.api.FeatureFlags
 import uk.gov.idcheck.features.api.permissions.PermissionStateHandler.Granted
 import uk.gov.idcheck.sdk.utils.buttons.support.SupportFormUriV1
@@ -40,7 +41,6 @@ import uk.gov.idcheck.ui.presentation.usecases.handback.Handback
 import uk.gov.idcheck.ui.presentation.usecases.handback.HandbackImpl
 import uk.gov.idcheck.ui.presentation.web.customtabs.CustomTabsIntentLauncher
 import uk.gov.idcheck.ui.presentation.web.customtabs.CustomTabsLauncher
-import javax.inject.Singleton
 
 object UiPresentationHiltModule {
     @InstallIn(SingletonComponent::class)
@@ -62,7 +62,7 @@ object UiPresentationHiltModule {
         @Provides
         @Singleton
         fun providesCustomTabsLauncher(
-            intentLauncher: CustomTabsIntentLauncher,
+            intentLauncher: CustomTabsIntentLauncher
         ): CustomTabsLauncher = intentLauncher
     }
 
@@ -81,7 +81,7 @@ object UiPresentationHiltModule {
         @FragmentScoped
         @Provides
         fun providesCameraPermissionErrorGrantedCallback(
-            callback: CameraPermissionErrorGrantedCallback,
+            callback: CameraPermissionErrorGrantedCallback
         ): Granted = callback
     }
 
@@ -91,7 +91,7 @@ object UiPresentationHiltModule {
         @Provides
         @ActivityScoped
         fun providesFragmentDirectionsLauncher(
-            launcher: FragmentActivityDirectionsLauncher,
+            launcher: FragmentActivityDirectionsLauncher
         ): DirectionsLauncher = launcher
     }
 
@@ -119,7 +119,7 @@ object UiPresentationHiltModule {
         @ActivityScoped
         @Provides
         fun providesController(
-            router: ConfirmIdentityAnotherWayJourneyControllerImpl,
+            router: ConfirmIdentityAnotherWayJourneyControllerImpl
         ): ConfirmIdentityAnotherWayJourneyController = router
     }
 
@@ -129,7 +129,7 @@ object UiPresentationHiltModule {
         @Provides
         @ViewModelScoped
         fun providesAbortJourneyApiCall(
-            abortJourneyApiCall: AbortJourneyApiCallImpl,
+            abortJourneyApiCall: AbortJourneyApiCallImpl
         ): AbortJourneyApiCall = abortJourneyApiCall
     }
 
@@ -148,7 +148,7 @@ object UiPresentationHiltModule {
         @ActivityScoped
         fun providesActivityResultRegistry(
             @ActivityContext
-            context: Context,
+            context: Context
         ): ActivityResultRegistry = (context as AppCompatActivity).activityResultRegistry
     }
 
@@ -160,7 +160,7 @@ object UiPresentationHiltModule {
         fun supportFormUri(
             featureFlags: FeatureFlags,
             supportFormUriV1: SupportFormUriV1,
-            supportFormUriV2: SupportFormUriV2,
+            supportFormUriV2: SupportFormUriV2
         ): SupportFormUri =
             if (featureFlags[SUPPORT_BUTTON]) {
                 supportFormUriV2

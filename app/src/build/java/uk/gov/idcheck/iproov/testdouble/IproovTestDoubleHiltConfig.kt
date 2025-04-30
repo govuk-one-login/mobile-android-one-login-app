@@ -27,5 +27,4 @@ object IproovTestDoubleHiltConfig {
         @ViewModelScoped
         fun providesLaunchFaceScan(launcher: LaunchFaceScanFakeImpl): LaunchFaceScan = launcher
     }
-
 }

@@ -41,7 +41,7 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetPassportImageScannerResult(
-            getPassportImageScannerResults: GetPassportImageScannerResultsImpl,
+            getPassportImageScannerResults: GetPassportImageScannerResultsImpl
         ): GetPassportImageScannerResults = getPassportImageScannerResults
     }
 
@@ -51,7 +51,7 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesStartPassportImageScan(
-            useCases: StartPassportImageScanImpl,
+            useCases: StartPassportImageScanImpl
         ): StartPassportImageScan = useCases
     }
 
@@ -66,7 +66,7 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetScannerResult(
-            scannerResultFetcher: GetDrivingScannerResultsImpl,
+            scannerResultFetcher: GetDrivingScannerResultsImpl
         ): GetDrivingScannerResults = scannerResultFetcher
     }
 
@@ -89,13 +89,13 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ActivityScoped
         fun providesDisableForegroundDispatcherUsecase(
-            disableForegroundDispatcherUsecase: DisableForegroundDispatcherUsecase,
+            disableForegroundDispatcherUsecase: DisableForegroundDispatcherUsecase
         ): IDisableForegroundDispatcherUsecase = disableForegroundDispatcherUsecase
 
         @Provides
         @ActivityScoped
         fun providesEnableForegroundDispatcherUsecase(
-            enableForegroundDispatcherUsecase: EnableForegroundDispatcherUsecase,
+            enableForegroundDispatcherUsecase: EnableForegroundDispatcherUsecase
         ): IEnableForegroundDispatcherUsecase = enableForegroundDispatcherUsecase
     }
 
@@ -113,7 +113,7 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesGetPassportNfcScannerResults(
-            getPassportNfcScan: GetPassportNfcScannerResultsImpl,
+            getPassportNfcScan: GetPassportNfcScannerResultsImpl
         ): GetPassportNfcScannerResults = getPassportNfcScan
     }
 
@@ -123,7 +123,7 @@ object ReadidCommonApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesStartPassportNfcScan(
-            startPassportNfcScan: StartPassportNfcScanImpl,
+            startPassportNfcScan: StartPassportNfcScanImpl
         ): StartPassportNfcScan = startPassportNfcScan
     }
 
@@ -135,7 +135,7 @@ object ReadidCommonApiHiltConfig {
         fun providesPassportPhotoScannerEventsLogger(
             featureFlags: FeatureFlags,
             eventLogger: PassportPhotoScannerEventLogger,
-            noOpLogger: PassportPhotoScannerNoOpLogger,
+            noOpLogger: PassportPhotoScannerNoOpLogger
         ): IPassportPhotoScannerEventLogger =
             if (
                 featureFlags[ENHANCED_PASSPORT_PHOTO_LOGGING]

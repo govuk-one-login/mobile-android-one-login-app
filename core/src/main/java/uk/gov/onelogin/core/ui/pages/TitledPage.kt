@@ -3,11 +3,7 @@
 package uk.gov.onelogin.core.ui.pages
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,8 +18,6 @@ import uk.gov.ui.components.appbar.GdsTopAppBar
 @Composable
 fun TitledPage(
     title: Int,
-    floatingActionButton: Boolean = false,
-    onClick: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -44,15 +38,6 @@ fun TitledPage(
                 },
                 scrollBehavior = scrollBehavior
             ).generate()
-        },
-        floatingActionButton = {
-            if (floatingActionButton) {
-                ExtendedFloatingActionButton(
-                    onClick = onClick,
-                    icon = { Icon(Icons.Filled.Settings, null) },
-                    text = { Text(text = "Cri Orchestrator Dev Menu") },
-                )
-            }
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->

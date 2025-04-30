@@ -21,6 +21,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.statement.bodyAsText
 import io.ktor.serialization.kotlinx.json.json
+import javax.inject.Singleton
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import uk.gov.idcheck.network.api.checker.OnlineChecker
@@ -32,7 +33,6 @@ import uk.gov.idcheck.network.api.usecases.GetAppInfoFromApi
 import uk.gov.idcheck.network.api.usecases.GetAppInfoFromApiImpl
 import uk.gov.idcheck.network.api.useragent.UserAgentGenerator
 import uk.gov.onelogin.idcheck.network.api.R
-import javax.inject.Singleton
 
 object NetworkApiHiltConfig {
     @InstallIn(SingletonComponent::class)
@@ -74,7 +74,7 @@ object NetworkApiHiltConfig {
                             ignoreUnknownKeys = true
                             isLenient = true
                             explicitNulls = false
-                        },
+                        }
                     )
                 }
 
@@ -102,7 +102,7 @@ object NetworkApiHiltConfig {
         @Singleton
         @HttpClientBaseUri
         fun providesBaseUrl(
-            @ApplicationContext context: Context,
+            @ApplicationContext context: Context
         ): String = context.resources.getString(R.string.backendApiUrl)
     }
 
@@ -113,10 +113,10 @@ object NetworkApiHiltConfig {
         @Singleton
         fun providesNetworkManager(
             @ApplicationContext
-            context: Context,
+            context: Context
         ): ConnectivityManager =
             context.getSystemService(
-                Context.CONNECTIVITY_SERVICE,
+                Context.CONNECTIVITY_SERVICE
             ) as ConnectivityManager
     }
 

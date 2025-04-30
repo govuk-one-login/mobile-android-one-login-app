@@ -4,8 +4,8 @@ import android.app.Activity
 import androidx.annotation.IdRes
 import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
-import uk.gov.idcheck.sdk.IdCheckSdkActivity
 import javax.inject.Inject
+import uk.gov.idcheck.sdk.IdCheckSdkActivity
 import uk.gov.onelogin.idcheck.sdk.R.id as sdkId
 
 /**
@@ -20,22 +20,22 @@ import uk.gov.onelogin.idcheck.sdk.R.id as sdkId
  * testing space.
  */
 class FragmentActivityDirectionsLauncher
-    @Inject
-    constructor(
-        private val activity: Activity,
-    ) : DirectionsLauncher {
-        override fun launch(directions: NavDirections) {
-            val navHostFragmentId = getNavHostFragmentId()
+@Inject
+constructor(
+    private val activity: Activity
+) : DirectionsLauncher {
+    override fun launch(directions: NavDirections) {
+        val navHostFragmentId = getNavHostFragmentId()
 
-            activity.findNavController(navHostFragmentId).navigate(directions)
-        }
-
-        private fun getNavHostFragmentId(): Int {
-            val navHostFragmentId =
-                when (activity) {
-                    is IdCheckSdkActivity -> sdkId.sdk_fragment_wrapper
-                    else -> android.R.id.content
-                }
-            return navHostFragmentId
-        }
+        activity.findNavController(navHostFragmentId).navigate(directions)
     }
+
+    private fun getNavHostFragmentId(): Int {
+        val navHostFragmentId =
+            when (activity) {
+                is IdCheckSdkActivity -> sdkId.sdk_fragment_wrapper
+                else -> android.R.id.content
+            }
+        return navHostFragmentId
+    }
+}

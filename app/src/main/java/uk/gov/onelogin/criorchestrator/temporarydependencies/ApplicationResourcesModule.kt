@@ -16,6 +16,6 @@ object ApplicationResourcesModule {
     @Singleton
     fun providesApplicationResources(
         @ApplicationContext
-        context: Context,
+        context: Context
     ): Resources = context.resources
 }

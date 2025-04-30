@@ -29,7 +29,7 @@ object RepositoriesApiHiltConfig {
         @ViewModelScoped
         @Provides
         fun providesGetChipCloneAttemptsRemaining(
-            reader: ChippedDocNfcSession.Reader,
+            reader: ChippedDocNfcSession.Reader
         ): GetChipCloneAttemptsRemaining =
             GetChipCloneAttemptsRemaining {
                 reader.getChipCloneAttemptRemaining()
@@ -38,7 +38,7 @@ object RepositoriesApiHiltConfig {
         @ViewModelScoped // Lowest hilt injection level
         @Provides
         fun providesSetChipCloneAttemptsRemaining(
-            writer: ChippedDocNfcSession.Writer,
+            writer: ChippedDocNfcSession.Writer
         ): SetChipCloneAttemptsRemaining =
             SetChipCloneAttemptsRemaining { attemptsRemaining ->
                 writer.updateChipCloneAttemptRemaining(attemptsRemaining)
@@ -82,7 +82,7 @@ object RepositoriesApiHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesChipDocSessionPhotoRepository(
-            repository: DocumentImageSessionRepository,
+            repository: DocumentImageSessionRepository
         ): ChippedDocImageSession.Repository = repository
 
         /**
@@ -96,7 +96,7 @@ object RepositoriesApiHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesChipDocSessionNfcRepository(
-            repository: DocumentNfcSessionRepository,
+            repository: DocumentNfcSessionRepository
         ): ChippedDocNfcSession.Repository = repository
 
         /**
@@ -111,7 +111,7 @@ object RepositoriesApiHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesChipDocSessionNfcReader(
-            repository: ChippedDocNfcSession.Repository,
+            repository: ChippedDocNfcSession.Repository
         ): ChippedDocNfcSession.Reader = repository
 
         /**
@@ -126,7 +126,7 @@ object RepositoriesApiHiltConfig {
         @ActivityRetainedScoped
         @Provides
         fun providesChipDocSessionNfcWriter(
-            repository: ChippedDocNfcSession.Repository,
+            repository: ChippedDocNfcSession.Repository
         ): ChippedDocNfcSession.Writer = repository
     }
 
@@ -151,7 +151,7 @@ object RepositoriesApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesChipDocSessionPhotoReader(
-            repository: ChippedDocImageSession.Repository,
+            repository: ChippedDocImageSession.Repository
         ): ChippedDocImageSession.Reader = repository
 
         /**
@@ -167,7 +167,7 @@ object RepositoriesApiHiltConfig {
         @Provides
         @ViewModelScoped
         fun providesChipDocSessionPhotoWriter(
-            repository: ChippedDocImageSession.Repository,
+            repository: ChippedDocImageSession.Repository
         ): ChippedDocImageSession.Writer = repository
     }
 

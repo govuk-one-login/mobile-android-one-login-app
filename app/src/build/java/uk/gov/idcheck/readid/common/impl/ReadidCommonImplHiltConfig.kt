@@ -8,6 +8,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.idcheck.readid.common.api.brp.mrz.BrpMrzValidator
 import uk.gov.idcheck.readid.common.api.brp.nfc.BrpNfcScanner
 import uk.gov.idcheck.readid.common.api.brp.photo.BrpPhotoScanner
@@ -22,7 +23,6 @@ import uk.gov.idcheck.readid.common.impl.dispatchers.ReadIdForegroundDispatcher
 import uk.gov.idcheck.readid.common.impl.driving.DrivingScannerImpl
 import uk.gov.idcheck.readid.common.impl.passport.nfc.PassportNfcScannerImpl
 import uk.gov.idcheck.readid.common.impl.passport.photo.PassportPhotoScannerImpl
-import javax.inject.Singleton
 
 object ReadidCommonImplHiltConfig {
     @InstallIn(ViewModelComponent::class)
@@ -55,7 +55,7 @@ object ReadidCommonImplHiltConfig {
         @Provides
         @Singleton
         fun providesReadIdUtil(
-            dispatcher: ReadIdForegroundDispatcher,
+            dispatcher: ReadIdForegroundDispatcher
         ): IReadIdForegroundDispatcher = dispatcher
     }
 
