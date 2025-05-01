@@ -117,7 +117,7 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
-secure-store = { group = "uk.gov.securestore", name = "app", version = "0.8.0" }
+secure-store = { group = "uk.gov.securestore", name = "app", version = "0.10.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
 logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }
