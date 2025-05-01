@@ -1,6 +1,5 @@
 package uk.gov.onelogin
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -36,11 +35,5 @@ class MainActivity : AppCompatActivity() {
 
             OneLoginApp(navController = navController)
         }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-
-        viewModel.handleIntent(intent)
     }
 }
