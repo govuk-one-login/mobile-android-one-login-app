@@ -122,7 +122,7 @@ internal fun WelcomeBody(
     val buttonText = stringResource(R.string.app_signInButton)
     Column(
         modifier = Modifier.fillMaxSize()
-            .padding(bottom = mediumPadding, top = mediumPadding),
+            .padding(vertical = mediumPadding, horizontal = smallPadding),
         verticalArrangement = Arrangement.Center
     ) {
         Column(
@@ -163,10 +163,6 @@ internal fun WelcomeBody(
             onClick = onSignIn,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = smallPadding,
-                    end = smallPadding
-                )
         )
     }
 }
