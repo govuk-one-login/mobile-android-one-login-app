@@ -6,18 +6,39 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.pages.LandingPage
-import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.GdsButton
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.componentsv2.images.GdsVectorImage
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.mediumPadding
+import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
@@ -85,33 +106,69 @@ fun WelcomeScreen(
     }
 }
 
+@OptIn(UnstableDesignSystemAPI::class)
 @Composable
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
     onTopIconClick: () -> Unit = { }
 ) {
-    LandingPage(
-        landingPageParameters = LandingPageParameters(
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        R.string.app_signInBody1
-                    )
-                ),
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        R.string.app_signInBody2
-                    )
-                )
-            ),
-            onPrimary = onSignIn,
-            onTopIconClick = onTopIconClick,
-            primaryButtonText = R.string.app_signInButton,
-            title = R.string.app_signInTitle,
-            topIcon = R.drawable.app_icon,
-            contentDescription = R.string.app_signInIconDescription
-        )
+    val icon = ImageVector.vectorResource(R.drawable.app_icon)
+    val iconContentDesc = stringResource(R.string.app_signInIconDescription)
+    val title = stringResource(R.string.app_signInTitle)
+    val content = listOf(
+        stringResource(R.string.app_signInBody1),
+        stringResource(R.string.app_signInBody2)
     )
+    val buttonText = stringResource(R.string.app_signInButton)
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .padding(bottom = mediumPadding, top = mediumPadding),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .weight(1f)
+        ) {
+            GdsVectorImage(
+                image = icon,
+                contentDescription = iconContentDesc,
+                modifier = Modifier
+                    .padding(bottom = mediumPadding)
+                    .clickable(enabled = true) { onTopIconClick() }
+            )
+            GdsHeading(
+                text = title,
+                style = GdsHeadingStyle.LargeTitle,
+                textAlign = GdsHeadingAlignment.CenterAligned,
+                modifier = Modifier.padding(
+                    end = smallPadding,
+                    start = smallPadding,
+                    bottom = mediumPadding
+                )
+            )
+            content.forEach {
+                Text(
+                    text = it,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = mediumPadding)
+                )
+            }
+        }
+        GdsButton(
+            text = buttonText,
+            buttonType = ButtonType.Primary,
+            onClick = onSignIn,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = smallPadding,
+                    end = smallPadding
+                )
+        )
+    }
 }
 
 @ExcludeFromJacocoGeneratedReport
