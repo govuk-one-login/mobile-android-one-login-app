@@ -29,6 +29,7 @@ import uk.gov.onelogin.core.AnalyticsModule
 import uk.gov.onelogin.featureflagss.FeaturesModule
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.wallet.data.WalletRepository
+import uk.gov.onelogin.features.wallet.ui.DEEPLINK_PATH
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.wallet.WalletRepositoryModule
 
@@ -128,6 +129,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun deeplinkExists() {
         whenever(walletRepository.getCredential()).thenReturn("credential")
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(DEEPLINK_PATH)
         setup()
 
         assertEquals(
