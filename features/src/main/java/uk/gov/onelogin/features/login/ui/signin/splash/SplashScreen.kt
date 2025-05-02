@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.login.ui.signin.splash
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -107,8 +106,6 @@ private fun handleOptInRequired(
         else ->
             if (!viewModel.showUnlock.value) {
                 viewModel.login(context)
-            } else {
-                Log.e("SplashScreen", "showUnlock true. Do nothing")
             }
     }
 }
