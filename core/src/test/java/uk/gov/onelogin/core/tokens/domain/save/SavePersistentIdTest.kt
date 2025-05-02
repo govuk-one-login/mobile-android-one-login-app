@@ -1,5 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
+import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -9,28 +10,31 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
-class SaveTokensTest {
-    private lateinit var saveTokens: SaveTokens
+class SavePersistentIdTest {
+    private lateinit var savePersistentId: SavePersistentId
     private val mockTokenRepository: TokenRepository = mock()
-    private val mockSaveToTokenSecureStore: SaveToTokenSecureStore = mock()
+    private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
+    private val logger = SystemLogger()
 
     // encoded ID token with persistent ID in the body
     private val idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJzaXN0ZW50X2lkIjoiMTIzNCJ9"
 
     @BeforeEach
     fun setup() {
-        saveTokens =
-            SaveTokensImpl(
+        savePersistentId =
+            SavePersistentIdImpl(
                 mockTokenRepository,
-                mockSaveToTokenSecureStore
+                mockSaveToOpenSecureStore,
+                logger
             )
     }
 
     @Test
-    fun saveTokenWhenTokensNotNull() =
+    fun savePersistentIdWhenTokensNotNull() =
         runTest {
             val testResponse =
                 TokenResponse(
@@ -42,22 +46,18 @@ class SaveTokensTest {
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            saveTokens()
+            savePersistentId()
 
             runBlocking {
-                verify(mockSaveToTokenSecureStore).invoke(
-                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
-                )
-                verify(mockSaveToTokenSecureStore).invoke(
-                    AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    idToken
+                verify(mockSaveToOpenSecureStore).save(
+                    AuthTokenStoreKeys.PERSISTENT_ID_KEY,
+                    "1234"
                 )
             }
         }
 
     @Test
-    fun saveTokenWhenTokensNotNullMissingPersistentId() =
+    fun notSaveIdWhenTokensNotNullMissingPersistentId() =
         runTest {
             val testResponse =
                 TokenResponse(
@@ -69,27 +69,22 @@ class SaveTokensTest {
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            saveTokens()
+            savePersistentId()
             runBlocking {
-                verify(mockSaveToTokenSecureStore).invoke(
-                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
-                )
-                verify(mockSaveToTokenSecureStore).invoke(
-                    AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    "id"
-                )
+                verifyNoInteractions(mockSaveToOpenSecureStore)
             }
+            assertTrue(logger.size == 1)
         }
 
     @Test
-    fun noSaveTokenWhenTokensIsNull() {
+    fun noSaveIdWhenTokensIsNull() {
         runBlocking {
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
 
-            saveTokens()
+            savePersistentId()
 
-            verifyNoInteractions(mockSaveToTokenSecureStore)
+            verifyNoInteractions(mockSaveToOpenSecureStore)
+            assert(logger.contains("Failed to save Persistent ID, tokens not available"))
         }
     }
 }
