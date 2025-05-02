@@ -59,6 +59,7 @@ class MainActivityViewModel @Inject constructor(
     fun handleIntent(intent: Intent?) {
         val walletEnabled = features[WalletFeatureFlag.ENABLED]
         if (intent?.action == ACTION_VIEW && intent.data != null && walletEnabled) {
+            walletRepository.addDeepLinkPath(intent.data?.path)
             intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
                 walletRepository.addCredential(it)
             }

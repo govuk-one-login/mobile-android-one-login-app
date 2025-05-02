@@ -86,4 +86,30 @@ class WalletScreenViewModelTest {
         // THEN
         assertEquals(expectedCredential, actualCredential)
     }
+
+    @Test
+    fun `no wallet deeplink received`() {
+        // GIVEN
+        val deeplinkPath = "path"
+
+        // WHEN
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
+        sut.checkWalletEnabled()
+
+        // THEN
+        assertFalse(sut.walletDeepLinkReceived.value)
+    }
+
+    @Test
+    fun `wallet deeplink received`() {
+        // GIVEN
+        val deeplinkPath = DEEPLINK_PATH
+
+        // WHEN
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
+        sut.checkWalletEnabled()
+
+        // THEN
+        assertTrue(sut.walletDeepLinkReceived.value)
+    }
 }

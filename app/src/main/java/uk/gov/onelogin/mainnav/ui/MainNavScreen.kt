@@ -93,7 +93,7 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = if (walletScreenViewModel.walletDeeplink.value.isNotEmpty()) {
+                startDestination = if (walletScreenViewModel.walletDeepLinkReceived.value) {
                     BottomNavDestination.Wallet.key
                 } else {
                     BottomNavDestination.Home.key

@@ -22,12 +22,18 @@ class WalletScreenViewModel @Inject constructor(
     private val _walletDeeplink = mutableStateOf("")
     val walletDeeplink: State<String> = _walletDeeplink
 
+    private val _walletDeepLinkReceived = mutableStateOf(false)
+    val walletDeepLinkReceived: State<Boolean> = _walletDeepLinkReceived
+
     fun checkWalletEnabled() {
         _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
         _walletDeeplink.value = walletRepository.getCredential()
+        _walletDeepLinkReceived.value = walletRepository.getDeepLinkPath() == DEEPLINK_PATH
     }
 
     fun getCredential(): String {
         return walletRepository.getCredential()
     }
 }
+
+const val DEEPLINK_PATH = "/wallet/add"

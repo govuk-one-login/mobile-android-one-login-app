@@ -80,7 +80,7 @@ class MainActivityViewModelIntentTest {
     @Test
     fun invalidDeepLink() {
         val credentialOffer = "xxx"
-        val deeplink = "app://route?crudential_offer=$credentialOffer"
+        val deeplink = "https://mobile.build.account.gov.uk/wallet/add?invalid=$credentialOffer"
         val intent =
             Intent().apply {
                 action = ACTION_VIEW
@@ -89,7 +89,7 @@ class MainActivityViewModelIntentTest {
         whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         viewModel.handleIntent(intent)
 
-        verifyNoInteractions(walletRepository)
+        verify(walletRepository).addDeepLinkPath("/wallet/add")
     }
 
     @Test
