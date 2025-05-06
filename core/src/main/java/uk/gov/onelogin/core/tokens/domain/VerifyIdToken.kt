@@ -31,12 +31,12 @@ class VerifyIdTokenImpl @Inject constructor(
         idToken: String,
         jwksUrl: String
     ): Boolean {
-        val verified = isEmailValid() && isIdTokenValid(jwksUrl, idToken)
+        val verified = isEmailValid(idToken) && isIdTokenValid(jwksUrl, idToken)
         return verified
     }
 
-    private fun isEmailValid(): Boolean =
-        getEmail() != null
+    private fun isEmailValid(idToken: String): Boolean =
+        getEmail(idToken) != null
 
     private suspend fun isIdTokenValid(
         jwksUrl: String,

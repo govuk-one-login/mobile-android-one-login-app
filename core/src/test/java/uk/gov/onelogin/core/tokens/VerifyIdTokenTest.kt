@@ -68,7 +68,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `non 200 response from jwks endpoint`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(false)
         setupHttpStub(ApiResponse.Failure(400, Exception()))
         buildVerifyToken()
@@ -80,7 +80,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `unable to verify token`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(false)
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -92,7 +92,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `verifier throws exception`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -104,7 +104,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `idToken json parse throws exception`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success("not a json"))
         buildVerifyToken()
@@ -120,7 +120,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `jwks json parse throws exception`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success("not a json"))
         buildVerifyToken()
@@ -138,7 +138,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `id_token successfully verified`() = runTest {
-        whenever(getEmail.invoke()).thenReturn("email")
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -150,7 +150,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `verify fails - email missing`() = runTest {
-        whenever(getEmail.invoke()).thenReturn(null)
+        whenever(getEmail.invoke(any())).thenReturn(null)
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
         buildVerifyToken()

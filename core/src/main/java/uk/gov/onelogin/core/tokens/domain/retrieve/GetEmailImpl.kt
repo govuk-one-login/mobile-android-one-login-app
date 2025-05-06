@@ -7,17 +7,11 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.core.tokens.data.TokenRepository
 
 class GetEmailImpl @Inject constructor(
-    private val tokenRepository: TokenRepository,
     private val logger: Logger
 ) : GetEmail {
-    override fun invoke(): String? {
-        val idToken: String = tokenRepository.getTokenResponse()?.idToken ?: return null
-        val email = extractEmail(idToken)
-        return email
-    }
+    override fun invoke(idToken: String) = extractEmail(idToken)
 
     @Suppress("TooGenericExceptionCaught")
     @OptIn(ExperimentalEncodingApi::class)
