@@ -1,6 +1,6 @@
 package uk.gov.onelogin.features.login.ui.welcome
 
-import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
@@ -54,8 +54,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private val logger = SystemLogger()
 
-    private val signInIcon =
-        hasContentDescription(resources.getString(R.string.app_signInIconDescription))
+    private val devButton = hasText(resources.getString(R.string.app_developer_button))
 
     @Before
     fun setup() {
@@ -104,7 +103,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
 
     @Test
     fun verifyDevMenuClick() {
-        composeTestRule.onNode(signInIcon).performClick()
+        composeTestRule.onNode(devButton).performClick()
 
         verify(navigator).openDeveloperPanel()
     }
