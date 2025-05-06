@@ -51,6 +51,7 @@ auth = "0.18.0"
 junitVersion = "4.13.2"
 material = "1.12.0"
 aboutLibraries = "11.6.3"
+robolectric = "4.14.1"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -103,7 +104,7 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
-roboelectric = { group = "org.robolectric", name = "robolectric", version = "4.14.1" }
+roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }
@@ -116,7 +117,7 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
-secure-store = { group = "uk.gov.securestore", name = "app", version = "0.8.0" }
+secure-store = { group = "uk.gov.securestore", name = "app", version = "0.10.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
 logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }

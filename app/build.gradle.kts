@@ -221,9 +221,13 @@ dependencies {
         libs.junit.jupiter,
         libs.junit.jupiter.params,
         libs.junit.jupiter.engine,
+        libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
-        libs.classgraph
+        libs.classgraph,
+        libs.roboelectric,
+        libs.junit,
+        libs.androidx.test.ext.junit
     ).forEach(::testImplementation)
 
     listOf(

@@ -8,7 +8,6 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -22,6 +21,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -48,7 +49,7 @@ fun MainNavScreen(
         { analyticsViewModel.trackSettingsTabButton() }
     )
     GdsTheme {
-        LaunchedEffect(Unit) {
+        LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
             walletScreenViewModel.checkWalletEnabled()
         }
         Scaffold(
@@ -92,7 +93,11 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = BottomNavDestination.Home.key,
+                startDestination = if (walletScreenViewModel.walletDeepLinkReceived.value) {
+                    BottomNavDestination.Wallet.key
+                } else {
+                    BottomNavDestination.Home.key
+                },
                 modifier = Modifier.padding(paddingValues)
             ) {
                 bottomGraph()
