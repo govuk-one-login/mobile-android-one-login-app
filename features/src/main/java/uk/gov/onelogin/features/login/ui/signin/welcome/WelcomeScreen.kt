@@ -6,39 +6,23 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
-import uk.gov.android.ui.componentsv2.button.GdsButton
-import uk.gov.android.ui.componentsv2.heading.GdsHeading
-import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
-import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
-import uk.gov.android.ui.componentsv2.images.GdsVectorImage
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenImage
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.mediumPadding
-import uk.gov.android.ui.theme.smallPadding
-import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
@@ -73,11 +57,7 @@ fun WelcomeScreen(
                 viewModel.navigateToOfflineError()
             }
         },
-        onTopIconClick = {
-            if (DeveloperTools.isDeveloperPanelEnabled()) {
-                viewModel.navigateToDevPanel()
-            }
-        }
+        openDevMenu = { viewModel.navigateToDevPanel() }
     )
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
@@ -106,13 +86,11 @@ fun WelcomeScreen(
     }
 }
 
-@OptIn(UnstableDesignSystemAPI::class)
 @Composable
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
-    onTopIconClick: () -> Unit = { }
+    openDevMenu: () -> Unit = { }
 ) {
-    val icon = ImageVector.vectorResource(R.drawable.app_icon)
     val iconContentDesc = stringResource(R.string.app_signInIconDescription)
     val title = stringResource(R.string.app_signInTitle)
     val content = listOf(
@@ -120,49 +98,31 @@ internal fun WelcomeBody(
         stringResource(R.string.app_signInBody2)
     )
     val buttonText = stringResource(R.string.app_signInButton)
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .padding(vertical = mediumPadding, horizontal = smallPadding),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .weight(1f)
-        ) {
-            GdsVectorImage(
-                image = icon,
-                contentDescription = iconContentDesc,
-                modifier = Modifier
-                    .padding(bottom = mediumPadding)
-                    .clickable(enabled = true) { onTopIconClick() }
-            )
-            GdsHeading(
-                text = title,
-                style = GdsHeadingStyle.LargeTitle,
-                textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = Modifier.padding(
-                    end = smallPadding,
-                    start = smallPadding,
-                    bottom = mediumPadding
+    val devButtonText = stringResource(R.string.app_developer_button)
+    GdsTheme {
+        CentreAlignedScreen(
+            title = title,
+            modifier = Modifier.fillMaxSize(),
+            image = CentreAlignedScreenImage(
+                image = R.drawable.app_icon,
+                description = iconContentDesc
+            ),
+            body = persistentListOf(
+                CentreAlignedScreenBodyContent.Text(content[0]),
+                CentreAlignedScreenBodyContent.Text(content[1])
+            ),
+            primaryButton = CentreAlignedScreenButton(
+                text = buttonText,
+                onClick = onSignIn
+            ),
+            secondaryButton = if (DeveloperTools.isDeveloperPanelEnabled()) {
+                CentreAlignedScreenButton(
+                    text = devButtonText,
+                    onClick = openDevMenu
                 )
-            )
-            content.forEach {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = mediumPadding)
-                )
+            } else {
+                null
             }
-        }
-        GdsButton(
-            text = buttonText,
-            buttonType = ButtonType.Primary,
-            onClick = onSignIn,
-            modifier = Modifier
-                .fillMaxWidth()
         )
     }
 }

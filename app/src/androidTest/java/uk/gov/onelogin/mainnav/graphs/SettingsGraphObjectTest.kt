@@ -1,5 +1,6 @@
 package uk.gov.onelogin.mainnav.graphs
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
@@ -33,6 +34,6 @@ class SettingsGraphObjectTest : TestCase() {
     fun navigateToOssl() {
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_osslTitle)
-        ).assertExists()
+        ).assertIsDisplayed()
     }
 }
