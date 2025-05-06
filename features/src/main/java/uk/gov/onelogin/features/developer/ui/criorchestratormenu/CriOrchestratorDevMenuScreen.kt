@@ -3,14 +3,7 @@ package uk.gov.onelogin.features.developer.ui.criorchestratormenu
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
@@ -36,19 +29,6 @@ fun CriOrchestratorDevMenuScreen(
                 size = HeadingSize.H2(),
                 text = R.string.app_developer_features_title
             )
-        )
-        var subjectToken by rememberSaveable { mutableStateOf("") }
-
-        LaunchedEffect(subjectToken) {
-//            onSubUpdateRequest(subjectToken.takeIf { it.isNotBlank() })
-        }
-
-        TextField(
-            value = subjectToken,
-            onValueChange = { subjectToken = it },
-            label = {
-                Text("Subject token")
-            },
         )
         val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
         DevMenuScreen(criOrchestratorComponent)

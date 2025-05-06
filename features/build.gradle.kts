@@ -92,6 +92,13 @@ android {
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
+    packaging {
+        resources.excludes += setOf(
+            "META-INF/LICENSE-notice.md",
+            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+            "META-INF/LICENSE.md"
+        )
+    }
 }
 
 dependencies {
@@ -160,9 +167,7 @@ dependencies {
         libs.hilt.android,
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.tooling.preview,
-        libs.bundles.about.libraries,
-        libs.uk.gov.idcheck.sdk,
-        libs.uk.gov.idcheck.repositories.api
+        libs.bundles.about.libraries
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

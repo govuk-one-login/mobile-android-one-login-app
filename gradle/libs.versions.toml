@@ -46,13 +46,13 @@ govuk-ui = "7.19.0"
 govuk-logging = "0.20.0"
 compose-runtime = "1.8.0"
 wallet = "1.66.0"
-cri-orchestrator = "0.41.0"
+cri-orchestrator = "0.42.0"
 auth = "0.18.0"
 junitVersion = "4.13.2"
 material = "1.12.0"
 aboutLibraries = "11.6.3"
-gov-uk-idcheck = "0.8.0"
 robolectric = "4.14.1"
+gov-uk-idcheck = "0.9.0"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -110,6 +110,9 @@ roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }
 cri-orchestrator = { group = "uk.gov.onelogin.criorchestrator.sdk", name = "sdk", version.ref = "cri-orchestrator" }
+cri-orchestrator-dev = { module = "uk.gov.onelogin.criorchestrator.features:dev-public-api", version.ref = "cri-orchestrator" }
+uk-gov-idcheck-sdk = { module = "uk.gov.onelogin.idcheck:sdk", version.ref = "gov-uk-idcheck" }
+uk-gov-idcheck-hilt-config = { module = "uk.gov.onelogin.idcheck:hilt-config", version.ref = "gov-uk-idcheck" }
 
 components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
 pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
@@ -138,6 +141,7 @@ aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", 
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 
 [bundles]
+cri-orchestrator-bundle = ["uk-gov-idcheck-sdk", "uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
 gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator", "localauth"]
 about-libraries = [ "aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3" ]

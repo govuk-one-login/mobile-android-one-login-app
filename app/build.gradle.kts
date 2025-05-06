@@ -135,6 +135,7 @@ android {
 
     packaging {
         resources.excludes += setOf(
+            "META-INF/LICENSE-notice.md",
             "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
             "META-INF/LICENSE.md"
         )
@@ -201,7 +202,7 @@ dependencies {
         platform(libs.firebase.bom),
         libs.bundles.firebase,
         libs.androidx.biometric,
-        libs.bundles.cri.orchestrator.temporary
+        libs.bundles.cri.orchestrator.bundle
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

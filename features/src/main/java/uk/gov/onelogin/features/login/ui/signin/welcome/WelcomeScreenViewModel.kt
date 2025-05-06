@@ -31,6 +31,7 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -50,6 +51,7 @@ class WelcomeScreenViewModel @Inject constructor(
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
     private val signOutUseCase: SignOutUseCase,
+    @OneLoginInjectionAnnotation
     private val logger: Logger,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {

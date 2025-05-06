@@ -149,8 +149,7 @@ dependencies {
         libs.kotlinx.serialization.json,
         libs.ktor.client.android,
         libs.androidx.compose.ui.tooling,
-        libs.androidx.compose.ui.tooling.preview,
-        libs.bundles.gov.uk
+        libs.androidx.compose.ui.tooling.preview
     ).forEach(::implementation)
 
     listOf(
