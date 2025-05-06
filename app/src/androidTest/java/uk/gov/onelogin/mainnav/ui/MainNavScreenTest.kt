@@ -21,8 +21,8 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.CrashLogger
 import uk.gov.android.wallet.core.R as walletR
+import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
