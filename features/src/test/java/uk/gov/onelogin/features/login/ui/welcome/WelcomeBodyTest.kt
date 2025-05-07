@@ -23,6 +23,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
     private lateinit var subTitle1: SemanticsMatcher
     private lateinit var subTitle2: SemanticsMatcher
     private lateinit var primaryButton: SemanticsMatcher
+    private lateinit var devButton: SemanticsMatcher
     private lateinit var icon: SemanticsMatcher
 
     @Before
@@ -34,6 +35,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
         subTitle1 = hasText(resources.getString(R.string.app_signInBody1))
         subTitle2 = hasText(resources.getString(R.string.app_signInBody2))
         primaryButton = hasText(resources.getString(R.string.app_signInButton))
+        devButton = hasText(resources.getString(R.string.app_developer_button))
         icon = hasContentDescription(resources.getString(R.string.app_signInIconDescription))
     }
 
@@ -58,29 +60,12 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             WelcomeBody(
                 onSignIn = { actual = true },
-                onTopIconClick = {}
+                openDevMenu = {}
             )
         }
         // When clicking the `primaryButton`
         composeTestRule.onNode(primaryButton).performClick()
         // Then onShare() is called and the variable is true
-        assertEquals(true, actual)
-    }
-
-    @Test
-    fun onTopIcon() {
-        // Given the WelcomeBody Composable
-        var actual = false
-        composeTestRule.setContent {
-            WelcomeBody(
-                onSignIn = {},
-                onTopIconClick = { actual = true }
-            )
-        }
-
-        // When clicking the icon
-        composeTestRule.onNode(icon).performClick()
-        // Then onTopIcon() is called and the variable is true
         assertEquals(true, actual)
     }
 }

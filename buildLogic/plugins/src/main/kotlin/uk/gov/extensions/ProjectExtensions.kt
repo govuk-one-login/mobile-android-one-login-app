@@ -1,6 +1,6 @@
 package uk.gov.extensions
 
-import gradle.kotlin.dsl.accessors._de1ae95fd48a1440f45f50d171d58be3.ext
+import gradle.kotlin.dsl.accessors._2f6785c9131286d9d1030ac08c37b2f3.ext
 import java.io.ByteArrayOutputStream
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog

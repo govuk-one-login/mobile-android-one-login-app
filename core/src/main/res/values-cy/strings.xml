@@ -61,6 +61,7 @@
 
     <!-- Errors-->
     <!-- App Unavailable -->
+    <string name="app_signInIconDescription">GOV.UK One Login logo</string>
     <string name="app_appUnavailableTitle">Mae\'n ddrwg gennym, nid yw\'r ap ar gael</string>
     <string name="app_appUnavailableBody">Ni allwch ddefnyddio\'r ap GOV.UK One Login ar hyn o bryd.\n\nRhowch gynnig arall yn nes ymlaen.</string>
 

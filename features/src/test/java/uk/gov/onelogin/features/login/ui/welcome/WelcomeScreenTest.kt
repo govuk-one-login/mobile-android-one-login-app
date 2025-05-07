@@ -30,6 +30,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
@@ -52,6 +53,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var navigator: Navigator
     private lateinit var saveTokens: SaveTokens
+    private lateinit var savePersistentId: SavePersistentId
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
@@ -81,6 +83,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         verifyIdToken = mock()
         navigator = mock()
         saveTokens = mock()
+        savePersistentId = mock()
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
@@ -101,6 +104,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
                 verifyIdToken,
                 navigator,
                 saveTokens,
+                savePersistentId,
                 saveTokenExpiry,
                 handleRemoteLogin,
                 handleLoginRedirect,
