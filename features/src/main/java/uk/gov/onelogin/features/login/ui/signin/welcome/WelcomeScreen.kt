@@ -91,7 +91,6 @@ internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
     openDevMenu: () -> Unit = { }
 ) {
-    val iconContentDesc = stringResource(R.string.app_signInIconDescription)
     val title = stringResource(R.string.app_signInTitle)
     val content = listOf(
         stringResource(R.string.app_signInBody1),
@@ -105,7 +104,8 @@ internal fun WelcomeBody(
             modifier = Modifier.fillMaxSize(),
             image = CentreAlignedScreenImage(
                 image = R.drawable.app_icon,
-                description = iconContentDesc
+                // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
+                description = ""
             ),
             body = persistentListOf(
                 CentreAlignedScreenBodyContent.Text(content[0]),
