@@ -33,9 +33,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
 ) {
-    val httpClient = viewModel.httpClient
-    val analyticsLogger = viewModel.analyticsLogger
-    val criOrchestratorComponent = rememberCriOrchestrator(httpClient, analyticsLogger)
+    val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
     val contentsCardTitle = stringResource(R.string.app_oneLoginCardTitle)
     val contentsCardBody = stringResource(R.string.app_oneLoginCardBody)
     val contentsCardLinkText = stringResource(R.string.app_oneLoginCardLink)

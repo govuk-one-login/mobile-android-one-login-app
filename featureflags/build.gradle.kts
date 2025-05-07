@@ -98,9 +98,10 @@ dependencies {
 
     listOf(
         libs.junit.jupiter,
-        libs.junit.jupiter.params,
-        libs.junit.jupiter.engine
+        libs.junit.jupiter.params
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.ext.junit,

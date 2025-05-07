@@ -1,8 +1,12 @@
 package uk.gov.onelogin.features
 
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
+import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
+import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.nfc.NfcConfigKey
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
 object TestUtils {
@@ -113,6 +117,36 @@ object TestUtils {
                 )
             )
         )
+
+    val criSdkConfig = Config(
+        entries =
+        persistentListOf(
+            Config.Entry(
+                key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
+                Config.Value.StringValue(
+                    value = "https://sessions.review-b-async.build.account.gov.uk"
+                )
+            ),
+            Config.Entry(
+                key = SdkConfigKey.BypassIdCheckAsyncBackend,
+                Config.Value.BooleanValue(
+                    value = true
+                )
+            ),
+            Config.Entry<Config.Value.StringValue>(
+                key = NfcConfigKey.NfcAvailability,
+                Config.Value.StringValue(
+                    value = NfcConfigKey.NfcAvailability.OPTION_NOT_AVAILABLE
+                )
+            ),
+            Config.Entry(
+                key = IdCheckWrapperConfigKey.EnableManualLauncher,
+                Config.Value.BooleanValue(
+                    value = true
+                )
+            )
+        )
+    )
 
     internal sealed class TrackEventTestCase(val runTrackFunction: () -> Unit) {
         data class Icon(val trackFunction: () -> Unit, val text: String) :

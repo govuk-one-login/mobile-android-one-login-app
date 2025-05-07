@@ -22,6 +22,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.network.domain.StsAuthenticationProvider
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -63,6 +64,7 @@ object NetworkModule {
         tokenRepository: TokenRepository,
         isAccessTokenExpired: IsAccessTokenExpired,
         navigator: Navigator,
+        @OneLoginInjectionAnnotation
         logger: Logger
     ): GenericHttpClient {
         val client = KtorHttpClient(userAgentGenerator)

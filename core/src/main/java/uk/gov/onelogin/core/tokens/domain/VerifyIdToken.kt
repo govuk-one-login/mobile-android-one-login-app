@@ -12,6 +12,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 
 interface VerifyIdToken {
     suspend operator fun invoke(
@@ -25,6 +26,7 @@ class VerifyIdTokenImpl @Inject constructor(
     private val httpClient: GenericHttpClient,
     private val verifier: JwtVerifier,
     private val getEmail: GetEmail,
+    @OneLoginInjectionAnnotation
     private val logger: Logger
 ) : VerifyIdToken {
     override suspend fun invoke(
