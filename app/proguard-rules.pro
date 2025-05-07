@@ -26,4 +26,3 @@
 -dontwarn com.squareup.anvil.annotations.ContributesTo
 -dontwarn com.squareup.anvil.annotations.internal.InternalMergedTypeMarker
 -keep class com.squareup.anvil.annotations.** { *; }
--keep class uk.gov.android.ui.componentsv2.bulletedlist.** { *; }
