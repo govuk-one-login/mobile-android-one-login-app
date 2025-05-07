@@ -15,11 +15,13 @@ import uk.gov.android.network.client.StubHttpClient
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 
 class VerifyIdTokenTest {
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
+    private lateinit var getEmail: GetEmail
     private val logger = SystemLogger()
 
     // the header of the web token contains a 'kid' for one of the keys below
@@ -60,11 +62,13 @@ class VerifyIdTokenTest {
 
     @BeforeEach
     fun setup() {
+        getEmail = mock()
         stubVerifier = mock()
     }
 
     @Test
     fun `non 200 response from jwks endpoint`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(false)
         setupHttpStub(ApiResponse.Failure(400, Exception()))
         buildVerifyToken()
@@ -76,6 +80,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `unable to verify token`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(false)
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -87,6 +92,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `verifier throws exception`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -98,17 +104,23 @@ class VerifyIdTokenTest {
 
     @Test
     fun `idToken json parse throws exception`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success("not a json"))
         buildVerifyToken()
 
         val result = verifyIdToken("not an id token", "testUrl")
         assertFalse(result)
-        assertTrue(logger.contains("java.lang.IndexOutOfBoundsException: Index: 1, Size: 1"))
+        assertTrue(
+            logger.contains(
+                "java.lang.IllegalArgumentException: Invalid symbol ' '(40) at index 3"
+            )
+        )
     }
 
     @Test
     fun `jwks json parse throws exception`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success("not a json"))
         buildVerifyToken()
@@ -126,6 +138,7 @@ class VerifyIdTokenTest {
 
     @Test
     fun `id_token successfully verified`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn("email")
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success(jwksResponse))
         buildVerifyToken()
@@ -137,18 +150,13 @@ class VerifyIdTokenTest {
 
     @Test
     fun `verify fails - email missing`() = runTest {
+        whenever(getEmail.invoke(any())).thenReturn(null)
         whenever(stubVerifier.verify(any(), any())).thenReturn(true)
         setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
         buildVerifyToken()
 
         val result = verifyIdToken(idToken, "testUrl")
         assertFalse(result)
-        assertTrue(
-            logger.contains(
-                "java.lang.IllegalArgumentException: Element class " +
-                    "kotlinx.serialization.json.JsonLiteral is not a JsonObject"
-            )
-        )
     }
 
     private fun setupHttpStub(response: ApiResponse) {
@@ -159,6 +167,7 @@ class VerifyIdTokenTest {
         verifyIdToken = VerifyIdTokenImpl(
             stubHttpClient,
             stubVerifier,
+            getEmail,
             logger
         )
     }

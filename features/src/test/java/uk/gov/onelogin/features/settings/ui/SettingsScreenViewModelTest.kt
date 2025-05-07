@@ -11,12 +11,14 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
 
@@ -26,6 +28,7 @@ class SettingsScreenViewModelTest {
 
     private val mockNavigator: Navigator = mock()
     private val mockGetEmail: GetEmail = mock()
+    private val mockTokenRepository: TokenRepository = mock()
     private val mockOptInRepository: OptInRepository = mock()
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -37,6 +40,7 @@ class SettingsScreenViewModelTest {
             SettingsScreenViewModel(
                 mockOptInRepository,
                 mockNavigator,
+                mockTokenRepository,
                 mockGetEmail
             )
     }
@@ -48,7 +52,7 @@ class SettingsScreenViewModelTest {
 
     @Test
     fun `email is empty when getEmail returns null`() {
-        whenever(mockGetEmail.invoke()).thenReturn(null)
+        whenever(mockGetEmail.invoke(any())).thenReturn(null)
         setup()
 
         assert(viewModel.email.isEmpty())
@@ -56,7 +60,7 @@ class SettingsScreenViewModelTest {
 
     @Test
     fun `email is given when getEmail returns a value`() {
-        whenever(mockGetEmail.invoke()).thenReturn("test")
+        whenever(mockGetEmail.invoke(any())).thenReturn("test")
         setup()
 
         assertEquals("test", viewModel.email)
@@ -92,6 +96,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockTokenRepository,
                     mockGetEmail
                 )
             assertEquals(true, viewModel.optInState.value)
@@ -105,6 +110,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockTokenRepository,
                     mockGetEmail
                 )
             assertEquals(true, viewModel.optInState.value)
@@ -122,6 +128,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockTokenRepository,
                     mockGetEmail
                 )
             assertEquals(false, viewModel.optInState.value)

@@ -24,7 +24,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
-import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -147,7 +146,7 @@ class LoginTest : TestCase() {
     // Remove this once Secure Store is fixed
     private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
 
-    private val data = TestUtils.appInfoData
+    private val appInfoData = TestUtils.appInfoData
 
     @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()
@@ -174,10 +173,9 @@ class LoginTest : TestCase() {
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
-    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
         whenever(mockAppIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -236,14 +234,13 @@ class LoginTest : TestCase() {
         verify(mockLoginSession).present(any(), eq(loginConfig))
     }
 
-    @FlakyTest
     @Test
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
         runBlocking {
             setPersistentId()
         }
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -287,11 +284,10 @@ class LoginTest : TestCase() {
     }
 
     // App remains on sign in page when not data is returned in intent from login
-    @FlakyTest
     @Test
     fun handleActivityResultNullData() {
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -307,11 +303,10 @@ class LoginTest : TestCase() {
         verify(mockLoginSession, times(0)).finalise(any(), any(), any())
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataButLoginThrows() {
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -328,12 +323,11 @@ class LoginTest : TestCase() {
         nodeWithTextExists("There was a problem signing you in")
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -360,11 +354,10 @@ class LoginTest : TestCase() {
         allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataBioOptIn() {
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
@@ -389,12 +382,11 @@ class LoginTest : TestCase() {
         allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
-    @FlakyTest
     @Test
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(data))
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
