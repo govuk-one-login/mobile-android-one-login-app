@@ -7,7 +7,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph

@@ -23,6 +23,7 @@
         <activity
             android:launchMode="singleTask"
             android:name="uk.gov.onelogin.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:permission="">
             <intent-filter>

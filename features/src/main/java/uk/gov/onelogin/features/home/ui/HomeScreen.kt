@@ -22,7 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.core.ui.pages.TitledPage
+import uk.gov.onelogin.core.ui.pages.TitledLogoPage
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
@@ -46,7 +46,7 @@ fun HomeScreen(
         viewModel.getUiCardFlagState()
         analyticsViewModel.trackScreen()
     }
-    TitledPage(R.string.app_homeTitle) { paddingValues ->
+    TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)

@@ -1,6 +1,7 @@
 package uk.gov.onelogin.mainnav.ui
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +53,9 @@ fun MainNavScreen(
         LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
             walletScreenViewModel.checkWalletEnabled()
         }
+
         Scaffold(
+            contentWindowInsets = WindowInsets(0.dp),
             bottomBar = {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 GdsNavigationBar(
