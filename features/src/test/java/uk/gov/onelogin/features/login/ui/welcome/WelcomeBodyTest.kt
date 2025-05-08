@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -24,7 +23,6 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
     private lateinit var subTitle2: SemanticsMatcher
     private lateinit var primaryButton: SemanticsMatcher
     private lateinit var devButton: SemanticsMatcher
-    private lateinit var icon: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -36,9 +34,9 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
         subTitle2 = hasText(resources.getString(R.string.app_signInBody2))
         primaryButton = hasText(resources.getString(R.string.app_signInButton))
         devButton = hasText(resources.getString(R.string.app_developer_button))
-        icon = hasContentDescription(resources.getString(R.string.app_signInIconDescription))
     }
 
+    @Suppress("ForbiddenComment")
     @Test
     fun verifyComponents() {
         // Given
@@ -50,7 +48,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
         composeTestRule.onNode(subTitle1).assertIsDisplayed()
         composeTestRule.onNode(subTitle2).assertIsDisplayed()
         composeTestRule.onNode(primaryButton).assertIsDisplayed()
-        composeTestRule.onNode(icon).assertIsDisplayed()
+        // TODO: Add testTag to the icon in mobile ui to be able to test the icon on CentreAlignedScreen when contentDescription is empty
     }
 
     @Test
