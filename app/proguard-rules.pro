@@ -25,5 +25,7 @@
 -dontwarn com.squareup.anvil.annotations.ContributesBinding
 -dontwarn com.squareup.anvil.annotations.ContributesTo
 -dontwarn com.squareup.anvil.annotations.internal.InternalMergedTypeMarker
+-dontwarn com.squareup.anvil.annotations.ContributesMultibinding
+-dontwarn com.squareup.anvil.annotations.MergeComponent
+-dontwarn org.apiguardian.api.API
 -keep class com.squareup.anvil.annotations.** { *; }
--keep class uk.gov.android.ui.componentsv2.bulletedlist.** { *; }
