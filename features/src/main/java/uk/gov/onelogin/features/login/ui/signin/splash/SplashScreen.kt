@@ -44,11 +44,11 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.m3.images.icon.GdsIcon
-import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 
@@ -207,7 +207,7 @@ internal fun LoadingIndicator() {
 @ScreenPreview
 @Composable
 internal fun SplashScreenPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         SplashBody(
             isUnlock = false,
             loading = false,
@@ -222,7 +222,7 @@ internal fun SplashScreenPreview() {
 @Preview
 @Composable
 internal fun UnlockScreenPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         SplashBody(
             isUnlock = true,
             loading = false,
@@ -237,7 +237,7 @@ internal fun UnlockScreenPreview() {
 @Preview
 @Composable
 internal fun LoadingSplashScreenPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         SplashBody(
             isUnlock = false,
             loading = true,

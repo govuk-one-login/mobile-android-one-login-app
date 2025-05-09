@@ -25,7 +25,7 @@ import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibraryDefaults
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.m3.HeadingSize
-import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun OsslScreen(
     }
     LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
 
-    GdsTheme {
+    GdsThemeE2E {
         Scaffold(
             topBar = {
                 TopAppBar(

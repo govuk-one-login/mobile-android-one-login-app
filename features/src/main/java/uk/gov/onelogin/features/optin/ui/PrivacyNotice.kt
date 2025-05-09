@@ -27,11 +27,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.ui.components.TextWithLink
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 private const val WHITE_SPACE = " "
 private const val ICON_KEY = "link_out.key"
@@ -102,7 +102,7 @@ private fun LinkOut() {
 @PreviewLightDark
 @Composable
 internal fun PrivacyNoticePreview() {
-    GdsTheme {
+    GdsThemeE2E {
         PrivacyNotice(
             Modifier.padding(smallPadding),
             privacyNoticeString =

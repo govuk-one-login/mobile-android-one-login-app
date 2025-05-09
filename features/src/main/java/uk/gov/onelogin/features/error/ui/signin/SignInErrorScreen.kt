@@ -16,7 +16,7 @@ import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 @Preview
@@ -25,7 +25,7 @@ fun SignInErrorScreen(
     goBack: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
-    GdsTheme {
+    GdsThemeE2E {
         BackHandler(true) {
             analyticsViewModel.trackBackButton()
             goBack()

@@ -17,11 +17,11 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 import uk.gov.onelogin.developer.DeveloperTools
 
 @Composable
@@ -118,7 +118,7 @@ internal fun WelcomeBody(
 @ScreenPreview
 @Composable
 internal fun WelcomePreview() {
-    GdsTheme {
+    GdsThemeE2E {
         WelcomeBody()
     }
 }

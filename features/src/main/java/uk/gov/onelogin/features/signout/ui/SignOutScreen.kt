@@ -12,11 +12,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.ui.pages.modal.ModalDialog
 import uk.gov.android.ui.pages.modal.ModalDialogParameters
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
 
 @Composable
@@ -89,7 +89,7 @@ internal fun SignOutBody(
 @ScreenPreview
 @Composable
 internal fun SignOutWalletPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         SignOutBody(
             uiState = SignOutUIState.Wallet,
             onPrimary = {},
@@ -102,7 +102,7 @@ internal fun SignOutWalletPreview() {
 @PreviewLightDark
 @Composable
 internal fun SignOutPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         SignOutBody(
             uiState = SignOutUIState.NoWallet,
             onPrimary = {},

@@ -23,19 +23,19 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.m3.buttons.ButtonParameters
 import uk.gov.android.ui.components.m3.buttons.ButtonType
 import uk.gov.android.ui.components.m3.buttons.GdsButton
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
     val uriHandler = LocalUriHandler.current
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
     BackHandler(enabled = true) { viewModel.goToSignIn() }
-    GdsTheme {
+    GdsThemeE2E {
         OptInBody(
             uiState = state.value,
             onPrivacyNotice = { uri ->
@@ -148,7 +148,7 @@ private fun OptInButtons(
 @ScreenPreview
 @Composable
 internal fun OptInPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         OptInBody(
             uiState = OptInUIState.PreChoice,
             onPrivacyNotice = {},

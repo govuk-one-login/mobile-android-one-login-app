@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.largePadding
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun LoadingScreen(
@@ -41,7 +41,7 @@ fun LoadingScreen(
         analyticsViewModel.trackLoadingScreenEvent()
     }
 
-    GdsTheme {
+    GdsThemeE2E {
         LoadingBody()
     }
 }
@@ -80,7 +80,7 @@ fun LoadingBody() {
 @ScreenPreview
 @Composable
 internal fun LoadingPreview() {
-    GdsTheme {
+    GdsThemeE2E {
         LoadingBody()
     }
 }
