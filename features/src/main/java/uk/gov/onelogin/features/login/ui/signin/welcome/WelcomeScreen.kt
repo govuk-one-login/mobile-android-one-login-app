@@ -19,6 +19,7 @@ import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
@@ -43,21 +44,23 @@ fun WelcomeScreen(
                 }
             }
         }
-    WelcomeBody(
-        onSignIn = {
-            if (viewModel.onlineChecker.isOnline()) {
-                viewModel.onPrimary(launcher)
-                analyticsViewModel.trackSignIn()
-            } else {
-                viewModel.navigateToOfflineError()
+    EdgeToEdgePage { _ ->
+        WelcomeBody(
+            onSignIn = {
+                if (viewModel.onlineChecker.isOnline()) {
+                    viewModel.onPrimary(launcher)
+                    analyticsViewModel.trackSignIn()
+                } else {
+                    viewModel.navigateToOfflineError()
+                }
+            },
+            onTopIconClick = {
+                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                    viewModel.navigateToDevPanel()
+                }
             }
-        },
-        onTopIconClick = {
-            if (DeveloperTools.isDeveloperPanelEnabled()) {
-                viewModel.navigateToDevPanel()
-            }
-        }
-    )
+        )
+    }
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
             viewModel.abortLogin(launcher)
