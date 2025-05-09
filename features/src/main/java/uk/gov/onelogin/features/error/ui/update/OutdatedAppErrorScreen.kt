@@ -80,7 +80,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
                 ) {
                     Image(
                         painter = painterResource(UiR.drawable.ic_error),
-                        contentDescription = stringResource(R.string.app_updateApp_ContentDescription),
+                        contentDescription = stringResource(
+                            R.string.app_updateApp_ContentDescription
+                        ),
                         modifier = Modifier.padding(mediumPadding)
                     )
                     GdsHeading(
