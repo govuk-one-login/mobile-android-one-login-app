@@ -23,6 +23,7 @@ import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
@@ -66,16 +67,18 @@ fun SignedOutInfoScreen(
         )
     }
 
-    if (loading) {
-        LoadingScreen(loadingAnalyticsViewModel) {}
-    } else {
-        SignedOutInfoBody {
-            analyticsViewModel.trackReAuth()
-            handleLogin(
-                loginViewModel,
-                signOutViewModel,
-                launcher
-            )
+    EdgeToEdgePage { _ ->
+        if (loading) {
+            LoadingScreen(loadingAnalyticsViewModel) {}
+        } else {
+            SignedOutInfoBody {
+                analyticsViewModel.trackReAuth()
+                handleLogin(
+                    loginViewModel,
+                    signOutViewModel,
+                    launcher
+                )
+            }
         }
     }
 
