@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.login.ui.welcome
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -71,8 +70,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private val signInSubTitle1 = hasText(resources.getString(R.string.app_signInBody1))
     private val signInSubTitle2 = hasText(resources.getString(R.string.app_signInBody2))
     private val signInButton = hasText(resources.getString(R.string.app_signInButton))
-    private val signInIcon =
-        hasContentDescription(resources.getString(R.string.app_signInIconDescription))
 
     @Before
     fun setup() {
@@ -117,6 +114,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         shouldTryAgainCalled = false
     }
 
+    @Suppress("ForbiddenComment")
     @Test
     fun verifyComponents() {
         composeTestRule.setContent {
@@ -131,7 +129,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(signInSubTitle1).assertIsDisplayed()
         composeTestRule.onNode(signInSubTitle2).assertIsDisplayed()
         composeTestRule.onNode(signInButton).assertIsDisplayed()
-        composeTestRule.onNode(signInIcon).assertIsDisplayed()
+        // TODO: Add testTag to the icon in mobile ui to be able to test the icon on CentreAlignedScreen when contentDescription is empty
     }
 
     @Test
