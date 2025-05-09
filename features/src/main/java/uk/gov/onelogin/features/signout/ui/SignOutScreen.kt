@@ -14,6 +14,7 @@ import uk.gov.android.ui.pages.modal.ModalDialog
 import uk.gov.android.ui.pages.modal.ModalDialogParameters
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
@@ -28,23 +29,25 @@ fun SignOutScreen(
     val loading by viewModel.loadingState.collectAsState()
     val context = LocalActivity.current as FragmentActivity
 
-    if (loading) {
-        LoadingScreen(loadingAnalyticsViewModel) {
-            context.finishAndRemoveTask()
-        }
-    } else {
-        SignOutBody(
-            uiState = viewModel.uiState,
-            onClose = {
-                analyticsViewModel.trackCloseIcon()
-                viewModel.goBack()
-            },
-            onPrimary = {
-                analyticsViewModel.trackPrimary()
-                viewModel.signOut()
+    EdgeToEdgePage { _ ->
+        if (loading) {
+            LoadingScreen(loadingAnalyticsViewModel) {
+                context.finishAndRemoveTask()
             }
-        )
-        analyticsViewModel.trackSignOutView(viewModel.uiState)
+        } else {
+            SignOutBody(
+                uiState = viewModel.uiState,
+                onClose = {
+                    analyticsViewModel.trackCloseIcon()
+                    viewModel.goBack()
+                },
+                onPrimary = {
+                    analyticsViewModel.trackPrimary()
+                    viewModel.signOut()
+                }
+            )
+            analyticsViewModel.trackSignOutView(viewModel.uiState)
+        }
     }
 
     BackHandler(true) {
