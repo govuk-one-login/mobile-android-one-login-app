@@ -28,6 +28,7 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
@@ -36,20 +37,22 @@ fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
     BackHandler(enabled = true) { viewModel.goToSignIn() }
     GdsThemeE2E {
-        OptInBody(
-            uiState = state.value,
-            onPrivacyNotice = { uri ->
-                uriHandler.openUri(uri)
-            },
-            onShare = {
-                viewModel.optIn()
-                viewModel.goToSignIn()
-            },
-            onDoNotShare = {
-                viewModel.optOut()
-                viewModel.goToSignIn()
-            }
-        )
+        EdgeToEdgePage { _ ->
+            OptInBody(
+                uiState = state.value,
+                onPrivacyNotice = { uri ->
+                    uriHandler.openUri(uri)
+                },
+                onShare = {
+                    viewModel.optIn()
+                    viewModel.goToSignIn()
+                },
+                onDoNotShare = {
+                    viewModel.optOut()
+                    viewModel.goToSignIn()
+                }
+            )
+        }
     }
 }
 
