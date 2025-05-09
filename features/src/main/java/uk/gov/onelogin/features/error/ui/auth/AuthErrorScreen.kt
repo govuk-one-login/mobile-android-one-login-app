@@ -12,13 +12,16 @@ import uk.gov.android.ui.pages.LandingPageParameters
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
     GdsThemeE2E {
-        AuthErrorBody(viewModel.walletEnabled) {
-            viewModel.navigateToSignIn()
+        EdgeToEdgePage { _ ->
+            AuthErrorBody(viewModel.walletEnabled) {
+                viewModel.navigateToSignIn()
+            }
         }
     }
 }
