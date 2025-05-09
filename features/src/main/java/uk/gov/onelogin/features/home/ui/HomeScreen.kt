@@ -4,8 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -53,6 +56,7 @@ fun HomeScreen(
                 .padding(horizontal = smallPadding)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
+                .windowInsetsPadding(WindowInsets.displayCutout)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
