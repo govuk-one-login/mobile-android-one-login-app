@@ -13,6 +13,7 @@ import uk.gov.android.ui.patterns.errorscreen.ErrorScreen
 import uk.gov.android.ui.patterns.errorscreen.ErrorScreenIcon
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
@@ -26,9 +27,11 @@ fun GenericErrorScreen(
             onClick()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        GenericErrorBody {
-            analyticsViewModel.trackButton()
-            onClick()
+        EdgeToEdgePage { _ ->
+            GenericErrorBody {
+                analyticsViewModel.trackButton()
+                onClick()
+            }
         }
     }
 }
