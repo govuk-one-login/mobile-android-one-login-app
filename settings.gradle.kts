@@ -1,7 +1,7 @@
 import org.gradle.api.internal.provider.MissingValueException
 
 pluginManagement {
-    //includeBuild("buildLogic")
+    includeBuild("${rootProject.projectDir}/build-logic")
     repositories {
         google()
         mavenCentral()
@@ -55,10 +55,10 @@ fun fetchGithubCredentials(): Pair<String, String> {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "OneLogin-Android"
-includeBuild("buildLogic")
+//includeBuild("build-logic")
 include(":app")
 include(":core")
 include(":featureflags")
 include(":features")
 
-gradle.startParameter.excludedTaskNames.addAll(listOf(":buildLogic:plugins:testClasses"))
+gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:plugins:testClasses"))

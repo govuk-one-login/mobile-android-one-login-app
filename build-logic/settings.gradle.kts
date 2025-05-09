@@ -16,8 +16,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "buildLogic"
+rootProject.name = "build-logic"
 
-include(
-    ":plugins"
-)
+includeBuild("../mobile-android-pipelines/buildLogic")
+include(":plugins")
