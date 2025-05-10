@@ -1,16 +1,11 @@
 package uk.gov.onelogin
 
 import com.android.build.gradle.BaseExtension
-import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
-import java.io.FileReader
-import java.io.StringReader
-import org.gradle.kotlin.dsl.configure
-import uk.gov.onelogin.emulator.SystemImageSource
-import uk.gov.onelogin.emulator.SystemImageSource.GOOGLE_ATD
-import uk.gov.onelogin.emulator.SystemImageSource.AOSP_ATD
 import uk.gov.extensions.BaseExtensions.generateDeviceConfigurations
 import uk.gov.extensions.BaseExtensions.generateGetHardwareProfilesTask
+import uk.gov.onelogin.emulator.SystemImageSource
+import uk.gov.onelogin.emulator.SystemImageSource.AOSP_ATD
+import java.io.FileReader
 
 plugins {
     id("kotlin-android")
