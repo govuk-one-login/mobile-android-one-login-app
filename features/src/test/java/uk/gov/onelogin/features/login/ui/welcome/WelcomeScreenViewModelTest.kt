@@ -39,6 +39,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
@@ -72,6 +73,7 @@ class WelcomeScreenViewModelTest {
     private val mockHandleRemoteLogin: HandleRemoteLogin = mock()
     private val mockHandleLoginRedirect: HandleLoginRedirect = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
+    private val mockSavePersistentId: SavePersistentId = mock()
     private val logger = SystemLogger()
 
     private val testAccessToken = "testAccessToken"
@@ -102,6 +104,7 @@ class WelcomeScreenViewModelTest {
             mockVerifyIdToken,
             mockNavigator,
             mockSaveTokens,
+            mockSavePersistentId,
             mockSaveTokenExpiry,
             mockHandleRemoteLogin,
             mockHandleLoginRedirect,
@@ -139,6 +142,7 @@ class WelcomeScreenViewModelTest {
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
@@ -173,6 +177,7 @@ class WelcomeScreenViewModelTest {
             )
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
             verify(mockAutoInitialiseSecureStore, times(1)).initialise()
@@ -203,6 +208,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
 
@@ -232,6 +238,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
 
@@ -258,6 +265,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo).setLocalAuthPref(LocalAuthPreference.Disabled)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
@@ -288,6 +296,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
             verifyNoInteractions(mockSaveTokens)
         }
@@ -318,6 +327,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
             verify(mockSaveTokens).invoke()
         }
@@ -346,6 +356,7 @@ class WelcomeScreenViewModelTest {
 
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
+            verifyNoInteractions(mockSavePersistentId)
             assertThat("logger has log", logger.contains("access_denied"))
         }
 
@@ -372,6 +383,7 @@ class WelcomeScreenViewModelTest {
             )
 
             verifyNoInteractions(mockSignOutUseCase)
+            verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
             assertThat("logger has log", logger.contains("oauth_error"))
         }
@@ -391,6 +403,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockNavigator)
+            verifyNoInteractions(mockSavePersistentId)
         }
 
     @Test
@@ -413,6 +426,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
+            verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
             assertThat("logger has log", logger.size == 1)
         }
@@ -434,6 +448,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
+            verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
             assertThat("logger has no log", logger.size == 0)
         }
@@ -460,6 +475,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokens)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
+            verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
         }
 

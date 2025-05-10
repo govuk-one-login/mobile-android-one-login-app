@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -35,12 +34,10 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
             text = stringResource(R.string.app_developer_features_title),
             style = TextStyle(fontWeight = FontWeight.Bold)
         )
-        LazyColumn {
+        Column {
             availableFeatures.forEach { feature ->
-                item {
-                    FeatureToggle(featureFlag = feature.key, checked = feature.value) {
-                        viewModel.toggleFeature(feature.key)
-                    }
+                FeatureToggle(featureFlag = feature.key, checked = feature.value) {
+                    viewModel.toggleFeature(feature.key)
                 }
             }
         }

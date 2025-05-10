@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -30,7 +31,8 @@ fun EmailSection(email: String) {
         modifier = Modifier
             .padding(top = smallPadding)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

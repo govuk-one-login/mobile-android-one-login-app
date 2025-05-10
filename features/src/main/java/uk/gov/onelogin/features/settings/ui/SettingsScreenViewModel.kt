@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
 
@@ -19,6 +20,7 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 class SettingsScreenViewModel @Inject constructor(
     private val optInRepository: OptInRepository,
     private val navigator: Navigator,
+    tokenRepository: TokenRepository,
     getEmail: GetEmail
 ) : ViewModel() {
     private val _optInState = MutableStateFlow(false)
@@ -33,7 +35,7 @@ class SettingsScreenViewModel @Inject constructor(
         }
     }
 
-    val email = getEmail().orEmpty()
+    val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
     fun goToSignOut() {
         navigator.navigate(SignOutRoutes.Start)

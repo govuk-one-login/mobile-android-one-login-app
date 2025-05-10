@@ -6,17 +6,22 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.pages.LandingPage
-import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenImage
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
@@ -52,11 +57,7 @@ fun WelcomeScreen(
                 viewModel.navigateToOfflineError()
             }
         },
-        onTopIconClick = {
-            if (DeveloperTools.isDeveloperPanelEnabled()) {
-                viewModel.navigateToDevPanel()
-            }
-        }
+        openDevMenu = { viewModel.navigateToDevPanel() }
     )
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
@@ -88,30 +89,42 @@ fun WelcomeScreen(
 @Composable
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
-    onTopIconClick: () -> Unit = { }
+    openDevMenu: () -> Unit = { }
 ) {
-    LandingPage(
-        landingPageParameters = LandingPageParameters(
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        R.string.app_signInBody1
-                    )
-                ),
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        R.string.app_signInBody2
-                    )
-                )
-            ),
-            onPrimary = onSignIn,
-            onTopIconClick = onTopIconClick,
-            primaryButtonText = R.string.app_signInButton,
-            title = R.string.app_signInTitle,
-            topIcon = R.drawable.app_icon,
-            contentDescription = R.string.app_signInIconDescription
-        )
+    val title = stringResource(R.string.app_signInTitle)
+    val content = listOf(
+        stringResource(R.string.app_signInBody1),
+        stringResource(R.string.app_signInBody2)
     )
+    val buttonText = stringResource(R.string.app_signInButton)
+    val devButtonText = stringResource(R.string.app_developer_button)
+    GdsTheme {
+        CentreAlignedScreen(
+            title = title,
+            modifier = Modifier.fillMaxSize(),
+            image = CentreAlignedScreenImage(
+                image = R.drawable.app_icon,
+                // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
+                description = ""
+            ),
+            body = persistentListOf(
+                CentreAlignedScreenBodyContent.Text(content[0]),
+                CentreAlignedScreenBodyContent.Text(content[1])
+            ),
+            primaryButton = CentreAlignedScreenButton(
+                text = buttonText,
+                onClick = onSignIn
+            ),
+            secondaryButton = if (DeveloperTools.isDeveloperPanelEnabled()) {
+                CentreAlignedScreenButton(
+                    text = devButtonText,
+                    onClick = openDevMenu
+                )
+            } else {
+                null
+            }
+        )
+    }
 }
 
 @ExcludeFromJacocoGeneratedReport

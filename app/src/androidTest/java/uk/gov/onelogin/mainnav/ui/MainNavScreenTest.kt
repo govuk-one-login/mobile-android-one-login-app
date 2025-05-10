@@ -22,16 +22,21 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.R as walletR
+import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.AnalyticsModule
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.featureflagss.FeaturesModule
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
+import uk.gov.onelogin.features.wallet.data.WalletRepository
+import uk.gov.onelogin.features.wallet.ui.DEEPLINK_PATH
 import uk.gov.onelogin.utils.TestCase
+import uk.gov.onelogin.wallet.WalletRepositoryModule
 
 @HiltAndroidTest
-@UninstallModules(FeaturesModule::class, AnalyticsModule::class)
+@UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)
 class MainNavScreenTest : TestCase() {
     private val homeTab = hasText(resources.getString(R.string.app_home))
     private val walletTab = hasText(resources.getString(R.string.app_wallet))
@@ -46,12 +51,21 @@ class MainNavScreenTest : TestCase() {
     @BindValue
     var analytics: AnalyticsLogger = mock()
 
+    @OneLoginInjectionAnnotation
     @BindValue
     val logger: Logger = mock()
+
+    @OneLoginInjectionAnnotation
+    @BindValue
+    val crashLogger: CrashLogger = mock()
+
+    @BindValue
+    val walletRepository: WalletRepository = mock()
 
     @Test
     fun checkBottomOptionsDisplayed() {
         whenever(featureFlags[any()]).thenReturn(true)
+        whenever(walletRepository.getCredential()).thenReturn("")
         setup()
         composeTestRule.onAllNodes(homeTab)[1].apply {
             isDisplayed()
@@ -71,6 +85,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun goesToWalletOnClick() {
         whenever(featureFlags[any()]).thenReturn(true)
+        whenever(walletRepository.getCredential()).thenReturn("")
         setup()
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).performClick()
@@ -90,6 +105,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun checkWalletNotDisplayed() {
         whenever(featureFlags[any()]).thenReturn(false)
+        whenever(walletRepository.getCredential()).thenReturn("")
         setup()
         composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
         composeTestRule.onNode(walletTab).isNotDisplayed()
@@ -103,6 +119,7 @@ class MainNavScreenTest : TestCase() {
 
     @Test
     fun goesToSettingsOnClick() {
+        whenever(walletRepository.getCredential()).thenReturn("")
         setup()
         composeTestRule.onNode(settingsTab).performClick()
 
@@ -114,6 +131,18 @@ class MainNavScreenTest : TestCase() {
         composeTestRule.onAllNodes(settingsTab).assertCountEquals(2)
 
         verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
+    }
+
+    @Test
+    fun deeplinkExists() {
+        whenever(walletRepository.getCredential()).thenReturn("credential")
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(DEEPLINK_PATH)
+        setup()
+
+        assertEquals(
+            BottomNavDestination.Wallet.key,
+            navController.currentDestination?.route
+        )
     }
 
     private fun setup() {

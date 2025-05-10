@@ -13,6 +13,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
@@ -22,6 +23,7 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -33,6 +35,8 @@ class MainActivityViewModelTest {
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
     private val mockNavigator: Navigator = mock()
+    private val walletRepository: WalletRepository = mock()
+    private val featureFlags: FeatureFlags = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -53,6 +57,8 @@ class MainActivityViewModelTest {
             localAuthManager,
             mockTokenRepository,
             mockNavigator,
+            walletRepository,
+            featureFlags,
             mockAutoInitialiseSecureStore
         )
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")

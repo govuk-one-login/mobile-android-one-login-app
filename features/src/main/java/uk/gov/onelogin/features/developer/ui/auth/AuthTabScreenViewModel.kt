@@ -42,7 +42,7 @@ class AuthTabScreenViewModel @Inject constructor(
     val serviceFailingCallLoading: State<Boolean>
         get() = _serviceFailingCallLoading
 
-    val email = getEmail().orEmpty()
+    val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
     fun getTokens(): TokenResponse? {
         return tokenRepository.getTokenResponse()

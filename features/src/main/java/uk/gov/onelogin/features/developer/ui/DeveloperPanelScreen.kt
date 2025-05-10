@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -43,6 +44,7 @@ import uk.gov.onelogin.core.ui.pages.SimpleTextPage
 import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
 import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
+import uk.gov.onelogin.features.developer.ui.criorchestratormenu.CriOrchestratorDevMenuScreen
 import uk.gov.onelogin.features.developer.ui.features.FeaturesScreen
 import uk.gov.onelogin.features.developer.ui.localauth.LocalAuthTabScreen
 import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
@@ -71,6 +73,9 @@ fun TabView(goBack: () -> Unit) {
                 Icons.Filled.Settings
             ) {
                 FeaturesScreen()
+            },
+            TabItem(R.string.app_developer_tab_cri_orchestartor_dev_menu, Icons.Filled.Face) {
+                CriOrchestratorDevMenuScreen()
             },
             TabItem(
                 R.string.app_developer_tab_secure_store,

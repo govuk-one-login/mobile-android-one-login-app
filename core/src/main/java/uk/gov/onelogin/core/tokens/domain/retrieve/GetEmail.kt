@@ -6,5 +6,5 @@ fun interface GetEmail {
      *
      * @return email as a string or null if it fails to retrieve it
      */
-    operator fun invoke(): String?
+    operator fun invoke(idToken: String): String?
 }

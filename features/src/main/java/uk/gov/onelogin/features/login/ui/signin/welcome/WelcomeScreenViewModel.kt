@@ -29,8 +29,10 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -46,10 +48,12 @@ class WelcomeScreenViewModel @Inject constructor(
     private val verifyIdToken: VerifyIdToken,
     private val navigator: Navigator,
     private val saveTokens: SaveTokens,
+    private val savePersistentId: SavePersistentId,
     private val saveTokenExpiry: SaveTokenExpiry,
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
     private val signOutUseCase: SignOutUseCase,
+    @OneLoginInjectionAnnotation
     private val logger: Logger,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
@@ -151,6 +155,7 @@ class WelcomeScreenViewModel @Inject constructor(
     ) {
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)
+        savePersistentId()
 
         localAuthManager.enforceAndSet(
             false,
