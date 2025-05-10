@@ -1,0 +1,17 @@
+name: 'Setup runner'
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b # v4.3.0
+
+    - name: Install cocogitto
+      uses: cocogitto/cocogitto-action@ed62593c499c2d7697bb0177213946f1e2634119 # v3.10
+      with:
+        check: false
