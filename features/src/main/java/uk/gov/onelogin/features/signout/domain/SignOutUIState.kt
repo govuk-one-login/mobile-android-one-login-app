@@ -18,11 +18,12 @@ enum class SignOutUIState(
         title = R.string.app_signOutConfirmationTitle,
         header = R.string.app_signOutConfirmationBody1,
         subTitle = R.string.app_signOutConfirmationSubtitle,
-        bullets = listOf(
-            R.string.app_signOutConfirmationBullet1,
-            R.string.app_signOutConfirmationBullet2,
-            R.string.app_signOutConfirmationBullet3
-        ),
+        bullets =
+            listOf(
+                R.string.app_signOutConfirmationBullet1,
+                R.string.app_signOutConfirmationBullet2,
+                R.string.app_signOutConfirmationBullet3
+            ),
         footer = R.string.app_signOutConfirmationBody3,
         button = R.string.app_signOutAndDeleteAppDataButton,
         buttonType = ButtonType.ERROR()
@@ -31,10 +32,11 @@ enum class SignOutUIState(
         title = R.string.app_signOutConfirmationTitle_no_wallet,
         header = R.string.app_signOutConfirmationBody1_no_wallet,
         subTitle = 0,
-        bullets = listOf(
-            R.string.app_signOutConfirmationBullet1_no_wallet,
-            R.string.app_signOutConfirmationBullet2_no_wallet
-        ),
+        bullets =
+            listOf(
+                R.string.app_signOutConfirmationBullet1_no_wallet,
+                R.string.app_signOutConfirmationBullet2_no_wallet
+            ),
         footer = R.string.app_signOutConfirmationBody2_no_wallet,
         button = R.string.app_signOutButton_no_wallet,
         buttonType = ButtonType.PRIMARY()

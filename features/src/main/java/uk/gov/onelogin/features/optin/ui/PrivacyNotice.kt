@@ -47,37 +47,40 @@ fun PrivacyNotice(
     onPrivacyNotice: () -> Unit
 ) {
     TextWithLink(
-        modifier = modifier.then(
-            Modifier
-                .minimumInteractiveComponentSize()
-                .semantics {
-                    role = Role.Button
-                    onClick {
-                        onPrivacyNotice()
-                        true
-                    }
-                }
-                .testTag(NOTICE_TAG)
-        ),
+        modifier =
+            modifier.then(
+                Modifier
+                    .minimumInteractiveComponentSize()
+                    .semantics {
+                        role = Role.Button
+                        onClick {
+                            onPrivacyNotice()
+                            true
+                        }
+                    }.testTag(NOTICE_TAG)
+            ),
         text = privacyNoticeString,
-        linkText = buildAnnotatedString {
-            privacyNoticeString?.let {
+        linkText =
+            buildAnnotatedString {
+                privacyNoticeString?.let {
+                    append(WHITE_SPACE)
+                }
+                withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                    append(privacyNoticeLink)
+                }
                 append(WHITE_SPACE)
-            }
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                append(privacyNoticeLink)
-            }
-            append(WHITE_SPACE)
-            appendInlineContent(ICON_KEY)
-        },
+                appendInlineContent(ICON_KEY)
+            },
         style = style,
-        inlineContent = mapOf(
-            ICON_KEY to InlineTextContent(
-                Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
-            ) {
-                LinkOut()
-            }
-        )
+        inlineContent =
+            mapOf(
+                ICON_KEY to
+                    InlineTextContent(
+                        Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
+                    ) {
+                        LinkOut()
+                    }
+            )
     ) {
         onPrivacyNotice()
     }
@@ -89,10 +92,11 @@ private fun LinkOut() {
     Image(
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
         painter = painterResource(id = R.drawable.link_out),
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { contentDescription = description }
-            .testTag(ICON_TAG),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .semantics { contentDescription = description }
+                .testTag(ICON_TAG),
         contentDescription = null
     )
 }
@@ -106,13 +110,13 @@ internal fun PrivacyNoticePreview() {
         PrivacyNotice(
             Modifier.padding(smallPadding),
             privacyNoticeString =
-            stringResource(
-                R.string.app_settingsAnalyticsToggleFootnote
-            ),
+                stringResource(
+                    R.string.app_settingsAnalyticsToggleFootnote
+                ),
             privacyNoticeLink =
-            stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnoteLink
-            )
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                )
         ) {}
     }
 }

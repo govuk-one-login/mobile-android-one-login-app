@@ -51,12 +51,13 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
             ) {
                 Text(
                     modifier = Modifier.padding(8.dp),
-                    text = buildAnnotatedString {
-                        append("App flavor: ")
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append(BuildConfig.FLAVOR)
+                    text =
+                        buildAnnotatedString {
+                            append("App flavor: ")
+                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append(BuildConfig.FLAVOR)
+                            }
                         }
-                    }
                 )
                 Text(text = "Version Name: ${viewModel.version}")
             }
@@ -113,16 +114,16 @@ private fun AppInfoView(
                         AppInfoData.AppInfo(
                             minimumVersion = minimumVersion,
                             releaseFlags =
-                            AppInfoData.ReleaseFlags(
-                                walletVisibleViaDeepLink = false,
-                                walletVisibleIfExists = false,
-                                walletVisibleToAll = walletEnabled
-                            ),
+                                AppInfoData.ReleaseFlags(
+                                    walletVisibleViaDeepLink = false,
+                                    walletVisibleIfExists = false,
+                                    walletVisibleToAll = walletEnabled
+                                ),
                             available = appAvailable,
                             featureFlags =
-                            AppInfoData.FeatureFlags(
-                                appCheckEnabled = appCheckEnabled
-                            )
+                                AppInfoData.FeatureFlags(
+                                    appCheckEnabled = appCheckEnabled
+                                )
                         )
                     )
                 )

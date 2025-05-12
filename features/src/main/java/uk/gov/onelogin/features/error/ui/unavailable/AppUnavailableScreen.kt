@@ -30,13 +30,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.R as Res
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.spacingDouble
 import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.android.ui.components.R as Res
 
 internal const val ICON_TAG = "icon.tag"
 private val iconSize = 100.dp
@@ -58,9 +58,10 @@ internal fun AppUnavailableBody() {
     // Update typography references when UI is updated
     val color = colorScheme.contentColorFor(colorScheme.background)
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(smallPadding),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(smallPadding),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -69,27 +70,30 @@ internal fun AppUnavailableBody() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(iconPadding)
-                    .size(iconSize)
-                    .testTag(ICON_TAG),
+                modifier =
+                    Modifier
+                        .padding(iconPadding)
+                        .size(iconSize)
+                        .testTag(ICON_TAG),
                 painter = painterResource(Res.drawable.ic_error),
                 contentDescription = null,
                 tint = color
             )
             Text(
                 color = color,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { heading() },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics { heading() },
                 style = MaterialTheme.typography.headlineLarge, // `displaySmall`
                 text = stringResource(R.string.app_appUnavailableTitle),
                 textAlign = TextAlign.Center
             )
             Text(
                 color = color,
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 style = MaterialTheme.typography.bodyLarge, // `bodySmall`
                 text = stringResource(R.string.app_appUnavailableBody),
                 textAlign = TextAlign.Center

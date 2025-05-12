@@ -1,8 +1,5 @@
 package uk.gov.onelogin.features.optin.domain
 
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -16,6 +13,9 @@ import org.mockito.kotlin.verify
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 
 @ExperimentalCoroutinesApi
 class FirebaseAnalyticsOptInSourceTest {

@@ -82,61 +82,66 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
     @Before
-    fun setup() = runBlocking {
-        localAuthPreferenceRepo = mock()
-        deviceBiometricsManager = mock()
-        tokenRepository = mock()
-        autoInitialiseSecureStore = mock()
-        verifyIdToken = mock()
-        navigator = mock()
-        saveTokens = mock()
-        savePersistentId = mock()
-        saveTokenExpiry = mock()
-        handleRemoteLogin = mock()
-        handleLoginRedirect = mock()
-        signOutUseCase = mock()
-        onlineChecker = mock()
-        analytics = mock()
-        localAuthManager = LocalAuthManagerImpl(
-            localAuthPreferenceRepo,
-            deviceBiometricsManager,
-            analytics
-        )
-        localAuthPrefResetUseCase = LocalAuthPrefResetUseCaseImpl(
-            localAuthPreferenceRepo,
-            localAuthManager
-        )
-        loginViewModel = WelcomeScreenViewModel(
-            context,
-            localAuthManager,
-            tokenRepository,
-            autoInitialiseSecureStore,
-            verifyIdToken,
-            navigator,
-            saveTokens,
-            savePersistentId,
-            saveTokenExpiry,
-            handleRemoteLogin,
-            handleLoginRedirect,
-            signOutUseCase,
-            logger,
-            onlineChecker
-        )
-        getPersistentId = mock()
-        signOutUseCase = mock()
-        viewModel = SignedOutInfoViewModel(
-            navigator,
-            tokenRepository,
-            saveTokens,
-            getPersistentId,
-            signOutUseCase,
-            localAuthPrefResetUseCase,
-            logger
-        )
-        analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
-        loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
-        shouldTryAgainCalled = false
-    }
+    fun setup() =
+        runBlocking {
+            localAuthPreferenceRepo = mock()
+            deviceBiometricsManager = mock()
+            tokenRepository = mock()
+            autoInitialiseSecureStore = mock()
+            verifyIdToken = mock()
+            navigator = mock()
+            saveTokens = mock()
+            savePersistentId = mock()
+            saveTokenExpiry = mock()
+            handleRemoteLogin = mock()
+            handleLoginRedirect = mock()
+            signOutUseCase = mock()
+            onlineChecker = mock()
+            analytics = mock()
+            localAuthManager =
+                LocalAuthManagerImpl(
+                    localAuthPreferenceRepo,
+                    deviceBiometricsManager,
+                    analytics
+                )
+            localAuthPrefResetUseCase =
+                LocalAuthPrefResetUseCaseImpl(
+                    localAuthPreferenceRepo,
+                    localAuthManager
+                )
+            loginViewModel =
+                WelcomeScreenViewModel(
+                    context,
+                    localAuthManager,
+                    tokenRepository,
+                    autoInitialiseSecureStore,
+                    verifyIdToken,
+                    navigator,
+                    saveTokens,
+                    savePersistentId,
+                    saveTokenExpiry,
+                    handleRemoteLogin,
+                    handleLoginRedirect,
+                    signOutUseCase,
+                    logger,
+                    onlineChecker
+                )
+            getPersistentId = mock()
+            signOutUseCase = mock()
+            viewModel =
+                SignedOutInfoViewModel(
+                    navigator,
+                    tokenRepository,
+                    saveTokens,
+                    getPersistentId,
+                    signOutUseCase,
+                    localAuthPrefResetUseCase,
+                    logger
+                )
+            analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
+            loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
+            shouldTryAgainCalled = false
+        }
 
     @Test
     fun verifyScreenDisplayed() {
@@ -157,42 +162,44 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() = runBlocking {
-        whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(getPersistentId.invoke()).thenReturn("persistentId")
+    fun opensWebLoginViaCustomTab() =
+        runBlocking {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
+            whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-        composeTestRule.setContent {
-            SignedOutInfoScreen(
-                loginViewModel,
-                viewModel,
-                analyticsViewModel,
-                loadingAnalyticsViewModel
-            )
+            composeTestRule.setContent {
+                SignedOutInfoScreen(
+                    loginViewModel,
+                    viewModel,
+                    analyticsViewModel,
+                    loadingAnalyticsViewModel
+                )
+            }
+
+            whenWeClickSignIn()
+
+            verify(handleRemoteLogin).login(any(), any())
         }
-
-        whenWeClickSignIn()
-
-        verify(handleRemoteLogin).login(any(), any())
-    }
 
     @Test
-    fun noPersistentId_OpensSignInScreen() = runBlocking {
-        whenever(onlineChecker.isOnline()).thenReturn(true)
+    fun noPersistentId_OpensSignInScreen() =
+        runBlocking {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
 
-        composeTestRule.setContent {
-            SignedOutInfoScreen(
-                loginViewModel,
-                viewModel,
-                analyticsViewModel,
-                loadingAnalyticsViewModel
-            )
+            composeTestRule.setContent {
+                SignedOutInfoScreen(
+                    loginViewModel,
+                    viewModel,
+                    analyticsViewModel,
+                    loadingAnalyticsViewModel
+                )
+            }
+
+            whenWeClickSignIn()
+
+            verify(signOutUseCase).invoke()
+            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
         }
-
-        whenWeClickSignIn()
-
-        verify(signOutUseCase).invoke()
-        verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-    }
 
     @Test
     fun shouldTryAgainCalledOnPageLoad() {
@@ -212,42 +219,44 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit = runBlocking {
-        whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(getPersistentId.invoke()).thenReturn("persistentId")
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit =
+        runBlocking {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
+            whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-        composeTestRule.setContent {
-            SignedOutInfoScreen(
-                loginViewModel,
-                viewModel,
-                analyticsViewModel,
-                loadingAnalyticsViewModel,
-                shouldTryAgain = {
-                    true
-                }
-            )
+            composeTestRule.setContent {
+                SignedOutInfoScreen(
+                    loginViewModel,
+                    viewModel,
+                    analyticsViewModel,
+                    loadingAnalyticsViewModel,
+                    shouldTryAgain = {
+                        true
+                    }
+                )
+            }
+
+            verify(handleRemoteLogin).login(any(), any())
         }
-
-        verify(handleRemoteLogin).login(any(), any())
-    }
 
     @Test
-    fun loginFiresAutomaticallyButOffline() = runBlocking {
-        whenever(onlineChecker.isOnline()).thenReturn(false)
-        composeTestRule.setContent {
-            SignedOutInfoScreen(
-                loginViewModel,
-                viewModel,
-                analyticsViewModel,
-                loadingAnalyticsViewModel,
-                shouldTryAgain = {
-                    true
-                }
-            )
-        }
+    fun loginFiresAutomaticallyButOffline() =
+        runBlocking {
+            whenever(onlineChecker.isOnline()).thenReturn(false)
+            composeTestRule.setContent {
+                SignedOutInfoScreen(
+                    loginViewModel,
+                    viewModel,
+                    analyticsViewModel,
+                    loadingAnalyticsViewModel,
+                    shouldTryAgain = {
+                        true
+                    }
+                )
+            }
 
-        itOpensErrorScreen()
-    }
+            itOpensErrorScreen()
+        }
 
     @Test
     fun opensNetworkErrorScreen() {

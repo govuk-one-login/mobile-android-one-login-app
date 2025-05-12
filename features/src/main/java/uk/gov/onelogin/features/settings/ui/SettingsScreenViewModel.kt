@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.settings.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,46 +14,49 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
+import javax.inject.Inject
 
 @HiltViewModel
-class SettingsScreenViewModel @Inject constructor(
-    private val optInRepository: OptInRepository,
-    private val navigator: Navigator,
-    tokenRepository: TokenRepository,
-    getEmail: GetEmail
-) : ViewModel() {
-    private val _optInState = MutableStateFlow(false)
-    val optInState: StateFlow<Boolean>
-        get() = _optInState.asStateFlow()
+class SettingsScreenViewModel
+    @Inject
+    constructor(
+        private val optInRepository: OptInRepository,
+        private val navigator: Navigator,
+        tokenRepository: TokenRepository,
+        getEmail: GetEmail
+    ) : ViewModel() {
+        private val _optInState = MutableStateFlow(false)
+        val optInState: StateFlow<Boolean>
+            get() = _optInState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            optInRepository.hasAnalyticsOptIn().collect {
-                _optInState.value = it
+        init {
+            viewModelScope.launch {
+                optInRepository.hasAnalyticsOptIn().collect {
+                    _optInState.value = it
+                }
             }
         }
-    }
 
-    val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
+        val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
-    fun goToSignOut() {
-        navigator.navigate(SignOutRoutes.Start)
-    }
+        fun goToSignOut() {
+            navigator.navigate(SignOutRoutes.Start)
+        }
 
-    fun goToOssl() {
-        navigator.navigate(SettingsRoutes.Ossl)
-    }
+        fun goToOssl() {
+            navigator.navigate(SettingsRoutes.Ossl)
+        }
 
-    fun toggleOptInPreference() {
-        viewModelScope.launch {
-            _optInState.update { currentOptInState ->
-                currentOptInState.not().also { newOptInState ->
-                    when (newOptInState) {
-                        true -> optInRepository.optIn()
-                        false -> optInRepository.optOut()
+        fun toggleOptInPreference() {
+            viewModelScope.launch {
+                _optInState.update { currentOptInState ->
+                    currentOptInState.not().also { newOptInState ->
+                        when (newOptInState) {
+                            true -> optInRepository.optIn()
+                            false -> optInRepository.optOut()
+                        }
                     }
                 }
             }
         }
     }
-}

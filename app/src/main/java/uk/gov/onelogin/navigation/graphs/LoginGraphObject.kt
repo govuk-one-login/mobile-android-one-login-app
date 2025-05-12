@@ -16,9 +16,7 @@ import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAI
 
 object LoginGraphObject {
     @Suppress("LongMethod")
-    fun NavGraphBuilder.loginGraph(
-        navController: NavHostController
-    ) {
+    fun NavGraphBuilder.loginGraph(navController: NavHostController) {
         navigation(
             route = LoginRoutes.Root.getRoute(),
             startDestination = LoginRoutes.Start.getRoute()

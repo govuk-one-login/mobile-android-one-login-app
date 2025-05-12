@@ -29,52 +29,32 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiryImpl
 @InstallIn(ViewModelComponent::class)
 interface TokenModule {
     @Binds
-    fun bindGetFromTokenSecureStore(
-        getFromSecureStore: GetFromEncryptedSecureStoreImpl
-    ): GetFromEncryptedSecureStore
+    fun bindGetFromTokenSecureStore(getFromSecureStore: GetFromEncryptedSecureStoreImpl): GetFromEncryptedSecureStore
 
     @Binds
-    fun bindGetFromOpenSecureStore(
-        getFromOpenSecureStore: GetFromOpenSecureStoreImpl
-    ): GetFromOpenSecureStore
+    fun bindGetFromOpenSecureStore(getFromOpenSecureStore: GetFromOpenSecureStoreImpl): GetFromOpenSecureStore
 
     @Binds
-    fun bindSaveToSecureStore(
-        saveToSecureStore: SaveToTokenSecureStoreImpl
-    ): SaveToTokenSecureStore
+    fun bindSaveToSecureStore(saveToSecureStore: SaveToTokenSecureStoreImpl): SaveToTokenSecureStore
 
     @Binds
-    fun bindSaveToOpenSecureStore(
-        saveToOpenSecureStore: SaveToOpenSecureStoreImpl
-    ): SaveToOpenSecureStore
+    fun bindSaveToOpenSecureStore(saveToOpenSecureStore: SaveToOpenSecureStoreImpl): SaveToOpenSecureStore
 
     @Binds
-    fun bindClearAllSecureStore(
-        clearAllSecureStore: RemoveAllSecureStoreDataImpl
-    ): RemoveAllSecureStoreData
+    fun bindClearAllSecureStore(clearAllSecureStore: RemoveAllSecureStoreDataImpl): RemoveAllSecureStoreData
 
     @Binds
-    fun bindRemoveTokenExpiry(
-        removeTokenExpiry: RemoveTokenExpiryImpl
-    ): RemoveTokenExpiry
+    fun bindRemoveTokenExpiry(removeTokenExpiry: RemoveTokenExpiryImpl): RemoveTokenExpiry
 
     @Binds
-    fun bindGetEmail(
-        getEmail: GetEmailImpl
-    ): GetEmail
+    fun bindGetEmail(getEmail: GetEmailImpl): GetEmail
 
     @Binds
-    fun bindSavePersistentId(
-        saveId: SavePersistentIdImpl
-    ): SavePersistentId
+    fun bindSavePersistentId(saveId: SavePersistentIdImpl): SavePersistentId
 
     @Binds
-    fun bindGetPersistentId(
-        getPersistentId: GetPersistentIdImpl
-    ): GetPersistentId
+    fun bindGetPersistentId(getPersistentId: GetPersistentIdImpl): GetPersistentId
 
     @Binds
-    fun bindSaveTokenExpiry(
-        saveTokenExpiry: SaveTokenExpiryImpl
-    ): SaveTokenExpiry
+    fun bindSaveTokenExpiry(saveTokenExpiry: SaveTokenExpiryImpl): SaveTokenExpiry
 }

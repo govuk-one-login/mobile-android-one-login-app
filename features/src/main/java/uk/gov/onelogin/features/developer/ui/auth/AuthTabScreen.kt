@@ -36,8 +36,10 @@ fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
     ) {
         AuthTokensSection(viewModel)
         OpenIdAuthSection(viewModel)
@@ -62,8 +64,9 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
-        modifier = Modifier
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .padding(16.dp)
     )
     HorizontalDivider()
     Text(
@@ -74,8 +77,9 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
-        modifier = Modifier
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .padding(16.dp)
     )
     HorizontalDivider()
     Text(
@@ -86,10 +90,11 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.refreshToken ?: "No refresh token set!",
-        modifier = Modifier
-            .padding(
-                all = 16.dp
-            )
+        modifier =
+            Modifier
+                .padding(
+                    all = 16.dp
+                )
     )
     HorizontalDivider()
 }
@@ -135,21 +140,23 @@ private fun ButtonRow(
 ) {
     Row(
         modifier =
-        Modifier.fillMaxWidth()
-            .padding(vertical = smallPadding),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = smallPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (!buttonLoading) {
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    text = stringResource(buttonText),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        onClick()
-                    }
-                )
+                buttonParameters =
+                    ButtonParameters(
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        text = stringResource(buttonText),
+                        buttonType = ButtonType.PRIMARY(),
+                        onClick = {
+                            onClick()
+                        }
+                    )
             )
         } else {
             CircularProgressIndicator(
@@ -159,17 +166,18 @@ private fun ButtonRow(
         }
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = buildAnnotatedString {
-                append("Api response: ")
-                withStyle(
-                    style =
-                    SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append(apiResponse)
+            text =
+                buildAnnotatedString {
+                    append("Api response: ")
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                    ) {
+                        append(apiResponse)
+                    }
                 }
-            }
         )
     }
 }

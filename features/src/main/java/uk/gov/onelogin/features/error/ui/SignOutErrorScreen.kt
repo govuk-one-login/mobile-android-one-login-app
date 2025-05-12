@@ -20,31 +20,37 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
     GdsTheme {
         ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = onExitAppClicked,
-                    text = R.string.app_exitButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_signOutErrorTitle,
-                                text =
-                                intArrayOf(
-                                    R.string.app_signOutErrorBody
-                                )
-                            )
+            parameters =
+                ErrorPageParameters(
+                    primaryButtonParameters =
+                        ButtonParameters(
+                            buttonType = ButtonType.PRIMARY(),
+                            onClick = onExitAppClicked,
+                            text = R.string.app_exitButton
                         ),
-                        headingSize = HeadingSize.H1()
-                    ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
-                    )
+                    informationParameters =
+                        InformationParameters(
+                            contentParameters =
+                                ContentParameters(
+                                    resource =
+                                        listOf(
+                                            GdsContentText.GdsContentTextString(
+                                                subTitle = R.string.app_signOutErrorTitle,
+                                                text =
+                                                    intArrayOf(
+                                                        R.string.app_signOutErrorBody
+                                                    )
+                                            )
+                                        ),
+                                    headingSize = HeadingSize.H1()
+                                ),
+                            iconParameters =
+                                IconParameters(
+                                    foreGroundColor = Color.Unspecified,
+                                    image = uk.gov.android.ui.components.R.drawable.ic_error
+                                )
+                        )
                 )
-            )
         )
     }
 }

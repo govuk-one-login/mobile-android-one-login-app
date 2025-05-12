@@ -19,9 +19,10 @@ class AuthErrorViewModelTest {
     @Test
     fun `navigate to sign in`() =
         runTest {
-            featureFlags = InMemoryFeatureFlags(
-                setOf()
-            )
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf()
+                )
             val sut = AuthErrorViewModel(mockNavigator, featureFlags)
 
             sut.navigateToSignIn()
@@ -32,9 +33,10 @@ class AuthErrorViewModelTest {
     @Test
     fun `wallet enabled`() =
         runTest {
-            featureFlags = InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            )
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf(WalletFeatureFlag.ENABLED)
+                )
             val sut = AuthErrorViewModel(mockNavigator, featureFlags)
 
             val result = sut.walletEnabled
@@ -45,9 +47,10 @@ class AuthErrorViewModelTest {
     @Test
     fun `wallet disabled`() =
         runTest {
-            featureFlags = InMemoryFeatureFlags(
-                setOf()
-            )
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf()
+                )
             val sut = AuthErrorViewModel(mockNavigator, featureFlags)
 
             val result = sut.walletEnabled

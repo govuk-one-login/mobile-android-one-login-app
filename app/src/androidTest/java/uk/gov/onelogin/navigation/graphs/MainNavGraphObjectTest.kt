@@ -6,7 +6,6 @@ import androidx.compose.ui.test.onAllNodesWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -23,6 +22,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.utils.TestUtils
 import uk.gov.onelogin.utils.TestUtils.setActivity
+import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
@@ -54,8 +54,9 @@ class MainNavGraphObjectTest : TestCase() {
             navigator.navigate(MainNavRoutes.Start)
         }
 
-        composeTestRule.onAllNodesWithText(
-            resources.getString(R.string.app_homeTitle)
-        ).assertCountEquals(2)
+        composeTestRule
+            .onAllNodesWithText(
+                resources.getString(R.string.app_homeTitle)
+            ).assertCountEquals(2)
     }
 }

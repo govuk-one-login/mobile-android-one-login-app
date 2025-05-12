@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import kotlin.test.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -48,6 +47,7 @@ import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRed
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import kotlin.test.assertFalse
 
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -58,11 +58,12 @@ class WelcomeScreenViewModelTest {
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepository = mock()
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
     private val analyticsLogger: AnalyticsLogger = mock()
-    private val localAuthManager: LocalAuthManager = LocalAuthManagerImpl(
-        localAuthPreferenceRepo,
-        deviceBiometricsManager,
-        analyticsLogger
-    )
+    private val localAuthManager: LocalAuthManager =
+        LocalAuthManagerImpl(
+            localAuthPreferenceRepo,
+            deviceBiometricsManager,
+            analyticsLogger
+        )
     private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockVerifyIdToken: VerifyIdToken = mock()
@@ -86,14 +87,16 @@ class WelcomeScreenViewModelTest {
             testIdToken,
             "testRefreshToken"
         )
-    private val accessDeniedError = AuthenticationError(
-        "access_denied",
-        AuthenticationError.ErrorType.ACCESS_DENIED
-    )
-    private val oauthError = AuthenticationError(
-        "oauth_error",
-        AuthenticationError.ErrorType.OAUTH
-    )
+    private val accessDeniedError =
+        AuthenticationError(
+            "access_denied",
+            AuthenticationError.ErrorType.ACCESS_DENIED
+        )
+    private val oauthError =
+        AuthenticationError(
+            "oauth_error",
+            AuthenticationError.ErrorType.OAUTH
+        )
 
     private val viewModel =
         WelcomeScreenViewModel(
@@ -494,18 +497,19 @@ class WelcomeScreenViewModelTest {
     }
 
     @Test
-    fun `check abort login works as expected`() = runTest {
-        val mockIntent: Intent = mock()
+    fun `check abort login works as expected`() =
+        runTest {
+            val mockIntent: Intent = mock()
 
-        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                runBlocking {
-                    delay(10000)
-                    assert(viewModel.loading.value)
-                    viewModel.abortLogin(any())
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    runBlocking {
+                        delay(10000)
+                        assert(viewModel.loading.value)
+                        viewModel.abortLogin(any())
+                    }
                 }
-            }
 
-        assertFalse(viewModel.loading.value)
-    }
+            assertFalse(viewModel.loading.value)
+        }
 }

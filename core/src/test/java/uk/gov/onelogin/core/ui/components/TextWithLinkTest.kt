@@ -31,7 +31,8 @@ class TextWithLinkTest : FragmentActivityTestCase() {
         }
 
         // Perform a click in the middle of the text
-        composeTestRule.onNodeWithText("Click Me", useUnmergedTree = true, substring = true)
+        composeTestRule
+            .onNodeWithText("Click Me", useUnmergedTree = true, substring = true)
             .performTouchInput {
                 click(center)
             }
@@ -54,7 +55,8 @@ class TextWithLinkTest : FragmentActivityTestCase() {
         }
 
         // Perform a click outside the bounds of the text
-        composeTestRule.onNodeWithTag("ClickableText", useUnmergedTree = true)
+        composeTestRule
+            .onNodeWithTag("ClickableText", useUnmergedTree = true)
             .performTouchInput {
                 click(bottomLeft.copy(x = bottomLeft.x - 10f)) // Click outside to the left
             }
@@ -84,7 +86,8 @@ class TextWithLinkTest : FragmentActivityTestCase() {
         }
 
         // Perform a click in the middle of the normal text
-        composeTestRule.onNodeWithTag("ClickableText", useUnmergedTree = true)
+        composeTestRule
+            .onNodeWithTag("ClickableText", useUnmergedTree = true)
             .performTouchInput {
                 click(center.copy(x = center.x - 50f)) // Click in the "Normal Text" part
             }
@@ -113,7 +116,8 @@ class TextWithLinkTest : FragmentActivityTestCase() {
         }
 
         // Perform a click in the middle of the link text
-        composeTestRule.onNodeWithText("Click Me", useUnmergedTree = true, substring = true)
+        composeTestRule
+            .onNodeWithText("Click Me", useUnmergedTree = true, substring = true)
             .performTouchInput {
                 click() // Click in the "Click me part
             }

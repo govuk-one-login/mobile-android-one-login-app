@@ -44,26 +44,28 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
-        viewModel = SplashScreenViewModel(
-            navigator,
-            handleLocalLogin,
-            appInfoService
-        )
+        viewModel =
+            SplashScreenViewModel(
+                navigator,
+                handleLocalLogin,
+                appInfoService
+            )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
         optInViewModel = OptInRequirementViewModel(repository)
     }
 
     @Test
-    fun testDevMenuButton() = runBlocking {
-        composeTestRule.setContent {
-            SplashScreen(viewModel, analyticsViewModel, optInViewModel)
+    fun testDevMenuButton() =
+        runBlocking {
+            composeTestRule.setContent {
+                SplashScreen(viewModel, analyticsViewModel, optInViewModel)
+            }
+
+            composeTestRule.onNode(splashIcon).performClick()
+
+            composeTestRule.onNodeWithText("Developer Portal").assertDoesNotExist()
         }
-
-        composeTestRule.onNode(splashIcon).performClick()
-
-        composeTestRule.onNodeWithText("Developer Portal").assertDoesNotExist()
-    }
 
     @Test
     fun onOpenDeveloperPortal() {

@@ -54,9 +54,10 @@ class ErrorGraphObjectTest : TestCase() {
             navController.setCurrentDestination(ErrorRoutes.SignOut.getRoute())
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorTitle)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_signOutErrorTitle)
+            ).assertExists()
     }
 
     @Test
@@ -64,9 +65,10 @@ class ErrorGraphObjectTest : TestCase() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(ErrorRoutes.Generic.getRoute())
         }
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_genericErrorPage)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_genericErrorPage)
+            ).assertExists()
     }
 
     @Test
@@ -74,9 +76,10 @@ class ErrorGraphObjectTest : TestCase() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(ErrorRoutes.Offline.getRoute())
         }
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_networkErrorTitle)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_networkErrorTitle)
+            ).assertExists()
     }
 
     @Test
@@ -84,15 +87,17 @@ class ErrorGraphObjectTest : TestCase() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(ErrorRoutes.UpdateRequired.getRoute())
         }
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_updateApp_Title)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_updateApp_Title)
+            ).assertExists()
         composeTestRule.runOnUiThread {
             navController.popBackStack()
         }
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_updateApp_Title)
-        ).assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_updateApp_Title)
+            ).assertDoesNotExist()
     }
 
     @Test
@@ -100,8 +105,9 @@ class ErrorGraphObjectTest : TestCase() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(ErrorRoutes.Unavailable.getRoute())
         }
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_appUnavailableTitle)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_appUnavailableTitle)
+            ).assertExists()
     }
 }

@@ -26,9 +26,9 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
     val availableFeatures by viewModel.featureList
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(mediumPadding)
+            Modifier
+                .fillMaxSize()
+                .padding(mediumPadding)
     ) {
         Text(
             text = stringResource(R.string.app_developer_features_title),

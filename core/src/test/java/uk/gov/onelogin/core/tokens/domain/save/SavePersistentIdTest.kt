@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -13,6 +12,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import kotlin.test.assertTrue
 
 class SavePersistentIdTest {
     private lateinit var savePersistentId: SavePersistentId

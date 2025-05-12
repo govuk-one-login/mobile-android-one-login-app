@@ -24,10 +24,11 @@ import uk.gov.android.ui.theme.smallPadding
 @Composable
 fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel()) {
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize()
-            .padding(smallPadding),
+        modifier =
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+                .padding(smallPadding),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
@@ -36,9 +37,9 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
         ) {
             Text(
                 text =
-                buildAnnotatedString {
-                    AppendBold("App Check")
-                }
+                    buildAnnotatedString {
+                        AppendBold("App Check")
+                    }
             )
         }
 

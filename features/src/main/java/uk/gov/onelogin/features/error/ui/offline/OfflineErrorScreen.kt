@@ -35,25 +35,24 @@ fun OfflineErrorScreen(
 }
 
 @Composable
-private fun OfflineErrorBody(
-    onPrimary: () -> Unit = {}
-) {
+private fun OfflineErrorBody(onPrimary: () -> Unit = {}) {
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_networkErrorTitle),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_networkErrorBody1)
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_networkErrorBody1)
+                ),
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_networkErrorBody2)
+                )
             ),
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_networkErrorBody2)
-            )
-        ),
         primaryButton =
-        CentreAlignedScreenButton(
-            text = stringResource(R.string.app_genericErrorPageButton),
-            onClick = onPrimary
-        )
+            CentreAlignedScreenButton(
+                text = stringResource(R.string.app_genericErrorPageButton),
+                onClick = onPrimary
+            )
     )
 }
 

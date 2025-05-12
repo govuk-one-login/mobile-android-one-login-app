@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
-import java.io.IOException
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -15,6 +14,7 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCalle
 import uk.gov.android.authentication.json.jwk.JWK
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
+import java.io.IOException
 
 class AttestationApiCallTest {
     private lateinit var context: Context

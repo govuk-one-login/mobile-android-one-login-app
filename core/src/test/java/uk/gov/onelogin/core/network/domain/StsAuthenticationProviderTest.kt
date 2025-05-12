@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.network.domain
 
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
@@ -18,6 +17,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import kotlin.test.assertEquals
 
 class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()

@@ -6,7 +6,6 @@ import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,6 +23,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.utils.TestUtils
 import uk.gov.onelogin.utils.TestUtils.back
 import uk.gov.onelogin.utils.TestUtils.setActivity
+import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
@@ -55,9 +55,10 @@ class SignOutGraphObjectTest : TestCase() {
             navigator.navigate(SignOutRoutes.Start)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutConfirmationTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_signOutConfirmationTitle)
+            ).assertIsDisplayed()
     }
 
     @Test

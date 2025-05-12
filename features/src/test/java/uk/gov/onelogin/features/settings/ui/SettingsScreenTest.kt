@@ -80,19 +80,21 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
         yourDetailsHeader = hasText(resources.getString(R.string.app_settingsSubtitle1))
         yourDetailsTitle = hasText(resources.getString(R.string.app_settingsSignInDetailsLink))
-        yourDetailsSubTitle = hasText(
-            resources.getString(R.string.app_settingSignInDetailsFootnote)
-        )
+        yourDetailsSubTitle =
+            hasText(
+                resources.getString(R.string.app_settingSignInDetailsFootnote)
+            )
         legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
         legalLink2 = hasText(resources.getString(R.string.app_openSourceLicences))
         legalLink3 = hasText(resources.getString(R.string.app_accessibilityStatement))
         helpLink = hasText(resources.getString(R.string.app_appGuidanceLink))
         contactLink = hasText(resources.getString(R.string.app_contactLink))
         aboutTheAppSwitch = hasTestTag(resources.getString(R.string.optInSwitchTestTag))
-        aboutTheAppSubTitle = hasText(
-            resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
-            substring = true
-        )
+        aboutTheAppSubTitle =
+            hasText(
+                resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
+                substring = true
+            )
         aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
         openSourceLicensesButton = hasText(resources.getString(R.string.app_openSourceLicences))
@@ -170,7 +172,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 onPrivacyNoticeClick = { privacyNoticeClicked = true }
             )
         }
-        composeTestRule.onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
+        composeTestRule
+            .onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
             .performTouchInput {
                 click(bottomRight.copy(x = bottomRight.x - 10f))
             }
@@ -237,7 +240,10 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAccessibilityEvent(context))
     }
 
-    private fun checkTheLinkOpensTheCorrectUrl(linkView: SemanticsMatcher, url: String) {
+    private fun checkTheLinkOpensTheCorrectUrl(
+        linkView: SemanticsMatcher,
+        url: String
+    ) {
         val signInURL = Uri.parse(url)
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)

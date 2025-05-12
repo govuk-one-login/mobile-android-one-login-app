@@ -8,7 +8,6 @@ import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,6 +26,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.utils.TestUtils.appInfoData
 import uk.gov.onelogin.utils.TestUtils.back
 import uk.gov.onelogin.utils.TestUtils.setActivity
+import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
@@ -56,9 +56,10 @@ class LoginGraphObjectTest : TestCase() {
     fun loginGraph_SignInError() {
         composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInError) }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInErrorTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_signInErrorTitle)
+            ).assertIsDisplayed()
     }
 
     @FlakyTest
@@ -68,13 +69,15 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_analyticsPermissionBody)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_analyticsPermissionBody)
+            ).assertIsDisplayed()
         composeTestRule.back()
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInButton)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_signInButton)
+            ).assertIsDisplayed()
     }
 
     @FlakyTest
@@ -84,8 +87,9 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.Loading)
         }
 
-        composeTestRule.onNodeWithTag(
-            LOADING_SCREEN_PROGRESS_INDICATOR
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithTag(
+                LOADING_SCREEN_PROGRESS_INDICATOR
+            ).assertIsDisplayed()
     }
 }

@@ -24,8 +24,7 @@ class SaveTokenExpiryTest {
                 eq(AuthTokenStoreKeys.TOKEN_SHARED_PREFS),
                 eq(Context.MODE_PRIVATE)
             )
-        )
-            .thenReturn(mockSharedPreferences)
+        ).thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
 
         useCase = SaveTokenExpiryImpl(mockContext)

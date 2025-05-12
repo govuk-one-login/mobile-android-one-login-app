@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.signout.domain
 
+import uk.gov.onelogin.features.optin.ui.OptInUIState
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import uk.gov.onelogin.features.optin.ui.OptInUIState
 
 class SignOutUIStateTest {
     @Test

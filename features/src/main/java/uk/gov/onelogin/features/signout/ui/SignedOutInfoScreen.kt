@@ -105,21 +105,23 @@ private fun handleLogin(
 @Composable
 internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
     LandingPage(
-        landingPageParameters = LandingPageParameters(
-            title = R.string.app_youveBeenSignedOutTitle,
-            titleBottomPadding = smallPadding,
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody1)
-                ),
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody2)
-                )
-            ),
-            contentInternalPadding = PaddingValues(bottom = smallPadding),
-            primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
-            onPrimary = onPrimary
-        )
+        landingPageParameters =
+            LandingPageParameters(
+                title = R.string.app_youveBeenSignedOutTitle,
+                titleBottomPadding = smallPadding,
+                content =
+                    listOf(
+                        GdsContentText.GdsContentTextString(
+                            intArrayOf(R.string.app_youveBeenSignedOutBody1)
+                        ),
+                        GdsContentText.GdsContentTextString(
+                            intArrayOf(R.string.app_youveBeenSignedOutBody2)
+                        )
+                    ),
+                contentInternalPadding = PaddingValues(bottom = smallPadding),
+                primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
+                onPrimary = onPrimary
+            )
     )
 }
 

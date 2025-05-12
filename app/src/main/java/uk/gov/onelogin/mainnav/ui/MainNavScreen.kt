@@ -42,12 +42,13 @@ fun MainNavScreen(
     walletScreenViewModel: WalletScreenViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
-    val navItems = createBottomNavItems(
-        walletScreenViewModel.walletEnabled,
-        { analyticsViewModel.trackHomeTabButton() },
-        { analyticsViewModel.trackWalletTabButton() },
-        { analyticsViewModel.trackSettingsTabButton() }
-    )
+    val navItems =
+        createBottomNavItems(
+            walletScreenViewModel.walletEnabled,
+            { analyticsViewModel.trackHomeTabButton() },
+            { analyticsViewModel.trackWalletTabButton() },
+            { analyticsViewModel.trackSettingsTabButton() }
+        )
     GdsTheme {
         LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
             walletScreenViewModel.checkWalletEnabled()
@@ -56,34 +57,36 @@ fun MainNavScreen(
             bottomBar = {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 GdsNavigationBar(
-                    items = navItems.map { navDest ->
-                        GdsNavigationItem(
-                            icon = {
-                                Icon(painterResource(id = navDest.first.icon), navDest.first.key)
-                            },
-                            onClick = {
-                                navDest.second()
-                                navController.navigate(navDest.first.key) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                    items =
+                        navItems.map { navDest ->
+                            GdsNavigationItem(
+                                icon = {
+                                    Icon(painterResource(id = navDest.first.icon), navDest.first.key)
+                                },
+                                onClick = {
+                                    navDest.second()
+                                    navController.navigate(navDest.first.key) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
+                                },
+                                selected = navBackStackEntry?.destination?.route == navDest.first.key,
+                                label = { Label(navDest.first.label) },
+                                colors = {
+                                    NavigationBarItemDefaults.colors(
+                                        indicatorColor =
+                                            if (isSystemInDarkTheme()) {
+                                                MaterialTheme.colorScheme.tertiary
+                                            } else {
+                                                colorResource(id = R.color.nav_bottom_selected)
+                                            }
+                                    )
                                 }
-                            },
-                            selected = navBackStackEntry?.destination?.route == navDest.first.key,
-                            label = { Label(navDest.first.label) },
-                            colors = {
-                                NavigationBarItemDefaults.colors(
-                                    indicatorColor = if (isSystemInDarkTheme()) {
-                                        MaterialTheme.colorScheme.tertiary
-                                    } else {
-                                        colorResource(id = R.color.nav_bottom_selected)
-                                    }
-                                )
-                            }
-                        )
-                    },
+                            )
+                        },
                     tonalElevation = 0.dp,
                     containerColor = {
                         MaterialTheme.colorScheme.background
@@ -93,11 +96,12 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = if (walletScreenViewModel.walletDeepLinkReceived.value) {
-                    BottomNavDestination.Wallet.key
-                } else {
-                    BottomNavDestination.Home.key
-                },
+                startDestination =
+                    if (walletScreenViewModel.walletDeepLinkReceived.value) {
+                        BottomNavDestination.Wallet.key
+                    } else {
+                        BottomNavDestination.Home.key
+                    },
                 modifier = Modifier.padding(paddingValues)
             ) {
                 bottomGraph()
@@ -112,8 +116,9 @@ private fun Label(text: Int) {
         text = stringResource(id = text),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme
-            .typography.bodyMedium.fontSize.nonScaledSp,
+        fontSize =
+            MaterialTheme
+                .typography.bodyMedium.fontSize.nonScaledSp,
         fontWeight = FontWeight.Bold
     )
 }

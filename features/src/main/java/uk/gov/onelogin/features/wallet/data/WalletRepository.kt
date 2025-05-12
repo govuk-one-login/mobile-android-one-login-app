@@ -2,8 +2,11 @@ package uk.gov.onelogin.features.wallet.data
 
 interface WalletRepository {
     fun addCredential(credential: String)
+
     fun getCredential(): String
+
     fun addDeepLinkPath(path: String?)
+
     fun getDeepLinkPath(): String
 }
 
@@ -23,7 +26,5 @@ class WalletRepositoryImpl : WalletRepository {
         }
     }
 
-    override fun getDeepLinkPath(): String {
-        return path
-    }
+    override fun getDeepLinkPath(): String = path
 }

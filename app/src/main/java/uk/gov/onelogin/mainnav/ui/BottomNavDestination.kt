@@ -16,11 +16,13 @@ sealed class BottomNavDestination(
         label = R.string.app_home,
         icon = R.drawable.outline_home_24
     )
+
     data object Wallet : BottomNavDestination(
         key = "wallet",
         label = R.string.app_wallet,
         icon = R.drawable.outline_article_24
     )
+
     data object Settings : BottomNavDestination(
         key = "settings",
         label = R.string.app_settings,

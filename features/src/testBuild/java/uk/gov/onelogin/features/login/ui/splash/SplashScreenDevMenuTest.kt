@@ -43,11 +43,12 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
-        viewModel = SplashScreenViewModel(
-            navigator,
-            handleLocalLogin,
-            appInfoService
-        )
+        viewModel =
+            SplashScreenViewModel(
+                navigator,
+                handleLocalLogin,
+                appInfoService
+            )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
         optInViewModel = OptInRequirementViewModel(repository)

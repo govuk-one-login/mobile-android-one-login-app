@@ -17,7 +17,6 @@ class CoroutinesTestExtension(
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : BeforeEachCallback,
     AfterEachCallback {
-
     /**
      * Set TestCoroutine dispatcher as main
      */

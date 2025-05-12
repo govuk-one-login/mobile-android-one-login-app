@@ -19,8 +19,9 @@ class InMemoryFeatureFlagsTest {
 
     @Test
     fun `flags may have features removed in an immutable way`() {
-        val updateByFlag = FeatureFlagsTestData.originalFeatures -
-            FeatureFlagsTestData.existingFeature
+        val updateByFlag =
+            FeatureFlagsTestData.originalFeatures -
+                FeatureFlagsTestData.existingFeature
         val updateBySet =
             FeatureFlagsTestData.originalFeatures - FeatureFlagsTestData.existingFeature
 

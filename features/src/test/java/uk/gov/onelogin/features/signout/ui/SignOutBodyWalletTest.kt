@@ -14,9 +14,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.pages.R as T
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
+import uk.gov.android.ui.pages.R as T
 
 @RunWith(AndroidJUnit4::class)
 class SignOutBodyWalletTest : FragmentActivityTestCase() {

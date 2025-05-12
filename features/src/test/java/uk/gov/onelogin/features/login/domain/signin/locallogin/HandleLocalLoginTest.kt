@@ -86,9 +86,9 @@ class HandleLocalLoginTest {
             (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(
                 LocalAuthStatus.Success(
                     payload =
-                    mapOf(
-                        AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken"
-                    )
+                        mapOf(
+                            AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken"
+                        )
                 )
             )
         }

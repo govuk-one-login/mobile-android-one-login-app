@@ -1,8 +1,5 @@
 package uk.gov.onelogin.core.tokens
 
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
@@ -16,6 +13,9 @@ import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class VerifyIdTokenTest {
     private lateinit var stubHttpClient: GenericHttpClient
@@ -38,27 +38,28 @@ class VerifyIdTokenTest {
         "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI" +
             "6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN2Q5LTk4NzgxZWJkZjkzZCJ9" +
             ".eyJhd"
-    private val jwksResponse = "{\n" +
-        "  \"keys\": [\n" +
-        "    {\n" +
-        "      \"kty\": \"EC\",\n" +
-        "      \"x\": \"nfKPgSUMcrJ96ejGHr-tAvfzZOgLuFK-W_pz3Jjcs-Y\",\n" +
-        "      \"y\": \"Z7xBQNM9ipvaDp1Lp3DNAn7RWQ_JaUBXstcXnefLR5k\",\n" +
-        "      \"crv\": \"P-256\",\n" +
-        "      \"use\": \"sig\",\n" +
-        "      \"alg\": \"ES256\",\n" +
-        "      \"kid\": \"16db6587-5445-45d6-a7d9-98781ebdf93d\"\n" +
-        "    },\n" +
-        "    {\n" +
-        "      \"kty\": \"RSA\",\n" +
-        "      \"n\": \"DYuXw\",\n" +
-        "      \"e\": \"AQAB\",\n" +
-        "      \"use\": \"enc\",\n" +
-        "      \"alg\": \"RSA-OAEP-256\",\n" +
-        "      \"kid\": \"849bb6a3-eb58-471a-b279-75be3c60601b\"\n" +
-        "    }\n" +
-        "  ]\n" +
-        "}"
+    private val jwksResponse =
+        "{\n" +
+            "  \"keys\": [\n" +
+            "    {\n" +
+            "      \"kty\": \"EC\",\n" +
+            "      \"x\": \"nfKPgSUMcrJ96ejGHr-tAvfzZOgLuFK-W_pz3Jjcs-Y\",\n" +
+            "      \"y\": \"Z7xBQNM9ipvaDp1Lp3DNAn7RWQ_JaUBXstcXnefLR5k\",\n" +
+            "      \"crv\": \"P-256\",\n" +
+            "      \"use\": \"sig\",\n" +
+            "      \"alg\": \"ES256\",\n" +
+            "      \"kid\": \"16db6587-5445-45d6-a7d9-98781ebdf93d\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"kty\": \"RSA\",\n" +
+            "      \"n\": \"DYuXw\",\n" +
+            "      \"e\": \"AQAB\",\n" +
+            "      \"use\": \"enc\",\n" +
+            "      \"alg\": \"RSA-OAEP-256\",\n" +
+            "      \"kid\": \"849bb6a3-eb58-471a-b279-75be3c60601b\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}"
 
     @BeforeEach
     fun setup() {
@@ -67,108 +68,116 @@ class VerifyIdTokenTest {
     }
 
     @Test
-    fun `non 200 response from jwks endpoint`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-        setupHttpStub(ApiResponse.Failure(400, Exception()))
-        buildVerifyToken()
+    fun `non 200 response from jwks endpoint`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+            setupHttpStub(ApiResponse.Failure(400, Exception()))
+            buildVerifyToken()
 
-        val result = verifyIdToken(idToken, "testUrl")
-        assertFalse(result)
-        assertTrue(logger.size == 0)
-    }
-
-    @Test
-    fun `unable to verify token`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-        setupHttpStub(ApiResponse.Success(jwksResponse))
-        buildVerifyToken()
-
-        val result = verifyIdToken(idToken, "testUrl")
-        assertFalse(result)
-        assertTrue(logger.size == 0)
-    }
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+            assertTrue(logger.size == 0)
+        }
 
     @Test
-    fun `verifier throws exception`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
-        setupHttpStub(ApiResponse.Success(jwksResponse))
-        buildVerifyToken()
+    fun `unable to verify token`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+            setupHttpStub(ApiResponse.Success(jwksResponse))
+            buildVerifyToken()
 
-        val result = verifyIdToken(idToken, "testUrl")
-        assertFalse(result)
-        assertTrue(logger.contains("java.lang.IllegalArgumentException: fail"))
-    }
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+            assertTrue(logger.size == 0)
+        }
 
     @Test
-    fun `idToken json parse throws exception`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-        setupHttpStub(ApiResponse.Success("not a json"))
-        buildVerifyToken()
+    fun `verifier throws exception`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
+            setupHttpStub(ApiResponse.Success(jwksResponse))
+            buildVerifyToken()
 
-        val result = verifyIdToken("not an id token", "testUrl")
-        assertFalse(result)
-        assertTrue(
-            logger.contains(
-                "java.lang.IllegalArgumentException: Invalid symbol ' '(40) at index 3"
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+            assertTrue(logger.contains("java.lang.IllegalArgumentException: fail"))
+        }
+
+    @Test
+    fun `idToken json parse throws exception`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            setupHttpStub(ApiResponse.Success("not a json"))
+            buildVerifyToken()
+
+            val result = verifyIdToken("not an id token", "testUrl")
+            assertFalse(result)
+            assertTrue(
+                logger.contains(
+                    "java.lang.IllegalArgumentException: Invalid symbol ' '(40) at index 3"
+                )
             )
-        )
-    }
+        }
 
     @Test
-    fun `jwks json parse throws exception`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-        setupHttpStub(ApiResponse.Success("not a json"))
-        buildVerifyToken()
+    fun `jwks json parse throws exception`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            setupHttpStub(ApiResponse.Success("not a json"))
+            buildVerifyToken()
 
-        val result = verifyIdToken(idToken, "testUrl")
-        assertFalse(result)
-        assertTrue(
-            logger.contains(
-                "kotlinx.serialization.json.internal.JsonDecodingException: " +
-                    "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
-                    "instead at path: \$\nJSON input: not a json"
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+            assertTrue(
+                logger.contains(
+                    "kotlinx.serialization.json.internal.JsonDecodingException: " +
+                        "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
+                        "instead at path: \$\nJSON input: not a json"
+                )
             )
-        )
-    }
+        }
 
     @Test
-    fun `id_token successfully verified`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn("email")
-        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-        setupHttpStub(ApiResponse.Success(jwksResponse))
-        buildVerifyToken()
+    fun `id_token successfully verified`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            setupHttpStub(ApiResponse.Success(jwksResponse))
+            buildVerifyToken()
 
-        val result = verifyIdToken(idToken, "testUrl")
-        assertTrue(result)
-        assertTrue(logger.size == 0)
-    }
+            val result = verifyIdToken(idToken, "testUrl")
+            assertTrue(result)
+            assertTrue(logger.size == 0)
+        }
 
     @Test
-    fun `verify fails - email missing`() = runTest {
-        whenever(getEmail.invoke(any())).thenReturn(null)
-        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-        setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
-        buildVerifyToken()
+    fun `verify fails - email missing`() =
+        runTest {
+            whenever(getEmail.invoke(any())).thenReturn(null)
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            buildVerifyToken()
 
-        val result = verifyIdToken(idToken, "testUrl")
-        assertFalse(result)
-    }
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+        }
 
     private fun setupHttpStub(response: ApiResponse) {
         stubHttpClient = StubHttpClient(response)
     }
 
     private fun buildVerifyToken() {
-        verifyIdToken = VerifyIdTokenImpl(
-            stubHttpClient,
-            stubVerifier,
-            getEmail,
-            logger
-        )
+        verifyIdToken =
+            VerifyIdTokenImpl(
+                stubHttpClient,
+                stubVerifier,
+                getEmail,
+                logger
+            )
     }
 }

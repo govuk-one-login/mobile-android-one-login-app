@@ -77,10 +77,11 @@ internal fun OptInBody(
 @Composable
 private fun OptInHeader() {
     Text(
-        modifier = Modifier
-            .semantics { heading() }
-            .padding(horizontal = smallPadding)
-            .padding(top = mediumPadding),
+        modifier =
+            Modifier
+                .semantics { heading() }
+                .padding(horizontal = smallPadding)
+                .padding(top = mediumPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.headlineLarge,
         text = stringResource(id = R.string.app_analyticsPermissionTitle),
@@ -94,16 +95,18 @@ private fun OptInContent(
     url: String
 ) {
     Text(
-        modifier = Modifier
-            .padding(all = smallPadding),
+        modifier =
+            Modifier
+                .padding(all = smallPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.bodyLarge,
         text = stringResource(id = R.string.app_analyticsPermissionBody)
     )
     PrivacyNotice(
-        modifier = Modifier
-            .padding(horizontal = smallPadding)
-            .semantics(mergeDescendants = true) {},
+        modifier =
+            Modifier
+                .padding(horizontal = smallPadding)
+                .semantics(mergeDescendants = true) {},
         style = MaterialTheme.typography.bodyLarge,
         privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),
         onPrivacyNotice = { onPrivacyNotice(url) }
@@ -117,30 +120,33 @@ private fun OptInButtons(
     onDoNotShare: () -> Unit
 ) {
     GdsButton(
-        buttonParameters = ButtonParameters(
-            modifier = Modifier
-                .padding(horizontal = smallPadding)
-                .padding(top = xsmallPadding)
-                .fillMaxWidth(),
-            text = stringResource(R.string.app_shareAnalyticsButton),
-            buttonType = ButtonType.PRIMARY(),
-            textStyle = MaterialTheme.typography.labelMedium,
-            onClick = onShare,
-            isEnabled = uiState.hasButtonsOn
-        )
+        buttonParameters =
+            ButtonParameters(
+                modifier =
+                    Modifier
+                        .padding(horizontal = smallPadding)
+                        .padding(top = xsmallPadding)
+                        .fillMaxWidth(),
+                text = stringResource(R.string.app_shareAnalyticsButton),
+                buttonType = ButtonType.PRIMARY(),
+                textStyle = MaterialTheme.typography.labelMedium,
+                onClick = onShare,
+                isEnabled = uiState.hasButtonsOn
+            )
     )
     GdsButton(
         buttonParameters =
-        ButtonParameters(
-            modifier = Modifier
-                .padding(horizontal = smallPadding, vertical = xsmallPadding)
-                .fillMaxWidth(),
-            text = stringResource(R.string.app_doNotShareAnalytics),
-            buttonType = ButtonType.SECONDARY(),
-            textStyle = MaterialTheme.typography.labelMedium,
-            onClick = onDoNotShare,
-            isEnabled = uiState.hasButtonsOn
-        )
+            ButtonParameters(
+                modifier =
+                    Modifier
+                        .padding(horizontal = smallPadding, vertical = xsmallPadding)
+                        .fillMaxWidth(),
+                text = stringResource(R.string.app_doNotShareAnalytics),
+                buttonType = ButtonType.SECONDARY(),
+                textStyle = MaterialTheme.typography.labelMedium,
+                onClick = onDoNotShare,
+                isEnabled = uiState.hasButtonsOn
+            )
     )
 }
 

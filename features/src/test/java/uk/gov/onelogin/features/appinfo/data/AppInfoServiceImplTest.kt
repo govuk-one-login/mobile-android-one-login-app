@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.appinfo.data
 
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -16,6 +15,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoRemoteSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoServiceImpl
 import uk.gov.onelogin.features.appinfo.domain.AppVersionCheck
+import kotlin.test.assertEquals
 
 class AppInfoServiceImplTest {
     private val remoteSource: AppInfoRemoteSource = mock()

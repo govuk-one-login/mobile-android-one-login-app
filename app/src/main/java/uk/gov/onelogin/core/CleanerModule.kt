@@ -21,11 +21,12 @@ internal object CleanerModule {
         localAuthPreferenceRepo: LocalAuthPreferenceRepo,
         secureStoreData: RemoveAllSecureStoreData,
         removeTokenExpiry: RemoveTokenExpiry
-    ): Cleaner = MultiCleaner(
-        Dispatchers.Default,
-        removeTokenExpiry,
-        optInRepository,
-        localAuthPreferenceRepo,
-        secureStoreData
-    )
+    ): Cleaner =
+        MultiCleaner(
+            Dispatchers.Default,
+            removeTokenExpiry,
+            optInRepository,
+            localAuthPreferenceRepo,
+            secureStoreData
+        )
 }
