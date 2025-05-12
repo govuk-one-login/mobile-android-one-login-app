@@ -28,7 +28,6 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 import uk.gov.onelogin.developer.DeveloperTools
 
 @Composable
@@ -135,7 +134,7 @@ internal fun WelcomeBody(
 @ScreenPreview
 @Composable
 internal fun WelcomePreview() {
-    GdsThemeE2E {
+    GdsTheme {
         WelcomeBody()
     }
 }

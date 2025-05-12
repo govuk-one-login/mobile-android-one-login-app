@@ -29,6 +29,7 @@ import uk.gov.android.ui.componentsv2.button.ButtonType
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -36,7 +37,6 @@ import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun ErrorUpdateRequiredScreen(
@@ -62,7 +62,7 @@ fun ErrorUpdateRequiredScreen(
 internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     val buttonText = stringResource(R.string.app_updateAppButton)
     val buttonAccessibilityDesc = stringResource(R.string.app_openGooglePlayStore)
-    GdsThemeE2E {
+    GdsTheme {
         EdgeToEdgePage { _ ->
             Column(
                 modifier = Modifier
@@ -120,7 +120,7 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
 @ScreenPreview
 @Composable
 internal fun UpdateRequiredPreview() {
-    GdsThemeE2E {
+    GdsTheme {
         UpdateRequiredBody {}
     }
 }

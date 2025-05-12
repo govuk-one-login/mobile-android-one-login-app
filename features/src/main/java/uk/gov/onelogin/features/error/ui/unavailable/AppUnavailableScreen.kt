@@ -31,13 +31,13 @@ import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.R as Res
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.spacingDouble
 import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 internal const val ICON_TAG = "icon.tag"
 private val iconSize = 100.dp
@@ -46,7 +46,7 @@ private val iconPadding = 1.dp
 @Composable
 fun AppUnavailableScreen(analyticsViewModel: AppUnavailableAnalyticsViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-    GdsThemeE2E {
+    GdsTheme {
         EdgeToEdgePage { _ ->
             AppUnavailableBody()
         }
@@ -107,5 +107,5 @@ internal fun AppUnavailableBody() {
 @ScreenPreview
 @Composable
 internal fun AppUnavailablePreview() {
-    GdsThemeE2E { AppUnavailableBody() }
+    GdsTheme { AppUnavailableBody() }
 }

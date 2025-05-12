@@ -11,17 +11,17 @@ import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyCon
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
 import uk.gov.android.ui.patterns.errorscreen.ErrorScreen
 import uk.gov.android.ui.patterns.errorscreen.ErrorScreenIcon
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun GenericErrorScreen(
     analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel(),
     onClick: () -> Unit = { }
 ) {
-    GdsThemeE2E {
+    GdsTheme {
         BackHandler {
             analyticsViewModel.trackBackButton()
             onClick()
@@ -60,7 +60,7 @@ private fun GenericErrorBody(
 @ScreenPreview
 @Composable
 internal fun GenericErrorPreview() {
-    GdsThemeE2E {
+    GdsTheme {
         GenericErrorBody()
     }
 }

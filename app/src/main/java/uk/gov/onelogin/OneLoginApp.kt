@@ -7,8 +7,8 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.errorGraph
@@ -23,7 +23,7 @@ fun OneLoginApp(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    GdsThemeE2E {
+    GdsTheme {
         NavHost(
             navController = navController,
             startDestination = LoginRoutes.Root.getRoute()

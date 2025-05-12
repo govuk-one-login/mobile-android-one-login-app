@@ -9,15 +9,15 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.components.content.GdsContentText
 import uk.gov.android.ui.pages.LandingPage
 import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
 
 @Composable
 fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
-    GdsThemeE2E {
+    GdsTheme {
         EdgeToEdgePage { _ ->
             AuthErrorBody(viewModel.walletEnabled) {
                 viewModel.navigateToSignIn()
@@ -88,7 +88,7 @@ internal data class AuthScreenBodyContent(
 @ScreenPreview
 @Composable
 internal fun AuthErrorScreenPreview() {
-    GdsThemeE2E {
+    GdsTheme {
         AuthErrorBody(true)
     }
 }
@@ -97,7 +97,7 @@ internal fun AuthErrorScreenPreview() {
 @ScreenPreview
 @Composable
 internal fun AuthErrorScreenNoWalletPreview() {
-    GdsThemeE2E {
+    GdsTheme {
         AuthErrorBody(false)
     }
 }

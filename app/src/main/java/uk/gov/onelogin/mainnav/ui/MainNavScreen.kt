@@ -30,7 +30,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.core.ui.theme.GdsThemeE2E
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.ui.components.navigation.GdsNavigationBar
@@ -49,7 +49,7 @@ fun MainNavScreen(
         { analyticsViewModel.trackWalletTabButton() },
         { analyticsViewModel.trackSettingsTabButton() }
     )
-    GdsThemeE2E {
+    GdsTheme {
         LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
             walletScreenViewModel.checkWalletEnabled()
         }
