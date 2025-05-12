@@ -32,33 +32,37 @@ class StsAuthenticationProvider(
         }
 
         return tokenRepository.getTokenResponse()?.accessToken?.let {
-            val request = ApiRequest.Post(
-                url = stsUrl,
-                body = FormDataContent(
-                    Parameters.build {
-                        append(
-                            GRANT_TYPE,
-                            "urn:ietf:params:oauth:grant-type:token-exchange"
+            val request =
+                ApiRequest.Post(
+                    url = stsUrl,
+                    body =
+                        FormDataContent(
+                            Parameters.build {
+                                append(
+                                    GRANT_TYPE,
+                                    "urn:ietf:params:oauth:grant-type:token-exchange"
+                                )
+                                append(SUBJECT_TOKEN, it)
+                                append(
+                                    SUBJECT_TOKEN_TYPE,
+                                    "urn:ietf:params:oauth:token-type:access_token"
+                                )
+                                append(SCOPE, scope)
+                            }
+                        ),
+                    headers =
+                        listOf(
+                            Pair("Content-Type", "application/x-www-form-urlencoded")
                         )
-                        append(SUBJECT_TOKEN, it)
-                        append(
-                            SUBJECT_TOKEN_TYPE,
-                            "urn:ietf:params:oauth:token-type:access_token"
-                        )
-                        append(SCOPE, scope)
-                    }
-                ),
-                headers = listOf(
-                    Pair("Content-Type", "application/x-www-form-urlencoded")
                 )
-            )
 
             val response = httpClient.makeRequest(request)
             if (response is ApiResponse.Success<*>) {
                 try {
                     val tokenResponseString: String = response.response.toString()
-                    val tokenApiResponse: TokenApiResponse = jsonDecoder
-                        .decodeFromString(tokenResponseString)
+                    val tokenApiResponse: TokenApiResponse =
+                        jsonDecoder
+                            .decodeFromString(tokenResponseString)
                     AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
                     logger.error(this::class.java.simpleName, e.message.toString(), e)

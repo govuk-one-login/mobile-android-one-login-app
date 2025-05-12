@@ -26,17 +26,16 @@ object WalletModule {
         genericHttpClient: GenericHttpClient,
         deleteAllDataUseCase: DeleteAllDataUseCase
     ): WalletSdk {
-        val config = WalletSdk.Configuration(
-            clientId = context.resources.getString(R.string.stsClientId),
-            authNetworkClient = genericHttpClient
-        )
+        val config =
+            WalletSdk.Configuration(
+                clientId = context.resources.getString(R.string.stsClientId),
+                authNetworkClient = genericHttpClient
+            )
         val walletSdk = WalletSdkImpl(navigator, deleteAllDataUseCase)
         walletSdk.init(config)
         return walletSdk
     }
 
     @Provides
-    fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase {
-        return DeleteWalletDataUseCaseImpl(walletSdk)
-    }
+    fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase = DeleteWalletDataUseCaseImpl(walletSdk)
 }

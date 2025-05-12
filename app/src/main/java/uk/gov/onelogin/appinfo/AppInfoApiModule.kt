@@ -28,9 +28,7 @@ interface AppInfoApiModule {
     fun provideAppInfoApiCall(appInfoApiImpl: AppInfoApiImpl): AppInfoApi
 
     @Binds
-    fun provideAppInfoRemoteSource(
-        appInfoRemoteSource: AppInfoRemoteSourceImpl
-    ): AppInfoRemoteSource
+    fun provideAppInfoRemoteSource(appInfoRemoteSource: AppInfoRemoteSourceImpl): AppInfoRemoteSource
 
     @Binds
     fun provideAppInfoLocalSource(appInfoLocalSource: AppInfoLocalSourceImpl): AppInfoLocalSource
@@ -51,7 +49,5 @@ object BuildConfigProviderModule {
     @Provides
     @ViewModelScoped
     @BuildConfigVersion
-    fun provideBuildConfigVersion(): String {
-        return BuildConfig.VERSION_NAME
-    }
+    fun provideBuildConfigVersion(): String = BuildConfig.VERSION_NAME
 }

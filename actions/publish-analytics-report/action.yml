@@ -1,0 +1,39 @@
+name: Publish analytics test report
+description: Uploads the analytics test report to Github artifacts and creates a PR comment
+
+inputs:
+  path:
+    description: Path to the build outputs to be uploaded
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Upload analytics test report
+    uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+    id: upload-analytics-report
+    with:
+      name: analytics-test-report
+      path: ${{ inputs.path }}
+
+  - name: Find existing PR comment
+    if: github.event_name == 'pull_request'
+    uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
+    id: find-comment
+    with:
+      issue-number: ${{ github.event.pull_request.number }}
+      comment-author: "github-actions[bot]"
+      body-includes: Analytics test report
+
+  - name: Create or update PR comment
+    if: github.event_name == 'pull_request'
+    uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+    with:
+      comment-id: ${{ steps.find-comment.outputs.comment-id }}
+      issue-number: ${{ github.event.pull_request.number }}
+      body: |
+        Analytics test report is [available to download].
+        
+        [available to download]: ${{ steps.upload-analytics-report.outputs.artifact-url }}
+      edit-mode: replace
+

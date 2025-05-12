@@ -1,7 +1,6 @@
 package uk.gov.onelogin.core.network.domain
 
 import android.content.Context
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,6 +12,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
 import uk.gov.android.onelogin.core.R
+import kotlin.test.assertEquals
 
 class HelloWorldApiCallTest {
     private val mockContext: Context = mock()

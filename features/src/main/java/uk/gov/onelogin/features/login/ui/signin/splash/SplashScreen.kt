@@ -119,39 +119,42 @@ internal fun SplashBody(
     onOpenDeveloperPortal: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.govuk_blue)),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(colorResource(id = R.color.govuk_blue)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         GdsIcon(
-            parameters = IconParameters(
-                image = R.drawable.tudor_crown_with_gov_uk,
-                backGroundColor = colorResource(id = R.color.govuk_blue),
-                foreGroundColor = Color.White,
-                modifier = Modifier
-                    .weight(1F)
-                    .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
-                        onOpenDeveloperPortal()
-                    }
-                    .testTag(stringResource(id = R.string.splashIconTestTag))
-            )
+            parameters =
+                IconParameters(
+                    image = R.drawable.tudor_crown_with_gov_uk,
+                    backGroundColor = colorResource(id = R.color.govuk_blue),
+                    foreGroundColor = Color.White,
+                    modifier =
+                        Modifier
+                            .weight(1F)
+                            .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
+                                onOpenDeveloperPortal()
+                            }.testTag(stringResource(id = R.string.splashIconTestTag))
+                )
         )
         if (isUnlock && !loading) {
             GdsHeading(
-                headingParameters = HeadingParameters(
-                    size = HeadingSize.H3(),
-                    text = R.string.app_unlockButton,
-                    color = Color.White,
-                    backgroundColor = colorResource(id = R.color.govuk_blue),
-                    modifier = Modifier
-                        .clickable {
-                            trackUnlockButton()
-                            onLogin()
-                        }
-                        .padding(bottom = mediumPadding)
-                )
+                headingParameters =
+                    HeadingParameters(
+                        size = HeadingSize.H3(),
+                        text = R.string.app_unlockButton,
+                        color = Color.White,
+                        backgroundColor = colorResource(id = R.color.govuk_blue),
+                        modifier =
+                            Modifier
+                                .clickable {
+                                    trackUnlockButton()
+                                    onLogin()
+                                }.padding(bottom = mediumPadding)
+                    )
             )
         }
         if (loading && !isUnlock) {
@@ -167,28 +170,30 @@ internal fun LoadingIndicator() {
             id = R.string.app_splashScreenLoadingContentDescription
         )
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = smallPadding,
-                end = smallPadding,
-                bottom = PROGRESS_BAR
-            )
-            .semantics { contentDescription = loadingContentDescription }
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = smallPadding,
+                    end = smallPadding,
+                    bottom = PROGRESS_BAR
+                ).semantics { contentDescription = loadingContentDescription }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = smallPadding)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = smallPadding)
         ) {
             CircularProgressIndicator(
                 color = colorResource(id = R.color.govuk_blue),
                 trackColor = MaterialTheme.colorScheme.onPrimary,
                 strokeCap = StrokeCap.Square,
-                modifier = Modifier
-                    .width(PROGRESS_BAR)
-                    .height(PROGRESS_BAR)
+                modifier =
+                    Modifier
+                        .width(PROGRESS_BAR)
+                        .height(PROGRESS_BAR)
             )
         }
         Row(

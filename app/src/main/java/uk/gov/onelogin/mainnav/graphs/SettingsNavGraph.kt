@@ -7,9 +7,7 @@ import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.features.settings.ui.OsslScreen
 
 object SettingsNavGraph {
-    fun NavGraphBuilder.settingsGraph(
-        navController: NavController
-    ) {
+    fun NavGraphBuilder.settingsGraph(navController: NavController) {
         composable(SettingsRoutes.Ossl.getRoute()) {
             OsslScreen {
                 navController.popBackStack()

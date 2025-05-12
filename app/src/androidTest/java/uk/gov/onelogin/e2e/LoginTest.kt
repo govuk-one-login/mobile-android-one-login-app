@@ -27,9 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -50,7 +47,6 @@ import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.localauth.R as LocalAuthR
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -78,6 +74,10 @@ import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
+import uk.gov.android.authentication.localauth.R as LocalAuthR
 
 @Suppress("SwallowedException")
 @HiltAndroidTest
@@ -133,11 +133,12 @@ class LoginTest : TestCase() {
     val mockKeyStoreManager: KeyStoreManager = ECKeyManager()
 
     @BindValue
-    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
-        mockAttestationCaller,
-        mockAppChecker,
-        mockKeyStoreManager
-    )
+    val mockAppIntegrityConfiguration: AppIntegrityConfiguration =
+        AppIntegrityConfiguration(
+            mockAttestationCaller,
+            mockAppChecker,
+            mockKeyStoreManager
+        )
 
     @Inject
     @Named("Open")
@@ -156,14 +157,17 @@ class LoginTest : TestCase() {
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
         mockLocalAuthRepo = LocalAuthPreferenceRepositoryImpl(context)
-        ArchTaskExecutor.getInstance()
-            .setDelegate(object : TaskExecutor() {
-                override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+        ArchTaskExecutor
+            .getInstance()
+            .setDelegate(
+                object : TaskExecutor() {
+                    override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
 
-                override fun postToMainThread(runnable: Runnable) = runnable.run()
+                    override fun postToMainThread(runnable: Runnable) = runnable.run()
 
-                override fun isMainThread(): Boolean = true
-            })
+                    override fun isMainThread(): Boolean = true
+                }
+            )
         hiltRule.inject()
         deletePersistentId()
     }
@@ -174,65 +178,70 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        tokenRepository.setTokenResponse(
-            TokenResponse(
-                tokenType = "type",
-                accessToken = "access",
-                accessTokenExpirationTime = 1L,
-                idToken = ""
-            )
-        )
-
-        startApp()
-
-        composeRule.apply {
-            onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
-                .clickIfExisting()
-            onNodeWithText(context.getString(R.string.app_dataDeletedButton))
-                .clickIfExisting()
-        }
-
-        clickOptOut()
-        clickLogin()
-
-        val authorizeUrl = Uri.parse(
-            resources.getString(
-                R.string.stsUrl,
-                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val redirectUrl = Uri.parse(
-            resources.getString(
-                R.string.webBaseUrl,
-                resources.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.stsUrl,
-                context.resources.getString(
-                    R.string.tokenExchangeEndpoint
+    fun selectingLoginButtonFiresAuthRequestNoPersistentId() =
+        runTest {
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("Success"))
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("Success"))
+            tokenRepository.setTokenResponse(
+                TokenResponse(
+                    tokenType = "type",
+                    accessToken = "access",
+                    accessTokenExpirationTime = 1L,
+                    idToken = ""
                 )
             )
-        )
-        val loginConfig = LoginSessionConfiguration(
-            authorizeEndpoint = authorizeUrl,
-            clientId = resources.getString(R.string.stsClientId),
-            locale = localeUtils.getLocaleAsSessionConfig(),
-            redirectUri = redirectUrl,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint,
-            persistentSessionId = null
-        )
 
-        verify(mockLoginSession).present(any(), eq(loginConfig))
-    }
+            startApp()
+
+            composeRule.apply {
+                onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
+                    .clickIfExisting()
+                onNodeWithText(context.getString(R.string.app_dataDeletedButton))
+                    .clickIfExisting()
+            }
+
+            clickOptOut()
+            clickLogin()
+
+            val authorizeUrl =
+                Uri.parse(
+                    resources.getString(
+                        R.string.stsUrl,
+                        resources.getString(R.string.openIdConnectAuthorizeEndpoint)
+                    )
+                )
+            val redirectUrl =
+                Uri.parse(
+                    resources.getString(
+                        R.string.webBaseUrl,
+                        resources.getString(R.string.webRedirectEndpoint)
+                    )
+                )
+            val tokenEndpoint =
+                Uri.parse(
+                    context.resources.getString(
+                        R.string.stsUrl,
+                        context.resources.getString(
+                            R.string.tokenExchangeEndpoint
+                        )
+                    )
+                )
+            val loginConfig =
+                LoginSessionConfiguration(
+                    authorizeEndpoint = authorizeUrl,
+                    clientId = resources.getString(R.string.stsClientId),
+                    locale = localeUtils.getLocaleAsSessionConfig(),
+                    redirectUri = redirectUrl,
+                    scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                    tokenEndpoint = tokenEndpoint,
+                    persistentSessionId = null
+                )
+
+            verify(mockLoginSession).present(any(), eq(loginConfig))
+        }
 
     @Test
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
@@ -250,35 +259,39 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        val authorizeUrl = Uri.parse(
-            resources.getString(
-                R.string.stsUrl,
-                resources.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
-        )
-        val redirectUrl = Uri.parse(
-            resources.getString(
-                R.string.webBaseUrl,
-                resources.getString(R.string.webRedirectEndpoint)
-            )
-        )
-        val tokenEndpoint = Uri.parse(
-            context.resources.getString(
-                R.string.stsUrl,
-                context.resources.getString(
-                    R.string.tokenExchangeEndpoint
+        val authorizeUrl =
+            Uri.parse(
+                resources.getString(
+                    R.string.stsUrl,
+                    resources.getString(R.string.openIdConnectAuthorizeEndpoint)
                 )
             )
-        )
-        val loginConfig = LoginSessionConfiguration(
-            authorizeEndpoint = authorizeUrl,
-            clientId = resources.getString(R.string.stsClientId),
-            locale = localeUtils.getLocaleAsSessionConfig(),
-            redirectUri = redirectUrl,
-            scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-            tokenEndpoint = tokenEndpoint,
-            persistentSessionId = PERSISTENT_ID
-        )
+        val redirectUrl =
+            Uri.parse(
+                resources.getString(
+                    R.string.webBaseUrl,
+                    resources.getString(R.string.webRedirectEndpoint)
+                )
+            )
+        val tokenEndpoint =
+            Uri.parse(
+                context.resources.getString(
+                    R.string.stsUrl,
+                    context.resources.getString(
+                        R.string.tokenExchangeEndpoint
+                    )
+                )
+            )
+        val loginConfig =
+            LoginSessionConfiguration(
+                authorizeEndpoint = authorizeUrl,
+                clientId = resources.getString(R.string.stsClientId),
+                locale = localeUtils.getLocaleAsSessionConfig(),
+                redirectUri = redirectUrl,
+                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                tokenEndpoint = tokenEndpoint,
+                persistentSessionId = PERSISTENT_ID
+            )
 
         verify(mockLoginSession).present(any(), eq(loginConfig))
     }
@@ -419,19 +432,21 @@ class LoginTest : TestCase() {
         }
 
         composeRule.setContent {
-            val registryOwner = object : ActivityResultRegistryOwner {
-                override val activityResultRegistry: ActivityResultRegistry
-                    get() = object : ActivityResultRegistry() {
-                        override fun <I : Any?, O : Any?> onLaunch(
-                            requestCode: Int,
-                            contract: ActivityResultContract<I, O>,
-                            input: I,
-                            options: ActivityOptionsCompat?
-                        ) {
-                            this.dispatchResult(requestCode, Activity.RESULT_OK, returnedIntent)
-                        }
-                    }
-            }
+            val registryOwner =
+                object : ActivityResultRegistryOwner {
+                    override val activityResultRegistry: ActivityResultRegistry
+                        get() =
+                            object : ActivityResultRegistry() {
+                                override fun <I : Any?, O : Any?> onLaunch(
+                                    requestCode: Int,
+                                    contract: ActivityResultContract<I, O>,
+                                    input: I,
+                                    options: ActivityOptionsCompat?
+                                ) {
+                                    this.dispatchResult(requestCode, Activity.RESULT_OK, returnedIntent)
+                                }
+                            }
+                }
             CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
                 val navController = rememberNavController()
 
@@ -466,9 +481,10 @@ class LoginTest : TestCase() {
 
     private fun clickOptOut() {
         composeRule.waitForIdle()
-        val doNotShare = composeRule.onNodeWithText(
-            resources.getString(R.string.app_doNotShareAnalytics)
-        )
+        val doNotShare =
+            composeRule.onNodeWithText(
+                resources.getString(R.string.app_doNotShareAnalytics)
+            )
         val isOnOptInScreen = doNotShare.isDisplayed()
         if (isOnOptInScreen) {
             doNotShare.performClick()
@@ -477,7 +493,8 @@ class LoginTest : TestCase() {
 
     private fun clickLogin() {
         composeRule.waitUntil(TIMEOUT) {
-            composeRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+            composeRule
+                .onNodeWithText(resources.getString(R.string.app_signInButton))
                 .isDisplayed()
         }
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
@@ -528,18 +545,20 @@ class LoginTest : TestCase() {
     companion object {
         private const val TIMEOUT = 10000L
         private const val PERSISTENT_ID = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
-        private val tokenResponse = TokenResponse(
-            tokenType = "test",
-            accessToken = "test",
-            accessTokenExpirationTime = 1L,
-            idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
-                "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
-                "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
-                "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
-                "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
-                "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
-                "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
-        )
+        private val tokenResponse =
+            TokenResponse(
+                tokenType = "test",
+                accessToken = "test",
+                accessTokenExpirationTime = 1L,
+                idToken =
+                    "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
+                        "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
+                        "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
+                        "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
+                        "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
+                        "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
+                        "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
+                        "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
+            )
     }
 }

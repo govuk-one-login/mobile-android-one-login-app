@@ -1,14 +1,5 @@
 package uk.gov.onelogin.core.cleaner.domain
 
-import java.util.stream.Stream
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
-import kotlin.time.measureTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -19,6 +10,15 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import kotlin.time.measureTime
 
 @ExperimentalCoroutinesApi
 class ResultCollectionUtilTest {
@@ -160,8 +160,8 @@ class ResultCollectionUtilTest {
 
     companion object {
         @JvmStatic
-        fun suspendFunctionProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun suspendFunctionProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Cleaner>(), emptyList<Result<Unit>>()),
                 Arguments.of(
                     listOf(
@@ -200,11 +200,10 @@ class ResultCollectionUtilTest {
                     )
                 )
             )
-        }
 
         @JvmStatic
-        fun combineProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun combineProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Result<Unit>>(), true),
                 Arguments.of(listOf(Result.success(Unit)), true),
                 Arguments.of(
@@ -220,11 +219,10 @@ class ResultCollectionUtilTest {
                     false
                 )
             )
-        }
 
         @JvmStatic
-        fun throwablesProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun throwablesProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Result<Unit>>(), emptyList<Throwable>()),
                 Arguments.of(listOf(Result.success(Unit)), emptyList<Throwable>()),
                 Arguments.of(
@@ -246,6 +244,5 @@ class ResultCollectionUtilTest {
                     )
                 )
             )
-        }
     }
 }

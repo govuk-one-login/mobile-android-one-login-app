@@ -1,0 +1,177 @@
+name: Test
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  push:
+    branches:
+      - main
+  merge_group:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      packages: read
+      pull-requests: write
+    env:
+      GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+      GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up GitHub runner
+        uses: ./actions/setup-runner
+
+      - name: Cache mobile-android-pipelines build
+        uses: ./actions/cache-pipelines-build
+
+      - name: Unit test
+        id: unit-tests
+        # Exclude Konsist unit tests which are actually lint checks
+        # Build all unit tests so that jars are available for Sonar
+        run: |
+          ./gradlew assembleDebugUnitTest
+          ./gradlew testDebugUnitTest
+          ./gradlew testBuildDebugUnitTest
+        env:
+          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+
+      - name: Verify screenshots
+        run: |
+          ./gradlew verifyPaparazziDebug
+          ./gradlew verifyPaparazziBuildDebug
+        env:
+          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+
+      - name: Upload test report
+        if: ${{ failure() && steps.unit-tests.outcome == 'failure' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: unit-test-reports
+          path: "**/build/reports/tests/**/*"
+
+      # Sonar analyzers must have access to the bytecode to perform an accurate analysis.
+      # https://community.sonarsource.com/t/sonarscanner-for-gradle-you-can-now-decide-when-to-compile/102069
+      - name: Upload jars
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: jars
+          path: "**/build/**/*.jar"
+
+      - name: Upload test coverage report
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        with:
+          artifact-name: unit-test-coverage
+
+      - name: Publish analytics test report
+        uses: ./actions/publish-analytics-report
+        with:
+          path: "build/reports/analytics/*.yml"
+
+      - name: Clean workspace
+        if: ${{ always() }}
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
+  instrumentation-test:
+    name: Instrumentation test
+    runs-on: ubuntu-latest
+    permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      packages: read
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up GitHub runner
+        uses: ./actions/setup-runner
+
+      - name: Cache mobile-android-pipelines build
+        uses: ./actions/cache-pipelines-build
+
+      -  name: Stop all emulators
+         run: |
+           .sh/stopAllEmulators.sh
+         shell: bash
+
+      - name: Instrumentation test
+        # There are currently no device tests in the project.
+        # Keep this step so that it is simple to add device tests when needed.
+        run: |
+          ./.sh/tests/runInstrumentationChecks
+        env:
+          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+
+      - name: Upload test coverage report
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        with:
+          artifact-name: instrumentation-test-coverage
+
+      - name: Clean workspace
+        if: ${{ always() }}
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
+  sonar-scan:
+    name: Scan with Sonar
+    runs-on: ubuntu-latest
+    needs:
+      - unit-test
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up GitHub runner
+        uses: ./actions/setup-runner
+
+      - name: Cache mobile-android-pipelines build
+        uses: ./actions/cache-pipelines-build
+
+      - name: Download jars
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
+        with:
+          name: jars
+
+      - name: Download unit test coverage reports
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
+        with:
+          name: unit-test-coverage
+
+      - name: Scan with Sonar
+        uses: ./mobile-android-pipelines/actions/sonar-scan
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+
+      - name: Clean workspace
+        if: ${{ always() }}
+        uses: ./mobile-android-pipelines/actions/clean-workspace

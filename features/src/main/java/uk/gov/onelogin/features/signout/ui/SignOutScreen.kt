@@ -62,24 +62,27 @@ internal fun SignOutBody(
     ModalDialog(
         ModalDialogParameters(
             title = stringResource(id = uiState.title),
-            header = buildAnnotatedString {
-                append(stringResource(id = uiState.header))
-                if (uiState == SignOutUIState.Wallet) {
-                    appendLine()
-                    appendLine()
-                    append(stringResource(id = uiState.subTitle))
-                }
-            },
+            header =
+                buildAnnotatedString {
+                    append(stringResource(id = uiState.header))
+                    if (uiState == SignOutUIState.Wallet) {
+                        appendLine()
+                        appendLine()
+                        append(stringResource(id = uiState.subTitle))
+                    }
+                },
             bullets = uiState.bullets.map { stringResource(it) },
-            footer = buildAnnotatedString {
-                append(stringResource(id = uiState.footer))
-            },
-            buttonParams = ModalDialogParameters.ButtonParameters(
-                text = stringResource(id = uiState.button),
-                buttonType = uiState.buttonType,
-                isEnabled = true,
-                onClick = onPrimary
-            ),
+            footer =
+                buildAnnotatedString {
+                    append(stringResource(id = uiState.footer))
+                },
+            buttonParams =
+                ModalDialogParameters.ButtonParameters(
+                    text = stringResource(id = uiState.button),
+                    buttonType = uiState.buttonType,
+                    isEnabled = true,
+                    onClick = onPrimary
+                ),
             onClose = onClose
         )
     )

@@ -19,10 +19,13 @@ object DeeplinkController {
         }
     }
 
-    private fun getDeeplinkUrl(path: String): String {
-        return InstrumentationRegistry.getInstrumentation().context
-            .classLoader.getResource(path).readText()
-    }
+    private fun getDeeplinkUrl(path: String): String =
+        InstrumentationRegistry
+            .getInstrumentation()
+            .context
+            .classLoader
+            .getResource(path)
+            .readText()
 
     private const val LAUNCH_TIMEOUT = 5000L
     private const val PACKAGE_NAME = "uk.gov.onelogin.build"

@@ -64,13 +64,14 @@ fun SettingsScreen(
     val uriHandler = LocalUriHandler.current
     val email = viewModel.email
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
-    val settingsScreenLinks = SettingsScreenLinks(
-        signInUrl = stringResource(R.string.app_manageSignInDetailsUrl),
-        privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
-        accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
-        helpUrl = stringResource(R.string.app_helpUrl),
-        contactUrl = stringResource(R.string.app_contactUrl)
-    )
+    val settingsScreenLinks =
+        SettingsScreenLinks(
+            signInUrl = stringResource(R.string.app_manageSignInDetailsUrl),
+            privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
+            accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
+            helpUrl = stringResource(R.string.app_helpUrl),
+            contactUrl = stringResource(R.string.app_contactUrl)
+        )
 
     TitledPage(title = R.string.app_settings) { paddingValues ->
         SettingsScreenContent(
@@ -96,9 +97,10 @@ private fun SettingsScreenContent(
     settingsScreenLinks: SettingsScreenLinks
 ) {
     Column(
-        modifier = Modifier
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
     ) {
         EmailSection(email)
         YourDetailsSection(
@@ -159,17 +161,16 @@ private data class SettingsScreenLinks(
 )
 
 @Composable
-private fun YourDetailsSection(
-    onClick: () -> Unit
-) {
+private fun YourDetailsSection(onClick: () -> Unit) {
     HorizontalDivider()
     ExternalLinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        description = stringResource(
-            id = R.string.app_settingSignInDetailsFootnote
-        )
+        description =
+            stringResource(
+                id = R.string.app_settingSignInDetailsFootnote
+            )
     ) {
         onClick()
     }
@@ -243,15 +244,18 @@ internal fun AboutTheAppSection(
         PrivacyNotice(
             Modifier
                 .padding(smallPadding),
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.surface
-            ),
-            privacyNoticeString = stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnote
-            ),
-            privacyNoticeLink = stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnoteLink
-            )
+            style =
+                MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.surface
+                ),
+            privacyNoticeString =
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnote
+                ),
+            privacyNoticeLink =
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                )
         ) {
             onPrivacyNoticeClick()
         }
@@ -259,7 +263,9 @@ internal fun AboutTheAppSection(
 }
 
 @Composable
-private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
+private fun HeadingRow(
+    @androidx.annotation.StringRes text: Int
+) {
     GdsHeading(
         HeadingParameters(
             text = text,
@@ -280,29 +286,32 @@ private fun ExternalLinkRow(
     onClick: () -> Unit = { }
 ) {
     Box(
-        modifier = Modifier
-            .clickable(onClick = onClick)
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            .fillMaxWidth()
-            .semantics(mergeDescendants = true) {}
+        modifier =
+            Modifier
+                .clickable(onClick = onClick)
+                .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {}
     ) {
         Column {
             Text(
-                modifier = Modifier
-                    .padding(horizontal = smallPadding)
-                    .padding(top = smallPadding)
-                    .padding(bottom = if (description == null) smallPadding else 4.dp),
+                modifier =
+                    Modifier
+                        .padding(horizontal = smallPadding)
+                        .padding(top = smallPadding)
+                        .padding(bottom = if (description == null) smallPadding else 4.dp),
                 style = MaterialTheme.typography.bodyMedium,
                 text = stringResource(title)
             )
             description?.let {
                 Text(
-                    modifier = Modifier
-                        .padding(
-                            start = smallPadding,
-                            bottom = smallPadding,
-                            end = 64.dp
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(
+                                start = smallPadding,
+                                bottom = smallPadding,
+                                end = 64.dp
+                            ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.surface,
                     text = it
@@ -312,10 +321,11 @@ private fun ExternalLinkRow(
         Icon(
             painter = painterResource(id = icon),
             contentDescription = contentDescription?.let { stringResource(it) } ?: "",
-            modifier = Modifier
-                .padding(end = smallPadding, top = smallPadding)
-                .size(24.dp)
-                .align(alignment = Alignment.TopEnd)
+            modifier =
+                Modifier
+                    .padding(end = smallPadding, top = smallPadding)
+                    .size(24.dp)
+                    .align(alignment = Alignment.TopEnd)
         )
     }
 }
@@ -328,22 +338,22 @@ internal fun PreferenceToggleRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            .semantics {
-                role = Role.Switch
-                onClick {
-                    onToggle()
-                    true
-                }
-            }
-            .focusable()
-            .padding(
-                start = smallPadding,
-                end = smallPadding
-            )
+        modifier =
+            Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+                .semantics {
+                    role = Role.Switch
+                    onClick {
+                        onToggle()
+                        true
+                    }
+                }.focusable()
+                .padding(
+                    start = smallPadding,
+                    end = smallPadding
+                )
     ) {
         Text(
             modifier = Modifier.weight(1F),
@@ -353,9 +363,10 @@ internal fun PreferenceToggleRow(
         Switch(
             checked = checked,
             onCheckedChange = { onToggle() },
-            modifier = Modifier
-                .testTag(stringResource(id = R.string.optInSwitchTestTag))
-                .clearAndSetSemantics { }
+            modifier =
+                Modifier
+                    .testTag(stringResource(id = R.string.optInSwitchTestTag))
+                    .clearAndSetSemantics { }
         )
     }
     HorizontalDivider()
@@ -366,19 +377,21 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(top = mediumPadding)
-            .height(56.dp)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            .clickable {
-                openSignOutScreen()
-            }
+        modifier =
+            Modifier
+                .padding(top = mediumPadding)
+                .height(56.dp)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+                .clickable {
+                    openSignOutScreen()
+                }
     ) {
         Text(
-            modifier = Modifier
-                .padding(all = smallPadding)
-                .height(24.dp),
+            modifier =
+                Modifier
+                    .padding(all = smallPadding)
+                    .height(24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = MaterialTheme.colorScheme.primary

@@ -13,9 +13,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiryImpl
 @InstallIn(SingletonComponent::class)
 interface SingletonTokenModule {
     @Binds
-    fun bindGetTokenExpiry(
-        getTokenExpiry: GetTokenExpiryImpl
-    ): GetTokenExpiry
+    fun bindGetTokenExpiry(getTokenExpiry: GetTokenExpiryImpl): GetTokenExpiry
 
     @Binds
     fun bindIsAccessTokenExpired(isTokenExpired: IsAccessTokenExpiredImpl): IsAccessTokenExpired

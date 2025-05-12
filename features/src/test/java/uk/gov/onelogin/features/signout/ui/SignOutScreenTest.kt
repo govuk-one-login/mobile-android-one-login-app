@@ -61,9 +61,10 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun verifyScreenDisplayedWallet() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+            )
         viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
@@ -78,9 +79,10 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun verifyScreenDisplayedNoWallet() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(CriOrchestratorFeatureFlag.ENABLED)
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(CriOrchestratorFeatureFlag.ENABLED)
+            )
         viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
@@ -94,43 +96,48 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun verifySignOutButtonSucceeds() = runBlocking {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
-        composeTestRule.setContent {
-            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
-        }
-        composeTestRule.onNode(button).performClick()
+    fun verifySignOutButtonSucceeds() =
+        runBlocking {
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+                )
+            viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
+            composeTestRule.setContent {
+                SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+            }
+            composeTestRule.onNode(button).performClick()
 
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
-        verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
-        verify(signOutUseCase).invoke()
-        verify(navigator).navigate(LoginRoutes.Root, true)
-    }
+            composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
+            verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.onPrimaryEvent(context))
+            verify(signOutUseCase).invoke()
+            verify(navigator).navigate(LoginRoutes.Root, true)
+        }
 
     @Test
-    fun verifySignOutButtonFails() = runTest {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
-        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
-        composeTestRule.setContent {
-            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+    fun verifySignOutButtonFails() =
+        runTest {
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+                )
+            viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
+            composeTestRule.setContent {
+                SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+            }
+            whenever(signOutUseCase.invoke())
+                .thenThrow(SignOutError(Exception("something went wrong")))
+            composeTestRule.onNode(button).performClick()
+            verify(signOutUseCase).invoke()
+            verify(navigator).navigate(ErrorRoutes.SignOut, true)
         }
-        whenever(signOutUseCase.invoke())
-            .thenThrow(SignOutError(Exception("something went wrong")))
-        composeTestRule.onNode(button).performClick()
-        verify(signOutUseCase).invoke()
-        verify(navigator).navigate(ErrorRoutes.SignOut, true)
-    }
 
     @Test
     fun verifyCloseIconButton() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+            )
         viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
@@ -143,9 +150,10 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun verifyBackButton() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+            )
         viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
         composeTestRule.setContent {
             SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)

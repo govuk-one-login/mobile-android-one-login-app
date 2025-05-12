@@ -1,13 +1,13 @@
 package uk.gov.onelogin.core.utils
 
-import java.util.stream.Stream
-import kotlin.test.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.securestore.AccessControlLevel
 import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper.mapAccessControlLevel
+import java.util.stream.Stream
+import kotlin.test.assertEquals
 
 class LocalAuthPrefsMapperTest {
     @ParameterizedTest

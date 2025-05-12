@@ -36,15 +36,16 @@ class MainActivityViewModelIntentTest {
 
     @Before
     fun setup() {
-        viewModel = MainActivityViewModel(
-            analyticsOptInRepo,
-            localAuthManager,
-            mockTokenRepository,
-            mockNavigator,
-            walletRepository,
-            featureFlags,
-            mockAutoInitialiseSecureStore
-        )
+        viewModel =
+            MainActivityViewModel(
+                analyticsOptInRepo,
+                localAuthManager,
+                mockTokenRepository,
+                mockNavigator,
+                walletRepository,
+                featureFlags,
+                mockAutoInitialiseSecureStore
+            )
     }
 
     @Test

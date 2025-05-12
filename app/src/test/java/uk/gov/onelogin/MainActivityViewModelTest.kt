@@ -2,7 +2,6 @@ package uk.gov.onelogin
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import kotlin.test.Test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -24,6 +23,7 @@ import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
+import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -40,35 +40,38 @@ class MainActivityViewModelTest {
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
-    private val tokenResponse = TokenResponse(
-        "testType",
-        testAccessToken,
-        1L,
-        testIdToken,
-        "testRefreshToken"
-    )
+    private val tokenResponse =
+        TokenResponse(
+            "testType",
+            testAccessToken,
+            1L,
+            testIdToken,
+            "testRefreshToken"
+        )
 
     private lateinit var viewModel: MainActivityViewModel
 
     @BeforeEach
     fun setup() {
-        viewModel = MainActivityViewModel(
-            analyticsOptInRepo,
-            localAuthManager,
-            mockTokenRepository,
-            mockNavigator,
-            walletRepository,
-            featureFlags,
-            mockAutoInitialiseSecureStore
-        )
+        viewModel =
+            MainActivityViewModel(
+                analyticsOptInRepo,
+                localAuthManager,
+                mockTokenRepository,
+                mockNavigator,
+                walletRepository,
+                featureFlags,
+                mockAutoInitialiseSecureStore
+            )
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
     }
 
     @Test
-    fun `secure store auto initialised`() = runTest {
-        verify(mockAutoInitialiseSecureStore).initialise()
-    }
+    fun `secure store auto initialised`() =
+        runTest {
+            verify(mockAutoInitialiseSecureStore).initialise()
+        }
 
     @Test
     fun `lock screen activates when app backgrounds`() {
@@ -126,8 +129,9 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `synchronise analytics on each app start`() = runTest {
-        viewModel.onStart(owner = mockLifecycleOwner)
-        verify(analyticsOptInRepo).synchronise()
-    }
+    fun `synchronise analytics on each app start`() =
+        runTest {
+            viewModel.onStart(owner = mockLifecycleOwner)
+            verify(analyticsOptInRepo).synchronise()
+        }
 }

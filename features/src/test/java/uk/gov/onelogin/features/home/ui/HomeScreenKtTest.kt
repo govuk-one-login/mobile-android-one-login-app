@@ -64,18 +64,20 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             )
         navigator = mock()
         logger = mock()
-        criOrchestratorSdk = CriOrchestratorSdk.create(
-            authenticatedHttpClient = httpClient,
-            analyticsLogger = analyticsLogger,
-            initialConfig = TestUtils.criSdkConfig,
-            logger = logger,
-            applicationContext = context
-        )
-        viewModel = HomeScreenViewModel(
-            featureFlags,
-            navigator,
-            criOrchestratorSdk
-        )
+        criOrchestratorSdk =
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = httpClient,
+                analyticsLogger = analyticsLogger,
+                initialConfig = TestUtils.criSdkConfig,
+                logger = logger,
+                applicationContext = context
+            )
+        viewModel =
+            HomeScreenViewModel(
+                featureFlags,
+                navigator,
+                criOrchestratorSdk
+            )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
         composeTestRule.setupComposeTestRule { _ ->

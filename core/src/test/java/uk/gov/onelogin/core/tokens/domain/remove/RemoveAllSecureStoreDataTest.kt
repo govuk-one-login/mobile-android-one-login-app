@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.remove
 
-import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,6 +14,7 @@ import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)

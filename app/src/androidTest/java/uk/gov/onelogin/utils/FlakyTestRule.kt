@@ -6,19 +6,26 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 @Suppress("TooGenericExceptionCaught")
-class FlakyTestRule(private val retryCount: Int = 3) : TestRule {
-
-    override fun apply(base: Statement, description: Description): Statement {
-        val isAnnotationEnabled = description
-            .annotations.filterIsInstance(FlakyTest::class.java)
-            .isNotEmpty()
+class FlakyTestRule(
+    private val retryCount: Int = 3
+) : TestRule {
+    override fun apply(
+        base: Statement,
+        description: Description
+    ): Statement {
+        val isAnnotationEnabled =
+            description
+                .annotations
+                .filterIsInstance(FlakyTest::class.java)
+                .isNotEmpty()
 
         // Determine the actual allowed invocation count based on the FlakyTest annotation
-        val actualAllowedInvocationCount = if (isAnnotationEnabled) {
-            retryCount
-        } else {
-            1
-        }
+        val actualAllowedInvocationCount =
+            if (isAnnotationEnabled) {
+                retryCount
+            } else {
+                1
+            }
 
         return object : Statement() {
             override fun evaluate() {

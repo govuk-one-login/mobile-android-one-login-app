@@ -64,9 +64,10 @@ fun OsslScreen(
                             )
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
+                    colors =
+                        TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.background
+                        )
                 )
             }
         ) {
@@ -86,13 +87,15 @@ fun OsslAboutLibrariesScreen(
     val background = MaterialTheme.colorScheme.background
     val primary = MaterialTheme.colorScheme.primary
     LibrariesContainer(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxSize(),
-        colors = LibraryDefaults.libraryColors(
-            backgroundColor = background,
-            badgeBackgroundColor = primary
-        )
+        modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxSize(),
+        colors =
+            LibraryDefaults.libraryColors(
+                backgroundColor = background,
+                badgeBackgroundColor = primary
+            )
     ) { library ->
         val license = library.licenses.firstOrNull()
         onClick(

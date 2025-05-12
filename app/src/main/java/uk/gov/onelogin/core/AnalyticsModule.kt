@@ -28,9 +28,7 @@ object AnalyticsModule {
 
     @OneLoginInjectionAnnotation
     @Provides
-    fun provideCrashlyticsLogger(
-        crashlytics: FirebaseCrashlytics
-    ): CrashLogger = CrashlyticsLogger(crashlytics)
+    fun provideCrashlyticsLogger(crashlytics: FirebaseCrashlytics): CrashLogger = CrashlyticsLogger(crashlytics)
 
     @OneLoginInjectionAnnotation
     @Provides

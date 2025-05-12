@@ -32,8 +32,9 @@ class SettingsGraphObjectTest : TestCase() {
 
     @Test
     fun navigateToOssl() {
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_osslTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_osslTitle)
+            ).assertIsDisplayed()
     }
 }

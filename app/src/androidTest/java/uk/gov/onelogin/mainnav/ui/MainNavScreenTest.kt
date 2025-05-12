@@ -21,7 +21,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.wallet.core.R as walletR
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -34,6 +33,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 import uk.gov.onelogin.features.wallet.ui.DEEPLINK_PATH
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.wallet.WalletRepositoryModule
+import uk.gov.android.wallet.core.R as walletR
 
 @HiltAndroidTest
 @UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)
@@ -95,9 +95,10 @@ class MainNavScreenTest : TestCase() {
             navController.currentDestination?.route
         )
 
-        composeTestRule.onNodeWithText(
-            resources.getString(walletR.string.introCardTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(walletR.string.introCardTitle)
+            ).assertIsDisplayed()
 
         verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))
     }

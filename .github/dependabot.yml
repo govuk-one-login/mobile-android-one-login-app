@@ -37,6 +37,8 @@ updates:
     schedule:
       interval: weekly
       day: sunday
+    registries:
+      - github-maven
     open-pull-requests-limit: 5
     groups:
       kotlin:
@@ -46,3 +48,10 @@ updates:
         update-types:
           - minor
           - patch
+
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "build"

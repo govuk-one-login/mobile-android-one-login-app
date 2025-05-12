@@ -28,34 +28,39 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 fun EmailSection(email: String) {
     HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
     Row(
-        modifier = Modifier
-            .padding(top = smallPadding)
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
-            .fillMaxWidth()
-            .semantics(true) {},
+        modifier =
+            Modifier
+                .padding(top = smallPadding)
+                .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+                .fillMaxWidth()
+                .semantics(true) {},
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Image(
-            modifier = Modifier.padding(smallPadding)
-                .testTag(IMAGE_TEST_TAG),
+            modifier =
+                Modifier
+                    .padding(smallPadding)
+                    .testTag(IMAGE_TEST_TAG),
             painter = painterResource(id = R.drawable.ic_profile),
             contentDescription = null
         )
         Text(
             style = MaterialTheme.typography.bodyMedium,
-            text = buildAnnotatedString {
-                append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
-                appendLine()
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                        color = MaterialTheme.colorScheme.surface
-                    )
-                ) {
-                    append(email)
+            text =
+                buildAnnotatedString {
+                    append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
+                    appendLine()
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = MaterialTheme.colorScheme.surface
+                            )
+                    ) {
+                        append(email)
+                    }
                 }
-            }
         )
     }
 }

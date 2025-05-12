@@ -43,13 +43,14 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
         httpClient = mock()
         analyticsLogger = mock()
         logger = mock()
-        criOrchestratorSdk = CriOrchestratorSdk.create(
-            authenticatedHttpClient = httpClient,
-            analyticsLogger = analyticsLogger,
-            initialConfig = TestUtils.criSdkConfig,
-            logger = logger,
-            applicationContext = context
-        )
+        criOrchestratorSdk =
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = httpClient,
+                analyticsLogger = analyticsLogger,
+                initialConfig = TestUtils.criSdkConfig,
+                logger = logger,
+                applicationContext = context
+            )
         featureFlags =
             InMemoryFeatureFlags(
                 setOf(WalletFeatureFlag.ENABLED)
@@ -70,7 +71,8 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
 
     @Test
     fun homeScreenDisplayed() {
-        composeTestRule.onNodeWithText("Developer Panel", useUnmergedTree = true)
+        composeTestRule
+            .onNodeWithText("Developer Panel", useUnmergedTree = true)
             .assertExists()
     }
 }

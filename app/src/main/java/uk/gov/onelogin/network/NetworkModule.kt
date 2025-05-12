@@ -38,7 +38,9 @@ object NetworkModule {
     }
 
     @Provides
-    fun providesUserAgentGenerator(@ApplicationContext context: Context): UserAgentGenerator {
+    fun providesUserAgentGenerator(
+        @ApplicationContext context: Context
+    ): UserAgentGenerator {
         val userAgentGenerator = UserAgentGeneratorImpl()
         val appName = context.resources.getString(R.string.app_name)
         userAgentGenerator.setUserAgent(
@@ -70,14 +72,15 @@ object NetworkModule {
         val client = KtorHttpClient(userAgentGenerator)
         val endpoint = context.getString(R.string.tokenExchangeEndpoint)
         val url = context.getString(R.string.stsUrl, endpoint)
-        val authProvider = StsAuthenticationProvider(
-            url,
-            tokenRepository,
-            isAccessTokenExpired,
-            client,
-            navigator,
-            logger
-        )
+        val authProvider =
+            StsAuthenticationProvider(
+                url,
+                tokenRepository,
+                isAccessTokenExpired,
+                client,
+                navigator,
+                logger
+            )
         client.setAuthenticationProvider(authProvider)
         return client
     }

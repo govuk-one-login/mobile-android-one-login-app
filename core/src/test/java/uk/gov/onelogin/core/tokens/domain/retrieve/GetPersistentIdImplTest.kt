@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
-import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -8,6 +7,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import kotlin.test.assertNull
 
 class GetPersistentIdImplTest {
     private val expectedPersistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"

@@ -24,7 +24,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.R as UiR
 import uk.gov.android.ui.componentsv2.button.ButtonType
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
@@ -36,6 +35,7 @@ import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.android.ui.components.R as UiR
 
 @Composable
 fun ErrorUpdateRequiredScreen(
@@ -63,18 +63,20 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     val buttonAccessibilityDesc = stringResource(R.string.app_openGooglePlayStore)
     GdsTheme {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(mediumPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(mediumPadding),
             verticalArrangement = Arrangement.Center
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .weight(1f)
-                    .padding(bottom = smallPadding)
+                modifier =
+                    Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(1f)
+                        .padding(bottom = smallPadding)
             ) {
                 Image(
                     painter = painterResource(UiR.drawable.ic_error),
@@ -101,11 +103,12 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
                 text = buttonText,
                 buttonType = ButtonType.Primary,
                 onClick = onPrimary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics(mergeDescendants = true) {
-                        contentDescription = buttonText + buttonAccessibilityDesc
-                    }
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = buttonText + buttonAccessibilityDesc
+                        }
             )
         }
     }

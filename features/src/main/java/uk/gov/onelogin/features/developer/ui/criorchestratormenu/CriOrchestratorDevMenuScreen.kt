@@ -15,20 +15,19 @@ import uk.gov.onelogin.criorchestrator.features.dev.publicapi.DevMenuScreen
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 
 @Composable
-fun CriOrchestratorDevMenuScreen(
-    viewModel: CriOrchestratorDevMenuScreenViewModel = hiltViewModel()
-) {
+fun CriOrchestratorDevMenuScreen(viewModel: CriOrchestratorDevMenuScreenViewModel = hiltViewModel()) {
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(mediumPadding)
+            Modifier
+                .fillMaxSize()
+                .padding(mediumPadding)
     ) {
         GdsHeading(
-            headingParameters = HeadingParameters(
-                size = HeadingSize.H2(),
-                text = R.string.app_developer_features_title
-            )
+            headingParameters =
+                HeadingParameters(
+                    size = HeadingSize.H2(),
+                    text = R.string.app_developer_features_title
+                )
         )
         val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
         DevMenuScreen(criOrchestratorComponent)

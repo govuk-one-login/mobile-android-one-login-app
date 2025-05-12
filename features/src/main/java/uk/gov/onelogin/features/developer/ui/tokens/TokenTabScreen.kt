@@ -29,52 +29,60 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val persistentId by viewModel.persistentId.collectAsState()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(largePadding),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(largePadding),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = mediumPadding),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = mediumPadding),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    text = stringResource(R.string.app_developer_reset_access_token_button),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        viewModel.resetAccessToken()
-                        Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                )
+                buttonParameters =
+                    ButtonParameters(
+                        text = stringResource(R.string.app_developer_reset_access_token_button),
+                        buttonType = ButtonType.PRIMARY(),
+                        onClick = {
+                            viewModel.resetAccessToken()
+                            Toast
+                                .makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    )
             )
         }
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = mediumPadding),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = mediumPadding),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.weight(1F)
-                    .padding(end = smallPadding),
+                modifier =
+                    Modifier
+                        .weight(1F)
+                        .padding(end = smallPadding),
                 text = "Persistent ID: ${persistentId.ifEmpty { "<Empty>" }}"
             )
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    modifier = Modifier.weight(1F),
-                    text = stringResource(R.string.app_developer_reset_persistent_id_button),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        viewModel.resetPersistentId()
-                    }
-                )
+                buttonParameters =
+                    ButtonParameters(
+                        modifier = Modifier.weight(1F),
+                        text = stringResource(R.string.app_developer_reset_persistent_id_button),
+                        buttonType = ButtonType.PRIMARY(),
+                        onClick = {
+                            viewModel.resetPersistentId()
+                        }
+                    )
             )
         }
     }

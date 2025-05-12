@@ -1,8 +1,8 @@
 package uk.gov.onelogin.core.network.domain
 
-import kotlin.test.Test
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import kotlin.test.Test
 
 class TokenApiResponseTest {
     @Test

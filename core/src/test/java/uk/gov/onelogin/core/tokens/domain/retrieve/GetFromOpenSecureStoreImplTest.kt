@@ -1,8 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.mockito.ArgumentMatchers
@@ -12,6 +9,9 @@ import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.logging.testdouble.SystemLogger
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class GetFromOpenSecureStoreImplTest {
     private val secureStore: SecureStore = mock()
@@ -19,28 +19,30 @@ class GetFromOpenSecureStoreImplTest {
     private val useCase = GetFromOpenSecureStoreImpl(secureStore, logger)
 
     @Test
-    fun verifySuccess() = runTest {
-        val expected = mapOf("Key" to "Success")
-        whenever(secureStore.retrieve(ArgumentMatchers.any()))
-            .thenReturn(RetrievalEvent.Success(expected))
+    fun verifySuccess() =
+        runTest {
+            val expected = mapOf("Key" to "Success")
+            whenever(secureStore.retrieve(ArgumentMatchers.any()))
+                .thenReturn(RetrievalEvent.Success(expected))
 
-        val result = useCase.invoke("Key")
-        assertEquals(expected, result)
-        assertEquals(0, logger.size)
-    }
+            val result = useCase.invoke("Key")
+            assertEquals(expected, result)
+            assertEquals(0, logger.size)
+        }
 
     @Test
-    fun verifyFailure() = runTest {
-        whenever(secureStore.retrieve(ArgumentMatchers.any()))
-            .thenReturn(
-                RetrievalEvent.Failed(
-                    SecureStoreErrorType.NOT_FOUND,
-                    "Not found"
+    fun verifyFailure() =
+        runTest {
+            whenever(secureStore.retrieve(ArgumentMatchers.any()))
+                .thenReturn(
+                    RetrievalEvent.Failed(
+                        SecureStoreErrorType.NOT_FOUND,
+                        "Not found"
+                    )
                 )
-            )
 
-        val result = useCase.invoke("Key")
-        assertNull(result)
-        assertTrue(logger.contains("Reason: Not found"))
-    }
+            val result = useCase.invoke("Key")
+            assertNull(result)
+            assertTrue(logger.contains("Reason: Not found"))
+        }
 }

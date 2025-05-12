@@ -31,47 +31,53 @@ private fun AuthErrorBody(
     val title = R.string.app_dataDeletedErrorTitle
     val buttonText = R.string.app_dataDeletedButton
     val contentDescription = R.string.app_dataDeletedError_ContentDescription
-    val bodyContent = if (walletEnabled) {
-        AuthScreenBodyContent(
-            body1 = R.string.app_dataDeletedBody1,
-            body2 = R.string.app_dataDeletedBody2,
-            body3 = R.string.app_dataDeletedBody3
-        )
-    } else {
-        AuthScreenBodyContent(
-            body1 = R.string.app_dataDeletedBody1_no_wallet,
-            body2 = R.string.app_dataDeletedBody2_no_wallet,
-            body3 = R.string.app_dataDeletedBody3_no_wallet
-        )
-    }
+    val bodyContent =
+        if (walletEnabled) {
+            AuthScreenBodyContent(
+                body1 = R.string.app_dataDeletedBody1,
+                body2 = R.string.app_dataDeletedBody2,
+                body3 = R.string.app_dataDeletedBody3
+            )
+        } else {
+            AuthScreenBodyContent(
+                body1 = R.string.app_dataDeletedBody1_no_wallet,
+                body2 = R.string.app_dataDeletedBody2_no_wallet,
+                body3 = R.string.app_dataDeletedBody3_no_wallet
+            )
+        }
     LandingPage(
-        landingPageParameters = LandingPageParameters(
-            topIcon = uk.gov.android.ui.components.R.drawable.ic_error,
-            iconColor = MaterialTheme.colorScheme.onBackground,
-            contentDescription = contentDescription,
-            title = title,
-            titleBottomPadding = smallPadding,
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        bodyContent.body1
-                    )
-                ),
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        bodyContent.body2
-                    )
-                ),
-                GdsContentText.GdsContentTextString(
-                    text = intArrayOf(
-                        bodyContent.body3
-                    )
-                )
-            ),
-            contentInternalPadding = PaddingValues(bottom = smallPadding),
-            primaryButtonText = buttonText,
-            onPrimary = goToSignIn
-        )
+        landingPageParameters =
+            LandingPageParameters(
+                topIcon = uk.gov.android.ui.components.R.drawable.ic_error,
+                iconColor = MaterialTheme.colorScheme.onBackground,
+                contentDescription = contentDescription,
+                title = title,
+                titleBottomPadding = smallPadding,
+                content =
+                    listOf(
+                        GdsContentText.GdsContentTextString(
+                            text =
+                                intArrayOf(
+                                    bodyContent.body1
+                                )
+                        ),
+                        GdsContentText.GdsContentTextString(
+                            text =
+                                intArrayOf(
+                                    bodyContent.body2
+                                )
+                        ),
+                        GdsContentText.GdsContentTextString(
+                            text =
+                                intArrayOf(
+                                    bodyContent.body3
+                                )
+                        )
+                    ),
+                contentInternalPadding = PaddingValues(bottom = smallPadding),
+                primaryButtonText = buttonText,
+                onPrimary = goToSignIn
+            )
     )
 }
 

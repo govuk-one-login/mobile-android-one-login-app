@@ -52,23 +52,26 @@ fun LoadingBody() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag(LOADING_SCREEN_BOX)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .testTag(LOADING_SCREEN_BOX)
     ) {
         CircularProgressIndicator(
-            modifier = Modifier
-                .width(64.dp)
-                .padding(bottom = mediumPadding)
-                .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
+            modifier =
+                Modifier
+                    .width(64.dp)
+                    .padding(bottom = mediumPadding)
+                    .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
             color = colorScheme.primary,
             trackColor = colorScheme.secondary
         )
         Text(
-            modifier = Modifier
-                .semantics { heading() }
-                .padding(top = largePadding)
-                .testTag(LOADING_SCREEN_TEXT),
+            modifier =
+                Modifier
+                    .semantics { heading() }
+                    .padding(top = largePadding)
+                    .testTag(LOADING_SCREEN_TEXT),
             style = MaterialTheme.typography.bodyLarge,
             color = color,
             text = stringResource(R.string.app_loadingBody)

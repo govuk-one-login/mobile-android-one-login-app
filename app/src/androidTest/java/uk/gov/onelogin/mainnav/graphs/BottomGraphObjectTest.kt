@@ -9,10 +9,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.wallet.core.R as walletR
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 import uk.gov.onelogin.utils.TestCase
+import uk.gov.android.wallet.core.R as walletR
 
 @HiltAndroidTest
 class BottomGraphObjectTest : TestCase() {
@@ -37,9 +37,10 @@ class BottomGraphObjectTest : TestCase() {
             navController.setCurrentDestination(BottomNavDestination.Home.key)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_homeTitle)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_homeTitle)
+            ).assertExists()
     }
 
     @Test
@@ -48,9 +49,10 @@ class BottomGraphObjectTest : TestCase() {
             navController.setCurrentDestination(BottomNavDestination.Wallet.key)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(walletR.string.introCardTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(walletR.string.introCardTitle)
+            ).assertIsDisplayed()
     }
 
     @Test
@@ -59,8 +61,9 @@ class BottomGraphObjectTest : TestCase() {
             navController.setCurrentDestination(BottomNavDestination.Settings.key)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_settings)
-        ).assertExists()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_settings)
+            ).assertExists()
     }
 }

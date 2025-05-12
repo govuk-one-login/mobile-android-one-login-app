@@ -16,7 +16,6 @@ import uk.gov.onelogin.navigation.NavigatorModule
 @HiltAndroidTest
 @UninstallModules(NavigatorModule::class)
 class MainActivityTest : TestCase() {
-
     @BindValue
     val navigator: Navigator = mock()
 

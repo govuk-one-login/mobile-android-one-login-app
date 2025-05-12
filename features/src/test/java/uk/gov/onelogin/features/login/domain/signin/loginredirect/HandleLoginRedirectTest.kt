@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.login.domain.signin.loginredirect
 
 import android.content.Intent
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -15,6 +14,7 @@ import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import kotlin.test.assertEquals
 
 @Suppress("MaxLineLength")
 class HandleLoginRedirectTest {
@@ -34,14 +34,16 @@ class HandleLoginRedirectTest {
             testIdToken,
             "testRefreshToken"
         )
-    private val accessDeniedError = AuthenticationError(
-        "access_denied",
-        AuthenticationError.ErrorType.ACCESS_DENIED
-    )
-    private val oauthError = AuthenticationError(
-        "oauth_error",
-        AuthenticationError.ErrorType.OAUTH
-    )
+    private val accessDeniedError =
+        AuthenticationError(
+            "access_denied",
+            AuthenticationError.ErrorType.ACCESS_DENIED
+        )
+    private val oauthError =
+        AuthenticationError(
+            "oauth_error",
+            AuthenticationError.ErrorType.OAUTH
+        )
 
     private val handleLoginRedirect = HandleLoginRedirectImpl(mockAppIntegrity, mockLoginSession)
 

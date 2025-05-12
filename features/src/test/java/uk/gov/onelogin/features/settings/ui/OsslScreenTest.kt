@@ -16,7 +16,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.matcher.UriMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlin.test.assertTrue
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -28,6 +27,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class OsslScreenTest : FragmentActivityTestCase() {
@@ -116,9 +116,10 @@ class OsslScreenTest : FragmentActivityTestCase() {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(
-            resources.getString(R.string.app_back_icon)
-        ).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(
+                resources.getString(R.string.app_back_icon)
+            ).performClick()
 
         verify(analyticsLogger).logEventV3Dot1(
             OsslAnalyticsViewModel.makeBackIconEvent(context)

@@ -1,0 +1,71 @@
+name: Lint
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  merge_group:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up git runner
+        uses: ./mobile-android-pipelines/actions/setup-runner
+        with:
+          jdk-version: 21
+
+      - name: Cache mobile-android-pipelines build
+        uses: ./actions/cache-pipelines-build
+
+      - name: Lint
+        uses: govuk-one-login/mobile-android-pipelines/actions/lint
+        env:
+          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+
+      - name: Clean workspace
+        if: ${{ always() }}
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
+#  lint-structure:
+#    name: Lint Kotlin structure
+#    runs-on: ubuntu-latest
+#    permissions:
+#      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+#      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+#      packages: read
+#
+#    steps:
+#      - name: Run checkout github action
+#        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+#        with:
+#          lfs: 'true'
+#          submodules: 'true'
+#          fetch-depth: 0
+#
+#      - name: Set up git runner
+#        uses: ./mobile-android-pipelines/actions/setup-runner
+#        with:
+#          jdk-version: 21
+#
+#      - name: Run Konsist tests
+#        run: ./gradlew konsist-test:testDebugUnitTest
+#        env:
+#          GITHUB_ACTOR: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME}}
+#          GITHUB_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}

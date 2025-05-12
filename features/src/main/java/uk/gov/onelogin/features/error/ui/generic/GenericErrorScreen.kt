@@ -34,22 +34,21 @@ fun GenericErrorScreen(
 }
 
 @Composable
-private fun GenericErrorBody(
-    primaryOnClick: () -> Unit = {}
-) {
+private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_genericErrorPage),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_genericErrorPageBody)
-            )
-        ),
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_genericErrorPageBody)
+                )
+            ),
         primaryButton =
-        CentreAlignedScreenButton(
-            text = stringResource(R.string.app_genericErrorPageButton),
-            onClick = primaryOnClick
-        )
+            CentreAlignedScreenButton(
+                text = stringResource(R.string.app_genericErrorPageButton),
+                onClick = primaryOnClick
+            )
     )
 }
 

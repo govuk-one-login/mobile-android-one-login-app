@@ -1,7 +1,7 @@
 package uk.gov.onelogin.features.featureflags.data
 
-import javax.inject.Inject
 import uk.gov.android.featureflags.FeatureFlag
+import javax.inject.Inject
 
 class AvailableFeatures(
     private val features: MutableSet<FeatureFlag>
@@ -22,10 +22,11 @@ class AvailableFeatures(
     override operator fun iterator() = this.features.iterator()
 
     operator fun plus(flags: Iterable<FeatureFlag>): AvailableFeatures {
-        val availableFlags = mutableSetOf<FeatureFlag>().apply {
-            addAll(features)
-            addAll(flags)
-        }
+        val availableFlags =
+            mutableSetOf<FeatureFlag>().apply {
+                addAll(features)
+                addAll(flags)
+            }
 
         return AvailableFeatures(availableFlags)
     }

@@ -1,10 +1,6 @@
 package uk.gov.onelogin.features.optin.domain
 
 import android.content.SharedPreferences
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -20,6 +16,10 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import uk.gov.onelogin.features.optin.domain.AnalyticsOptInLocalSource.Companion.DEFAULT_ORDINAL
 import uk.gov.onelogin.features.optin.domain.AnalyticsOptInLocalSource.Companion.OPT_IN_KEY
 import uk.gov.onelogin.features.optin.domain.source.OptInLocalSource
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class AnalyticsOptInLocalSourceTest {

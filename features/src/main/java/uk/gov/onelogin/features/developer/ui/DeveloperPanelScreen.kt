@@ -86,10 +86,11 @@ fun TabView(goBack: () -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     Column {
         CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,
-                titleContentColor = Color.Gray
-            ),
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Gray
+                ),
             title = {
                 Text(
                     "Developer Portal",
@@ -114,9 +115,10 @@ fun TabView(goBack: () -> Unit) {
             contentColor = Color.Gray,
             indicator = { tabPositions ->
                 SecondaryIndicator(
-                    modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                            .fillMaxWidth(),
                     color = Color.Black
                 )
             }
@@ -139,11 +141,11 @@ fun TabView(goBack: () -> Unit) {
                                 text = stringResource(tab.title),
                                 modifier = Modifier.padding(8.dp),
                                 color =
-                                if (pagerState.currentPage == index) {
-                                    Color.Black
-                                } else {
-                                    Color.Gray
-                                }
+                                    if (pagerState.currentPage == index) {
+                                        Color.Black
+                                    } else {
+                                        Color.Gray
+                                    }
                             )
                         }
                     }

@@ -20,8 +20,10 @@ fun LocalAuthTabScreen(viewModel: LocalAuthTabScreenViewModel = hiltViewModel())
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
     ) {
         Button(
             onClick = { viewModel.triggerLocalAuthMock(activity, false) }

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.localauth.domain
 
-import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -8,6 +7,7 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
+import kotlin.test.Test
 
 class LocalAuthPrefResetUseCaseImplTest {
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
@@ -19,40 +19,44 @@ class LocalAuthPrefResetUseCaseImplTest {
         )
 
     @Test
-    fun `test when device is secure - enabled (biometrics)`() = runTest {
-        whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Enabled(true))
+    fun `test when device is secure - enabled (biometrics)`() =
+        runTest {
+            whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Enabled(true))
 
-        localAuthPrefResetUseCase.reset()
+            localAuthPrefResetUseCase.reset()
 
-        verifyNoInteractions(localAuthPreferenceRepo)
-    }
-
-    @Test
-    fun `test when device is secure - enabled (passcode)`() = runTest {
-        whenever(localAuthManager.localAuthPreference).thenReturn(
-            LocalAuthPreference.Enabled(false)
-        )
-
-        localAuthPrefResetUseCase.reset()
-
-        verifyNoInteractions(localAuthPreferenceRepo)
-    }
+            verifyNoInteractions(localAuthPreferenceRepo)
+        }
 
     @Test
-    fun `test when device is not secure - disabled`() = runTest {
-        whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+    fun `test when device is secure - enabled (passcode)`() =
+        runTest {
+            whenever(localAuthManager.localAuthPreference).thenReturn(
+                LocalAuthPreference.Enabled(false)
+            )
 
-        localAuthPrefResetUseCase.reset()
+            localAuthPrefResetUseCase.reset()
 
-        verify(localAuthPreferenceRepo).clean()
-    }
+            verifyNoInteractions(localAuthPreferenceRepo)
+        }
 
     @Test
-    fun `test when device is not secure - null`() = runTest {
-        whenever(localAuthManager.localAuthPreference).thenReturn(null)
+    fun `test when device is not secure - disabled`() =
+        runTest {
+            whenever(localAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
-        localAuthPrefResetUseCase.reset()
+            localAuthPrefResetUseCase.reset()
 
-        verify(localAuthPreferenceRepo).clean()
-    }
+            verify(localAuthPreferenceRepo).clean()
+        }
+
+    @Test
+    fun `test when device is not secure - null`() =
+        runTest {
+            whenever(localAuthManager.localAuthPreference).thenReturn(null)
+
+            localAuthPrefResetUseCase.reset()
+
+            verify(localAuthPreferenceRepo).clean()
+        }
 }

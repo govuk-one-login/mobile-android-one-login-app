@@ -27,22 +27,26 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
     private val body1 = hasText(resources.getString(R.string.app_dataDeletedBody1))
     private val body2 = hasText(resources.getString(R.string.app_dataDeletedBody2))
     private val body3 = hasText(resources.getString(R.string.app_dataDeletedBody3))
-    private val body1NoWallet = hasText(
-        resources.getString(R.string.app_dataDeletedBody1_no_wallet)
-    )
-    private val body2NoWallet = hasText(
-        resources.getString(R.string.app_dataDeletedBody2_no_wallet)
-    )
-    private val body3NoWallet = hasText(
-        resources.getString(R.string.app_dataDeletedBody3_no_wallet)
-    )
+    private val body1NoWallet =
+        hasText(
+            resources.getString(R.string.app_dataDeletedBody1_no_wallet)
+        )
+    private val body2NoWallet =
+        hasText(
+            resources.getString(R.string.app_dataDeletedBody2_no_wallet)
+        )
+    private val body3NoWallet =
+        hasText(
+            resources.getString(R.string.app_dataDeletedBody3_no_wallet)
+        )
     private val primary = hasText(resources.getString(R.string.app_dataDeletedButton))
 
     @Test
     fun reAuthErrorScreenWithWallet() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED)
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED)
+            )
         viewModel = AuthErrorViewModel(navigator, featureFlags)
         composeTestRule.setContent {
             AuthErrorScreen(viewModel)
@@ -63,9 +67,10 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun reAuthErrorScreenWithoutWallet() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf()
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf()
+            )
         viewModel = AuthErrorViewModel(navigator, featureFlags)
         composeTestRule.setContent {
             AuthErrorScreen(viewModel)
@@ -86,15 +91,17 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun onPrimary() {
-        featureFlags = InMemoryFeatureFlags(
-            setOf()
-        )
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf()
+            )
         viewModel = AuthErrorViewModel(navigator, featureFlags)
         composeTestRule.setContent {
             AuthErrorScreen(viewModel)
         }
 
-        composeTestRule.onNode(primary)
+        composeTestRule
+            .onNode(primary)
             .performClick()
 
         verify(navigator).navigate(LoginRoutes.Start, true)

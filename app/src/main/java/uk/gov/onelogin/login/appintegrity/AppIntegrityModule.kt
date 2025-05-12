@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlin.io.encoding.ExperimentalEncodingApi
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.FirebaseAppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
@@ -21,6 +20,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityImpl
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @SuppressWarnings("kotlin:S6517")
 @Module
@@ -31,20 +31,16 @@ object AppIntegrityModule {
         attestationCaller: AttestationCaller,
         appChecker: AppChecker,
         keyStoreManager: KeyStoreManager
-    ): AppIntegrityConfiguration {
-        return AppIntegrityConfiguration(
+    ): AppIntegrityConfiguration =
+        AppIntegrityConfiguration(
             attestationCaller = attestationCaller,
             appChecker = appChecker,
             keyStoreManager = keyStoreManager
         )
-    }
 
     @Provides
-    fun provideFirebaseTokenManager(
-        config: AppIntegrityConfiguration
-    ): AppIntegrityManager {
-        return FirebaseAppIntegrityManager(config)
-    }
+    fun provideFirebaseTokenManager(config: AppIntegrityConfiguration): AppIntegrityManager =
+        FirebaseAppIntegrityManager(config)
 
     @Provides
     fun provideAppIntegrityCheck(
@@ -54,15 +50,14 @@ object AppIntegrityModule {
         appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
         getFromOpenSecureStore: GetFromOpenSecureStore
-    ): AppIntegrity {
-        return AppIntegrityImpl(
+    ): AppIntegrity =
+        AppIntegrityImpl(
             context,
             featureFlags,
             appCheck,
             saveToOpenSecureStore,
             getFromOpenSecureStore
         )
-    }
 
     @Provides
     fun provideAssertionApiCall(

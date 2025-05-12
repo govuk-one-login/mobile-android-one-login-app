@@ -28,23 +28,25 @@ class SettingsAnalyticsViewModelTest {
 
     @Before
     fun setUp() {
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
         logger = mock()
         viewModel = SettingsAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun testScreenEvent() {
-        val event = TestUtils.TrackEventTestCase.Screen(
-            trackFunction = {
-                viewModel.trackSettingsView()
-            },
-            name = context.getEnglishString(R.string.action_settings),
-            id = context.getEnglishString(R.string.settings_page_id)
-        )
+        val event =
+            TestUtils.TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackSettingsView()
+                },
+                name = context.getEnglishString(R.string.action_settings),
+                id = context.getEnglishString(R.string.settings_page_id)
+            )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
         verify(logger).logEventV3Dot1(result)

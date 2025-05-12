@@ -1,12 +1,12 @@
 package uk.gov.onelogin.core.tokens
 
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpiredImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class IsAccessTokenExpiredImplTest {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()

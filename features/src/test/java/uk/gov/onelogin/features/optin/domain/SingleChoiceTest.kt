@@ -1,10 +1,10 @@
 package uk.gov.onelogin.features.optin.domain
 
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
 
 class SingleChoiceTest {
     private lateinit var choice: SingleChoice

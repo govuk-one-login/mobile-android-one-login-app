@@ -92,37 +92,42 @@ internal fun WelcomeBody(
     openDevMenu: () -> Unit = { }
 ) {
     val title = stringResource(R.string.app_signInTitle)
-    val content = listOf(
-        stringResource(R.string.app_signInBody1),
-        stringResource(R.string.app_signInBody2)
-    )
+    val content =
+        listOf(
+            stringResource(R.string.app_signInBody1),
+            stringResource(R.string.app_signInBody2)
+        )
     val buttonText = stringResource(R.string.app_signInButton)
     val devButtonText = stringResource(R.string.app_developer_button)
     GdsTheme {
         CentreAlignedScreen(
             title = title,
             modifier = Modifier.fillMaxSize(),
-            image = CentreAlignedScreenImage(
-                image = R.drawable.app_icon,
-                // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
-                description = ""
-            ),
-            body = persistentListOf(
-                CentreAlignedScreenBodyContent.Text(content[0]),
-                CentreAlignedScreenBodyContent.Text(content[1])
-            ),
-            primaryButton = CentreAlignedScreenButton(
-                text = buttonText,
-                onClick = onSignIn
-            ),
-            secondaryButton = if (DeveloperTools.isDeveloperPanelEnabled()) {
+            image =
+                CentreAlignedScreenImage(
+                    image = R.drawable.app_icon,
+                    // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
+                    description = ""
+                ),
+            body =
+                persistentListOf(
+                    CentreAlignedScreenBodyContent.Text(content[0]),
+                    CentreAlignedScreenBodyContent.Text(content[1])
+                ),
+            primaryButton =
                 CentreAlignedScreenButton(
-                    text = devButtonText,
-                    onClick = openDevMenu
-                )
-            } else {
-                null
-            }
+                    text = buttonText,
+                    onClick = onSignIn
+                ),
+            secondaryButton =
+                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                    CentreAlignedScreenButton(
+                        text = devButtonText,
+                        onClick = openDevMenu
+                    )
+                } else {
+                    null
+                }
         )
     }
 }

@@ -18,11 +18,12 @@ class WalletScreenTest : FragmentActivityTestCase() {
     private val featureFlags: FeatureFlags = mock()
     private val walletRepository: WalletRepository = mock()
 
-    private val viewModel = WalletScreenViewModel(
-        walletSdk,
-        featureFlags,
-        walletRepository
-    )
+    private val viewModel =
+        WalletScreenViewModel(
+            walletSdk,
+            featureFlags,
+            walletRepository
+        )
 
     @Ignore("Fix mockito verify composable extra arguments issue")
     @Test

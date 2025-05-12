@@ -46,16 +46,18 @@ fun HomeScreen(
     }
     TitledPage(R.string.app_homeTitle) { paddingValues ->
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = smallPadding)
-                .verticalScroll(rememberScrollState())
-                .height(IntrinsicSize.Max)
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = smallPadding)
+                    .verticalScroll(rememberScrollState())
+                    .height(IntrinsicSize.Max)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(
-                    modifier = Modifier
-                        .testTag(stringResource(R.string.appCriCardTestTag))
+                    modifier =
+                        Modifier
+                            .testTag(stringResource(R.string.appCriCardTestTag))
                 ) {
                     ProveYourIdentityCard(
                         component = criOrchestratorComponent,
@@ -73,9 +75,10 @@ fun HomeScreen(
                     analyticsViewModel.trackLink()
                     uriHandler.openUri(servicesUrl)
                 },
-                modifier = Modifier
-                    .padding(top = smallPadding)
-                    .testTag(stringResource(R.string.yourServicesCardTestTag))
+                modifier =
+                    Modifier
+                        .padding(top = smallPadding)
+                        .testTag(stringResource(R.string.yourServicesCardTestTag))
             )
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(

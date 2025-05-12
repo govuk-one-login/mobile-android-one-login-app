@@ -1,7 +1,5 @@
 package uk.gov.onelogin.features.wallet.ui
 
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
@@ -11,6 +9,8 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.wallet.data.WalletRepository
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class WalletScreenViewModelTest {
     private val walletSdk: WalletSdk = mock()
