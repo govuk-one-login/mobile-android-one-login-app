@@ -2,7 +2,8 @@ import org.gradle.api.internal.provider.MissingValueException
 import java.net.URI
 
 pluginManagement {
-    includeBuild("${rootProject.projectDir}/build-logic")
+    includeBuild("../mobile-android-pipelines/buildLogic")
+//    includeBuild("${rootProject.projectDir}/build-logic")
     repositories {
         google()
         mavenCentral()
@@ -66,4 +67,4 @@ include(":core")
 include(":featureflags")
 include(":features")
 
-gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:plugins:testClasses"))
+//gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:plugins:testClasses"))

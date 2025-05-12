@@ -12,25 +12,19 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
     kotlin("kapt")
-    id("uk.gov.onelogin.jvm-toolchains")
-    id("uk.gov.jacoco.app-config")
-    id("uk.gov.sonar.module-config")
-    id("uk.gov.onelogin.emulator-config")
+//    id("uk.gov.onelogin.jvm-toolchains")
+    id("uk.gov.pipelines.android-app-config")
+//    id("uk.gov.onelogin.emulator-config")
 }
 
-apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
-apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
+// apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
+// apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 
 android {
     namespace = "uk.gov.android.onelogin"
-    compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
     defaultConfig {
-        applicationId = rootProject.ext["appId"] as String
-        minSdk = rootProject.ext["minSdkVersion"] as Int
-        targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = rootProject.ext["versionCode"] as Int
-        versionName = rootProject.ext["versionName"] as String
+        applicationId = "uk.gov.onelogin"
         testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
@@ -52,7 +46,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -80,7 +74,7 @@ android {
             "build",
             "staging",
             "integration",
-            "production"
+            "production",
         ).forEach { environment ->
             create(environment) {
                 var suffix = ""
@@ -107,11 +101,12 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
             it.testLogging {
-                events = setOf(
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
-                )
+                events =
+                    setOf(
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                    )
             }
         }
         unitTests {
@@ -134,11 +129,12 @@ android {
     }
 
     packaging {
-        resources.excludes += setOf(
-            "META-INF/LICENSE-notice.md",
-            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
-            "META-INF/LICENSE.md"
-        )
+        resources.excludes +=
+            setOf(
+                "META-INF/LICENSE-notice.md",
+                "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+                "META-INF/LICENSE.md",
+            )
     }
 }
 
@@ -149,8 +145,8 @@ androidComponents {
             BuildConfigField(
                 "String",
                 "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
-                "debug token"
-            )
+                "debug token",
+            ),
         )
     }
 }
@@ -166,12 +162,12 @@ dependencies {
         libs.hilt.android.testing,
         libs.uiautomator,
         libs.mockito.kotlin,
-        libs.mockito.android
+        libs.mockito.android,
     ).forEach(::androidTestImplementation)
 
     listOf(
         libs.androidx.compose.ui.tooling,
-        libs.androidx.compose.ui.test.manifest
+        libs.androidx.compose.ui.test.manifest,
     ).forEach(::debugImplementation)
 
     listOf(
@@ -202,7 +198,7 @@ dependencies {
         platform(libs.firebase.bom),
         libs.bundles.firebase,
         libs.androidx.biometric,
-        libs.bundles.cri.orchestrator.bundle
+        libs.bundles.cri.orchestrator.bundle,
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {
@@ -212,11 +208,11 @@ dependencies {
 
     listOf(
         libs.hilt.android.compiler,
-        libs.hilt.compiler
+        libs.hilt.compiler,
     ).forEach(::kapt)
 
     listOf(
-        libs.hilt.android.compiler
+        libs.hilt.android.compiler,
     ).forEach(::kaptAndroidTest)
 
     listOf(
@@ -231,13 +227,13 @@ dependencies {
         libs.classgraph,
         libs.roboelectric,
         libs.junit,
-        libs.androidx.test.ext.junit
+        libs.androidx.test.ext.junit,
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
-        libs.androidx.test.orchestrator
+        libs.androidx.test.orchestrator,
     ).forEach {
         androidTestUtil(it)
     }
@@ -247,43 +243,22 @@ kapt {
     correctErrorTypes = true
 }
 
-fun getVersionCode(): Int {
-    val code =
-        if (rootProject.hasProperty("versionCode")) {
-            (rootProject.property("versionCode") as String).toInt()
-        } else {
-            1
-        }
-    println("VersionCode is set to $code")
-    return code
-}
-
-fun getVersionName(): String {
-    val name =
-        if (rootProject.hasProperty("versionName")) {
-            rootProject.property("versionName") as String
-        } else {
-            "1.0"
-        }
-    println("VersionName is set to $name")
-    return name
-}
-
 project.afterEvaluate {
     this.android.applicationVariants.forEach { applicationVariant ->
-        val applicationVariantCapitalised = applicationVariant.name.replaceFirstChar {
-            if (it.isLowerCase()) {
-                it.titlecase(Locale.getDefault())
-            } else {
-                it.toString()
+        val applicationVariantCapitalised =
+            applicationVariant.name.replaceFirstChar {
+                if (it.isLowerCase()) {
+                    it.titlecase(Locale.getDefault())
+                } else {
+                    it.toString()
+                }
             }
-        }
         val flavorName = applicationVariant.flavorName
 
         if (flavorName.equals("production")) {
             listOf(
                 "process${applicationVariantCapitalised}GoogleServices",
-                "uploadCrashlyticsMappingFile$applicationVariantCapitalised"
+                "uploadCrashlyticsMappingFile$applicationVariantCapitalised",
             ).mapNotNull { taskName ->
                 tasks.findByName(taskName)
             }.forEach { task ->

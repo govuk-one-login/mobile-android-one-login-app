@@ -1,0 +1,5 @@
+[*.kt]
+ktlint_function_naming_ignore_when_annotated_with=Composable
+max_line_length = 120   # Align with detekt line length
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled

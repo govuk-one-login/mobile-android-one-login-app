@@ -5,28 +5,24 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
-    id("uk.gov.onelogin.jvm-toolchains")
-    id("uk.gov.jacoco.library-config")
-    id("uk.gov.sonar.module-config")
+    id("uk.gov.pipelines.android-lib-config")
+//    id("uk.gov.onelogin.jvm-toolchains")
+//    id("uk.gov.jacoco.library-config")
+//    id("uk.gov.sonar.module-config")
 }
 
-apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
-apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
+// apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
+// apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 
 android {
-    namespace = rootProject.ext["appId"] as String
-
-    defaultConfig {
-        minSdk = rootProject.ext["minSdkVersion"] as Int
-        compileSdk = rootProject.ext["compileSdkVersion"] as Int
-    }
+    namespace = "uk.gov.android.onelogin.featureflags"
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -47,8 +43,8 @@ android {
             setOf(
                 "ConvertToWebp",
                 "UnusedIds",
-                "VectorPath"
-            )
+                "VectorPath",
+            ),
         )
         explainIssues = true
         htmlReport = true
@@ -75,11 +71,12 @@ android {
         unitTests.all {
             it.useJUnitPlatform()
             it.testLogging {
-                events = setOf(
-                    TestLogEvent.FAILED,
-                    TestLogEvent.PASSED,
-                    TestLogEvent.SKIPPED
-                )
+                events =
+                    setOf(
+                        TestLogEvent.FAILED,
+                        TestLogEvent.PASSED,
+                        TestLogEvent.SKIPPED,
+                    )
             }
         }
         unitTests {
@@ -93,19 +90,19 @@ android {
 dependencies {
     listOf(
         libs.androidx.appcompat,
-        libs.androidx.core.ktx
+        libs.androidx.core.ktx,
     ).forEach(::implementation)
 
     listOf(
         libs.junit.jupiter,
-        libs.junit.jupiter.params
+        libs.junit.jupiter.params,
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.ext.junit,
-        libs.androidx.espresso.core
+        libs.androidx.espresso.core,
     ).forEach(::androidTestImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.launcher)

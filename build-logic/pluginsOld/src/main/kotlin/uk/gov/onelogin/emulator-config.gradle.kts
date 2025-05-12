@@ -1,8 +1,8 @@
 package uk.gov.onelogin
 
 import com.android.build.gradle.BaseExtension
-import uk.gov.extensions.BaseExtensions.generateDeviceConfigurations
-import uk.gov.extensions.BaseExtensions.generateGetHardwareProfilesTask
+import uk.gov.pipelines.extensions.BaseExtensions.generateDeviceConfigurations
+import uk.gov.pipelines.extensions.BaseExtensions.generateGetHardwareProfilesTask
 import uk.gov.onelogin.emulator.SystemImageSource
 import uk.gov.onelogin.emulator.SystemImageSource.AOSP_ATD
 import java.io.FileReader

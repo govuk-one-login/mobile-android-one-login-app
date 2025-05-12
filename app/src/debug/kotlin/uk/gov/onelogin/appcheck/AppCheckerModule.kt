@@ -25,16 +25,18 @@ object AppCheckerModule {
         val factory = DebugAppCheckProviderFactory.getInstance()
         return FirebaseAppCheck(factory, context).also {
             val key = Firebase.app.persistenceKey
-            context.getSharedPreferences(
-                "com.google.firebase.appcheck.debug.store.$key",
-                MODE_PRIVATE
-            ).edit().apply {
-                putString(
-                    "com.google.firebase.appcheck.debug.DEBUG_SECRET",
-                    BuildConfig.AppCheckDebugSecret
-                )
-                commit()
-            }
+            context
+                .getSharedPreferences(
+                    "com.google.firebase.appcheck.debug.store.$key",
+                    MODE_PRIVATE
+                ).edit()
+                .apply {
+                    putString(
+                        "com.google.firebase.appcheck.debug.DEBUG_SECRET",
+                        BuildConfig.AppCheckDebugSecret
+                    )
+                    commit()
+                }
         }
     }
 }
