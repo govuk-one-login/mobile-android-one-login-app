@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -92,6 +94,13 @@ android {
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
+    packaging {
+        resources.excludes += setOf(
+            "META-INF/LICENSE-notice.md",
+            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+            "META-INF/LICENSE.md"
+        )
+    }
 }
 
 dependencies {
@@ -114,7 +123,6 @@ dependencies {
         libs.mockito.kotlin,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
-        libs.junit.jupiter.engine,
         libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
@@ -128,6 +136,8 @@ dependencies {
         libs.androidx.espresso.intents,
         libs.logging.test
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.test.orchestrator

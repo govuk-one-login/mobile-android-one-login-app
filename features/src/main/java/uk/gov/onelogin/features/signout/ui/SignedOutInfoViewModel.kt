@@ -13,6 +13,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
@@ -25,6 +26,7 @@ class SignedOutInfoViewModel @Inject constructor(
     private val getPersistentId: GetPersistentId,
     private val signOutUseCase: SignOutUseCase,
     private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
+    @OneLoginInjectionAnnotation
     private val logger: Logger
 ) : ViewModel() {
     fun resetTokens() {

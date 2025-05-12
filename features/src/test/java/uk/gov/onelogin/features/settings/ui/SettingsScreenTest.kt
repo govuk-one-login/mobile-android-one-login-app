@@ -37,6 +37,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.optin.data.OptInRepository
@@ -47,6 +48,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private val optInRepository: OptInRepository = mock()
     private lateinit var navigator: Navigator
     private lateinit var getEmail: GetEmail
+    private lateinit var tokenRepository: TokenRepository
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SettingsAnalyticsViewModel
@@ -72,7 +74,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         whenever(optInRepository.hasAnalyticsOptIn()).thenReturn(MutableStateFlow(false))
         navigator = mock()
         getEmail = mock()
-        viewModel = SettingsScreenViewModel(optInRepository, navigator, getEmail)
+        tokenRepository = mock()
+        viewModel = SettingsScreenViewModel(optInRepository, navigator, tokenRepository, getEmail)
         analytics = mock()
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
         yourDetailsHeader = hasText(resources.getString(R.string.app_settingsSubtitle1))

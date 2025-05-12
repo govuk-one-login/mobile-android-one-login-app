@@ -65,7 +65,6 @@
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
-    <string name="app_signInIconDescription" translatable="false">GOV.UK Icon</string>
 
     <!-- Errors -->
     <!-- App Unavailable -->
@@ -97,14 +96,16 @@
     <string name="StagingEnv" translatable="false">staging</string>
 
     <!-- Developer Panel -->
+    <string name="app_developer_button" translatable="false">Open Developer Menu</string>
     <string name="app_developer_panel" translatable="false">Developer Portal</string>
     <string name="app_developer_tab_app" translatable="false">App</string>
     <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
     <string name="app_developer_tab_auth" translatable="false">Auth</string>
+    <string name="app_developer_tab_app_integrity" translatable="false">App Integrity</string>
     <string name="app_developer_tab_local_auth" translatable="false">Local Auth</string>
-    <string name="app_developer_tab_app_integrity" translatable="false">AppIntegrity</string>
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
+    <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
@@ -157,6 +158,8 @@
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Opens in web browser</string>
     <string name="app_openGooglePlayStore">Opens in Google Play Store</string>
-
     <string name="one_login_image_content_desc" translatable="false">Gov dot UK one login</string>
+
+    <!-- Cri Orchestrator Temporary -->
+    <string name="app_cri_orchestrator_placeholder" translatable="false">Placeholder</string>
 </resources>
