@@ -136,19 +136,17 @@ private suspend fun settleAppBar(
                 if (abs(delta - consumed) > HALF) this.cancelAnimation()
             }
     }
-    if (snapAnimationSpec != null) {
-        if (state.heightOffset < 0 &&
-            state.heightOffset > state.heightOffsetLimit
-        ) {
-            AnimationState(initialValue = state.heightOffset).animateTo(
-                if (state.collapsedFraction < HALF) {
-                    0f
-                } else {
-                    state.heightOffsetLimit
-                },
-                animationSpec = snapAnimationSpec
-            ) { state.heightOffset = value }
-        }
+    if (snapAnimationSpec != null && state.heightOffset < 0 &&
+        state.heightOffset > state.heightOffsetLimit
+    ) {
+        AnimationState(initialValue = state.heightOffset).animateTo(
+            if (state.collapsedFraction < HALF) {
+                0f
+            } else {
+                state.heightOffsetLimit
+            },
+            animationSpec = snapAnimationSpec
+        ) { state.heightOffset = value }
     }
 
     return Velocity(0f, remainingVelocity)
