@@ -6,29 +6,41 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.layout.SubcomposeMeasureScope
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,14 +48,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.GdsHeading
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.components.images.icon.IconParameters
-import uk.gov.android.ui.components.m3.images.icon.GdsIcon
+import uk.gov.android.ui.componentsv2.images.GdsIcon
 import uk.gov.android.ui.theme.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -118,54 +127,139 @@ internal fun SplashBody(
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(id = R.color.govuk_blue)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        GdsIcon(
-            parameters = IconParameters(
-                image = R.drawable.tudor_crown_with_gov_uk,
-                backGroundColor = colorResource(id = R.color.govuk_blue),
-                foreGroundColor = Color.White,
-                modifier = Modifier
-                    .weight(1F)
-                    .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
-                        onOpenDeveloperPortal()
-                    }
-                    .testTag(stringResource(id = R.string.splashIconTestTag))
-            )
-        )
-        if (isUnlock && !loading) {
-            GdsHeading(
-                headingParameters = HeadingParameters(
-                    size = HeadingSize.H3(),
-                    text = R.string.app_unlockButton,
-                    color = Color.White,
-                    backgroundColor = colorResource(id = R.color.govuk_blue),
-                    modifier = Modifier
-                        .clickable {
-                            trackUnlockButton()
-                            onLogin()
-                        }
-                        .padding(bottom = mediumPadding)
-                )
-            )
-        }
-        if (loading && !isUnlock) {
+    val displayLoading = loading && !isUnlock
+    val displayUnlock = isUnlock && !loading
+    SubcomposeLayout(
+        modifier = Modifier.background(colorResource(R.color.govuk_blue))
+    ) { constraints ->
+        // Get full specs of device
+        val fullHeight = constraints.maxHeight
+        val fullWidth = constraints.maxWidth
+        // Measure logo and create slot to be displayed
+        val logoPlaceable = createSubcomposeLogo(onOpenDeveloperPortal, constraints)
+        // Measure crown icon and create slot to be displayed
+        val crownPlaceable = createSubcomposeCrown(onOpenDeveloperPortal)
+        // Measure loading spinner and/ or unlock text and create slot to be displayed
+        val dynamicContentPlaceable = subcompose("content") {
+            if (displayUnlock) UnlockButton(trackUnlockButton, onLogin) else LoadingIndicator()
+        }.first().measure(Constraints(maxWidth = fullWidth))
+        // Measure unlock button height to be used to enable equal space distribution between the logo, crown and loading spinner (when this is displayed)
+        val loadingSpinnerHeight = subcompose("loading spinner") {
             LoadingIndicator()
+        }.first().measure(Constraints(maxWidth = fullWidth)).height
+
+        // Calculate logo height
+        val imageHeight = logoPlaceable.maxOf { it.height }
+        // Y coordinate for logo to be placed (pos: absolute center at all times)
+        val imageY = (fullHeight - imageHeight) / 2
+        // Calculate the total space available to display the crown and optional/ dynamic content (loading spinner/ unlock button)
+        val availableContentHeight = fullHeight - (imageY + imageHeight) - BOTTOM_PADDING.toPx()
+        // Calculate the exact total space taken by the items - assists in defining the gap between items and space distribution to meet design requirements
+        val concreteContentHeight = crownPlaceable.height + loadingSpinnerHeight
+        // Calculate the max gap that can be added between item to be equally distributed
+        val gapHeight =
+            ((availableContentHeight - concreteContentHeight).coerceAtLeast(0f)) / 2
+        // Y coordinate for crown icon to be centred and have a exact gap between the logo and itself which is equal to the gap between the crown and loading spinner when that is displayed
+        val crownY = imageY + imageHeight + gapHeight
+        // Y coordinate for loading spinner - includes bottom padding of 48.dp and an equal gap between crown icon as the crown icon to logo
+        val loadingY = crownY + crownPlaceable.height + gapHeight
+        // Y coordinate for unlock button - this ensured the unlock button is positioned at a 48.dp gap from the screen bottom
+        val unlockY =
+            crownY + crownPlaceable.height + (concreteContentHeight - BOTTOM_PADDING.toPx())
+
+        // Create layout and place content accordingly
+        layout(fullWidth, fullHeight) {
+            logoPlaceable.forEach {
+                it.placeRelative(x = (fullWidth - it.width) / 2, y = imageY)
+            }
+            crownPlaceable.placeRelative(
+                x = (fullWidth - crownPlaceable.width) / 2,
+                y = crownY.roundToInt()
+            )
+            if (displayUnlock || displayLoading) {
+                dynamicContentPlaceable.placeRelative(
+                    x = (fullWidth - dynamicContentPlaceable.width) / 2,
+                    y = if (displayLoading) loadingY.roundToInt() else unlockY.roundToInt()
+                )
+            }
         }
+    }
+}
+
+private fun SubcomposeMeasureScope.createSubcomposeLogo(
+    onOpenDeveloperPortal: () -> Unit,
+    constraints: Constraints
+): List<Placeable> {
+    val imagePlaceable = subcompose("logo") {
+        Icon(
+            painter = painterResource(R.drawable.ic_splash_logo),
+            contentDescription = "",
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
+                    onOpenDeveloperPortal()
+                }
+                .fillMaxWidth()
+                .testTag(stringResource(id = R.string.splashLogoTestTag))
+        )
+    }.map { it.measure(constraints = constraints) }
+    return imagePlaceable
+}
+
+private fun SubcomposeMeasureScope.createSubcomposeCrown(onOpenDeveloperPortal: () -> Unit) =
+    subcompose("crown") {
+        GdsIcon(
+            image = ImageVector.vectorResource(R.drawable.ic_tudor_crown),
+            contentDescription = "",
+            modifier = Modifier
+                .clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
+                    onOpenDeveloperPortal()
+                }
+                .testTag(stringResource(id = R.string.splashCrownIconTestTag)),
+            backgroundColor = colorResource(id = R.color.govuk_blue),
+            color = Color.White
+        )
+    }.first().measure(Constraints())
+
+@Composable
+private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
+    Button(
+        colors = ButtonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color.White,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Gray
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = smallPadding)
+            .testTag(stringResource(R.string.splashUnlockBtnTestTag)),
+        contentPadding = PaddingValues(0.dp),
+        onClick = {
+            trackUnlockButton()
+            onLogin()
+        }
+    ) {
+        Text(
+            text = stringResource(R.string.app_unlockButton),
+            modifier = Modifier
+                .clickable {
+                    trackUnlockButton()
+                    onLogin()
+                }
+                .padding(bottom = mediumPadding)
+                .fillMaxSize(),
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.W600,
+            color = Color.White
+        )
     }
 }
 
 @Composable
 internal fun LoadingIndicator() {
-    val loadingContentDescription =
-        stringResource(
-            id = R.string.app_splashScreenLoadingContentDescription
-        )
+    val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -174,7 +268,7 @@ internal fun LoadingIndicator() {
                 end = smallPadding,
                 bottom = PROGRESS_BAR
             )
-            .semantics { contentDescription = loadingContentDescription }
+            .semantics(true) { contentDescription = "" }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -189,6 +283,8 @@ internal fun LoadingIndicator() {
                 modifier = Modifier
                     .width(PROGRESS_BAR)
                     .height(PROGRESS_BAR)
+                    .semantics { contentDescription = "" }
+                    .testTag(stringResource(R.string.splashLoadingSpinnerTestTag))
             )
         }
         Row(
@@ -196,7 +292,8 @@ internal fun LoadingIndicator() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = stringResource(id = R.string.app_splashScreenLoadingIndicatorText),
+                text = loadingText,
+                style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
         }
@@ -249,3 +346,4 @@ internal fun LoadingSplashScreenPreview() {
 }
 
 val PROGRESS_BAR = 48.dp
+val BOTTOM_PADDING = 48.dp

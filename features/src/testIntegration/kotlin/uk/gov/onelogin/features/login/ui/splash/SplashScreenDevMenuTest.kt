@@ -36,7 +36,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private var repository: OptInRepository = mock()
     private lateinit var optInViewModel: OptInRequirementViewModel
 
-    private val splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
+    private val splashIcon = hasTestTag(resources.getString(R.string.splashLogoTestTag))
 
     @Before
     fun setup() {

@@ -1,15 +1,15 @@
 package uk.gov.onelogin.features.login.ui.splash
 
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Test
@@ -51,7 +51,8 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private var repository: OptInRepository = mock()
     private lateinit var optInViewModel: OptInRequirementViewModel
 
-    private lateinit var splashIcon: SemanticsMatcher
+    private lateinit var logo: SemanticsMatcher
+    private lateinit var crownIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
@@ -75,12 +76,13 @@ class SplashScreenTest : FragmentActivityTestCase() {
         wheneverBlocking { appInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(TestUtils.appInfoData))
 
-        splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
-        unlockButton = hasText(resources.getString(R.string.app_unlockButton))
+        logo = hasTestTag(context.getString(R.string.splashLogoTestTag))
+        crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
+        unlockButton = hasTestTag(resources.getString(R.string.splashUnlockBtnTestTag))
         privacyNotice = hasTestTag(NOTICE_TAG)
         loadingIndicator =
-            hasContentDescription(
-                resources.getString(R.string.app_splashScreenLoadingContentDescription)
+            hasTestTag(
+                resources.getString(R.string.splashLoadingSpinnerTestTag)
             )
         loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
     }
@@ -94,7 +96,8 @@ class SplashScreenTest : FragmentActivityTestCase() {
 
         // Then
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
     }
 
     @Test
@@ -107,8 +110,9 @@ class SplashScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
+
         composeTestRule.waitUntil(15000) {
-            composeTestRule.onNode(unlockButton).isDisplayed()
+            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
         }
 
         wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
@@ -134,7 +138,8 @@ class SplashScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
     }
 
     @Test
@@ -144,8 +149,11 @@ class SplashScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
-        composeTestRule.onNode(unlockButton).assertIsDisplayed()
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
+        assertTrue(
+            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
+        )
         composeTestRule.onNode(loadingText).assertIsNotDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
     }
@@ -157,9 +165,10 @@ class SplashScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
-        composeTestRule.onNode(loadingText).assertIsDisplayed()
-        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
+        composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
+        composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
     }
 
     @Test
