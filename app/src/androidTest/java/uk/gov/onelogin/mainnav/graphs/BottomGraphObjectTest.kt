@@ -38,7 +38,7 @@ class BottomGraphObjectTest : TestCase() {
         }
 
         composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_homeTitle)
+            resources.getString(R.string.app_oneLoginCardTitle)
         ).assertExists()
     }
 

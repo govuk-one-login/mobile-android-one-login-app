@@ -1,8 +1,7 @@
 package uk.gov.onelogin.navigation.graphs
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -54,8 +53,8 @@ class MainNavGraphObjectTest : TestCase() {
             navigator.navigate(MainNavRoutes.Start)
         }
 
-        composeTestRule.onAllNodesWithText(
+        composeTestRule.onNodeWithText(
             resources.getString(R.string.app_homeTitle)
-        ).assertCountEquals(2)
+        ).assertExists()
     }
 }

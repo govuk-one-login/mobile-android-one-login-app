@@ -14,6 +14,7 @@ import uk.gov.android.ui.patterns.errorscreen.ErrorScreenIcon
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 fun OfflineErrorScreen(
@@ -27,9 +28,11 @@ fun OfflineErrorScreen(
             goBack()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        OfflineErrorBody {
-            analyticsViewModel.trackButton()
-            onRetryClick()
+        EdgeToEdgePage { _ ->
+            OfflineErrorBody {
+                analyticsViewModel.trackButton()
+                onRetryClick()
+            }
         }
     }
 }
