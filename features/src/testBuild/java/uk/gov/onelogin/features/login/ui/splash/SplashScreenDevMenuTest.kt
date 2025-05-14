@@ -1,5 +1,7 @@
 package uk.gov.onelogin.features.login.ui.splash
 
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,7 +37,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private var repository: OptInRepository = mock()
     private lateinit var optInViewModel: OptInRequirementViewModel
 
-    private val splashIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
+    private val splashIcon = hasTestTag(resources.getString(R.string.splashLogoTestTag))
 
     @Before
     fun setup() {
@@ -59,6 +61,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
             SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
 
+        composeTestRule.onNode(splashIcon).assert(hasClickAction())
         composeTestRule.onNode(splashIcon).performClick()
 
         verify(navigator).openDeveloperPanel()
