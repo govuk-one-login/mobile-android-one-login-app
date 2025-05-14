@@ -67,10 +67,10 @@ class MainNavScreenTest : TestCase() {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(walletRepository.getCredential()).thenReturn("")
         setup()
-        composeTestRule.onAllNodes(homeTab)[1].apply {
+        composeTestRule.onNode(homeTab).apply {
             isDisplayed()
             performClick()
-        } // we have double match of `Home` text
+        }
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(settingsTab).isDisplayed()

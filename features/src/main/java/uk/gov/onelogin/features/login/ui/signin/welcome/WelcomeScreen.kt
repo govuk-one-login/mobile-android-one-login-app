@@ -25,6 +25,7 @@ import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenImage
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.developer.DeveloperTools
@@ -48,17 +49,19 @@ fun WelcomeScreen(
                 }
             }
         }
-    WelcomeBody(
-        onSignIn = {
-            if (viewModel.onlineChecker.isOnline()) {
-                viewModel.onPrimary(launcher)
-                analyticsViewModel.trackSignIn()
-            } else {
-                viewModel.navigateToOfflineError()
-            }
-        },
-        openDevMenu = { viewModel.navigateToDevPanel() }
-    )
+    EdgeToEdgePage { _ ->
+        WelcomeBody(
+            onSignIn = {
+                if (viewModel.onlineChecker.isOnline()) {
+                    viewModel.onPrimary(launcher)
+                    analyticsViewModel.trackSignIn()
+                } else {
+                    viewModel.navigateToOfflineError()
+                }
+            },
+            openDevMenu = { viewModel.navigateToDevPanel() }
+        )
+    }
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
             viewModel.abortLogin(launcher)
@@ -91,7 +94,6 @@ internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
     openDevMenu: () -> Unit = { }
 ) {
-    val iconContentDesc = stringResource(R.string.app_signInIconDescription)
     val title = stringResource(R.string.app_signInTitle)
     val content = listOf(
         stringResource(R.string.app_signInBody1),
@@ -105,7 +107,8 @@ internal fun WelcomeBody(
             modifier = Modifier.fillMaxSize(),
             image = CentreAlignedScreenImage(
                 image = R.drawable.app_icon,
-                description = iconContentDesc
+                // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
+                description = ""
             ),
             body = persistentListOf(
                 CentreAlignedScreenBodyContent.Text(content[0]),

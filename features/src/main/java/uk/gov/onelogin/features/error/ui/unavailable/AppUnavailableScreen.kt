@@ -37,6 +37,7 @@ import uk.gov.android.ui.theme.spacingDouble
 import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 internal const val ICON_TAG = "icon.tag"
 private val iconSize = 100.dp
@@ -45,7 +46,11 @@ private val iconPadding = 1.dp
 @Composable
 fun AppUnavailableScreen(analyticsViewModel: AppUnavailableAnalyticsViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-    GdsTheme { AppUnavailableBody() }
+    GdsTheme {
+        EdgeToEdgePage { _ ->
+            AppUnavailableBody()
+        }
+    }
     BackHandler {
         analyticsViewModel.trackBackButton()
         navController.closeApp()

@@ -12,40 +12,43 @@ import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.ui.theme.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 fun SignOutErrorScreen(onExitAppClicked: () -> Unit) {
     GdsTheme {
-        ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = onExitAppClicked,
-                    text = R.string.app_exitButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_signOutErrorTitle,
-                                text =
-                                intArrayOf(
-                                    R.string.app_signOutErrorBody
-                                )
-                            )
-                        ),
-                        headingSize = HeadingSize.H1()
+        EdgeToEdgePage { _ ->
+            ErrorPage(
+                parameters = ErrorPageParameters(
+                    primaryButtonParameters = ButtonParameters(
+                        buttonType = ButtonType.PRIMARY(),
+                        onClick = onExitAppClicked,
+                        text = R.string.app_exitButton
                     ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
+                    informationParameters = InformationParameters(
+                        contentParameters = ContentParameters(
+                            resource = listOf(
+                                GdsContentText.GdsContentTextString(
+                                    subTitle = R.string.app_signOutErrorTitle,
+                                    text =
+                                    intArrayOf(
+                                        R.string.app_signOutErrorBody
+                                    )
+                                )
+                            ),
+                            headingSize = HeadingSize.H1()
+                        ),
+                        iconParameters = IconParameters(
+                            foreGroundColor = Color.Unspecified,
+                            image = uk.gov.android.ui.components.R.drawable.ic_error
+                        )
                     )
                 )
             )
-        )
+        }
     }
 }
 

@@ -4,8 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -22,7 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.theme.smallPadding
-import uk.gov.onelogin.core.ui.pages.TitledPage
+import uk.gov.onelogin.core.ui.pages.TitledLogoPage
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
@@ -44,13 +47,14 @@ fun HomeScreen(
         viewModel.getUiCardFlagState()
         analyticsViewModel.trackScreen()
     }
-    TitledPage(R.string.app_homeTitle) { paddingValues ->
+    TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(horizontal = smallPadding)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
+                .windowInsetsPadding(WindowInsets.displayCutout)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {
                 Row(

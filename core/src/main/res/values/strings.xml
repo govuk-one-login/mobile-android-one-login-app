@@ -64,7 +64,6 @@
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
-    <string name="app_signInIconDescription">GOV.UK One Login logo</string>
 
     <!-- Errors -->
     <!-- App Unavailable -->
@@ -158,6 +157,7 @@
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Opens in web browser</string>
     <string name="app_openGooglePlayStore">Opens in Google Play Store</string>
+    <string name="one_login_image_content_desc" translatable="false">Gov dot UK one login</string>
 
     <!-- Cri Orchestrator Temporary -->
     <string name="app_cri_orchestrator_placeholder" translatable="false">Placeholder</string>

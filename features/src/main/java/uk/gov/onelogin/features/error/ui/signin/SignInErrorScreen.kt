@@ -16,7 +16,8 @@ import uk.gov.android.ui.components.images.icon.IconParameters
 import uk.gov.android.ui.components.information.InformationParameters
 import uk.gov.android.ui.pages.errors.ErrorPage
 import uk.gov.android.ui.pages.errors.ErrorPageParameters
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 @Preview
@@ -31,32 +32,34 @@ fun SignInErrorScreen(
             goBack()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
-        ErrorPage(
-            parameters = ErrorPageParameters(
-                primaryButtonParameters = ButtonParameters(
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        analyticsViewModel.trackButton()
-                        onClick()
-                    },
-                    text = R.string.app_closeButton
-                ),
-                informationParameters = InformationParameters(
-                    contentParameters = ContentParameters(
-                        resource = listOf(
-                            GdsContentText.GdsContentTextString(
-                                subTitle = R.string.app_signInErrorTitle,
-                                text = intArrayOf(R.string.app_signInErrorBody)
-                            )
-                        ),
-                        headingSize = HeadingSize.H1()
+        EdgeToEdgePage { _ ->
+            ErrorPage(
+                parameters = ErrorPageParameters(
+                    primaryButtonParameters = ButtonParameters(
+                        buttonType = ButtonType.PRIMARY(),
+                        onClick = {
+                            analyticsViewModel.trackButton()
+                            onClick()
+                        },
+                        text = R.string.app_closeButton
                     ),
-                    iconParameters = IconParameters(
-                        foreGroundColor = Color.Unspecified,
-                        image = uk.gov.android.ui.components.R.drawable.ic_error
+                    informationParameters = InformationParameters(
+                        contentParameters = ContentParameters(
+                            resource = listOf(
+                                GdsContentText.GdsContentTextString(
+                                    subTitle = R.string.app_signInErrorTitle,
+                                    text = intArrayOf(R.string.app_signInErrorBody)
+                                )
+                            ),
+                            headingSize = HeadingSize.H1()
+                        ),
+                        iconParameters = IconParameters(
+                            foreGroundColor = Color.Unspecified,
+                            image = uk.gov.android.ui.components.R.drawable.ic_error
+                        )
                     )
                 )
             )
-        )
+        }
     }
 }
