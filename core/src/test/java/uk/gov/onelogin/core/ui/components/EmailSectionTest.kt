@@ -20,8 +20,6 @@ class EmailSectionTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-            onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
-
             onNodeWithTag(IMAGE_TEST_TAG, useUnmergedTree = true).assertIsDisplayed()
 
             onNodeWithText(

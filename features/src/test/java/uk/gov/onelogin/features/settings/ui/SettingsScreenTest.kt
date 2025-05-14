@@ -9,6 +9,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
@@ -39,6 +40,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
@@ -112,6 +114,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
+        composeTestRule.onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()

@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,6 +41,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,11 +49,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.GdsHeading
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.pages.TitledPage
@@ -103,9 +107,11 @@ private fun SettingsScreenContent(
     Column(
         modifier = Modifier
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
             .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.displayCutout)
     ) {
+        Spacer(modifier = Modifier.height(smallPadding))
         EmailSection(email)
         YourDetailsSection(
             onClick = {
@@ -153,6 +159,7 @@ private fun SettingsScreenContent(
                 viewModel.goToSignOut()
             }
         )
+        Spacer(modifier = Modifier.height(xsmallPadding))
     }
 }
 
@@ -264,17 +271,18 @@ internal fun AboutTheAppSection(
     }
 }
 
+@OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
     GdsHeading(
-        HeadingParameters(
-            text = text,
-            color = MaterialTheme.colorScheme.onBackground,
-            size = HeadingSize.H3(),
-            textAlign = TextAlign.Left,
-            backgroundColor = MaterialTheme.colorScheme.background,
-            padding = PaddingValues(all = smallPadding)
-        )
+        text = stringResource(text),
+        textColour = MaterialTheme.colorScheme.onBackground,
+        textFontWeight = FontWeight.Bold,
+        textAlign = GdsHeadingAlignment.LeftAligned,
+        style = GdsHeadingStyle.Title3,
+        modifier = Modifier
+            .padding(all = smallPadding)
+            .background(color = MaterialTheme.colorScheme.background)
     )
 }
 
@@ -344,7 +352,7 @@ private fun ExternalLinkRow(
     }
 }
 
-@Composable()
+@Composable
 internal fun PreferenceToggleRow(
     @androidx.annotation.StringRes title: Int,
     checked: Boolean,
