@@ -42,6 +42,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.core.R
@@ -50,6 +51,7 @@ import uk.gov.android.ui.components.HeadingParameters
 import uk.gov.android.ui.components.HeadingSize
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
@@ -267,8 +269,9 @@ private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
     GdsHeading(
         HeadingParameters(
             text = text,
+            color = MaterialTheme.colorScheme.onBackground,
             size = HeadingSize.H3(),
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Left,
             backgroundColor = MaterialTheme.colorScheme.background,
             padding = PaddingValues(all = smallPadding)
         )
@@ -290,37 +293,54 @@ private fun ExternalLinkRow(
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {}
     ) {
-        Column {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = smallPadding)
-                    .padding(top = smallPadding)
-                    .padding(bottom = if (description == null) smallPadding else 4.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                text = stringResource(title)
-            )
-            description?.let {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+        ) {
+            val (titleRef, iconRef) = createRefs()
+            Column(
+                modifier = Modifier.constrainAs(titleRef) {
+                    start.linkTo(parent.start)
+                    end.linkTo(iconRef.start, xsmallPadding)
+                }
+            ) {
                 Text(
                     modifier = Modifier
-                        .padding(
-                            start = smallPadding,
-                            bottom = smallPadding,
-                            end = 64.dp
-                        ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.surface,
-                    text = it
+                        .fillMaxWidth()
+                        .padding(horizontal = smallPadding)
+                        .padding(top = smallPadding)
+                        .padding(bottom = if (description == null) smallPadding else 4.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(title),
+                    textAlign = TextAlign.Left
                 )
+                description?.let {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = smallPadding,
+                                bottom = smallPadding,
+                                end = 64.dp
+                            ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.surface,
+                        text = it,
+                        textAlign = TextAlign.Left
+                    )
+                }
             }
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = contentDescription?.let { stringResource(it) } ?: "",
+                modifier = Modifier
+                    .size(24.dp)
+                    .constrainAs(iconRef) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
         }
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = contentDescription?.let { stringResource(it) } ?: "",
-            modifier = Modifier
-                .padding(end = smallPadding, top = smallPadding)
-                .size(24.dp)
-                .align(alignment = Alignment.TopEnd)
-        )
     }
 }
 
