@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.home.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,11 +37,10 @@ fun HomeScreen(
     analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
 ) {
     val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
-    val contentsCardTitle = stringResource(R.string.app_oneLoginCardTitle)
-    val contentsCardBody = stringResource(R.string.app_oneLoginCardBody)
-    val contentsCardLinkText = stringResource(R.string.app_oneLoginCardLink)
-    val servicesUrl = stringResource(R.string.app_oneLoginCardLinkUrl)
-    val uriHandler = LocalUriHandler.current
+    val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
+    val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
+    val proveIdentityCardTitle = stringResource(R.string.app_appPurposeTileHeader)
+    val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.getUiCardFlagState()
@@ -67,19 +66,15 @@ fun HomeScreen(
                     )
                 }
             }
-            GdsCard(
-                title = contentsCardTitle,
-                body = contentsCardBody,
-                buttonText = contentsCardLinkText,
-                displayPrimary = false,
-                showSecondaryIcon = true,
-                onClick = {
-                    analyticsViewModel.trackLink()
-                    uriHandler.openUri(servicesUrl)
-                },
-                modifier = Modifier
-                    .padding(top = smallPadding)
-                    .testTag(stringResource(R.string.yourServicesCardTestTag))
+            AddCard(
+                cardTitle = welcomeCardTitle,
+                cardBody = welcomeCardBody,
+                testTag = R.string.welcomeCardTestTag
+            )
+            AddCard(
+                cardTitle = proveIdentityCardTitle,
+                cardBody = proveIdentityCardBody,
+                testTag = R.string.proveIdentityCardTestTag
             )
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
@@ -90,4 +85,22 @@ fun HomeScreen(
             }
         }
     }
+}
+
+@Composable
+private fun AddCard(
+    cardTitle: String,
+    cardBody: String,
+    @StringRes testTag: Int
+) {
+    GdsCard(
+        title = cardTitle,
+        body = cardBody,
+        displayPrimary = false,
+        showSecondaryIcon = false,
+        onClick = {},
+        modifier = Modifier
+            .padding(top = smallPadding)
+            .testTag(stringResource(testTag))
+    )
 }

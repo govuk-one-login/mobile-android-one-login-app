@@ -1,18 +1,14 @@
 package uk.gov.onelogin.features.home.ui
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.After
 import org.junit.Before
@@ -49,9 +45,6 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
     private lateinit var viewModel: HomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: HomeScreenAnalyticsViewModel
-
-    private val intent = Intent()
-    private val result = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
 
     @Before
     fun setup() {
@@ -134,16 +127,19 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             ).performClick()
 
             onNodeWithTag(
-                resources.getString(R.string.yourServicesCardTestTag),
+                resources.getString(R.string.welcomeCardTestTag),
                 useUnmergedTree = true
             ).assertIsDisplayed()
+
+            onNodeWithTag(
+                resources.getString(R.string.proveIdentityCardTestTag),
+                useUnmergedTree = true
+            ).performScrollTo().assertIsDisplayed()
         }
     }
 
     @Test
     fun analyticsTriggered() {
-        // This will stop the test from throwing an error due to missing intent on pipeline
-        intending(hasData(context.getString(R.string.app_oneLoginCardLinkUrl))).respondWith(result)
         composeTestRule.apply {
             waitUntil(TIMEOUT) {
                 onNodeWithContentDescription(
@@ -160,12 +156,6 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             ).performClick()
 
             Espresso.pressBack()
-
-            onNodeWithText(
-                resources.getString(R.string.app_oneLoginCardLink),
-                useUnmergedTree = true,
-                substring = true
-            ).performClick()
         }
     }
 
