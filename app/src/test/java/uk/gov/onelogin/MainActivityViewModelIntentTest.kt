@@ -14,9 +14,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
@@ -25,10 +22,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @RunWith(AndroidJUnit4::class)
 class MainActivityViewModelIntentTest {
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
-    private val localAuthManager: LocalAuthManager = mock()
-    private val mockTokenRepository: TokenRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
-    private val mockNavigator: Navigator = mock()
     private val walletRepository: WalletRepository = mock()
     private val featureFlags: FeatureFlags = mock()
 
@@ -38,9 +32,6 @@ class MainActivityViewModelIntentTest {
     fun setup() {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
-            localAuthManager,
-            mockTokenRepository,
-            mockNavigator,
             walletRepository,
             featureFlags,
             mockAutoInitialiseSecureStore

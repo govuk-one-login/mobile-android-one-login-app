@@ -125,7 +125,7 @@ class AutoInitialiseSecureStoreTest {
             val expectedConfiguration =
                 SecureStorageConfiguration(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                    AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
+                    AccessControlLevel.PASSCODE_AND_BIOMETRICS
                 )
             verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
         }
