@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.login.ui.signin.splash
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
@@ -123,7 +124,6 @@ internal fun SplashBody(
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit
 ) {
-    val displayLoading = loading && !isUnlock
     val displayUnlock = isUnlock && !loading
     SubcomposeLayout(
         modifier = Modifier.background(colorResource(R.color.govuk_blue))
@@ -172,10 +172,10 @@ internal fun SplashBody(
                 x = (fullWidth - crownPlaceable.width) / 2,
                 y = crownY.roundToInt()
             )
-            if (displayUnlock || displayLoading) {
+            if (displayUnlock || loading) {
                 dynamicContentPlaceable.placeRelative(
                     x = (fullWidth - dynamicContentPlaceable.width) / 2,
-                    y = if (displayLoading) loadingY.roundToInt() else unlockY.roundToInt()
+                    y = if (loading) loadingY.roundToInt() else unlockY.roundToInt()
                 )
             }
         }
@@ -265,7 +265,7 @@ internal fun LoadingIndicator() {
                 bottom = PROGRESS_BAR
             )
             .focusGroup()
-            .semantics(true) { contentDescription = "" }
+            .semantics(true) { contentDescription = loadingText }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -291,12 +291,14 @@ internal fun LoadingIndicator() {
             Text(
                 text = loadingText,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier.semantics { contentDescription = "" }
             )
         }
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
@@ -312,6 +314,7 @@ internal fun SplashScreenPreview() {
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
 @Preview
 @Composable
@@ -327,6 +330,7 @@ internal fun UnlockScreenPreview() {
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
 @Preview
 @Composable
