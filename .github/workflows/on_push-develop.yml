@@ -73,6 +73,20 @@ jobs:
           version-name: ${{ steps.version-name.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
+      - name: Upload production bundle artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-bundle-prod
+          path: production:app/build/outputs/bundle/productionRelease/app-production-release.aab
+          retention-days: 1
+
+      - name: Upload integration bundle artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: app-bundle-int
+          path: integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab
+          retention-days: 1
+
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
