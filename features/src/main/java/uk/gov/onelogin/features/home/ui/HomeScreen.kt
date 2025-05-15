@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,6 +52,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .padding(horizontal = smallPadding)
+                .consumeWindowInsets(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .height(IntrinsicSize.Max)
                 .windowInsetsPadding(WindowInsets.displayCutout)

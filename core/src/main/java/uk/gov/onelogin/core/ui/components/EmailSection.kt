@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,10 +25,8 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun EmailSection(email: String) {
-    HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
     Row(
         modifier = Modifier
-            .padding(top = smallPadding)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth()
             .semantics(true) {},
@@ -67,5 +64,5 @@ internal fun EmailSectionPreview() {
     EmailSection("mock@email.com")
 }
 
-internal const val DIVIDER_TEST_TAG = "divider_test_tag"
+const val DIVIDER_TEST_TAG = "divider_test_tag"
 internal const val IMAGE_TEST_TAG = "image_test_tag"
