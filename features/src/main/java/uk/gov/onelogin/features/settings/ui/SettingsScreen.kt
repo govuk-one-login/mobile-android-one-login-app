@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,7 +46,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.core.R
@@ -301,20 +301,17 @@ private fun ExternalLinkRow(
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {}
     ) {
-        ConstraintLayout(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = smallPadding),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            val (titleRef, iconRef) = createRefs()
-            Column(
-                modifier = Modifier.constrainAs(titleRef) {
-                    start.linkTo(parent.start)
-                    end.linkTo(iconRef.start, xsmallPadding)
-                }
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = smallPadding)
+                        .padding(end = smallPadding)
                         .padding(top = smallPadding)
                         .padding(bottom = if (description == null) smallPadding else 4.dp),
                     style = MaterialTheme.typography.bodyMedium,
@@ -326,7 +323,6 @@ private fun ExternalLinkRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(
-                                start = smallPadding,
                                 bottom = smallPadding,
                                 end = 64.dp
                             ),
@@ -342,11 +338,6 @@ private fun ExternalLinkRow(
                 contentDescription = contentDescription?.let { stringResource(it) } ?: "",
                 modifier = Modifier
                     .size(24.dp)
-                    .constrainAs(iconRef) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
             )
         }
     }
@@ -400,7 +391,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(top = mediumPadding)
-            .height(56.dp)
+            .defaultMinSize(minHeight = 56.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .clickable {
@@ -410,7 +401,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
         Text(
             modifier = Modifier
                 .padding(all = smallPadding)
-                .height(24.dp),
+                .defaultMinSize(minHeight = 24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = MaterialTheme.colorScheme.primary
