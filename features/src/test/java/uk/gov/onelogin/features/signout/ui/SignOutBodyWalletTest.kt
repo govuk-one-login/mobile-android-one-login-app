@@ -8,6 +8,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Before
@@ -54,7 +55,7 @@ class SignOutBodyWalletTest : FragmentActivityTestCase() {
     fun verifyWalletUI() {
         // Given the SignOutBody Composable
         composeTestRule.setContent {
-            SignOutBody(SignOutUIState.Wallet, {}, {})
+            SignOutBody(SignOutUIState.Wallet, {}, {}, {})
         }
         // Then the UI elements are visible
         with(composeTestRule) {
@@ -81,7 +82,8 @@ class SignOutBodyWalletTest : FragmentActivityTestCase() {
             SignOutBody(
                 uiState = SignOutUIState.Wallet,
                 onPrimary = {},
-                onClose = { actual = true }
+                onClose = { actual = true },
+                onBack = {}
             )
         }
         // When clicking the `closeButton`
@@ -98,11 +100,30 @@ class SignOutBodyWalletTest : FragmentActivityTestCase() {
             SignOutBody(
                 uiState = SignOutUIState.Wallet,
                 onPrimary = { actual = true },
-                onClose = {}
+                onClose = {},
+                onBack = {}
             )
         }
         // When clicking the `primaryButton`
         composeTestRule.onNode(primaryButton).performClick()
+        // Then onBack() is called and the variable is true
+        assertEquals(true, actual)
+    }
+
+    @Test
+    fun onBack() {
+        // Given the SignOutBody Composable
+        var actual = false
+        composeTestRule.setContent {
+            SignOutBody(
+                uiState = SignOutUIState.Wallet,
+                onPrimary = {},
+                onClose = {},
+                onBack = { actual = true }
+            )
+        }
+        // When clicking the `primaryButton`
+        Espresso.pressBack()
         // Then onPrimary() is called and the variable is true
         assertEquals(true, actual)
     }
