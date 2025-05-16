@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.signout.ui
 
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -84,7 +86,12 @@ internal fun SignOutBody(
     ) { scrollState ->
         val bulletList = uiState.bullets.map { ListItem(stringResource(it)) }
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = smallPadding)) {
-            Column(Modifier.verticalScroll(scrollState).weight(1f)) {
+            Column(
+                modifier = Modifier.verticalScroll(scrollState)
+                    .weight(1f)
+                    .semantics(true) { }
+                    .focusGroup()
+            ) {
                 GdsHeading(
                     text = stringResource(id = uiState.title),
                     textAlign = GdsHeadingAlignment.LeftAligned

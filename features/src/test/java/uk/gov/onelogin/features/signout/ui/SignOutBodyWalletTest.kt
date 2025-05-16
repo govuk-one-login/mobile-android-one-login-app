@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -65,10 +64,7 @@ class SignOutBodyWalletTest : FragmentActivityTestCase() {
             onNode(bullet1).assertIsDisplayed()
             onNode(bullet2).assertIsDisplayed()
             onNode(bullet3).assertIsDisplayed()
-            onNode(footer).apply {
-                performScrollTo()
-                assertIsDisplayed()
-            }
+            onNode(footer).assertIsDisplayed()
             onNode(primaryButton).assertIsDisplayed()
             onNode(closeButton).assertIsDisplayed()
         }
