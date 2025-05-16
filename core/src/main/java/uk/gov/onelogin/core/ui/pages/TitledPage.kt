@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import uk.gov.android.ui.components.m3.HeadingSize
 import uk.gov.android.ui.theme.smallPadding
@@ -36,13 +38,18 @@ fun TitledPage(
             FlexibleTopBar(
                 content = {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(top = smallPadding)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = smallPadding)
                             .statusBarsPadding()
                     ) {
                         Text(
                             text = stringResource(title),
                             style = HeadingSize.HeadlineLarge().style(),
-                            modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = smallPadding)
+                                .semantics { heading() },
                             textAlign = TextAlign.Center
                         )
                         HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))

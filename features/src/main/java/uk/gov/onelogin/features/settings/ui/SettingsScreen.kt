@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -108,10 +109,10 @@ private fun SettingsScreenContent(
         modifier = Modifier
             .padding(paddingValues)
             .consumeWindowInsets(paddingValues)
-            .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.displayCutout)
+            .verticalScroll(rememberScrollState())
     ) {
-        Spacer(modifier = Modifier.height(smallPadding))
+        Spacer(modifier = Modifier.semantics { hideFromAccessibility() }.height(xsmallPadding))
         EmailSection(email)
         YourDetailsSection(
             onClick = {
@@ -159,7 +160,7 @@ private fun SettingsScreenContent(
                 viewModel.goToSignOut()
             }
         )
-        Spacer(modifier = Modifier.height(xsmallPadding))
+        Spacer(modifier = Modifier.semantics { hideFromAccessibility() }.height(xsmallPadding))
     }
 }
 
