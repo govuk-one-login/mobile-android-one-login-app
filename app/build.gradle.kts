@@ -31,7 +31,7 @@ android {
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
     signingConfigs {
