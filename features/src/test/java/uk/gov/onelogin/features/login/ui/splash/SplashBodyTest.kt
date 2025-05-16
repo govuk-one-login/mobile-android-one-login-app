@@ -3,9 +3,9 @@ package uk.gov.onelogin.features.login.ui.splash
 import android.content.Context
 import android.content.res.Resources
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
@@ -21,7 +21,8 @@ import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 
 @RunWith(AndroidJUnit4::class)
 class SplashBodyTest : FragmentActivityTestCase() {
-    private lateinit var splashIcon: SemanticsMatcher
+    private lateinit var logo: SemanticsMatcher
+    private lateinit var crownIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
@@ -31,13 +32,11 @@ class SplashBodyTest : FragmentActivityTestCase() {
         val context: Context = ApplicationProvider.getApplicationContext()
         val resources: Resources = context.resources
 
-        splashIcon = hasTestTag(resources.getString(R.string.splashIconTestTag))
+        logo = hasTestTag(context.getString(R.string.splashLogoTestTag))
+        crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
         loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
-        loadingIndicator =
-            hasContentDescription(
-                resources.getString(R.string.app_splashScreenLoadingContentDescription)
-            )
+        loadingIndicator = hasTestTag(context.getString(R.string.splashLoadingSpinnerTestTag))
     }
 
     @Test
@@ -55,9 +54,10 @@ class SplashBodyTest : FragmentActivityTestCase() {
         // Then loading indicator is NOT displayed
         composeTestRule.onNode(loadingText).assertIsNotDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
-        // And both `splashIcon` and `unlockButton` are displayed
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
-        composeTestRule.onNode(unlockButton).assertIsDisplayed()
+        // And `logo`, `crownIcon` and `unlockButton` are displayed
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
+        composeTestRule.onNode(unlockButton).assertExists()
     }
 
     @Test
@@ -72,11 +72,13 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 onOpenDeveloperPortal = {}
             )
         }
-        // Then loading indicator is displayed
-        composeTestRule.onNode(loadingText).assertIsDisplayed()
-        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
-        // And only `splashIcon` is displayed and`unlockButton` is not
-        composeTestRule.onNode(splashIcon).assertIsDisplayed()
+        // Then loading indicator and logo are displayed
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
+        composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
+        // And only `logo`, `crownIcon` is displayed and`unlockButton` is not
+        composeTestRule.onNode(logo).assertIsDisplayed()
+        composeTestRule.onNode(crownIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsNotDisplayed()
     }
 

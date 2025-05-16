@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,17 +42,20 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.GdsHeading
-import uk.gov.android.ui.components.HeadingParameters
-import uk.gov.android.ui.components.HeadingSize
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
+import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
@@ -101,9 +107,11 @@ private fun SettingsScreenContent(
     Column(
         modifier = Modifier
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
             .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.displayCutout)
     ) {
+        Spacer(modifier = Modifier.height(smallPadding))
         EmailSection(email)
         YourDetailsSection(
             onClick = {
@@ -151,6 +159,7 @@ private fun SettingsScreenContent(
                 viewModel.goToSignOut()
             }
         )
+        Spacer(modifier = Modifier.height(xsmallPadding))
     }
 }
 
@@ -262,16 +271,18 @@ internal fun AboutTheAppSection(
     }
 }
 
+@OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
     GdsHeading(
-        HeadingParameters(
-            text = text,
-            size = HeadingSize.H3(),
-            textAlign = TextAlign.Center,
-            backgroundColor = MaterialTheme.colorScheme.background,
-            padding = PaddingValues(all = smallPadding)
-        )
+        text = stringResource(text),
+        textColour = MaterialTheme.colorScheme.onBackground,
+        textFontWeight = FontWeight.Bold,
+        textAlign = GdsHeadingAlignment.LeftAligned,
+        style = GdsHeadingStyle.Title3,
+        modifier = Modifier
+            .padding(all = smallPadding)
+            .background(color = MaterialTheme.colorScheme.background)
     )
 }
 
@@ -290,41 +301,49 @@ private fun ExternalLinkRow(
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {}
     ) {
-        Column {
-            Text(
-                modifier = Modifier
-                    .padding(horizontal = smallPadding)
-                    .padding(top = smallPadding)
-                    .padding(bottom = if (description == null) smallPadding else 4.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                text = stringResource(title)
-            )
-            description?.let {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = smallPadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     modifier = Modifier
-                        .padding(
-                            start = smallPadding,
-                            bottom = smallPadding,
-                            end = 64.dp
-                        ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.surface,
-                    text = it
+                        .fillMaxWidth()
+                        .padding(end = smallPadding)
+                        .padding(top = smallPadding)
+                        .padding(bottom = if (description == null) smallPadding else 4.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(title),
+                    textAlign = TextAlign.Left
                 )
+                description?.let {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                bottom = smallPadding,
+                                end = 64.dp
+                            ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.surface,
+                        text = it,
+                        textAlign = TextAlign.Left
+                    )
+                }
             }
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = contentDescription?.let { stringResource(it) } ?: "",
+                modifier = Modifier
+                    .size(24.dp)
+            )
         }
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = contentDescription?.let { stringResource(it) } ?: "",
-            modifier = Modifier
-                .padding(end = smallPadding, top = smallPadding)
-                .size(24.dp)
-                .align(alignment = Alignment.TopEnd)
-        )
     }
 }
 
-@Composable()
+@Composable
 internal fun PreferenceToggleRow(
     @androidx.annotation.StringRes title: Int,
     checked: Boolean,
@@ -372,7 +391,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .padding(top = mediumPadding)
-            .height(56.dp)
+            .defaultMinSize(minHeight = 56.dp)
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .clickable {
@@ -382,7 +401,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
         Text(
             modifier = Modifier
                 .padding(all = smallPadding)
-                .height(24.dp),
+                .defaultMinSize(minHeight = 24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = MaterialTheme.colorScheme.primary
