@@ -31,7 +31,7 @@ android {
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
         versionCode = rootProject.ext["versionCode"] as Int
         versionName = rootProject.ext["versionName"] as String
-        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -102,7 +102,6 @@ android {
             }
         }
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -226,11 +225,13 @@ dependencies {
         libs.mockito.kotlin,
         libs.junit.jupiter,
         libs.junit.jupiter.params,
+        libs.junit.vintage.engine,
         platform(libs.junit.bom),
         libs.kotlinx.coroutines.test,
         libs.classgraph,
         libs.roboelectric,
         libs.junit,
+        libs.androidx.test.orchestrator,
         libs.androidx.test.ext.junit
     ).forEach(::testImplementation)
 

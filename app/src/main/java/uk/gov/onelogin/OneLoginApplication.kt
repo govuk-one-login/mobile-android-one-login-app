@@ -12,29 +12,32 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 
 @HiltAndroidApp
 class OneLoginApplication : Application(), DefaultLifecycleObserver {
-    private var appEntryPoint: ApplicationEntryPoint? = null
-
-    override fun onCreate() {
-        super<Application>.onCreate()
-        appEntryPoint = EntryPointAccessors.fromApplication(
+    var appEntryPointProvider: () -> ApplicationEntryPoint = {
+        EntryPointAccessors.fromApplication(
             this,
             ApplicationEntryPoint::class.java
         )
+    }
+
+    private val appEntryPoint: ApplicationEntryPoint by lazy { appEntryPointProvider() }
+
+    override fun onCreate() {
+        super<Application>.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
+    override fun onStop(owner: LifecycleOwner) {
         if (isLocalAuthEnabled() &&
-            appEntryPoint?.tokenRepository()?.getTokenResponse() != null
+            appEntryPoint.tokenRepository().getTokenResponse() != null
         ) {
-            appEntryPoint?.tokenRepository()?.clearTokenResponse()
-            appEntryPoint?.navigator()?.navigate(LoginRoutes.Start)
+            appEntryPoint.tokenRepository().clearTokenResponse()
+            appEntryPoint.navigator().navigate(LoginRoutes.Start)
         }
+        super.onStop(owner)
     }
 
     private fun isLocalAuthEnabled(): Boolean {
-        val prefs = appEntryPoint?.localAuthManager()?.localAuthPreference
+        val prefs = appEntryPoint.localAuthManager().localAuthPreference
         return !(prefs == LocalAuthPreference.Disabled || prefs == null)
     }
 }
