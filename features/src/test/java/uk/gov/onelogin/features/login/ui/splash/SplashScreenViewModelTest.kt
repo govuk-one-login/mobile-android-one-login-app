@@ -227,14 +227,17 @@ class SplashScreenViewModelTest {
             assertFalse(viewModel.loading.value)
 
             // AND AppInfo call is successful remote
-            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+            whenever(mockAppInfoService.get()).thenAnswer {
+                assertTrue(viewModel.loading.value)
+                AppInfoServiceState.Successful(data)
+            }
             // AND it calls retrieveAppInfo
             viewModel.retrieveAppInfo {
                 // Callback - Nothing to do
             }
 
             // THEN loading progress indicator will be set to true
-            assertTrue(viewModel.loading.value)
+            assertFalse(viewModel.loading.value)
         }
 
     @Test
