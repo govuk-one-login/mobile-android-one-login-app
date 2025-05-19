@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
@@ -61,6 +62,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .testTag(stringResource(R.string.appCriCardTestTag))
+                        .padding(top = smallPadding)
                 ) {
                     ProveYourIdentityCard(
                         component = criOrchestratorComponent,
@@ -99,7 +101,7 @@ private fun AddCard(
         title = cardTitle,
         body = cardBody,
         displayPrimary = false,
-        showSecondaryIcon = false,
+        shadow = 0.dp,
         onClick = {},
         modifier = Modifier
             .padding(top = smallPadding)
