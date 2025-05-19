@@ -8,9 +8,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
@@ -39,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -57,6 +54,7 @@ import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.android.ui.theme.xsmallPadding
+import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
@@ -83,21 +81,28 @@ fun SettingsScreen(
     )
 
     TitledPage(title = R.string.app_settings) { paddingValues ->
-        SettingsScreenContent(
-            paddingValues = paddingValues,
-            email = email,
-            optInState = optInState,
-            viewModel = viewModel,
-            analyticsViewModel = analyticsViewModel,
-            uriHandler = uriHandler,
-            settingsScreenLinks = settingsScreenLinks
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .windowInsetsPadding(WindowInsets.displayCutout)
+        ) {
+            HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
+            SettingsScreenContent(
+                email = email,
+                optInState = optInState,
+                viewModel = viewModel,
+                analyticsViewModel = analyticsViewModel,
+                uriHandler = uriHandler,
+                settingsScreenLinks = settingsScreenLinks
+            )
+        }
     }
 }
 
 @Composable
 private fun SettingsScreenContent(
-    paddingValues: PaddingValues,
     email: String,
     optInState: Boolean,
     viewModel: SettingsScreenViewModel,
@@ -107,12 +112,9 @@ private fun SettingsScreenContent(
 ) {
     Column(
         modifier = Modifier
-            .padding(paddingValues)
-            .consumeWindowInsets(paddingValues)
-            .windowInsetsPadding(WindowInsets.displayCutout)
             .verticalScroll(rememberScrollState())
+            .padding(vertical = xsmallPadding)
     ) {
-        Spacer(modifier = Modifier.semantics { hideFromAccessibility() }.height(xsmallPadding))
         EmailSection(email)
         YourDetailsSection(
             onClick = {
@@ -160,7 +162,6 @@ private fun SettingsScreenContent(
                 viewModel.goToSignOut()
             }
         )
-        Spacer(modifier = Modifier.semantics { hideFromAccessibility() }.height(xsmallPadding))
     }
 }
 
