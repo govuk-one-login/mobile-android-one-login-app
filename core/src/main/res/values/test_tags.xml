@@ -6,5 +6,6 @@
     <string name="splashLoadingSpinnerTestTag" translatable="false">splash loading spinner test tag</string>
     <string name="optInSwitchTestTag" translatable="false">opt in switch test tag</string>
     <string name="appCriCardTestTag" translatable="false">Cri Orchestrator test tag</string>
-    <string name="yourServicesCardTestTag" translatable="false">Your services card test tag</string>
+    <string name="welcomeCardTestTag" translatable="false">Welcome card test tag</string>
+    <string name="proveIdentityCardTestTag" translatable="false">Prove your identity card test tag</string>
 </resources>
