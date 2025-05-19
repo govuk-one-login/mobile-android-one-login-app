@@ -73,7 +73,7 @@ jobs:
           version-name: ${{ steps.version-name.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Encrypt INT bundle and upload for it to github artifacts
+      - name: Encrypt int bundle and upload for it to github artifacts
         id: encryptIntBundle
         run: |
           gpg --import temp_app_bundle_signing_key_pub.gpg
@@ -85,7 +85,7 @@ jobs:
           --output encrypted-int-bundle.aab.gpg \
           integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab;"
 
-      - name: Encrypt PROD bundle and upload for it to github artifacts
+      - name: Encrypt prod bundle and upload for it to github artifacts
         id: encryptIntBundle
         run: |
           gpg --import temp_app_bundle_signing_key_pub.gpg
@@ -105,15 +105,24 @@ jobs:
 
         shell: bash
 
-      - name: Upload encrypted bundles
-        id: uploadEncryptedFile
+      - name: Upload encrypted bundles prod
+        id: uploadEncryptedProdFile
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: encryptedBundles
+          name: encryptedProdBundle
           retention-days: 1
           if-no-files-found: error
           path: |-
             encrypted-prod-bundle.zip
+
+      - name: Upload encrypted bundles int
+        id: uploadEncryptedIntFile
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: encryptedIntBundle
+          retention-days: 1
+          if-no-files-found: error
+          path: |-
             encrypted-int-bundle.zip 
 
       - name: Run gradle instrumentation tests
