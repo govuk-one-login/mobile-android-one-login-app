@@ -82,7 +82,7 @@ jobs:
           --pinentry-mode loopback \
           --recipient bianca.mihaila@digital.cabinet-office.gov.uk \
           --encrypt \
-          --output encrypted-prod-bundle.aab.gpg \
+          --output encrypted-int-bundle.aab.gpg \
           integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab;"
 
       - name: Encrypt PROD bundle and upload for it to github artifacts
