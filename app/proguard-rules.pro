@@ -23,6 +23,7 @@
 -dontwarn kotlinx.parcelize.Parcelize
 -dontwarn javax.servlet.ServletContainerInitializer
 -dontwarn com.squareup.anvil.annotations.ContributesBinding
+-dontwarn com.squareup.anvil.annotations.ContributesMultibinding$Container
 -dontwarn com.squareup.anvil.annotations.ContributesTo
 -dontwarn com.squareup.anvil.annotations.internal.InternalMergedTypeMarker
 -dontwarn com.squareup.anvil.annotations.ContributesMultibinding
