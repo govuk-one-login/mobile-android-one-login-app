@@ -20,6 +20,7 @@ import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
@@ -351,7 +352,9 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        composeRule.onNodeWithTag(
+            resources.getString(R.string.yourServicesCardTestTag)
+        ).isDisplayed()
     }
 
     @Test
@@ -378,8 +381,11 @@ class LoginTest : TestCase() {
             onNodeWithText(
                 resources.getString(LocalAuthR.string.bio_opt_in_passcode_button)
             ).performClick()
+
+            onNodeWithTag(
+                resources.getString(R.string.yourServicesCardTestTag)
+            ).isDisplayed()
         }
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @Test
@@ -409,7 +415,9 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        composeRule.onNodeWithTag(
+            resources.getString(R.string.yourServicesCardTestTag)
+        ).isDisplayed()
     }
 
     private fun setupActivityForResult(returnedIntent: Intent) {

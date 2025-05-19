@@ -74,7 +74,6 @@ fun HomeScreen(
                 body = contentsCardBody,
                 buttonText = contentsCardLinkText,
                 displayPrimary = false,
-                showSecondaryIcon = true,
                 onClick = {
                     analyticsViewModel.trackLink()
                     uriHandler.openUri(servicesUrl)

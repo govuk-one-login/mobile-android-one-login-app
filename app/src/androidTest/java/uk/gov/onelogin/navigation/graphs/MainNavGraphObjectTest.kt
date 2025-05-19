@@ -1,11 +1,13 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -48,13 +50,14 @@ class MainNavGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun mainGraph_startingDestination() {
+    fun mainGraph_startingDestination() = runTest {
         composeTestRule.setActivity {
             navigator.navigate(MainNavRoutes.Start)
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_homeTitle)
+        delay(5000L)
+        composeTestRule.onNodeWithTag(
+            resources.getString(R.string.yourServicesCardTestTag)
         ).assertExists()
     }
 }
