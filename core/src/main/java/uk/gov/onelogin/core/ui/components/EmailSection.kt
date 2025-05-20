@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -29,7 +30,9 @@ fun EmailSection(email: String) {
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth()
-            .semantics(true) {},
+            .semantics(true) {
+                traversalIndex = EMAIL_TRAVERSAL_ORDER
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -66,3 +69,4 @@ internal fun EmailSectionPreview() {
 
 const val DIVIDER_TEST_TAG = "divider_test_tag"
 internal const val IMAGE_TEST_TAG = "image_test_tag"
+private const val EMAIL_TRAVERSAL_ORDER = -25f

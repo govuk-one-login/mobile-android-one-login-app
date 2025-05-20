@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
@@ -32,6 +33,7 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.ui.components.TextWithLink
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.features.settings.ui.PRIVACY_NOTICE_TRAVERSAL_ORDER
 
 private const val WHITE_SPACE = " "
 private const val ICON_KEY = "link_out.key"
@@ -51,6 +53,7 @@ fun PrivacyNotice(
             Modifier
                 .minimumInteractiveComponentSize()
                 .semantics {
+                    traversalIndex = PRIVACY_NOTICE_TRAVERSAL_ORDER
                     role = Role.Button
                     onClick {
                         onPrivacyNotice()

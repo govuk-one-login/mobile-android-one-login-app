@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
@@ -42,6 +41,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -110,8 +110,8 @@ private fun SettingsScreenContent(
             .consumeWindowInsets(paddingValues)
             .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.displayCutout)
+            .padding(top = smallPadding, bottom = xsmallPadding)
     ) {
-        Spacer(modifier = Modifier.height(smallPadding))
         EmailSection(email)
         YourDetailsSection(
             onClick = {
@@ -159,7 +159,6 @@ private fun SettingsScreenContent(
                 viewModel.goToSignOut()
             }
         )
-        Spacer(modifier = Modifier.height(xsmallPadding))
     }
 }
 
@@ -182,7 +181,8 @@ private fun YourDetailsSection(
         contentDescription = R.string.app_openLinkExternally,
         description = stringResource(
             id = R.string.app_settingSignInDetailsFootnote
-        )
+        ),
+        traversalIndex = MANAGE_DETAILS_TRAVERSAL_ORDER
     ) {
         onClick()
     }
@@ -197,7 +197,8 @@ private fun LegalSection(
     ExternalLinkRow(
         title = R.string.app_privacyNoticeLink2,
         icon = R.drawable.external_link_icon,
-        contentDescription = R.string.app_openLinkExternally
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER
     ) {
         onPrivacyNoticeClick()
     }
@@ -205,12 +206,17 @@ private fun LegalSection(
     ExternalLinkRow(
         title = R.string.app_accessibilityStatement,
         icon = R.drawable.external_link_icon,
-        contentDescription = R.string.app_openLinkExternally
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = ACCESSIBILITY_LINK_TRAVERSAL_ORDER
     ) {
         onAccessibilityStatementClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(R.string.app_openSourceLicences, R.drawable.arrow_right_icon) {
+    ExternalLinkRow(
+        title = R.string.app_openSourceLicences,
+        icon = R.drawable.arrow_right_icon,
+        traversalIndex = OSL_LINK_TRAVERSAL_ORDER
+    ) {
         onOpenSourceLicensesClick()
     }
 }
@@ -220,11 +226,12 @@ private fun HelpAndFeedbackSection(
     onHelpClick: () -> Unit,
     onContactClick: () -> Unit
 ) {
-    HeadingRow(R.string.app_settingsSubtitle1)
+    HeadingRow(text = R.string.app_settingsSubtitle1, traversalIndex = HELP_TRAVERSAL_ORDER)
     ExternalLinkRow(
         title = R.string.app_appGuidanceLink,
         icon = R.drawable.external_link_icon,
-        contentDescription = R.string.app_openLinkExternally
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = USING_LINK_TRAVERSAL_ORDER
     ) {
         onHelpClick()
     }
@@ -232,7 +239,8 @@ private fun HelpAndFeedbackSection(
     ExternalLinkRow(
         title = R.string.app_contactLink,
         icon = R.drawable.external_link_icon,
-        contentDescription = R.string.app_openLinkExternally
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = CONTACT_LINK_TRAVERSAL_ORDER
     ) {
         onContactClick()
     }
@@ -244,7 +252,7 @@ internal fun AboutTheAppSection(
     onToggle: () -> Unit,
     onPrivacyNoticeClick: () -> Unit
 ) {
-    HeadingRow(R.string.app_settingsSubtitle2)
+    HeadingRow(text = R.string.app_settingsSubtitle2, traversalIndex = ABOUT_TRAVERSAL_ORDER)
     Column(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
@@ -273,7 +281,10 @@ internal fun AboutTheAppSection(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
+private fun HeadingRow(
+    @androidx.annotation.StringRes text: Int,
+    traversalIndex: Float
+) {
     GdsHeading(
         text = stringResource(text),
         textColour = MaterialTheme.colorScheme.onBackground,
@@ -283,6 +294,7 @@ private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
         modifier = Modifier
             .padding(all = smallPadding)
             .background(color = MaterialTheme.colorScheme.background)
+            .semantics { this.traversalIndex = traversalIndex }
     )
 }
 
@@ -292,6 +304,7 @@ private fun ExternalLinkRow(
     @DrawableRes icon: Int,
     description: String? = null,
     contentDescription: Int? = null,
+    traversalIndex: Float,
     onClick: () -> Unit = { }
 ) {
     Box(
@@ -299,7 +312,7 @@ private fun ExternalLinkRow(
             .clickable(onClick = onClick)
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .fillMaxWidth()
-            .semantics(mergeDescendants = true) {}
+            .semantics(mergeDescendants = true) { this.traversalIndex = traversalIndex }
     ) {
         Row(
             modifier = Modifier
@@ -356,6 +369,7 @@ internal fun PreferenceToggleRow(
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .semantics {
+                traversalIndex = ANALYTICS_TOGGLE_TRAVERSAL_ORDER
                 role = Role.Switch
                 onClick {
                     onToggle()
@@ -397,6 +411,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
             .clickable {
                 openSignOutScreen()
             }
+            .semantics { traversalIndex = SIGN_OUT_TRAVERSAL_ORDER }
     ) {
         Text(
             modifier = Modifier
@@ -408,3 +423,15 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
         )
     }
 }
+
+private const val MANAGE_DETAILS_TRAVERSAL_ORDER = -24f
+private const val HELP_TRAVERSAL_ORDER = -23f
+private const val USING_LINK_TRAVERSAL_ORDER = -22f
+private const val CONTACT_LINK_TRAVERSAL_ORDER = -21f
+private const val ABOUT_TRAVERSAL_ORDER = -20f
+private const val ANALYTICS_TOGGLE_TRAVERSAL_ORDER = -19f
+const val PRIVACY_NOTICE_TRAVERSAL_ORDER = -18f
+private const val PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER = 8f
+private const val ACCESSIBILITY_LINK_TRAVERSAL_ORDER = 9f
+private const val OSL_LINK_TRAVERSAL_ORDER = 10f
+private const val SIGN_OUT_TRAVERSAL_ORDER = 11f
