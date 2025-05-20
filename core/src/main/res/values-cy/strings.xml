@@ -27,6 +27,7 @@
     <string name="app_settingsSignInDetailsLink">Rheoli eich manylion mewngofnodi</string>
 
     <!-- Sign Out-->
+    <string name="app_settingsBiometricsField">Biometrig</string>
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>

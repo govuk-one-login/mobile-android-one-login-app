@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -22,6 +23,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.matcher.UriMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -30,6 +33,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
@@ -44,12 +48,14 @@ import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
+import uk.gov.onelogin.features.settings.domain.BiometricsOptInChecker
 
 @RunWith(AndroidJUnit4::class)
 class SettingsScreenTest : FragmentActivityTestCase() {
     private val optInRepository: OptInRepository = mock()
     private lateinit var navigator: Navigator
     private lateinit var getEmail: GetEmail
+    private lateinit var biometricsOptInChecker: BiometricsOptInChecker
     private lateinit var tokenRepository: TokenRepository
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -68,6 +74,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var aboutTheAppPrivacyLink: SemanticsMatcher
     private lateinit var signOutButton: SemanticsMatcher
     private lateinit var openSourceLicensesButton: SemanticsMatcher
+    private lateinit var biometricsOptIn: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -77,7 +84,14 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         navigator = mock()
         getEmail = mock()
         tokenRepository = mock()
-        viewModel = SettingsScreenViewModel(optInRepository, navigator, tokenRepository, getEmail)
+        biometricsOptInChecker = mock()
+        viewModel = SettingsScreenViewModel(
+            optInRepository,
+            navigator,
+            biometricsOptInChecker,
+            tokenRepository,
+            getEmail
+        )
         analytics = mock()
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
         yourDetailsHeader = hasText(resources.getString(R.string.app_settingsSubtitle1))
@@ -98,6 +112,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
         openSourceLicensesButton = hasText(resources.getString(R.string.app_openSourceLicences))
+        biometricsOptIn = hasText(context.getString(R.string.app_settingsBiometricsField))
         Intents.init()
         intending(not(isInternal())).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
@@ -110,7 +125,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun yourDetailsGroupDisplayed() {
+    fun yourDetailsGroupDisplayed() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -122,7 +139,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun legalGroupDisplayed() {
+    fun legalGroupDisplayed() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -132,7 +151,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun aboutTheAppSectionDisplayed() {
+    fun aboutTheAppSectionDisplayed() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -149,7 +170,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun toggleSwitchCallOnToggleClickEvent() {
+    fun toggleSwitchCallOnToggleClickEvent() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         var optInState = false
         composeTestRule.setContent {
             PreferenceToggleRow(
@@ -163,12 +186,19 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() {
+    fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         var optInState = false
+        var biometricsOptInState = false
+        var biometricsClick = 0
         var privacyNoticeClicked = false
+
         composeTestRule.setContent {
             AboutTheAppSection(
                 optInState,
+                biometricsOptInState,
+                onBiometrics = { biometricsClick++ },
                 onToggle = { optInState = true },
                 onPrivacyNoticeClick = { privacyNoticeClicked = true }
             )
@@ -181,7 +211,42 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun signOutCta() {
+    fun biometricsDisplayedAndOnClickWorks() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
+        composeTestRule.setContent {
+            SettingsScreen(viewModel, analyticsViewModel)
+        }
+        composeTestRule.apply {
+            onNode(biometricsOptIn, useUnmergedTree = true)
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+        }
+
+        verify(navigator).navigate(SettingsRoutes.BiometricsOptIn)
+    }
+
+    @Test
+    fun biometricsNotDisplayed() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(false))
+
+        composeTestRule.setContent {
+            SettingsScreen(viewModel, analyticsViewModel)
+        }
+        composeTestRule.apply {
+            onNode(biometricsOptIn, useUnmergedTree = true).assertIsNotDisplayed()
+        }
+
+        // This can be removed once functionality has been added to the ticket and navigation can be tested
+        // Purpose - test click on Biometrics
+        verify(navigator, times(0)).navigate(SettingsRoutes.BiometricsOptIn)
+    }
+
+    @Test
+    fun signOutCta() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -191,7 +256,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun openSourceLicensesCta() {
+    fun openSourceLicensesCta() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)
         }
@@ -201,7 +268,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun signInLaunchesBrowser() {
+    fun signInLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_manageSignInDetailsUrl)
         checkTheLinkOpensTheCorrectUrl(yourDetailsTitle, url)
@@ -209,7 +278,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun helpLaunchesBrowser() {
+    fun helpLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_helpUrl)
         checkTheLinkOpensTheCorrectUrl(helpLink, url)
@@ -217,7 +287,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun contactLaunchesBrowser() {
+    fun contactLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_contactUrl)
         checkTheLinkOpensTheCorrectUrl(contactLink, url)
@@ -225,7 +297,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun privacyNoticeLaunchesBrowser() {
+    fun privacyNoticeLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.privacy_notice_url)
         checkTheLinkOpensTheCorrectUrl(legalLink1, url)
@@ -233,7 +307,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun accessibilityStatementLaunchesBrowser() {
+    fun accessibilityStatementLaunchesBrowser() = runTest {
+        whenever(biometricsOptInChecker.getBiometricsOptInState()).thenReturn(flowOf(true))
+
         // Given the SettingsScreen Composable
         val url = resources.getString(R.string.app_accessibilityStatementUrl)
         checkTheLinkOpensTheCorrectUrl(legalLink3, url)

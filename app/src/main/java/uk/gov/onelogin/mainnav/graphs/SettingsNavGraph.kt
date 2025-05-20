@@ -4,7 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
-import uk.gov.onelogin.features.settings.ui.OsslScreen
+import uk.gov.onelogin.features.settings.ui.biometricsoptin.BiometricsOptInScreen
+import uk.gov.onelogin.features.settings.ui.ossl.OsslScreen
 
 object SettingsNavGraph {
     fun NavGraphBuilder.settingsGraph(
@@ -14,6 +15,10 @@ object SettingsNavGraph {
             OsslScreen {
                 navController.popBackStack()
             }
+        }
+
+        composable(SettingsRoutes.BiometricsOptIn.getRoute()) {
+            BiometricsOptInScreen()
         }
     }
 }

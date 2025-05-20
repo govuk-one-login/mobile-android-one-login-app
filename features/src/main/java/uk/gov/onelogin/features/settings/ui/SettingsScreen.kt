@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.settings.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -29,6 +30,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +46,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,13 +62,13 @@ import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 
 @Composable
-@Preview
 fun SettingsScreen(
     viewModel: SettingsScreenViewModel = hiltViewModel(),
     analyticsViewModel: SettingsAnalyticsViewModel = hiltViewModel()
 ) {
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
+        viewModel.checkDeviceBiometricsStatus()
         analyticsViewModel.trackSettingsView()
     }
     val uriHandler = LocalUriHandler.current
@@ -80,9 +81,8 @@ fun SettingsScreen(
         helpUrl = stringResource(R.string.app_helpUrl),
         contactUrl = stringResource(R.string.app_contactUrl)
     )
-
     TitledPage(title = R.string.app_settings) { paddingValues ->
-        SettingsScreenContent(
+        SettingsScreenBody(
             paddingValues = paddingValues,
             email = email,
             optInState = optInState,
@@ -94,8 +94,9 @@ fun SettingsScreen(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
-private fun SettingsScreenContent(
+private fun SettingsScreenBody(
     paddingValues: PaddingValues,
     email: String,
     optInState: Boolean,
@@ -131,6 +132,11 @@ private fun SettingsScreenContent(
         )
         AboutTheAppSection(
             optInState = optInState,
+            showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
+            onBiometrics = {
+                analyticsViewModel.trackBiometricsButton()
+                viewModel.goToBiometricsOptIn()
+            },
             onToggle = {
                 viewModel.toggleOptInPreference()
             },
@@ -176,7 +182,7 @@ private fun YourDetailsSection(
     onClick: () -> Unit
 ) {
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -194,7 +200,7 @@ private fun LegalSection(
     onAccessibilityStatementClick: () -> Unit,
     onOpenSourceLicensesClick: () -> Unit
 ) {
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_privacyNoticeLink2,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally
@@ -202,7 +208,7 @@ private fun LegalSection(
         onPrivacyNoticeClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_accessibilityStatement,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally
@@ -210,7 +216,7 @@ private fun LegalSection(
         onAccessibilityStatementClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(R.string.app_openSourceLicences, R.drawable.arrow_right_icon) {
+    LinkRow(R.string.app_openSourceLicences, R.drawable.arrow_right_icon) {
         onOpenSourceLicensesClick()
     }
 }
@@ -221,7 +227,7 @@ private fun HelpAndFeedbackSection(
     onContactClick: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle1)
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_appGuidanceLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally
@@ -229,7 +235,7 @@ private fun HelpAndFeedbackSection(
         onHelpClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_contactLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally
@@ -241,6 +247,8 @@ private fun HelpAndFeedbackSection(
 @Composable
 internal fun AboutTheAppSection(
     optInState: Boolean,
+    showBiometricsOption: Boolean,
+    onBiometrics: () -> Unit,
     onToggle: () -> Unit,
     onPrivacyNoticeClick: () -> Unit
 ) {
@@ -248,6 +256,13 @@ internal fun AboutTheAppSection(
     Column(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
+        if (showBiometricsOption) {
+            LinkRow(
+                title = R.string.app_settingsBiometricsField,
+                icon = R.drawable.arrow_right_icon,
+                onClick = onBiometrics
+            )
+        }
         PreferenceToggleRow(
             title = R.string.app_settingsAnalyticsToggle,
             checked = optInState,
@@ -273,7 +288,7 @@ internal fun AboutTheAppSection(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
+private fun HeadingRow(@StringRes text: Int) {
     GdsHeading(
         text = stringResource(text),
         textColour = MaterialTheme.colorScheme.onBackground,
@@ -287,8 +302,8 @@ private fun HeadingRow(@androidx.annotation.StringRes text: Int) {
 }
 
 @Composable
-private fun ExternalLinkRow(
-    @androidx.annotation.StringRes title: Int,
+private fun LinkRow(
+    @StringRes title: Int,
     @DrawableRes icon: Int,
     description: String? = null,
     contentDescription: Int? = null,
@@ -345,7 +360,7 @@ private fun ExternalLinkRow(
 
 @Composable
 internal fun PreferenceToggleRow(
-    @androidx.annotation.StringRes title: Int,
+    @StringRes title: Int,
     checked: Boolean,
     onToggle: () -> Unit
 ) {

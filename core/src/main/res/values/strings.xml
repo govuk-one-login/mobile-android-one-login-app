@@ -28,6 +28,7 @@
     <string name="app_settingsAnalyticsToggleFootnoteLink">Read more in the GOV.UK One Login privacy notice</string>
     <string name="app_signOutButton">Sign out</string>
     <string name="app_settingsSignInDetailsLink">Manage sign in details</string>
+    <string name="app_settingsBiometricsField">Biometrics</string>
 
     <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Are you sure you want to sign out?</string>

@@ -117,6 +117,10 @@ class SettingsAnalyticsViewModelTest {
                 },
                 domain = context.getEnglishString(R.string.app_accessibilityStatementUrl).domain,
                 text = context.getEnglishString(R.string.app_accessibilityStatement)
+            ),
+            TestUtils.TrackEventTestCase.Button(
+                trackFunction = { viewModel.trackBiometricsButton() },
+                text = context.getEnglishString(R.string.app_settingsBiometricsField)
             )
         ).forEach {
             // When tracking

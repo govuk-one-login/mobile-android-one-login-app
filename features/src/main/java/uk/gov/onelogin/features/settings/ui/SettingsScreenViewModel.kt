@@ -15,27 +15,40 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.settings.domain.BiometricsOptInChecker
 
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
     private val optInRepository: OptInRepository,
     private val navigator: Navigator,
+    private val biometricsOptInChecker: BiometricsOptInChecker,
     tokenRepository: TokenRepository,
     getEmail: GetEmail
 ) : ViewModel() {
     private val _optInState = MutableStateFlow(false)
     val optInState: StateFlow<Boolean>
         get() = _optInState.asStateFlow()
+    private val _biometricsOptionState = MutableStateFlow(false)
+    val biometricsOptionState: StateFlow<Boolean>
+        get() = _biometricsOptionState.asStateFlow()
 
     init {
         viewModelScope.launch {
             optInRepository.hasAnalyticsOptIn().collect {
-                _optInState.value = it
+                _optInState.emit(it)
             }
         }
     }
 
     val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
+
+    fun checkDeviceBiometricsStatus() {
+        viewModelScope.launch {
+            biometricsOptInChecker.getBiometricsOptInState().collect {
+                _biometricsOptionState.emit(it)
+            }
+        }
+    }
 
     fun goToSignOut() {
         navigator.navigate(SignOutRoutes.Start)
@@ -43,6 +56,10 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun goToOssl() {
         navigator.navigate(SettingsRoutes.Ossl)
+    }
+
+    fun goToBiometricsOptIn() {
+        navigator.navigate(SettingsRoutes.BiometricsOptIn)
     }
 
     fun toggleOptInPreference() {

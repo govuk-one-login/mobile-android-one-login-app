@@ -1,7 +1,10 @@
 package uk.gov.onelogin.features.settings.ui
 
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -21,6 +24,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.settings.domain.BiometricsOptInChecker
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsScreenViewModelTest {
@@ -30,6 +34,7 @@ class SettingsScreenViewModelTest {
     private val mockGetEmail: GetEmail = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockOptInRepository: OptInRepository = mock()
+    private val mockBiometricsOptInChecker: BiometricsOptInChecker = mock()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @BeforeEach
@@ -40,6 +45,7 @@ class SettingsScreenViewModelTest {
             SettingsScreenViewModel(
                 mockOptInRepository,
                 mockNavigator,
+                mockBiometricsOptInChecker,
                 mockTokenRepository,
                 mockGetEmail
             )
@@ -96,6 +102,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockBiometricsOptInChecker,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -110,6 +117,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockBiometricsOptInChecker,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -128,6 +136,7 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
+                    mockBiometricsOptInChecker,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -136,5 +145,48 @@ class SettingsScreenViewModelTest {
             viewModel.toggleOptInPreference()
 
             verify(mockOptInRepository).optIn()
+        }
+
+    @Test
+    fun `biometrics are not available`() =
+        runTest {
+            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+            whenever(mockBiometricsOptInChecker.getBiometricsOptInState())
+                .thenReturn(flowOf(false))
+            viewModel =
+                SettingsScreenViewModel(
+                    mockOptInRepository,
+                    mockNavigator,
+                    mockBiometricsOptInChecker,
+                    mockTokenRepository,
+                    mockGetEmail
+                )
+
+            assertFalse(viewModel.biometricsOptionState.value)
+
+            viewModel.checkDeviceBiometricsStatus()
+
+            assertFalse(viewModel.biometricsOptionState.value)
+        }
+
+    @Test
+    fun `biometrics are available`() =
+        runTest {
+            whenever(mockBiometricsOptInChecker.getBiometricsOptInState())
+                .thenReturn(MutableStateFlow(true))
+            viewModel =
+                SettingsScreenViewModel(
+                    mockOptInRepository,
+                    mockNavigator,
+                    mockBiometricsOptInChecker,
+                    mockTokenRepository,
+                    mockGetEmail
+                )
+
+            assertFalse(viewModel.biometricsOptionState.value)
+
+            viewModel.checkDeviceBiometricsStatus()
+
+            assertTrue(viewModel.biometricsOptionState.value)
         }
 }
