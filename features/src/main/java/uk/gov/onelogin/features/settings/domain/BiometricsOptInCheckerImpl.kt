@@ -10,7 +10,7 @@ class BiometricsOptInCheckerImpl @Inject constructor(
     private val deviceBiometricsManager: DeviceBiometricsManager
 ) : BiometricsOptInChecker {
 
-    override suspend fun getBiometricsOptInState(): Flow<Boolean> = flow {
+    override fun getBiometricsOptInState(): Flow<Boolean> = flow {
         val biometricsAvailable =
             deviceBiometricsManager.getCredentialStatus() == DeviceBiometricsStatus.SUCCESS
         emit(biometricsAvailable)
