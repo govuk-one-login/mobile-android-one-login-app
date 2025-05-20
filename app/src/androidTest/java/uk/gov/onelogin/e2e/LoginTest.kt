@@ -351,7 +351,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.onNodeWithTag(
-            resources.getString(R.string.appCriCardTestTag)
+            resources.getString(R.string.welcomeCardTestTag)
         ).isDisplayed()
     }
 
@@ -381,7 +381,7 @@ class LoginTest : TestCase() {
             ).performClick()
 
             onNodeWithTag(
-                resources.getString(R.string.appCriCardTestTag)
+                resources.getString(R.string.welcomeCardTestTag)
             ).isDisplayed()
         }
     }
@@ -414,7 +414,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.onNodeWithTag(
-            resources.getString(R.string.appCriCardTestTag)
+            resources.getString(R.string.welcomeCardTestTag)
         ).isDisplayed()
     }
 
