@@ -86,7 +86,7 @@ jobs:
           integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab;"
 
       - name: Encrypt prod bundle and upload for it to github artifacts
-        id: encryptIntBundle
+        id: encryptProdBundle
         run: |
           gpg --import temp_app_bundle_signing_key_pub.gpg
           gpg --batch --yes \
