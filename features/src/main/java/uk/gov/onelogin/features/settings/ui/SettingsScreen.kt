@@ -53,7 +53,6 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
-import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.pages.TitledPage
@@ -113,7 +112,7 @@ private fun SettingsScreenContent(
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .padding(vertical = xsmallPadding)
+            .padding(vertical = smallPadding)
     ) {
         EmailSection(email)
         YourDetailsSection(

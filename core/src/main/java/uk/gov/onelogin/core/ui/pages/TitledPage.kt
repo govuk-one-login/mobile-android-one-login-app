@@ -3,10 +3,7 @@
 package uk.gov.onelogin.core.ui.pages
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -21,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import uk.gov.android.ui.components.m3.HeadingSize
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.ui.components.appbar.GdsTopAppBar
 
 @Composable
 fun TitledPage(
@@ -30,52 +28,25 @@ fun TitledPage(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            GdsTopAppBar(
                 title = {
                     Text(
                         text = stringResource(title),
                         style = HeadingSize.HeadlineLarge().style(),
                         modifier = Modifier
-                            .fillMaxWidth()
                             .padding(vertical = smallPadding)
-                            .statusBarsPadding()
                             .semantics { heading() },
                         textAlign = TextAlign.Center
                     )
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                ),
+                colors = {
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
+                    )
+                },
                 scrollBehavior = scrollBehavior
-            )
-//            FlexibleTopBar(
-//                content = {
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(top = smallPadding)
-//                            .statusBarsPadding()
-//                    ) {
-//                        Text(
-//                            text = stringResource(title),
-//                            style = HeadingSize.HeadlineLarge().style(),
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(bottom = smallPadding)
-//                                .semantics { heading() },
-//                            textAlign = TextAlign.Center
-//                        )
-//                        HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
-//                    }
-//                },
-//                colors =
-//                FlexibleTopBarColors(
-//                    containerColor = MaterialTheme.colorScheme.background,
-//                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-//                ),
-//                scrollBehavior = scrollBehavior
-//            )
+            ).generate()
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->
