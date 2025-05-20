@@ -73,58 +73,6 @@ jobs:
           version-name: ${{ steps.version-name.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Encrypt int bundle and upload for it to github artifacts
-        id: encryptIntBundle
-        run: |
-          gpg --import temp_app_bundle_signing_key_pub.gpg
-          gpg --batch --yes \
-          --trust-model always \
-          --pinentry-mode loopback \
-          --recipient bianca.mihaila@digital.cabinet-office.gov.uk \
-          --encrypt \
-          --output encrypted-int-bundle.aab.gpg \
-          app/build/outputs/bundle/integrationRelease/app-integration-release.aab;
-
-      - name: Encrypt prod bundle and upload for it to github artifacts
-        id: encryptProdBundle
-        run: |
-          gpg --import temp_app_bundle_signing_key_pub.gpg
-          gpg --batch --yes \
-          --trust-model always \
-          --pinentry-mode loopback \
-          --recipient bianca.mihaila@digital.cabinet-office.gov.uk \
-          --encrypt \
-          --output encrypted-prod-bundle.aab.gpg \
-          app/build/outputs/bundle/productionRelease/app-production-release.aab;
-
-      - name: Bundle encrypted files
-        id: bundleEncryptedFiles
-        run: |
-          zip -9 -r encrypted-prod-bundle.zip encrypted-prod-bundle.aab.gpg
-          zip -9 -r encrypted-int-bundle.zip encrypted-int-bundle.aab.gpg
-
-        shell: bash
-
-      - name: Upload encrypted bundles prod
-        id: uploadEncryptedProdFile
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: encryptedProdBundle
-          retention-days: 1
-          if-no-files-found: error
-          path: |-
-            encrypted-prod-bundle.zip
-
-      - name: Upload encrypted bundles int
-        id: uploadEncryptedIntFile
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: encryptedIntBundle
-          retention-days: 1
-          if-no-files-found: error
-          path: |-
-            encrypted-int-bundle.zip 
-
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
