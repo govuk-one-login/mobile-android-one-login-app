@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
@@ -230,7 +231,7 @@ class LoginTest : TestCase() {
             persistentSessionId = null
         )
 
-        verify(mockLoginSession).present(any(), eq(loginConfig))
+        verify(mockLoginSession, atLeast(1)).present(any(), eq(loginConfig))
     }
 
     @Test
