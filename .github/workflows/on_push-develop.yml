@@ -83,7 +83,7 @@ jobs:
           --recipient bianca.mihaila@digital.cabinet-office.gov.uk \
           --encrypt \
           --output encrypted-int-bundle.aab.gpg \
-          integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab;"
+          integration:app/build/outputs/bundle/integrationRelease/app-integration-release.aab;
 
       - name: Encrypt prod bundle and upload for it to github artifacts
         id: encryptProdBundle
@@ -95,7 +95,7 @@ jobs:
           --recipient bianca.mihaila@digital.cabinet-office.gov.uk \
           --encrypt \
           --output encrypted-prod-bundle.aab.gpg \
-          production:app/build/outputs/bundle/productionRelease/app-production-release.aab;"
+          production:app/build/outputs/bundle/productionRelease/app-production-release.aab;
 
       - name: Bundle encrypted files
         id: bundleEncryptedFiles
