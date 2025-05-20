@@ -36,4 +36,16 @@ class SettingsGraphObjectTest : TestCase() {
             resources.getString(R.string.app_osslTitle)
         ).assertIsDisplayed()
     }
+
+    @Test
+    fun navigateToBiometricsOptIn() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(SettingsRoutes.BiometricsOptIn.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            "Placeholder",
+            substring = true
+        ).assertIsDisplayed()
+    }
 }
