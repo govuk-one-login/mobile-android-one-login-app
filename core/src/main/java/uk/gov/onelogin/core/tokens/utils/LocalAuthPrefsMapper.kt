@@ -15,7 +15,7 @@ object LocalAuthPrefsMapper {
             LocalAuthPreference.Disabled -> AccessControlLevel.OPEN
             is LocalAuthPreference.Enabled -> {
                 if (localAuthPref.biometricsEnabled) {
-                    AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
+                    AccessControlLevel.PASSCODE_AND_BIOMETRICS
                 } else {
                     AccessControlLevel.PASSCODE
                 }

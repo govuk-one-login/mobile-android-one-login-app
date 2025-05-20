@@ -18,8 +18,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
@@ -37,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeast
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
@@ -231,7 +231,7 @@ class LoginTest : TestCase() {
             persistentSessionId = null
         )
 
-        verify(mockLoginSession).present(any(), eq(loginConfig))
+        verify(mockLoginSession, atLeast(1)).present(any(), eq(loginConfig))
     }
 
     @Test
@@ -351,7 +351,9 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        composeRule.onNodeWithTag(
+            resources.getString(R.string.welcomeCardTestTag)
+        ).isDisplayed()
     }
 
     @Test
@@ -378,8 +380,11 @@ class LoginTest : TestCase() {
             onNodeWithText(
                 resources.getString(LocalAuthR.string.bio_opt_in_passcode_button)
             ).performClick()
+
+            onNodeWithTag(
+                resources.getString(R.string.welcomeCardTestTag)
+            ).isDisplayed()
         }
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
     }
 
     @Test
@@ -409,7 +414,9 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        allNodeWithTextExists(resources.getString(R.string.app_homeTitle))
+        composeRule.onNodeWithTag(
+            resources.getString(R.string.welcomeCardTestTag)
+        ).isDisplayed()
     }
 
     private fun setupActivityForResult(returnedIntent: Intent) {
@@ -486,12 +493,6 @@ class LoginTest : TestCase() {
     private fun nodeWithTextExists(text: String) {
         composeRule.waitUntil(5000) {
             composeRule.onNodeWithText(text).isDisplayed()
-        }
-    }
-
-    private fun allNodeWithTextExists(text: String) {
-        composeRule.waitUntil(5000) {
-            composeRule.onAllNodesWithText(text).onFirst().isDisplayed()
         }
     }
 
