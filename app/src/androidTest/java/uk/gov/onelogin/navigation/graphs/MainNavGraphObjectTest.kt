@@ -6,7 +6,6 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -55,7 +54,6 @@ class MainNavGraphObjectTest : TestCase() {
             navigator.navigate(MainNavRoutes.Start)
         }
 
-        delay(5000L)
         composeTestRule.onNodeWithTag(
             resources.getString(R.string.appCriCardTestTag)
         ).assertExists()
