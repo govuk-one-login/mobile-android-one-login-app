@@ -18,8 +18,6 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onAllNodesWithText
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -353,7 +351,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.onNodeWithTag(
-            resources.getString(R.string.yourServicesCardTestTag)
+            resources.getString(R.string.appCriCardTestTag)
         ).isDisplayed()
     }
 
@@ -383,7 +381,7 @@ class LoginTest : TestCase() {
             ).performClick()
 
             onNodeWithTag(
-                resources.getString(R.string.yourServicesCardTestTag)
+                resources.getString(R.string.appCriCardTestTag)
             ).isDisplayed()
         }
     }
@@ -416,7 +414,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.onNodeWithTag(
-            resources.getString(R.string.yourServicesCardTestTag)
+            resources.getString(R.string.appCriCardTestTag)
         ).isDisplayed()
     }
 
@@ -494,12 +492,6 @@ class LoginTest : TestCase() {
     private fun nodeWithTextExists(text: String) {
         composeRule.waitUntil(5000) {
             composeRule.onNodeWithText(text).isDisplayed()
-        }
-    }
-
-    private fun allNodeWithTextExists(text: String) {
-        composeRule.waitUntil(5000) {
-            composeRule.onAllNodesWithText(text).onFirst().isDisplayed()
         }
     }
 

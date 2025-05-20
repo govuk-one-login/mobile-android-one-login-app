@@ -57,7 +57,7 @@ class MainNavGraphObjectTest : TestCase() {
 
         delay(5000L)
         composeTestRule.onNodeWithTag(
-            resources.getString(R.string.yourServicesCardTestTag)
+            resources.getString(R.string.appCriCardTestTag)
         ).assertExists()
     }
 }

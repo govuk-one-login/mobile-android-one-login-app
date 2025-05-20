@@ -161,4 +161,12 @@
 
     <!-- Cri Orchestrator Temporary -->
     <string name="app_cri_orchestrator_placeholder" translatable="false">Placeholder</string>
+
+    <!-- Welcome tile -->
+    <string name="app_welcomeTileHeader">Welcome</string>
+    <string name="app_welcomeTileBody1">You can use this app to prove your identity to access some government services.</string>
+
+    <!-- How to prove your identity tile -->
+    <string name="app_appPurposeTileHeader">How to prove your identity</string>
+    <string name="app_appPurposeTileBody1">If you need to prove your identity with GOV.UK One Login to access a service, you\'ll be asked to open this app. It works by matching your face to your photo ID.</string>
 </resources>
