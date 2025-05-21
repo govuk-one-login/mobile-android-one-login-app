@@ -132,6 +132,7 @@ private fun SettingsScreenBody(
         )
         AboutTheAppSection(
             optInState = optInState,
+            biometricsOptionFeatureFlagEnabled = viewModel.displayBiometricsToggle,
             showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
             onBiometrics = {
                 analyticsViewModel.trackBiometricsButton()
@@ -247,6 +248,7 @@ private fun HelpAndFeedbackSection(
 @Composable
 internal fun AboutTheAppSection(
     optInState: Boolean,
+    biometricsOptionFeatureFlagEnabled: Boolean,
     showBiometricsOption: Boolean,
     onBiometrics: () -> Unit,
     onToggle: () -> Unit,
@@ -256,12 +258,14 @@ internal fun AboutTheAppSection(
     Column(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
-        if (showBiometricsOption) {
-            LinkRow(
-                title = R.string.app_settingsBiometricsField,
-                icon = R.drawable.arrow_right_icon,
-                onClick = onBiometrics
-            )
+        if (biometricsOptionFeatureFlagEnabled) {
+            if (showBiometricsOption) {
+                LinkRow(
+                    title = R.string.app_settingsBiometricsField,
+                    icon = R.drawable.arrow_right_icon,
+                    onClick = onBiometrics
+                )
+            }
         }
         PreferenceToggleRow(
             title = R.string.app_settingsAnalyticsToggle,

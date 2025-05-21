@@ -9,19 +9,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.features.featureflags.data.LocalAuthBiometricsToggleFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
-import uk.gov.onelogin.features.settings.domain.BiometricsOptInChecker
 
 @HiltViewModel
 class SettingsScreenViewModel @Inject constructor(
     private val optInRepository: OptInRepository,
     private val navigator: Navigator,
-    private val biometricsOptInChecker: BiometricsOptInChecker,
+    private val localAuthManager: LocalAuthManager,
+    private val featureFlags: FeatureFlags,
     tokenRepository: TokenRepository,
     getEmail: GetEmail
 ) : ViewModel() {
@@ -31,6 +34,8 @@ class SettingsScreenViewModel @Inject constructor(
     private val _biometricsOptionState = MutableStateFlow(false)
     val biometricsOptionState: StateFlow<Boolean>
         get() = _biometricsOptionState.asStateFlow()
+    val displayBiometricsToggle: Boolean
+        get() = featureFlags[LocalAuthBiometricsToggleFeatureFlag.ENABLED]
 
     init {
         viewModelScope.launch {
@@ -44,9 +49,7 @@ class SettingsScreenViewModel @Inject constructor(
 
     fun checkDeviceBiometricsStatus() {
         viewModelScope.launch {
-            biometricsOptInChecker.getBiometricsOptInState().collect {
-                _biometricsOptionState.emit(it)
-            }
+            _biometricsOptionState.emit(localAuthManager.biometricsAvailable())
         }
     }
 

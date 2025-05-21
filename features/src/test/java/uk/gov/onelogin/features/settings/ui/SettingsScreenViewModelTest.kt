@@ -4,7 +4,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -18,13 +17,15 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.features.featureflags.data.LocalAuthBiometricsToggleFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
-import uk.gov.onelogin.features.settings.domain.BiometricsOptInChecker
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsScreenViewModelTest {
@@ -33,19 +34,22 @@ class SettingsScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
     private val mockGetEmail: GetEmail = mock()
     private val mockTokenRepository: TokenRepository = mock()
+    private val mockFeatureFlags: FeatureFlags = mock()
     private val mockOptInRepository: OptInRepository = mock()
-    private val mockBiometricsOptInChecker: BiometricsOptInChecker = mock()
+    private val mockLocalAuthManager: LocalAuthManager = mock()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+        whenever(mockFeatureFlags[LocalAuthBiometricsToggleFeatureFlag.ENABLED]).thenReturn(true)
         viewModel =
             SettingsScreenViewModel(
                 mockOptInRepository,
                 mockNavigator,
-                mockBiometricsOptInChecker,
+                mockLocalAuthManager,
+                mockFeatureFlags,
                 mockTokenRepository,
                 mockGetEmail
             )
@@ -102,7 +106,8 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
-                    mockBiometricsOptInChecker,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -117,7 +122,8 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
-                    mockBiometricsOptInChecker,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -136,7 +142,8 @@ class SettingsScreenViewModelTest {
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
-                    mockBiometricsOptInChecker,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -151,13 +158,14 @@ class SettingsScreenViewModelTest {
     fun `biometrics are not available`() =
         runTest {
             whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
-            whenever(mockBiometricsOptInChecker.getBiometricsOptInState())
-                .thenReturn(flowOf(false))
+            whenever(mockLocalAuthManager.biometricsAvailable())
+                .thenReturn(false)
             viewModel =
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
-                    mockBiometricsOptInChecker,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -172,13 +180,38 @@ class SettingsScreenViewModelTest {
     @Test
     fun `biometrics are available`() =
         runTest {
-            whenever(mockBiometricsOptInChecker.getBiometricsOptInState())
-                .thenReturn(MutableStateFlow(true))
+            whenever(mockLocalAuthManager.biometricsAvailable())
+                .thenReturn(true)
             viewModel =
                 SettingsScreenViewModel(
                     mockOptInRepository,
                     mockNavigator,
-                    mockBiometricsOptInChecker,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
+                    mockTokenRepository,
+                    mockGetEmail
+                )
+
+            assertFalse(viewModel.biometricsOptionState.value)
+
+            viewModel.checkDeviceBiometricsStatus()
+
+            assertTrue(viewModel.biometricsOptionState.value)
+        }
+
+    @Test
+    fun `biometrics are available - biometrics toggle feature flag disabled`() =
+        runTest {
+            whenever(mockLocalAuthManager.biometricsAvailable())
+                .thenReturn(true)
+            whenever(mockFeatureFlags[LocalAuthBiometricsToggleFeatureFlag.ENABLED])
+                .thenReturn(false)
+            viewModel =
+                SettingsScreenViewModel(
+                    mockOptInRepository,
+                    mockNavigator,
+                    mockLocalAuthManager,
+                    mockFeatureFlags,
                     mockTokenRepository,
                     mockGetEmail
                 )
