@@ -266,15 +266,14 @@ internal fun AboutTheAppSection(
     Column(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
-        if (biometricsOptionFeatureFlagEnabled) {
-            if (showBiometricsOption) {
-                LinkRow(
-                    title = R.string.app_settingsBiometricsField,
-                    icon = R.drawable.arrow_right_icon,
-                    onClick = onBiometrics,
-                    traversalIndex = BIOMETRICS_OPT_IN_TRAVERSAL_ORDER
-                )
-            }
+        // Remove feature flag check once epic completed
+        if (biometricsOptionFeatureFlagEnabled && showBiometricsOption) {
+            LinkRow(
+                title = R.string.app_settingsBiometricsField,
+                icon = R.drawable.arrow_right_icon,
+                onClick = onBiometrics,
+                traversalIndex = BIOMETRICS_OPT_IN_TRAVERSAL_ORDER
+            )
         }
         PreferenceToggleRow(
             title = R.string.app_settingsAnalyticsToggle,
