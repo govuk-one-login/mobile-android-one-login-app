@@ -80,11 +80,10 @@ fun WelcomeScreen(
         }
     }
 
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        analyticsViewModel.trackWelcomeView()
-    }
-
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        if (!loading.value) {
+            analyticsViewModel.trackWelcomeView()
+        }
         viewModel.stopLoading()
     }
 }

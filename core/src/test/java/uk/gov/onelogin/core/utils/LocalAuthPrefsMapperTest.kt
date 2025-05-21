@@ -27,7 +27,7 @@ class LocalAuthPrefsMapperTest {
             Stream.of(
                 Arguments.of(
                     LocalAuthPreference.Enabled(true),
-                    AccessControlLevel.PASSCODE_AND_CURRENT_BIOMETRICS
+                    AccessControlLevel.PASSCODE_AND_BIOMETRICS
                 ),
                 Arguments.of(LocalAuthPreference.Enabled(false), AccessControlLevel.PASSCODE),
                 Arguments.of(LocalAuthPreference.Disabled, AccessControlLevel.OPEN)

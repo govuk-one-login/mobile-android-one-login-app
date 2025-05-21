@@ -29,13 +29,13 @@ class SignInErrorScreenTest : FragmentActivityTestCase() {
     fun setupNavigation() {
         analytics = mock()
         viewModel = SignInErrorAnalyticsViewModel(context, analytics)
-        composeTestRule.setContent {
-            SignInErrorScreen(analyticsViewModel = viewModel) { onClick = !onClick }
-        }
     }
 
     @Test
     fun verifyComponents() {
+        composeTestRule.setContent {
+            SignInErrorScreen(analyticsViewModel = viewModel) { onClick = !onClick }
+        }
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(body).assertIsDisplayed()
         composeTestRule.onNode(button).apply {
@@ -49,7 +49,17 @@ class SignInErrorScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun checkBackClicked() {
+        composeTestRule.setContent {
+            SignInErrorScreen(analyticsViewModel = viewModel) { onClick = !onClick }
+        }
         Espresso.pressBack()
         verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.makeBackEvent(context))
+    }
+
+    @Test
+    fun preview() {
+        composeTestRule.setContent {
+            SignInErrorScreenPreview()
+        }
     }
 }
