@@ -3,20 +3,18 @@ package uk.gov.onelogin.features.error.ui.signin
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.HeadingSize
-import uk.gov.android.ui.components.buttons.ButtonParameters
-import uk.gov.android.ui.components.buttons.ButtonType
-import uk.gov.android.ui.components.content.ContentParameters
-import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.components.images.icon.IconParameters
-import uk.gov.android.ui.components.information.InformationParameters
-import uk.gov.android.ui.pages.errors.ErrorPage
-import uk.gov.android.ui.pages.errors.ErrorPageParameters
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
+import uk.gov.android.ui.patterns.errorscreen.ErrorScreen
+import uk.gov.android.ui.patterns.errorscreen.ErrorScreenIcon
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
@@ -33,33 +31,39 @@ fun SignInErrorScreen(
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         EdgeToEdgePage { _ ->
-            ErrorPage(
-                parameters = ErrorPageParameters(
-                    primaryButtonParameters = ButtonParameters(
-                        buttonType = ButtonType.PRIMARY(),
-                        onClick = {
-                            analyticsViewModel.trackButton()
-                            onClick()
-                        },
-                        text = R.string.app_closeButton
-                    ),
-                    informationParameters = InformationParameters(
-                        contentParameters = ContentParameters(
-                            resource = listOf(
-                                GdsContentText.GdsContentTextString(
-                                    subTitle = R.string.app_signInErrorTitle,
-                                    text = intArrayOf(R.string.app_signInErrorBody)
-                                )
-                            ),
-                            headingSize = HeadingSize.H1()
-                        ),
-                        iconParameters = IconParameters(
-                            foreGroundColor = Color.Unspecified,
-                            image = uk.gov.android.ui.components.R.drawable.ic_error
-                        )
-                    )
-                )
-            )
+            SignInErrorBody {
+                analyticsViewModel.trackButton()
+                onClick()
+            }
         }
+    }
+}
+
+@Composable
+private fun SignInErrorBody(
+    onPrimary: () -> Unit
+) {
+    ErrorScreen(
+        icon = ErrorScreenIcon.ErrorIcon,
+        title = stringResource(R.string.app_signInErrorTitle),
+        body = persistentListOf(
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_signInErrorBody)
+            )
+        ),
+        primaryButton =
+        CentreAlignedScreenButton(
+            text = stringResource(R.string.app_closeButton),
+            onClick = onPrimary
+        )
+    )
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+fun SignInErrorScreenPreview() {
+    GdsTheme {
+        SignInErrorBody {}
     }
 }
