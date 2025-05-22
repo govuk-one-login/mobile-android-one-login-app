@@ -30,6 +30,21 @@
     <string name="app_settingsSignInDetailsLink">Manage sign in details</string>
     <string name="app_settingsBiometricsField">Biometrics</string>
 
+    <!-- Biometrics Toggle Opt In Screen NO Wallet -->
+    <string name="app_biometricsOptInToggleTitle">Biometrics</string>
+    <string name="app_biometricsOptInToggleLabel">Use biometrics</string>
+    <string name="app_biometricsOptInToggleBody1">You can use your face, fingerprint or iris to unlock the app within 30 minutes of signing in with GOV.UK One Login.</string>
+    <string name="app_biometricsOptInToggleBody2">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
+    <string name="app_biometricsOptInToggleSubtitle">If you turn off biometrics</string>
+    <string name="app_biometricsOptInToggleBody3">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app.</string>
+
+    <!-- Biometrics Toggle Opt In Screen Wallet -->
+    <string name="app_biometricsOptInToggleBody1Wallet">You can use your face, fingerprint or iris to:</string>
+    <string name="app_biometricsOptInToggleBullet1">unlock the app within 30 minutes of signing in with GOV.UK  One Login</string>
+    <string name="app_biometricsOptInToggleBullet2">view and add documents</string>
+    <string name="app_biometricsOptInToggleBody2Wallet">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
+    <string name="app_biometricsOptInToggleBody3Wallet">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
+
     <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Are you sure you want to sign out?</string>
     <string name="app_signOutConfirmationBody1">If you sign out, the information saved in your app will be deleted. This is to reduce the risk that someone else will see your information.</string>
