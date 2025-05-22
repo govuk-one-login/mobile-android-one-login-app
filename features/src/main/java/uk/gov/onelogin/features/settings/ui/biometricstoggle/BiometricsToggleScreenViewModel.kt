@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biometricsoptin
+package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +13,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @HiltViewModel
-class BiometricsOptInScreenViewModel @Inject constructor(
+class BiometricsToggleScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val localAuthManager: LocalAuthManager,
     private val navigator: Navigator

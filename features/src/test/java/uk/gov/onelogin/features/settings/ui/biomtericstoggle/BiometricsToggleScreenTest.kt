@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biomtericsoptin
+package uk.gov.onelogin.features.settings.ui.biomtericstoggle
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
@@ -19,18 +19,22 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
-import uk.gov.onelogin.features.settings.ui.biometricsoptin.BiometricsOptInScreen
-import uk.gov.onelogin.features.settings.ui.biometricsoptin.BiometricsOptInScreenViewModel
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleAnalyticsViewModel
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreen
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreenViewModel
 
 @RunWith(AndroidJUnit4::class)
-class BiometricsOptInScreenTest : FragmentActivityTestCase() {
+class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private lateinit var featureFlags: FeatureFlags
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var navigator: Navigator
-    private lateinit var viewModel: BiometricsOptInScreenViewModel
+    private lateinit var viewModel: BiometricsToggleScreenViewModel
+    private lateinit var logger: AnalyticsLogger
+    private lateinit var analyticsViewModel: BiometricsToggleAnalyticsViewModel
 
     private val title = hasText(context.getString(R.string.app_biometricsOptInToggleTitle))
     private val navIcon = hasContentDescription(context.getString(R.string.app_back_icon))
@@ -56,15 +60,15 @@ class BiometricsOptInScreenTest : FragmentActivityTestCase() {
         featureFlags = mock()
         localAuthManager = mock()
         navigator = mock()
-        viewModel = BiometricsOptInScreenViewModel(featureFlags, localAuthManager, navigator)
+        viewModel = BiometricsToggleScreenViewModel(featureFlags, localAuthManager, navigator)
+        logger = mock()
+        analyticsViewModel = BiometricsToggleAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun bodyDisplayedWallet() {
         whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(true)
-        composeTestRule.setContent {
-            BiometricsOptInScreen(viewModel)
-        }
+        setContent()
 
         composeTestRule.apply {
             onAllNodes(title).assertCountEquals(2)
@@ -82,9 +86,7 @@ class BiometricsOptInScreenTest : FragmentActivityTestCase() {
     @Test
     fun bodyDisplayedNoWallet() {
         whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(false)
-        composeTestRule.setContent {
-            BiometricsOptInScreen(viewModel)
-        }
+        setContent()
 
         composeTestRule.apply {
             onAllNodes(title).assertCountEquals(2)
@@ -101,9 +103,7 @@ class BiometricsOptInScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(true))
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        composeTestRule.setContent {
-            BiometricsOptInScreen(viewModel)
-        }
+        setContent()
 
         composeTestRule.apply {
             onNode(toggle, useUnmergedTree = true).performClick()
@@ -117,14 +117,18 @@ class BiometricsOptInScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(true))
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        composeTestRule.setContent {
-            BiometricsOptInScreen(viewModel)
-        }
+        setContent()
 
         composeTestRule.apply {
             onNode(navIcon).performClick()
         }
 
         verify(navigator).goBack()
+    }
+
+    fun setContent() {
+        composeTestRule.setContent {
+            BiometricsToggleScreen(viewModel, analyticsViewModel)
+        }
     }
 }

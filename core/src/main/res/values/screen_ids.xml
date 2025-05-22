@@ -2,6 +2,8 @@
 <resources>
     <string name="sign_in_page_id" translatable="false">30a6b339-75a8-44a2-a79a-e108546419bf</string>
     <string name="settings_page_id" translatable="false">d6bae235-e427-4e51-8e17-17d2b976a201</string>
+    <string name="biometrics_toggle_wallet_id" translatable="false">332db1f2-fbe4-4e7e-8774-151f296eec93</string>
+    <string name="biometrics_toggle_no_wallet_id" translatable="false">daff4e35-0646-435a-98d6-cdc42bdd7a6e</string>
     <string name="signed_out_info_page_id" translatable="false">cfc50baa-4b56-4170-9707-cd05b60b6658</string>
     <string name="sign_out_wallet_page_id" translatable="false">17ab1f34-3d1b-4465-9ce6-fe648c2ff06c</string>
     <string name="sign_out_no_wallet_page_id" translatable="false">3e50cd12-4ee8-4787-add8-6a2ac7d4a840</string>

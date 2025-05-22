@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features
 
 import kotlinx.collections.immutable.persistentListOf
+import uk.gov.logging.api.analytics.parameters.data.Type
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
@@ -160,6 +161,14 @@ object TestUtils {
 
         data class Screen(val trackFunction: () -> Unit, val name: String, val id: String) :
             TrackEventTestCase(trackFunction)
+
+        data class Form(
+            val trackFunction: () -> Unit,
+            val text: String,
+            val type: Type,
+            val response: String
+        ) :
+            TrackEventTestCase(trackFunction)
     }
 
     internal fun executeTrackEventTestCase(
@@ -191,6 +200,14 @@ object TestUtils {
                 name = testCases.name,
                 id = testCases.id,
                 params = requiredParameters
+            )
+
+        is TrackEventTestCase.Form ->
+            TrackEvent.Form(
+                text = testCases.text,
+                response = testCases.response,
+                params = requiredParameters,
+                type = testCases.type
             )
     }.also { testCases.runTrackFunction() }
 }

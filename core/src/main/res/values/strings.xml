@@ -9,7 +9,7 @@
     <string name="app_wallet">Wallet</string>
     <string name="app_settings">Settings</string>
 
-    <string name="app_back_icon" translatable="false">Back Icon</string>
+    <string name="app_back_icon" translatable="false">Back</string>
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
 

@@ -1,5 +1,6 @@
-package uk.gov.onelogin.features.settings.ui.biometricsoptin
+package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -60,43 +61,60 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BiometricsOptInScreen(
-    viewModel: BiometricsOptInScreenViewModel = hiltViewModel()
+fun BiometricsToggleScreen(
+    viewModel: BiometricsToggleScreenViewModel = hiltViewModel(),
+    analyticsViewModel: BiometricsToggleAnalyticsViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    BackHandler(true) {
+        analyticsViewModel.trackBackButton()
+        viewModel.goBack()
+    }
     SideEffect {
         viewModel.checkBiometricsAvailable()
     }
     Scaffold(
         topBar = {
-            BiometricsTopAppBar(scrollBehavior) { viewModel.goBack() }
+            BiometricsTopAppBar(scrollBehavior) {
+                analyticsViewModel.trackIconBackButton()
+                viewModel.goBack()
+            }
         }
     ) { paddingValues ->
-        BiometricsOptInBody(
+        BiometricsToggleBody(
             biometricsEnabled = viewModel.biometricsEnabled,
             walletAvailable = viewModel.walletEnabled,
             toggleBiometrics = { viewModel.toggleBiometrics() },
-            padding = paddingValues
+            padding = paddingValues,
+            trackWalletCopy = { analyticsViewModel.trackWalletCopyView() },
+            trackNokWalletCopy = { analyticsViewModel.trackNoWalletCopyView() },
+            trackToggle = { analyticsViewModel.trackToggleEvent(it) }
         )
     }
 }
 
 @Composable
-private fun BiometricsOptInBody(
+private fun BiometricsToggleBody(
     biometricsEnabled: StateFlow<Boolean>,
     walletAvailable: Boolean,
     padding: PaddingValues,
-    toggleBiometrics: () -> Unit
+    toggleBiometrics: () -> Unit,
+    trackWalletCopy: () -> Unit,
+    trackNokWalletCopy: () -> Unit,
+    trackToggle: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(padding)
     ) {
         BiometricsToggleRow(R.string.app_settingsBiometricsField, biometricsEnabled) {
             toggleBiometrics()
+            trackToggle(it)
         }
         if (walletAvailable) {
+            trackWalletCopy()
             WalletCopyContent()
         } else {
+            trackNokWalletCopy()
             NoWalletCopyContent()
         }
     }
@@ -165,7 +183,7 @@ private fun NoWalletCopyContent() {
 private fun BiometricsToggleRow(
     @StringRes title: Int,
     checked: StateFlow<Boolean>,
-    onToggle: () -> Unit
+    onToggle: (Boolean) -> Unit
 ) {
     val state = checked.collectAsState().value
     var toggle by remember { mutableStateOf(state) }
@@ -180,7 +198,7 @@ private fun BiometricsToggleRow(
                 value = !toggle,
                 onValueChange = {
                     toggle = !toggle
-                    onToggle()
+                    onToggle(toggle)
                 }
             )
             .padding(
@@ -198,7 +216,7 @@ private fun BiometricsToggleRow(
             checked = toggle,
             onCheckedChange = {
                 toggle = !toggle
-                onToggle()
+                onToggle(toggle)
             }
         )
     }
@@ -255,7 +273,14 @@ internal fun BiometricsOptInEnabledWalletBodyPreview() {
                 BiometricsTopAppBar {}
             }
         ) { paddingValues ->
-            BiometricsOptInBody(MutableStateFlow(false), true, paddingValues) {}
+            BiometricsToggleBody(
+                MutableStateFlow(false),
+                true,
+                paddingValues,
+                {},
+                {},
+                {}
+            ) {}
         }
     }
 }
@@ -271,7 +296,14 @@ internal fun BiometricsOptInDisabledNoWalletBodyPreview() {
                 BiometricsTopAppBar {}
             }
         ) { paddingValues ->
-            BiometricsOptInBody(MutableStateFlow(true), false, paddingValues) {}
+            BiometricsToggleBody(
+                MutableStateFlow(true),
+                false,
+                paddingValues,
+                {},
+                {},
+                {}
+            ) {}
         }
     }
 }

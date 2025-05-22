@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biomtericsoptin
+package uk.gov.onelogin.features.settings.ui.biomtericstoggle
 
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -14,20 +14,20 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
-import uk.gov.onelogin.features.settings.ui.biometricsoptin.BiometricsOptInScreenViewModel
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreenViewModel
 
-class BiometricsOptInScreenViewModelTest {
+class BiometricsToggleScreenViewModelTest {
     private lateinit var featureFlags: FeatureFlags
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var navigator: Navigator
-    private lateinit var viewModel: BiometricsOptInScreenViewModel
+    private lateinit var viewModel: BiometricsToggleScreenViewModel
 
     @Before
     fun setup() {
         featureFlags = mock()
         localAuthManager = mock()
         navigator = mock()
-        viewModel = BiometricsOptInScreenViewModel(featureFlags, localAuthManager, navigator)
+        viewModel = BiometricsToggleScreenViewModel(featureFlags, localAuthManager, navigator)
     }
 
     @Test
