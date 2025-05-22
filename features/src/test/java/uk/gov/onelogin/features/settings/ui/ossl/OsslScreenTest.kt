@@ -63,17 +63,14 @@ class OsslScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun checkALinkOpensTheCorrectUrl() {
-        val apacheUrl = Uri.parse("http://www.apache.org/licenses/LICENSE-2.0.txt")
+        val apacheUrl = Uri.parse("https://spdx.org/licenses/Apache-2.0.html")
         composeTestRule.setContent {
             OsslScreen(analyticsViewModel)
         }
 
         composeTestRule.apply {
-            waitUntil(5000L) {
-                onAllNodes(hasText("The Apache Software License, Version 2.0", true))[0]
-                    .isDisplayed()
-            }
-            onAllNodes(hasText("The Apache Software License, Version 2.0", true))[0]
+            waitUntil { onAllNodes(hasText("Apache License 2.0", true))[0].isDisplayed() }
+            onAllNodes(hasText("Apache License 2.0", true))[0]
                 .performScrollTo()
                 .performClick()
         }
