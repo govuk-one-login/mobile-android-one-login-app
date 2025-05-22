@@ -30,6 +30,7 @@ class SettingsAnalyticsViewModel @Inject constructor(
     private val accessibilityStatementEvent = makeAccessibilityEvent(context)
     private val openSourceEvent = makeOpenSourceEvent(context)
     private val signOutEvent = makeSignOutEvent(context)
+    private val biometricsEvent = makeBiometricsButtonEvent(context)
 
     fun trackSettingsView() {
         analyticsLogger.logEventV3Dot1(settingsViewEvent)
@@ -65,6 +66,10 @@ class SettingsAnalyticsViewModel @Inject constructor(
 
     fun trackSignOutButton() {
         analyticsLogger.logEventV3Dot1(signOutEvent)
+    }
+
+    fun trackBiometricsButton() {
+        analyticsLogger.logEventV3Dot1(biometricsEvent)
     }
 
     companion object {
@@ -138,6 +143,13 @@ class SettingsAnalyticsViewModel @Inject constructor(
         internal fun makeSignOutEvent(context: Context) = with(context) {
             TrackEvent.Button(
                 text = getEnglishString(R.string.app_signOutButton),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeBiometricsButtonEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.app_settingsBiometricsField),
                 params = requiredParams
             )
         }

@@ -51,7 +51,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.theme.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview

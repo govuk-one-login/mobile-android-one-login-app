@@ -11,20 +11,21 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import uk.gov.android.ui.components.m3.HeadingSize
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.core.ui.components.FlexibleTopBar
 import uk.gov.onelogin.core.ui.components.FlexibleTopBarColors
 
+@OptIn(UnstableDesignSystemAPI::class)
 @Composable
 fun TitledPage(
     title: Int,
@@ -39,11 +40,10 @@ fun TitledPage(
                         modifier = Modifier.fillMaxWidth().padding(top = smallPadding)
                             .statusBarsPadding()
                     ) {
-                        Text(
+                        GdsHeading(
                             text = stringResource(title),
-                            style = HeadingSize.HeadlineLarge().style(),
                             modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding),
-                            textAlign = TextAlign.Center
+                            style = GdsHeadingStyle.Title2
                         )
                         HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
                     }
