@@ -7,21 +7,23 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.content.GdsContentText
-import uk.gov.android.ui.pages.LandingPage
-import uk.gov.android.ui.pages.LandingPageParameters
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
@@ -107,21 +109,21 @@ private fun handleLogin(
 
 @Composable
 internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
-    LandingPage(
-        landingPageParameters = LandingPageParameters(
-            title = R.string.app_youveBeenSignedOutTitle,
-            titleBottomPadding = smallPadding,
-            content = listOf(
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody1)
-                ),
-                GdsContentText.GdsContentTextString(
-                    intArrayOf(R.string.app_youveBeenSignedOutBody2)
-                )
-            ),
-            contentInternalPadding = PaddingValues(bottom = smallPadding),
-            primaryButtonText = R.string.app_SignInWithGovUKOneLoginButton,
-            onPrimary = onPrimary
+    val content = listOf(
+        stringResource(R.string.app_youveBeenSignedOutBody1),
+        stringResource(R.string.app_youveBeenSignedOutBody2)
+    )
+    val buttonText = stringResource(R.string.app_SignInWithGovUKOneLoginButton)
+    CentreAlignedScreen(
+        title = stringResource(R.string.app_youveBeenSignedOutTitle),
+        modifier = Modifier.fillMaxSize(),
+        body = persistentListOf(
+            CentreAlignedScreenBodyContent.Text(content[0]),
+            CentreAlignedScreenBodyContent.Text(content[1])
+        ),
+        primaryButton = CentreAlignedScreenButton(
+            text = buttonText,
+            onClick = onPrimary
         )
     )
 }
