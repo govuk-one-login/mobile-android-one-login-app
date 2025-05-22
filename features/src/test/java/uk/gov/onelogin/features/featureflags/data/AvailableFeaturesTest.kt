@@ -50,6 +50,9 @@ class AvailableFeaturesTest {
     fun `available features contains included feature`() {
         Assertions.assertTrue(availableFeatures.contains(AppIntegrityFeatureFlag.ENABLED))
         Assertions.assertTrue(availableFeatures.contains(CriOrchestratorFeatureFlag.ENABLED))
+        Assertions.assertTrue(
+            availableFeatures.contains(LocalAuthBiometricsToggleFeatureFlag.ENABLED)
+        )
     }
 
     @Test
@@ -64,7 +67,7 @@ class AvailableFeaturesTest {
     @Test
     fun `to String`() {
         Assertions.assertEquals(
-            "AvailableFeatures[ENABLED, ENABLED, ENABLED]",
+            "AvailableFeatures[ENABLED, ENABLED, ENABLED, ENABLED]",
             availableFeatures.toString()
         )
     }
@@ -98,6 +101,6 @@ class AvailableFeaturesTest {
     }
 
     companion object {
-        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 3
+        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 4
     }
 }
