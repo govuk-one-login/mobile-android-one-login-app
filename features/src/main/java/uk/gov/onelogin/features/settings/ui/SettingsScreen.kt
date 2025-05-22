@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.settings.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +46,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -61,13 +62,13 @@ import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 
 @Composable
-@Preview
 fun SettingsScreen(
     viewModel: SettingsScreenViewModel = hiltViewModel(),
     analyticsViewModel: SettingsAnalyticsViewModel = hiltViewModel()
 ) {
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
+        viewModel.checkDeviceBiometricsStatus()
         analyticsViewModel.trackSettingsView()
     }
     val uriHandler = LocalUriHandler.current
@@ -80,9 +81,8 @@ fun SettingsScreen(
         helpUrl = stringResource(R.string.app_helpUrl),
         contactUrl = stringResource(R.string.app_contactUrl)
     )
-
     TitledPage(title = R.string.app_settings) { paddingValues ->
-        SettingsScreenContent(
+        SettingsScreenBody(
             paddingValues = paddingValues,
             email = email,
             optInState = optInState,
@@ -94,8 +94,9 @@ fun SettingsScreen(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
-private fun SettingsScreenContent(
+private fun SettingsScreenBody(
     paddingValues: PaddingValues,
     email: String,
     optInState: Boolean,
@@ -131,6 +132,12 @@ private fun SettingsScreenContent(
         )
         AboutTheAppSection(
             optInState = optInState,
+            biometricsOptionFeatureFlagEnabled = viewModel.displayBiometricsToggle,
+            showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
+            onBiometrics = {
+                analyticsViewModel.trackBiometricsButton()
+                viewModel.goToBiometricsOptIn()
+            },
             onToggle = {
                 viewModel.toggleOptInPreference()
             },
@@ -175,7 +182,7 @@ private fun YourDetailsSection(
     onClick: () -> Unit
 ) {
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -194,7 +201,7 @@ private fun LegalSection(
     onAccessibilityStatementClick: () -> Unit,
     onOpenSourceLicensesClick: () -> Unit
 ) {
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_privacyNoticeLink2,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -203,7 +210,7 @@ private fun LegalSection(
         onPrivacyNoticeClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_accessibilityStatement,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -212,7 +219,7 @@ private fun LegalSection(
         onAccessibilityStatementClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_openSourceLicences,
         icon = R.drawable.arrow_right_icon,
         traversalIndex = OSL_LINK_TRAVERSAL_ORDER
@@ -226,8 +233,8 @@ private fun HelpAndFeedbackSection(
     onHelpClick: () -> Unit,
     onContactClick: () -> Unit
 ) {
-    HeadingRow(text = R.string.app_settingsSubtitle1, traversalIndex = HELP_TRAVERSAL_ORDER)
-    ExternalLinkRow(
+    HeadingRow(R.string.app_settingsSubtitle1, traversalIndex = HELP_TRAVERSAL_ORDER)
+    LinkRow(
         title = R.string.app_appGuidanceLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -236,7 +243,7 @@ private fun HelpAndFeedbackSection(
         onHelpClick()
     }
     HorizontalDivider()
-    ExternalLinkRow(
+    LinkRow(
         title = R.string.app_contactLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
@@ -249,6 +256,9 @@ private fun HelpAndFeedbackSection(
 @Composable
 internal fun AboutTheAppSection(
     optInState: Boolean,
+    biometricsOptionFeatureFlagEnabled: Boolean,
+    showBiometricsOption: Boolean,
+    onBiometrics: () -> Unit,
     onToggle: () -> Unit,
     onPrivacyNoticeClick: () -> Unit
 ) {
@@ -256,6 +266,15 @@ internal fun AboutTheAppSection(
     Column(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
+        // Remove feature flag check once epic completed
+        if (biometricsOptionFeatureFlagEnabled && showBiometricsOption) {
+            LinkRow(
+                title = R.string.app_settingsBiometricsField,
+                icon = R.drawable.arrow_right_icon,
+                onClick = onBiometrics,
+                traversalIndex = BIOMETRICS_OPT_IN_TRAVERSAL_ORDER
+            )
+        }
         PreferenceToggleRow(
             title = R.string.app_settingsAnalyticsToggle,
             checked = optInState,
@@ -282,7 +301,7 @@ internal fun AboutTheAppSection(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun HeadingRow(
-    @androidx.annotation.StringRes text: Int,
+    @StringRes text: Int,
     traversalIndex: Float
 ) {
     GdsHeading(
@@ -299,8 +318,8 @@ private fun HeadingRow(
 }
 
 @Composable
-private fun ExternalLinkRow(
-    @androidx.annotation.StringRes title: Int,
+private fun LinkRow(
+    @StringRes title: Int,
     @DrawableRes icon: Int,
     description: String? = null,
     contentDescription: Int? = null,
@@ -358,7 +377,7 @@ private fun ExternalLinkRow(
 
 @Composable
 internal fun PreferenceToggleRow(
-    @androidx.annotation.StringRes title: Int,
+    @StringRes title: Int,
     checked: Boolean,
     onToggle: () -> Unit
 ) {
@@ -431,8 +450,9 @@ private const val HELP_TRAVERSAL_ORDER = -23f
 private const val USING_LINK_TRAVERSAL_ORDER = -22f
 private const val CONTACT_LINK_TRAVERSAL_ORDER = -21f
 private const val ABOUT_TRAVERSAL_ORDER = -20f
-private const val ANALYTICS_TOGGLE_TRAVERSAL_ORDER = -19f
-const val PRIVACY_NOTICE_TRAVERSAL_ORDER = -18f
+private const val BIOMETRICS_OPT_IN_TRAVERSAL_ORDER = -19f
+private const val ANALYTICS_TOGGLE_TRAVERSAL_ORDER = -18f
+const val PRIVACY_NOTICE_TRAVERSAL_ORDER = -17f
 private const val PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER = 8f
 private const val ACCESSIBILITY_LINK_TRAVERSAL_ORDER = 9f
 private const val OSL_LINK_TRAVERSAL_ORDER = 10f

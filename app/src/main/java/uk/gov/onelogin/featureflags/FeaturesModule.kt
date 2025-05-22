@@ -1,4 +1,4 @@
-package uk.gov.onelogin.featureflagss
+package uk.gov.onelogin.featureflags
 
 import dagger.Module
 import dagger.Provides

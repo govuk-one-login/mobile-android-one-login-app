@@ -11,7 +11,8 @@ class AvailableFeatures(
         listOf(
             AppIntegrityFeatureFlag.entries.toTypedArray(),
             WalletFeatureFlag.entries.toTypedArray(),
-            CriOrchestratorFeatureFlag.entries.toTypedArray()
+            CriOrchestratorFeatureFlag.entries.toTypedArray(),
+            LocalAuthBiometricsToggleFeatureFlag.entries.toTypedArray()
         ).flatMap {
             it.asIterable()
         }.toMutableSet()

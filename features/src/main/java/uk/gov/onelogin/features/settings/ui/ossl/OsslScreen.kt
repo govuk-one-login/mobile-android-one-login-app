@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui
+package uk.gov.onelogin.features.settings.ui.ossl
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
