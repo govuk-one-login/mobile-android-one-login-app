@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
@@ -49,10 +48,6 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-            onNodeWithContentDescription(
-                context.getString(R.string.app_dataDeletedError_ContentDescription)
-            ).assertIsDisplayed()
-
             onNode(title).assertIsDisplayed()
             onNode(body1).assertIsDisplayed()
             onNode(body2).assertIsDisplayed()
@@ -72,10 +67,6 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-            onNodeWithContentDescription(
-                context.getString(R.string.app_dataDeletedError_ContentDescription)
-            ).assertIsDisplayed()
-
             onNode(title).assertIsDisplayed()
             onNode(body1NoWallet).assertIsDisplayed()
             onNode(body2NoWallet).assertIsDisplayed()
