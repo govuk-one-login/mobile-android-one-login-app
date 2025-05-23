@@ -49,7 +49,7 @@ class BiometricsToggleAnalyticsViewModel @Inject constructor(
     companion object {
         internal fun makeWalletCopyViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
-                name = getEnglishString(R.string.app_biometricsOptInToggleTitle),
+                name = getEnglishString(R.string.app_biometricsToggleTitle),
                 id = getEnglishString(R.string.biometrics_toggle_wallet_id),
                 params = requiredParams
             )
@@ -57,7 +57,7 @@ class BiometricsToggleAnalyticsViewModel @Inject constructor(
 
         internal fun makeNoWalletCopyViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
-                name = getEnglishString(R.string.app_biometricsOptInToggleTitle),
+                name = getEnglishString(R.string.app_biometricsToggleTitle),
                 id = getEnglishString(R.string.biometrics_toggle_no_wallet_id),
                 params = requiredParams
             )
@@ -79,7 +79,7 @@ class BiometricsToggleAnalyticsViewModel @Inject constructor(
 
         internal fun makeToggleEventFormEvent(context: Context, value: Boolean) = with(context) {
             TrackEvent.Form(
-                text = getEnglishString(R.string.app_biometricsOptInToggleLabel),
+                text = getEnglishString(R.string.app_biometricsToggleLabel),
                 response = value.toString(),
                 params = requiredParams,
                 type = Type.Toggle

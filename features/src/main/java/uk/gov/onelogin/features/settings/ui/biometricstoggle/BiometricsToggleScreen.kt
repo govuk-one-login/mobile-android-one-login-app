@@ -123,12 +123,12 @@ private fun BiometricsToggleBody(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun WalletCopyContent() {
-    val bulletListTitle = stringResource(R.string.app_biometricsOptInToggleBody1Wallet)
-    val bullet1 = stringResource(R.string.app_biometricsOptInToggleBullet1)
-    val bullet2 = stringResource(R.string.app_biometricsOptInToggleBullet2)
-    val body2 = stringResource(R.string.app_biometricsOptInToggleBody2Wallet)
-    val subtitle = stringResource(R.string.app_biometricsOptInToggleSubtitle)
-    val body3 = stringResource(R.string.app_biometricsOptInToggleBody3Wallet)
+    val bulletListTitle = stringResource(R.string.app_biometricsToggleBody1Wallet)
+    val bullet1 = stringResource(R.string.app_biometricsToggleBullet1)
+    val bullet2 = stringResource(R.string.app_biometricsToggleBullet2)
+    val body2 = stringResource(R.string.app_biometricsToggleBody2Wallet)
+    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
+    val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
     Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
         GdsBulletedList(
             title = ListTitle(
@@ -158,10 +158,10 @@ private fun WalletCopyContent() {
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun NoWalletCopyContent() {
-    val body1 = stringResource(R.string.app_biometricsOptInToggleBody1)
-    val body2 = stringResource(R.string.app_biometricsOptInToggleBody2)
-    val subtitle = stringResource(R.string.app_biometricsOptInToggleSubtitle)
-    val body3 = stringResource(R.string.app_biometricsOptInToggleBody3)
+    val body1 = stringResource(R.string.app_biometricsToggleBody1)
+    val body2 = stringResource(R.string.app_biometricsToggleBody2)
+    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
+    val body3 = stringResource(R.string.app_biometricsToggleBody3)
     Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
         Text(text = body1)
         Text(
@@ -232,7 +232,7 @@ private fun BiometricsTopAppBar(
     TopAppBar(
         title = {
             GdsHeading(
-                text = stringResource(R.string.app_biometricsOptInToggleTitle),
+                text = stringResource(R.string.app_biometricsToggleTitle),
                 textAlign = GdsHeadingAlignment.LeftAligned,
                 modifier = Modifier.fillMaxWidth(),
                 style = GdsHeadingStyle.Title2,

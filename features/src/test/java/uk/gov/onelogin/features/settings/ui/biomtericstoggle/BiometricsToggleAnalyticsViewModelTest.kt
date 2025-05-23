@@ -43,7 +43,7 @@ class BiometricsToggleAnalyticsViewModelTest {
             trackFunction = {
                 viewModel.trackWalletCopyView()
             },
-            name = context.getEnglishString(R.string.app_biometricsOptInToggleTitle),
+            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
             id = context.getEnglishString(R.string.biometrics_toggle_wallet_id)
         )
         val result = executeTrackEventTestCase(event, requiredParameters)
@@ -57,7 +57,7 @@ class BiometricsToggleAnalyticsViewModelTest {
             trackFunction = {
                 viewModel.trackNoWalletCopyView()
             },
-            name = context.getEnglishString(R.string.app_biometricsOptInToggleTitle),
+            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
             id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id)
         )
         val result = executeTrackEventTestCase(event, requiredParameters)
@@ -82,7 +82,7 @@ class BiometricsToggleAnalyticsViewModelTest {
             ),
             TestUtils.TrackEventTestCase.Form(
                 trackFunction = { viewModel.trackToggleEvent(true) },
-                text = context.getEnglishString(R.string.app_biometricsOptInToggleLabel),
+                text = context.getEnglishString(R.string.app_biometricsToggleLabel),
                 type = Type.Toggle,
                 response = true.toString()
             )
