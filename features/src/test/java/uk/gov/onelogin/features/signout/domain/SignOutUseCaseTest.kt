@@ -12,6 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
+import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
@@ -24,6 +25,7 @@ import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Compan
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignOutUseCaseTest {
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
+    private val tokenRepository: TokenRepository = mock()
     private lateinit var useCase: SignOutUseCase
 
     @Test
@@ -42,7 +44,8 @@ class SignOutUseCaseTest {
                         removeTokenExpiry,
                         bioPrefHandler
                     ),
-                    deleteWalletData
+                    deleteWalletData,
+                    tokenRepository
                 )
             useCase.invoke()
             // Then it clears all the required data
@@ -50,6 +53,7 @@ class SignOutUseCaseTest {
             verify(removeAllSecureStoreData).clean()
             verify(bioPrefHandler).clean()
             verify(deleteWalletData).invoke()
+            verify(tokenRepository).clearTokenResponse()
         }
 
     @Test
@@ -66,7 +70,8 @@ class SignOutUseCaseTest {
                         Dispatchers.Main,
                         { Result.success(Unit) }
                     ),
-                    deleteWalletData
+                    deleteWalletData,
+                    tokenRepository
                 )
 
             // Then throw SignOutError
@@ -90,7 +95,8 @@ class SignOutUseCaseTest {
                         { Result.success(Unit) },
                         { throw Exception(errorMessage) }
                     ),
-                    deleteWalletData
+                    deleteWalletData,
+                    tokenRepository
                 )
             // When invoking the sign out use case
             // Then throw SignOutError
