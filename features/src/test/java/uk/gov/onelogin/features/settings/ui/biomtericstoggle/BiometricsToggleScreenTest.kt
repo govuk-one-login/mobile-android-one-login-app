@@ -33,6 +33,8 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleAnalyticsViewModel
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleDisabledNoWalletBodyPreview
+import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleEnabledWalletBodyPreview
 import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreen
 import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreenViewModel
 
@@ -201,6 +203,41 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
 
         verify(navigator).goBack()
         verify(logger).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun testWalletPreview() {
+        composeTestRule.setContent {
+            BiometricsToggleEnabledWalletBodyPreview()
+        }
+
+        composeTestRule.apply {
+            onAllNodes(title).assertCountEquals(2)
+            onNode(navIcon).assertIsDisplayed().assertHasClickAction()
+            onNode(toggle, useUnmergedTree = true).assertIsToggleable()
+            onNode(bulletListTitle).assertIsDisplayed()
+            onNode(bullet1).assertIsDisplayed()
+            onNode(bullet2).assertIsDisplayed()
+            onNode(body2Wallet).assertIsDisplayed()
+            onNode(subtitle).assertIsDisplayed()
+            onNode(body3Wallet).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun testNoWalletPreview() {
+        composeTestRule.setContent {
+            BiometricsToggleDisabledNoWalletBodyPreview()
+        }
+
+        composeTestRule.apply {
+            onAllNodes(title).assertCountEquals(2)
+            onNode(toggle, useUnmergedTree = true).assertIsToggleable()
+            onNode(body1).assertIsDisplayed()
+            onNode(body2).assertIsDisplayed()
+            onNode(subtitle).assertIsDisplayed()
+            onNode(body3).assertIsDisplayed()
+        }
     }
 
     fun setContent() {

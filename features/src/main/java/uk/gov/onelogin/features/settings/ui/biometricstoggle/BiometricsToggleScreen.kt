@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -195,7 +196,7 @@ private fun BiometricsToggleRow(
             .background(color = MaterialTheme.colorScheme.inverseOnSurface)
             .toggleable(
                 role = Role.Switch,
-                value = !toggle,
+                value = toggle,
                 onValueChange = {
                     toggle = !toggle
                     onToggle(toggle)
@@ -217,7 +218,9 @@ private fun BiometricsToggleRow(
             onCheckedChange = {
                 toggle = !toggle
                 onToggle(toggle)
-            }
+            },
+            // Required for accessibility to not focus on the toggle first landing on the screen (TalkBack enabled)
+            modifier = Modifier.clearAndSetSemantics {}
         )
     }
     HorizontalDivider()
@@ -266,7 +269,7 @@ private fun BiometricsTopAppBar(
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun BiometricsOptInEnabledWalletBodyPreview() {
+internal fun BiometricsToggleEnabledWalletBodyPreview() {
     GdsTheme {
         Scaffold(
             topBar = {
@@ -289,7 +292,7 @@ internal fun BiometricsOptInEnabledWalletBodyPreview() {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun BiometricsOptInDisabledNoWalletBodyPreview() {
+internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
     GdsTheme {
         Scaffold(
             topBar = {
