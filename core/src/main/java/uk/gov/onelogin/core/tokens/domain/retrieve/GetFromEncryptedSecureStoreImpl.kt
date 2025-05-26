@@ -10,12 +10,11 @@ import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguratio
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 
 class GetFromEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : GetFromEncryptedSecureStore {
     override suspend fun invoke(

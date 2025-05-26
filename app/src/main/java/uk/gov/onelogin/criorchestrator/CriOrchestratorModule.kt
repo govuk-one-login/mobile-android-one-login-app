@@ -11,7 +11,6 @@ import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.nfc.NfcConfigKey
@@ -67,7 +66,7 @@ object CriOrchestratorModule {
         genericHttpClient: GenericHttpClient,
         analyticsLogger: AnalyticsLogger,
         sdkConfig: Config,
-        @OneLoginInjectionAnnotation
+
         logger: Logger
     ): CriOrchestratorSdk {
         return CriOrchestratorSdk.create(

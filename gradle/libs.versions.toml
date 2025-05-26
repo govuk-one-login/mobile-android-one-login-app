@@ -47,11 +47,11 @@ govuk-logging = "0.22.0"
 compose-runtime = "1.8.0"
 wallet = "1.74.2"
 auth = "0.20.0"
-cri-orchestrator = "0.52.1"
+cri-orchestrator = "0.52.2"
 junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
-gov-uk-idcheck = "0.12.0"
+gov-uk-idcheck = "0.13.0"
 aboutLibraries = "12.1.0-rc01"
 
 [libraries]
@@ -121,7 +121,7 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
-secure-store = { group = "uk.gov.securestore", name = "app", version = "0.11.0" }
+secure-store = { group = "uk.gov.securestore", name = "app", version = "0.12.0" }
 network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
 logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }
