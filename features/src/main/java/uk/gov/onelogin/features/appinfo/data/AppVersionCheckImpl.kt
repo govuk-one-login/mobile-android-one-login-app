@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.appinfo.data
 
 import javax.inject.Inject
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -13,7 +12,7 @@ class AppVersionCheckImpl @Inject constructor(
     private val utils: AppInfoUtils,
     @BuildConfigVersion
     private val appVersion: String,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : AppVersionCheck {
     override fun compareVersions(data: AppInfoData): AppInfoServiceState {

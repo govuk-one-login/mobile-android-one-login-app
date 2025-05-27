@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.appinfo.domain
 
 import javax.inject.Inject
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -11,7 +10,7 @@ class AppInfoServiceImpl @Inject constructor(
     private val remoteSource: AppInfoRemoteSource,
     private val localSource: AppInfoLocalSource,
     private val appVersionCheck: AppVersionCheck,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : AppInfoService {
     override suspend fun get(): AppInfoServiceState {

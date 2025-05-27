@@ -5,12 +5,11 @@ import javax.inject.Named
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 
 class SaveToOpenSecureStoreImpl @Inject constructor(
     @Named("Open")
     private val secureStore: SecureStore,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : SaveToOpenSecureStore {
     override suspend fun save(

@@ -6,7 +6,6 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 
 interface RemoveAllSecureStoreData : Cleaner
 
@@ -15,7 +14,7 @@ class RemoveAllSecureStoreDataImpl @Inject constructor(
     private val tokenSecureStore: SecureStore,
     @Named("Open")
     private val openSecureStore: SecureStore,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : RemoveAllSecureStoreData {
     override suspend fun clean(): Result<Unit> {
