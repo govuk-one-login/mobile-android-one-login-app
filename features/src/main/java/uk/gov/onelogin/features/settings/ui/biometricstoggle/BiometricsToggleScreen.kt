@@ -36,6 +36,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -139,20 +141,28 @@ private fun WalletCopyContent() {
             bulletListItems = persistentListOf(
                 ListItem(bullet1),
                 ListItem(bullet2)
-            )
+            ),
+            accessibilityIndex = LIST_INDEX
         )
         Text(
             text = body2,
-            modifier = Modifier.padding(top = smallPadding)
+            modifier = Modifier.padding(top = smallPadding).semantics {
+                this.traversalIndex = CONTENT_INDEX1
+            }
         )
         GdsHeading(
             text = subtitle,
             style = GdsHeadingStyle.Body,
             textAlign = GdsHeadingAlignment.LeftAligned,
             textFontWeight = FontWeight.W700,
-            modifier = Modifier.padding(vertical = smallPadding)
+            modifier = Modifier.padding(vertical = smallPadding).semantics {
+                this.traversalIndex = SUBTITLE_INDEX
+            }
         )
-        Text(body3)
+        Text(
+            text = body3,
+            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX2 }
+        )
     }
 }
 
@@ -206,6 +216,7 @@ private fun BiometricsToggleRow(
                 start = smallPadding,
                 end = smallPadding
             )
+            .semantics { this.traversalIndex = BIO_TOGGLE_INDEX }
             .testTag(stringResource(id = R.string.optInSwitchTestTag))
     ) {
         Text(
@@ -237,7 +248,9 @@ private fun BiometricsTopAppBar(
             GdsHeading(
                 text = stringResource(R.string.app_biometricsToggleTitle),
                 textAlign = GdsHeadingAlignment.LeftAligned,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics {
+                    this.traversalIndex = TOP_BAR_TITLE_INDEX
+                },
                 style = GdsHeadingStyle.Title2,
                 textFontWeight = FontWeight.W400
             )
@@ -310,3 +323,10 @@ internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
         }
     }
 }
+
+private const val TOP_BAR_TITLE_INDEX = -19f
+private const val BIO_TOGGLE_INDEX = -18f
+private const val LIST_INDEX = -16f
+private const val CONTENT_INDEX1 = -15f
+private const val SUBTITLE_INDEX = -14f
+private const val CONTENT_INDEX2 = -13f
