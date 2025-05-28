@@ -5,20 +5,17 @@ on:
     branches: ['main']
 
 permissions:
-  contents: write
+  contents: read
   security-events: write
+  id-token: write
+  actions: read
 
 jobs:
   dependency-submission:
     runs-on: ubuntu-latest
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
     env:
-      github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-      github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+      TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+      USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
 
     steps:
       - name: Checkout sources
