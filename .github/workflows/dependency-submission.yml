@@ -20,10 +20,29 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 17
+          lfs: true
+          fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+#      - name: Setup Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: 17
+
+      - name: Generate version code
+        id: version-code
+        uses: ./config/actions/generate-version-code
+
+      - name: Generate version name
+        id: version-name
+        uses: ./config/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
