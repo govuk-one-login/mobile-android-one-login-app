@@ -27,7 +27,6 @@ import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.AnalyticsModule
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.featureflags.FeaturesModule
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.wallet.data.WalletRepository
@@ -51,11 +50,9 @@ class MainNavScreenTest : TestCase() {
     @BindValue
     var analytics: AnalyticsLogger = mock()
 
-    @OneLoginInjectionAnnotation
     @BindValue
     val logger: Logger = mock()
 
-    @OneLoginInjectionAnnotation
     @BindValue
     val crashLogger: CrashLogger = mock()
 

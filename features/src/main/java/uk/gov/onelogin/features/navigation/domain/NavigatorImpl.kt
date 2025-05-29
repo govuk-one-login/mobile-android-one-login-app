@@ -6,11 +6,10 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 
 class NavigatorImpl @Inject constructor(
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : Navigator {
     private var navController: NavHostController? = null

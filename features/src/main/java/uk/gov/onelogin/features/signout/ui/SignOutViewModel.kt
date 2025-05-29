@@ -12,7 +12,6 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.utils.OneLoginInjectionAnnotation
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
@@ -23,7 +22,7 @@ class SignOutViewModel @Inject constructor(
     private val navigator: Navigator,
     private val signOutUseCase: SignOutUseCase,
     private val featureFlags: FeatureFlags,
-    @OneLoginInjectionAnnotation
+
     private val logger: Logger
 ) : ViewModel() {
     private val _loadingState = MutableStateFlow(false)
