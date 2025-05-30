@@ -111,7 +111,7 @@
     <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
     <string name="app_accessibilityStatementUrl">http://gov.uk/one-login/app-accessibility/cy</string>
     <string name="app_manageSignInDetailsUrl">https://home.account.gov.uk/security?lng=cy</string>
-    <string name="app_helpUrl">http://gov.uk/one-login/app-help/cy</string>
+    <string name="app_helpUrl">https://www.gov.uk/guidance/proving-your-identity-with-the-govuk-one-login-app.cy</string>
     <string name="app_contactUrl">https://home.account.gov.uk/contact-gov-uk-one-login?lng=cy</string>
 
     <!--  OSSL  -->
