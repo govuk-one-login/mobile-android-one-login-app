@@ -52,7 +52,7 @@ junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
 gov-uk-idcheck = "0.14.1"
-aboutLibraries = "12.1.0-rc01"
+aboutLibraries = "12.2.0"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
