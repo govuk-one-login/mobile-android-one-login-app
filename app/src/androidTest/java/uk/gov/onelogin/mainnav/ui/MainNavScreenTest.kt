@@ -93,7 +93,7 @@ class MainNavScreenTest : TestCase() {
         )
 
         composeTestRule.onNodeWithText(
-            resources.getString(walletR.string.introCardTitle)
+            resources.getString(walletR.string.intro_card_title)
         ).assertIsDisplayed()
 
         verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))

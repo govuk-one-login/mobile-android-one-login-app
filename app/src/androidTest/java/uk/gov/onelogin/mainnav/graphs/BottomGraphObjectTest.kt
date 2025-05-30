@@ -49,7 +49,7 @@ class BottomGraphObjectTest : TestCase() {
         }
 
         composeTestRule.onNodeWithText(
-            resources.getString(walletR.string.introCardTitle)
+            resources.getString(walletR.string.intro_card_title)
         ).assertIsDisplayed()
     }
 

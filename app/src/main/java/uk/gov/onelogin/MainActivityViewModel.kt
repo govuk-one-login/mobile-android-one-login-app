@@ -22,19 +22,14 @@ class MainActivityViewModel @Inject constructor(
     private val analyticsOptInRepo: AnalyticsOptInRepository,
     private val walletRepository: WalletRepository,
     private val features: FeatureFlags,
-    autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel(), DefaultLifecycleObserver {
-
-    init {
-        viewModelScope.launch {
-            autoInitialiseSecureStore.initialise()
-        }
-    }
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         viewModelScope.launch {
             analyticsOptInRepo.synchronise()
+            autoInitialiseSecureStore.initialise()
         }
     }
 

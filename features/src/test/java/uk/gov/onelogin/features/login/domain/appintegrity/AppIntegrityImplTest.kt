@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
-import io.jsonwebtoken.security.SignatureException
 import io.ktor.util.date.getTimeMillis
+import java.security.SignatureException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

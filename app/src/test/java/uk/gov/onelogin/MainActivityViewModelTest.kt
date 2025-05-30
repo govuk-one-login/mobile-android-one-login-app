@@ -43,13 +43,9 @@ class MainActivityViewModelTest {
     }
 
     @Test
-    fun `secure store auto initialised`() = runTest {
-        verify(mockAutoInitialiseSecureStore).initialise()
-    }
-
-    @Test
     fun `synchronise analytics on each app start`() = runTest {
         viewModel.onStart(owner = mockLifecycleOwner)
         verify(analyticsOptInRepo).synchronise()
+        verify(mockAutoInitialiseSecureStore).initialise()
     }
 }

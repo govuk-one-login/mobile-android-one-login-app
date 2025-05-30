@@ -35,7 +35,6 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -47,7 +46,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.featureflags.data.LocalAuthBiometricsToggleFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 
@@ -57,7 +55,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var navigator: Navigator
     private lateinit var getEmail: GetEmail
     private lateinit var localAuthManager: LocalAuthManager
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var tokenRepository: TokenRepository
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -87,12 +84,10 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         getEmail = mock()
         tokenRepository = mock()
         localAuthManager = mock()
-        featureFlags = mock()
         viewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
-            featureFlags,
             tokenRepository,
             getEmail
         )
@@ -117,7 +112,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
         openSourceLicensesButton = hasText(resources.getString(R.string.app_openSourceLicences))
         biometricsOptIn = hasText(context.getString(R.string.app_settingsBiometricsField))
-        whenever(featureFlags[LocalAuthBiometricsToggleFeatureFlag.ENABLED]).thenReturn(true)
         Intents.init()
         intending(not(isInternal())).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
@@ -202,7 +196,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             AboutTheAppSection(
                 optInState,
-                biometricsOptionFeatureFlagEnabled = false,
                 biometricsOptInState,
                 onBiometrics = { biometricsClick++ },
                 onToggle = { optInState = true },
@@ -252,7 +245,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     @Test
     fun biometricsEnabledBiometricsFeatureFlagDisabled() = runTest {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        whenever(featureFlags[LocalAuthBiometricsToggleFeatureFlag.ENABLED]).thenReturn(false)
 
         composeTestRule.setContent {
             SettingsScreen(viewModel, analyticsViewModel)

@@ -132,7 +132,6 @@ private fun SettingsScreenBody(
         )
         AboutTheAppSection(
             optInState = optInState,
-            biometricsOptionFeatureFlagEnabled = viewModel.displayBiometricsToggle,
             showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
             onBiometrics = {
                 analyticsViewModel.trackBiometricsButton()
@@ -256,7 +255,6 @@ private fun HelpAndFeedbackSection(
 @Composable
 internal fun AboutTheAppSection(
     optInState: Boolean,
-    biometricsOptionFeatureFlagEnabled: Boolean,
     showBiometricsOption: Boolean,
     onBiometrics: () -> Unit,
     onToggle: () -> Unit,
@@ -267,7 +265,7 @@ internal fun AboutTheAppSection(
         modifier = Modifier.semantics(mergeDescendants = true) { }
     ) {
         // Remove feature flag check once epic completed
-        if (biometricsOptionFeatureFlagEnabled && showBiometricsOption) {
+        if (showBiometricsOption) {
             LinkRow(
                 title = R.string.app_settingsBiometricsField,
                 icon = R.drawable.arrow_right_icon,
