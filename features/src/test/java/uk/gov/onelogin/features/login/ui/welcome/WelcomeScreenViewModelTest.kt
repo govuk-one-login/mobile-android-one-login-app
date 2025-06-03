@@ -22,6 +22,8 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
@@ -44,6 +46,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
@@ -67,6 +70,9 @@ class WelcomeScreenViewModelTest {
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockVerifyIdToken: VerifyIdToken = mock()
     private val mockNavigator: Navigator = mock()
+    private val mockFeatureFlags: FeatureFlags = InMemoryFeatureFlags(
+        WalletFeatureFlag.ENABLED
+    )
     private val mockOnlineChecker: OnlineChecker = mock()
     private val mockSaveTokens: SaveTokens = mock()
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
@@ -110,6 +116,7 @@ class WelcomeScreenViewModelTest {
             mockHandleLoginRedirect,
             mockSignOutUseCase,
             logger,
+            mockFeatureFlags,
             mockOnlineChecker
         )
 

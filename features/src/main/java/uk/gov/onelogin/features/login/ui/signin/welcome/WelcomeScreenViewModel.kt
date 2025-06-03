@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
 import uk.gov.android.localauth.preference.LocalAuthPreference
@@ -32,6 +33,7 @@ import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -52,8 +54,8 @@ class WelcomeScreenViewModel @Inject constructor(
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
     private val signOutUseCase: SignOutUseCase,
-
     private val logger: Logger,
+    private val featureFlags: FeatureFlags,
     val onlineChecker: OnlineChecker
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
@@ -75,6 +77,7 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean = false,
         activity: FragmentActivity
     ) {
+        println("Handle Local Auth: ${intent.data}")
         if (intent.data == null) return
 
         viewModelScope.launch {
@@ -152,11 +155,13 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
+        println("Handle Local Auth: $tokens")
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
+            featureFlags[WalletFeatureFlag.ENABLED],
             false,
             activity = activity,
             callbackHandler = object : LocalAuthManagerCallbackHandler {
