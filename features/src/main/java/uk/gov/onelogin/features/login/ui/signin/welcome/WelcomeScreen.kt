@@ -49,22 +49,24 @@ fun WelcomeScreen(
                 }
             }
         }
-    EdgeToEdgePage { _ ->
-        WelcomeBody(
-            onSignIn = {
-                if (viewModel.onlineChecker.isOnline()) {
-                    viewModel.onPrimary(launcher)
-                    analyticsViewModel.trackSignIn()
-                } else {
-                    viewModel.navigateToOfflineError()
-                }
-            },
-            openDevMenu = { viewModel.navigateToDevPanel() }
-        )
-    }
+
     if (loading.value) {
         LoadingScreen(loadingAnalyticsViewModel) {
             viewModel.abortLogin(launcher)
+        }
+    } else {
+        EdgeToEdgePage { _ ->
+            WelcomeBody(
+                onSignIn = {
+                    if (viewModel.onlineChecker.isOnline()) {
+                        viewModel.onPrimary(launcher)
+                        analyticsViewModel.trackSignIn()
+                    } else {
+                        viewModel.navigateToOfflineError()
+                    }
+                },
+                openDevMenu = { viewModel.navigateToDevPanel() }
+            )
         }
     }
 

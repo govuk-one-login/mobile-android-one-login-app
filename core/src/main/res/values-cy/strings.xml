@@ -9,6 +9,7 @@
 
     <!-- Loading -->
     <string name="app_loadingBody">Llwytho…</string>
+    <string name="app_loading_content_desc">Llwytho gov dot UK One Login</string>
 
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help ac adborth</string>
