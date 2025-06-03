@@ -14,6 +14,7 @@ jobs:
   prepareForRelease:
     name: Verify code base when pushed
     runs-on: ubuntu-24.04
+    environment: release
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
@@ -24,6 +25,11 @@ jobs:
     outputs:
       version: ${{ steps.version-number.outputs.version }}
     steps:
+      - name: Debug OIDC Claims
+        uses: github/actions-oidc-debugger@main
+        with:
+          audience: '${{ github.server_url }}/${{ github.repository_owner }}'
+
       - name: Run checkout github action
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
