@@ -7,5 +7,5 @@
     <string name="webBaseHost" translatable="false">mobile.account.gov.uk</string>
     <string name="helloWorldUrl" translatable="false">https://hello-world.token.account.gov.uk%1$s</string>
     <!-- Same as staging env for now as there was no option for production or release -->
-    <string name="appInfoUrl" translatable="false">https://mobile.staging.account.gov.uk%1$s</string>
+    <string name="appInfoUrl" translatable="false">https://mobile.account.gov.uk%1$s</string>
 </resources>
