@@ -1,10 +1,12 @@
 package uk.gov.onelogin.features.login.ui.signin.welcome
 
 import android.app.Activity
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -44,13 +46,8 @@ fun WelcomeScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.let { intent ->
-                    viewModel.handleActivityResult(intent = intent, activity = context)
-                }?.run {
-                    viewModel.stopLoading()
-                }
-            }
+
+            handleResult(result, viewModel, context)
         }
 
     if (loading) {
@@ -61,12 +58,7 @@ fun WelcomeScreen(
         EdgeToEdgePage { _ ->
             WelcomeBody(
                 onSignIn = {
-                    if (viewModel.onlineChecker.isOnline()) {
-                        viewModel.onPrimary(launcher)
-                        analyticsViewModel.trackSignIn()
-                    } else {
-                        viewModel.navigateToOfflineError()
-                    }
+                    handleScreenExit(viewModel, analyticsViewModel, launcher)
                 },
                 openDevMenu = { viewModel.navigateToDevPanel() }
             )
@@ -90,6 +82,35 @@ fun WelcomeScreen(
             analyticsViewModel.trackWelcomeView()
         }
         viewModel.stopLoading()
+    }
+}
+
+private fun handleResult(
+    result: ActivityResult,
+    viewModel: WelcomeScreenViewModel,
+    context: FragmentActivity
+) {
+    if (result.resultCode == Activity.RESULT_OK) {
+        result.data?.let { intent ->
+            viewModel.handleActivityResult(intent = intent, activity = context)
+        }?.run {
+            viewModel.stopLoading()
+        }
+    } else {
+        viewModel.stopLoading()
+    }
+}
+
+private fun handleScreenExit(
+    viewModel: WelcomeScreenViewModel,
+    analyticsViewModel: SignInAnalyticsViewModel,
+    launcher: ActivityResultLauncher<Intent>
+) {
+    if (viewModel.onlineChecker.isOnline()) {
+        viewModel.onPrimary(launcher)
+        analyticsViewModel.trackSignIn()
+    } else {
+        viewModel.navigateToOfflineError()
     }
 }
 
