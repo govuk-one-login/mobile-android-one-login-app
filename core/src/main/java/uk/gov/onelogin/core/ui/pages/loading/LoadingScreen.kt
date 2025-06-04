@@ -26,6 +26,8 @@ import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
@@ -86,6 +88,10 @@ fun LoadingBody() {
     }
 
     LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         focusRequester.requestFocus()
     }
 }
