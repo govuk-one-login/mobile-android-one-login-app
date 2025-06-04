@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
@@ -37,7 +38,7 @@ fun WelcomeScreen(
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false }
 ) {
-    val loading = viewModel.loading.collectAsState()
+    val loading by viewModel.loading.collectAsState()
     val context = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
@@ -46,11 +47,13 @@ fun WelcomeScreen(
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { intent ->
                     viewModel.handleActivityResult(intent = intent, activity = context)
+                }?.run {
+                    viewModel.stopLoading()
                 }
             }
         }
 
-    if (loading.value) {
+    if (loading) {
         LoadingScreen(loadingAnalyticsViewModel) {
             viewModel.abortLogin(launcher)
         }
@@ -83,7 +86,7 @@ fun WelcomeScreen(
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
-        if (!loading.value) {
+        if (!loading) {
             analyticsViewModel.trackWelcomeView()
         }
         viewModel.stopLoading()
