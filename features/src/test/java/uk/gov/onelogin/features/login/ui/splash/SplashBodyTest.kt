@@ -35,7 +35,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
         logo = hasTestTag(context.getString(R.string.splashLogoTestTag))
         crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
-        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
+        loadingText = hasText(resources.getString(R.string.app_loading_content_desc))
         loadingIndicator = hasTestTag(context.getString(R.string.splashLoadingSpinnerTestTag))
     }
 

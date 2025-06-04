@@ -35,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -189,11 +190,7 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
     val imagePlaceable = subcompose("logo") {
         Icon(
             painter = painterResource(R.drawable.ic_splash_logo),
-            contentDescription = if (DeveloperTools.isDeveloperPanelEnabled()) {
-                "Open dev menu"
-            } else {
-                null
-            },
+            contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
                 .fillMaxWidth()
@@ -208,6 +205,7 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         Modifier
                     }
                 )
+                .semantics { hideFromAccessibility() }
         )
     }.map { it.measure(constraints = constraints) }
     return imagePlaceable
@@ -255,7 +253,7 @@ private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
 
 @Composable
 internal fun LoadingIndicator() {
-    val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
+    val loadingText = stringResource(R.string.app_loading_content_desc)
     Column(
         modifier = Modifier
             .fillMaxWidth()
