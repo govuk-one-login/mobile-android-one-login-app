@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.ui.welcome
+package uk.gov.onelogin.features
 
 import android.content.Context
 import android.content.Intent
@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -42,7 +43,6 @@ import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
-import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
@@ -282,16 +282,12 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun testBiometricsOptInWithWallet() {
+        val intent = Intent()
         whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(localAuthPreferenceRepo.getLocalAuthPref()).thenReturn(null)
         whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
         whenever(deviceBiometricsManager.getCredentialStatus())
             .thenReturn(DeviceBiometricsStatus.SUCCESS)
-        wheneverBlocking {
-            handleRemoteLogin.login(any(), any())
-        }.thenAnswer {
-            (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
-        }
         wheneverBlocking {
             handleLoginRedirect.handle(any(), any(), any())
         }.thenAnswer {
@@ -303,20 +299,25 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsVM,
+                shouldTryAgain = {
+                    true
+                }
             )
         }
 
         composeTestRule.apply {
-            composeTestRule.onNode(signInButton).performClick()
-            waitUntil(3000) { onNodeWithText("documents").isDisplayed() }
+            composeTestRule.onNode(signInButton).assertIsDisplayed()
+            waitUntil(3000) {
+                onNodeWithText("documents", substring = true)
+                    .isDisplayed()
+            }
         }
     }
 
     @Test
     fun testBiometricsOptInNoWallet() {
         (featureFlags as InMemoryFeatureFlags).minus(WalletFeatureFlag.ENABLED)
-        whenever(onlineChecker.isOnline()).thenReturn(true)
         whenever(localAuthPreferenceRepo.getLocalAuthPref()).thenReturn(null)
         whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
         whenever(deviceBiometricsManager.getCredentialStatus())
@@ -337,7 +338,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-
             waitUntil(3000) { onNodeWithText("documents").isDisplayed() }
         }
     }
