@@ -42,12 +42,6 @@ object CriOrchestratorModule {
                         value = false
                     )
                 ),
-                Config.Entry(
-                    key = SdkConfigKey.DebugAppReviewPrompts,
-                    Config.Value.BooleanValue(
-                        value = false
-                    )
-                ),
                 Config.Entry<Config.Value.StringValue>(
                     key = NfcConfigKey.NfcAvailability,
                     Config.Value.StringValue(
