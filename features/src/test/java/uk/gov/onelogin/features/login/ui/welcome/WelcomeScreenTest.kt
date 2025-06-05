@@ -1,12 +1,8 @@
 package uk.gov.onelogin.features.login.ui.welcome
 
 import android.content.Context
-import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,14 +15,11 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import org.mockito.kotlin.wheneverBlocking
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
-import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -280,68 +273,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         }
     }
 
-    @Test
-    fun testBiometricsOptInWithWallet() {
-        whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(localAuthPreferenceRepo.getLocalAuthPref()).thenReturn(null)
-        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-        whenever(deviceBiometricsManager.getCredentialStatus())
-            .thenReturn(DeviceBiometricsStatus.SUCCESS)
-        wheneverBlocking {
-            handleRemoteLogin.login(any(), any())
-        }.thenAnswer {
-            (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
-        }
-        wheneverBlocking {
-            handleLoginRedirect.handle(any(), any(), any())
-        }.thenAnswer {
-            (it.arguments[2] as (TokenResponse) -> Unit).invoke(TOKEN_RESPONSE)
-        }
-        wheneverBlocking { verifyIdToken.invoke(any(), any()) }.thenReturn(true)
-
-        composeTestRule.setContent {
-            WelcomeScreen(
-                analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
-            )
-        }
-
-        composeTestRule.apply {
-            composeTestRule.onNode(signInButton).performClick()
-            waitUntil(3000) { onNodeWithText("documents").isDisplayed() }
-        }
-    }
-
-    @Test
-    fun testBiometricsOptInNoWallet() {
-        (featureFlags as InMemoryFeatureFlags).minus(WalletFeatureFlag.ENABLED)
-        whenever(onlineChecker.isOnline()).thenReturn(true)
-        whenever(localAuthPreferenceRepo.getLocalAuthPref()).thenReturn(null)
-        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-        whenever(deviceBiometricsManager.getCredentialStatus())
-            .thenReturn(DeviceBiometricsStatus.SUCCESS)
-        wheneverBlocking {
-            handleLoginRedirect.handle(any(), any(), any())
-        }.thenAnswer {
-            (it.arguments[2] as (TokenResponse) -> Unit).invoke(TOKEN_RESPONSE)
-        }
-        wheneverBlocking { verifyIdToken.invoke(any(), any()) }.thenReturn(true)
-
-        composeTestRule.setContent {
-            WelcomeScreen(
-                analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
-            )
-        }
-
-        composeTestRule.apply {
-
-            waitUntil(3000) { onNodeWithText("documents").isDisplayed() }
-        }
-    }
-
     private fun whenWeClickSignIn() {
         composeTestRule.onNode(signInButton).performClick()
     }
@@ -367,15 +298,5 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             WelcomePreview()
         }
-    }
-
-    companion object {
-        private val TOKEN_RESPONSE = TokenResponse(
-            tokenType = "test",
-            accessToken = "test",
-            accessTokenExpirationTime = 100000,
-            idToken = "test",
-            refreshToken = "test",
-        )
     }
 }

@@ -375,10 +375,10 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.apply {
-            nodeWithTextExists(resources.getString(LocalAuthR.string.bio_opt_in_title))
+            nodeWithTextExists(resources.getString(LocalAuthR.string.app_enableBiometricsTitle))
 
             onNodeWithText(
-                resources.getString(LocalAuthR.string.bio_opt_in_passcode_button)
+                resources.getString(LocalAuthR.string.app_enablePasscodeOrPatternButton)
             ).performClick()
 
             onNodeWithTag(

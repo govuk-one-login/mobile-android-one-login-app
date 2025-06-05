@@ -10,7 +10,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
@@ -57,29 +56,23 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private val mockContext: Context = mock()
-    private val mockFragmentActivity: FragmentActivity = mock()
-    private val localAuthPreferenceRepo: LocalAuthPreferenceRepository = mock()
-    private val deviceBiometricsManager: DeviceBiometricsManager = mock()
-    private val analyticsLogger: AnalyticsLogger = mock()
-    private val localAuthManager: LocalAuthManager = LocalAuthManagerImpl(
-        localAuthPreferenceRepo,
-        deviceBiometricsManager,
-        analyticsLogger
-    )
-    private val mockTokenRepository: TokenRepository = mock()
-    private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
-    private val mockVerifyIdToken: VerifyIdToken = mock()
-    private val mockNavigator: Navigator = mock()
-    private val mockFeatureFlags: FeatureFlags = InMemoryFeatureFlags(
-        WalletFeatureFlag.ENABLED
-    )
-    private val mockOnlineChecker: OnlineChecker = mock()
-    private val mockSaveTokens: SaveTokens = mock()
-    private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
-    private val mockHandleRemoteLogin: HandleRemoteLogin = mock()
-    private val mockHandleLoginRedirect: HandleLoginRedirect = mock()
-    private val mockSignOutUseCase: SignOutUseCase = mock()
-    private val mockSavePersistentId: SavePersistentId = mock()
+    private lateinit var mockFragmentActivity: FragmentActivity
+    private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepository
+    private lateinit var deviceBiometricsManager: DeviceBiometricsManager
+    private lateinit var analyticsLogger: AnalyticsLogger
+    private lateinit var localAuthManager: LocalAuthManager
+    private lateinit var mockTokenRepository: TokenRepository
+    private lateinit var mockAutoInitialiseSecureStore: AutoInitialiseSecureStore
+    private lateinit var mockVerifyIdToken: VerifyIdToken
+    private lateinit var mockNavigator: Navigator
+    private lateinit var mockFeatureFlags: FeatureFlags
+    private lateinit var mockOnlineChecker: OnlineChecker
+    private lateinit var mockSaveTokens: SaveTokens
+    private lateinit var mockSaveTokenExpiry: SaveTokenExpiry
+    private lateinit var mockHandleRemoteLogin: HandleRemoteLogin
+    private lateinit var mockHandleLoginRedirect: HandleLoginRedirect
+    private lateinit var mockSignOutUseCase: SignOutUseCase
+    private lateinit var mockSavePersistentId: SavePersistentId
     private val logger = SystemLogger()
 
     private val testAccessToken = "testAccessToken"
@@ -101,34 +94,12 @@ class WelcomeScreenViewModelTest {
         AuthenticationError.ErrorType.OAUTH
     )
 
-    private val viewModel =
-        WelcomeScreenViewModel(
-            mockContext,
-            localAuthManager,
-            mockTokenRepository,
-            mockAutoInitialiseSecureStore,
-            mockVerifyIdToken,
-            mockNavigator,
-            mockSaveTokens,
-            mockSavePersistentId,
-            mockSaveTokenExpiry,
-            mockHandleRemoteLogin,
-            mockHandleLoginRedirect,
-            mockSignOutUseCase,
-            logger,
-            mockFeatureFlags,
-            mockOnlineChecker
-        )
-
-    @BeforeEach
-    fun setup() {
-        whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
-        whenever(mockContext.getString(any())).thenReturn("test")
-    }
+    private lateinit var viewModel: WelcomeScreenViewModel
 
     @Test
     fun `handleIntent when data != null, device secure, no biometrics, verify id token success`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -160,6 +131,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `when data != null, device secure, verify id token success, bio pref set to biometrics`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -194,6 +166,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null and device is secure with ok biometrics`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -222,6 +195,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `when data != null and device is secure with ok biometrics and pref set to none`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -252,6 +226,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null and device is not secure`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -280,6 +255,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null, device not secure and reauth is true`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -311,6 +287,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null, device is secure and reauth is true`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -342,6 +319,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null && access_denied, device is secure and reauth is true`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -370,6 +348,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null && oauth_error, device is secure and reauth is true`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -398,6 +377,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data == null`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             whenever(mockIntent.data).thenReturn(null)
 
@@ -416,6 +396,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `When login redirect fails - it displays sign in error screen`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -441,6 +422,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `When login redirect fails, null throwable - it displays sign in error screen`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -463,6 +445,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `When id token verification fails - displays sign in error screen`() =
         runTest {
+            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -487,7 +470,54 @@ class WelcomeScreenViewModelTest {
         }
 
     @Test
+    fun `When login successful and wallet enabled - show BioOptIn`() = runTest {
+        createMocks(true)
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+
+        viewModel.handleActivityResult(
+            mockIntent,
+            activity = mockFragmentActivity
+        )
+
+        verify(localAuthManager).enforceAndSet(eq(true), any(), any(), any())
+    }
+
+    @Test
+    fun `When login successful and wallet disabled - show BioOptIn`() = runTest {
+        createMocks(true, true)
+        (mockFeatureFlags as InMemoryFeatureFlags).minus(WalletFeatureFlag.ENABLED)
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+
+        viewModel.handleActivityResult(
+            mockIntent,
+            activity = mockFragmentActivity
+        )
+
+        verify(localAuthManager).enforceAndSet(eq(false), any(), any(), any())
+    }
+
+    @Test
     fun `check nav to dev panel calls navigator correctly`() {
+        createMocks()
+
         viewModel.navigateToDevPanel()
 
         verify(mockNavigator).openDeveloperPanel()
@@ -495,6 +525,8 @@ class WelcomeScreenViewModelTest {
 
     @Test
     fun `check nav to offline error calls navigator correctly`() {
+        createMocks()
+
         viewModel.navigateToOfflineError()
 
         verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
@@ -502,6 +534,7 @@ class WelcomeScreenViewModelTest {
 
     @Test
     fun `check abort login works as expected`() = runTest {
+        createMocks()
         val mockIntent: Intent = mock()
 
         whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
@@ -514,5 +547,61 @@ class WelcomeScreenViewModelTest {
             }
 
         assertFalse(viewModel.loading.value)
+    }
+
+    private fun createMocks(isLocalAuthMocked: Boolean = false, noFeatureFlags: Boolean = false) {
+        mockFragmentActivity = mock()
+        localAuthPreferenceRepo = mock()
+        deviceBiometricsManager = mock()
+        analyticsLogger = mock()
+        localAuthManager = if (isLocalAuthMocked) {
+            mock()
+        } else {
+            LocalAuthManagerImpl(
+                localAuthPreferenceRepo,
+                deviceBiometricsManager,
+                analyticsLogger
+            )
+        }
+        mockTokenRepository = mock()
+        mockAutoInitialiseSecureStore = mock()
+        mockVerifyIdToken = mock()
+        mockNavigator = mock()
+        mockSaveTokens = mock()
+        mockSavePersistentId = mock()
+        mockSaveTokenExpiry = mock()
+        mockHandleRemoteLogin = mock()
+        mockHandleLoginRedirect = mock()
+        mockSignOutUseCase = mock()
+        mockFeatureFlags = if (noFeatureFlags) {
+            InMemoryFeatureFlags()
+        } else {
+            InMemoryFeatureFlags(
+                WalletFeatureFlag.ENABLED
+            )
+        }
+        mockOnlineChecker = mock()
+
+        viewModel =
+            WelcomeScreenViewModel(
+                mockContext,
+                localAuthManager,
+                mockTokenRepository,
+                mockAutoInitialiseSecureStore,
+                mockVerifyIdToken,
+                mockNavigator,
+                mockSaveTokens,
+                mockSavePersistentId,
+                mockSaveTokenExpiry,
+                mockHandleRemoteLogin,
+                mockHandleLoginRedirect,
+                mockSignOutUseCase,
+                logger,
+                mockFeatureFlags,
+                mockOnlineChecker
+            )
+
+        whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
+        whenever(mockContext.getString(any())).thenReturn("test")
     }
 }
