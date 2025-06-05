@@ -253,7 +253,8 @@ private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
 
 @Composable
 internal fun LoadingIndicator() {
-    val loadingText = stringResource(R.string.app_loading_content_desc)
+    val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
+    val loadingContentDescription = stringResource(R.string.app_loading_content_desc)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -263,7 +264,7 @@ internal fun LoadingIndicator() {
                 bottom = PROGRESS_BAR
             )
             .focusGroup()
-            .semantics(true) { contentDescription = loadingText }
+            .semantics(true) { contentDescription = loadingContentDescription }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -278,7 +279,7 @@ internal fun LoadingIndicator() {
                 modifier = Modifier
                     .width(PROGRESS_BAR)
                     .height(PROGRESS_BAR)
-                    .semantics { contentDescription = "" }
+                    .semantics { hideFromAccessibility() }
                     .testTag(stringResource(R.string.splashLoadingSpinnerTestTag))
             )
         }
@@ -290,7 +291,7 @@ internal fun LoadingIndicator() {
                 text = loadingText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
-                modifier = Modifier.semantics { contentDescription = "" }
+                modifier = Modifier.semantics { hideFromAccessibility() }
             )
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
@@ -57,6 +58,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var privacyNotice: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
     private lateinit var loadingText: SemanticsMatcher
+    private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -84,7 +86,10 @@ class SplashScreenTest : FragmentActivityTestCase() {
             hasTestTag(
                 resources.getString(R.string.splashLoadingSpinnerTestTag)
             )
-        loadingText = hasText(resources.getString(R.string.app_loading_content_desc))
+        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
+        loadingContentDescription = hasContentDescription(
+            resources.getString(R.string.app_loading_content_desc)
+        )
     }
 
     @Test
@@ -169,6 +174,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
         composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
         composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
+        composeTestRule.onAllNodes(loadingContentDescription).assertCountEquals(2)
     }
 
     @Test
