@@ -113,7 +113,8 @@ dependencies {
         libs.test.core.ktx,
         libs.uiautomator,
         libs.mockito.kotlin,
-        libs.mockito.android
+        libs.mockito.android,
+        libs.logging.test
     ).forEach(::androidTestImplementation)
 
     listOf(
