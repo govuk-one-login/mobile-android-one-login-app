@@ -108,10 +108,10 @@ private fun handleScreenExit(
 ) {
     if (viewModel.onlineChecker.isOnline()) {
         viewModel.onPrimary(launcher)
-        analyticsViewModel.trackSignIn()
     } else {
         viewModel.navigateToOfflineError()
     }
+    analyticsViewModel.trackSignIn()
 }
 
 @Composable
