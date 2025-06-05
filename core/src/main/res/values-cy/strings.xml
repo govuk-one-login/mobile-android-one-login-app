@@ -110,7 +110,7 @@
     <string name="app_dataDeletedBody3">Mae angen i chi fewngofnodi eto a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu dogfennau at eich GOV.UK  Wallet.</string>
 
     <!-- Url  -->
-    <string name="privacy_notice_url">https://signin.account.gov.uk/privacy-notice?lng=cy</string>
+    <string name="privacy_notice_url">https://www.gov.uk/government/publications/govuk-one-login-privacy-notice.cy</string>
     <string name="app_accessibilityStatementUrl">http://gov.uk/one-login/app-accessibility/cy</string>
     <string name="app_manageSignInDetailsUrl">https://home.account.gov.uk/security?lng=cy</string>
     <string name="app_helpUrl">https://www.gov.uk/guidance/proving-your-identity-with-the-govuk-one-login-app.cy</string>
