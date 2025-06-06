@@ -2,6 +2,8 @@
 
 This repository hosts the Android Mobile app for GOV.UK's One Login.
 
+Triggering this PR simply to test gradle advanced security.  DO NOT MERGE!
+
 ## Branching strategy and releases
 
 This project uses a git-flow branching strategy, briefly:
