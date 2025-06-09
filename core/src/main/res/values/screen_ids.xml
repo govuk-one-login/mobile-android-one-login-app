@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sign_in_page_id" translatable="false">30a6b339-75a8-44a2-a79a-e108546419bf</string>
+    <string name="settings_page_id" translatable="false">d6bae235-e427-4e51-8e17-17d2b976a201</string>
+    <string name="biometrics_toggle_wallet_id" translatable="false">332db1f2-fbe4-4e7e-8774-151f296eec93</string>
+    <string name="biometrics_toggle_no_wallet_id" translatable="false">daff4e35-0646-435a-98d6-cdc42bdd7a6e</string>
+    <string name="signed_out_info_page_id" translatable="false">cfc50baa-4b56-4170-9707-cd05b60b6658</string>
+    <string name="sign_out_wallet_page_id" translatable="false">17ab1f34-3d1b-4465-9ce6-fe648c2ff06c</string>
+    <string name="sign_out_no_wallet_page_id" translatable="false">3e50cd12-4ee8-4787-add8-6a2ac7d4a840</string>
+    <string name="update_required_page_id" translatable="false">ae56a0d6-072a-406f-84c7-83759aa4f942</string>
+    <string name="app_unavailable_page_id" translatable="false">d21ab1f2-9b2f-43cd-a2f4-3da0c5c611ea</string>
+    <string name="app_loading_page_id" translatable="false">0672f0fa-8126-479b-b191-8e750fa3d909</string>
+    <string name="home_page_id" translatable="false">35d856e3-382a-40e5-9758-50784f23e846</string>
+    <string name="ossl_page_id" translatable="false">b32f312d-faec-4906-ab67-db5406cf9d73</string>
+    <string name="splash_screen_page_id" translatable="false">3e95fe16-7ba7-4f46-a22e-4ae17112debf</string>
+    <string name="splash_unlock_screen_page_id" translatable="false">d61fcd23-cbcf-4df6-8e9c-d0dec956dbe1</string>
+    <string name="bio_opt_in_screen_page_id" translatable="false">4c6af885-a47f-4979-8b34-146574c73745</string>
+    <string name="generic_error_screen_id" translatable="false">f275a786-7366-4ef5-b24b-9e514d324403</string>
+    <string name="sign_in_error_screen_id" translatable="false">6c15e073-d1a5-4781-b416-aaad6e80b078</string>
+    <string name="network_error_screen_id" translatable="false">80606f36-f6aa-4f49-aaa8-ff7d3cdeb16f</string>
+</resources>

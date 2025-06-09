@@ -1,0 +1,48 @@
+version: 2
+registries:
+  github-maven:
+    type: maven-repository
+    url: https://maven.pkg.github.com/govuk-one-login/*
+    username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+    password: ${{ secrets.MODULE_FETCH_TOKEN }}
+updates:
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - "/config/actions/**"
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+    groups:
+      bundler-minor-versions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+    open-pull-requests-limit: 5
+    groups:
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "com.google.devtools.ksp*"
+        update-types:
+          - minor
+          - patch

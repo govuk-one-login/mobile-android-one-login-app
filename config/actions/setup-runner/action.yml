@@ -4,7 +4,7 @@ inputs:
   jdk-version:
     description: 'The Java Development Kit (JDK) version to use'
     required: false
-    default: '17'
+    default: '21'
   gradle-version:
     description: 'The version of gradle for the "gradle/gradle-build-action" step.'
     required: false
@@ -16,7 +16,7 @@ runs:
       shell: bash
       run: echo "/usr/local/bin" >> $GITHUB_PATH
 
-    - uses: actions/setup-java@v3
+    - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
       with:
         distribution: 'oracle'
         java-version: ${{ inputs.jdk-version }}
@@ -28,33 +28,39 @@ runs:
         echo "JAVA_HOME=$(/usr/libexec/java_home --version ${JDK_VERSION})" >> $GITHUB_ENV
       shell: bash
 
-    - name: Install snap dependencies
+    # - name: Install snap dependencies
+    #   run: |
+    #     sudo snap install vale --edge
+    #   shell: bash
+    #   if: runner.os == 'Linux'
+
+    - name: Install homebrew if necessary
+
       run: |
-        sudo snap install vale --edge
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       shell: bash
-      if: runner.os == 'Linux'
 
     - name: Install brew dependencies
       run: |
-        brew install vale
+        source ./config/shell/brewPath
+        brew bundle
       shell: bash
-      if: runner.os == 'macOS'
 
-    - name: Install KVM hardware acceleration Dependencies
+    - name: Update
       run: |
-        sudo apt-get install \
-          bridge-utils \
-          cpu-checker \
-          libvirt-clients \
-          libvirt-daemon-system \
-          qemu-kvm
+        sudo apt-get update
       shell: bash
       if: runner.os == 'Linux'
 
-# https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
+    - name: Install Linux Dependencies
+      run: |
+        sudo apt-get install $(grep -o '^[^#]*' ./Aptfile)
+      shell: bash
+      if: runner.os == 'Linux'
+
+    # https://github.blog/changelog/2023-02-23-hardware-accelerated-android-virtualization-on-actions-windows-and-linux-larger-hosted-runners/
     - name: Configure KVM hardware acceleration
-      run:
-        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+      run: echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
       shell: bash
       if: runner.os == 'Linux'
 
@@ -76,16 +82,28 @@ runs:
 
     - name: Setup Gradle
       id: setupGradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/gradle-build-action@ac2d340dc04d9e1113182899e983b5400c17cda1 # v3.5.0
       env:
         CI: 'true'
       with:
         gradle-version: ${{ inputs.gradle-version }}
+        cache-disabled: true
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
+      uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # pin@v2
 
     - name: Update Android SDK Manager
       run: |
         sdkmanager --update
       shell: bash
+
+    - name: git
+      run: |
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git status
+        git tag
+        git describe
+      shell: bash
+      if: runner.os == 'Linux'

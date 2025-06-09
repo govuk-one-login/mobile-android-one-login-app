@@ -1,0 +1,188 @@
+<resources>
+    <string name="app_name" translatable="false">One Login</string>
+    <string name="action_settings" translatable="false">Settings</string>
+
+    <!-- Navigation -->
+    <string name="app_continue">Continue</string>
+    <string name="app_closeButton">Close</string>
+    <string name="app_home">Home</string>
+    <string name="app_wallet">Wallet</string>
+    <string name="app_settings">Settings</string>
+
+    <string name="app_back_icon" translatable="false">Back</string>
+    <!-- Loading -->
+    <string name="app_loadingBody">Loading…</string>
+
+    <!-- Settings -->
+    <string name="app_settingsSubtitle1">Help and feedback</string>
+    <string name="app_settingsSubtitle2">About the app</string>
+    <string name="app_settingsSignInDetailsTile">Your GOV.UK One Login</string>
+    <string name="app_settingSignInDetailsFootnote">You might need to sign in again to manage your GOV.UK One Login details.</string>
+    <string name="app_privacyNoticeLink2">GOV.UK One Login privacy notice</string>
+    <string name="app_accessibilityStatement">Accessibility statement</string>
+    <string name="app_openSourceLicences">Open source licences</string>
+    <string name="app_appGuidanceLink">Using the GOV.UK One Login app</string>
+    <string name="app_contactLink">Contact GOV.UK One Login</string>
+    <string name="app_settingsAnalyticsToggle">Share app analytics</string>
+    <string name="app_settingsAnalyticsToggleFootnote">You can share anonymous analytics about how you use the app to help the GOV.UK One Login team make improvements.</string>
+    <string name="app_settingsAnalyticsToggleFootnoteLink">Read more in the GOV.UK One Login privacy notice</string>
+    <string name="app_signOutButton">Sign out</string>
+    <string name="app_settingsSignInDetailsLink">Manage sign in details</string>
+    <string name="app_settingsBiometricsField">Biometrics</string>
+
+    <!-- Biometrics Toggle Opt In Screen NO Wallet -->
+    <string name="app_biometricsToggleTitle">Biometrics</string>
+    <string name="app_biometricsToggleLabel">Use biometrics</string>
+    <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to unlock the app within 30 minutes of signing in with GOV.UK One Login.</string>
+    <string name="app_biometricsToggleBody2">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
+    <string name="app_biometricsToggleSubtitle">If you turn off biometrics</string>
+    <string name="app_biometricsToggleBody3">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app.</string>
+
+    <!-- Biometrics Toggle Opt In Screen Wallet -->
+    <string name="app_biometricsToggleBody1Wallet">You can use your face, fingerprint or iris to:</string>
+    <string name="app_biometricsToggleBullet1">unlock the app within 30 minutes of signing in with GOV.UK  One Login</string>
+    <string name="app_biometricsToggleBullet2">view and add documents</string>
+    <string name="app_biometricsToggleBody2Wallet">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
+    <string name="app_biometricsToggleBody3Wallet">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
+
+    <!-- Sign Out -->
+    <string name="app_signOutConfirmationTitle">Are you sure you want to sign out?</string>
+    <string name="app_signOutConfirmationBody1">If you sign out, the information saved in your app will be deleted. This is to reduce the risk that someone else will see your information.</string>
+    <string name="app_signOutConfirmationSubtitle">This means:</string>
+    <string name="app_signOutConfirmationBullet1">any documents saved in your GOV.UK Wallet will be removed</string>
+    <string name="app_signOutConfirmationBullet2">if you’re using biometrics or your phone’s pin or pattern to unlock the app, this will be switched off</string>
+    <string name="app_signOutConfirmationBullet3">you’ll stop sharing analytics about how you use the app</string>
+    <string name="app_signOutConfirmationBody3">Next time you sign in, you’ll be able to add your documents to your GOV.UK  Wallet and set your preferences again.</string>
+    <string name="app_signOutAndDeleteAppDataButton">Sign out and delete information</string>
+
+    <string name="app_youveBeenSignedOutTitle">You need to sign in again</string>
+    <string name="app_youveBeenSignedOutBody1">It’s been more than 30 minutes since you last signed in to the GOV.UK One Login app.</string>
+    <string name="app_youveBeenSignedOutBody2">Sign in again to continue.</string>
+    <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
+
+    <string name="app_signOutConfirmationTitle_no_wallet">Are you sure you want to sign out?</string>
+    <string name="app_signOutConfirmationBody1_no_wallet">Signing out will switch off your preferences for:</string>
+    <string name="app_signOutConfirmationBullet1_no_wallet">using biometrics or your phone’s pin or pattern to unlock the app</string>
+    <string name="app_signOutConfirmationBullet2_no_wallet">sharing analytics about how you use the app</string>
+    <string name="app_signOutConfirmationBody2_no_wallet">You’ll be asked to set these preferences again next time you sign in.</string>
+    <string name="app_signOutButton_no_wallet">Sign out and delete preferences</string>
+
+    <!-- Splash Screen -->
+    <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
+    <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
+    <string name="app_splashScreenLoadingIndicatorText">Loading</string>
+
+    <!-- Sign in -->
+    <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
+    <string name="app_signInBody1">Prove your identity to access government services.</string>
+    <string name="app_signInBody2">You’ll need to sign in with your GOV.UK One Login details.</string>
+    <string name="app_signInButton">Sign in with GOV.UK One Login</string>
+    <string name="app_unlockButton">Unlock</string>
+    <string name="app_signInErrorTitle">There was a problem signing you in</string>
+    <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
+
+    <!-- Errors -->
+    <!-- App Unavailable -->
+    <string name="app_appUnavailableTitle">Sorry, the app is unavailable</string>
+    <string name="app_appUnavailableBody">You cannot use the GOV.UK One Login app at the moment.\n\nTry again later.</string>
+
+    <!-- Errors Generic -->
+    <string name="app_genericErrorPage">Sorry, there’s a problem</string>
+    <string name="app_genericErrorPageBody">Try again later.</string>
+    <string name="app_genericErrorPageButton">Go back and try again</string>
+
+    <!-- Errors Offline -->
+    <string name="app_networkErrorTitle">You are not connected to the internet</string>
+    <string name="app_networkErrorBody1">You need to have an internet connection to use GOV.UK One Login.</string>
+    <string name="app_networkErrorBody2">Reconnect to the internet and try again.</string>
+    <string name="app_tryAgainButton">Go back and try again</string>
+
+    <!-- Errors Sign Out -->
+    <string name="app_signOutErrorTitle">There was a problem signing you out</string>
+    <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
+    <string name="app_exitButton">Exit</string>
+
+    <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
+
+    <string name="app_homeTitle">Home</string>
+
+    <string name="app_walletTitle" translatable="false">GOV.UK Wallet</string>
+
+    <string name="StagingEnv" translatable="false">staging</string>
+
+    <!-- Developer Panel -->
+    <string name="app_developer_button" translatable="false">Open Developer Menu</string>
+    <string name="app_developer_panel" translatable="false">Developer Portal</string>
+    <string name="app_developer_tab_app" translatable="false">App</string>
+    <string name="app_developer_tab_feature_flags" translatable="false">Feature Flags</string>
+    <string name="app_developer_tab_auth" translatable="false">Auth</string>
+    <string name="app_developer_tab_app_integrity" translatable="false">App Integrity</string>
+    <string name="app_developer_tab_local_auth" translatable="false">Local Auth</string>
+    <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
+    <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
+    <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
+    <string name="app_developer_features_title" translatable="false">Select Features</string>
+
+    <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
+    <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
+
+    <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
+    <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
+    <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
+
+    <!-- Analytics Opt In -->
+    <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
+    <string name="app_analyticsPermissionBody">You can help the GOV.UK One Login team make improvements by sharing analytics about how you use the app.\n\nThese analytics are anonymous. They show us what is and is not working, and help make the app better.\n\nYou can stop sharing these analytics any time by changing your app settings.</string>
+    <string name="app_privacyNoticeLink">Read more about this in the GOV.UK One Login privacy notice</string>
+    <string name="app_shareAnalyticsButton">Share analytics</string>
+    <string name="app_doNotShareAnalytics">Skip for now</string>
+
+    <!-- Update Required -->
+    <string name="app_updateApp_Title">You need to update your app</string>
+    <string name="app_updateAppBody1">You’re using an old version of the GOV.UK One Login app.</string>
+    <string name="app_updateAppBody2">Update your app to continue.</string>
+    <string name="app_updateAppButton">Update GOV.UK One Login app</string>
+    <string name="app_updateApp_ContentDescription" translatable="false">Update App Required icon content description</string>
+    
+    <!-- Re-Auth Error -->
+    <string name="app_dataDeletedErrorTitle">Something went wrong</string>
+    <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
+    <string name="app_dataDeletedButton">Sign in</string>
+    <string name="app_dataDeletedBody1_no_wallet">We could not confirm your sign in details.</string>
+    <string name="app_dataDeletedBody2_no_wallet">To keep your information secure, your preference for using biometrics to unlock the app has been reset.</string>
+    <string name="app_dataDeletedBody3_no_wallet">You need to sign in and set your preferences again to continue using the app.</string>
+    <string name="app_dataDeletedBody1">We could not confirm your sign in details.</string>
+    <string name="app_dataDeletedBody2">To keep your information secure, any documents in your GOV.UK Wallet have been removed and your app preferences have been reset.</string>
+    <string name="app_dataDeletedBody3">You need to sign in again and set your preferences again to continue using the app. You’ll then be able to add documents to you GOV.UK Wallet.</string>
+
+    <!-- Analytics Values   -->
+    <string name="system_backButton" translatable="false">Back - System</string>
+    <string name="system_backIcon" translatable="false">Back</string>
+    <string name="generic_error_reason" translatable="false">generic error</string>
+    <string name="sign_in_error_reason" translatable="false">sign in error</string>
+    <string name="network_error_reason" translatable="false">network error</string>
+
+    <!-- Home Screen -->
+    <string name="app_oneLoginCardTitle" translatable="false">Using your GOV.UK One Login</string>
+    <string name="app_oneLoginCardBody" translatable="false">Sign in to your GOV.UK One Login and read about the services you can use with it.</string>
+    <string name="app_oneLoginCardLink" translatable="false">Go to the GOV.UK website</string>
+
+    <!--  OSSL  -->
+    <string name="app_osslTitle">Open source licenses</string>
+
+    <!-- Accessibility -->
+    <string name="app_openLinkExternally">Opens in web browser</string>
+    <string name="app_openGooglePlayStore">Opens in Google Play Store</string>
+    <string name="one_login_image_content_desc" translatable="false">Gov dot UK one login</string>
+
+    <!-- Cri Orchestrator Temporary -->
+    <string name="app_cri_orchestrator_placeholder" translatable="false">Placeholder</string>
+
+    <!-- Welcome tile -->
+    <string name="app_welcomeTileHeader">Welcome</string>
+    <string name="app_welcomeTileBody1">You can use this app to prove your identity to access some government services.</string>
+
+    <!-- How to prove your identity tile -->
+    <string name="app_appPurposeTileHeader">How to prove your identity</string>
+    <string name="app_appPurposeTileBody1">If you need to prove your identity with GOV.UK One Login to access a service, you\'ll be asked to open this app. It works by matching your face to your photo ID.</string>
+</resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "792769336852",
+    "project_id": "mobile-one-login-staging",
+    "storage_bucket": "mobile-one-login-staging.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:792769336852:android:54c620eb8a00975590b901",
+        "android_client_info": {
+          "package_name": "uk.gov.onelogin.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKg2_B7zjWYT9nh2C-_s85WppEUjFIkG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

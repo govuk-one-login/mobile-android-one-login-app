@@ -2,12 +2,22 @@ name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
 inputs:
+  github-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
+  github-actor:
+    description: 'Service account name that allows publishing packages'
+    required: true
   version-code:
     description: 'Version code'
     required: true
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -15,12 +25,11 @@ runs:
     - name: Run Gradle Check
       shell: bash
       run: |
-        ./gradlew \
-          check \
-          -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME \
-          --stacktrace
+        ./.sh/tests/runUnitChecks
       env:
         CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}

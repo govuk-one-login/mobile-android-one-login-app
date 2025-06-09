@@ -2,6 +2,9 @@ name: 'Run gradle check'
 description: 'Run the "check" command for a Gradle project'
 
 inputs:
+  github-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
   architecture:
     description: 'AVD architecture to use'
     required: false
@@ -14,6 +17,9 @@ inputs:
     description: 'Locale used within the emulator'
     required: false
     default: 'en-GB'
+  github-actor:
+    description: 'Service account username that allows publishing packages'
+    required: true
   version-code:
     description: 'Version code'
     required: true
@@ -25,12 +31,14 @@ runs:
   using: "composite"
   steps:
     - name: Run gradle connected test
-      uses: reactivecircus/android-emulator-runner@v2
+      uses: reactivecircus/android-emulator-runner@1dcd0090116d15e7c562f8db72807de5e036a4ed # v2.34.0
       env:
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_ACTOR: ${{ inputs.github-actor }}
       with:
-        api-level: 29
+        api-level: 30
         arch: ${{ inputs.architecture }}
         avd-name: ${{ inputs.device-profile }}
         disable-animations: true
@@ -38,5 +46,7 @@ runs:
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -change-locale ${{ inputs.locale }}
         profile: ${{ inputs.device-profile }}
         script: |
-          ./gradlew connectedStagingDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace
+          adb kill-server
+          adb start-server
+          ./gradlew connectedBuildDebugAndroidTest -PversionCode=$INPUT_VERSION_CODE -PversionName=$INPUT_VERSION_NAME --continue --stacktrace
         target: playstore

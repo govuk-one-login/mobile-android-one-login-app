@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+# Optionally provide the INPUT_VERSION_CODE or INPUT_VERSION_NAME environment variables for being
+# able to defer them to the gradle commands.
+#
+# For example:
+# - Terminal usage: `INPUT_VERSION_CODE="100" INPUT_VERSION_NAME="1.2.3" ./.sh/runUnitChecks`
+# See `config/gradle-check/action.yml` for workflow usage deferring to the `env` configuration.
+
+find ./.sh -type f -exec shellcheck {} +
+find ./.githooks -type f -exec shellcheck {} +
+
+# INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
+if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
+then
+  echo "Running unit checks without environment variables (local development)..."
+  ./gradlew \
+    check \
+    --continue \
+    --stacktrace
+else
+  echo "Running unit checks with environment variables (GitHub workflow)..."
+  ./gradlew \
+    check \
+    -PversionCode="${INPUT_VERSION_CODE}" \
+    -PversionName="${INPUT_VERSION_NAME}" \
+    --continue \
+    --stacktrace
+fi

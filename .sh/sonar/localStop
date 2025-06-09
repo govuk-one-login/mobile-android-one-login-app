@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+SONAR_SCRIPTS=$(dirname "$0")
+
+# Ensure the `sonar` command is on the PATH variable.
+"${SONAR_SCRIPTS}"/verifyPath
+
+# Stop local sonar instance
+sonar stop

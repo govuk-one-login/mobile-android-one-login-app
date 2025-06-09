@@ -2,16 +2,30 @@ name: 'Run gradle assemble and bundle (release build type)'
 description: 'Run the "assembleRelease" and "bundleRelease" commands for a Gradle project'
 
 inputs:
+  github-token:
+    description: 'Service account access token that allows publishing packages'
+  module-fetch-token:
+    description: 'GitHub PAT that allows reading packages from other repositories'
+    required: true
   flavors:
     description: 'App flavors to return paths for, comma separated'
     required: false
     default: 'production'
+  github-actor:
+    description: 'Service account name that allows publishing packages'
+  module-fetch-token-username:
+    description: 'GitHub username that generated the PAT token that allows reading packages'
+    required: true
   version-code:
     description: 'Version code'
     required: true
   version-name:
     description: 'Version name'
     required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
 
 outputs:
   aab-paths:
@@ -24,6 +38,10 @@ runs:
     - name: Bundle release
       id: gradle-assemble-and-bundle
       run: |
+        echo "Flavors = ${INPUT_FLAVORS}"
+        echo "Version code = ${INPUT_VERSION_CODE}"
+        echo "Version name = ${INPUT_VERSION_NAME}"
+        
         ./gradlew \
           assembleRelease \
           bundleRelease \
@@ -38,13 +56,20 @@ runs:
           OUTPUT+="$FLAVOR:app/build/outputs/bundle/${FLAVOR}Release/app-${FLAVOR}-release.aab;"
         done
         
+        echo "aab paths = ${OUTPUT}"
         echo "aab-paths=${OUTPUT}" >> $GITHUB_OUTPUT
       shell: bash
       env:
         CI: true
+        INPUT_FLAVORS:  ${{ inputs.flavors }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         READID_API_KEY: ${{ env.READID_API_KEY }}
         SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ env.KEYSTORE_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        GITHUB_ACTOR: ${{ inputs.github-actor }}
+        TOKEN: ${{ inputs.module-fetch-token }}
+        USERNAME: ${{ inputs.module-fetch-token-username }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}

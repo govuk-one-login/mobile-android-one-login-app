@@ -12,10 +12,10 @@ runs:
 
     - name: Upload build reports
       id: uploadBuildReports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: build-reports
         retention-days: 1
         if-no-files-found: error
-        path: |
+        path: |-
           reports.zip

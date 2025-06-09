@@ -1,29 +1,59 @@
+import com.android.build.api.variant.BuildConfigField
+
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
+    kotlin("kapt")
+    id("uk.gov.onelogin.jvm-toolchains")
+    id("uk.gov.jacoco.app-config")
+    id("uk.gov.sonar.module-config")
+    id("uk.gov.onelogin.emulator-config")
 }
 
+apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
+apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
+
 android {
-    namespace = rootProject.ext["appId"] as String
+    namespace = "uk.gov.android.onelogin"
     compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
     defaultConfig {
         applicationId = rootProject.ext["appId"] as String
         minSdk = rootProject.ext["minSdkVersion"] as Int
         targetSdk = rootProject.ext["targetSdkVersion"] as Int
-        versionCode = getVersionCode()
-        versionName = getVersionName()
+        versionCode = rootProject.ext["versionCode"] as Int
+        versionName = rootProject.ext["versionName"] as String
+        testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
+    }
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    signingConfigs {
+        create("release") {
+            val configDir = rootProject.extra["configDir"] as String
+
+            storeFile = file("$configDir/keystore.jks")
+
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isDebuggable = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             enableUnitTestCoverage = true
@@ -31,102 +61,209 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
     buildFeatures {
+        compose = true
+        dataBinding = true
         viewBinding = true
-    }
-    signingConfigs {
-        create("release") {
-            val tmpFilePath = System.getProperty("user.home") + "/work/_temp/keystore/"
-            val allFilesFromDir = File(tmpFilePath).listFiles()
-            val configDir = rootProject.extra["configDir"] as String
-
-            storeFile = file("$configDir/keystore.jks")
-
-            if (allFilesFromDir != null) {
-                val keystoreFile = allFilesFromDir.first()
-                keystoreFile.renameTo(storeFile)
-            }
-
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-        }
+        buildConfig = true
     }
     flavorDimensions += "env"
     productFlavors {
-        create("dev") {
-            dimension = "env"
-            applicationIdSuffix = ".dev"
+        listOf(
+            "build",
+            "staging",
+            "integration",
+            "production"
+        ).forEach { environment ->
+            create(environment) {
+                var suffix = ""
+
+                dimension = "env"
+                if (environment == "integration") {
+                    matchingFallbacks.add("production")
+                }
+
+                if (environment != "production") {
+                    suffix = ".$environment"
+                    applicationIdSuffix = ".$environment"
+                }
+
+                val packageName = "${project.android.namespace}$suffix"
+
+                manifestPlaceholders["flavorSuffix"] = suffix
+                manifestPlaceholders["appAuthRedirectScheme"] = packageName
+            }
         }
-        create("build") {
-            dimension = "env"
-            applicationIdSuffix = ".build"
+    }
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+            it.testLogging {
+                events = setOf(
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                    org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                )
+            }
         }
-        create("staging") {
-            dimension = "env"
-            applicationIdSuffix = ".staging"
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
         }
-        create("integration") {
-            dimension = "env"
-            applicationIdSuffix = ".integration"
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
+
+    sourceSets.findByName("androidTestBuild")?.let { sourceSet ->
+        sourceSet.kotlin.srcDir("src/e2eTestBuild/java")
+        sourceSet.java.srcDir("src/e2eTestBulid/java")
+    }
+
+    bundle {
+        language {
+            enableSplit = false
         }
-        create("production") {
-            dimension = "env"
-        }
+    }
+
+    packaging {
+        resources.excludes += setOf(
+            "META-INF/LICENSE-notice.md",
+            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+            "META-INF/LICENSE.md"
+        )
+    }
+}
+
+androidComponents {
+    onVariants {
+        it.buildConfigFields.put(
+            "AppCheckDebugSecret",
+            BuildConfigField(
+                "String",
+                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
+                "debug token"
+            )
+        )
     }
 }
 
 dependencies {
     listOf(
-        "androidx.test.ext:junit:1.1.5",
-        "androidx.test.espresso:espresso-core:3.5.1",
+        libs.androidx.compose.ui.junit4,
+        libs.androidx.navigation.testing,
+        libs.androidx.espresso.intents,
+        libs.androidx.espresso.core,
+        libs.androidx.test.ext.junit,
+        libs.test.core.ktx,
+        libs.hilt.android.testing,
+        libs.uiautomator,
+        libs.mockito.kotlin,
+        libs.mockito.android
     ).forEach(::androidTestImplementation)
 
     listOf(
-        "androidx.core:core-ktx:1.10.1",
-        "androidx.appcompat:appcompat:1.6.1",
-        "com.google.android.material:material:1.9.0",
-        "androidx.constraintlayout:constraintlayout:2.1.4",
-    ).forEach(::implementation)
+        libs.androidx.compose.ui.tooling,
+        libs.androidx.compose.ui.test.manifest
+    ).forEach(::debugImplementation)
 
     listOf(
-        "androidx.navigation:navigation-fragment-ktx:2.6.0",
-        "androidx.navigation:navigation-ui-ktx:2.6.0",
-    ).forEach { dep: String ->
-        implementation(dep) {
-            because(
-                "Bumping to 2.7.0 requires compile SDK 34, which the " +
-                        "Android Google Plugin (AGP) would then need to be higher than 8.1.0, which " +
-                        "is at the time of this writing, not released as a stable version yet."
-            )
-        }
+        libs.androidx.appcompat,
+        libs.androidx.browser,
+        libs.androidx.biometric,
+        libs.androidx.compose.material,
+        libs.androidx.compose.material3,
+        libs.androidx.compose.ui.tooling.preview,
+        libs.androidx.constraintlayout,
+        libs.androidx.core.ktx,
+        libs.androidx.hilt.navigation.compose,
+        libs.androidx.lifecycle.viewmodel.compose,
+        libs.androidx.lifecycle.runtime.compose,
+        libs.bundles.gov.uk,
+        libs.gson,
+        libs.hilt.android,
+        libs.kotlinx.serialization.json,
+        libs.kotlinx.coroutines.core,
+        libs.ktor.client.android,
+        libs.navigation.compose,
+        libs.slf4j.api,
+        libs.jose4j,
+        projects.featureflags,
+        projects.core,
+        projects.features,
+        libs.runtime.livedata,
+        platform(libs.firebase.bom),
+        libs.bundles.firebase,
+        libs.androidx.biometric,
+        libs.bundles.cri.orchestrator.bundle
+    ).forEach(::implementation)
+
+    implementation(libs.wallet.sdk) {
+        exclude(group = "uk.gov.android", module = "network")
+        exclude(group = "uk.gov.securestore", module = "app")
     }
 
-    testImplementation("junit:junit:4.13.2")
+    listOf(
+        libs.hilt.android.compiler,
+        libs.hilt.compiler
+    ).forEach(::kapt)
+
+    listOf(
+        libs.hilt.android.compiler
+    ).forEach(::kaptAndroidTest)
+
+    listOf(
+        kotlin("test"),
+        libs.hilt.android.testing,
+        libs.ktor.client.mock,
+        libs.mockito.kotlin,
+        libs.junit.jupiter,
+        libs.junit.jupiter.params,
+        libs.junit.vintage.engine,
+        platform(libs.junit.bom),
+        libs.kotlinx.coroutines.test,
+        libs.classgraph,
+        libs.roboelectric,
+        libs.junit,
+        libs.androidx.test.orchestrator,
+        libs.androidx.test.ext.junit
+    ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
+
+    listOf(
+        libs.androidx.test.orchestrator
+    ).forEach {
+        androidTestUtil(it)
+    }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {
-    val code = if (rootProject.hasProperty("versionCode")) {
-        (rootProject.property("versionCode") as String).toInt()
-    } else {
-        1
-    }
+    val code =
+        if (rootProject.hasProperty("versionCode")) {
+            (rootProject.property("versionCode") as String).toInt()
+        } else {
+            1
+        }
     println("VersionCode is set to $code")
     return code
 }
 
 fun getVersionName(): String {
-    val name = if (rootProject.hasProperty("versionName")) {
-        rootProject.property("versionName") as String
-    } else {
-        "1.0"
-    }
+    val name =
+        if (rootProject.hasProperty("versionName")) {
+            rootProject.property("versionName") as String
+        } else {
+            "1.0"
+        }
     println("VersionName is set to $name")
     return name
 }

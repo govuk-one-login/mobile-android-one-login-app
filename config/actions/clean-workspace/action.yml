@@ -8,3 +8,4 @@ runs:
       run: |
         rm -f config/keystore.jks
         rm -f config/service-account.json
+      shell: bash

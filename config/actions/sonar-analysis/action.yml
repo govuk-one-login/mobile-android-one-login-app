@@ -1,0 +1,64 @@
+name: 'Run sonar analysis'
+description: 'Run sonar analysis on a PR or branch'
+
+inputs:
+  project-version:
+    description: "Version of the project to use. Passed in as the `-Dsonar.projectVersion` property"
+    required: false
+    default: "0.0.1"
+  sonar-token:
+    description: "Sonarqube access token"
+    required: true
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Sonarqube PR Analysis
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        ./gradlew sonar \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.token=$SONAR_TOKEN \
+          -Dsonar.projectVersion=$PROJECT_VERSION \
+          -Dsonar.pullrequest.base=develop \
+          -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
+          -Dsonar.pullrequest.key=${{ github.event.number }} \
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME
+      shell: bash
+      env:
+        CI: true
+        PROJECT_VERSION: ${{ inputs.project-version }}
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+
+    - name: Run Sonarqube Branch Analysis
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        ./gradlew sonar \
+          -Dsonar.branch.name=${{ github.head_ref || github.ref_name }} \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.token=$SONAR_TOKEN \
+          -Dsonar.projectVersion=$PROJECT_VERSION \
+          -PversionCode=$INPUT_VERSION_CODE \
+          -PversionName=$INPUT_VERSION_NAME
+      shell: bash
+      env:
+        CI: true
+        PROJECT_VERSION: ${{ inputs.project-version }}
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
