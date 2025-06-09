@@ -30,15 +30,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
-                <data android:host="@string/loginHost"/>
-                <data android:pathPrefix="/wallet"/>
-                <data android:pathPrefix="/wallet-test"/>
-            </intent-filter>
+<!--            <intent-filter android:autoVerify="true">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <data android:scheme="https"/>-->
+<!--                <data android:host="@string/loginHost"/>-->
+<!--                <data android:pathPrefix="/wallet"/>-->
+<!--                <data android:pathPrefix="/wallet-test"/>-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:launchMode="singleTop"
@@ -47,7 +47,7 @@
             android:permission=""
             tools:node="replace"
             tools:ignore="MissingClass">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
