@@ -19,8 +19,7 @@ fun interface AppInfoUtils {
     }
 
     companion object {
-        // When app is released replace with: "https://play.google.com/store/apps/details?id=uk.gov.login"
-        const val GOOGLE_PLAY_URL = "https://play.google.com/store/apps/"
+        const val GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=uk.gov.login"
     }
 }
 
