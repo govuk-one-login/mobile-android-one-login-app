@@ -104,6 +104,6 @@ runs:
         git config user.email "<>"
         git status
         git tag
-        git describe
+        git describe --always
       shell: bash
       if: runner.os == 'Linux'
