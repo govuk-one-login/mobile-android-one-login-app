@@ -21,60 +21,43 @@ import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @Composable
 fun SignOutSuccess(
-    viewModel: SignOutSuccessViewModel = hiltViewModel()
+    viewModel: SignOutSuccessViewModel = hiltViewModel(),
+    analyticsViewModel: SignOutSuccessAnalyticsViewModel = hiltViewModel()
 ) {
     val walletFeatureFlag = viewModel.featureFlags[WalletFeatureFlag.ENABLED]
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
+        analyticsViewModel.trackBackPress()
         // Close the app
         (context as? Activity)?.finish()
     }
 
     EdgeToEdgePage { _ ->
-        if (walletFeatureFlag) {
-            SignOutConfirmationWalletBody {
-                viewModel.navigateStart()
-            }
-        } else {
-            SignOutConfirmationBody {
-                viewModel.navigateStart()
-            }
+        analyticsViewModel.trackWalletCopyScreen(walletFeatureFlag)
+        SignOutConfirmationBody(walletFeatureFlag) {
+            analyticsViewModel.trackPrimaryButton()
+            viewModel.navigateStart()
         }
     }
 }
 
 @Composable
 fun SignOutConfirmationBody(
+    walletEnabled: Boolean,
     onPrimary: () -> Unit
 ) {
-    val content = listOf(
-        stringResource(R.string.app_signOutBody),
-        stringResource(R.string.app_signOutBody2)
-    )
-    val buttonText = stringResource(R.string.app_signOutSuccessButton)
-    CentreAlignedScreen(
-        title = stringResource(R.string.app_signOutTitle),
-        modifier = Modifier.fillMaxSize(),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(content[0]),
-            CentreAlignedScreenBodyContent.Text(content[1])
-        ),
-        primaryButton = CentreAlignedScreenButton(
-            text = buttonText,
-            onClick = onPrimary
+    val content = if (walletEnabled) {
+        listOf(
+            stringResource(R.string.app_signOutWalletBody),
+            stringResource(R.string.app_signOutWalletBody2)
         )
-    )
-}
-
-@Composable
-fun SignOutConfirmationWalletBody(
-    onPrimary: () -> Unit
-) {
-    val content = listOf(
-        stringResource(R.string.app_signOutWalletBody),
-        stringResource(R.string.app_signOutWalletBody2)
-    )
+    } else {
+        listOf(
+            stringResource(R.string.app_signOutBody),
+            stringResource(R.string.app_signOutBody2)
+        )
+    }
     val buttonText = stringResource(R.string.app_signOutSuccessButton)
     CentreAlignedScreen(
         title = stringResource(R.string.app_signOutTitle),
@@ -95,7 +78,7 @@ fun SignOutConfirmationWalletBody(
 @Composable
 internal fun SignOutSuccessPreview() {
     GdsTheme {
-        SignOutConfirmationBody {}
+        SignOutConfirmationBody(false) {}
     }
 }
 
@@ -104,6 +87,6 @@ internal fun SignOutSuccessPreview() {
 @Composable
 internal fun SignOutSuccessWalletPreview() {
     GdsTheme {
-        SignOutConfirmationWalletBody {}
+        SignOutConfirmationBody(true) {}
     }
 }
