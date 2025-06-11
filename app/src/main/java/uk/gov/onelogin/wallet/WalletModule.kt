@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
@@ -19,6 +20,7 @@ import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 @InstallIn(SingletonComponent::class)
 @Module
 object WalletModule {
+    @Suppress("LongParameterList")
     @Provides
     fun provideWalletSdk(
         @ApplicationContext
@@ -26,16 +28,17 @@ object WalletModule {
         navigator: Navigator,
         genericHttpClient: GenericHttpClient,
         analyticsLogger: AnalyticsLogger,
-        deleteAllDataUseCase: DeleteAllDataUseCase
+        deleteAllDataUseCase: DeleteAllDataUseCase,
+        localAuthManager: LocalAuthManager
     ): WalletSdk {
         val config = WalletSdk.Configuration(
             clientId = context.resources.getString(R.string.stsClientId),
             authNetworkClient = genericHttpClient,
-            analyticsLogger = analyticsLogger
+            analyticsLogger = analyticsLogger,
+            localAuthManger = localAuthManager,
+            deleteAllDataUseCase = deleteAllDataUseCase
         )
-        val walletSdk = WalletSdkImpl(navigator, deleteAllDataUseCase)
-        walletSdk.init(config)
-        return walletSdk
+        return WalletSdkImpl(navigator, config)
     }
 
     @Provides
