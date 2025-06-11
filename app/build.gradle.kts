@@ -49,6 +49,7 @@ android {
         release {
             isDebuggable = false
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -141,14 +142,16 @@ android {
 
 androidComponents {
     onVariants {
-        it.buildConfigFields.put(
-            "AppCheckDebugSecret",
-            BuildConfigField(
-                "String",
-                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
-                "debug token"
+        if (it.buildType == "debug") {
+            it.buildConfigFields.put(
+                "AppCheckDebugSecret",
+                BuildConfigField(
+                    "String",
+                    "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
+                    "debug token"
+                )
             )
-        )
+        }
     }
 }
 
@@ -253,7 +256,6 @@ fun getVersionCode(): Int {
         } else {
             1
         }
-    println("VersionCode is set to $code")
     return code
 }
 
@@ -264,6 +266,5 @@ fun getVersionName(): String {
         } else {
             "1.0"
         }
-    println("VersionName is set to $name")
     return name
 }
