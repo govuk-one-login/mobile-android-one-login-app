@@ -18,4 +18,11 @@
             <pin digest="SHA-256">KwccWaCgrnaw6tsrrSO61FgLacNgG2MMLq8GE6+oP5I=</pin>
         </pin-set>
     </domain-config>
+    <domain-config>
+        <domain includeSubdomains="false">vvrc-credential-issuance-service-dbs-ag-vvrc-staging.apps.ocp1.azure.dso.digital.mod.uk</domain>
+        <pin-set>
+            <pin digest="SHA-256">CLcBxJ0axyguKJiapmJ5QQHO6hpXTbn7atGEto6ruSY=</pin>
+            <pin digest="SHA-256">R3hcMOAGw0WFztuG2skTodoHp8IGid3Qg63Cn7YUYoM=</pin>
+        </pin-set>
+    </domain-config>
 </network-security-config>
