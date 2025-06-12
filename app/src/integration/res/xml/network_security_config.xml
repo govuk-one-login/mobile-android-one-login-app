@@ -9,7 +9,7 @@
         <domain includeSubdomains="true">token.integration.account.gov.uk</domain>
         <domain includeSubdomains="true">auth-stub.mobile.integration.account.gov.uk</domain>
         <domain includeSubdomains="true">mobile.integration.account.gov.uk</domain>
-        <domain includeSubdomains="false">api-backend-api.review-b.account.gov.uk</domain>
+        <domain includeSubdomains="false">api-backend-api.review-b.integration.account.gov.uk</domain>
         <pin-set>
             <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
             <pin digest="SHA-256">f0KW/FtqTjs108NpYj42SrGvOB2PpxIVM8nWxjPqJGE=</pin>
