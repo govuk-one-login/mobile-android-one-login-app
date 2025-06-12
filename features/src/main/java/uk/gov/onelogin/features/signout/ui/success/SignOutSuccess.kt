@@ -17,14 +17,13 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @Composable
 fun SignOutSuccess(
     viewModel: SignOutSuccessViewModel = hiltViewModel(),
     analyticsViewModel: SignOutSuccessAnalyticsViewModel = hiltViewModel()
 ) {
-    val walletFeatureFlag = viewModel.featureFlags[WalletFeatureFlag.ENABLED]
+    val walletFeatureFlag = viewModel.isWalletEnabled()
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
