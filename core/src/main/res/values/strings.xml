@@ -2,6 +2,9 @@
     <string name="app_name" translatable="false">One Login</string>
     <string name="action_settings" translatable="false">Settings</string>
 
+    <!-- Required in the ID Check SDK -->
+    <string name="appName" translatable="false">@string/app_name</string>
+
     <!-- Navigation -->
     <string name="app_continue">Continue</string>
     <string name="app_closeButton">Close</string>
