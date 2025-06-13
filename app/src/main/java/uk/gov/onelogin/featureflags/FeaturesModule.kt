@@ -9,7 +9,6 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetterImpl
 
@@ -22,7 +21,6 @@ object FeaturesModule {
     @Singleton
     fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
         setOf(
-            WalletFeatureFlag.ENABLED,
             CriOrchestratorFeatureFlag.ENABLED
         )
     )
