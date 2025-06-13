@@ -75,7 +75,7 @@ jobs:
     permissions:
       contents: write
       packages: read
-
+      id-token: write
     steps:
       - name: Run checkout github action
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -105,8 +105,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          flavors: 'staging'
-#          flavors: 'staging,production'
+          flavors: 'staging,integration,production'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}

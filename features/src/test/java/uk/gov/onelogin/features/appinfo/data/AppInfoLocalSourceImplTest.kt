@@ -22,12 +22,10 @@ import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.AP
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
-import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppInfoLocalSourceImplTest {
     private val prefs: SharedPreferences = mock()
-    private val mockFeatureFlagSetter: FeatureFlagSetter = mock()
 
     private val dispatcher = StandardTestDispatcher()
     private val editor: SharedPreferences.Editor = mock()
@@ -60,7 +58,7 @@ class AppInfoLocalSourceImplTest {
 
     @BeforeEach
     fun setup() {
-        sut = AppInfoLocalSourceImpl(prefs, mockFeatureFlagSetter)
+        sut = AppInfoLocalSourceImpl(prefs)
         Dispatchers.setMain(dispatcher)
         whenever(prefs.edit()).thenReturn(editor)
     }
@@ -110,6 +108,5 @@ class AppInfoLocalSourceImplTest {
         sut.update(data)
         verify(prefs.edit()).putString(APP_INFO_KEY, encodedValue)
         verify(editor).commit()
-        verify(mockFeatureFlagSetter).setFromAppInfo(data.apps.android)
     }
 }

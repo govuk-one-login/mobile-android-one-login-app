@@ -5,12 +5,13 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
+import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 
 class AppInfoServiceImpl @Inject constructor(
     private val remoteSource: AppInfoRemoteSource,
     private val localSource: AppInfoLocalSource,
     private val appVersionCheck: AppVersionCheck,
-
+    private val featureFlagSetter: FeatureFlagSetter,
     private val logger: Logger
 ) : AppInfoService {
     override suspend fun get(): AppInfoServiceState {
@@ -30,6 +31,7 @@ class AppInfoServiceImpl @Inject constructor(
     private fun useLocalSource(fallback: AppInfoServiceState): AppInfoServiceState {
         val localState = localSource.get()
         return if (localState is AppInfoLocalState.Success) {
+            featureFlagSetter.setFromAppInfo(localState.value.apps.android)
             // Check app availability
             if (localState.value.apps.android.available) {
                 // Check min version compatible

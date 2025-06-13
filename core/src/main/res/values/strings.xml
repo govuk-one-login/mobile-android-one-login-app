@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">One Login</string>
+    <string name="one_login_app_name" translatable="false">One Login</string>
     <string name="action_settings" translatable="false">Settings</string>
 
     <!-- Navigation -->
