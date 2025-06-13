@@ -1,5 +1,4 @@
 import com.android.build.api.variant.BuildConfigField
-import java.util.Locale
 
 plugins {
     alias(libs.plugins.android.application)
@@ -127,7 +126,6 @@ android {
 
     bundle {
         language {
-            @Suppress("UnstableApiUsage")
             enableSplit = false
         }
     }
@@ -268,29 +266,4 @@ fun getVersionName(): String {
         }
     println("VersionName is set to $name")
     return name
-}
-
-project.afterEvaluate {
-    this.android.applicationVariants.forEach { applicationVariant ->
-        val applicationVariantCapitalised = applicationVariant.name.replaceFirstChar {
-            if (it.isLowerCase()) {
-                it.titlecase(Locale.getDefault())
-            } else {
-                it.toString()
-            }
-        }
-        val flavorName = applicationVariant.flavorName
-
-        if (flavorName.equals("production")) {
-            listOf(
-                "process${applicationVariantCapitalised}GoogleServices",
-                "uploadCrashlyticsMappingFile$applicationVariantCapitalised"
-            ).mapNotNull { taskName ->
-                tasks.findByName(taskName)
-            }.forEach { task ->
-                project.logger.lifecycle("Disabling ${task.name}")
-                task.enabled = false
-            }
-        }
-    }
 }
