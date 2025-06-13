@@ -304,6 +304,23 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    fun handleActivityCancelledResult() {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
+        setupActivityForResult(Intent(), resultCode = Activity.RESULT_CANCELED)
+
+        clickOptOut()
+        clickLogin()
+
+        nodeWithTextExists(resources.getString(R.string.app_signInTitle))
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any())
+    }
+
+    @Test
     fun handleActivityResultWithDataButLoginThrows() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -375,10 +392,10 @@ class LoginTest : TestCase() {
         clickLogin()
 
         composeRule.apply {
-            nodeWithTextExists(resources.getString(LocalAuthR.string.bio_opt_in_title))
+            nodeWithTextExists(resources.getString(LocalAuthR.string.app_enableBiometricsTitle))
 
             onNodeWithText(
-                resources.getString(LocalAuthR.string.bio_opt_in_passcode_button)
+                resources.getString(LocalAuthR.string.app_enablePasscodeOrPatternButton)
             ).performClick()
 
             onNodeWithTag(
@@ -419,7 +436,10 @@ class LoginTest : TestCase() {
         ).isDisplayed()
     }
 
-    private fun setupActivityForResult(returnedIntent: Intent) {
+    private fun setupActivityForResult(
+        returnedIntent: Intent,
+        resultCode: Int = Activity.RESULT_OK
+    ) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
@@ -435,7 +455,7 @@ class LoginTest : TestCase() {
                             input: I,
                             options: ActivityOptionsCompat?
                         ) {
-                            this.dispatchResult(requestCode, Activity.RESULT_OK, returnedIntent)
+                            this.dispatchResult(requestCode, resultCode, returnedIntent)
                         }
                     }
             }

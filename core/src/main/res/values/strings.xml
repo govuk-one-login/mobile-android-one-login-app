@@ -12,6 +12,7 @@
     <string name="app_back_icon" translatable="false">Back</string>
     <!-- Loading -->
     <string name="app_loadingBody">Loading…</string>
+    <string name="app_loading_content_desc">Loading gov dot UK One Login</string>
 
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help and feedback</string>

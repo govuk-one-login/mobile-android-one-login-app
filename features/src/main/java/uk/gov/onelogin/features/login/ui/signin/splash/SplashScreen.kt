@@ -35,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -189,11 +190,7 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
     val imagePlaceable = subcompose("logo") {
         Icon(
             painter = painterResource(R.drawable.ic_splash_logo),
-            contentDescription = if (DeveloperTools.isDeveloperPanelEnabled()) {
-                "Open dev menu"
-            } else {
-                null
-            },
+            contentDescription = null,
             tint = Color.Unspecified,
             modifier = Modifier
                 .fillMaxWidth()
@@ -208,6 +205,7 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         Modifier
                     }
                 )
+                .semantics { hideFromAccessibility() }
         )
     }.map { it.measure(constraints = constraints) }
     return imagePlaceable
@@ -256,6 +254,7 @@ private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
 @Composable
 internal fun LoadingIndicator() {
     val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
+    val loadingContentDescription = stringResource(R.string.app_loading_content_desc)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -265,7 +264,7 @@ internal fun LoadingIndicator() {
                 bottom = PROGRESS_BAR
             )
             .focusGroup()
-            .semantics(true) { contentDescription = loadingText }
+            .semantics(true) { contentDescription = loadingContentDescription }
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -280,7 +279,7 @@ internal fun LoadingIndicator() {
                 modifier = Modifier
                     .width(PROGRESS_BAR)
                     .height(PROGRESS_BAR)
-                    .semantics { contentDescription = "" }
+                    .semantics { hideFromAccessibility() }
                     .testTag(stringResource(R.string.splashLoadingSpinnerTestTag))
             )
         }
@@ -292,7 +291,7 @@ internal fun LoadingIndicator() {
                 text = loadingText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
-                modifier = Modifier.semantics { contentDescription = "" }
+                modifier = Modifier.semantics { hideFromAccessibility() }
             )
         }
     }

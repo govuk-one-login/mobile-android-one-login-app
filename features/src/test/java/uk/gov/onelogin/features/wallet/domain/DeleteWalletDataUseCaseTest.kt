@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
@@ -37,13 +36,14 @@ class DeleteWalletDataUseCaseTest {
         }
 
     @Test
+    @Suppress("TooGenericExceptionThrown")
     fun `walled sdk init error`(): Unit =
         runBlocking {
             whenever(walletSdk.deleteWalletData()).then {
-                throw WalletSdk.WalletSdkError.SdkNotInitialised
+                throw Error("Error")
             }
             Assertions.assertThrows(
-                WalletSdk.WalletSdkError.SdkNotInitialised::class.java
+                Error::class.java
             ) {
                 runBlocking { sut.invoke() }
             }

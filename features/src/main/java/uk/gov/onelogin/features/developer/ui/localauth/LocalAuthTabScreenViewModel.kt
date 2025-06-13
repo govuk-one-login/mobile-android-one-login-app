@@ -6,17 +6,20 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @HiltViewModel
 class LocalAuthTabScreenViewModel @Inject constructor(
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo,
-    private val analyticsLogger: AnalyticsLogger
+    private val analyticsLogger: AnalyticsLogger,
+    private val featureFlags: FeatureFlags
 ) : ViewModel() {
 
     fun triggerLocalAuthMock(activity: FragmentActivity, isDeviceSecure: Boolean) {
@@ -25,6 +28,7 @@ class LocalAuthTabScreenViewModel @Inject constructor(
             val realPref = localAuthManager.localAuthPreference
             localAuthPreferenceRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
             localAuthManager.enforceAndSet(
+                featureFlags[WalletFeatureFlag.ENABLED],
                 true,
                 activity,
                 object : LocalAuthManagerCallbackHandler {
