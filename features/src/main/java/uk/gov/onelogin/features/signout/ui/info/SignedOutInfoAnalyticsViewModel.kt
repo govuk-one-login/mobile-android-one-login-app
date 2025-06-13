@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui
+package uk.gov.onelogin.features.signout.ui.info
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

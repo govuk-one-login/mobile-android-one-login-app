@@ -26,10 +26,24 @@
     <string name="app_settingsAnalyticsToggleFootnoteLink">Darllenwch fwy yn yr hysbysiad preifatrwydd GOV.UK One Login</string>
     <string name="app_signOutButton">Allgofnodi</string>
     <string name="app_settingsSignInDetailsLink">Rheoli eich manylion mewngofnodi</string>
-
-    <!-- Sign Out-->
     <string name="app_settingsBiometricsField">Biometrig</string>
+
+    <!-- Biometrics Toggle Opt In Screen NO Wallet -->
+    <string name="app_biometricsToggleTitle">Biometreg</string>
+    <string name="app_biometricsToggleLabel">Defnyddiwch biometreg</string>
+    <string name="app_biometricsToggleBody1">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK One Login.</string>
+    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap.</string>
+    <string name="app_biometricsToggleSubtitle">Os ydych yn troi biometreg i ffwrdd</string>
+    <string name="app_biometricsToggleBody3">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i ddatglo\'r ap.</string>
+
+    <!-- Biometrics Toggle Opt In Screen Wallet -->
+    <string name="app_biometricsToggleBody1Wallet">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
+    <string name="app_biometricsToggleBullet1">ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK  One Login</string>
+    <string name="app_biometricsToggleBullet2">gweld ac ychwanegu dogfennau</string>
+    <string name="app_biometricsToggleBody2Wallet">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
     <string name="app_biometricsToggleBody3Wallet">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
+
+    <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
@@ -50,6 +64,15 @@
     <string name="app_signOutConfirmationBullet2_no_wallet">rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
     <string name="app_signOutConfirmationBody2_no_wallet">Gofynnir i chi osod y dewisiadau hyn eto y tro nesaf y byddwch yn mewngofnodi.</string>
     <string name="app_signOutButton_no_wallet">Allgofnodi a dileu dewisiadau</string>
+
+    <string name="app_signOutTitle">Rydych wedi allfognodi</string>
+    <string name="app_signOutSuccessButton">Parhau</string>
+    <!-- Without Wallet -->
+    <string name="app_signOutBody">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae eich dewisiadau ap wedi\'u hailosod.</string>
+    <string name="app_signOutBody2">Mae angen i chi fewngofnodi a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap.</string>
+    <!-- With Wallet -->
+    <string name="app_signOutWalletBody">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn yr ap hwn wedi\'u dileu ac mae eich dewisiadau wedi\'u hailosod.</string>
+    <string name="app_signOutWalletBody2">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
 
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
@@ -122,16 +145,6 @@
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Agor mewn porwr gwe</string>
     <string name="app_openGooglePlayStore">Yn agor yn y Google Play Store</string>
-    <string name="app_biometricsToggleTitle">Biometreg</string>
-    <string name="app_biometricsToggleLabel">Defnyddiwch biometreg</string>
-    <string name="app_biometricsToggleBody1">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK One Login.</string>
-    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap.</string>
-    <string name="app_biometricsToggleSubtitle">Os ydych yn troi biometreg i ffwrdd</string>
-    <string name="app_biometricsToggleBody3">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i ddatglo\'r ap.</string>
-    <string name="app_biometricsToggleBody1Wallet">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
-    <string name="app_biometricsToggleBullet1">ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK  One Login</string>
-    <string name="app_biometricsToggleBullet2">gweld ac ychwanegu dogfennau</string>
-    <string name="app_biometricsToggleBody2Wallet">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
 
     <!-- Welcome tile -->
     <string name="app_welcomeTileHeader">Croeso</string>

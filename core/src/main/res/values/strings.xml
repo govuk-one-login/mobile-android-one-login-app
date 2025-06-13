@@ -68,6 +68,15 @@
     <string name="app_signOutConfirmationBody2_no_wallet">You’ll be asked to set these preferences again next time you sign in.</string>
     <string name="app_signOutButton_no_wallet">Sign out and delete preferences</string>
 
+    <string name="app_signOutTitle">You have signed out</string>
+    <string name="app_signOutSuccessButton">Continue</string>
+    <!-- Without Wallet -->
+    <string name="app_signOutBody">To keep your information secure, your app preferences have been reset.</string>
+    <string name="app_signOutBody2">You need to sign in and set your preferences again to continue using the app.</string>
+    <!-- With Wallet -->
+    <string name="app_signOutWalletBody">To keep your information secure, any documents in this app have been removed and your preferences have been reset.</string>
+    <string name="app_signOutWalletBody2">You need to sign in and reset your preferences to continue using the app. You’ll then be able to add your documents again.</string>
+
     <!-- Splash Screen -->
     <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
     <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
