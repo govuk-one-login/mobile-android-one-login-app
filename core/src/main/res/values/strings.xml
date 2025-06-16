@@ -2,6 +2,9 @@
     <string name="app_name" translatable="false">One Login</string>
     <string name="action_settings" translatable="false">Settings</string>
 
+    <!-- ID Check SDK -->
+    <string name="idsdk_app_name" translatable="false">@string/app_name</string>
+
     <!-- Navigation -->
     <string name="app_continue">Continue</string>
     <string name="app_closeButton">Close</string>
@@ -144,7 +147,7 @@
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
     <string name="app_updateApp_ContentDescription" translatable="false">Update App Required icon content description</string>
-    
+
     <!-- Re-Auth Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
