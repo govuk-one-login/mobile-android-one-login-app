@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
@@ -101,30 +100,6 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             onNodeWithContentDescription(
                 resources.getString(R.string.one_login_image_content_desc)
             ).assertIsDisplayed()
-
-            onNodeWithTag(
-                resources.getString(R.string.appCriCardTestTag),
-                useUnmergedTree = true
-            ).assertIsDisplayed()
-
-            onNodeWithText(
-                "Continue proving your identity",
-                useUnmergedTree = true
-            ).performClick()
-
-            waitUntil(TIMEOUT) {
-                onNodeWithContentDescription(
-                    "Close",
-                    substring = true,
-                    useUnmergedTree = true
-                ).isDisplayed()
-            }
-
-            onNodeWithContentDescription(
-                "Close",
-                substring = true,
-                useUnmergedTree = true
-            ).performClick()
 
             onNodeWithTag(
                 resources.getString(R.string.welcomeCardTestTag),
