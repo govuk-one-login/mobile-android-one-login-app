@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui
+package uk.gov.onelogin.features.signout.ui.info
 
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -7,7 +7,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
