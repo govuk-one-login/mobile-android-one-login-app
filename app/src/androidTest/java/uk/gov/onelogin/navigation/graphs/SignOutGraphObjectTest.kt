@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import javax.inject.Inject
+import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -97,6 +98,25 @@ class SignOutGraphObjectTest : TestCase() {
             onNodeWithText(
                 resources.getString(R.string.app_dataDeletedErrorTitle)
             ).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun signOutGraph_navigateToSignOutSuccessScreen() {
+        composeTestRule.setActivity {
+            navigator.navigate(SignOutRoutes.Success)
+        }
+
+        composeTestRule.apply {
+            onNodeWithText(
+                resources.getString(R.string.app_signOutTitle)
+            ).assertIsDisplayed()
+
+            activityRule.scenario.onActivity { activity ->
+                back()
+
+                assertTrue(activity.isFinishing)
+            }
         }
     }
 }
