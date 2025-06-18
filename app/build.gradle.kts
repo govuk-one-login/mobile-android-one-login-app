@@ -143,14 +143,27 @@ android {
 
 androidComponents {
     onVariants {
-        it.buildConfigFields.put(
-            "AppCheckDebugSecret",
-            BuildConfigField(
-                "String",
-                "\"" + rootProject.ext["debugAppCheckToken"] as String + "\"",
-                "debug token"
-            )
-        )
+        if (it.buildType == "debug") {
+            if (it.flavorName == "build") {
+                it.buildConfigFields.put(
+                    "AppCheckDebugSecret",
+                    BuildConfigField(
+                        "String",
+                        "\"" + rootProject.ext["debugBuildAppCheckToken"] as String + "\"",
+                        "debug token"
+                    )
+                )
+            } else if (it.flavorName == "staging") {
+                it.buildConfigFields.put(
+                    "AppCheckDebugSecret",
+                    BuildConfigField(
+                        "String",
+                        "\"" + rootProject.ext["debugStagingAppCheckToken"] as String + "\"",
+                        "debug token"
+                    )
+                )
+            }
+        }
     }
 }
 
