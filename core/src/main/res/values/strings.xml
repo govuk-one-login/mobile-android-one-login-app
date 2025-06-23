@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name" translatable="false">One Login</string>
+    <string name="one_login_app_name" translatable="false">One Login</string>
     <string name="action_settings" translatable="false">Settings</string>
 
     <!-- ID Check SDK -->
-    <string name="idsdk_app_name" translatable="false">@string/app_name</string>
+    <string name="idsdk_app_name" translatable="false">@string/one_login_app_name</string>
 
     <!-- Navigation -->
     <string name="app_continue">Continue</string>

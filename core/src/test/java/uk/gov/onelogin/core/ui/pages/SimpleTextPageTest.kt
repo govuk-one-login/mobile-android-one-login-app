@@ -14,7 +14,7 @@ class SimpleTextPageTest : FragmentActivityTestCase() {
     fun testSimpleTextPage() {
         val testText = "One Login"
         composeTestRule.setContent {
-            SimpleTextPage(text = R.string.app_name)
+            SimpleTextPage(text = R.string.one_login_app_name)
         }
 
         composeTestRule.onNodeWithText(testText).assertIsDisplayed()
