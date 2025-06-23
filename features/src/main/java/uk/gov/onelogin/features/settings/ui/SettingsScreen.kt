@@ -107,7 +107,7 @@ private fun SettingsScreenBody(
 ) {
     Column(
         modifier = Modifier
-            .padding(paddingValues)
+            .padding(top = paddingValues.calculateTopPadding())
             .consumeWindowInsets(paddingValues)
             .verticalScroll(rememberScrollState())
             .windowInsetsPadding(WindowInsets.displayCutout)

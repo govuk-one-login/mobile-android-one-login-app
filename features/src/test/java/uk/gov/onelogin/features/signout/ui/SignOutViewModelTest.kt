@@ -13,7 +13,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
-import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
@@ -50,7 +50,7 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(LoginRoutes.Root, true)
+            verify(mockNavigator).navigate(SignOutRoutes.Success)
             assertThat("logger has no logs", logger.size == 0)
         }
 

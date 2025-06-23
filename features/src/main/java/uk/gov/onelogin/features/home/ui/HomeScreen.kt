@@ -3,12 +3,11 @@ package uk.gov.onelogin.features.home.ui
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -51,11 +50,11 @@ fun HomeScreen(
     TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding())
                 .padding(horizontal = smallPadding)
                 .consumeWindowInsets(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .height(IntrinsicSize.Max)
                 .windowInsetsPadding(WindowInsets.displayCutout)
         ) {
             if (viewModel.uiCardEnabled.collectAsState().value) {

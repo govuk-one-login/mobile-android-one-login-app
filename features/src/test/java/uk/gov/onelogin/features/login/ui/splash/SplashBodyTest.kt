@@ -6,6 +6,7 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
@@ -26,6 +27,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
+    private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
     fun setup() {
@@ -36,6 +38,9 @@ class SplashBodyTest : FragmentActivityTestCase() {
         crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
         loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
+        loadingContentDescription = hasContentDescription(
+            resources.getString(R.string.app_loading_content_desc)
+        )
         loadingIndicator = hasTestTag(context.getString(R.string.splashLoadingSpinnerTestTag))
     }
 
@@ -76,6 +81,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
         composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
+        composeTestRule.onAllNodes(loadingContentDescription).assertCountEquals(2)
         // And only `logo`, `crownIcon` is displayed and`unlockButton` is not
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
