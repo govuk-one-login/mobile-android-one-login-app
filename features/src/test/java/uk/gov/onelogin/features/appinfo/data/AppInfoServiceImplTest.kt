@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.features.TestUtils
@@ -16,11 +18,13 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoRemoteSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoServiceImpl
 import uk.gov.onelogin.features.appinfo.domain.AppVersionCheck
+import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 
 class AppInfoServiceImplTest {
     private val remoteSource: AppInfoRemoteSource = mock()
     private val localSource: AppInfoLocalSource = mock()
     private val appVersionCheck: AppVersionCheck = mock()
+    private val featureFlagSetter: FeatureFlagSetter = mock()
     private val logger = SystemLogger()
     private val data = TestUtils.appInfoData
     private val dataAppUnavailable = TestUtils.appInfoDataAppUnavailable
@@ -32,6 +36,7 @@ class AppInfoServiceImplTest {
             remoteSource,
             localSource,
             appVersionCheck,
+            featureFlagSetter,
             logger
         )
 
@@ -45,6 +50,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
             assertTrue(logger.size == 0)
+            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
         }
 
     @Test
@@ -57,6 +63,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
             assertTrue(logger.size == 0)
+            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
         }
 
     @Test
@@ -67,6 +74,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Offline, result)
             assertTrue(logger.size == 0)
+            verifyNoInteractions(featureFlagSetter)
         }
 
     @Test
@@ -81,6 +89,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Successful(data), result)
             assertTrue(logger.contains(remoteSourceErrorMsg))
+            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
         }
 
     @Test
@@ -93,6 +102,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Unavailable, result)
             assertTrue(logger.contains(remoteSourceErrorMsg))
+            verifyNoInteractions(featureFlagSetter)
         }
 
     @Test
@@ -105,6 +115,7 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.UpdateRequired, result)
             assertTrue(logger.size == 0)
+            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
         }
 
     @Test
@@ -115,5 +126,6 @@ class AppInfoServiceImplTest {
             val result = sut.get()
             assertEquals(AppInfoServiceState.Unavailable, result)
             assertTrue(logger.size == 0)
+            verify(featureFlagSetter).setFromAppInfo(dataAppUnavailable.apps.android)
         }
 }

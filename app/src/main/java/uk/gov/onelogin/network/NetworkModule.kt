@@ -39,7 +39,7 @@ object NetworkModule {
     @Provides
     fun providesUserAgentGenerator(@ApplicationContext context: Context): UserAgentGenerator {
         val userAgentGenerator = UserAgentGeneratorImpl()
-        val appName = context.resources.getString(R.string.app_name)
+        val appName = context.resources.getString(R.string.one_login_app_name)
         userAgentGenerator.setUserAgent(
             UserAgent(
                 appName = appName,

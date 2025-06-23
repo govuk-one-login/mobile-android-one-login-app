@@ -8,11 +8,9 @@ import kotlinx.serialization.json.Json
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
-import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 
 class AppInfoLocalSourceImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences,
-    private val featureFlagSetter: FeatureFlagSetter
+    private val sharedPrefs: SharedPreferences
 ) : AppInfoLocalSource {
     override fun get(): AppInfoLocalState {
         return try {
@@ -32,7 +30,6 @@ class AppInfoLocalSourceImpl @Inject constructor(
         sharedPrefs.edit(true) {
             putString(APP_INFO_KEY, encodedValue)
         }
-        featureFlagSetter.setFromAppInfo(value.apps.android)
     }
 
     private fun decodeAppInfoData(result: String): AppInfoLocalState {

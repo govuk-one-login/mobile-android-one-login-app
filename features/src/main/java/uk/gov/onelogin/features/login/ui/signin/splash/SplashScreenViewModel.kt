@@ -38,7 +38,6 @@ class SplashScreenViewModel @Inject constructor(
             handleLocalLogin(
                 fragmentActivity,
                 callback = {
-                    println(it)
                     when (it) {
                         LocalAuthStatus.SecureStoreError ->
                             nextScreen(SignOutRoutes.Info)

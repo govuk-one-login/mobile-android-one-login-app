@@ -77,7 +77,6 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean = false,
         activity: FragmentActivity
     ) {
-        println("Handle Local Auth: ${intent.data}")
         if (intent.data == null) return
 
         viewModelScope.launch {
@@ -155,7 +154,6 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
-        println("Handle Local Auth: $tokens")
         tokenRepository.setTokenResponse(tokens)
         saveTokenExpiry(tokens.accessTokenExpirationTime)
         savePersistentId()

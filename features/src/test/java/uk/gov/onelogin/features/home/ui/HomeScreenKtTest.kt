@@ -97,6 +97,10 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
                 useUnmergedTree = true
             ).performClick()
 
+            onNodeWithContentDescription(
+                resources.getString(R.string.one_login_image_content_desc)
+            ).assertIsDisplayed()
+
             onNodeWithTag(
                 resources.getString(R.string.welcomeCardTestTag),
                 useUnmergedTree = true

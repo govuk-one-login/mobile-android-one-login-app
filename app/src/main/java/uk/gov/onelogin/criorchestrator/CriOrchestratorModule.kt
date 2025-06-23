@@ -13,7 +13,6 @@ import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
-import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.nfc.NfcConfigKey
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.create
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 
@@ -24,40 +23,19 @@ object CriOrchestratorModule {
     @Singleton
     fun provideSdkConfig(
         @ApplicationContext context: Context
-    ): Config {
-        val config = Config(
-            entries =
-            persistentListOf(
-                Config.Entry(
-                    key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
-                    Config.Value.StringValue(
-                        value = context.getString(
-                            uk.gov.android.onelogin.core.R.string.backendAsyncUrl
-                        )
-                    )
-                ),
-                Config.Entry(
-                    key = SdkConfigKey.BypassIdCheckAsyncBackend,
-                    Config.Value.BooleanValue(
-                        value = false
-                    )
-                ),
-                Config.Entry<Config.Value.StringValue>(
-                    key = NfcConfigKey.NfcAvailability,
-                    Config.Value.StringValue(
-                        value = NfcConfigKey.NfcAvailability.OPTION_DEVICE
-                    )
-                ),
-                Config.Entry(
-                    key = IdCheckWrapperConfigKey.EnableManualLauncher,
-                    Config.Value.BooleanValue(
-                        value = true
+    ) = Config(
+        entries =
+        persistentListOf(
+            Config.Entry(
+                key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
+                Config.Value.StringValue(
+                    value = context.getString(
+                        uk.gov.android.onelogin.core.R.string.backendAsyncUrl
                     )
                 )
             )
         )
-        return config
-    }
+    )
 
     @Provides
     @Singleton
@@ -66,7 +44,6 @@ object CriOrchestratorModule {
         genericHttpClient: GenericHttpClient,
         analyticsLogger: AnalyticsLogger,
         sdkConfig: Config,
-
         logger: Logger
     ): CriOrchestratorSdk {
         return CriOrchestratorSdk.create(
