@@ -162,6 +162,15 @@ androidComponents {
                         "debug token"
                     )
                 )
+            } else {
+                it.buildConfigFields.put(
+                    "AppCheckDebugSecret",
+                    BuildConfigField(
+                        "String",
+                        "\"\"",
+                        "debug token"
+                    )
+                )
             }
         }
     }

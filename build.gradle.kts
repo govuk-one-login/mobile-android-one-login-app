@@ -66,7 +66,7 @@ buildscript {
             providers.gradleProperty("debugStagingAppCheckToken").get()
         }  catch (e: org.gradle.api.internal.provider.MissingValueException) {
             logger.warn("firebase debug staging token not found in gradle properties")
-            System.getenv("STAGING_DEBUG_APP_CHECK_TOKEN")
+            ""
         }
     )
 }
