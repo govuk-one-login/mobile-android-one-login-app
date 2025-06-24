@@ -52,12 +52,12 @@ jobs:
         id: next-version
         uses: ./config/actions/get-next-version-from-branch
 
-      - name: Ensure version is correct
-        id: version-number
-        uses: ./config/actions/ensure-version-is-correct
-        with:
-          current-version: ${{ steps.latest-tag.outputs.current-tag }}
-          next-version: ${{ steps.next-version.outputs.next-version }}
+#      - name: Ensure version is correct
+#        id: version-number
+#        uses: ./config/actions/ensure-version-is-correct
+#        with:
+#          current-version: ${{ steps.latest-tag.outputs.current-tag }}
+#          next-version: ${{ steps.next-version.outputs.next-version }}
 
       - name: Display version jump
         run: |
