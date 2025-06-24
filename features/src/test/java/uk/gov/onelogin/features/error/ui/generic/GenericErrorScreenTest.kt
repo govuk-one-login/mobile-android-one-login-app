@@ -16,7 +16,7 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 @RunWith(AndroidJUnit4::class)
 class GenericErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsLogger: AnalyticsLogger
-    private lateinit var viewModel: GenericErrorAnalyticsViewModel
+    private lateinit var analyticsViewModel: GenericErrorAnalyticsViewModel
     private var primaryClicked = false
 
     private val errorTitle = hasText(resources.getString(R.string.app_genericErrorPage))
@@ -26,7 +26,7 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         analyticsLogger = mock()
-        viewModel = GenericErrorAnalyticsViewModel(context, analyticsLogger)
+        analyticsViewModel = GenericErrorAnalyticsViewModel(context, analyticsLogger)
         primaryClicked = false
     }
 
@@ -34,7 +34,6 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
     fun genericErrorScreen() {
         composeTestRule.setContent {
             GenericErrorScreen(
-                analyticsViewModel = viewModel,
                 onClick = { primaryClicked = true }
             )
         }
@@ -53,7 +52,6 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
     fun onBackClicked() {
         composeTestRule.setContent {
             GenericErrorScreen(
-                analyticsViewModel = viewModel,
                 onClick = { primaryClicked = true }
             )
         }

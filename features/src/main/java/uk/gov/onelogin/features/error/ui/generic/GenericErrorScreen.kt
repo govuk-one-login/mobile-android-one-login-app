@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
@@ -18,18 +17,20 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 fun GenericErrorScreen(
-    analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel(),
+    trackBackButton: () -> Unit = {},
+    trackScreen: () -> Unit = {},
+    trackButton: () -> Unit = {},
     onClick: () -> Unit = { }
 ) {
     GdsTheme {
         BackHandler {
-            analyticsViewModel.trackBackButton()
+            trackBackButton()
             onClick()
         }
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
+        LaunchedEffect(Unit) { trackScreen() }
         EdgeToEdgePage { _ ->
             GenericErrorBody {
-                analyticsViewModel.trackButton()
+                trackButton()
                 onClick()
             }
         }
