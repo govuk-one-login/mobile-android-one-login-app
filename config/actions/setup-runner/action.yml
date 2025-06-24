@@ -40,11 +40,11 @@ runs:
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       shell: bash
 
-    - name: Install brew dependencies
-      run: |
-        source ./config/shell/brewPath
-        brew bundle
-      shell: bash
+#    - name: Install brew dependencies
+#      run: |
+#        source ./config/shell/brewPath
+#        brew bundle
+#      shell: bash
 
     - name: Update
       run: |

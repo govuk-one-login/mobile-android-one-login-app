@@ -65,7 +65,7 @@ jobs:
         shell: bash
         env:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
-          NEXT_VERSION: ${{ steps.version-number.outputs.version }}
+          NEXT_VERSION: ${{ steps.next-version.outputs.next-version }}
 
   buildAndPublishRelease:
     name: Verify code base when pushed
