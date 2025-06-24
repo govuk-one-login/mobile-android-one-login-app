@@ -118,7 +118,7 @@ jobs:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
 
       - name: Git tag bundles
-        uses: ./config/actions/git-tag-bundles
+        uses: ./config/actions/git-tag-bundles-pre-release
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-code: ${{ steps.version-code.outputs.version-code }}
