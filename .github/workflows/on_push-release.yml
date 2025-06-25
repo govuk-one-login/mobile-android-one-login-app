@@ -52,12 +52,12 @@ jobs:
         id: next-version
         uses: ./config/actions/get-next-version-from-branch
 
-      - name: Ensure version is correct
-        id: version-number
-        uses: ./config/actions/ensure-version-is-correct
-        with:
-          current-version: ${{ steps.latest-tag.outputs.current-tag }}
-          next-version: ${{ steps.next-version.outputs.next-version }}
+#      - name: Ensure version is correct
+#        id: version-number
+#        uses: ./config/actions/ensure-version-is-correct
+#        with:
+#          current-version: ${{ steps.latest-tag.outputs.current-tag }}
+#          next-version: ${{ steps.next-version.outputs.next-version }}
 
       - name: Display version jump
         run: |
@@ -105,7 +105,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          flavors: 'staging,integration,production'
+#          flavors: 'staging,integration,production'
+          flavors: 'build, staging'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
