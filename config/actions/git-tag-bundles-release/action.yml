@@ -44,7 +44,6 @@ runs:
               git push origin "${INPUT_VERSION_NAME}-${INPUT_VERSION_CODE}"
               git tag -a "v${INPUT_VERSION_NAME}" -m "${INPUT_VERSION_NAME} - ${INPUT_VERSION_CODE}"
               git push origin ":refs/tags/v${INPUT_VERSION_NAME}"
-              git push origin "v${INPUT_VERSION_NAME}"
               ;;
             *)
               git tag -a "${FLAVOR}-${INPUT_VERSION_NAME}-${INPUT_VERSION_CODE}" -m "Publish ${INPUT_VERSION_NAME} - ${INPUT_PACKAGE_NAME}.${FLAVOR} - ${INPUT_VERSION_CODE} - internal"
