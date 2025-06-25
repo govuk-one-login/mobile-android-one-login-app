@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.generic
+package uk.gov.onelogin.features.signout.ui.success
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -9,9 +9,12 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class GenericErrorScreenShotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SignOutSuccessScreenshotTest(
+    walletEnabled: Boolean,
+    nightMode: NightMode
+) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        GenericErrorPreview()
+        SignOutConfirmationBody(walletEnabled) {}
     }
 
     companion object {
@@ -19,8 +22,10 @@ class GenericErrorScreenShotTest(nightMode: NightMode) : BaseScreenshotTest(nigh
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> {
             return arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
+                arrayOf(true, NOTNIGHT),
+                arrayOf(true, NIGHT),
+                arrayOf(false, NOTNIGHT),
+                arrayOf(false, NIGHT)
             )
         }
     }

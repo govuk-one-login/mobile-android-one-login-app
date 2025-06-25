@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.generic
+package uk.gov.onelogin.features.error.ui.signin
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -9,9 +9,9 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class GenericErrorScreenShotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SignInErrorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        GenericErrorPreview()
+        SignInErrorScreenPreview()
     }
 
     companion object {

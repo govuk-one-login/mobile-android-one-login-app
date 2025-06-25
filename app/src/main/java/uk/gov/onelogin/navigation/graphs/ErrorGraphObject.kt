@@ -3,16 +3,14 @@ package uk.gov.onelogin.navigation.graphs
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
-import uk.gov.onelogin.features.error.ui.SignOutErrorScreen
-import uk.gov.onelogin.features.error.ui.generic.GenericErrorAnalyticsViewModel
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
+import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableScreen
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 
@@ -27,12 +25,7 @@ object ErrorGraphObject {
             composable(
                 route = ErrorRoutes.Generic.getRoute()
             ) {
-                val analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel()
-                GenericErrorScreen(
-                    trackBackButton = { analyticsViewModel.trackBackButton() },
-                    trackScreen = { analyticsViewModel.trackScreen() },
-                    trackButton = { analyticsViewModel.trackButton() }
-                ) { navController.popBackStack() }
+                GenericErrorScreen { navController.popBackStack() }
             }
             composable(
                 route = ErrorRoutes.SignOut.getRoute()
