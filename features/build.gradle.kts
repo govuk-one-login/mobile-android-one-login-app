@@ -26,7 +26,6 @@ android {
 
     defaultConfig {
         minSdk = rootProject.ext["minSdkVersion"] as Int
-        // targetSdk = rootProject.ext["targetSdkVersion"] as Int
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 

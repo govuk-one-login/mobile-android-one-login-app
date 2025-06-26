@@ -7,10 +7,12 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
+import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
 
 @RunWith(Parameterized::class)
 class WelcomeScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
+        WelcomePreview()
     }
 
     companion object {
