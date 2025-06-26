@@ -11,6 +11,7 @@ runs:
   steps:
     - name: Git tag bundles
       run: |
+        git tag -a "v${INPUT_VERSION_NAME}" -m "Creating tag v${INPUT_VERSION_NAME}"
         git push origin "v${INPUT_VERSION_NAME}"
       shell: bash
       env:
