@@ -1,4 +1,4 @@
-name: On Branch Push (release)
+name: On Branch Push (main)
 
 on:
   push:
