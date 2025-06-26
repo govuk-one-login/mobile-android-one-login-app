@@ -22,7 +22,7 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      version: ${{ steps.version-number.outputs.version }}
+      version: ${{ steps.next-version.outputs.next-version }}
     steps:
       - name: Run checkout github action
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
