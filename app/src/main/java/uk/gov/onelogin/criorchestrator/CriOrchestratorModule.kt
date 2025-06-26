@@ -15,6 +15,8 @@ import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.create
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
+import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
+import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -53,5 +55,13 @@ object CriOrchestratorModule {
             logger,
             context
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideCheckIdCheckIsActive(
+        criOrchestratorSdk: CriOrchestratorSdk
+    ): CheckIdCheckSessionState {
+        return CheckIdCheckSessionStateImpl(criOrchestratorSdk)
     }
 }

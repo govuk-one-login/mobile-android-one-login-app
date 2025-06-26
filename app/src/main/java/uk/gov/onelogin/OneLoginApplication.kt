@@ -48,7 +48,8 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
 
     override fun onStop(owner: LifecycleOwner) {
         if (isLocalAuthEnabled() &&
-            appEntryPoint.tokenRepository().getTokenResponse() != null
+            appEntryPoint.tokenRepository().getTokenResponse() != null &&
+            !appEntryPoint.isIdCheckSessionActive().isIdCheckActive()
         ) {
             appEntryPoint.tokenRepository().clearTokenResponse()
             appEntryPoint.navigator().navigate(LoginRoutes.Start)
