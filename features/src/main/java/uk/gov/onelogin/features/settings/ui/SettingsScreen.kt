@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package uk.gov.onelogin.features.settings.ui
 
 import androidx.activity.compose.BackHandler
@@ -53,11 +55,14 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 
@@ -86,8 +91,25 @@ fun SettingsScreen(
             paddingValues = paddingValues,
             email = email,
             optInState = optInState,
-            viewModel = viewModel,
-            analyticsViewModel = analyticsViewModel,
+            viewModelFunctions = ViewModelFunctions(
+                showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
+                goToBiometricsOptIn = { viewModel.goToBiometricsOptIn() },
+                toggleOptInPreference = { viewModel.toggleOptInPreference() },
+                goToOssl = { viewModel.goToOssl() },
+                goToSignOut = { viewModel.goToSignOut() }
+            ),
+            analyticsViewModelFunctions = AnalyticsViewModelFunctions(
+                trackSignInDetailLink = { analyticsViewModel.trackSignInDetailLink() },
+                trackUsingOneLoginLink = { analyticsViewModel.trackUsingOneLoginLink() },
+                trackContactOneLoginLink = { analyticsViewModel.trackContactOneLoginLink() },
+                trackBiometricsButton = { analyticsViewModel.trackBiometricsButton() },
+                trackPrivacyNoticeLink = { analyticsViewModel.trackPrivacyNoticeLink() },
+                trackAccessibilityStatementLink = {
+                    analyticsViewModel.trackAccessibilityStatementLink()
+                },
+                trackOpenSourceButton = { analyticsViewModel.trackOpenSourceButton() },
+                trackSignOutButton = { analyticsViewModel.trackSignOutButton() }
+            ),
             uriHandler = uriHandler,
             settingsScreenLinks = settingsScreenLinks
         )
@@ -100,8 +122,8 @@ private fun SettingsScreenBody(
     paddingValues: PaddingValues,
     email: String,
     optInState: Boolean,
-    viewModel: SettingsScreenViewModel,
-    analyticsViewModel: SettingsAnalyticsViewModel,
+    viewModelFunctions: ViewModelFunctions,
+    analyticsViewModelFunctions: AnalyticsViewModelFunctions,
     uriHandler: UriHandler,
     settingsScreenLinks: SettingsScreenLinks
 ) {
@@ -116,53 +138,53 @@ private fun SettingsScreenBody(
         EmailSection(email)
         YourDetailsSection(
             onClick = {
-                analyticsViewModel.trackSignInDetailLink()
+                analyticsViewModelFunctions.trackSignInDetailLink()
                 uriHandler.openUri(settingsScreenLinks.signInUrl)
             }
         )
         HelpAndFeedbackSection(
             onHelpClick = {
-                analyticsViewModel.trackUsingOneLoginLink()
+                analyticsViewModelFunctions.trackUsingOneLoginLink()
                 uriHandler.openUri(settingsScreenLinks.helpUrl)
             },
             onContactClick = {
-                analyticsViewModel.trackContactOneLoginLink()
+                analyticsViewModelFunctions.trackContactOneLoginLink()
                 uriHandler.openUri(settingsScreenLinks.contactUrl)
             }
         )
         AboutTheAppSection(
             optInState = optInState,
-            showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
+            showBiometricsOption = viewModelFunctions.showBiometricsOption,
             onBiometrics = {
-                analyticsViewModel.trackBiometricsButton()
-                viewModel.goToBiometricsOptIn()
+                analyticsViewModelFunctions.trackBiometricsButton()
+                viewModelFunctions.goToBiometricsOptIn()
             },
             onToggle = {
-                viewModel.toggleOptInPreference()
+                viewModelFunctions.toggleOptInPreference()
             },
             onPrivacyNoticeClick = {
-                analyticsViewModel.trackPrivacyNoticeLink()
+                analyticsViewModelFunctions.trackPrivacyNoticeLink()
                 uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
             }
         )
         LegalSection(
             onPrivacyNoticeClick = {
-                analyticsViewModel.trackPrivacyNoticeLink()
+                analyticsViewModelFunctions.trackPrivacyNoticeLink()
                 uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
             },
             onAccessibilityStatementClick = {
-                analyticsViewModel.trackAccessibilityStatementLink()
+                analyticsViewModelFunctions.trackAccessibilityStatementLink()
                 uriHandler.openUri(settingsScreenLinks.accessibilityStatementUrl)
             },
             onOpenSourceLicensesClick = {
-                analyticsViewModel.trackOpenSourceButton()
-                viewModel.goToOssl()
+                analyticsViewModelFunctions.trackOpenSourceButton()
+                viewModelFunctions.goToOssl()
             }
         )
         SignOutRow(
             openSignOutScreen = {
-                analyticsViewModel.trackSignOutButton()
-                viewModel.goToSignOut()
+                analyticsViewModelFunctions.trackSignOutButton()
+                viewModelFunctions.goToSignOut()
             }
         )
     }
@@ -174,6 +196,25 @@ private data class SettingsScreenLinks(
     val accessibilityStatementUrl: String,
     val helpUrl: String,
     val contactUrl: String
+)
+
+private data class ViewModelFunctions(
+    val showBiometricsOption: Boolean,
+    val goToBiometricsOptIn: () -> Unit = {},
+    val toggleOptInPreference: () -> Unit = {},
+    val goToOssl: () -> Unit = {},
+    val goToSignOut: () -> Unit = {}
+)
+
+private data class AnalyticsViewModelFunctions(
+    val trackSignInDetailLink: () -> Unit = {},
+    val trackUsingOneLoginLink: () -> Unit = {},
+    val trackContactOneLoginLink: () -> Unit = {},
+    val trackBiometricsButton: () -> Unit = {},
+    val trackPrivacyNoticeLink: () -> Unit = {},
+    val trackAccessibilityStatementLink: () -> Unit = {},
+    val trackOpenSourceButton: () -> Unit = {},
+    val trackSignOutButton: () -> Unit = {}
 )
 
 @Composable
@@ -439,6 +480,42 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
             color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun SettingsScreenOptOutShowBiometricsPreview() {
+    GdsTheme {
+        SettingsScreenBody(
+            paddingValues = PaddingValues(all = smallPadding),
+            email = "name@place.gov.uk",
+            optInState = false,
+            viewModelFunctions = ViewModelFunctions(showBiometricsOption = true, {}, {}, {}, {}),
+            analyticsViewModelFunctions =
+            AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+            uriHandler = LocalUriHandler.current,
+            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "")
+        )
+    }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun SettingsScreenOptInNoShowBiometricsPreview() {
+    GdsTheme {
+        SettingsScreenBody(
+            paddingValues = PaddingValues(all = smallPadding),
+            email = "name@place.gov.uk",
+            optInState = true,
+            viewModelFunctions = ViewModelFunctions(showBiometricsOption = false, {}, {}, {}, {}),
+            analyticsViewModelFunctions =
+            AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+            uriHandler = LocalUriHandler.current,
+            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "")
         )
     }
 }
