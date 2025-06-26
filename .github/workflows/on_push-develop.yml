@@ -58,7 +58,7 @@ jobs:
         uses: ./config/actions/version-name
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.get-latest-tag.outputs.current-tag }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
 
       - name: Bundle release
         id: bundle-release
