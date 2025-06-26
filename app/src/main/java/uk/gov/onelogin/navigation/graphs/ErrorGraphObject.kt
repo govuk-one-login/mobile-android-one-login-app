@@ -8,9 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
-import uk.gov.onelogin.features.error.ui.SignOutErrorScreen
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
+import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableScreen
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 

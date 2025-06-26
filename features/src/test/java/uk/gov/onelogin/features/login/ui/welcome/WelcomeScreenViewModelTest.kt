@@ -166,7 +166,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handleIntent when data != null and device is secure with ok biometrics`() =
         runTest {
-            createMocks()
+            createMocks(isLocalAuthMocked = true)
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 
@@ -195,7 +195,7 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `when data != null and device is secure with ok biometrics and pref set to none`() =
         runTest {
-            createMocks()
+            createMocks(isLocalAuthMocked = true)
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
 

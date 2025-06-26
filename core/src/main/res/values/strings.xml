@@ -88,7 +88,7 @@
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
     <string name="app_signInBody1">Prove your identity to access government services.</string>
-    <string name="app_signInBody2">You’ll need to sign in with your GOV.UK One Login details.</string>
+    <string name="app_signInBody2">You\'ll need to sign in with your GOV.UK One Login details.</string>
     <string name="app_signInButton">Sign in with GOV.UK One Login</string>
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>

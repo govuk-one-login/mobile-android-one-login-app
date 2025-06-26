@@ -1,7 +1,5 @@
 package uk.gov.onelogin.features.login.ui.splash
 
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,10 +131,8 @@ class SplashScreenViewModelTest {
             viewModel.login(mockActivity)
 
             verifyNoInteractions(mockNavigator)
-            Handler(Looper.getMainLooper()).post {
-                assertTrue(viewModel.showUnlock.value)
-                assertFalse(viewModel.loading.value)
-            }
+            assertTrue(viewModel.showUnlock.value)
+            assertFalse(viewModel.loading.value)
         }
 
     @Test

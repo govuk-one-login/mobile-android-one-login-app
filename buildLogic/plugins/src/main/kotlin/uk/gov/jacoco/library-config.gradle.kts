@@ -6,6 +6,7 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.internal.coverage.JacocoReportTask
 import com.android.build.gradle.internal.tasks.ManagedDeviceInstrumentationTestTask
 import org.gradle.configurationcache.extensions.capitalized
+import uk.gov.extensions.excludeAndroidClassesFromJacocoCoverage
 import uk.gov.extensions.LibraryExtensionExt.decorateExtensionWithJacoco
 import uk.gov.extensions.ProjectExtensions.debugLog
 import uk.gov.extensions.ProjectExtensions.libs
@@ -59,6 +60,9 @@ project.configure<LibraryAndroidComponentsExtension> {
         }
     }
 }
+
+// https://github.com/cashapp/paparazzi/issues/955
+project.excludeAndroidClassesFromJacocoCoverage()
 
 /**
  * Generate custom JaCoCo report tasks

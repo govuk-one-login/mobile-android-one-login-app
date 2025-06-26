@@ -22,7 +22,6 @@ android {
 
     defaultConfig {
         minSdk = rootProject.ext["minSdkVersion"] as Int
-        targetSdk = rootProject.ext["targetSdkVersion"] as Int
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -89,6 +88,7 @@ android {
             isIncludeAndroidResources = true
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
+        // targetSdk = rootProject.ext["targetSdkVersion"] as Int
     }
 }
 
@@ -139,6 +139,7 @@ dependencies {
 
     listOf(
         libs.androidx.core.ktx,
+        platform(libs.androidx.compose.bom),
         libs.material,
         libs.bundles.gov.uk,
         libs.hilt.android,

@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.oss.licence.about.libraries)
+    alias(libs.plugins.paparazzi)
     kotlin("kapt")
     id("uk.gov.onelogin.jvm-toolchains")
     id("uk.gov.jacoco.library-config")
@@ -25,7 +26,6 @@ android {
 
     defaultConfig {
         minSdk = rootProject.ext["minSdkVersion"] as Int
-        targetSdk = rootProject.ext["targetSdkVersion"] as Int
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -133,7 +133,6 @@ dependencies {
         libs.androidx.compose.ui.junit4,
         libs.androidx.espresso.core,
         libs.androidx.navigation.testing,
-        libs.androidx.test.orchestrator,
         libs.androidx.espresso.intents,
         libs.logging.test
     ).forEach(::testImplementation)
@@ -154,6 +153,7 @@ dependencies {
     listOf(
         libs.androidx.core.ktx,
         libs.androidx.appcompat,
+        platform(libs.androidx.compose.bom),
         libs.material,
         libs.androidx.compose.material,
         libs.androidx.compose.material3,
