@@ -18,12 +18,14 @@ import uk.gov.onelogin.core.ApplicationEntryPoint
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 
 @RunWith(AndroidJUnit4::class)
 class OneLoginApplicationTest {
     private lateinit var app: OneLoginApplication
 
     private val entryPoint: ApplicationEntryPoint = mock()
+    private val mockCheckIdCheckSessionState: CheckIdCheckSessionState = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockNavigator: Navigator = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
@@ -43,6 +45,7 @@ class OneLoginApplicationTest {
         app = ApplicationProvider.getApplicationContext<OneLoginApplication>()
 
         // Setup mocks
+        whenever(entryPoint.isIdCheckSessionActive()).thenReturn(mockCheckIdCheckSessionState)
         whenever(entryPoint.tokenRepository()).thenReturn(mockTokenRepository)
         whenever(entryPoint.navigator()).thenReturn(mockNavigator)
         whenever(entryPoint.localAuthManager()).thenReturn(mockLocalAuthManager)
@@ -59,6 +62,7 @@ class OneLoginApplicationTest {
             )
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
 
         // When
         app.onStop(ProcessLifecycleOwner.get())
@@ -71,6 +75,7 @@ class OneLoginApplicationTest {
     @Test
     fun `onStop does nothing when local auth is disabled`() {
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+        whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
 
         app.onStop(ProcessLifecycleOwner.get())
 
@@ -86,6 +91,23 @@ class OneLoginApplicationTest {
             )
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
+        whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
+
+        app.onStop(ProcessLifecycleOwner.get())
+
+        verify(mockTokenRepository, never()).clearTokenResponse()
+        verify(mockNavigator, never()).navigate(any(), any())
+    }
+
+    @Test
+    fun `onStop does nothing when ID-Check journey is in progress`() {
+        whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
+            LocalAuthPreference.Enabled(
+                true
+            )
+        )
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
+        whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(true)
 
         app.onStop(ProcessLifecycleOwner.get())
 
