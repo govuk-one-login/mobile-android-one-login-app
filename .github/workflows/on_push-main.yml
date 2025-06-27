@@ -48,7 +48,7 @@ jobs:
 
       - name: Get next version from branch
         id: next-version
-        uses: ./config/actions/get-next-version-from-branch
+        uses: ./config/actions/get-next-version-from-commit-message
 
       - name: Ensure version is correct
         id: version-number
