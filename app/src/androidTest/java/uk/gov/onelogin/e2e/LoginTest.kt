@@ -299,7 +299,7 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        nodeWithTextExists(resources.getString(R.string.app_signInTitle))
+        nodeWithTextExists(resources.getString(R.string.app_loadingBody))
         verify(mockLoginSession, times(0)).finalise(any(), any(), any())
     }
 
