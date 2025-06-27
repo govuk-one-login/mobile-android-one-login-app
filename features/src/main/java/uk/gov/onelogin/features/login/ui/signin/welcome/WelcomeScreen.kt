@@ -93,7 +93,7 @@ private fun handleResult(
     if (result.resultCode == Activity.RESULT_OK) {
         result.data?.let { intent ->
             viewModel.handleActivityResult(intent = intent, activity = context)
-        }?.run {
+        } ?: {
             viewModel.stopLoading()
         }
     } else {
