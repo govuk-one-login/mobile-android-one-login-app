@@ -293,12 +293,13 @@ class LoginTest : TestCase() {
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
         setupActivityForResult(
-            Intent()
+            null
         )
 
         clickOptOut()
         clickLogin()
 
+        composeRule.waitForIdle()
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
         verify(mockLoginSession, times(0)).finalise(any(), any(), any())
     }
@@ -437,7 +438,7 @@ class LoginTest : TestCase() {
     }
 
     private fun setupActivityForResult(
-        returnedIntent: Intent,
+        returnedIntent: Intent?,
         resultCode: Int = Activity.RESULT_OK
     ) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
