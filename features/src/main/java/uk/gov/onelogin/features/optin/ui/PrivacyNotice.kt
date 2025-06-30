@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.Links
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.ui.components.TextWithLink
@@ -67,7 +69,7 @@ fun PrivacyNotice(
             privacyNoticeString?.let {
                 append(WHITE_SPACE)
             }
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+            withStyle(SpanStyle(color = Links.link.toMappedColors())) {
                 append(privacyNoticeLink)
             }
             append(WHITE_SPACE)
@@ -90,7 +92,7 @@ fun PrivacyNotice(
 private fun LinkOut() {
     val description = stringResource(R.string.app_openLinkExternally)
     Image(
-        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
+        colorFilter = ColorFilter.tint(color = Links.link.toMappedColors()),
         painter = painterResource(id = R.drawable.link_out),
         modifier = Modifier
             .fillMaxSize()
