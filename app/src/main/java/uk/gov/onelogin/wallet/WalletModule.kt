@@ -13,6 +13,7 @@ import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
+import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
@@ -29,14 +30,16 @@ object WalletModule {
         genericHttpClient: GenericHttpClient,
         analyticsLogger: AnalyticsLogger,
         deleteAllDataUseCase: DeleteAllDataUseCase,
-        localAuthManager: LocalAuthManager
+        localAuthManager: LocalAuthManager,
+        logger: Logger
     ): WalletSdk {
         val config = WalletSdk.Configuration(
             clientId = context.resources.getString(R.string.stsClientId),
             authNetworkClient = genericHttpClient,
             analyticsLogger = analyticsLogger,
             localAuthManger = localAuthManager,
-            deleteAllDataUseCase = deleteAllDataUseCase
+            deleteAllDataUseCase = deleteAllDataUseCase,
+            logger = logger
         )
         return WalletSdkImpl(navigator, config)
     }
