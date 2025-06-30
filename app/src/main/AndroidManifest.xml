@@ -38,8 +38,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https"/>
                 <data android:host="mobile${flavorSuffix}.account.gov.uk"/>
-                <data android:pathPrefix="/wallet/add"/>
-                <data android:pathPrefix="/wallet-test/add"/>
+                <data android:pathPrefix="/wallet"/>
+                <data android:pathPrefix="/wallet-test"/>
             </intent-filter>
         </activity>
         <activity

@@ -18,11 +18,11 @@ object BottomNavGraph {
             deepLinks = listOf(
                 navDeepLink {
                     uriPattern =
-                        "https://mobile.staging/wallet-test/add"
+                        "https://mobile.staging/wallet-test"
                 },
                 navDeepLink {
                     uriPattern =
-                        "https://mobile.staging/wallet/add"
+                        "https://mobile.staging/wallet"
                 }
             )
         ) {
