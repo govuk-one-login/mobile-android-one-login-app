@@ -6,6 +6,7 @@
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
     <string name="app_settings">Gosodiadau</string>
+    <string name="app_TabBarWallet">Dogfennau</string>
 
     <!-- Loading -->
     <string name="app_loadingBody">Llwytho…</string>
