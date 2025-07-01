@@ -69,7 +69,7 @@ fun PrivacyNotice(
             privacyNoticeString?.let {
                 append(WHITE_SPACE)
             }
-            withStyle(SpanStyle(color = Links.link.toMappedColors())) {
+            withStyle(SpanStyle(color = Links.default.toMappedColors())) {
                 append(privacyNoticeLink)
             }
             append(WHITE_SPACE)
@@ -92,7 +92,7 @@ fun PrivacyNotice(
 private fun LinkOut() {
     val description = stringResource(R.string.app_openLinkExternally)
     Image(
-        colorFilter = ColorFilter.tint(color = Links.link.toMappedColors()),
+        colorFilter = ColorFilter.tint(color = Links.default.toMappedColors()),
         painter = painterResource(id = R.drawable.link_out),
         modifier = Modifier
             .fillMaxSize()
