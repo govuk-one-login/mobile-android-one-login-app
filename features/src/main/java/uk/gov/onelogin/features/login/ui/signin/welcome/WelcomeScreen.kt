@@ -91,9 +91,10 @@ private fun handleResult(
     context: FragmentActivity
 ) {
     if (result.resultCode == Activity.RESULT_OK) {
-        result.data?.let { intent ->
+        val intent = result.data
+        if (intent != null) {
             viewModel.handleActivityResult(intent = intent, activity = context)
-        }?.run {
+        } else {
             viewModel.stopLoading()
         }
     } else {
