@@ -11,6 +11,7 @@
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_settings">Settings</string>
+    <string name="app_TabBarWallet">Documents</string>
 
     <string name="app_back_icon" translatable="false">Back</string>
     <!-- Loading -->
