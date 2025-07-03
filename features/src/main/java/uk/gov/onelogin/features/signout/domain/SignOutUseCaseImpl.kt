@@ -14,9 +14,15 @@ class SignOutUseCaseImpl @Inject constructor(
     @Throws(SignOutError::class)
     override suspend fun invoke() {
         try {
-            cleaner.clean()
             deleteWalletData.invoke()
             tokenRepository.clearTokenResponse()
+
+            val result = cleaner.clean()
+            if (result.isFailure) {
+                result.exceptionOrNull()?.let {
+                    throw it
+                }
+            }
         } catch (e: Throwable) {
             throw SignOutError(e)
         }

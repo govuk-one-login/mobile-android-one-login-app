@@ -46,12 +46,14 @@ govuk-ui = "7.35.0"
 govuk-logging = "0.25.4"
 compose-runtime = "1.8.0"
 wallet = "2.1.0"
-auth = "0.22.1"
+auth = "0.23.0"
 cri-orchestrator = "0.57.0"
 junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
 aboutLibraries = "12.1.0-rc01"
+secureStore = "0.12.2"
+network = "0.3.4"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -119,8 +121,8 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
-secure-store = { group = "uk.gov.securestore", name = "app", version = "0.12.1" }
-network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
+secure-store = { group = "uk.gov.securestore", name = "app", version.ref = "secureStore" }
+network = { group = "uk.gov.android", name = "network", version.ref = "network" }
 logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }
 
