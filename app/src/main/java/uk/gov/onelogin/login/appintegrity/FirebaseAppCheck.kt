@@ -24,12 +24,15 @@ class FirebaseAppCheck @Inject constructor(
         Firebase.initialize(context)
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun getAppCheckToken(): Result<AppCheckToken> {
         return try {
             Result.success(
                 AppCheckToken(appCheck.limitedUseAppCheckToken.await().token)
             )
         } catch (e: FirebaseException) {
+            Result.failure(e)
+        } catch (e: Throwable) {
             Result.failure(e)
         }
     }
