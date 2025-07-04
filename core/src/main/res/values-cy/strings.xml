@@ -6,6 +6,7 @@
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
     <string name="app_settings">Gosodiadau</string>
+    <string name="app_TabBarWallet">Dogfennau</string>
 
     <!-- Loading -->
     <string name="app_loadingBody">Llwytho…</string>
@@ -83,7 +84,7 @@
     <string name="app_signInButton">Mewngofnodi gyda GOV.UK One Login</string>
     <string name="app_unlockButton">Datgloi</string>
     <string name="app_signInErrorTitle">Roedd problem wrth eich mewngofnodi</string>
-    <string name="app_signInErrorBody">Gallwch geisio mewngofnodi eto. Os na fydd hyn yn gweithio, efallai y bydd angen i chi roi cynnig arall yn nes ymlaen.</string>
+    <string name="app_signInErrorBody">Ceisio mewngofnodi eto.</string>
 
     <!-- Errors-->
     <!-- App Unavailable -->

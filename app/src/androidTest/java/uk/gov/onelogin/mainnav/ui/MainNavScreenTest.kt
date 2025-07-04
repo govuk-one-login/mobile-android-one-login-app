@@ -38,7 +38,7 @@ import uk.gov.onelogin.wallet.WalletRepositoryModule
 @UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)
 class MainNavScreenTest : TestCase() {
     private val homeTab = hasText(resources.getString(R.string.app_home))
-    private val walletTab = hasText(resources.getString(R.string.app_wallet))
+    private val walletTab = hasText(resources.getString(R.string.app_TabBarWallet))
     private val settingsTab = hasText(resources.getString(R.string.app_settings))
 
     @BindValue

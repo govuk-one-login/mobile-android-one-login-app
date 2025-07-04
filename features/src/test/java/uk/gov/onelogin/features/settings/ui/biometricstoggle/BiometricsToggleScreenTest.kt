@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biomtericstoggle
+package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
@@ -32,11 +32,6 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleAnalyticsViewModel
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleDisabledNoWalletBodyPreview
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleEnabledWalletBodyPreview
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreen
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreenViewModel
 
 @RunWith(AndroidJUnit4::class)
 class BiometricsToggleScreenTest : FragmentActivityTestCase() {

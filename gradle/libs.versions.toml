@@ -10,6 +10,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
+paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 [versions]
 jose4j = "0.9.6"
@@ -45,13 +46,16 @@ classgraph = "4.8.179"
 govuk-ui = "7.36.0"
 govuk-logging = "0.25.4"
 compose-runtime = "1.8.0"
-wallet = "2.1.0"
+wallet = "2.2.1"
 auth = "0.22.1"
 cri-orchestrator = "0.57.0"
 junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
 aboutLibraries = "12.1.0-rc01"
+paparazzi = "2.0.0-alpha01" # https://github.com/cashapp/paparazzi/releases
+composeBom = "2025.06.00"
+navigationCommonAndroid = "2.9.0"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -81,9 +85,10 @@ androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lif
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "andoridxBrowser" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
-androidx-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose-material" }
-androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "compose-material3" }
-androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "compose-material3" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-material = { group = "androidx.compose.material", name = "material" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation-android" }
 androidx-compose-ui-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose-ui-junit4" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -137,9 +142,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
+androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
 
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
 gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator", "localauth"]
-about-libraries = [ "aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3" ]
+about-libraries = ["aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3"]

@@ -2,7 +2,6 @@ import org.gradle.api.internal.provider.MissingValueException
 import java.net.URI
 
 pluginManagement {
-    //includeBuild("buildLogic")
     repositories {
         google()
         mavenCentral()

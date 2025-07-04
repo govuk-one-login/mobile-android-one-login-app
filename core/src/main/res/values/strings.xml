@@ -11,6 +11,7 @@
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_settings">Settings</string>
+    <string name="app_TabBarWallet">Documents</string>
 
     <string name="app_back_icon" translatable="false">Back</string>
     <!-- Loading -->
@@ -88,11 +89,11 @@
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
     <string name="app_signInBody1">Prove your identity to access government services.</string>
-    <string name="app_signInBody2">You’ll need to sign in with your GOV.UK One Login details.</string>
+    <string name="app_signInBody2">You\'ll need to sign in with your GOV.UK One Login details.</string>
     <string name="app_signInButton">Sign in with GOV.UK One Login</string>
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
-    <string name="app_signInErrorBody">You can try signing in again.\n\nIf this does not work, you may need to try again later.</string>
+    <string name="app_signInErrorBody">Try to sign in again.</string>
 
     <!-- Errors -->
     <!-- App Unavailable -->
