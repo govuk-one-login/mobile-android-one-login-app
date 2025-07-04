@@ -70,9 +70,6 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
         )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
-        composeTestRule.setupComposeTestRule { _ ->
-            HomeScreen(viewModel, analyticsViewModel)
-        }
     }
 
     @After
@@ -82,6 +79,7 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
 
     @Test
     fun homeScreenDisplayed() {
+        setupScreen()
         composeTestRule.apply {
             waitUntil(TIMEOUT) {
                 onNodeWithContentDescription(
@@ -115,6 +113,7 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
 
     @Test
     fun analyticsTriggered() {
+        setupScreen()
         composeTestRule.apply {
             waitUntil(TIMEOUT) {
                 onNodeWithContentDescription(
@@ -131,6 +130,38 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             ).performClick()
 
             Espresso.pressBack()
+        }
+    }
+
+    @Test
+    fun homeScreenPreviewDisplayed() {
+        setupPreview()
+        composeTestRule.apply {
+            onNodeWithContentDescription(
+                resources.getString(R.string.one_login_image_content_desc)
+            ).assertIsDisplayed()
+
+            onNodeWithTag(
+                resources.getString(R.string.welcomeCardTestTag),
+                useUnmergedTree = true
+            ).assertIsDisplayed()
+
+            onNodeWithTag(
+                resources.getString(R.string.proveIdentityCardTestTag),
+                useUnmergedTree = true
+            ).performScrollTo().assertIsDisplayed()
+        }
+    }
+
+    private fun setupScreen() {
+        composeTestRule.setupComposeTestRule { _ ->
+            HomeScreen(viewModel, analyticsViewModel)
+        }
+    }
+
+    private fun setupPreview() {
+        composeTestRule.setupComposeTestRule { _ ->
+            HomeScreenPreview()
         }
     }
 

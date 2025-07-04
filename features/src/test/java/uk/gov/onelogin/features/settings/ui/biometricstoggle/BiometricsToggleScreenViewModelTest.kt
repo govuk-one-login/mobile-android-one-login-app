@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biomtericstoggle
+package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -14,7 +14,6 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScreenViewModel
 
 class BiometricsToggleScreenViewModelTest {
     private lateinit var featureFlags: FeatureFlags

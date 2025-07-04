@@ -294,7 +294,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun previewTest() {
-        // Absolute cop out
         composeTestRule.setContent {
             WelcomePreview()
         }

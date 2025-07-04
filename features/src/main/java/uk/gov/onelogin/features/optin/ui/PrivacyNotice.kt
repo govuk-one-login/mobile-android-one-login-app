@@ -119,7 +119,7 @@ internal fun PrivacyNoticePreview() {
                 id = R.string.app_settingsAnalyticsToggleFootnoteLink
             ),
             style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.surface
+                color = MaterialTheme.colorScheme.onBackground
             )
         ) {}
     }
