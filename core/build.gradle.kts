@@ -88,7 +88,6 @@ android {
             isIncludeAndroidResources = true
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
-        // targetSdk = rootProject.ext["targetSdkVersion"] as Int
     }
 }
 

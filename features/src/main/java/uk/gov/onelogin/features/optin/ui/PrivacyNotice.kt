@@ -118,7 +118,7 @@ internal fun PrivacyNoticePreview() {
             stringResource(
                 id = R.string.app_settingsAnalyticsToggleFootnoteLink
             ),
-            style = MaterialTheme.typography.bodyLarge.copy(
+            style = MaterialTheme.typography.bodySmall.copy(
                 color = MaterialTheme.colorScheme.onBackground
             )
         ) {}
