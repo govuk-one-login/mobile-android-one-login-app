@@ -23,14 +23,16 @@ import uk.gov.android.ui.theme.m3.GdsTheme
  * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenShotTest
  */
 abstract class BaseScreenshotTest(
-    nightMode: NightMode = NOTNIGHT
+    nightMode: NightMode = NOTNIGHT,
+    locale: String = LOCALE_EN
 ) {
     @get:Rule
     val paparazzi =
         Paparazzi(
             deviceConfig =
             DeviceConfig.PIXEL_6.copy(
-                nightMode = nightMode
+                nightMode = nightMode,
+                locale = locale
             ),
             renderingMode = SHRINK,
             showSystemUi = false
@@ -56,5 +58,16 @@ abstract class BaseScreenshotTest(
                 result.add(parameters to NOTNIGHT)
                 result.add(parameters to NIGHT)
             }
+
+        @JvmStatic
+        fun applyNightModeAndLocale(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN),
+            arrayOf(NIGHT, LOCALE_EN),
+            arrayOf(NOTNIGHT, LOCALE_CY),
+            arrayOf(NIGHT, LOCALE_CY)
+        )
     }
 }
+
+const val LOCALE_EN = "en"
+const val LOCALE_CY = "cy"
