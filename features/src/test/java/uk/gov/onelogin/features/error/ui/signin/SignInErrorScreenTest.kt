@@ -23,7 +23,7 @@ class SignInErrorScreenTest : FragmentActivityTestCase() {
 
     private val title = hasText(resources.getString(R.string.app_signInErrorTitle))
     private val body = hasText(resources.getString(R.string.app_signInErrorBody))
-    private val button = hasText(resources.getString(R.string.app_closeButton))
+    private val button = hasText(resources.getString(R.string.app_tryAgainButton))
 
     @Before
     fun setupNavigation() {

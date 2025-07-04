@@ -53,7 +53,7 @@ private fun SignInErrorBody(
         ),
         primaryButton =
         CentreAlignedScreenButton(
-            text = stringResource(R.string.app_closeButton),
+            text = stringResource(R.string.app_tryAgainButton),
             onClick = onPrimary
         )
     )

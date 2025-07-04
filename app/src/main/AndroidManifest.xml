@@ -22,7 +22,7 @@
         android:theme="@style/Theme.OneLogin"
         tools:targetApi="31">
         <activity
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:name="uk.gov.onelogin.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
