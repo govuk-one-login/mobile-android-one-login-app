@@ -48,10 +48,10 @@
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
-    <string name="app_signOutConfirmationBullet1">bydd unrhyw ddogfennau a arbedir yn eich GOV.UK Wallet yn cael eu dileu</string>
+    <string name="app_signOutConfirmationBullet1">bydd unrhyw ddogfennau yn eich ap yn cael eu dileu</string>
     <string name="app_signOutConfirmationBullet2">os ydych yn defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, bydd hyn yn cael ei ddiffodd</string>
     <string name="app_signOutConfirmationBullet3">byddwch yn stopio rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
-    <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, gallwch ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
+    <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, byddwch yn gallu ychwanegu eich dogfennau eto ac ailosod eich dewisiadau.</string>
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
     <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
