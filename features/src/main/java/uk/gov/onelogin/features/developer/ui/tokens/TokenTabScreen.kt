@@ -17,9 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.m3.buttons.ButtonParameters
-import uk.gov.android.ui.components.m3.buttons.ButtonType
-import uk.gov.android.ui.components.m3.buttons.GdsButton
+import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -43,15 +42,13 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    text = stringResource(R.string.app_developer_reset_access_token_button),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        viewModel.resetAccessToken()
-                        Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                )
+                text = stringResource(R.string.app_developer_reset_access_token_button),
+                buttonType = ButtonType.Primary,
+                onClick = {
+                    viewModel.resetAccessToken()
+                    Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
+                        .show()
+                }
             )
         }
         Row(
@@ -67,14 +64,12 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
                 text = "Persistent ID: ${persistentId.ifEmpty { "<Empty>" }}"
             )
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    modifier = Modifier.weight(1F),
-                    text = stringResource(R.string.app_developer_reset_persistent_id_button),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        viewModel.resetPersistentId()
-                    }
-                )
+                text = stringResource(R.string.app_developer_reset_persistent_id_button),
+                buttonType = ButtonType.Primary,
+                onClick = {
+                    viewModel.resetPersistentId()
+                },
+                modifier = Modifier.weight(1F)
             )
         }
     }
