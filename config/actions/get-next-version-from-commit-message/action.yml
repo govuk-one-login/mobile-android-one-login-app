@@ -25,7 +25,7 @@ runs:
         then
           NEXT_VERSION="${BASH_REMATCH[0]}"
         else
-          echo "Invalid version in branch name ($GITHUB_REF)"
+          echo "Invalid version in branch name ($commit_title)"
           exit 1
         fi
         
