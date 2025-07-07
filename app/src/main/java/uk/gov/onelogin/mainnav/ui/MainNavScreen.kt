@@ -50,8 +50,20 @@ fun MainNavScreen(
         { analyticsViewModel.trackSettingsTabButton() }
     )
     GdsTheme {
-        LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
+        LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
             walletScreenViewModel.checkWalletEnabled()
+        }
+
+        LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
+            if (
+                walletScreenViewModel.walletDeepLinkReceived.value &&
+                walletScreenViewModel.walletEnabled.value
+            ) {
+                bottomNav(
+                    navController,
+                    navItems.first { it.first == BottomNavDestination.Wallet }
+                )
+            }
         }
 
         Scaffold(
@@ -65,14 +77,10 @@ fun MainNavScreen(
                                 Icon(painterResource(id = navDest.first.icon), navDest.first.key)
                             },
                             onClick = {
-                                navDest.second()
-                                navController.navigate(navDest.first.key) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                bottomNav(
+                                    navController,
+                                    navDest
+                                )
                             },
                             selected = navBackStackEntry?.destination?.route == navDest.first.key,
                             label = { Label(navDest.first.label) },
@@ -96,7 +104,10 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = if (walletScreenViewModel.walletDeepLinkReceived.value) {
+                startDestination = if (
+                    walletScreenViewModel.walletDeepLinkReceived.value &&
+                    walletScreenViewModel.walletEnabled.value
+                ) {
                     BottomNavDestination.Wallet.key
                 } else {
                     BottomNavDestination.Home.key
@@ -143,6 +154,20 @@ private fun createBottomNavItems(
         listOf(home, wallet, profile)
     } else {
         listOf(home, profile)
+    }
+}
+
+private fun bottomNav(
+    navController: NavHostController,
+    navDest: Pair<BottomNavDestination, () -> Unit>
+) {
+    navDest.second()
+    navController.navigate(navDest.first.key) {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
