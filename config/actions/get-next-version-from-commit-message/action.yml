@@ -15,8 +15,8 @@ runs:
     - name: Get latest tagged version
       id: get-latest-tag-from-commit-msg
       run: |
-#       Grab last commit message
-        commit_title=$(git log -1 --pretty=%s)
+        echo "$(git log --oneline -n 5)"
+        commit_title=$(git log -2 --pretty=%s)
         
         merged_branch=$(echo "$commit_title" | head -n1)
         IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX BRANCH_VERSION <<< "${merged_branch}"

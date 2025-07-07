@@ -42,6 +42,10 @@ jobs:
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
 
+      - name: Get next version from last commit
+        id: next-version
+        uses: ./config/actions/get-next-version-from-commit-message
+
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
