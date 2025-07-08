@@ -7,12 +7,14 @@ import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
 class HandleLoginRedirectImpl @Inject constructor(
     private val appIntegrity: AppIntegrity,
-    private val loginSession: LoginSession
+    private val loginSession: LoginSession,
+    private val logger: Logger
 ) : HandleLoginRedirect {
     override suspend fun handle(
         intent: Intent,
@@ -47,6 +49,7 @@ class HandleLoginRedirectImpl @Inject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private fun handleLoginFinalise(
         intent: Intent,
         attestation: String,
@@ -59,10 +62,31 @@ class HandleLoginRedirectImpl @Inject constructor(
                 intent = intent,
                 appIntegrity = AppIntegrityParameters(attestation, jwt)
             ) { tokens ->
-                onSuccess(tokens)
+                try {
+                    onSuccess(tokens)
+                } catch (e: Throwable) {
+                    logger.error(
+                        e.javaClass.simpleName,
+                        e.message ?: NO_MESSAGE,
+                        e
+                    )
+                    onFailure(e)
+                }
             }
         } catch (authError: AuthenticationError) {
+            logger.error(
+                authError.javaClass.simpleName,
+                authError.message,
+                authError
+            )
             onFailure(authError)
+        } catch (e: Throwable) {
+            logger.error(
+                e.javaClass.simpleName,
+                e.message ?: NO_MESSAGE,
+                e
+            )
+            onFailure(e)
         }
     }
 
@@ -115,5 +139,9 @@ class HandleLoginRedirectImpl @Inject constructor(
                 onFailure(e)
             }
         }
+    }
+
+    companion object {
+        private const val NO_MESSAGE = "No message"
     }
 }
