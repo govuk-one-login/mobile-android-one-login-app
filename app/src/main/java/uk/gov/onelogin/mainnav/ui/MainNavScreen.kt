@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -54,11 +55,8 @@ fun MainNavScreen(
             walletScreenViewModel.checkWalletEnabled()
         }
 
-        LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
-            if (
-                walletScreenViewModel.walletDeepLinkReceived.value &&
-                walletScreenViewModel.walletEnabled.value
-            ) {
+        LaunchedEffect(walletScreenViewModel.walletDeepLinkReceived) {
+            if (walletScreenViewModel.walletDeepLinkReceived.value) {
                 bottomNav(
                     navController,
                     navItems.first { it.first == BottomNavDestination.Wallet }
@@ -105,8 +103,7 @@ fun MainNavScreen(
             NavHost(
                 navController = navController,
                 startDestination = if (
-                    walletScreenViewModel.walletDeepLinkReceived.value &&
-                    walletScreenViewModel.walletEnabled.value
+                    walletScreenViewModel.walletDeepLinkReceived.value
                 ) {
                     BottomNavDestination.Wallet.key
                 } else {
