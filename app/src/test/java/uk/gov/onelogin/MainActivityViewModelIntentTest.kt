@@ -9,13 +9,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
-import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
@@ -24,7 +20,6 @@ class MainActivityViewModelIntentTest {
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val walletRepository: WalletRepository = mock()
-    private val featureFlags: FeatureFlags = mock()
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -33,13 +28,12 @@ class MainActivityViewModelIntentTest {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
             walletRepository,
-            featureFlags,
             mockAutoInitialiseSecureStore
         )
     }
 
     @Test
-    fun validDeepLinkWalletFeatureFlagEnabled() {
+    fun validDeepLink() {
         val credentialOffer = "xxx"
         val deeplink = "app://route?credential_offer=$credentialOffer"
         val intent =
@@ -47,25 +41,9 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_VIEW
                 data = deeplink.toUri()
             }
-        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         viewModel.handleIntent(intent)
 
         verify(walletRepository).addCredential(credentialOffer)
-    }
-
-    @Test
-    fun validDeepLinkWalletFeatureFlagDisabled() {
-        val credentialOffer = "xxx"
-        val deeplink = "app://route?credential_offer=$credentialOffer"
-        val intent =
-            Intent().apply {
-                action = ACTION_VIEW
-                data = deeplink.toUri()
-            }
-        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(false)
-        viewModel.handleIntent(intent)
-
-        verifyNoInteractions(walletRepository)
     }
 
     @Test
@@ -77,7 +55,6 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_VIEW
                 data = deeplink.toUri()
             }
-        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         viewModel.handleIntent(intent)
 
         verify(walletRepository).addDeepLinkPath("/wallet/add")
@@ -90,7 +67,6 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_VIEW
                 data = null
             }
-        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)
@@ -105,7 +81,6 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_MAIN
                 data = deeplink.toUri()
             }
-        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)

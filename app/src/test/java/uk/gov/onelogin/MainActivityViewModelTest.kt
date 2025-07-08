@@ -11,7 +11,6 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
@@ -26,7 +25,6 @@ class MainActivityViewModelTest {
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
     private val walletRepository: WalletRepository = mock()
-    private val featureFlags: FeatureFlags = mock()
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -35,7 +33,6 @@ class MainActivityViewModelTest {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
             walletRepository,
-            featureFlags,
             mockAutoInitialiseSecureStore
         )
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
