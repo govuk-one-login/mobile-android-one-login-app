@@ -8,6 +8,7 @@ import javax.inject.Inject
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
@@ -22,8 +23,11 @@ class HandleRemoteLoginImpl @Inject constructor(
     private val loginSession: LoginSession,
     private val getPersistentId: GetPersistentId,
     private val appIntegrity: AppIntegrity,
-    private val uriParser: UriParser
+    private val uriParser: UriParser,
+    private val logger: Logger
 ) : HandleRemoteLogin {
+
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
         onFailure: () -> Unit
@@ -31,10 +35,19 @@ class HandleRemoteLoginImpl @Inject constructor(
         val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
         handleGetClientAttestation(
             {
-                loginSession.present(
-                    launcher,
-                    configuration = createLoginConfiguration(persistentId)
-                )
+                try {
+                    loginSession.present(
+                        launcher,
+                        configuration = createLoginConfiguration(persistentId)
+                    )
+                } catch (e: Throwable) {
+                    logger.error(
+                        e.javaClass.simpleName,
+                        e.message ?: NO_MESSAGE,
+                        e
+                    )
+                    onFailure()
+                }
             },
             onFailure
         )
@@ -83,5 +96,9 @@ class HandleRemoteLoginImpl @Inject constructor(
             tokenEndpoint = tokenEndpoint,
             persistentSessionId = persistentId
         )
+    }
+
+    companion object {
+        private const val NO_MESSAGE = "No message"
     }
 }
