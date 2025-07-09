@@ -46,7 +46,7 @@ jobs:
         with:
           pattern: 'v*'
 
-      - name: Get next version from branch
+      - name: Get next version from last commit
         id: next-version
         uses: ./config/actions/get-next-version-from-commit-message
 

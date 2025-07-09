@@ -4,7 +4,7 @@ description: 'Gets the next version number from the release branch when merging 
 outputs:
   next-version:
     description: 'Next version number determined from the commit message when release branch merged into main'
-    value: ${{ steps.get-latest-tag.outputs.next-version }}
+    value: ${{ steps.get-latest-tag-from-commit-msg.outputs.next-version }}
   next-version-pattern:
     description: 'Pattern used in git describe calls for the next version number'
     value: ${{ steps.get-next-version.outputs.next-version-pattern }}
@@ -15,17 +15,16 @@ runs:
     - name: Get latest tagged version
       id: get-latest-tag-from-commit-msg
       run: |
-#        Grab last commit message
-        commit_title = $(git log -1 --pretty=%s)
+        commit_title=$(git log -1 --pretty=%s | tail -n1)
         
         merged_branch=$(echo "$commit_title" | head -n1)
-        IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX <<< "${merged_branch}"
+        IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX BRANCH_VERSION <<< "${merged_branch}"
         
-        if [[ "$BRANCH_SUFFIX" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+        if [[ "$BRANCH_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
         then
           NEXT_VERSION="${BASH_REMATCH[0]}"
         else
-          echo "Invalid version in branch name ($GITHUB_REF)"
+          echo "Invalid version in branch name ($commit_title)"
           exit 1
         fi
         
