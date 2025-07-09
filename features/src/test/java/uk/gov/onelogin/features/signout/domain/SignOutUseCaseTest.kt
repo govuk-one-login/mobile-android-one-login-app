@@ -11,6 +11,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
+import uk.gov.onelogin.core.cleaner.domain.ResultCollectionUtil
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
@@ -105,5 +106,30 @@ class SignOutUseCaseTest {
                     useCase.invoke()
                 }
             assertTrue(exception.error.message!!.contains(errorMessage))
+        }
+
+    @Test
+    @Suppress("TooGenericExceptionThrown")
+    fun `exception propagates up as a SignOutError via failure`() =
+        runTest {
+            // Given
+            val errorMessage = "something went terribly bad"
+            useCase =
+                SignOutUseCaseImpl(
+                    MultiCleaner(
+                        Dispatchers.Main,
+                        { Result.success(Unit) },
+                        { Result.failure(Exception(errorMessage)) }
+                    ),
+                    deleteWalletData,
+                    tokenRepository
+                )
+            // When invoking the sign out use case
+            // Then throw SignOutError
+            val exception =
+                assertThrows<SignOutError> {
+                    useCase.invoke()
+                }
+            assertTrue(exception.error is ResultCollectionUtil.Failure)
         }
 }
