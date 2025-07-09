@@ -60,7 +60,7 @@ jobs:
       - name: Display version jump
         run: |
           echo "Moving from $CURRENT_VERSION to $NEXT_VERSION"
-          shell: bash
+        shell: bash
         env:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
