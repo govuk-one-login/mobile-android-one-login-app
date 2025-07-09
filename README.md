@@ -16,7 +16,7 @@ This project uses a git-flow branching strategy, briefly:
 - Any required fixes for the release should be pull requested into the release branch
 - Once approval has been granted for the release to be published the release branch should be merged
   into `main`
-- The new tag will be pushed on the merge to `main`
+- The new tag will be pushed on the merge to `main` with the default merge title
 - `main` should then be merged back into `develop`
 
 ## Getting started
