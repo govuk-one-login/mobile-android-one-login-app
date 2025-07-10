@@ -20,7 +20,7 @@ jobs:
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       packages: read
       id-token: write
-      contents: read
+      contents: write
     steps:
       - name: Run checkout github action
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -60,7 +60,7 @@ jobs:
       - name: Display version jump
         run: |
           echo "Moving from $CURRENT_VERSION to $NEXT_VERSION"
-          shell: bash
+        shell: bash
         env:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
