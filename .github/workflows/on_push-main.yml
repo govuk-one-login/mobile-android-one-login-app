@@ -69,7 +69,7 @@ jobs:
         id: git-tag
         uses: ./config/actions/push-tag
         env:
-          NEXT_VERSION: ${{ steps.version-number.outputs.version }}
+          version-name: ${{ steps.version-number.outputs.version }}
 
       - name: Generate version code
         id: version-code
