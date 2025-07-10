@@ -18,7 +18,7 @@ sealed class BottomNavDestination(
     )
     data object Wallet : BottomNavDestination(
         key = "wallet",
-        label = R.string.app_wallet,
+        label = R.string.app_TabBarWallet,
         icon = R.drawable.outline_article_24
     )
     data object Settings : BottomNavDestination(

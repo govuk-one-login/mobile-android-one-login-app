@@ -16,6 +16,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
@@ -29,6 +30,7 @@ class HandleRemoteLoginTest {
     private val mockLoginSession: LoginSession = mock()
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockUriParser: UriParser = mock()
+    private val mockLogger: Logger = mock()
     private val mockLauncher: ActivityResultLauncher<Intent> = mock()
     private val mockUri: Uri = mock()
     private val testAttestation = "testAttestation"
@@ -45,7 +47,8 @@ class HandleRemoteLoginTest {
                 mockLoginSession,
                 mockGetPersistentId,
                 mockAppIntegrity,
-                mockUriParser
+                mockUriParser,
+                mockLogger
             )
 
         whenever(mockContext.getString(any())).thenReturn("")
@@ -161,4 +164,19 @@ class HandleRemoteLoginTest {
                 assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
             }
         }
+
+    @Test
+    fun `login() - loginSession present() throws error`(): Unit = runTest {
+        val error = Error("Error")
+        whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
+        whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
+            AttestationResult.NotRequired(null)
+        )
+        whenever(mockLoginSession.present(any(), any())).thenThrow(error)
+
+        handleRemoteLogin.login(mockLauncher) {}
+
+        verify(mockLogger)
+            .error(error.javaClass.simpleName, error.message ?: "No message", error)
+    }
 }

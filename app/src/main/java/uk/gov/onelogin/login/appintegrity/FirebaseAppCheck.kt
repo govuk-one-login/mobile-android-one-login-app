@@ -10,10 +10,12 @@ import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
+import uk.gov.logging.api.Logger
 
 class FirebaseAppCheck @Inject constructor(
     appCheckFactory: AppCheckProviderFactory,
-    context: Context
+    context: Context,
+    private val logger: Logger
 ) : AppChecker {
     private val appCheck = Firebase.appCheck
 
@@ -31,9 +33,23 @@ class FirebaseAppCheck @Inject constructor(
                 AppCheckToken(appCheck.limitedUseAppCheckToken.await().token)
             )
         } catch (e: FirebaseException) {
+            logger.error(
+                e.javaClass.simpleName,
+                e.message ?: NO_MESSAGE,
+                e
+            )
             Result.failure(e)
         } catch (e: Throwable) {
+            logger.error(
+                e.javaClass.simpleName,
+                e.message ?: NO_MESSAGE,
+                e
+            )
             Result.failure(e)
         }
+    }
+
+    companion object {
+        private const val NO_MESSAGE = "No message"
     }
 }

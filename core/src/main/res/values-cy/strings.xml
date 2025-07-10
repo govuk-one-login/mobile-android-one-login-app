@@ -6,6 +6,7 @@
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
     <string name="app_settings">Gosodiadau</string>
+    <string name="app_TabBarWallet">Dogfennau</string>
 
     <!-- Loading -->
     <string name="app_loadingBody">Llwytho…</string>
@@ -47,10 +48,10 @@
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
-    <string name="app_signOutConfirmationBullet1">bydd unrhyw ddogfennau a arbedir yn eich GOV.UK Wallet yn cael eu dileu</string>
+    <string name="app_signOutConfirmationBullet1">bydd unrhyw ddogfennau yn eich ap yn cael eu dileu</string>
     <string name="app_signOutConfirmationBullet2">os ydych yn defnyddio biometreg neu pin neu batrwm eich ffôn i ddatgloi\'r ap, bydd hyn yn cael ei ddiffodd</string>
     <string name="app_signOutConfirmationBullet3">byddwch yn stopio rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
-    <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, gallwch ychwanegu eich dogfennau at eich GOV.UK Wallet a gosod eich dewisiadau eto.</string>
+    <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, byddwch yn gallu ychwanegu eich dogfennau eto ac ailosod eich dewisiadau.</string>
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
     <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
@@ -83,7 +84,7 @@
     <string name="app_signInButton">Mewngofnodi gyda GOV.UK One Login</string>
     <string name="app_unlockButton">Datgloi</string>
     <string name="app_signInErrorTitle">Roedd problem wrth eich mewngofnodi</string>
-    <string name="app_signInErrorBody">Gallwch geisio mewngofnodi eto. Os na fydd hyn yn gweithio, efallai y bydd angen i chi roi cynnig arall yn nes ymlaen.</string>
+    <string name="app_signInErrorBody">Ceisio mewngofnodi eto.</string>
 
     <!-- Errors-->
     <!-- App Unavailable -->
@@ -129,8 +130,8 @@
     <string name="app_dataDeletedBody2_no_wallet">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae eich dewis o ddefnyddio biometreg i ddatgloi\'r ap wedi\'i ailosod.</string>
     <string name="app_dataDeletedBody3_no_wallet">Mae angen i chi fewngofnodi a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap.</string>
     <string name="app_dataDeletedBody1">Ni allem gadarnhau eich manylion mewngofnodi.</string>
-    <string name="app_dataDeletedBody2">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn eich GOV.UK  Wallet wedi\'u dileu ac mae eich dewisiadau ap wedi\'u hailosod.</string>
-    <string name="app_dataDeletedBody3">Mae angen i chi fewngofnodi eto a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu dogfennau at eich GOV.UK  Wallet.</string>
+    <string name="app_dataDeletedBody2">Er mwyn cadw eich gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn eich ap wedi cael eu dileu ac mae eich dewisiadau wedi cael eu hailosod.</string>
+    <string name="app_dataDeletedBody3">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
 
     <!-- Url  -->
     <string name="privacy_notice_url">https://www.gov.uk/government/publications/govuk-one-login-privacy-notice.cy</string>

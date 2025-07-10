@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.onelogin.BuildConfig
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.login.appintegrity.FirebaseAppCheck
 
 @Module
@@ -20,10 +21,11 @@ object AppCheckerModule {
     @Provides
     fun provideAppCheck(
         @ApplicationContext
-        context: Context
+        context: Context,
+        logger: Logger
     ): AppChecker {
         val factory = DebugAppCheckProviderFactory.getInstance()
-        return FirebaseAppCheck(factory, context).also {
+        return FirebaseAppCheck(factory, context, logger).also {
             val key = Firebase.app.persistenceKey
             context.getSharedPreferences(
                 "com.google.firebase.appcheck.debug.store.$key",

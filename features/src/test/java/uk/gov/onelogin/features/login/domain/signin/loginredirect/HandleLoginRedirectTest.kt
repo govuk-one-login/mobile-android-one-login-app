@@ -6,6 +6,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
@@ -13,6 +14,7 @@ import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
@@ -20,6 +22,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 class HandleLoginRedirectTest {
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockLoginSession: LoginSession = mock()
+    private val mockLogger: Logger = mock()
     private val mockIntent: Intent = mock()
 
     private val testJwt = "testJwt"
@@ -43,7 +46,11 @@ class HandleLoginRedirectTest {
         AuthenticationError.ErrorType.OAUTH
     )
 
-    private val handleLoginRedirect = HandleLoginRedirectImpl(mockAppIntegrity, mockLoginSession)
+    private val handleLoginRedirect = HandleLoginRedirectImpl(
+        mockAppIntegrity,
+        mockLoginSession,
+        mockLogger
+    )
 
     @Test
     fun `handle() should call onSuccess with tokens when attestation and PoP are successful`() =
@@ -191,6 +198,13 @@ class HandleLoginRedirectTest {
             handleLoginRedirect.handle(
                 mockIntent,
                 {
+                    it?.let {
+                        verify(mockLogger).error(
+                            it::class.java.simpleName,
+                            it.message ?: "No message",
+                            it
+                        )
+                    }
                     assertEquals("access_denied", it?.message)
                 },
                 { }
@@ -210,6 +224,13 @@ class HandleLoginRedirectTest {
             handleLoginRedirect.handle(
                 mockIntent,
                 {
+                    it?.let {
+                        verify(mockLogger).error(
+                            it::class.java.simpleName,
+                            it.message ?: "No message",
+                            it
+                        )
+                    }
                     assertEquals("oauth_error", it?.message)
                 },
                 { }

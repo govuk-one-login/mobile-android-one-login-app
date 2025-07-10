@@ -82,6 +82,7 @@ plugins {
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.oss.licence.about.libraries) apply false
+    alias(libs.plugins.paparazzi) apply false
     id("uk.gov.sonar.root-config")
 }
 
@@ -89,6 +90,7 @@ setProperty("appId", "uk.gov.onelogin")
 setProperty("compileSdkVersion", 35)
 setProperty("configDir", "${rootProject.rootDir}/config")
 setProperty("minSdkVersion", 29)
+// Consider DCMAW-13740 before targeting Android 16 (API level 36)
 setProperty("targetSdkVersion", 35)
 
 val jacocoVersion: String by rootProject.extra(

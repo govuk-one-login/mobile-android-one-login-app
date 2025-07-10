@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui
+package uk.gov.onelogin.features.error.ui.signout
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

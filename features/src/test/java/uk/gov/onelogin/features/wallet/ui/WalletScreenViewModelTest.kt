@@ -82,11 +82,12 @@ class WalletScreenViewModelTest {
     }
 
     @Test
-    fun `no wallet deeplink received`() {
+    fun `no wallet deeplink received, wallet enabled`() {
         // GIVEN
         val deeplinkPath = "path"
 
         // WHEN
+        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
         sut.checkWalletEnabled()
 
@@ -95,15 +96,44 @@ class WalletScreenViewModelTest {
     }
 
     @Test
-    fun `wallet deeplink received`() {
+    fun `wallet deeplink received, wallet enabled`() {
         // GIVEN
         val deeplinkPath = DEEPLINK_PATH
 
         // WHEN
+        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(true)
         whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
         sut.checkWalletEnabled()
 
         // THEN
         assertTrue(sut.walletDeepLinkReceived.value)
+    }
+
+    @Test
+    fun `no wallet deeplink received, wallet disabled`() {
+        // GIVEN
+        val deeplinkPath = "path"
+
+        // WHEN
+        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
+        sut.checkWalletEnabled()
+
+        // THEN
+        assertFalse(sut.walletDeepLinkReceived.value)
+    }
+
+    @Test
+    fun `wallet deeplink received, wallet disabled`() {
+        // GIVEN
+        val deeplinkPath = DEEPLINK_PATH
+
+        // WHEN
+        whenever(featureFlags[eq(WalletFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(walletRepository.getDeepLinkPath()).thenReturn(deeplinkPath)
+        sut.checkWalletEnabled()
+
+        // THEN
+        assertFalse(sut.walletDeepLinkReceived.value)
     }
 }

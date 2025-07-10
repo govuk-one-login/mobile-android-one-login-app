@@ -25,9 +25,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.m3.buttons.ButtonParameters
-import uk.gov.android.ui.components.m3.buttons.ButtonType
-import uk.gov.android.ui.components.m3.buttons.GdsButton
+import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 
@@ -142,14 +140,10 @@ private fun ButtonRow(
     ) {
         if (!buttonLoading) {
             GdsButton(
-                buttonParameters = ButtonParameters(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    text = stringResource(buttonText),
-                    buttonType = ButtonType.PRIMARY(),
-                    onClick = {
-                        onClick()
-                    }
-                )
+                text = stringResource(buttonText),
+                buttonType = uk.gov.android.ui.componentsv2.button.ButtonType.Primary,
+                onClick = onClick,
+                modifier = Modifier.padding(bottom = 8.dp)
             )
         } else {
             CircularProgressIndicator(

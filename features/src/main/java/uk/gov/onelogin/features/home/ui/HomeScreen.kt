@@ -20,33 +20,59 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.TitledLogoPage
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
 
 @Composable
-@Preview
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
 ) {
     val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
-    val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
-    val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
-    val proveIdentityCardTitle = stringResource(R.string.app_appPurposeTileHeader)
-    val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
+
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.getUiCardFlagState()
         analyticsViewModel.trackScreen()
     }
+    HomeScreenBody(
+        uiCardEnabled = viewModel.uiCardEnabled.collectAsState().value,
+        content = {
+            Row(
+                modifier = Modifier
+                    .testTag(stringResource(R.string.appCriCardTestTag))
+                    .padding(top = smallPadding)
+            ) {
+                ProveYourIdentityCard(
+                    component = criOrchestratorComponent,
+                    modifier = Modifier
+                )
+            }
+        },
+        openDevPanel = { viewModel.openDevPanel() }
+    )
+}
+
+@Composable
+private fun HomeScreenBody(
+    uiCardEnabled: Boolean,
+    content: @Composable () -> Unit = {},
+    openDevPanel: () -> Unit = {}
+) {
+    val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
+    val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
+    val proveIdentityCardTitle = stringResource(R.string.app_appPurposeTileHeader)
+    val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
     TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         Column(
             modifier = Modifier
@@ -57,17 +83,8 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
                 .windowInsetsPadding(WindowInsets.displayCutout)
         ) {
-            if (viewModel.uiCardEnabled.collectAsState().value) {
-                Row(
-                    modifier = Modifier
-                        .testTag(stringResource(R.string.appCriCardTestTag))
-                        .padding(top = smallPadding)
-                ) {
-                    ProveYourIdentityCard(
-                        component = criOrchestratorComponent,
-                        modifier = Modifier
-                    )
-                }
+            if (uiCardEnabled) {
+                content()
             }
             AddCard(
                 cardTitle = welcomeCardTitle,
@@ -81,7 +98,7 @@ fun HomeScreen(
             )
             if (DeveloperTools.isDeveloperPanelEnabled()) {
                 TextButton(
-                    onClick = { viewModel.openDevPanel() }
+                    onClick = { openDevPanel() }
                 ) {
                     Text("Developer Panel")
                 }
@@ -106,4 +123,15 @@ private fun AddCard(
             .padding(top = smallPadding)
             .testTag(stringResource(testTag))
     )
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun HomeScreenPreview() {
+    GdsTheme {
+        HomeScreenBody(
+            uiCardEnabled = false
+        )
+    }
 }
