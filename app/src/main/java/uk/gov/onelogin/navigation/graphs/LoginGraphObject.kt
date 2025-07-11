@@ -1,6 +1,8 @@
 package uk.gov.onelogin.navigation.graphs
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -8,7 +10,8 @@ import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
-import uk.gov.onelogin.features.error.ui.signin.SignInErrorScreen
+import uk.gov.onelogin.features.error.ui.signin.SignInErrorRecoverableScreen
+import uk.gov.onelogin.features.error.ui.signin.SignInErrorUnrecoverableScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
 import uk.gov.onelogin.features.optin.ui.OptInScreen
@@ -53,9 +56,9 @@ object LoginGraphObject {
             }
 
             composable(
-                route = LoginRoutes.SignInError.getRoute()
+                route = LoginRoutes.SignInRecoverableError.getRoute()
             ) {
-                SignInErrorScreen(
+                SignInErrorRecoverableScreen(
                     goBack = {
                         navController.navigate(LoginRoutes.Welcome.getRoute()) {
                             popUpTo(navController.graph.id) {
@@ -70,6 +73,18 @@ object LoginGraphObject {
                         }
                     }
                 }
+            }
+
+            composable(
+                route = LoginRoutes.SignInUnrecoverableError.getRoute()
+            ) {
+                val context = LocalActivity.current as Activity
+                SignInErrorUnrecoverableScreen(
+                    goBack = {
+                        // Close / terminate the app
+                        context.finishAndRemoveTask()
+                    }
+                )
             }
 
             composable(

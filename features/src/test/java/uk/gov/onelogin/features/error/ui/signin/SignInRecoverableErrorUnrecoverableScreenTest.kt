@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.error.ui.signin
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
@@ -16,13 +16,12 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
-class SignInErrorScreenTest : FragmentActivityTestCase() {
+class SignInRecoverableErrorUnrecoverableScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var viewModel: SignInErrorAnalyticsViewModel
-    private var onClick = false
 
     private val title = hasText(resources.getString(R.string.app_signInErrorTitle))
-    private val body = hasText(resources.getString(R.string.app_signInErrorBody))
+    private val body = hasText(resources.getString(R.string.app_genericErrorPageBody))
     private val button = hasText(resources.getString(R.string.app_tryAgainButton))
 
     @Before
@@ -34,23 +33,20 @@ class SignInErrorScreenTest : FragmentActivityTestCase() {
     @Test
     fun verifyComponents() {
         composeTestRule.setContent {
-            SignInErrorScreen(analyticsViewModel = viewModel) { onClick = !onClick }
+            SignInErrorUnrecoverableScreen(analyticsViewModel = viewModel)
         }
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(body).assertIsDisplayed()
-        composeTestRule.onNode(button).apply {
-            assertIsDisplayed()
-            performClick()
-        }
-        assert(onClick)
-        verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.makeScreenEvent(context))
-        verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.makeButtonEvent(context))
+        composeTestRule.onNode(button).assertIsNotDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SignInErrorAnalyticsViewModel.makeUnrecoverableScreenEvent(context)
+        )
     }
 
     @Test
     fun checkBackClicked() {
         composeTestRule.setContent {
-            SignInErrorScreen(analyticsViewModel = viewModel) { onClick = !onClick }
+            SignInErrorUnrecoverableScreen(analyticsViewModel = viewModel)
         }
         Espresso.pressBack()
         verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.makeBackEvent(context))
@@ -59,7 +55,7 @@ class SignInErrorScreenTest : FragmentActivityTestCase() {
     @Test
     fun preview() {
         composeTestRule.setContent {
-            SignInErrorScreenPreview()
+            SignInErrorUnrecoverableScreenPreview()
         }
     }
 }

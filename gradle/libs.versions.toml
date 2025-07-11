@@ -47,7 +47,7 @@ govuk-ui = "7.35.0"
 govuk-logging = "0.25.4"
 compose-runtime = "1.8.0"
 wallet = "2.2.1"
-auth = "0.22.1"
+auth = "0.25.0"
 cri-orchestrator = "0.57.4"
 junitVersion = "4.13.2"
 material = "1.12.0"
@@ -56,6 +56,7 @@ aboutLibraries = "12.1.0-rc01"
 paparazzi = "2.0.0-alpha01" # https://github.com/cashapp/paparazzi/releases
 composeBom = "2025.06.00"
 navigationCommonAndroid = "2.9.0"
+network = "0.7.2"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -125,7 +126,7 @@ theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
 secure-store = { group = "uk.gov.securestore", name = "app", version = "0.12.1" }
-network = { group = "uk.gov.android", name = "network", version = "0.3.4" }
+network = { group = "uk.gov.android", name = "network", version.ref = "network" }
 logging-impl = { group = "uk.gov.logging", name = "logging-impl", version.ref = "govuk-logging" }
 logging-test = { group = "uk.gov.logging", name = "logging-testdouble", version.ref = "govuk-logging" }
 

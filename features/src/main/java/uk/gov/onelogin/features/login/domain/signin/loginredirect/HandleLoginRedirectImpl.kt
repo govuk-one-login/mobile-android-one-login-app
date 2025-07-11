@@ -4,7 +4,6 @@ import android.content.Intent
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
@@ -54,16 +53,16 @@ class HandleLoginRedirectImpl @Inject constructor(
         onSuccess: (TokenResponse) -> Unit,
         onFailure: (Throwable?) -> Unit
     ) {
-        try {
-            loginSession.finalise(
-                intent = intent,
-                appIntegrity = AppIntegrityParameters(attestation, jwt)
-            ) { tokens ->
+        loginSession.finalise(
+            intent = intent,
+            appIntegrity = AppIntegrityParameters(attestation, jwt),
+            { tokens ->
                 onSuccess(tokens)
+            },
+            { authError ->
+                onFailure(authError)
             }
-        } catch (authError: AuthenticationError) {
-            onFailure(authError)
-        }
+        )
     }
 
     private suspend fun handleGetClientAttestation(

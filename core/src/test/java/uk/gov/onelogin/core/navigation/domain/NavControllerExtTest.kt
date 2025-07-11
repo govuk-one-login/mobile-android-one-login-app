@@ -39,7 +39,7 @@ class NavControllerExtTest : FragmentActivityTestCase() {
         composeTestRule.runOnUiThread {
             // Fill up backstack
             navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
-            navController.setCurrentDestination(LoginRoutes.SignInError.getRoute())
+            navController.setCurrentDestination(LoginRoutes.SignInRecoverableError.getRoute())
             navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
             navController.closeApp()
         }
@@ -59,7 +59,7 @@ class NavControllerExtTest : FragmentActivityTestCase() {
 
                 composable(route = LoginRoutes.Loading.getRoute()) {}
 
-                composable(route = LoginRoutes.SignInError.getRoute()) {}
+                composable(route = LoginRoutes.SignInRecoverableError.getRoute()) {}
 
                 composable(route = LoginRoutes.AnalyticsOptIn.getRoute()) {}
             }

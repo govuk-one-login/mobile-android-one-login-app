@@ -19,7 +19,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 @Preview
-fun SignInErrorScreen(
+fun SignInErrorRecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),
     goBack: () -> Unit = {},
     onClick: () -> Unit = {}
@@ -29,7 +29,7 @@ fun SignInErrorScreen(
             analyticsViewModel.trackBackButton()
             goBack()
         }
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
+        LaunchedEffect(Unit) { analyticsViewModel.trackRecoverableScreen() }
         EdgeToEdgePage { _ ->
             SignInErrorBody {
                 analyticsViewModel.trackButton()
@@ -48,7 +48,7 @@ private fun SignInErrorBody(
         title = stringResource(R.string.app_signInErrorTitle),
         body = persistentListOf(
             CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_signInErrorBody)
+                bodyText = stringResource(R.string.app_signInErrorRecoverableBody)
             )
         ),
         primaryButton =
@@ -62,7 +62,7 @@ private fun SignInErrorBody(
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-fun SignInErrorScreenPreview() {
+fun SignInErrorRecoverableScreenPreview() {
     GdsTheme {
         SignInErrorBody {}
     }
