@@ -6,12 +6,14 @@ import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
 class HandleLoginRedirectImpl @Inject constructor(
     private val appIntegrity: AppIntegrity,
-    private val loginSession: LoginSession
+    private val loginSession: LoginSession,
+    private val logger: Logger
 ) : HandleLoginRedirect {
     override suspend fun handle(
         intent: Intent,
@@ -60,6 +62,11 @@ class HandleLoginRedirectImpl @Inject constructor(
                 onSuccess(tokens)
             },
             { authError ->
+                logger.error(
+                    authError.javaClass.simpleName,
+                    authError.message ?: NO_MESSAGE,
+                    authError
+                )
                 onFailure(authError)
             }
         )
@@ -114,5 +121,9 @@ class HandleLoginRedirectImpl @Inject constructor(
                 onFailure(e)
             }
         }
+    }
+
+    companion object {
+        private const val NO_MESSAGE = "No message"
     }
 }

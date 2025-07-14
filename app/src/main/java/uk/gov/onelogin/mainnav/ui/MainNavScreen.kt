@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -50,8 +51,17 @@ fun MainNavScreen(
         { analyticsViewModel.trackSettingsTabButton() }
     )
     GdsTheme {
-        LifecycleEventEffect(event = Lifecycle.Event.ON_RESUME) {
+        LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
             walletScreenViewModel.checkWalletEnabled()
+        }
+
+        LaunchedEffect(walletScreenViewModel.walletDeepLinkReceived) {
+            if (walletScreenViewModel.walletDeepLinkReceived.value) {
+                bottomNav(
+                    navController,
+                    navItems.first { it.first == BottomNavDestination.Wallet }
+                )
+            }
         }
 
         Scaffold(
@@ -65,14 +75,10 @@ fun MainNavScreen(
                                 Icon(painterResource(id = navDest.first.icon), navDest.first.key)
                             },
                             onClick = {
-                                navDest.second()
-                                navController.navigate(navDest.first.key) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                bottomNav(
+                                    navController,
+                                    navDest
+                                )
                             },
                             selected = navBackStackEntry?.destination?.route == navDest.first.key,
                             label = { Label(navDest.first.label) },
@@ -96,7 +102,9 @@ fun MainNavScreen(
         ) { paddingValues ->
             NavHost(
                 navController = navController,
-                startDestination = if (walletScreenViewModel.walletDeepLinkReceived.value) {
+                startDestination = if (
+                    walletScreenViewModel.walletDeepLinkReceived.value
+                ) {
                     BottomNavDestination.Wallet.key
                 } else {
                     BottomNavDestination.Home.key
@@ -143,6 +151,20 @@ private fun createBottomNavItems(
         listOf(home, wallet, profile)
     } else {
         listOf(home, profile)
+    }
+}
+
+private fun bottomNav(
+    navController: NavHostController,
+    navDest: Pair<BottomNavDestination, () -> Unit>
+) {
+    navDest.second()
+    navController.navigate(navDest.first.key) {
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
