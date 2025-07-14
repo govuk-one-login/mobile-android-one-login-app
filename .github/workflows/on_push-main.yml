@@ -68,7 +68,7 @@ jobs:
       - name: Push tag
         id: git-tag
         uses: ./config/actions/push-tag
-        env:
+        with:
           version-name: ${{ steps.version-number.outputs.version }}
 
       - name: Generate version code
