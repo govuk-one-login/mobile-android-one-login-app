@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.login.appintegrity.FirebaseAppCheck
 
 @Module
@@ -16,9 +17,10 @@ object AppCheckerModule {
     @Provides
     fun provideAppCheck(
         @ApplicationContext
-        context: Context
+        context: Context,
+        logger: Logger
     ): AppChecker {
         val factory = PlayIntegrityAppCheckProviderFactory.getInstance()
-        return FirebaseAppCheck(factory, context)
+        return FirebaseAppCheck(factory, context, logger)
     }
 }

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.settings.ui.biomtericstoggle
+package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -18,7 +18,6 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.TestUtils.executeTrackEventTestCase
-import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleAnalyticsViewModel
 
 @RunWith(AndroidJUnit4::class)
 class BiometricsToggleAnalyticsViewModelTest {

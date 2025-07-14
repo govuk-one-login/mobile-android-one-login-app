@@ -198,6 +198,7 @@ dependencies {
         libs.androidx.appcompat,
         libs.androidx.browser,
         libs.androidx.biometric,
+        platform(libs.androidx.compose.bom),
         libs.androidx.compose.material,
         libs.androidx.compose.material3,
         libs.androidx.compose.ui.tooling.preview,

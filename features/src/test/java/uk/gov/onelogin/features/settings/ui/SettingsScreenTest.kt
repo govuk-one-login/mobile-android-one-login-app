@@ -331,6 +331,28 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAccessibilityEvent(context))
     }
 
+    @Test
+    fun optOutBiometricsPreview() = runTest {
+        composeTestRule.setContent {
+            SettingsScreenOptOutShowBiometricsPreview()
+        }
+
+        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+    }
+
+    @Test
+    fun optInNoBiometricsPreview() = runTest {
+        composeTestRule.setContent {
+            SettingsScreenOptInNoShowBiometricsPreview()
+        }
+
+        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+    }
+
     private fun checkTheLinkOpensTheCorrectUrl(linkView: SemanticsMatcher, url: String) {
         val signInURL = Uri.parse(url)
         composeTestRule.setContent {
