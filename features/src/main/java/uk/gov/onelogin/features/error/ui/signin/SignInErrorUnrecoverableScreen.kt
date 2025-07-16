@@ -1,10 +1,11 @@
 package uk.gov.onelogin.features.error.ui.signin
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
@@ -17,15 +18,15 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
-@Preview
 fun SignInErrorUnrecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),
-    goBack: () -> Unit = {}
+    viewModel: SignInErrorUnrecoverableViewModel = hiltViewModel()
 ) {
     GdsTheme {
+        val context = LocalActivity.current as Activity
         BackHandler(true) {
             analyticsViewModel.trackBackButton()
-            goBack()
+            viewModel.exitApp(context)
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackUnrecoverableScreen() }
         EdgeToEdgePage { _ ->

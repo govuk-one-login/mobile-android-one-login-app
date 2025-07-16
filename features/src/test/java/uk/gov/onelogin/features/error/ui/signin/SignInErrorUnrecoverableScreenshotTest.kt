@@ -7,7 +7,7 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class SignInRecoverableErrorUnrecoverableScreenshotTest(nightMode: NightMode, locale: String) :
+class SignInErrorUnrecoverableScreenshotTest(nightMode: NightMode, locale: String) :
     BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignInErrorUnrecoverableScreenPreview()

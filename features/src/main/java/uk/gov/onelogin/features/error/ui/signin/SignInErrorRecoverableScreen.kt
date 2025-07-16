@@ -21,19 +21,18 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 @Preview
 fun SignInErrorRecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),
-    goBack: () -> Unit = {},
-    onClick: () -> Unit = {}
+    viewModel: SignInErrorRecoverableViewModel = hiltViewModel()
 ) {
     GdsTheme {
         BackHandler(true) {
             analyticsViewModel.trackBackButton()
-            goBack()
+            viewModel.onBack()
         }
         LaunchedEffect(Unit) { analyticsViewModel.trackRecoverableScreen() }
         EdgeToEdgePage { _ ->
             SignInErrorBody {
                 analyticsViewModel.trackButton()
-                onClick()
+                viewModel.onClick()
             }
         }
     }

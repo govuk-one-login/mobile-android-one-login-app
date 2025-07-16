@@ -4,6 +4,7 @@ import android.content.Intent
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -50,6 +51,8 @@ class HandleLoginRedirectTest {
         AuthenticationError.ErrorType.OAUTH
     )
 
+    private val exceptionNullMessage = Exception()
+
     private val handleLoginRedirect = HandleLoginRedirectImpl(
         mockAppIntegrity,
         mockLoginSession,
@@ -62,6 +65,7 @@ class HandleLoginRedirectTest {
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
             }
 
@@ -107,6 +111,7 @@ class HandleLoginRedirectTest {
             )
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 val appIntegrityParameters = it.arguments[1] as AppIntegrityParameters
                 assertEquals("", appIntegrityParameters.attestation)
@@ -131,6 +136,7 @@ class HandleLoginRedirectTest {
             )
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 val appIntegrityParameters = it.arguments[1] as AppIntegrityParameters
                 assertEquals("", appIntegrityParameters.attestation)
@@ -174,6 +180,7 @@ class HandleLoginRedirectTest {
                 .thenReturn(AttestationResult.NotRequired(testAttestation))
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 val appIntegrityParameters = it.arguments[1] as AppIntegrityParameters
                 assertEquals(testAttestation, appIntegrityParameters.attestation)
@@ -190,27 +197,6 @@ class HandleLoginRedirectTest {
         }
 
     @Test
-    fun `onFailure, handleLoginFinalise returns access_denied`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success(""))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenThrow(
-                accessDeniedError
-            )
-
-            // When
-            handleLoginRedirect.handle(
-                mockIntent,
-                {
-                    assertEquals("access_denied", it?.message)
-                },
-                { }
-            )
-        }
-
-    @Test
     fun `onFailure, handleLoginFinalise returns access_denied failure callback`() =
         runTest {
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
@@ -218,6 +204,7 @@ class HandleLoginRedirectTest {
                 .thenReturn(AttestationResult.Success(""))
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[3] as (error: AuthenticationError) -> Unit).invoke(accessDeniedError)
             }
 
@@ -246,6 +233,7 @@ class HandleLoginRedirectTest {
                 .thenReturn(AttestationResult.Success(""))
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[3] as (error: AuthenticationError) -> Unit).invoke(oauthError)
             }
             // When
@@ -266,6 +254,7 @@ class HandleLoginRedirectTest {
                 .thenReturn(AttestationResult.Success(""))
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
             whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
                 (it.arguments[3] as (error: AuthenticationError) -> Unit).invoke(tokenError)
             }
             // When
@@ -273,6 +262,27 @@ class HandleLoginRedirectTest {
                 mockIntent,
                 {
                     assertEquals("token_error", it?.message)
+                },
+                { }
+            )
+        }
+
+    @Test
+    fun `onFailure, handleLoginFinalise returns error with null message`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success(""))
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+            whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
+                (it.arguments[3] as (error: Throwable) -> Unit).invoke(exceptionNullMessage)
+            }
+            // When
+            handleLoginRedirect.handle(
+                mockIntent,
+                {
+                    assertNull(it?.message)
                 },
                 { }
             )

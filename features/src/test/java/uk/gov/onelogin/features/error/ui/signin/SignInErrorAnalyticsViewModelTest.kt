@@ -19,7 +19,7 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @RunWith(AndroidJUnit4::class)
-class SignInRecoverableErrorAnalyticsViewModelTest {
+class SignInErrorAnalyticsViewModelTest {
     private lateinit var name: String
     private lateinit var id: String
     private lateinit var reason: String

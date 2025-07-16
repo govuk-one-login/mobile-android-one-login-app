@@ -1,8 +1,6 @@
 package uk.gov.onelogin.navigation.graphs
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalActivity
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -58,33 +56,13 @@ object LoginGraphObject {
             composable(
                 route = LoginRoutes.SignInRecoverableError.getRoute()
             ) {
-                SignInErrorRecoverableScreen(
-                    goBack = {
-                        navController.navigate(LoginRoutes.Welcome.getRoute()) {
-                            popUpTo(navController.graph.id) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                ) {
-                    navController.navigate(LoginRoutes.Start.getRoute()) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
-                }
+                SignInErrorRecoverableScreen()
             }
 
             composable(
                 route = LoginRoutes.SignInUnrecoverableError.getRoute()
             ) {
-                val context = LocalActivity.current as Activity
-                SignInErrorUnrecoverableScreen(
-                    goBack = {
-                        // Close / terminate the app
-                        context.finishAndRemoveTask()
-                    }
-                )
+                SignInErrorUnrecoverableScreen()
             }
 
             composable(
