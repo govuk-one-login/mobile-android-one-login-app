@@ -23,6 +23,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
+import androidx.test.espresso.intent.Intents
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -51,6 +52,7 @@ import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.localauth.R as LocalAuthR
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -159,6 +161,7 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        Intents.init()
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
         mockLocalAuthRepo = LocalAuthPreferenceRepositoryImpl(context)
@@ -176,7 +179,37 @@ class LoginTest : TestCase() {
 
     @After
     fun tearDown() {
+        Intents.release()
         ArchTaskExecutor.getInstance().setDelegate(null)
+    }
+
+    @Test
+    fun handleActivityResultWithDataButLoginThrowsRecoverableError() {
+        val authenticationError = AuthenticationError(
+            message = "Error",
+            type = AuthenticationError.ErrorType.SERVER_ERROR
+        )
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
+        }
+        setupActivityForResult(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.EMPTY
+            )
+        )
+        clickOptOut()
+        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
+        composeRule.waitUntil(5000) {
+            composeRule.onNodeWithText("Try to sign in again.").isDisplayed()
+        }
     }
 
     @Test
@@ -329,7 +362,11 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun handleActivityResultWithDataButLoginThrows() {
+    fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
+        val authenticationError = AuthenticationError(
+            message = "Error",
+            type = AuthenticationError.ErrorType.TOKEN_ERROR
+        )
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
@@ -338,7 +375,7 @@ class LoginTest : TestCase() {
             .thenReturn(SignedPoP.Success("Success"))
         whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[3] as (Throwable) -> Unit).invoke(Error())
+            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
         }
         setupActivityForResult(
             Intent(
@@ -348,7 +385,7 @@ class LoginTest : TestCase() {
         )
         clickOptOut()
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
-        nodeWithTextExists("There was a problem signing you in")
+        nodeWithTextExists("Try again later.")
     }
 
     @Test
