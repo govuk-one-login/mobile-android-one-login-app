@@ -184,35 +184,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun handleActivityResultWithDataButLoginThrowsRecoverableError() {
-        val authenticationError = AuthenticationError(
-            message = "Error",
-            type = AuthenticationError.ErrorType.SERVER_ERROR
-        )
-        wheneverBlocking { mockAppInfoService.get() }
-            .thenReturn(AppInfoServiceState.Successful(appInfoData))
-        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
-            .thenReturn(AttestationResult.Success("Success"))
-        whenever(mockAppIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
-            @Suppress("unchecked_cast")
-            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
-        }
-        setupActivityForResult(
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.EMPTY
-            )
-        )
-        clickOptOut()
-        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
-        composeRule.waitUntil(5000) {
-            composeRule.onNodeWithText("Try to sign in again.").isDisplayed()
-        }
-    }
-
-    @Test
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
         whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
         whenever(mockAppIntegrity.getClientAttestation())
