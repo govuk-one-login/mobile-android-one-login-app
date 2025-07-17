@@ -11,7 +11,8 @@ class LoginRoutesTest {
             LoginRoutes.Start.getRoute() to "/login/start",
             LoginRoutes.Welcome.getRoute() to "/login/welcome",
             LoginRoutes.Loading.getRoute() to "/login/loading",
-            LoginRoutes.SignInError.getRoute() to "/login/sign_in_error",
+            LoginRoutes.SignInRecoverableError.getRoute() to "/login/sign_in_recoverable_error",
+            LoginRoutes.SignInUnrecoverableError.getRoute() to "/login/sign_in_unrecoverable_error",
             LoginRoutes.AnalyticsOptIn.getRoute() to "/login/analytics_opt_in"
         ).forEach { assertEquals(it.second, it.first) }
     }

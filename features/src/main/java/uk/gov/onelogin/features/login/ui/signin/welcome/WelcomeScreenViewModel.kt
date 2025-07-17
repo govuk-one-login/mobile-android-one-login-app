@@ -68,7 +68,7 @@ class WelcomeScreenViewModel @Inject constructor(
             handleRemoteLogin.login(
                 launcher
             ) {
-                navigator.navigate(LoginRoutes.SignInError)
+                navigator.navigate(LoginRoutes.SignInRecoverableError)
             }
         }
 
@@ -104,19 +104,29 @@ class WelcomeScreenViewModel @Inject constructor(
     }
 
     private fun CoroutineScope.handleLoginErrors(it: Throwable?) {
-        this.launch {
-            when (it) {
-                is AuthenticationError -> {
-                    when (it.type) {
-                        AuthenticationError.ErrorType.ACCESS_DENIED -> {
+        when (it) {
+            is AuthenticationError -> {
+                when (it.type) {
+                    AuthenticationError.ErrorType.ACCESS_DENIED -> {
+                        this.launch {
                             signOutUseCase.invoke()
-                            navigator.navigate(SignOutRoutes.ReAuthError)
                         }
-                        else -> navigator.navigate(LoginRoutes.SignInError, true)
+                        navigator.navigate(SignOutRoutes.ReAuthError)
+                    }
+
+                    AuthenticationError.ErrorType.SERVER_ERROR ->
+                        navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+
+                    AuthenticationError.ErrorType.TOKEN_ERROR ->
+                        navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+
+                    else -> {
+                        navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                     }
                 }
-                else -> navigator.navigate(LoginRoutes.SignInError, true)
             }
+
+            else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
         }
     }
 
@@ -143,7 +153,7 @@ class WelcomeScreenViewModel @Inject constructor(
         )
 
         if (!verifyIdToken(tokens.idToken, jwksUrl)) {
-            navigator.navigate(LoginRoutes.SignInError, true)
+            navigator.navigate(LoginRoutes.SignInRecoverableError, true)
         } else {
             checkLocalAuthRoute(tokens, isReAuth, activity)
         }

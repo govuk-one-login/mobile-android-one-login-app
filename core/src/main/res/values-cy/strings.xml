@@ -84,7 +84,7 @@
     <string name="app_signInButton">Mewngofnodi gyda GOV.UK One Login</string>
     <string name="app_unlockButton">Datgloi</string>
     <string name="app_signInErrorTitle">Roedd problem wrth eich mewngofnodi</string>
-    <string name="app_signInErrorBody">Ceisio mewngofnodi eto.</string>
+    <string name="app_signInErrorRecoverableBody">Ceisio mewngofnodi eto.</string>
 
     <!-- Errors-->
     <!-- App Unavailable -->
