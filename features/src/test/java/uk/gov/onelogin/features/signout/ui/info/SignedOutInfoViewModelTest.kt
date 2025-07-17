@@ -154,7 +154,7 @@ class SignedOutInfoViewModelTest {
             viewModel.checkPersistentId { callback = true }
 
             verify(signOutUseCase).invoke()
-            verify(navigator).navigate(LoginRoutes.SignInError, true)
+            verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
             assertFalse(callback)
             assertTrue(logger.contains("java.lang.Error: test"))
         }

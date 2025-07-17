@@ -33,7 +33,7 @@ class SignInErrorAnalyticsViewModelTest {
     fun setup() {
         val context: Context = ApplicationProvider.getApplicationContext()
         name = context.getEnglishString(R.string.app_signInErrorTitle)
-        id = context.getEnglishString(R.string.sign_in_error_screen_id)
+        id = context.getEnglishString(R.string.sign_in_recoverable_error_screen_id)
         reason = context.getEnglishString(R.string.sign_in_error_reason)
         button = context.getEnglishString(R.string.app_closeButton)
         backButton = context.getEnglishString(R.string.system_backButton)
@@ -51,7 +51,7 @@ class SignInErrorAnalyticsViewModelTest {
     }
 
     @Test
-    fun trackScreen() {
+    fun trackRecoverableScreen() {
         val event =
             ViewEvent.Error(
                 name = name,
@@ -62,7 +62,7 @@ class SignInErrorAnalyticsViewModelTest {
                 params = requiredParams
             )
 
-        viewModel.trackScreen()
+        viewModel.trackRecoverableScreen()
 
         verify(analyticsLogger).logEventV3Dot1(event)
     }

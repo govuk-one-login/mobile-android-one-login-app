@@ -54,7 +54,7 @@ class LoginGraphObjectTest : TestCase() {
     @FlakyTest
     @Test
     fun loginGraph_SignInError() {
-        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInError) }
+        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInRecoverableError) }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signInErrorTitle)

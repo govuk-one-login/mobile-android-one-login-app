@@ -11,9 +11,11 @@ sealed class LoginRoutes(private val route: String) : NavRoute {
 
     data object Loading : LoginRoutes("/login/loading")
 
-    data object SignInError : LoginRoutes("/login/sign_in_error")
+    data object SignInRecoverableError : LoginRoutes("/login/sign_in_recoverable_error")
 
     data object AnalyticsOptIn : LoginRoutes("/login/analytics_opt_in")
+
+    data object SignInUnrecoverableError : LoginRoutes("/login/sign_in_unrecoverable_error")
 
     override fun getRoute() = route
 }
