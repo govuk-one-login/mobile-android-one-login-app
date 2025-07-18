@@ -20,12 +20,17 @@ class SignInErrorAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
 ) : ViewModel() {
-    private val screenEvent = makeScreenEvent(context)
+    private val recoverableScreenEvent = makeRecoverableScreenEvent(context)
+    private val unRecoverableScreenEvent = makeUnrecoverableScreenEvent(context)
     private val buttonEvent = makeButtonEvent(context)
     private val backButtonEvent = makeBackEvent(context)
 
-    fun trackScreen() {
-        analyticsLogger.logEventV3Dot1(screenEvent)
+    fun trackRecoverableScreen() {
+        analyticsLogger.logEventV3Dot1(recoverableScreenEvent)
+    }
+
+    fun trackUnrecoverableScreen() {
+        analyticsLogger.logEventV3Dot1(unRecoverableScreenEvent)
     }
 
     fun trackButton() {
@@ -37,10 +42,21 @@ class SignInErrorAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
-        internal fun makeScreenEvent(context: Context) = with(context) {
+        internal fun makeRecoverableScreenEvent(context: Context) = with(context) {
             ViewEvent.Error(
                 name = getEnglishString(R.string.app_signInErrorTitle),
-                id = getEnglishString(R.string.sign_in_error_screen_id),
+                id = getEnglishString(R.string.sign_in_recoverable_error_screen_id),
+                endpoint = "",
+                reason = getEnglishString(R.string.sign_in_error_reason),
+                status = "",
+                params = requiredParams
+            )
+        }
+
+        internal fun makeUnrecoverableScreenEvent(context: Context) = with(context) {
+            ViewEvent.Error(
+                name = getEnglishString(R.string.app_signInErrorTitle),
+                id = getEnglishString(R.string.sign_in_unrecoverable_error_screen_id),
                 endpoint = "",
                 reason = getEnglishString(R.string.sign_in_error_reason),
                 status = "",

@@ -93,6 +93,19 @@ class WelcomeScreenViewModelTest {
         "oauth_error",
         AuthenticationError.ErrorType.OAUTH
     )
+    private val oauthError500 = AuthenticationError(
+        "oauth_error",
+        AuthenticationError.ErrorType.OAUTH,
+        status = 500
+    )
+    private val serverError = AuthenticationError(
+        "server_error",
+        AuthenticationError.ErrorType.SERVER_ERROR
+    )
+    private val tokenError400 = AuthenticationError(
+        "token_error",
+        AuthenticationError.ErrorType.TOKEN_ERROR
+    )
 
     private lateinit var viewModel: WelcomeScreenViewModel
 
@@ -370,8 +383,95 @@ class WelcomeScreenViewModelTest {
 
             verifyNoInteractions(mockSignOutUseCase)
             verifyNoInteractions(mockSavePersistentId)
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
-            assertThat("logger has log", logger.contains("oauth_error"))
+            verify(mockNavigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
+            assertThat("logger has no oauth_error", logger.contains("oauth_error"))
+        }
+
+    @Test
+    fun `handleIntent when data != null, oauth_error 500, device is secure and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(oauthError500)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSignOutUseCase)
+            verifyNoInteractions(mockSavePersistentId)
+            verify(mockNavigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
+            assertThat("logger has no oauth_error", logger.contains("oauth_error"))
+        }
+
+    @Test
+    fun `handleIntent when data != null && server_error, device is secure and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(serverError)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSignOutUseCase)
+            verifyNoInteractions(mockSavePersistentId)
+            verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
+            assertThat("logger has no server_error", logger.contains("server_error"))
+        }
+
+    @Test
+    fun `handleIntent when data != null && token_error, device is secure and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(tokenError400)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSignOutUseCase)
+            verifyNoInteractions(mockSavePersistentId)
+            verify(mockNavigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
+            assertThat("logger has no token_error", logger.contains("token_error"))
         }
 
     @Test
@@ -415,7 +515,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
             assertThat("logger has log", logger.size == 1)
         }
 
@@ -438,7 +538,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
             assertThat("logger has no log", logger.size == 0)
         }
 
@@ -466,7 +566,7 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
-            verify(mockNavigator).navigate(LoginRoutes.SignInError, true)
+            verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
         }
 
     @Test

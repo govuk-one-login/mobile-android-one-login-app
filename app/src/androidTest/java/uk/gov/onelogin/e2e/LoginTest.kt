@@ -23,6 +23,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
+import androidx.test.espresso.intent.Intents
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -51,6 +52,7 @@ import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.localauth.R as LocalAuthR
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.authentication.login.TokenResponse
@@ -66,6 +68,7 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.e2e.controller.TestCase
@@ -75,6 +78,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.login.LoginSessionModule
+import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
@@ -86,7 +90,8 @@ import uk.gov.onelogin.utils.TestUtils
     BiometricsModule::class,
     AppInfoApiModule::class,
     AppCheckerModule::class,
-    AppIntegrityModule::class
+    AppIntegrityModule::class,
+    VerifyIdModule::class
 )
 class LoginTest : TestCase() {
     @BindValue
@@ -143,6 +148,9 @@ class LoginTest : TestCase() {
     @Named("Open")
     lateinit var secureStore: SecureStore
 
+    @BindValue
+    val mockVerifyIdToken: VerifyIdToken = mock()
+
     // Remove this once Secure Store is fixed
     private val sharedPrefs = context.getSharedPreferences("SharedPrefs.key", Context.MODE_PRIVATE)
 
@@ -153,6 +161,7 @@ class LoginTest : TestCase() {
 
     @Before
     fun setup() {
+        Intents.init()
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
         mockLocalAuthRepo = LocalAuthPreferenceRepositoryImpl(context)
@@ -170,6 +179,7 @@ class LoginTest : TestCase() {
 
     @After
     fun tearDown() {
+        Intents.release()
         ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
@@ -180,6 +190,7 @@ class LoginTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
+        wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         tokenRepository.setTokenResponse(
             TokenResponse(
                 tokenType = "type",
@@ -301,7 +312,7 @@ class LoginTest : TestCase() {
 
         composeRule.waitForIdle()
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
     }
 
     @Test
@@ -318,18 +329,25 @@ class LoginTest : TestCase() {
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
     }
 
     @Test
-    fun handleActivityResultWithDataButLoginThrows() {
+    fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
+        val authenticationError = AuthenticationError(
+            message = "Error",
+            type = AuthenticationError.ErrorType.TOKEN_ERROR
+        )
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any())).thenThrow(Error())
+        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
+        }
         setupActivityForResult(
             Intent(
                 Intent.ACTION_VIEW,
@@ -338,7 +356,7 @@ class LoginTest : TestCase() {
         )
         clickOptOut()
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
-        nodeWithTextExists("There was a problem signing you in")
+        nodeWithTextExists("Try again later.")
     }
 
     @Test
@@ -351,6 +369,7 @@ class LoginTest : TestCase() {
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
         whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(false)
+        wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         mockGoodLogin()
         setupActivityForResult(
             Intent(
@@ -385,6 +404,7 @@ class LoginTest : TestCase() {
         whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(true)
         whenever(mockDeviceBiometricManager.getCredentialStatus())
             .thenReturn(DeviceBiometricsStatus.SUCCESS)
+        wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         mockGoodLogin()
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
@@ -417,6 +437,7 @@ class LoginTest : TestCase() {
         whenever(mockDeviceBiometricManager.isDeviceSecure()).thenReturn(true)
         whenever(mockDeviceBiometricManager.getCredentialStatus())
             .thenReturn(DeviceBiometricsStatus.NOT_ENROLLED)
+        wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         mockGoodLogin()
         setupActivityForResult(
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
@@ -527,7 +548,7 @@ class LoginTest : TestCase() {
     }
 
     private fun mockGoodLogin() {
-        whenever(mockLoginSession.finalise(any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[2] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }

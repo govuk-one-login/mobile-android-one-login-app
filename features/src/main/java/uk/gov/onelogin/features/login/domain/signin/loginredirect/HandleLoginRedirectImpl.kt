@@ -4,7 +4,6 @@ import android.content.Intent
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.api.Logger
@@ -49,7 +48,6 @@ class HandleLoginRedirectImpl @Inject constructor(
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     private fun handleLoginFinalise(
         intent: Intent,
         attestation: String,
@@ -57,37 +55,21 @@ class HandleLoginRedirectImpl @Inject constructor(
         onSuccess: (TokenResponse) -> Unit,
         onFailure: (Throwable?) -> Unit
     ) {
-        try {
-            loginSession.finalise(
-                intent = intent,
-                appIntegrity = AppIntegrityParameters(attestation, jwt)
-            ) { tokens ->
-                try {
-                    onSuccess(tokens)
-                } catch (e: Throwable) {
-                    logger.error(
-                        e.javaClass.simpleName,
-                        e.message ?: NO_MESSAGE,
-                        e
-                    )
-                    onFailure(e)
-                }
+        loginSession.finalise(
+            intent = intent,
+            appIntegrity = AppIntegrityParameters(attestation, jwt),
+            { tokens ->
+                onSuccess(tokens)
+            },
+            { authError ->
+                logger.error(
+                    authError.javaClass.simpleName,
+                    authError.message ?: NO_MESSAGE,
+                    authError
+                )
+                onFailure(authError)
             }
-        } catch (authError: AuthenticationError) {
-            logger.error(
-                authError.javaClass.simpleName,
-                authError.message,
-                authError
-            )
-            onFailure(authError)
-        } catch (e: Throwable) {
-            logger.error(
-                e.javaClass.simpleName,
-                e.message ?: NO_MESSAGE,
-                e
-            )
-            onFailure(e)
-        }
+        )
     }
 
     private suspend fun handleGetClientAttestation(
