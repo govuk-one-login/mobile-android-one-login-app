@@ -84,7 +84,9 @@ fun SettingsScreen(
         privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
         accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
         helpUrl = stringResource(R.string.app_helpUrl),
-        contactUrl = stringResource(R.string.app_contactUrl)
+        contactUrl = stringResource(R.string.app_contactUrl),
+        addDocumentsUrl = stringResource(R.string.app_add_document_url),
+        termsAndConditionsUrl = stringResource(R.string.app_terms_and_conditions_url)
     )
     TitledPage(title = R.string.app_settings) { paddingValues ->
         SettingsScreenBody(
@@ -96,7 +98,8 @@ fun SettingsScreen(
                 goToBiometricsOptIn = { viewModel.goToBiometricsOptIn() },
                 toggleOptInPreference = { viewModel.toggleOptInPreference() },
                 goToOssl = { viewModel.goToOssl() },
-                goToSignOut = { viewModel.goToSignOut() }
+                goToSignOut = { viewModel.goToSignOut() },
+                isWalletEnabled = viewModel.isWalletEnabled
             ),
             analyticsViewModelFunctions = AnalyticsViewModelFunctions(
                 trackSignInDetailLink = { analyticsViewModel.trackSignInDetailLink() },
@@ -108,7 +111,9 @@ fun SettingsScreen(
                     analyticsViewModel.trackAccessibilityStatementLink()
                 },
                 trackOpenSourceButton = { analyticsViewModel.trackOpenSourceButton() },
-                trackSignOutButton = { analyticsViewModel.trackSignOutButton() }
+                trackSignOutButton = { analyticsViewModel.trackSignOutButton() },
+                trackAddDocumentsLink = { analyticsViewModel.trackAddDocumentsLink() },
+                trackTermsAndConditionsLink = { analyticsViewModel.trackTermsAndConditionsLink() }
             ),
             uriHandler = uriHandler,
             settingsScreenLinks = settingsScreenLinks
@@ -143,6 +148,7 @@ private fun SettingsScreenBody(
             }
         )
         HelpAndFeedbackSection(
+            isWalletEnabled = viewModelFunctions.isWalletEnabled,
             onHelpClick = {
                 analyticsViewModelFunctions.trackUsingOneLoginLink()
                 uriHandler.openUri(settingsScreenLinks.helpUrl)
@@ -150,6 +156,10 @@ private fun SettingsScreenBody(
             onContactClick = {
                 analyticsViewModelFunctions.trackContactOneLoginLink()
                 uriHandler.openUri(settingsScreenLinks.contactUrl)
+            },
+            onAddDocumentsClick = {
+                analyticsViewModelFunctions.trackAddDocumentsLink()
+                uriHandler.openUri(settingsScreenLinks.addDocumentsUrl)
             }
         )
         AboutTheAppSection(
@@ -168,6 +178,7 @@ private fun SettingsScreenBody(
             }
         )
         LegalSection(
+            isWalletEnabled = viewModelFunctions.isWalletEnabled,
             onPrivacyNoticeClick = {
                 analyticsViewModelFunctions.trackPrivacyNoticeLink()
                 uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
@@ -179,6 +190,10 @@ private fun SettingsScreenBody(
             onOpenSourceLicensesClick = {
                 analyticsViewModelFunctions.trackOpenSourceButton()
                 viewModelFunctions.goToOssl()
+            },
+            onTermsAndConditionsClick = {
+                analyticsViewModelFunctions.trackTermsAndConditionsLink()
+                uriHandler.openUri(settingsScreenLinks.termsAndConditionsUrl)
             }
         )
         SignOutRow(
@@ -195,7 +210,9 @@ private data class SettingsScreenLinks(
     val privacyNoticeUrl: String,
     val accessibilityStatementUrl: String,
     val helpUrl: String,
-    val contactUrl: String
+    val contactUrl: String,
+    val addDocumentsUrl: String,
+    val termsAndConditionsUrl: String
 )
 
 private data class ViewModelFunctions(
@@ -203,7 +220,8 @@ private data class ViewModelFunctions(
     val goToBiometricsOptIn: () -> Unit = {},
     val toggleOptInPreference: () -> Unit = {},
     val goToOssl: () -> Unit = {},
-    val goToSignOut: () -> Unit = {}
+    val goToSignOut: () -> Unit = {},
+    val isWalletEnabled: Boolean
 )
 
 private data class AnalyticsViewModelFunctions(
@@ -214,7 +232,9 @@ private data class AnalyticsViewModelFunctions(
     val trackPrivacyNoticeLink: () -> Unit = {},
     val trackAccessibilityStatementLink: () -> Unit = {},
     val trackOpenSourceButton: () -> Unit = {},
-    val trackSignOutButton: () -> Unit = {}
+    val trackSignOutButton: () -> Unit = {},
+    val trackAddDocumentsLink: () -> Unit = {},
+    val trackTermsAndConditionsLink: () -> Unit = {}
 )
 
 @Composable
@@ -237,9 +257,11 @@ private fun YourDetailsSection(
 
 @Composable
 private fun LegalSection(
+    isWalletEnabled: Boolean,
     onPrivacyNoticeClick: () -> Unit,
     onAccessibilityStatementClick: () -> Unit,
-    onOpenSourceLicensesClick: () -> Unit
+    onOpenSourceLicensesClick: () -> Unit,
+    onTermsAndConditionsClick: () -> Unit
 ) {
     LinkRow(
         title = R.string.app_privacyNoticeLink2,
@@ -259,6 +281,17 @@ private fun LegalSection(
         onAccessibilityStatementClick()
     }
     HorizontalDivider()
+    if (isWalletEnabled) {
+        LinkRow(
+            title = R.string.app_termsAndConditionsLink,
+            icon = R.drawable.external_link_icon,
+            contentDescription = R.string.app_openLinkExternally,
+            traversalIndex = TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER
+        ) {
+            onTermsAndConditionsClick()
+        }
+        HorizontalDivider()
+    }
     LinkRow(
         title = R.string.app_openSourceLicences,
         icon = R.drawable.arrow_right_icon,
@@ -270,12 +303,14 @@ private fun LegalSection(
 
 @Composable
 private fun HelpAndFeedbackSection(
+    isWalletEnabled: Boolean,
     onHelpClick: () -> Unit,
-    onContactClick: () -> Unit
+    onContactClick: () -> Unit,
+    onAddDocumentsClick: () -> Unit
 ) {
     HeadingRow(R.string.app_settingsSubtitle1, traversalIndex = HELP_TRAVERSAL_ORDER)
     LinkRow(
-        title = R.string.app_appGuidanceLink,
+        title = R.string.app_proveYourIdentityLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
         traversalIndex = USING_LINK_TRAVERSAL_ORDER
@@ -283,6 +318,17 @@ private fun HelpAndFeedbackSection(
         onHelpClick()
     }
     HorizontalDivider()
+    if (isWalletEnabled) {
+        LinkRow(
+            title = R.string.app_addDocumentsLink,
+            icon = R.drawable.external_link_icon,
+            contentDescription = R.string.app_openLinkExternally,
+            traversalIndex = ADD_DOCUMENTS_TRAVERSAL_ORDER
+        ) {
+            onAddDocumentsClick()
+        }
+        HorizontalDivider()
+    }
     LinkRow(
         title = R.string.app_contactLink,
         icon = R.drawable.external_link_icon,
@@ -493,11 +539,18 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
             paddingValues = PaddingValues(all = smallPadding),
             email = "name@place.gov.uk",
             optInState = false,
-            viewModelFunctions = ViewModelFunctions(showBiometricsOption = true, {}, {}, {}, {}),
+            viewModelFunctions = ViewModelFunctions(
+                showBiometricsOption = true,
+                {},
+                {},
+                {},
+                {},
+                isWalletEnabled = true
+            ),
             analyticsViewModelFunctions =
             AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
             uriHandler = LocalUriHandler.current,
-            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "")
+            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
         )
     }
 }
@@ -511,11 +564,18 @@ internal fun SettingsScreenOptInNoShowBiometricsPreview() {
             paddingValues = PaddingValues(all = smallPadding),
             email = "name@place.gov.uk",
             optInState = true,
-            viewModelFunctions = ViewModelFunctions(showBiometricsOption = false, {}, {}, {}, {}),
+            viewModelFunctions = ViewModelFunctions(
+                showBiometricsOption = false,
+                {},
+                {},
+                {},
+                {},
+                isWalletEnabled = false
+            ),
             analyticsViewModelFunctions =
             AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
             uriHandler = LocalUriHandler.current,
-            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "")
+            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
         )
     }
 }
@@ -523,12 +583,14 @@ internal fun SettingsScreenOptInNoShowBiometricsPreview() {
 private const val MANAGE_DETAILS_TRAVERSAL_ORDER = -24f
 private const val HELP_TRAVERSAL_ORDER = -23f
 private const val USING_LINK_TRAVERSAL_ORDER = -22f
-private const val CONTACT_LINK_TRAVERSAL_ORDER = -21f
-private const val ABOUT_TRAVERSAL_ORDER = -20f
-private const val BIOMETRICS_OPT_IN_TRAVERSAL_ORDER = -19f
-private const val ANALYTICS_TOGGLE_TRAVERSAL_ORDER = -18f
-const val PRIVACY_NOTICE_TRAVERSAL_ORDER = -17f
+private const val ADD_DOCUMENTS_TRAVERSAL_ORDER = -21f
+private const val CONTACT_LINK_TRAVERSAL_ORDER = -20f
+private const val ABOUT_TRAVERSAL_ORDER = -19f
+private const val BIOMETRICS_OPT_IN_TRAVERSAL_ORDER = -18f
+private const val ANALYTICS_TOGGLE_TRAVERSAL_ORDER = -17f
+const val PRIVACY_NOTICE_TRAVERSAL_ORDER = -16f
 private const val PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER = 8f
 private const val ACCESSIBILITY_LINK_TRAVERSAL_ORDER = 9f
-private const val OSL_LINK_TRAVERSAL_ORDER = 10f
-private const val SIGN_OUT_TRAVERSAL_ORDER = 11f
+private const val TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER = 10f
+private const val OSL_LINK_TRAVERSAL_ORDER = 11f
+private const val SIGN_OUT_TRAVERSAL_ORDER = 12f
