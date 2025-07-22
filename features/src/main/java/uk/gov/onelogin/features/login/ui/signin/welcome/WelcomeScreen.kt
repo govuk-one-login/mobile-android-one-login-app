@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -125,6 +126,7 @@ private fun handleScreenExit(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
+@Suppress("LongMethod")
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
     openDevMenu: () -> Unit = { }
@@ -154,6 +156,7 @@ internal fun WelcomeBody(
                 item {
                     Text(
                         text = content[0],
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
                     )
@@ -161,6 +164,7 @@ internal fun WelcomeBody(
                 item {
                     Text(
                         text = content[1],
+                        color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
                     )
@@ -192,7 +196,5 @@ internal fun WelcomeBody(
 @ScreenPreview
 @Composable
 internal fun WelcomePreview() {
-    GdsTheme {
-        WelcomeBody()
-    }
+    WelcomeBody()
 }

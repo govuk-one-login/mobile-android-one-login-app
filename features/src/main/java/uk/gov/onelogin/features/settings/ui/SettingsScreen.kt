@@ -432,6 +432,7 @@ private fun LinkRow(
                         .padding(top = smallPadding)
                         .padding(bottom = if (description == null) smallPadding else 4.dp),
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                     text = stringResource(title),
                     textAlign = TextAlign.Left
                 )
@@ -454,7 +455,8 @@ private fun LinkRow(
                 painter = painterResource(id = icon),
                 contentDescription = contentDescription?.let { stringResource(it) } ?: "",
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(24.dp),
+                tint = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -494,7 +496,8 @@ internal fun PreferenceToggleRow(
         Text(
             modifier = Modifier.weight(1F),
             text = stringResource(title),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
         Switch(
             checked = toggle,

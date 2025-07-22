@@ -44,6 +44,7 @@ fun EmailSection(email: String) {
         )
         Text(
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
             text = buildAnnotatedString {
                 append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
                 appendLine()
