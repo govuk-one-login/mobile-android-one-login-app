@@ -2,6 +2,7 @@
 
 package uk.gov.onelogin.features.settings.ui
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -48,6 +49,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -504,6 +506,7 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 internal fun SettingsScreenOptInNoShowBiometricsPreview() {
     GdsTheme {
