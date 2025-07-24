@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.error.ui.signout
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,13 @@ class SignOutErrorScreenTest : FragmentActivityTestCase() {
     fun clickExitButton() {
         setUp()
         composeTestRule.onNode(primaryButton).performClick()
+        verify(navigator, times(2)).goBack()
+    }
+
+    @Test
+    fun tapBackButton() {
+        setUp()
+        Espresso.pressBack()
         verify(navigator, times(2)).goBack()
     }
 
