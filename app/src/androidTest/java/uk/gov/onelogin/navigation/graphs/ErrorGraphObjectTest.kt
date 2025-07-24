@@ -55,7 +55,18 @@ class ErrorGraphObjectTest : TestCase() {
         }
 
         composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorTitle)
+            resources.getString(R.string.app_signOutErrorBody1)
+        ).assertExists()
+    }
+
+    @Test
+    fun navigateToSignOutWalletDisabledError() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(ErrorRoutes.SignOutWalletDisabled.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signOutErrorBody)
         ).assertExists()
     }
 

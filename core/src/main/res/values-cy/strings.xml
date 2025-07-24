@@ -105,8 +105,10 @@
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">Roedd problem wrth eich allgofnodi</string>
     <string name="app_signOutErrorBody">Gallwch orfodi allgofnodi trwy ddileu\'r ap o\'ch dyfais.</string>
+    <string name="app_signOutErrorBody1">@string/app_genericErrorPageBody</string>
+    <string name="app_signOutErrorBody2">Os oes angen i chi fewngofnodi nawr, gallwch ddileu\'r ap o\'ch ffôn. Bydd hyn hefyd yn dileu unrhyw ddogfennau sydd wedi\'u cadw yn eich ap.</string>
     <string name="app_exitButton">Gadael</string>
-
+    <string name="app_SignOutErrorButton">Yn ôl i gosodiadau</string>
     <string name="app_authenticationDialogueTitle">Datgloi GOV.UK One Login</string>
     <string name="app_homeTitle">Hafan</string>
 

@@ -114,8 +114,10 @@
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">There was a problem signing you out</string>
     <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
+    <string name="app_signOutErrorBody1">@string/app_genericErrorPageBody</string>
+    <string name="app_signOutErrorBody2">If you need to sign out right now, you can delete the app from your phone. This will also delete any documents saved in your app.</string>
     <string name="app_exitButton">Exit</string>
-
+    <string name="app_SignOutErrorButton">Go back to settings</string>
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
     <string name="app_homeTitle">Home</string>
