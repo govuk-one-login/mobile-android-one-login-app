@@ -17,6 +17,7 @@ import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 @HiltViewModel
+@Suppress("TooManyFunctions")
 class SettingsAnalyticsViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val analyticsLogger: AnalyticsLogger
@@ -31,6 +32,8 @@ class SettingsAnalyticsViewModel @Inject constructor(
     private val openSourceEvent = makeOpenSourceEvent(context)
     private val signOutEvent = makeSignOutEvent(context)
     private val biometricsEvent = makeBiometricsButtonEvent(context)
+    private val addDocumentsEvent = makeAddDocumentsEvent(context)
+    private val termsAndConditionsEvent = makeTermsAndConditionsEvent(context)
 
     fun trackSettingsView() {
         analyticsLogger.logEventV3Dot1(settingsViewEvent)
@@ -72,6 +75,15 @@ class SettingsAnalyticsViewModel @Inject constructor(
         analyticsLogger.logEventV3Dot1(biometricsEvent)
     }
 
+    fun trackAddDocumentsLink() {
+        analyticsLogger.logEventV3Dot1(addDocumentsEvent)
+    }
+
+    fun trackTermsAndConditionsLink() {
+        analyticsLogger.logEventV3Dot1(termsAndConditionsEvent)
+    }
+
+    @Suppress("TooManyFunctions")
     companion object {
         internal fun makeBackEvent(context: Context) = with(context) {
             TrackEvent.Icon(
@@ -101,7 +113,7 @@ class SettingsAnalyticsViewModel @Inject constructor(
             TrackEvent.Link(
                 isExternal = false,
                 domain = getEnglishString(R.string.app_oneLoginCardLinkUrl, "").domain,
-                text = getEnglishString(R.string.app_appGuidanceLink),
+                text = getEnglishString(R.string.app_proveYourIdentityLink),
                 params = requiredParams
             )
         }
@@ -150,6 +162,24 @@ class SettingsAnalyticsViewModel @Inject constructor(
         internal fun makeBiometricsButtonEvent(context: Context) = with(context) {
             TrackEvent.Button(
                 text = getEnglishString(R.string.app_settingsBiometricsField),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeAddDocumentsEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = false,
+                domain = getEnglishString(R.string.app_add_document_url, "").domain,
+                text = getEnglishString(R.string.app_addDocumentsLink),
+                params = requiredParams
+            )
+        }
+
+        internal fun makeTermsAndConditionsEvent(context: Context) = with(context) {
+            TrackEvent.Link(
+                isExternal = false,
+                domain = getEnglishString(R.string.app_terms_and_conditions_url, "").domain,
+                text = getEnglishString(R.string.app_termsAndConditionsLink),
                 params = requiredParams
             )
         }

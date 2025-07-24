@@ -26,7 +26,7 @@
     <string name="app_privacyNoticeLink2">GOV.UK One Login privacy notice</string>
     <string name="app_accessibilityStatement">Accessibility statement</string>
     <string name="app_openSourceLicences">Open source licences</string>
-    <string name="app_appGuidanceLink">Using the GOV.UK One Login app</string>
+    <string name="app_proveYourIdentityLink">Proving your identity</string>
     <string name="app_contactLink">Contact GOV.UK One Login</string>
     <string name="app_settingsAnalyticsToggle">Share app analytics</string>
     <string name="app_settingsAnalyticsToggleFootnote">You can share anonymous analytics about how you use the app to help the GOV.UK One Login team make improvements.</string>
@@ -34,6 +34,8 @@
     <string name="app_signOutButton">Sign out</string>
     <string name="app_settingsSignInDetailsLink">Manage sign in details</string>
     <string name="app_settingsBiometricsField">Biometrics</string>
+    <string name="app_addDocumentsLink">Adding documents to your app</string>
+    <string name="app_termsAndConditionsLink">Terms and conditions</string>
 
     <!-- Biometrics Toggle Opt In Screen NO Wallet -->
     <string name="app_biometricsToggleTitle">Biometrics</string>

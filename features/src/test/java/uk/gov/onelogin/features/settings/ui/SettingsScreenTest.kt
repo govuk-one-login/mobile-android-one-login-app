@@ -35,6 +35,8 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -46,6 +48,7 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 
@@ -59,6 +62,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SettingsAnalyticsViewModel
+    private lateinit var featureFlags: FeatureFlags
 
     private lateinit var yourDetailsHeader: SemanticsMatcher
     private lateinit var yourDetailsTitle: SemanticsMatcher
@@ -74,6 +78,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var signOutButton: SemanticsMatcher
     private lateinit var openSourceLicensesButton: SemanticsMatcher
     private lateinit var biometricsOptIn: SemanticsMatcher
+    private lateinit var addDocumentsLink: SemanticsMatcher
+    private lateinit var termsAndConditionsLink: SemanticsMatcher
+    private lateinit var proveIdentityLink: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -84,10 +91,14 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         getEmail = mock()
         tokenRepository = mock()
         localAuthManager = mock()
+        featureFlags = InMemoryFeatureFlags(
+            emptySet()
+        )
         viewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
+            featureFlags,
             tokenRepository,
             getEmail
         )
@@ -101,7 +112,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
         legalLink2 = hasText(resources.getString(R.string.app_openSourceLicences))
         legalLink3 = hasText(resources.getString(R.string.app_accessibilityStatement))
-        helpLink = hasText(resources.getString(R.string.app_appGuidanceLink))
+        helpLink = hasText(resources.getString(R.string.app_proveYourIdentityLink))
         contactLink = hasText(resources.getString(R.string.app_contactLink))
         aboutTheAppSwitch = hasTestTag(resources.getString(R.string.optInSwitchTestTag))
         aboutTheAppSubTitle = hasText(
@@ -116,6 +127,9 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         intending(not(isInternal())).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        addDocumentsLink = hasText(resources.getString(R.string.app_addDocumentsLink))
+        termsAndConditionsLink = hasText(resources.getString(R.string.app_termsAndConditionsLink))
+        proveIdentityLink = hasText(resources.getString(R.string.app_proveYourIdentityLink))
     }
 
     @After
@@ -124,7 +138,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun yourDetailsGroupDisplayed() = runTest {
+    fun yourDetailsGroupDisplayedWalletDisabled() = runTest {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
 
         composeTestRule.setContent {
@@ -134,11 +148,37 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
         composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+        composeTestRule.onNode(proveIdentityLink).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
     }
 
     @Test
-    fun legalGroupDisplayed() = runTest {
+    fun yourDetailsGroupDisplayedWalletEnabled() = runTest {
+        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+        val settingsViewModel = SettingsScreenViewModel(
+            optInRepository,
+            navigator,
+            localAuthManager,
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED)
+            ),
+            tokenRepository,
+            getEmail
+        )
+        composeTestRule.setContent {
+            SettingsScreen(settingsViewModel, analyticsViewModel)
+        }
+        composeTestRule.onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+        composeTestRule.onNode(proveIdentityLink).assertIsDisplayed()
+        composeTestRule.onNode(addDocumentsLink).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
+    }
+
+    @Test
+    fun legalGroupDisplayedWalletDisabled() = runTest {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
 
         composeTestRule.setContent {
@@ -147,6 +187,28 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
+    }
+
+    @Test
+    fun legalGroupDisplayedWalletEnabled() = runTest {
+        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+        val settingsViewModel = SettingsScreenViewModel(
+            optInRepository,
+            navigator,
+            localAuthManager,
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED)
+            ),
+            tokenRepository,
+            getEmail
+        )
+        composeTestRule.setContent {
+            SettingsScreen(settingsViewModel, analyticsViewModel)
+        }
+        composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
+        composeTestRule.onNode(termsAndConditionsLink).performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -332,6 +394,53 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
+    fun addDocumentsLaunchesBrowser() = runTest {
+        val url = resources.getString(R.string.app_add_document_url)
+        val settingsViewModel = SettingsScreenViewModel(
+            optInRepository,
+            navigator,
+            localAuthManager,
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED)
+            ),
+            tokenRepository,
+            getEmail
+        )
+        checkTheLinkOpensTheCorrectUrl(
+            addDocumentsLink,
+            url,
+            settingsViewModel
+        )
+        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAddDocumentsEvent(context))
+    }
+
+    @Test
+    fun termsAndConditionsLaunchesBrowser() = runTest {
+        featureFlags = InMemoryFeatureFlags(
+            setOf(WalletFeatureFlag.ENABLED)
+        )
+        val settingsViewModel = SettingsScreenViewModel(
+            optInRepository,
+            navigator,
+            localAuthManager,
+            InMemoryFeatureFlags(
+                setOf(WalletFeatureFlag.ENABLED)
+            ),
+            tokenRepository,
+            getEmail
+        )
+        val url = resources.getString(R.string.app_terms_and_conditions_url)
+        checkTheLinkOpensTheCorrectUrl(
+            termsAndConditionsLink,
+            url,
+            settingsViewModel
+        )
+        verify(analytics).logEventV3Dot1(
+            SettingsAnalyticsViewModel.makeTermsAndConditionsEvent(context)
+        )
+    }
+
+    @Test
     fun optOutBiometricsPreview() = runTest {
         composeTestRule.setContent {
             SettingsScreenOptOutShowBiometricsPreview()
@@ -353,10 +462,14 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
     }
 
-    private fun checkTheLinkOpensTheCorrectUrl(linkView: SemanticsMatcher, url: String) {
+    private fun checkTheLinkOpensTheCorrectUrl(
+        linkView: SemanticsMatcher,
+        url: String,
+        settingsViewModel: SettingsScreenViewModel = viewModel
+    ) {
         val signInURL = Uri.parse(url)
         composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
+            SettingsScreen(settingsViewModel, analyticsViewModel)
         }
         // When clicking on the link
 

@@ -7,4 +7,6 @@
     <string name="app_manageSignInDetailsUrl">https://home.account.gov.uk/security?lng=en</string>
     <string name="app_helpUrl">https://www.gov.uk/guidance/proving-your-identity-with-the-govuk-one-login-app</string>
     <string name="app_contactUrl">https://home.account.gov.uk/contact-gov-uk-one-login?lng=en</string>
+    <string name="app_terms_and_conditions_url">http://gov.uk/wallet/terms-conditions</string>
+    <string name="app_add_document_url">http://gov.uk/wallet/help-adding-document</string>
 </resources>
