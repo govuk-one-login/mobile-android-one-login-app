@@ -74,6 +74,7 @@ class SettingsAnalyticsViewModelTest {
     }
 
     @Test
+    @Suppress("LongMethod")
     fun testLinkEvents() {
         // Given a TrackEvent
         listOf(
@@ -95,7 +96,7 @@ class SettingsAnalyticsViewModelTest {
                     viewModel.trackUsingOneLoginLink()
                 },
                 domain = context.getEnglishString(R.string.app_oneLoginCardLinkUrl).domain,
-                text = context.getEnglishString(R.string.app_appGuidanceLink)
+                text = context.getEnglishString(R.string.app_proveYourIdentityLink)
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
@@ -121,6 +122,20 @@ class SettingsAnalyticsViewModelTest {
             TestUtils.TrackEventTestCase.Button(
                 trackFunction = { viewModel.trackBiometricsButton() },
                 text = context.getEnglishString(R.string.app_settingsBiometricsField)
+            ),
+            TestUtils.TrackEventTestCase.Link(
+                trackFunction = {
+                    viewModel.trackAddDocumentsLink()
+                },
+                domain = context.getEnglishString(R.string.app_add_document_url).domain,
+                text = context.getEnglishString(R.string.app_addDocumentsLink)
+            ),
+            TestUtils.TrackEventTestCase.Link(
+                trackFunction = {
+                    viewModel.trackTermsAndConditionsLink()
+                },
+                domain = context.getEnglishString(R.string.app_terms_and_conditions_url).domain,
+                text = context.getEnglishString(R.string.app_termsAndConditionsLink)
             )
         ).forEach {
             // When tracking
