@@ -22,6 +22,7 @@ import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -56,7 +57,8 @@ class WelcomeScreenViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
     private val logger: Logger,
     private val featureFlags: FeatureFlags,
-    val onlineChecker: OnlineChecker
+    val onlineChecker: OnlineChecker,
+    private val errorCounter: Counter
 ) : ViewModel() {
     private val tag = this::class.java.simpleName
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -114,8 +116,14 @@ class WelcomeScreenViewModel @Inject constructor(
                         navigator.navigate(SignOutRoutes.ReAuthError)
                     }
 
-                    AuthenticationError.ErrorType.SERVER_ERROR ->
-                        navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+                    AuthenticationError.ErrorType.SERVER_ERROR -> {
+                        errorCounter.increment()
+                        if (errorCounter.getValue() >= MAX_ATTEMPTS) {
+                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+                        } else {
+                            navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+                        }
+                    }
 
                     AuthenticationError.ErrorType.TOKEN_ERROR ->
                         navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
@@ -147,11 +155,11 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
+        errorCounter.reset()
         val jwksUrl = context.getString(
             R.string.stsUrl,
             context.getString(R.string.jwksEndpoint)
         )
-
         if (!verifyIdToken(tokens.idToken, jwksUrl)) {
             navigator.navigate(LoginRoutes.SignInRecoverableError, true)
         } else {
@@ -203,3 +211,5 @@ class WelcomeScreenViewModel @Inject constructor(
         )
     }
 }
+
+private const val MAX_ATTEMPTS = 3

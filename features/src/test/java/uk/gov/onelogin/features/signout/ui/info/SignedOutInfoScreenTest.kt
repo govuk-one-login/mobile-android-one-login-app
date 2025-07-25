@@ -31,6 +31,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -76,6 +77,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
+    private lateinit var errorCounter: Counter
     private val logger = SystemLogger()
     private var shouldTryAgainCalled = false
 
@@ -104,6 +106,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         )
         onlineChecker = mock()
         analytics = mock()
+        errorCounter = mock()
         localAuthManager = LocalAuthManagerImpl(
             localAuthPreferenceRepo,
             deviceBiometricsManager,
@@ -128,7 +131,8 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             signOutUseCase,
             logger,
             featureFlags,
-            onlineChecker
+            onlineChecker,
+            errorCounter
         )
         getPersistentId = mock()
         signOutUseCase = mock()

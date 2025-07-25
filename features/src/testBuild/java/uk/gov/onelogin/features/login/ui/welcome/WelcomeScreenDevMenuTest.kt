@@ -16,6 +16,7 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -54,6 +55,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
+    private lateinit var errorCounter: Counter
     private val logger = SystemLogger()
 
     private val devButton = hasText(resources.getString(R.string.app_developer_button))
@@ -75,6 +77,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         featureFlags = mock()
         onlineChecker = mock()
         analytics = mock()
+        errorCounter = mock()
         localAuthManager = LocalAuthManagerImpl(
             localAuthPreferenceRepo,
             deviceBiometricsManager,
@@ -96,7 +99,8 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 signOutUseCase,
                 logger,
                 featureFlags,
-                onlineChecker
+                onlineChecker,
+                errorCounter
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
