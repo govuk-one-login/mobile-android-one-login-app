@@ -1,11 +1,14 @@
 package uk.gov.onelogin.features.signout.ui.info
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.fragment.app.FragmentActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
@@ -17,10 +20,12 @@ import org.junit.runner.RunWith
 import org.mockito.AdditionalAnswers
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
@@ -36,6 +41,7 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
+import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -78,6 +84,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var errorCounter: Counter
+    private lateinit var mockFragmentActivity: FragmentActivity
     private val logger = SystemLogger()
     private var shouldTryAgainCalled = false
 
@@ -86,6 +93,11 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private val signedOutBody2 = hasText(resources.getString(R.string.app_youveBeenSignedOutBody2))
     private val signedOutButton =
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
+
+    private val serverError = AuthenticationError(
+        "server_error",
+        AuthenticationError.ErrorType.SERVER_ERROR
+    )
 
     @Before
     @Suppress("LongMethod")
@@ -149,6 +161,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
         shouldTryAgainCalled = false
+        mockFragmentActivity = mock()
     }
 
     @Test
@@ -205,6 +218,80 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
         verify(signOutUseCase).invoke()
         verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+    }
+
+    @Test
+    fun opensSignInScreenServerErrorAttempts1RecoverableError() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+        whenever(handleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                    .invoke(serverError)
+            }
+        whenever(verifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+        whenever(errorCounter.getValue()).thenReturn(1)
+        loginViewModel.handleActivityResult(
+            mockIntent,
+            true,
+            activity = mockFragmentActivity
+        )
+
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
+        }
+
+        whenWeClickSignIn()
+
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
+    }
+
+    @Test
+    fun opensSignInScreenServerErrorAttempts3UnRecoverableError() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        val mockIntent: Intent = mock()
+        val mockUri: Uri = mock()
+
+        whenever(mockIntent.data).thenReturn(mockUri)
+        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+        whenever(handleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                    .invoke(serverError)
+            }
+        whenever(verifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+            .thenReturn(true)
+        whenever(errorCounter.getValue()).thenReturn(3)
+        loginViewModel.handleActivityResult(
+            mockIntent,
+            true,
+            activity = mockFragmentActivity
+        )
+
+        composeTestRule.setContent {
+            SignedOutInfoScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel
+            )
+        }
+
+        whenWeClickSignIn()
+
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
     }
 
     @Test
