@@ -88,6 +88,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
     @Before
+    @Suppress("LongMethod")
     fun setup() = runBlocking {
         localAuthPreferenceRepo = mock()
         deviceBiometricsManager = mock()
