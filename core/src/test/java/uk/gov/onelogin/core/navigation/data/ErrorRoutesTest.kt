@@ -10,6 +10,7 @@ class ErrorRoutesTest {
             ErrorRoutes.Root.getRoute() to "/error",
             ErrorRoutes.Generic.getRoute() to "/error/generic",
             ErrorRoutes.Offline.getRoute() to "/error/offline",
+            ErrorRoutes.SignOutWalletDisabled.getRoute() to "/error/sign_out_wallet_disabled",
             ErrorRoutes.SignOut.getRoute() to "/error/sign_out",
             ErrorRoutes.UpdateRequired.getRoute() to "/error/update_required",
             ErrorRoutes.Unavailable.getRoute() to "/error/unavailable"

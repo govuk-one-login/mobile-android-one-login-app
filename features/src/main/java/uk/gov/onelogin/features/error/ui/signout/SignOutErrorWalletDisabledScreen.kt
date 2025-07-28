@@ -1,9 +1,7 @@
 package uk.gov.onelogin.features.error.ui.signout
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
@@ -16,12 +14,7 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
-fun SignOutErrorScreen(viewModel: SignOutErrorViewModel = hiltViewModel()) {
-    SignOutErrorBody { viewModel.goBackToSettingsScreen() }
-}
-
-@Composable
-internal fun SignOutErrorBody(onBackToSettings: () -> Unit) {
+fun SignOutErrorWalletDisabledScreen(onExitAppClicked: () -> Unit) {
     GdsTheme {
         EdgeToEdgePage { _ ->
             ErrorScreen(
@@ -29,21 +22,15 @@ internal fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                 title = stringResource(R.string.app_signOutErrorTitle),
                 body = persistentListOf(
                     CentreAlignedScreenBodyContent.Text(
-                        bodyText = stringResource(R.string.app_signOutErrorBody1)
-                    ),
-                    CentreAlignedScreenBodyContent.Text(
-                        bodyText = stringResource(R.string.app_signOutErrorBody2)
+                        bodyText = stringResource(R.string.app_signOutErrorBody)
                     )
                 ),
                 primaryButton =
                 CentreAlignedScreenButton(
-                    text = stringResource(R.string.app_SignOutErrorButton),
-                    onClick = onBackToSettings
+                    text = stringResource(R.string.app_exitButton),
+                    onClick = onExitAppClicked
                 )
             )
-            BackHandler {
-                onBackToSettings()
-            }
         }
     }
 }
@@ -51,6 +38,6 @@ internal fun SignOutErrorBody(onBackToSettings: () -> Unit) {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-fun SignOutWalletPreview() {
-    SignOutErrorBody {}
+fun Preview() {
+    SignOutErrorWalletDisabledScreen { }
 }

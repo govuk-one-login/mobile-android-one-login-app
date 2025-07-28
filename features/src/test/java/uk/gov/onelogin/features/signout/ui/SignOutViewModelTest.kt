@@ -41,12 +41,12 @@ class SignOutViewModelTest {
                 featureFlags,
                 logger
             )
-        whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
     }
 
     @Test
     fun `sign out use case does not throw`() =
         runTest {
+            whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
@@ -57,6 +57,7 @@ class SignOutViewModelTest {
     @Test
     fun `sign out use case does throw`() =
         runTest {
+            whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
             whenever(mockSignOutUseCase.invoke()).thenThrow(
                 SignOutError(Exception("test"))
             )
@@ -64,12 +65,28 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(ErrorRoutes.SignOut, true)
+            verify(mockNavigator).navigate(SignOutRoutes.SignOutError, false)
+            assertThat("logger has log", logger.contains("java.lang.Exception: test"))
+        }
+
+    @Test
+    fun `sign out use case does throw wallet disabled`() =
+        runTest {
+            whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { false }
+            whenever(mockSignOutUseCase.invoke()).thenThrow(
+                SignOutError(Exception("test"))
+            )
+
+            viewModel.signOut()
+
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutWalletDisabled, false)
             assertThat("logger has log", logger.contains("java.lang.Exception: test"))
         }
 
     @Test
     fun `goBack() correctly navigates back`() {
+        whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
         viewModel.goBack()
 
         verify(mockNavigator).goBack()
