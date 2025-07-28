@@ -43,7 +43,12 @@ class AppIntegrityImpl @Inject constructor(
     }
 
     override suspend fun retrieveSavedClientAttestation(): String? {
-        return getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)?.get(CLIENT_ATTESTATION)
+        // Check if attestation is expired:
+        return if (isAttestationCallRequired()) {
+            null
+        } else {
+            getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)?.get(CLIENT_ATTESTATION)
+        }
     }
 
     private suspend fun handleClientAttestation(result: AttestationResponse.Success) =

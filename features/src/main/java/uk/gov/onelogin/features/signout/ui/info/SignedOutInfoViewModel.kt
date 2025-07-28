@@ -54,7 +54,7 @@ class SignedOutInfoViewModel @Inject constructor(
                         error.message.toString(),
                         error
                     )
-                    navigator.navigate(LoginRoutes.SignInError, true)
+                    navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                 }
             } else {
                 localAuthPrefResetUseCase.reset()
