@@ -37,7 +37,7 @@ class SignedOutInfoAnalyticsViewModelTest : FragmentActivityTestCase() {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
             )
         domain = context.getEnglishString(R.string.baseStsUrl, "").domain
         buttonText = context.getEnglishString(R.string.app_SignInWithGovUKOneLoginButton)

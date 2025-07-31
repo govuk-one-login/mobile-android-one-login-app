@@ -48,44 +48,32 @@ class SignOutAnalyticsViewModel @Inject constructor(
     }
 
     companion object {
+        private val requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+            taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+        )
         fun onPrimaryEvent(context: Context) = with(context) {
             TrackEvent.Button(
                 text = getEnglishString(R.string.app_signOutAndDeleteAppDataButton),
-                params =
-                RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                )
+                params = requiredParameters
             )
         }
 
         fun onCloseIcon() = TrackEvent.Icon(
             text = "back",
-            params =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-            )
+            params = requiredParameters
         )
 
         fun onBackPressed() = TrackEvent.Icon(
             text = "back - system",
-            params =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-            )
+            params = requiredParameters
         )
 
         fun makeSignOutWalletViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signOutConfirmationTitle),
                 id = getEnglishString(R.string.sign_out_wallet_page_id),
-                params =
-                RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                )
+                params = requiredParameters
             )
         }
 
@@ -93,11 +81,7 @@ class SignOutAnalyticsViewModel @Inject constructor(
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signOutConfirmationTitle),
                 id = getEnglishString(R.string.sign_out_no_wallet_page_id),
-                params =
-                RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
-                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-                )
+                params = requiredParameters
             )
         }
     }
