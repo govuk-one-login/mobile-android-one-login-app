@@ -42,16 +42,15 @@ class SplashScreenAnalyticsViewModelTest {
         idUnlock = context.getEnglishString(R.string.splash_unlock_screen_page_id)
         unlockButton = context.getEnglishString(R.string.app_unlockButton)
         backButton = context.getEnglishString(R.string.system_backButton)
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun trackSplashScreen() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-            )
         val event =
             ViewEvent.Screen(
                 name = name,
@@ -66,11 +65,6 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackSplashUnlockScreen() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             ViewEvent.Screen(
                 name = nameUnlock,
@@ -85,11 +79,6 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackUnlockButton() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             TrackEvent.Button(
                 text = unlockButton,
@@ -103,36 +92,26 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackBackButtonSplash() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-            )
         val event =
             TrackEvent.Icon(
                 text = backButton,
                 params = requiredParameters
             )
 
-        viewModel.trackBackButton(context, false)
+        viewModel.trackBackButton(context)
 
         verify(logger).logEventV3Dot1(event)
     }
 
     @Test
     fun trackBackButtonUnlock() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             TrackEvent.Icon(
                 text = backButton,
                 params = requiredParameters
             )
 
-        viewModel.trackBackButton(context, true)
+        viewModel.trackBackButton(context)
 
         verify(logger).logEventV3Dot1(event)
     }
