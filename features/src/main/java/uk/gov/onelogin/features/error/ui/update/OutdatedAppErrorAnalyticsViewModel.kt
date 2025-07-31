@@ -53,9 +53,12 @@ class OutdatedAppErrorAnalyticsViewModel @Inject constructor(
         }
 
         fun makeUpdateRequiredViewEvent(context: Context) = with(context) {
-            ViewEvent.Screen(
+            ViewEvent.Error(
                 name = getEnglishString(R.string.app_updateApp_Title),
                 id = getEnglishString(R.string.update_required_page_id),
+                endpoint = "",
+                status = "",
+                reason = getString(R.string.update_required_error_reason),
                 params =
                 RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
