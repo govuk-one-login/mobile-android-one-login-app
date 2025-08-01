@@ -26,7 +26,7 @@
     <string name="app_privacyNoticeLink2">GOV.UK One Login privacy notice</string>
     <string name="app_accessibilityStatement">Accessibility statement</string>
     <string name="app_openSourceLicences">Open source licences</string>
-    <string name="app_appGuidanceLink">Using the GOV.UK One Login app</string>
+    <string name="app_proveYourIdentityLink">Proving your identity</string>
     <string name="app_contactLink">Contact GOV.UK One Login</string>
     <string name="app_settingsAnalyticsToggle">Share app analytics</string>
     <string name="app_settingsAnalyticsToggleFootnote">You can share anonymous analytics about how you use the app to help the GOV.UK One Login team make improvements.</string>
@@ -34,6 +34,8 @@
     <string name="app_signOutButton">Sign out</string>
     <string name="app_settingsSignInDetailsLink">Manage sign in details</string>
     <string name="app_settingsBiometricsField">Biometrics</string>
+    <string name="app_addDocumentsLink">Adding documents to your app</string>
+    <string name="app_termsAndConditionsLink">Terms and conditions</string>
 
     <!-- Biometrics Toggle Opt In Screen NO Wallet -->
     <string name="app_biometricsToggleTitle">Biometrics</string>
@@ -114,8 +116,10 @@
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">There was a problem signing you out</string>
     <string name="app_signOutErrorBody">You can force sign out by deleting the app from your device.</string>
+    <string name="app_signOutErrorBody1">@string/app_genericErrorPageBody</string>
+    <string name="app_signOutErrorBody2">If you need to sign out right now, you can delete the app from your phone. This will also delete any documents saved in your app.</string>
     <string name="app_exitButton">Exit</string>
-
+    <string name="app_SignOutErrorButton">Go back to settings</string>
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
     <string name="app_homeTitle">Home</string>
@@ -138,6 +142,7 @@
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
+    <string name="app_developer_access_token_button_expire_45_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
     <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>

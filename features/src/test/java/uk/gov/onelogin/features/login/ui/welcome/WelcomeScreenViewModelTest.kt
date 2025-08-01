@@ -32,6 +32,7 @@ import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -73,6 +74,7 @@ class WelcomeScreenViewModelTest {
     private lateinit var mockHandleLoginRedirect: HandleLoginRedirect
     private lateinit var mockSignOutUseCase: SignOutUseCase
     private lateinit var mockSavePersistentId: SavePersistentId
+    private lateinit var mockCounter: Counter
     private val logger = SystemLogger()
 
     private val testAccessToken = "testAccessToken"
@@ -139,6 +141,7 @@ class WelcomeScreenViewModelTest {
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
             verify(mockAutoInitialiseSecureStore, times(1)).initialise()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
+            verify(mockCounter).reset()
         }
 
     @Test
@@ -417,7 +420,7 @@ class WelcomeScreenViewModelTest {
         }
 
     @Test
-    fun `handleIntent when data != null && server_error, device is secure and reauth is true`() =
+    fun `handleIntent when server_error, device is secure, reauth is true, attempt 1`() =
         runTest {
             createMocks()
             val mockIntent: Intent = mock()
@@ -432,7 +435,7 @@ class WelcomeScreenViewModelTest {
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
-
+            whenever(mockCounter.getValue()).thenReturn(1)
             viewModel.handleActivityResult(
                 mockIntent,
                 true,
@@ -442,6 +445,35 @@ class WelcomeScreenViewModelTest {
             verifyNoInteractions(mockSignOutUseCase)
             verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
+            assertThat("logger has no server_error", logger.contains("server_error"))
+        }
+
+    @Test
+    fun `handleIntent when server_error, device is secure, reauth is true, attempt 3`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
+                        .invoke(serverError)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(mockCounter.getValue()).thenReturn(3)
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verifyNoInteractions(mockSignOutUseCase)
+            verifyNoInteractions(mockSavePersistentId)
+            verify(mockNavigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
             assertThat("logger has no server_error", logger.contains("server_error"))
         }
 
@@ -681,6 +713,7 @@ class WelcomeScreenViewModelTest {
             )
         }
         mockOnlineChecker = mock()
+        mockCounter = mock()
 
         viewModel =
             WelcomeScreenViewModel(
@@ -698,7 +731,8 @@ class WelcomeScreenViewModelTest {
                 mockSignOutUseCase,
                 logger,
                 mockFeatureFlags,
-                mockOnlineChecker
+                mockOnlineChecker,
+                mockCounter
             )
 
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")

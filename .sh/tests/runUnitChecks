@@ -21,10 +21,22 @@ then
     check \
     --continue \
     --stacktrace
+  echo "Running Paparazzi verify without environment variables (local development)..."
+  ./gradlew \
+    features:verifyPaparazziBuildDebug \
+    --continue \
+    --stacktrace
 else
   echo "Running unit checks with environment variables (GitHub workflow)..."
   ./gradlew \
     check \
+    -PversionCode="${INPUT_VERSION_CODE}" \
+    -PversionName="${INPUT_VERSION_NAME}" \
+    --continue \
+    --stacktrace
+  echo "Running Paparazzi verify with environment variables (GitHub workflow)..."
+  ./gradlew  \
+    features:verifyPaparazziBuildDebug \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \

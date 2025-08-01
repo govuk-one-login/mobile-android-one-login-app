@@ -119,4 +119,15 @@ class SignOutGraphObjectTest : TestCase() {
             }
         }
     }
+
+    @Test
+    fun signOutGraph_navigateToSignOutErrorScreen() {
+        composeTestRule.setActivity {
+            navigator.navigate(SignOutRoutes.SignOutError)
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signOutErrorBody1)
+        )
+    }
 }

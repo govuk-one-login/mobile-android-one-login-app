@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.developer.ui.tokens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.util.date.getTimeMillis
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,10 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry(System.currentTimeMillis() - 1)
     }
 
+    fun setAccessTokenExpireTo30Seconds() {
+        saveTokenExpiry(getTimeMillis() + SECONDS_TO_MILLIS_30)
+    }
+
     fun resetPersistentId() {
         viewModelScope.launch {
             saveToOpenSecureStore.save(
@@ -45,5 +50,9 @@ class TokenTabScreenViewModel @Inject constructor(
 
     private suspend fun setPersistentId() {
         _persistentId.value = getPersistentId() ?: ""
+    }
+
+    companion object {
+        private const val SECONDS_TO_MILLIS_30 = 30000
     }
 }

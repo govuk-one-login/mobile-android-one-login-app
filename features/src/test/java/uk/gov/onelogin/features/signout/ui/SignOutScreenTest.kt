@@ -44,6 +44,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsViewModel: SignOutAnalyticsViewModel
     private lateinit var title: SemanticsMatcher
     private lateinit var button: SemanticsMatcher
+    private lateinit var noWalletButton: SemanticsMatcher
     private lateinit var closeButton: SemanticsMatcher
     private val logger = SystemLogger()
 
@@ -56,6 +57,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         analyticsViewModel = SignOutAnalyticsViewModel(context, analytics)
         title = hasText(resources.getString(R.string.app_signOutConfirmationTitle))
         button = hasText(resources.getString(R.string.app_signOutAndDeleteAppDataButton))
+        noWalletButton = hasText(resources.getString(R.string.app_signOutButton_no_wallet))
         closeButton = hasContentDescription("Close")
     }
 
@@ -111,6 +113,22 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
+    fun verifySignOutButtonFailsWalletDisabled() = runTest {
+        featureFlags = InMemoryFeatureFlags(
+            setOf(CriOrchestratorFeatureFlag.ENABLED)
+        )
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+        }
+        whenever(signOutUseCase.invoke())
+            .thenThrow(SignOutError(Exception("something went wrong")))
+        composeTestRule.onNode(noWalletButton).performClick()
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(ErrorRoutes.SignOutWalletDisabled, false)
+    }
+
+    @Test
     fun verifySignOutButtonFails() = runTest {
         featureFlags = InMemoryFeatureFlags(
             setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
@@ -123,7 +141,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(ErrorRoutes.SignOut, true)
+        verify(navigator).navigate(SignOutRoutes.SignOutError, false)
     }
 
     @Test

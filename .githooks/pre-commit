@@ -10,3 +10,6 @@
   detekt \
   --daemon \
   --stacktrace
+
+./gradlew features:verifyPaparazziBuildDebug
+

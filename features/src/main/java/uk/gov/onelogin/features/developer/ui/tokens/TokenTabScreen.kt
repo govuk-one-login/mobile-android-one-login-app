@@ -34,22 +34,22 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = mediumPadding),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+        ButtonRow(
+            text = stringResource(R.string.app_developer_reset_access_token_button)
         ) {
-            GdsButton(
-                text = stringResource(R.string.app_developer_reset_access_token_button),
-                buttonType = ButtonType.Primary,
-                onClick = {
-                    viewModel.resetAccessToken()
-                    Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
-                        .show()
-                }
-            )
+            viewModel.resetAccessToken()
+            Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
+                .show()
+        }
+        ButtonRow(
+            text = stringResource(R.string.app_developer_access_token_button_expire_45_sec)
+        ) {
+            viewModel.setAccessTokenExpireTo30Seconds()
+            Toast.makeText(
+                context,
+                "Token expiry set to 30 seconds from now!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
         Row(
             modifier = Modifier
@@ -72,5 +72,25 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
                 modifier = Modifier.weight(1F)
             )
         }
+    }
+}
+
+@Composable
+private fun ButtonRow(
+    text: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = mediumPadding),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        GdsButton(
+            text = text,
+            buttonType = ButtonType.Primary,
+            onClick = onClick
+        )
     }
 }
