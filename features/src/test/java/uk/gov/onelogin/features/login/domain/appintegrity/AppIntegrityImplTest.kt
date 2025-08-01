@@ -297,13 +297,28 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `retrieve saved ClientAttestation`() =
+    fun `retrieve saved ClientAttestation success`() =
         runBlocking {
             whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
                 .thenReturn(attestationSsResult)
+            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
+                .thenReturn(validAttestationExpSSResult)
             val result = sut.retrieveSavedClientAttestation()
 
             assertEquals(ATTESTATION, result)
+        }
+
+    @Test
+    fun `retrieve saved ClientAttestation failure`() =
+        runBlocking {
+            whenever(featureFlags[AppIntegrityFeatureFlag.ENABLED]).thenReturn(true)
+            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+                .thenReturn(attestationSsResult)
+            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
+                .thenReturn(invalidAttestationExpSSResult)
+            val result = sut.retrieveSavedClientAttestation()
+
+            assertEquals(null, result)
         }
 
     companion object {
