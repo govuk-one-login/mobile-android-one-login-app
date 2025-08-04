@@ -8,24 +8,33 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.GdsButton
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
-import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenBodyContent
-import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenButton
-import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreenImage
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
@@ -115,7 +124,9 @@ private fun handleScreenExit(
     analyticsViewModel.trackSignIn()
 }
 
+@OptIn(UnstableDesignSystemAPI::class)
 @Composable
+@Suppress("LongMethod")
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
     openDevMenu: () -> Unit = { }
@@ -129,28 +140,53 @@ internal fun WelcomeBody(
     val devButtonText = stringResource(R.string.app_developer_button)
     GdsTheme {
         CentreAlignedScreen(
-            title = title,
-            modifier = Modifier.fillMaxSize(),
-            image = CentreAlignedScreenImage(
-                image = R.drawable.app_icon,
-                // This is not required - see https://govukverify.atlassian.net/browse/DCMAW-12974 comment from UCD
-                description = ""
-            ),
-            body = persistentListOf(
-                CentreAlignedScreenBodyContent.Text(content[0]),
-                CentreAlignedScreenBodyContent.Text(content[1])
-            ),
-            primaryButton = CentreAlignedScreenButton(
-                text = buttonText,
-                onClick = onSignIn
-            ),
-            secondaryButton = if (DeveloperTools.isDeveloperPanelEnabled()) {
-                CentreAlignedScreenButton(
-                    text = devButtonText,
-                    onClick = openDevMenu
+            title = {
+                GdsHeading(
+                    text = title
                 )
-            } else {
-                null
+            },
+            image = {
+                Image(
+                    imageVector = ImageVector.vectorResource(R.drawable.app_icon),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth().clearAndSetSemantics { }
+                )
+            },
+            body = {
+                item {
+                    Text(
+                        text = content[0],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+                    )
+                }
+                item {
+                    Text(
+                        text = content[1],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+                    )
+                }
+            },
+            primaryButton = {
+                GdsButton(
+                    text = buttonText,
+                    buttonType = ButtonType.Primary,
+                    onClick = onSignIn,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            secondaryButton = {
+                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                    GdsButton(
+                        text = devButtonText,
+                        buttonType = ButtonType.Secondary,
+                        onClick = openDevMenu,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         )
     }
@@ -160,7 +196,5 @@ internal fun WelcomeBody(
 @ScreenPreview
 @Composable
 internal fun WelcomePreview() {
-    GdsTheme {
-        WelcomeBody()
-    }
+    WelcomeBody()
 }
