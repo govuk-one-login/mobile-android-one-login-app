@@ -1,5 +1,7 @@
 package uk.gov.onelogin.features.navigation.domain
 
+import android.os.Handler
+import android.os.Looper
 import androidx.navigation.NavHostController
 import javax.inject.Inject
 import uk.gov.logging.api.Logger
@@ -32,15 +34,17 @@ class NavigatorImpl @Inject constructor(
         popUpToInclusive: Boolean
     ) {
         logger.debug("Navigator", "Navigating to: ${route.getRoute()}")
-        navController?.let { controller ->
-            if (popUpToInclusive) {
-                controller.navigate(route.getRoute()) {
-                    popUpTo(controller.graph.id) {
-                        inclusive = true
+        runOnMainThread {
+            navController?.let { controller ->
+                if (popUpToInclusive) {
+                    controller.navigate(route.getRoute()) {
+                        popUpTo(controller.graph.id) {
+                            inclusive = true
+                        }
                     }
+                } else {
+                    controller.navigate(route.getRoute())
                 }
-            } else {
-                controller.navigate(route.getRoute())
             }
         }
     }
@@ -57,5 +61,15 @@ class NavigatorImpl @Inject constructor(
 
     override fun reset() {
         navController = null
+    }
+
+    private fun runOnMainThread(action: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                action()
+            }
+        }
     }
 }
