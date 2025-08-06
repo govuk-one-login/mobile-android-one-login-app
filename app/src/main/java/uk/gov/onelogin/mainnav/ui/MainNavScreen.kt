@@ -32,7 +32,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.ui.components.navigation.GdsNavigationBar
 import uk.gov.ui.components.navigation.GdsNavigationItem
@@ -41,22 +40,22 @@ import uk.gov.ui.components.navigation.GdsNavigationItem
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
-    walletScreenViewModel: WalletScreenViewModel = hiltViewModel(),
+    mainNavScreenViewModel: MainNavViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
     val navItems = createBottomNavItems(
-        walletScreenViewModel.walletEnabled,
+        mainNavScreenViewModel.walletEnabled,
         { analyticsViewModel.trackHomeTabButton() },
         { analyticsViewModel.trackWalletTabButton() },
         { analyticsViewModel.trackSettingsTabButton() }
     )
     GdsTheme {
         LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-            walletScreenViewModel.checkWalletEnabled()
+            mainNavScreenViewModel.checkWalletEnabled()
         }
 
-        LaunchedEffect(walletScreenViewModel.walletDeepLinkReceived) {
-            if (walletScreenViewModel.walletDeepLinkReceived.value) {
+        LaunchedEffect(mainNavScreenViewModel.walletDeepLinkReceived) {
+            if (mainNavScreenViewModel.walletDeepLinkReceived.value) {
                 bottomNav(
                     navController,
                     navItems.first { it.first == BottomNavDestination.Wallet }
@@ -103,7 +102,7 @@ fun MainNavScreen(
             NavHost(
                 navController = navController,
                 startDestination = if (
-                    walletScreenViewModel.walletDeepLinkReceived.value
+                    mainNavScreenViewModel.walletDeepLinkReceived.value
                 ) {
                     BottomNavDestination.Wallet.key
                 } else {
