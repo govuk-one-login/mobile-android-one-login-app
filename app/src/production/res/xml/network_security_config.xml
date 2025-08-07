@@ -20,6 +20,8 @@
     </domain-config>
     <domain-config>
     <domain includeSubdomains="true">vvrc-credential-issuance-service-dbs-ag-vvrc.apps.ocp1.azure.dso.digital.mod.uk</domain>
-        <pin digest="SHA-256">x4QzPSC810K5/cMjb05Qm4k3Bw5zBn4lTdO/nEW/Td4=</pin>
+        <pin-set>
+            <pin digest="SHA-256">x4QzPSC810K5/cMjb05Qm4k3Bw5zBn4lTdO/nEW/Td4=</pin>
+        </pin-set>
     </domain-config>
 </network-security-config>
