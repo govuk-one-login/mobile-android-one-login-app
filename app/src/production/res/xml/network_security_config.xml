@@ -19,7 +19,7 @@
         </pin-set>
     </domain-config>
     <domain-config>
-    <domain includeSubdomains="true">https://vvrc-credential-issuance.service.mod.gov.uk/</domain>
+    <domain includeSubdomains="true">vvrc-credential-issuance.service.mod.gov.uk/</domain>
         <pin-set>
             <pin digest="SHA-256">x4QzPSC810K5/cMjb05Qm4k3Bw5zBn4lTdO/nEW/Td4=</pin>
         </pin-set>
