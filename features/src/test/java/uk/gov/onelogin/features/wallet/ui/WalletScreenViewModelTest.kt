@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
@@ -29,6 +31,9 @@ class WalletScreenViewModelTest {
         sut.checkWalletEnabled()
 
         // THEN
+        // Times 2 because once when is initialised, and once when called specifically - this test
+        // all possible use cases when coming in via deeplink and when returning back to the tab from any others
+        verify(walletRepository, times(2)).resetDeepLinkPath()
         assertTrue(sut.walletEnabled.value)
     }
 
@@ -78,6 +83,7 @@ class WalletScreenViewModelTest {
         val actualCredential = sut.getCredential()
 
         // THEN
+        verify(walletRepository).resetCredential()
         assertEquals(expectedCredential, actualCredential)
     }
 
