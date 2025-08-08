@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.error.ui.update
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +19,9 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.core.utils.GAUtils
+import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_TRUE
+import uk.gov.onelogin.core.utils.GAUtils.TRUE
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 
 @RunWith(AndroidJUnit4::class)
@@ -26,6 +30,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
     private lateinit var buttonText: String
     private lateinit var name: String
     private lateinit var id: String
+    private lateinit var reason: String
     private lateinit var iconText: String
     private lateinit var logger: AnalyticsLogger
     private lateinit var requiredParameters: RequiredParameters
@@ -45,6 +50,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
         name = context.getEnglishString(R.string.app_updateApp_Title)
         id = context.getEnglishString(R.string.update_required_page_id)
         iconText = context.getEnglishString(R.string.system_backButton)
+        reason = context.getString(R.string.update_required_error_reason)
         viewModel = OutdatedAppErrorAnalyticsViewModel(context, logger)
     }
 
@@ -68,15 +74,23 @@ class OutdatedAppErrorAnalyticsViewModelTest {
     fun trackSignOutViewLogsScreenView() {
         // Given a ViewEvent.Screen
         val event =
-            ViewEvent.Screen(
+            ViewEvent.Error(
                 name = name,
                 id = id,
+                endpoint = "",
+                status = "",
+                reason = reason,
                 params = requiredParameters
             )
         // When tracking the update required screen view
         viewModel.trackUpdateRequiredView()
         // Then log a ScreenView to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
+
+        assertThat(
+            IS_ERROR_REASON_TRUE,
+            GAUtils.containsIsError(event, TRUE)
+        )
     }
 
     @Test

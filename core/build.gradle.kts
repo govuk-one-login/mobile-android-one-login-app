@@ -89,9 +89,13 @@ android {
         }
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
+    testFixtures {
+        enable = true
+    }
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
     listOf(
         libs.androidx.compose.ui.junit4,
         libs.androidx.navigation.testing,
@@ -140,7 +144,6 @@ dependencies {
         libs.androidx.core.ktx,
         platform(libs.androidx.compose.bom),
         libs.material,
-        libs.bundles.gov.uk,
         libs.hilt.android,
         libs.androidx.hilt.navigation.compose,
         libs.androidx.compose.foundation,
@@ -152,10 +155,18 @@ dependencies {
         libs.androidx.compose.ui.tooling.preview
     ).forEach(::implementation)
 
+    api(libs.bundles.gov.uk)
+
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler
     ).forEach(::kapt)
+
+    listOf(
+        libs.kotlin.stdlib,
+        libs.compose.runtime,
+        libs.mockito.kotlin
+    ).forEach(::testFixturesImplementation)
 }
 
 kapt {

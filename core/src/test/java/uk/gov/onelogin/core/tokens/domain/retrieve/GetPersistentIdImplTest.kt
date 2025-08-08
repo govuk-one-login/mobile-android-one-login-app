@@ -4,10 +4,11 @@ import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.core.utils.MockitoHelper
 
 class GetPersistentIdImplTest {
     private val expectedPersistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
@@ -18,7 +19,7 @@ class GetPersistentIdImplTest {
     @Test
     fun successScenario() =
         runTest {
-            whenever(mockGetFromOpenSecureStore.invoke(ArgumentMatchers.any()))
+            whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
                 .thenReturn(mapOf(AuthTokenStoreKeys.PERSISTENT_ID_KEY to expectedPersistentId))
 
             val idResponse = sut.invoke()
@@ -30,7 +31,9 @@ class GetPersistentIdImplTest {
     fun missingToken() =
         runTest {
             // Given token is null
-            whenever(mockGetFromOpenSecureStore(AuthTokenStoreKeys.PERSISTENT_ID_KEY)).thenReturn(
+            whenever(
+                mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY))
+            ).thenReturn(
                 null
             )
 
