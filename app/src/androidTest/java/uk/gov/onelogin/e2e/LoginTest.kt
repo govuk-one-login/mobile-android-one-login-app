@@ -609,6 +609,5 @@ class LoginTest : TestCase() {
                 "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
                 "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
         )
-        private const val MAX_RETRIES = 3
     }
 }
