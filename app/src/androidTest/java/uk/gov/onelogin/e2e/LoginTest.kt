@@ -35,7 +35,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -198,10 +197,15 @@ class LoginTest : TestCase() {
 
     @Test
     @AllowFlaky(attempts = MAX_RETRIES)
-    fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
+    fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
+        runBlocking {
+            whenever(mockAppInfoService.get()).thenReturn(
+                AppInfoServiceState.Successful(appInfoData)
+            )
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("Success"))
+        }
+
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
         wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
