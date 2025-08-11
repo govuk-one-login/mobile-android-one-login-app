@@ -142,6 +142,7 @@
     <string name="app_developer_features_title" translatable="false">Select Features</string>
 
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
+    <string name="app_developer_access_token_button_expire_45_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
     <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
@@ -177,8 +178,11 @@
     <string name="system_backButton" translatable="false">Back - System</string>
     <string name="system_backIcon" translatable="false">Back</string>
     <string name="generic_error_reason" translatable="false">generic error</string>
-    <string name="sign_in_error_reason" translatable="false">sign in error</string>
+    <string name="sign_in_error_recoverable_reason" translatable="false">sign in recoverable error</string>
+    <string name="sign_in_error_unrecoverable_reason" translatable="false">sign in unrecoverable error</string>
     <string name="network_error_reason" translatable="false">network error</string>
+    <string name="update_required_error_reason" translatable="false">update required error</string>
+    <string name="app_unavailable_error_reason" translatable="false">app unavailable error</string>
 
     <!-- Home Screen -->
     <string name="app_oneLoginCardTitle" translatable="false">Using your GOV.UK One Login</string>

@@ -33,9 +33,12 @@ class AppUnavailableAnalyticsViewModel @Inject constructor(
 
     companion object {
         fun makeUnavailableViewEvent(context: Context) = with(context) {
-            ViewEvent.Screen(
+            ViewEvent.Error(
                 name = getEnglishString(R.string.app_appUnavailableTitle),
                 id = getEnglishString(R.string.app_unavailable_page_id),
+                endpoint = "",
+                status = "",
+                reason = getString(R.string.app_unavailable_error_reason),
                 params =
                 RequiredParameters(
                     taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,

@@ -47,7 +47,7 @@ class SignInErrorAnalyticsViewModel @Inject constructor(
                 name = getEnglishString(R.string.app_signInErrorTitle),
                 id = getEnglishString(R.string.sign_in_recoverable_error_screen_id),
                 endpoint = "",
-                reason = getEnglishString(R.string.sign_in_error_reason),
+                reason = getEnglishString(R.string.sign_in_error_recoverable_reason),
                 status = "",
                 params = requiredParams
             )
@@ -58,7 +58,7 @@ class SignInErrorAnalyticsViewModel @Inject constructor(
                 name = getEnglishString(R.string.app_signInErrorTitle),
                 id = getEnglishString(R.string.sign_in_unrecoverable_error_screen_id),
                 endpoint = "",
-                reason = getEnglishString(R.string.sign_in_error_reason),
+                reason = getEnglishString(R.string.sign_in_error_unrecoverable_reason),
                 status = "",
                 params = requiredParams
             )

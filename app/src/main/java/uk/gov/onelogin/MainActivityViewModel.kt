@@ -30,8 +30,9 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    fun handleIntent(intent: Intent?) {
+    fun handleIntent(intent: Intent?, finishIntent: () -> Unit = {}) {
         if (intent?.action == ACTION_VIEW && intent.data != null) {
+            finishIntent()
             walletRepository.addDeepLinkPath(intent.data?.path)
             intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
                 walletRepository.addCredential(it)
