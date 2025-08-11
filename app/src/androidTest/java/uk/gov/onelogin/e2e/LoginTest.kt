@@ -26,8 +26,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
-import com.adevinta.android.barista.rule.flaky.AllowFlaky
-import com.adevinta.android.barista.rule.flaky.FlakyTestRule
+import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -159,11 +158,8 @@ class LoginTest : TestCase() {
 
     private val appInfoData = TestUtils.appInfoData
 
-    @get:Rule
-    val flakyRule = FlakyTestRule()
-
     // use createEmptyComposeRule instead of createAndroidComposeRule<HiltTestActivity>() to avoid
-    // Barista flakyTest IllegalStateException caused by composeRule.setContent being called twice
+    // IllegalStateException caused by composeRule.setContent being called twice
     @get:Rule(order = 3)
     val composeRule = createEmptyComposeRule()
 
@@ -196,7 +192,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         runBlocking {
             whenever(mockAppInfoService.get()).thenReturn(
@@ -264,7 +260,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
         runBlocking {
             setPersistentId()
@@ -315,7 +311,7 @@ class LoginTest : TestCase() {
 
     // App remains on sign in page when not data is returned in intent from login
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityResultNullData() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -336,7 +332,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityCancelledResult() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -354,7 +350,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
         val authenticationError = AuthenticationError(
             message = "Error",
@@ -382,7 +378,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -417,7 +413,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityResultWithDataBioOptIn() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -450,7 +446,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @AllowFlaky(attempts = MAX_RETRIES)
+    @FlakyTest
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }

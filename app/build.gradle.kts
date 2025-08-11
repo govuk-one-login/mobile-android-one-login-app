@@ -189,10 +189,6 @@ dependencies {
         libs.mockito.android
     ).forEach(::androidTestImplementation)
 
-    androidTestImplementation(libs.barista) {
-        exclude(group = "org.jetbrains.kotlin")
-    }
-
     listOf(
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.test.manifest

@@ -59,7 +59,6 @@ composeBom = "2025.06.00"
 navigationCommonAndroid = "2.9.0"
 network = "0.7.2"
 kotlinStdLib = "2.2.0"
-barista = "4.2.0"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -116,7 +115,6 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
-barista = { module = "com.adevinta.android:barista", version.ref = "barista" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }
