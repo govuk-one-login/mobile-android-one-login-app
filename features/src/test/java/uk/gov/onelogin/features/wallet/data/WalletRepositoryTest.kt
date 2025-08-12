@@ -26,4 +26,23 @@ class WalletRepositoryTest {
         sut.addDeepLinkPath(null)
         assertEquals(expectedPath, sut.getDeepLinkPath())
     }
+
+    @Test
+    fun `verify deeplink reset`() {
+        val setExpected = "hello"
+        val expected = ""
+        sut.addDeepLinkPath("hello")
+        assertEquals(setExpected, sut.getDeepLinkPath())
+        sut.resetDeepLinkPath()
+        assertEquals(expected, sut.getDeepLinkPath())
+    }
+
+    fun `verify credential reset`() {
+        val setExpected = "hello"
+        val expected = ""
+        sut.addCredential("hello")
+        assertEquals(setExpected, sut.getCredential())
+        sut.resetCredential()
+        assertEquals(expected, sut.getCredential())
+    }
 }

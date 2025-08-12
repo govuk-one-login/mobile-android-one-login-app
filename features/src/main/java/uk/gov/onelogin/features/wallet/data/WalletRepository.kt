@@ -5,6 +5,8 @@ interface WalletRepository {
     fun getCredential(): String
     fun addDeepLinkPath(path: String?)
     fun getDeepLinkPath(): String
+    fun resetDeepLinkPath()
+    fun resetCredential()
 }
 
 class WalletRepositoryImpl : WalletRepository {
@@ -25,5 +27,13 @@ class WalletRepositoryImpl : WalletRepository {
 
     override fun getDeepLinkPath(): String {
         return path
+    }
+
+    override fun resetDeepLinkPath() {
+        path = ""
+    }
+
+    override fun resetCredential() {
+        credential = ""
     }
 }
