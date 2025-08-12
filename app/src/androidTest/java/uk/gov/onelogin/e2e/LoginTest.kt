@@ -26,7 +26,8 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
-import androidx.test.filters.FlakyTest
+import com.adevinta.android.barista.rule.flaky.AllowFlaky
+import com.adevinta.android.barista.rule.flaky.FlakyTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -163,6 +164,9 @@ class LoginTest : TestCase() {
     @get:Rule(order = 3)
     val composeRule = createEmptyComposeRule()
 
+    @get:Rule(order = 5)
+    val flakyRule = FlakyTestRule()
+
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
     private var injectCounter = 0
@@ -195,7 +199,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         runBlocking {
             whenever(mockAppInfoService.get()).thenReturn(
@@ -350,7 +354,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
         val authenticationError = AuthenticationError(
             message = "Error",
@@ -378,7 +382,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -445,7 +449,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -595,8 +599,8 @@ class LoginTest : TestCase() {
     private fun hiltInject() {
         if (injectCounter < 1) {
             hiltRule.inject()
+            injectCounter++
         }
-        injectCounter++
     }
 
     companion object {
@@ -615,5 +619,6 @@ class LoginTest : TestCase() {
                 "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
                 "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
         )
+        private const val MAX_RETRIES = 3
     }
 }
