@@ -44,7 +44,7 @@ class OfflineErrorAnalyticsViewModelTest {
         requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.ERROR
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
             )
         analyticsLogger = mock()
         viewModel =

@@ -52,7 +52,7 @@ class SignedOutInfoAnalyticsViewModel @Inject constructor(
 
         private val requiredParams = RequiredParameters(
             taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-            taxonomyLevel3 = TaxonomyLevel3.RE_AUTH
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
         )
     }
 }

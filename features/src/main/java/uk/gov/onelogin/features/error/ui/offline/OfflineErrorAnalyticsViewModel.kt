@@ -64,7 +64,7 @@ class OfflineErrorAnalyticsViewModel @Inject constructor(
 
         private val requiredParams = RequiredParameters(
             taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.ERROR
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
         )
     }
 }

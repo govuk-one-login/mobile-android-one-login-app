@@ -41,7 +41,7 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
         val context: Context = ApplicationProvider.getApplicationContext()
         logger = mock()
         requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.ACCOUNT,
+            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
             taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
         )
         buttonText = context.getEnglishString(R.string.app_signOutAndDeleteAppDataButton)
