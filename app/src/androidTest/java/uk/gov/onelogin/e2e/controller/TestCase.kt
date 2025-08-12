@@ -3,10 +3,10 @@ package uk.gov.onelogin.e2e.controller
 import android.content.Context
 import android.content.res.Resources
 import androidx.test.core.app.ApplicationProvider
+import com.adevinta.android.barista.rule.flaky.FlakyTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Before
 import org.junit.Rule
-import uk.gov.onelogin.utils.FlakyTestRule
 
 open class TestCase {
     @get:Rule(order = 1)
@@ -30,5 +30,9 @@ open class TestCase {
     @Before
     fun setScreenshotName() {
         screenshotName = "${testNameRule.methodName}_${resources.configuration.locales.get(0)}"
+    }
+
+    companion object {
+        const val MAX_RETRIES = 3
     }
 }

@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
 import com.adevinta.android.barista.rule.flaky.AllowFlaky
-import com.adevinta.android.barista.rule.flaky.FlakyTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -163,9 +162,6 @@ class LoginTest : TestCase() {
     // IllegalStateException caused by composeRule.setContent being called twice
     @get:Rule(order = 3)
     val composeRule = createEmptyComposeRule()
-
-    @get:Rule(order = 5)
-    val flakyRule = FlakyTestRule()
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
@@ -619,6 +615,5 @@ class LoginTest : TestCase() {
                 "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
                 "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
         )
-        private const val MAX_RETRIES = 3
     }
 }
