@@ -165,6 +165,8 @@ class LoginTest : TestCase() {
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
+    private var injectCounter = 0
+
     @Before
     fun setup() {
         scenario = ActivityScenario.launch(HiltTestActivity::class.java)
@@ -180,7 +182,7 @@ class LoginTest : TestCase() {
 
                 override fun isMainThread(): Boolean = true
             })
-        hiltRule.inject()
+        hiltInject()
         deletePersistentId()
     }
 
@@ -189,6 +191,7 @@ class LoginTest : TestCase() {
         scenario.close()
         Intents.release()
         ArchTaskExecutor.getInstance().setDelegate(null)
+        injectCounter = 0
     }
 
     @Test
@@ -260,7 +263,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
         runBlocking {
             setPersistentId()
@@ -311,7 +313,6 @@ class LoginTest : TestCase() {
 
     // App remains on sign in page when not data is returned in intent from login
     @Test
-    @FlakyTest
     fun handleActivityResultNullData() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -332,7 +333,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
     fun handleActivityCancelledResult() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -413,7 +413,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
     fun handleActivityResultWithDataBioOptIn() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
@@ -591,6 +590,13 @@ class LoginTest : TestCase() {
         secureStore.delete(
             key = AuthTokenStoreKeys.PERSISTENT_ID_KEY
         )
+    }
+
+    private fun hiltInject() {
+        if (injectCounter < 1) {
+            hiltRule.inject()
+        }
+        injectCounter++
     }
 
     companion object {
