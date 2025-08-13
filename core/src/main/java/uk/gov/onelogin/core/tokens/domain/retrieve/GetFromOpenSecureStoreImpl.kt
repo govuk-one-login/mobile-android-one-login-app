@@ -9,13 +9,15 @@ import uk.gov.logging.api.Logger
 class GetFromOpenSecureStoreImpl @Inject constructor(
     @Named("Open")
     private val secureStore: SecureStore,
-
     private val logger: Logger
 ) : GetFromOpenSecureStore {
     override suspend fun invoke(vararg key: String): Map<String, String>? {
         return when (val retrievalEvent = secureStore.retrieve(*key)) {
             is RetrievalEvent.Failed -> {
-                logger.error(this::class.simpleName.toString(), "Reason: ${retrievalEvent.reason}")
+                logger.error(
+                    this::class.simpleName.toString(),
+                    retrievalEvent.toString()
+                )
                 null
             }
             is RetrievalEvent.Success -> retrievalEvent.value

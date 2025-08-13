@@ -41,6 +41,12 @@ class GetFromOpenSecureStoreImplTest {
 
         val result = useCase.invoke("Key")
         assertNull(result)
-        assertTrue(logger.contains("Reason: Not found"))
+        assertTrue(
+            logger.contains(
+                "Secure store retrieval failed: \n" +
+                    "type - NOT_FOUND\n" +
+                    "reason - Not found"
+            )
+        )
     }
 }

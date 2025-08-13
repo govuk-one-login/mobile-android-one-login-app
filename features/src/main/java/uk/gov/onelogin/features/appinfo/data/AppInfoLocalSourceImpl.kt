@@ -5,12 +5,14 @@ import androidx.core.content.edit
 import javax.inject.Inject
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 
 class AppInfoLocalSourceImpl @Inject constructor(
-    private val sharedPrefs: SharedPreferences
+    private val sharedPrefs: SharedPreferences,
+    private val logger: Logger
 ) : AppInfoLocalSource {
     override fun get(): AppInfoLocalState {
         return try {
@@ -21,6 +23,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
                 AppInfoLocalState.Failure(APP_INFO_LOCAL_SOURCE_ERROR)
             }
         } catch (e: ClassCastException) {
+            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
             AppInfoLocalState.Failure(APP_INFO_CLASS_CAST_ERROR, e)
         }
     }
@@ -37,6 +40,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
             val decodedResult = Json.decodeFromString<AppInfoData>(result)
             AppInfoLocalState.Success(decodedResult)
         } catch (e: SerializationException) {
+            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
             AppInfoLocalState.Failure(reason = APP_INFO_ILLEGAL_ARG_ERROR, exp = e)
         }
     }

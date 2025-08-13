@@ -25,6 +25,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -33,11 +34,13 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 class OsslScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var analyticsViewModel: OsslAnalyticsViewModel
+    private lateinit var crashLogger: Logger
 
     @Before
     fun setup() {
         analyticsLogger = mock()
-        analyticsViewModel = OsslAnalyticsViewModel(context, analyticsLogger)
+        crashLogger = mock()
+        analyticsViewModel = OsslAnalyticsViewModel(context, analyticsLogger, crashLogger)
         Intents.init()
     }
 

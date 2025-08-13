@@ -38,9 +38,7 @@ class GetFromEncryptedSecureStoreImpl @Inject constructor(
             is RetrievalEvent.Failed -> {
                 logger.error(
                     this::class.simpleName.toString(),
-                    "Secure store retrieval failed: " +
-                        "\ntype - ${result.type}" +
-                        "\nreason - ${result.reason}"
+                    result.toString()
                 )
                 val localAuthStatus = when (result.type) {
                     SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
