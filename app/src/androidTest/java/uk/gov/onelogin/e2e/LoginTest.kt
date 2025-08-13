@@ -26,7 +26,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
-import androidx.test.filters.FlakyTest
+import com.adevinta.android.barista.rule.flaky.AllowFlaky
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -195,7 +195,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         runBlocking {
             whenever(mockAppInfoService.get()).thenReturn(
@@ -350,7 +350,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
         val authenticationError = AuthenticationError(
             message = "Error",
@@ -378,7 +378,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -445,7 +445,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -595,8 +595,8 @@ class LoginTest : TestCase() {
     private fun hiltInject() {
         if (injectCounter < 1) {
             hiltRule.inject()
+            injectCounter++
         }
-        injectCounter++
     }
 
     companion object {

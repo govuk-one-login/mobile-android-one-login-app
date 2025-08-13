@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.filters.FlakyTest
+import com.adevinta.android.barista.rule.flaky.AllowFlaky
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -51,7 +51,7 @@ class LoginGraphObjectTest : TestCase() {
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
     }
 
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     @Test
     fun loginGraph_SignInError() {
         composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInRecoverableError) }
@@ -61,7 +61,7 @@ class LoginGraphObjectTest : TestCase() {
         ).assertIsDisplayed()
     }
 
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
         composeTestRule.setActivity {
@@ -77,7 +77,7 @@ class LoginGraphObjectTest : TestCase() {
         ).assertIsDisplayed()
     }
 
-    @FlakyTest
+    @AllowFlaky(attempts = MAX_RETRIES)
     @Test
     fun loginGraph_Loading() {
         composeTestRule.setActivity {
