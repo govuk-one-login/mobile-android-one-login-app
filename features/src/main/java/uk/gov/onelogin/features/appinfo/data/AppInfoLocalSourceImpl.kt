@@ -23,7 +23,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
                 AppInfoLocalState.Failure(APP_INFO_LOCAL_SOURCE_ERROR)
             }
         } catch (e: ClassCastException) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.message.toString(), e)
             AppInfoLocalState.Failure(APP_INFO_CLASS_CAST_ERROR, e)
         }
     }
@@ -40,7 +40,7 @@ class AppInfoLocalSourceImpl @Inject constructor(
             val decodedResult = Json.decodeFromString<AppInfoData>(result)
             AppInfoLocalState.Success(decodedResult)
         } catch (e: SerializationException) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.message.toString(), e)
             AppInfoLocalState.Failure(reason = APP_INFO_ILLEGAL_ARG_ERROR, exp = e)
         }
     }

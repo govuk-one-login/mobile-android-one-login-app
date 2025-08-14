@@ -109,7 +109,7 @@ fun OsslAboutLibrariesScreen(
             try {
                 uriHandler.openUri(it)
             } catch (e: IllegalArgumentException) {
-                onLogError("OsslScreen", "Failed to open url: $it", e)
+                onLogError(e.javaClass.simpleName, "Failed to open url: $it", e)
             }
         }
     }

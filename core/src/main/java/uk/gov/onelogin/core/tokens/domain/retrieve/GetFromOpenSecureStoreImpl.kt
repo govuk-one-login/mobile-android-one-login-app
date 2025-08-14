@@ -5,6 +5,7 @@ import javax.inject.Named
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.SecureStoreException
 
 class GetFromOpenSecureStoreImpl @Inject constructor(
     @Named("Open")
@@ -14,9 +15,13 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
     override suspend fun invoke(vararg key: String): Map<String, String>? {
         return when (val retrievalEvent = secureStore.retrieve(*key)) {
             is RetrievalEvent.Failed -> {
+                val secureStoreException = SecureStoreException(
+                    Exception(retrievalEvent.toString())
+                )
                 logger.error(
-                    this::class.simpleName.toString(),
-                    retrievalEvent.toString()
+                    secureStoreException::class.simpleName.toString(),
+                    retrievalEvent.toString(),
+                    secureStoreException
                 )
                 null
             }

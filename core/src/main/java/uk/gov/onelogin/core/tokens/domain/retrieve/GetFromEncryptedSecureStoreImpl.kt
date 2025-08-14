@@ -10,6 +10,7 @@ import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguratio
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.SecureStoreException
 
 class GetFromEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
@@ -36,9 +37,11 @@ class GetFromEncryptedSecureStoreImpl @Inject constructor(
             is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
 
             is RetrievalEvent.Failed -> {
+                val secureStoreException = SecureStoreException(Exception(result.toString()))
                 logger.error(
-                    this::class.simpleName.toString(),
-                    result.toString()
+                    secureStoreException.toString(),
+                    result.toString(),
+                    secureStoreException
                 )
                 val localAuthStatus = when (result.type) {
                     SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
