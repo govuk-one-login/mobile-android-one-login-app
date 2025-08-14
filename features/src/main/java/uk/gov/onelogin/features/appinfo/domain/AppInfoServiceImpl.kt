@@ -49,8 +49,4 @@ class AppInfoServiceImpl @Inject constructor(
             fallback
         }
     }
-
-    companion object {
-        private const val TAG = "AppInfoServiceError"
-    }
 }

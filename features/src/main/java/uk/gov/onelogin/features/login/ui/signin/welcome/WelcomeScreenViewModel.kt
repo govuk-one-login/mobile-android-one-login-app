@@ -61,7 +61,6 @@ class WelcomeScreenViewModel @Inject constructor(
     val onlineChecker: OnlineChecker,
     private val errorCounter: Counter
 ) : ViewModel() {
-    private val tag = this::class.java.simpleName
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
