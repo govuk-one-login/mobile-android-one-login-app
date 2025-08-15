@@ -20,8 +20,7 @@ class GetFromOpenSecureStoreImpl @Inject constructor(
                 )
                 logger.error(
                     secureStoreException::class.simpleName.toString(),
-                    retrievalEvent.toString(),
-                    secureStoreException
+                    retrievalEvent.toString()
                 )
                 null
             }
