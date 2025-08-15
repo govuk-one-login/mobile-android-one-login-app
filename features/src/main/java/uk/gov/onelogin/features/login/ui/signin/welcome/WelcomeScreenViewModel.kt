@@ -28,6 +28,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
@@ -60,7 +61,6 @@ class WelcomeScreenViewModel @Inject constructor(
     val onlineChecker: OnlineChecker,
     private val errorCounter: Counter
 ) : ViewModel() {
-    private val tag = this::class.java.simpleName
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
@@ -92,7 +92,12 @@ class WelcomeScreenViewModel @Inject constructor(
                 },
                 onFailure = {
                     it?.let {
-                        logger.error(tag, it.message.toString(), it)
+                        val loginException = LoginException(it)
+                        logger.error(
+                            loginException.javaClass.simpleName,
+                            it.message.toString(),
+                            loginException
+                        )
                     }
                     handleLoginErrors(it)
                 }
