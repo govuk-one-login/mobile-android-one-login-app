@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.appinfo.domain
 
 import javax.inject.Inject
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.ApiInfoException
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -22,7 +23,12 @@ class AppInfoServiceImpl @Inject constructor(
             }
             AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
             is AppInfoRemoteState.Failure -> {
-                logger.error(TAG, remoteResult.reason)
+                val apiException = ApiInfoException(Exception(remoteResult.reason))
+                logger.error(
+                    apiException::class.simpleName.toString(),
+                    remoteResult.reason,
+                    apiException
+                )
                 useLocalSource(AppInfoServiceState.Unavailable)
             }
         }
@@ -42,9 +48,5 @@ class AppInfoServiceImpl @Inject constructor(
         } else {
             fallback
         }
-    }
-
-    companion object {
-        private const val TAG = "AppInfoServiceError"
     }
 }

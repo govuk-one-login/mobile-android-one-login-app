@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.settings.ui.ossl
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -70,9 +69,15 @@ fun OsslScreen(
                 )
             }
         ) {
-            OsslAboutLibrariesScreen(it) { title, url ->
-                analyticsViewModel.trackLink(title, url)
-            }
+            OsslAboutLibrariesScreen(
+                padding = it,
+                onClick = { title, url ->
+                    analyticsViewModel.trackLink(title, url)
+                },
+                onLogError = { tag, message, exception ->
+                    analyticsViewModel.logError(tag, message, exception)
+                }
+            )
         }
     }
 }
@@ -80,7 +85,8 @@ fun OsslScreen(
 @Composable
 fun OsslAboutLibrariesScreen(
     padding: PaddingValues,
-    onClick: (String, String) -> Unit
+    onClick: (String, String) -> Unit,
+    onLogError: (String, String, Exception) -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val background = MaterialTheme.colorScheme.background
@@ -103,7 +109,7 @@ fun OsslAboutLibrariesScreen(
             try {
                 uriHandler.openUri(it)
             } catch (e: IllegalArgumentException) {
-                Log.e("OsslScreen", "Failed to open url: $it", e)
+                onLogError(e.javaClass.simpleName, "Failed to open url: $it", e)
             }
         }
     }
