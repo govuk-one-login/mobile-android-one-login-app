@@ -6,6 +6,7 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
+import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreRepository
 
@@ -30,7 +31,7 @@ class DeleteWalletDataUseCaseDevOptionTest {
         whenever(secureStoreRepository.isWalletDeleteOverride()).thenReturn(true)
 
         Assertions.assertThrows(
-            Exception::class.java
+            SecureStorageError::class.java
         ) {
             runBlocking { sut.invoke() }
         }
