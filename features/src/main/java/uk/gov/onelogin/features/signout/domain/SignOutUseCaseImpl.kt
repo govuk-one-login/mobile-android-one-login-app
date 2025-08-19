@@ -6,7 +6,7 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught","NestedBlockDepth")
 class SignOutUseCaseImpl @Inject constructor(
     private val cleaner: Cleaner,
     private val deleteWalletData: DeleteWalletDataUseCase,

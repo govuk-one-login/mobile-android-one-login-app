@@ -30,7 +30,7 @@ class DeleteWalletDataUseCaseDevOption(
 ) : DeleteWalletDataUseCase {
     override suspend fun invoke(): Boolean {
         if (secureStoreRepository.isWalletDeleteOverride()) {
-            throw Exception("Simulate wallet deletion failure")
+            throw IllegalArgumentException("Simulate wallet deletion failure")
         } else {
             return walletSdk.deleteWalletData()
         }
