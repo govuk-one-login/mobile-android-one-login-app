@@ -33,7 +33,6 @@ import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 import uk.gov.onelogin.features.wallet.ui.DEEPLINK_PATH
 import uk.gov.onelogin.utils.TestCase
-import uk.gov.onelogin.wallet.WalletRepositoryModule
 
 @HiltAndroidTest
 @UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)

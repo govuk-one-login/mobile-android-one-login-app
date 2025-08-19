@@ -16,6 +16,8 @@ import uk.gov.android.securestore.SharedPrefsStore
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStoreImpl
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreRepository
+import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -48,4 +50,12 @@ object SecureStoreViewModelModule {
     fun providesAutoInitialiseSecureStore(
         autoInitialiseSecureStoreImpl: AutoInitialiseSecureStoreImpl
     ): AutoInitialiseSecureStore = autoInitialiseSecureStoreImpl
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object SecureStoreDevModeModule {
+    @Provides
+    @Singleton
+    fun providesSecureStoreRepository(): SecureStoreRepository = SecureStoreRepositoryImpl()
 }
