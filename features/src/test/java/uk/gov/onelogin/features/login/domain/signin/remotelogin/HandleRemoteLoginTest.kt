@@ -17,6 +17,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
@@ -168,6 +169,7 @@ class HandleRemoteLoginTest {
     @Test
     fun `login() - loginSession present() throws error`(): Unit = runTest {
         val error = Error("Error")
+        val expectedWrappedException = LoginException(error)
         whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
             AttestationResult.NotRequired(null)
@@ -176,7 +178,10 @@ class HandleRemoteLoginTest {
 
         handleRemoteLogin.login(mockLauncher) {}
 
-        verify(mockLogger)
-            .error(error.javaClass.simpleName, error.message ?: "No message", error)
+        verify(mockLogger).error(
+            expectedWrappedException.javaClass.simpleName,
+            error.message ?: "No message",
+            expectedWrappedException
+        )
     }
 }

@@ -142,7 +142,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(signInSubTitle1).assertIsDisplayed()
         // TODO Fix breaking line below in buildRelease and StagingRelease flavours
         // composeTestRule.onNode(signInSubTitle2).assertIsDisplayed()
-        composeTestRule.onNode(signInButton).assertIsDisplayed()
+        composeTestRule.onAllNodes(signInButton)[0].assertIsDisplayed()
         // TODO: Add testTag to the icon in mobile ui to be able to test the icon on CentreAlignedScreen when contentDescription is empty
     }
 
@@ -278,7 +278,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     }
 
     private fun whenWeClickSignIn() {
-        composeTestRule.onNode(signInButton).performClick()
+        composeTestRule.onAllNodes(signInButton)[0].performClick()
     }
 
     private fun givenWeAreOffline() {

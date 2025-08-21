@@ -23,7 +23,7 @@ class RemoveAllSecureStoreDataImpl @Inject constructor(
             openSecureStore.deleteAll()
             Result.success(Unit)
         } catch (e: SecureStorageError) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.message.toString(), e)
             Result.failure(e)
         }
     }

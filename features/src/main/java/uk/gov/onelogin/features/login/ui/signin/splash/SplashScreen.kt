@@ -71,7 +71,7 @@ fun SplashScreen(
     val unlock = viewModel.showUnlock.collectAsState()
 
     BackHandler {
-        analyticsViewModel.trackBackButton(context, unlock.value)
+        analyticsViewModel.trackBackButton(context)
         context.finishAndRemoveTask()
     }
     SideEffect { analyticsViewModel.trackSplashScreen(context, unlock.value) }

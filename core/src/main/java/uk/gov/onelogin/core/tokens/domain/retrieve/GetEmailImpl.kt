@@ -7,6 +7,7 @@ import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.SettingsException
 
 class GetEmailImpl @Inject constructor(
     private val logger: Logger
@@ -25,7 +26,8 @@ class GetEmailImpl @Inject constructor(
             val stripEmail = email?.toString()?.removeSurrounding("\"")
             return stripEmail
         } catch (e: Exception) {
-            logger.error(this::class.java.simpleName, e.toString(), e)
+            val settingsException = SettingsException(e)
+            logger.error(settingsException::class.java.simpleName, e.toString(), settingsException)
             return null
         }
     }

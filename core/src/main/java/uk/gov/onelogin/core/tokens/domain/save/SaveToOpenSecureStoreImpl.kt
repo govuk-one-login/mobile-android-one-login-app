@@ -22,7 +22,7 @@ class SaveToOpenSecureStoreImpl @Inject constructor(
                 value = value
             )
         } catch (e: SecureStorageError) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.message.toString(), e)
         }
     }
 
@@ -36,7 +36,7 @@ class SaveToOpenSecureStoreImpl @Inject constructor(
                 value = value.toString()
             )
         } catch (e: SecureStorageError) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.message.toString(), e)
         }
     }
 }

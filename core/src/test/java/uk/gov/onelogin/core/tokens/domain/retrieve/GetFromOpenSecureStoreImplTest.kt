@@ -5,13 +5,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.RetrievalEvent
 import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStoreErrorType
 import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.onelogin.core.utils.MockitoHelper
 
 class GetFromOpenSecureStoreImplTest {
     private val secureStore: SecureStore = mock()
@@ -21,7 +21,7 @@ class GetFromOpenSecureStoreImplTest {
     @Test
     fun verifySuccess() = runTest {
         val expected = mapOf("Key" to "Success")
-        whenever(secureStore.retrieve(ArgumentMatchers.any()))
+        whenever(secureStore.retrieve(MockitoHelper.anyObject()))
             .thenReturn(RetrievalEvent.Success(expected))
 
         val result = useCase.invoke("Key")
@@ -31,7 +31,7 @@ class GetFromOpenSecureStoreImplTest {
 
     @Test
     fun verifyFailure() = runTest {
-        whenever(secureStore.retrieve(ArgumentMatchers.any()))
+        whenever(secureStore.retrieve(MockitoHelper.anyObject()))
             .thenReturn(
                 RetrievalEvent.Failed(
                     SecureStoreErrorType.NOT_FOUND,
@@ -41,6 +41,12 @@ class GetFromOpenSecureStoreImplTest {
 
         val result = useCase.invoke("Key")
         assertNull(result)
-        assertTrue(logger.contains("Reason: Not found"))
+        assertTrue(
+            logger.contains(
+                "Secure store retrieval failed: \n" +
+                    "type - NOT_FOUND\n" +
+                    "reason - Not found"
+            )
+        )
     }
 }

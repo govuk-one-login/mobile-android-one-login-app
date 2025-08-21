@@ -11,6 +11,7 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 
 interface VerifyIdToken {
@@ -51,7 +52,12 @@ class VerifyIdTokenImpl @Inject constructor(
             try {
                 verified = useJwksResponseToVerify(response.response.toString(), idToken)
             } catch (e: Exception) {
-                logger.error(this::class.java.simpleName, e.toString(), e)
+                val loginException = LoginException(e)
+                logger.error(
+                    loginException::class.java.simpleName,
+                    e.toString(),
+                    loginException
+                )
             }
         }
         return verified
@@ -84,7 +90,12 @@ class VerifyIdTokenImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            logger.error(this::class.java.simpleName, e.toString(), e)
+            val loginException = LoginException(e)
+            logger.error(
+                loginException::class.java.simpleName,
+                e.toString(),
+                loginException
+            )
         }
         return null
     }
@@ -98,7 +109,12 @@ class VerifyIdTokenImpl @Inject constructor(
             // the kid returned here will be surrounded by double quotes
             return data.jsonObject["kid"].toString()
         } catch (e: Exception) {
-            logger.error(this::class.java.simpleName, e.toString(), e)
+            val loginException = LoginException(e)
+            logger.error(
+                loginException::class.java.simpleName,
+                e.toString(),
+                loginException
+            )
             return null
         }
     }

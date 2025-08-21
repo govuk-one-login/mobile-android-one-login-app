@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.home.ui
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +18,9 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.core.utils.GAUtils
+import uk.gov.onelogin.core.utils.GAUtils.FALSE
+import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_FALSE
 
 @RunWith(AndroidJUnit4::class)
 class HomeScreenAnalyticsViewModelTest {
@@ -59,6 +63,11 @@ class HomeScreenAnalyticsViewModelTest {
         viewModel.trackScreen()
         // Then log a ScreenView to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
+
+        assertThat(
+            IS_ERROR_REASON_FALSE,
+            GAUtils.containsIsError(event, FALSE)
+        )
     }
 
     @Test

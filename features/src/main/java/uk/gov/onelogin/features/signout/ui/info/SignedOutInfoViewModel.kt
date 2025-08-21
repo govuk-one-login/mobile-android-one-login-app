@@ -50,7 +50,7 @@ class SignedOutInfoViewModel @Inject constructor(
                     navigator.navigate(SignOutRoutes.ReAuthError, true)
                 } catch (error: SignOutError) {
                     logger.error(
-                        this@SignedOutInfoViewModel::class.java.simpleName,
+                        error.javaClass.simpleName,
                         error.message.toString(),
                         error
                     )

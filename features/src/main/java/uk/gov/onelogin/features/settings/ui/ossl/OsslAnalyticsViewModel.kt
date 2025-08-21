@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.Exception
 import javax.inject.Inject
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -18,7 +20,8 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 @HiltViewModel
 class OsslAnalyticsViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    private val analyticsLogger: AnalyticsLogger
+    private val analyticsLogger: AnalyticsLogger,
+    private val logger: Logger
 ) : ViewModel() {
     private val screenEvent = makeScreenEvent(context)
     private val backButtonEvent = makeBackButtonEvent(context)
@@ -44,6 +47,10 @@ class OsslAnalyticsViewModel @Inject constructor(
 
     fun trackBackButton() {
         analyticsLogger.logEventV3Dot1(backButtonEvent)
+    }
+
+    fun logError(tag: String, msg: String, exception: Exception) {
+        logger.error(tag, msg, exception)
     }
 
     companion object {

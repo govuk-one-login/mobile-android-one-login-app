@@ -26,7 +26,7 @@ class WelcomeBodyDevButtonTest : FragmentActivityTestCase() {
         }
 
         // When clicking the icon
-        composeTestRule.onNode(devButton, useUnmergedTree = true).performClick()
+        composeTestRule.onAllNodes(devButton, useUnmergedTree = true)[0].performClick()
         // Then openDevMenu() is called and the variable is true
         assertEquals(true, actual)
     }

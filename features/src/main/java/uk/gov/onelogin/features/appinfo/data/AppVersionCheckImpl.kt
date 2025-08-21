@@ -39,13 +39,9 @@ class AppVersionCheckImpl @Inject constructor(
                 }
             }
         } catch (e: AppInfoUtils.AppError) {
-            logger.error(TAG, e.toString(), e)
+            logger.error(e::class.simpleName.toString(), e.toString(), e)
             result = AppInfoServiceState.Unavailable
         }
         return result
-    }
-
-    companion object {
-        private const val TAG = "AppVersionCheck"
     }
 }

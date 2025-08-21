@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.settings.ui
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +17,10 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
+import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.core.utils.GAUtils
+import uk.gov.onelogin.core.utils.GAUtils.FALSE
+import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_FALSE
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.TestUtils.executeTrackEventTestCase
 
@@ -48,6 +53,11 @@ class SettingsAnalyticsViewModelTest {
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
         verify(logger).logEventV3Dot1(result)
+
+        assertThat(
+            IS_ERROR_REASON_FALSE,
+            GAUtils.containsIsError(result as ViewEvent, FALSE)
+        )
     }
 
     @Test
