@@ -135,7 +135,6 @@ dependencies {
         libs.androidx.navigation.testing,
         libs.androidx.espresso.intents,
         libs.logging.test,
-        projects.core,
         testFixtures(projects.core)
     ).forEach(::testImplementation)
 
