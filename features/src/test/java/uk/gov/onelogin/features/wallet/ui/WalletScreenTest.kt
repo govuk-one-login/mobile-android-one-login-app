@@ -35,7 +35,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
                 viewModel = viewModel
             )
 
-            verify(walletSdk).WalletApp(deeplink, false)
+            verify(walletSdk).WalletApp(deeplink)
         }
     }
 
@@ -50,7 +50,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
                 viewModel = viewModel
             )
 
-            verify(walletSdk).WalletApp(deeplink, false)
+            verify(walletSdk).WalletApp(deeplink)
         }
     }
 }
