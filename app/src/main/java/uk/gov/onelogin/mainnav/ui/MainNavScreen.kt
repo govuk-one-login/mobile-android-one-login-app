@@ -12,6 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
@@ -43,6 +46,11 @@ fun MainNavScreen(
     mainNavScreenViewModel: MainNavViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
+    var showNavBarState by remember { mutableStateOf(true) }
+    fun setShowNavBarState(newValue: Boolean) {
+        showNavBarState = newValue
+    }
+
     val navItems = createBottomNavItems(
         mainNavScreenViewModel.walletEnabled,
         { analyticsViewModel.trackHomeTabButton() },
@@ -66,37 +74,43 @@ fun MainNavScreen(
         Scaffold(
             contentWindowInsets = WindowInsets(0.dp),
             bottomBar = {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                GdsNavigationBar(
-                    items = navItems.map { navDest ->
-                        GdsNavigationItem(
-                            icon = {
-                                Icon(painterResource(id = navDest.first.icon), navDest.first.key)
-                            },
-                            onClick = {
-                                bottomNav(
-                                    navController,
-                                    navDest
-                                )
-                            },
-                            selected = navBackStackEntry?.destination?.route == navDest.first.key,
-                            label = { Label(navDest.first.label) },
-                            colors = {
-                                NavigationBarItemDefaults.colors(
-                                    indicatorColor = if (isSystemInDarkTheme()) {
-                                        MaterialTheme.colorScheme.tertiary
-                                    } else {
-                                        colorResource(id = R.color.nav_bottom_selected)
-                                    }
-                                )
-                            }
-                        )
-                    },
-                    tonalElevation = 0.dp,
-                    containerColor = {
-                        MaterialTheme.colorScheme.background
-                    }
-                ).generate()
+                if (showNavBarState) {
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    GdsNavigationBar(
+                        items = navItems.map { navDest ->
+                            GdsNavigationItem(
+                                icon = {
+                                    Icon(
+                                        painterResource(id = navDest.first.icon),
+                                        navDest.first.key
+                                    )
+                                },
+                                onClick = {
+                                    bottomNav(
+                                        navController,
+                                        navDest
+                                    )
+                                },
+                                selected = navBackStackEntry?.destination?.route
+                                    == navDest.first.key,
+                                label = { Label(navDest.first.label) },
+                                colors = {
+                                    NavigationBarItemDefaults.colors(
+                                        indicatorColor = if (isSystemInDarkTheme()) {
+                                            MaterialTheme.colorScheme.tertiary
+                                        } else {
+                                            colorResource(id = R.color.nav_bottom_selected)
+                                        }
+                                    )
+                                }
+                            )
+                        },
+                        tonalElevation = 0.dp,
+                        containerColor = {
+                            MaterialTheme.colorScheme.background
+                        }
+                    ).generate()
+                } else { null }
             }
         ) { paddingValues ->
             NavHost(
@@ -110,7 +124,7 @@ fun MainNavScreen(
                 },
                 modifier = Modifier.padding(paddingValues)
             ) {
-                bottomGraph()
+                bottomGraph { setShowNavBarState(newValue = it) }
             }
         }
     }

@@ -10,7 +10,7 @@ import uk.gov.onelogin.features.wallet.ui.WalletScreen
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 
 object BottomNavGraph {
-    fun NavGraphBuilder.bottomGraph() {
+    fun NavGraphBuilder.bottomGraph(setShowNavBarState: (Boolean) -> Unit) {
         composable(BottomNavDestination.Home.key) {
             HomeScreen()
         }
@@ -25,7 +25,7 @@ object BottomNavGraph {
                 }
             )
         ) {
-            WalletScreen()
+            WalletScreen(setShowNavBarState)
         }
         composable(BottomNavDestination.Settings.key) {
             SettingsScreen()
