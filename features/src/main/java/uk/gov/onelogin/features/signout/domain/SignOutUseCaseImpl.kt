@@ -4,8 +4,9 @@ import javax.inject.Inject
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
+import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "NestedBlockDepth")
 class SignOutUseCaseImpl @Inject constructor(
     private val cleaner: Cleaner,
     private val deleteWalletData: DeleteWalletDataUseCase,
@@ -14,14 +15,17 @@ class SignOutUseCaseImpl @Inject constructor(
     @Throws(SignOutError::class)
     override suspend fun invoke() {
         try {
-            deleteWalletData.invoke()
-            tokenRepository.clearTokenResponse()
-
-            val result = cleaner.clean()
-            if (result.isFailure) {
-                result.exceptionOrNull()?.let {
-                    throw it
+            val isDeleted = deleteWalletData.invoke()
+            if (isDeleted) {
+                val result = cleaner.clean()
+                if (result.isFailure) {
+                    result.exceptionOrNull()?.let {
+                        throw it
+                    }
                 }
+                tokenRepository.clearTokenResponse()
+            } else {
+                throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
             }
         } catch (e: Throwable) {
             throw SignOutError(e)

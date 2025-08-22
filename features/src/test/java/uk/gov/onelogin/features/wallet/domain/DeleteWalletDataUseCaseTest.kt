@@ -1,14 +1,12 @@
 package uk.gov.onelogin.features.wallet.domain
 
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdkImpl
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
 class DeleteWalletDataUseCaseTest {
     private val walletSdk: WalletSdkImpl = mock()
@@ -19,20 +17,15 @@ class DeleteWalletDataUseCaseTest {
         runBlocking {
             whenever(walletSdk.deleteWalletData()).thenReturn(true)
             val result = sut.invoke()
-            assertEquals(Unit, result)
+            assertEquals(true, result)
         }
 
     @Test
     fun `delete wallet data error`() =
         runBlocking {
             whenever(walletSdk.deleteWalletData()).thenReturn(false)
-            val result =
-                Assertions.assertThrows(
-                    DeleteWalletDataUseCaseImpl.DeleteWalletDataError::class.java
-                ) {
-                    runBlocking { sut.invoke() }
-                }
-            assertTrue(result.message.contains(DELETE_WALLET_DATA_ERROR))
+            val result = sut.invoke()
+            assertEquals(false, result)
         }
 
     @Test
