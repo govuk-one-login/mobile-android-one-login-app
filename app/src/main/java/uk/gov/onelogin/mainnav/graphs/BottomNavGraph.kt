@@ -12,6 +12,7 @@ import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 object BottomNavGraph {
     fun NavGraphBuilder.bottomGraph(displayContentAsFullScreen: (Boolean) -> Unit) {
         composable(BottomNavDestination.Home.key) {
+            displayContentAsFullScreen(false)
             HomeScreen()
         }
         composable(
@@ -28,6 +29,7 @@ object BottomNavGraph {
             WalletScreen(displayContentAsFullScreen)
         }
         composable(BottomNavDestination.Settings.key) {
+            displayContentAsFullScreen(false)
             SettingsScreen()
         }
     }
