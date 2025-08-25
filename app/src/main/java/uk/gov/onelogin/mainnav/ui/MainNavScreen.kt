@@ -46,9 +46,9 @@ fun MainNavScreen(
     mainNavScreenViewModel: MainNavViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
-    var showNavBarState by remember { mutableStateOf(true) }
-    fun setShowNavBarState(newValue: Boolean) {
-        showNavBarState = newValue
+    var displayContentAsFullScreen by remember { mutableStateOf(false) }
+    fun displayContentAsFullScreen(newValue: Boolean) {
+        displayContentAsFullScreen = newValue
     }
 
     val navItems = createBottomNavItems(
@@ -74,7 +74,7 @@ fun MainNavScreen(
         Scaffold(
             contentWindowInsets = WindowInsets(0.dp),
             bottomBar = {
-                if (showNavBarState) {
+                if (!displayContentAsFullScreen) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     GdsNavigationBar(
                         items = navItems.map { navDest ->
@@ -124,7 +124,7 @@ fun MainNavScreen(
                 },
                 modifier = Modifier.padding(paddingValues)
             ) {
-                bottomGraph { setShowNavBarState(newValue = it) }
+                bottomGraph { displayContentAsFullScreen(newValue = it) }
             }
         }
     }

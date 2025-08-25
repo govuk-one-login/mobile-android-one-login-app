@@ -6,9 +6,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun WalletScreen(
-    setShowNavBarState: (Boolean) -> Unit,
+    displayContentAsFullScreen: (Boolean) -> Unit,
     viewModel: WalletScreenViewModel = hiltViewModel()
 ) {
     viewModel.walletSdk.WalletApp(deeplink = viewModel.getCredential())
-    setShowNavBarState(viewModel.walletSdk.shouldShowNavBar.collectAsStateWithLifecycle().value)
+    displayContentAsFullScreen(
+        viewModel.walletSdk.displayAsFullScreen.collectAsStateWithLifecycle().value
+    )
 }
