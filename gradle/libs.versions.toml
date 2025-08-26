@@ -1,6 +1,6 @@
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.0" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
@@ -44,23 +44,25 @@ firebaseBom = "33.13.0"
 crashlytics = "3.0.3"
 classgraph = "4.8.179"
 govuk-ui = "7.40.0"
-govuk-logging = "0.31.0"
+govuk-logging = "0.32.0"
 compose-runtime = "1.8.0"
-wallet = "2.32.0"
-auth = "0.29.1"
-cri-orchestrator = "0.59.2"
+auth = "0.30.0"
+wallet = "2.46.1"
+cri-orchestrator = "0.59.8"
 junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
 aboutLibraries = "12.1.0-rc01"
-secureStore = "0.13.0"
+secureStore = "0.14.0"
 paparazzi = "2.0.0-alpha01" # https://github.com/cashapp/paparazzi/releases
 composeBom = "2025.06.00"
 navigationCommonAndroid = "2.9.0"
 network = "0.7.2"
+kotlinStdLib = "2.2.0"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.13.1" }
@@ -112,6 +114,7 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }

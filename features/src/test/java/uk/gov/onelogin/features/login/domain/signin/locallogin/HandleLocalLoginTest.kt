@@ -20,6 +20,7 @@ import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.core.utils.MockitoHelper
 
 class HandleLocalLoginTest {
     private val mockActivity: FragmentActivity = mock()
@@ -164,7 +165,7 @@ class HandleLocalLoginTest {
             whenever(
                 mockGetFromEncryptedSecureStore(
                     context = any(),
-                    ArgumentMatchers.any(),
+                    MockitoHelper.anyObject(),
                     callback = any()
                 )
             ).thenAnswer {

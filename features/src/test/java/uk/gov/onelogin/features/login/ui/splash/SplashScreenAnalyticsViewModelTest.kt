@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.splash
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +18,9 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.core.utils.GAUtils
+import uk.gov.onelogin.core.utils.GAUtils.FALSE
+import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_FALSE
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsViewModel
 
 @RunWith(AndroidJUnit4::class)
@@ -42,16 +46,15 @@ class SplashScreenAnalyticsViewModelTest {
         idUnlock = context.getEnglishString(R.string.splash_unlock_screen_page_id)
         unlockButton = context.getEnglishString(R.string.app_unlockButton)
         backButton = context.getEnglishString(R.string.system_backButton)
+        requiredParameters = RequiredParameters(
+            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        )
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun trackSplashScreen() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-            )
         val event =
             ViewEvent.Screen(
                 name = name,
@@ -62,15 +65,15 @@ class SplashScreenAnalyticsViewModelTest {
         viewModel.trackSplashScreen(context, isLocked = false)
 
         verify(logger).logEventV3Dot1(event)
+
+        assertThat(
+            IS_ERROR_REASON_FALSE,
+            GAUtils.containsIsError(event, FALSE)
+        )
     }
 
     @Test
     fun trackSplashUnlockScreen() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             ViewEvent.Screen(
                 name = nameUnlock,
@@ -85,11 +88,6 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackUnlockButton() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             TrackEvent.Button(
                 text = unlockButton,
@@ -103,36 +101,26 @@ class SplashScreenAnalyticsViewModelTest {
 
     @Test
     fun trackBackButtonSplash() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-            )
         val event =
             TrackEvent.Icon(
                 text = backButton,
                 params = requiredParameters
             )
 
-        viewModel.trackBackButton(context, false)
+        viewModel.trackBackButton(context)
 
         verify(logger).logEventV3Dot1(event)
     }
 
     @Test
     fun trackBackButtonUnlock() {
-        requiredParameters =
-            RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNLOCK
-            )
         val event =
             TrackEvent.Icon(
                 text = backButton,
                 params = requiredParameters
             )
 
-        viewModel.trackBackButton(context, true)
+        viewModel.trackBackButton(context)
 
         verify(logger).logEventV3Dot1(event)
     }

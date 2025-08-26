@@ -9,6 +9,7 @@ import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
@@ -41,10 +42,11 @@ class HandleRemoteLoginImpl @Inject constructor(
                         configuration = createLoginConfiguration(persistentId)
                     )
                 } catch (e: Throwable) {
+                    val loginException = LoginException(e)
                     logger.error(
-                        e.javaClass.simpleName,
+                        loginException.javaClass.simpleName,
                         e.message ?: NO_MESSAGE,
-                        e
+                        loginException
                     )
                     onFailure()
                 }

@@ -51,7 +51,6 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
     private var repository: OptInRepository = mock()
     private lateinit var optInViewModel: OptInRequirementViewModel
-
     private lateinit var logo: SemanticsMatcher
     private lateinit var crownIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
@@ -193,7 +192,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
         }
 
         verify(analytics).logEventV3Dot1(
-            SplashScreenAnalyticsViewModel.makeBackEvent(context, false)
+            SplashScreenAnalyticsViewModel.makeBackEvent(context)
         )
     }
 }

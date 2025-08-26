@@ -12,6 +12,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
 
@@ -61,7 +62,12 @@ class StsAuthenticationProvider(
                         .decodeFromString(tokenResponseString)
                     AuthenticationResponse.Success(tokenApiResponse.token)
                 } catch (e: Exception) {
-                    logger.error(this::class.java.simpleName, e.message.toString(), e)
+                    val loginException = LoginException(e)
+                    logger.error(
+                        loginException::class.java.simpleName,
+                        e.message.toString(),
+                        loginException
+                    )
                     AuthenticationResponse.Failure(e)
                 }
             } else {

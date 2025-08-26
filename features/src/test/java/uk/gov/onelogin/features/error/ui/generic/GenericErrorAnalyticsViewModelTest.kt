@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.error.ui.generic
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,6 +18,9 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import uk.gov.onelogin.core.utils.GAUtils
+import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_TRUE
+import uk.gov.onelogin.core.utils.GAUtils.TRUE
 
 @RunWith(AndroidJUnit4::class)
 class GenericErrorAnalyticsViewModelTest {
@@ -40,7 +44,7 @@ class GenericErrorAnalyticsViewModelTest {
         requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.ERROR
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
             )
         analyticsLogger = mock()
         viewModel =
@@ -65,6 +69,11 @@ class GenericErrorAnalyticsViewModelTest {
         viewModel.trackScreen()
 
         verify(analyticsLogger).logEventV3Dot1(event)
+
+        assertThat(
+            IS_ERROR_REASON_TRUE,
+            GAUtils.containsIsError(event, TRUE)
+        )
     }
 
     @Test

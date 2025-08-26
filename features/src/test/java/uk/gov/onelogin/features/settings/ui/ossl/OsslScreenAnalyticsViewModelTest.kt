@@ -9,6 +9,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -27,6 +28,7 @@ class OsslScreenAnalyticsViewModelTest {
     private lateinit var requiredParameters: RequiredParameters
     private lateinit var logger: AnalyticsLogger
     private lateinit var viewModel: OsslAnalyticsViewModel
+    private lateinit var crashLogger: Logger
 
     @Before
     fun setUp() {
@@ -37,11 +39,12 @@ class OsslScreenAnalyticsViewModelTest {
                 taxonomyLevel3 = TaxonomyLevel3.LICENCES
             )
         logger = mock()
+        crashLogger = mock()
         name = context.getEnglishString(R.string.app_osslTitle)
         id = context.getEnglishString(R.string.ossl_page_id)
         backButton = context.getEnglishString(R.string.system_backButton)
         backIcon = context.getEnglishString(R.string.system_backIcon)
-        viewModel = OsslAnalyticsViewModel(context, logger)
+        viewModel = OsslAnalyticsViewModel(context, logger, crashLogger)
     }
 
     @Test
@@ -106,5 +109,15 @@ class OsslScreenAnalyticsViewModelTest {
         viewModel.trackBackIcon()
         // Then log a TrackEvent to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun logError() {
+        val tag = "tag"
+        val message = "crash"
+        val exception = Exception(message)
+        viewModel.logError(tag, message, exception)
+
+        verify(crashLogger).error(tag, message, exception)
     }
 }

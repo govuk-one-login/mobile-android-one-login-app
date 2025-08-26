@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -17,13 +18,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
+import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -31,7 +34,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -156,11 +158,18 @@ class LoginTest : TestCase() {
 
     private val appInfoData = TestUtils.appInfoData
 
+    // use createEmptyComposeRule instead of createAndroidComposeRule<HiltTestActivity>() to avoid
+    // IllegalStateException caused by composeRule.setContent being called twice
     @get:Rule(order = 3)
-    val composeRule = createAndroidComposeRule<HiltTestActivity>()
+    val composeRule = createEmptyComposeRule()
+
+    private lateinit var scenario: ActivityScenario<HiltTestActivity>
+
+    private var injectCounter = 0
 
     @Before
     fun setup() {
+        scenario = ActivityScenario.launch(HiltTestActivity::class.java)
         Intents.init()
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
@@ -173,21 +182,29 @@ class LoginTest : TestCase() {
 
                 override fun isMainThread(): Boolean = true
             })
-        hiltRule.inject()
+        hiltInject()
         deletePersistentId()
     }
 
     @After
     fun tearDown() {
+        scenario.close()
         Intents.release()
         ArchTaskExecutor.getInstance().setDelegate(null)
+        injectCounter = 0
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestNoPersistentId() = runTest {
-        whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(appInfoData))
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.Success("Success"))
+    @FlakyTest
+    fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
+        runBlocking {
+            whenever(mockAppInfoService.get()).thenReturn(
+                AppInfoServiceState.Successful(appInfoData)
+            )
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("Success"))
+        }
+
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
         wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
@@ -333,6 +350,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
         val authenticationError = AuthenticationError(
             message = "Error",
@@ -360,6 +378,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -426,6 +445,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -467,21 +487,41 @@ class LoginTest : TestCase() {
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
         }
 
-        composeRule.setContent {
-            val registryOwner = object : ActivityResultRegistryOwner {
-                override val activityResultRegistry: ActivityResultRegistry
-                    get() = object : ActivityResultRegistry() {
-                        override fun <I : Any?, O : Any?> onLaunch(
-                            requestCode: Int,
-                            contract: ActivityResultContract<I, O>,
-                            input: I,
-                            options: ActivityOptionsCompat?
-                        ) {
-                            this.dispatchResult(requestCode, resultCode, returnedIntent)
+        scenario.onActivity { activity ->
+            activity.setContent {
+                val registryOwner = object : ActivityResultRegistryOwner {
+                    override val activityResultRegistry: ActivityResultRegistry
+                        get() = object : ActivityResultRegistry() {
+                            override fun <I : Any?, O : Any?> onLaunch(
+                                requestCode: Int,
+                                contract: ActivityResultContract<I, O>,
+                                input: I,
+                                options: ActivityOptionsCompat?
+                            ) {
+                                this.dispatchResult(requestCode, resultCode, returnedIntent)
+                            }
+                        }
+                }
+                CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
+                    val navController = rememberNavController()
+
+                    DisposableEffect(key1 = navController) {
+                        navigator.setController(navController)
+
+                        onDispose {
+                            navigator.reset()
                         }
                     }
+
+                    OneLoginApp(navController = navController)
+                }
             }
-            CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
+        }
+    }
+
+    private fun startApp() {
+        scenario.onActivity { activity ->
+            activity.setContent {
                 val navController = rememberNavController()
 
                 DisposableEffect(key1 = navController) {
@@ -494,22 +534,6 @@ class LoginTest : TestCase() {
 
                 OneLoginApp(navController = navController)
             }
-        }
-    }
-
-    private fun startApp() {
-        composeRule.setContent {
-            val navController = rememberNavController()
-
-            DisposableEffect(key1 = navController) {
-                navigator.setController(navController)
-
-                onDispose {
-                    navigator.reset()
-                }
-            }
-
-            OneLoginApp(navController = navController)
         }
     }
 
@@ -566,6 +590,13 @@ class LoginTest : TestCase() {
         secureStore.delete(
             key = AuthTokenStoreKeys.PERSISTENT_ID_KEY
         )
+    }
+
+    private fun hiltInject() {
+        if (injectCounter < 1) {
+            hiltRule.inject()
+        }
+        injectCounter++
     }
 
     companion object {
