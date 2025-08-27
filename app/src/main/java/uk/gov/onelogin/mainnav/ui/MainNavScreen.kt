@@ -12,9 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
@@ -46,13 +44,12 @@ fun MainNavScreen(
     mainNavScreenViewModel: MainNavViewModel = hiltViewModel(),
     analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
 ) {
-    var displayContentAsFullScreenState by remember { mutableStateOf(false) }
-    fun setDisplayContentAsFullScreen(newValue: Boolean) {
-        displayContentAsFullScreenState = newValue
+    val displayContentAsFullScreen = remember {
+        mainNavScreenViewModel.displayContentAsFullScreenState
     }
 
     navController.addOnDestinationChangedListener { _, _, _ ->
-        setDisplayContentAsFullScreen(false)
+        mainNavScreenViewModel.setDisplayContentAsFullScreenState(false)
     }
 
     val navItems = createBottomNavItems(
@@ -78,7 +75,7 @@ fun MainNavScreen(
         Scaffold(
             contentWindowInsets = WindowInsets(0.dp),
             bottomBar = {
-                if (!displayContentAsFullScreenState) {
+                if (!displayContentAsFullScreen.value) {
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
                     GdsNavigationBar(
                         items = navItems.map { navDest ->
@@ -128,7 +125,9 @@ fun MainNavScreen(
                 },
                 modifier = Modifier.padding(paddingValues)
             ) {
-                bottomGraph { setDisplayContentAsFullScreen(newValue = it) }
+                bottomGraph {
+                    mainNavScreenViewModel.setDisplayContentAsFullScreenState(newValue = it)
+                }
             }
         }
     }
