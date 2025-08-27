@@ -114,7 +114,7 @@ fun MainNavScreen(
                             MaterialTheme.colorScheme.background
                         }
                     ).generate()
-                } else { null }
+                }
             }
         ) { paddingValues ->
             NavHost(
