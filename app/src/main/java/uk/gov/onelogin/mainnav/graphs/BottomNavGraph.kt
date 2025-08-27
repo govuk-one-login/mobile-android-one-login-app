@@ -10,9 +10,8 @@ import uk.gov.onelogin.features.wallet.ui.WalletScreen
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 
 object BottomNavGraph {
-    fun NavGraphBuilder.bottomGraph(displayContentAsFullScreen: (Boolean) -> Unit) {
+    fun NavGraphBuilder.bottomGraph(setDisplayContentAsFullScreen: (Boolean) -> Unit) {
         composable(BottomNavDestination.Home.key) {
-            displayContentAsFullScreen(false)
             HomeScreen()
         }
         composable(
@@ -26,10 +25,9 @@ object BottomNavGraph {
                 }
             )
         ) {
-            WalletScreen(displayContentAsFullScreen)
+            WalletScreen(setDisplayContentAsFullScreen)
         }
         composable(BottomNavDestination.Settings.key) {
-            displayContentAsFullScreen(false)
             SettingsScreen()
         }
     }

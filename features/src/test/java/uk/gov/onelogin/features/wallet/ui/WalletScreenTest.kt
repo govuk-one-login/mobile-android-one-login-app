@@ -31,7 +31,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
         whenever(walletRepository.getCredential()).thenReturn(deeplink)
         composeTestRule.setContent {
             WalletScreen(
-                displayContentAsFullScreen = { true },
+                setDisplayContentAsFullScreen = { true },
                 viewModel = viewModel
             )
 
@@ -46,7 +46,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
         whenever(walletRepository.getCredential()).thenReturn(deeplink)
         composeTestRule.setContent {
             WalletScreen(
-                displayContentAsFullScreen = { true },
+                setDisplayContentAsFullScreen = { true },
                 viewModel = viewModel
             )
 
