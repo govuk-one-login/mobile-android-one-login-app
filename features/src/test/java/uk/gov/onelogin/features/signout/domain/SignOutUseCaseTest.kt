@@ -19,7 +19,6 @@ import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,6 +35,8 @@ class SignOutUseCaseTest {
             val removeAllSecureStoreData: RemoveAllSecureStoreData = mock()
             val removeTokenExpiry: RemoveTokenExpiry = mock()
             val bioPrefHandler: LocalAuthPreferenceRepo = mock()
+
+            whenever(deleteWalletData.invoke()).thenReturn(true)
             // When we call sign out use case
             useCase =
                 SignOutUseCaseImpl(
@@ -61,9 +62,7 @@ class SignOutUseCaseTest {
     fun `sign out delete wallet data error`() =
         runTest {
             // When invoking the sign out use case
-            whenever(deleteWalletData.invoke()).then {
-                throw DeleteWalletDataUseCaseImpl.DeleteWalletDataError()
-            }
+            whenever(deleteWalletData.invoke()).thenReturn(false)
 
             useCase =
                 SignOutUseCaseImpl(
@@ -89,6 +88,7 @@ class SignOutUseCaseTest {
         runTest {
             // Given
             val errorMessage = "something went terribly bad"
+            whenever(deleteWalletData.invoke()).thenReturn(true)
             useCase =
                 SignOutUseCaseImpl(
                     MultiCleaner(
@@ -114,6 +114,7 @@ class SignOutUseCaseTest {
         runTest {
             // Given
             val errorMessage = "something went terribly bad"
+            whenever(deleteWalletData.invoke()).thenReturn(true)
             useCase =
                 SignOutUseCaseImpl(
                     MultiCleaner(
