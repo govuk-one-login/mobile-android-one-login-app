@@ -30,9 +30,12 @@ class WalletScreenTest : FragmentActivityTestCase() {
         val deeplink = ""
         whenever(walletRepository.getCredential()).thenReturn(deeplink)
         composeTestRule.setContent {
-            WalletScreen(viewModel)
+            WalletScreen(
+                setDisplayContentAsFullScreen = { true },
+                viewModel = viewModel
+            )
 
-            verify(walletSdk).WalletApp(deeplink, false)
+            verify(walletSdk).WalletApp(deeplink)
         }
     }
 
@@ -42,9 +45,12 @@ class WalletScreenTest : FragmentActivityTestCase() {
         val deeplink = "credential"
         whenever(walletRepository.getCredential()).thenReturn(deeplink)
         composeTestRule.setContent {
-            WalletScreen(viewModel)
+            WalletScreen(
+                setDisplayContentAsFullScreen = { true },
+                viewModel = viewModel
+            )
 
-            verify(walletSdk).WalletApp(deeplink, false)
+            verify(walletSdk).WalletApp(deeplink)
         }
     }
 }
