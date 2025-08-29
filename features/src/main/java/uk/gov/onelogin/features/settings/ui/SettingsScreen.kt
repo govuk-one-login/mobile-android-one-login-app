@@ -68,6 +68,7 @@ import uk.gov.android.ui.theme.xsmallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.TitledPage
 import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 
@@ -566,23 +567,25 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
 @Composable
 internal fun SettingsScreenOptInNoShowBiometricsPreview() {
     GdsTheme {
-        SettingsScreenBody(
-            paddingValues = PaddingValues(all = smallPadding),
-            email = "name@place.gov.uk",
-            optInState = true,
-            viewModelFunctions = ViewModelFunctions(
-                showBiometricsOption = false,
-                {},
-                {},
-                {},
-                {},
-                isWalletEnabled = false
-            ),
-            analyticsViewModelFunctions =
-            AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
-            uriHandler = LocalUriHandler.current,
-            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
-        )
+        EdgeToEdgePage {
+            SettingsScreenBody(
+                paddingValues = PaddingValues(all = smallPadding),
+                email = "name@place.gov.uk",
+                optInState = true,
+                viewModelFunctions = ViewModelFunctions(
+                    showBiometricsOption = false,
+                    {},
+                    {},
+                    {},
+                    {},
+                    isWalletEnabled = false
+                ),
+                analyticsViewModelFunctions =
+                AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+                uriHandler = LocalUriHandler.current,
+                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
+            )
+        }
     }
 }
 
