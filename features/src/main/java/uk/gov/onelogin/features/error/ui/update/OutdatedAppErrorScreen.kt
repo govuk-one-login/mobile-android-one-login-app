@@ -25,11 +25,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.R as UiR
 import uk.gov.android.ui.componentsv2.button.ButtonType
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
+import uk.gov.android.ui.patterns.R as UiR
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -80,7 +80,7 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
                         .padding(bottom = smallPadding)
                 ) {
                     Image(
-                        painter = painterResource(UiR.drawable.ic_error),
+                        painter = painterResource(UiR.drawable.ic_warning_error),
                         contentDescription = stringResource(
                             R.string.app_updateApp_ContentDescription
                         ),

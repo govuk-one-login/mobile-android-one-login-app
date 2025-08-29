@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.developer.ui
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -84,7 +85,7 @@ fun TabView(goBack: () -> Unit) {
         )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
-    Column {
+    Column(Modifier.background(MaterialTheme.colorScheme.background)) {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,

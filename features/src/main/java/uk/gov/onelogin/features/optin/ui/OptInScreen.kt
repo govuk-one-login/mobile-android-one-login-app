@@ -36,22 +36,20 @@ fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
     val state = viewModel.uiState.collectAsState(OptInUIState.PreChoice)
     BackHandler(enabled = true) { viewModel.goToSignIn() }
     GdsTheme {
-        EdgeToEdgePage { _ ->
-            OptInBody(
-                uiState = state.value,
-                onPrivacyNotice = { uri ->
-                    uriHandler.openUri(uri)
-                },
-                onShare = {
-                    viewModel.optIn()
-                    viewModel.goToSignIn()
-                },
-                onDoNotShare = {
-                    viewModel.optOut()
-                    viewModel.goToSignIn()
-                }
-            )
-        }
+        OptInBody(
+            uiState = state.value,
+            onPrivacyNotice = { uri ->
+                uriHandler.openUri(uri)
+            },
+            onShare = {
+                viewModel.optIn()
+                viewModel.goToSignIn()
+            },
+            onDoNotShare = {
+                viewModel.optOut()
+                viewModel.goToSignIn()
+            }
+        )
     }
 }
 
@@ -64,15 +62,17 @@ internal fun OptInBody(
 ) {
     val scrollState = rememberScrollState()
     val url = stringResource(id = R.string.privacy_notice_url)
-    Column(
-        Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-    ) {
-        OptInHeader()
-        OptInContent(onPrivacyNotice, url)
-        Spacer(modifier = Modifier.weight(1f))
-        OptInButtons(onShare, uiState, onDoNotShare)
+    EdgeToEdgePage {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            OptInHeader()
+            OptInContent(onPrivacyNotice, url)
+            Spacer(modifier = Modifier.weight(1f))
+            OptInButtons(onShare, uiState, onDoNotShare)
+        }
     }
 }
 

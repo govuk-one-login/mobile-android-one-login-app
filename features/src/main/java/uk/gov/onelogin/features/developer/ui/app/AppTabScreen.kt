@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.theme.largePadding
+import uk.gov.android.ui.theme.m3.Switch
+import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
@@ -88,22 +91,26 @@ private fun AppInfoView(
     OutlinedTextField(
         value = minimumVersion,
         onValueChange = { minimumVersion = it },
-        label = { Text(text = "Minimum version") }
+        label = { Text(text = "Minimum version") },
+        colors = textFieldDefaultColors()
     )
     Text("App Available")
     Switch(
         checked = appAvailable,
-        onCheckedChange = { appAvailable = it }
+        onCheckedChange = { appAvailable = it },
+        colors = Switch.defaultColors()
     )
     Text("Wallet Visibility")
     Switch(
         checked = walletEnabled,
-        onCheckedChange = { walletEnabled = it }
+        onCheckedChange = { walletEnabled = it },
+        colors = Switch.defaultColors()
     )
     Text("Feature Flag - App Check Enabled")
     Switch(
         checked = appCheckEnabled,
-        onCheckedChange = { appCheckEnabled = it }
+        onCheckedChange = { appCheckEnabled = it },
+        colors = Switch.defaultColors()
     )
     Button(
         onClick = {
@@ -133,3 +140,11 @@ private fun AppInfoView(
         Text("Update App Info Data - Local Source")
     }
 }
+
+@Composable
+private fun textFieldDefaultColors() = TextFieldDefaults.colors().copy(
+    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background
+)

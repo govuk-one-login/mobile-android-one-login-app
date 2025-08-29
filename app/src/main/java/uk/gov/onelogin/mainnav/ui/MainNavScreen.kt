@@ -1,10 +1,13 @@
 package uk.gov.onelogin.mainnav.ui
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,11 +33,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.NavigationElements
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
-import uk.gov.ui.components.navigation.GdsNavigationBar
-import uk.gov.ui.components.navigation.GdsNavigationItem
 
 @Suppress("LongMethod")
 @Composable
@@ -58,79 +58,87 @@ fun MainNavScreen(
         { analyticsViewModel.trackWalletTabButton() },
         { analyticsViewModel.trackSettingsTabButton() }
     )
-    GdsTheme {
-        LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-            mainNavScreenViewModel.checkWalletEnabled()
-        }
+    LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
+        mainNavScreenViewModel.checkWalletEnabled()
+    }
 
-        LaunchedEffect(mainNavScreenViewModel.walletDeepLinkReceived) {
-            if (mainNavScreenViewModel.walletDeepLinkReceived.value) {
-                bottomNav(
-                    navController,
-                    navItems.first { it.first == BottomNavDestination.Wallet }
-                )
-            }
-        }
-
-        Scaffold(
-            contentWindowInsets = WindowInsets(0.dp),
-            bottomBar = {
-                if (!displayContentAsFullScreen.value) {
-                    val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    GdsNavigationBar(
-                        items = navItems.map { navDest ->
-                            GdsNavigationItem(
-                                icon = {
-                                    Icon(
-                                        painterResource(id = navDest.first.icon),
-                                        navDest.first.key
-                                    )
-                                },
-                                onClick = {
-                                    bottomNav(
-                                        navController,
-                                        navDest
-                                    )
-                                },
-                                selected = navBackStackEntry?.destination?.route
-                                    == navDest.first.key,
-                                label = { Label(navDest.first.label) },
-                                colors = {
-                                    NavigationBarItemDefaults.colors(
-                                        indicatorColor = if (isSystemInDarkTheme()) {
-                                            MaterialTheme.colorScheme.tertiary
-                                        } else {
-                                            colorResource(id = R.color.nav_bottom_selected)
-                                        }
-                                    )
-                                }
-                            )
-                        },
-                        tonalElevation = 0.dp,
-                        containerColor = {
-                            MaterialTheme.colorScheme.background
-                        }
-                    ).generate()
-                }
-            }
-        ) { paddingValues ->
-            NavHost(
-                navController = navController,
-                startDestination = if (
-                    mainNavScreenViewModel.walletDeepLinkReceived.value
-                ) {
-                    BottomNavDestination.Wallet.key
-                } else {
-                    BottomNavDestination.Home.key
-                },
-                modifier = Modifier.padding(paddingValues)
-            ) {
-                bottomGraph {
-                    mainNavScreenViewModel.setDisplayContentAsFullScreenState(newValue = it)
-                }
-            }
+    LaunchedEffect(mainNavScreenViewModel.walletDeepLinkReceived) {
+        if (mainNavScreenViewModel.walletDeepLinkReceived.value) {
+            bottomNav(
+                navController,
+                navItems.first { it.first == BottomNavDestination.Wallet }
+            )
         }
     }
+
+    Scaffold(
+        contentWindowInsets = WindowInsets(0.dp),
+        bottomBar = {
+            if (!displayContentAsFullScreen.value) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
+                    tonalElevation = NavigationBarDefaults.Elevation,
+                    windowInsets = NavigationBarDefaults.windowInsets
+                ) {
+                    navItems.map { navDest ->
+                        NavBarItem(
+                            navigationDestination = navDest,
+                            navController = navController,
+                            selected = navBackStackEntry?.destination?.route == navDest.first.key
+                        )
+                    }
+                }
+            }
+        }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = if (
+                mainNavScreenViewModel.walletDeepLinkReceived.value
+            ) {
+                BottomNavDestination.Wallet.key
+            } else {
+                BottomNavDestination.Home.key
+            },
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            bottomGraph { mainNavScreenViewModel.setDisplayContentAsFullScreenState(newValue = it) }
+        }
+    }
+}
+
+@Composable
+private fun RowScope.NavBarItem(
+    navigationDestination: Pair<BottomNavDestination, () -> Unit>,
+    selected: Boolean,
+    navController: NavHostController
+) {
+    NavigationBarItem(
+        selected = selected,
+        onClick = {
+            bottomNav(
+                navController,
+                navigationDestination
+            )
+        },
+        icon = {
+            Icon(
+                painter = painterResource(navigationDestination.first.icon),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        },
+        label = {
+            Label(text = navigationDestination.first.label)
+        },
+        alwaysShowLabel = true,
+        colors = NavigationBarItemDefaults.colors(
+            indicatorColor =
+            NavigationElements.navigationBarSelectedState.toMappedColors()
+        )
+    )
 }
 
 @Composable
