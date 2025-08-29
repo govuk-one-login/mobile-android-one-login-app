@@ -57,7 +57,10 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.Switch
+import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -273,7 +276,6 @@ private fun LegalSection(
     ) {
         onPrivacyNoticeClick()
     }
-    HorizontalDivider()
     LinkRow(
         title = R.string.app_accessibilityStatement,
         icon = R.drawable.external_link_icon,
@@ -282,7 +284,6 @@ private fun LegalSection(
     ) {
         onAccessibilityStatementClick()
     }
-    HorizontalDivider()
     if (isWalletEnabled) {
         LinkRow(
             title = R.string.app_termsAndConditionsLink,
@@ -292,7 +293,6 @@ private fun LegalSection(
         ) {
             onTermsAndConditionsClick()
         }
-        HorizontalDivider()
     }
     LinkRow(
         title = R.string.app_openSourceLicences,
@@ -319,7 +319,6 @@ private fun HelpAndFeedbackSection(
     ) {
         onHelpClick()
     }
-    HorizontalDivider()
     if (isWalletEnabled) {
         LinkRow(
             title = R.string.app_addDocumentsLink,
@@ -329,7 +328,6 @@ private fun HelpAndFeedbackSection(
         ) {
             onAddDocumentsClick()
         }
-        HorizontalDivider()
     }
     LinkRow(
         title = R.string.app_contactLink,
@@ -371,7 +369,7 @@ internal fun AboutTheAppSection(
             Modifier
                 .padding(smallPadding),
             style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.surface
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             ),
             privacyNoticeString = stringResource(
                 id = R.string.app_settingsAnalyticsToggleFootnote
@@ -416,7 +414,7 @@ private fun LinkRow(
     Box(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = GdsLocalColorScheme.current.listBackground)
             .fillMaxWidth()
             .semantics(mergeDescendants = true) { this.traversalIndex = traversalIndex }
     ) {
@@ -447,7 +445,7 @@ private fun LinkRow(
                                 end = 64.dp
                             ),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.surface,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         text = it,
                         textAlign = TextAlign.Left
                     )
@@ -462,6 +460,7 @@ private fun LinkRow(
             )
         }
     }
+    HorizontalDivider()
 }
 
 @Composable
@@ -477,7 +476,7 @@ internal fun PreferenceToggleRow(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = GdsLocalColorScheme.current.listBackground)
             .semantics {
                 traversalIndex = ANALYTICS_TOGGLE_TRAVERSAL_ORDER
             }
@@ -503,7 +502,8 @@ internal fun PreferenceToggleRow(
         )
         Switch(
             checked = toggle,
-            onCheckedChange = null
+            onCheckedChange = null,
+            colors = Switch.defaultColors()
         )
     }
     HorizontalDivider()
@@ -518,7 +518,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
             .padding(top = mediumPadding)
             .defaultMinSize(minHeight = 56.dp)
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = GdsLocalColorScheme.current.listBackground)
             .clickable {
                 openSignOutScreen()
             }
@@ -530,7 +530,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
                 .defaultMinSize(minHeight = 24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
-            color = MaterialTheme.colorScheme.primary
+            color = GdsLocalColorScheme.current.nativeButtonText
         )
     }
 }

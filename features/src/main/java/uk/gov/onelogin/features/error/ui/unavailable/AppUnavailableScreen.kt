@@ -30,7 +30,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.R as Res
+import uk.gov.android.ui.patterns.R as Res
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.spacingDouble
@@ -78,7 +78,7 @@ internal fun AppUnavailableBody() {
                     .padding(iconPadding)
                     .size(iconSize)
                     .testTag(ICON_TAG),
-                painter = painterResource(Res.drawable.ic_error),
+                painter = painterResource(Res.drawable.ic_warning_error),
                 contentDescription = null,
                 tint = color
             )

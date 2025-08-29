@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -23,7 +24,9 @@ fun EdgeToEdgePage(
         .windowInsetsPadding(WindowInsets.displayCutout),
     content: @Composable (PaddingValues) -> Unit
 ) {
-    Scaffold(modifier = modifier) { paddingValues ->
-        content(paddingValues)
+    Surface {
+        Scaffold(modifier = modifier) { paddingValues ->
+            content(paddingValues)
+        }
     }
 }
