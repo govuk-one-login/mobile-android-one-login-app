@@ -541,23 +541,25 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
 @Composable
 internal fun SettingsScreenOptOutShowBiometricsPreview() {
     GdsTheme {
-        SettingsScreenBody(
-            paddingValues = PaddingValues(all = smallPadding),
-            email = "name@place.gov.uk",
-            optInState = false,
-            viewModelFunctions = ViewModelFunctions(
-                showBiometricsOption = true,
-                {},
-                {},
-                {},
-                {},
-                isWalletEnabled = true
-            ),
-            analyticsViewModelFunctions =
-            AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
-            uriHandler = LocalUriHandler.current,
-            settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
-        )
+        EdgeToEdgePage {
+            SettingsScreenBody(
+                paddingValues = PaddingValues(all = smallPadding),
+                email = "name@place.gov.uk",
+                optInState = false,
+                viewModelFunctions = ViewModelFunctions(
+                    showBiometricsOption = true,
+                    {},
+                    {},
+                    {},
+                    {},
+                    isWalletEnabled = true
+                ),
+                analyticsViewModelFunctions =
+                    AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+                uriHandler = LocalUriHandler.current,
+                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
+            )
+        }
     }
 }
 
