@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -62,7 +63,8 @@ private fun FeatureToggle(
         )
         Switch(
             checked = checked,
-            onCheckedChange = { onToggle() }
+            onCheckedChange = { onToggle() },
+            colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
         )
     }
     HorizontalDivider()

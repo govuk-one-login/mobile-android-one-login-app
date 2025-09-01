@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,7 +25,7 @@ import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.components.m3.HeadingSize
+import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +40,7 @@ fun OsslScreen(
     }
     LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
 
+    val scrollBehaviour = TopAppBarDefaults.pinnedScrollBehavior()
     GdsTheme {
         Scaffold(
             topBar = {
@@ -46,7 +48,7 @@ fun OsslScreen(
                     title = {
                         Text(
                             text = stringResource(R.string.app_osslTitle),
-                            style = HeadingSize.HeadlineMedium().style()
+                            style = MaterialTheme.typography.headlineMedium
                         )
                     },
                     navigationIcon = {
@@ -59,15 +61,19 @@ fun OsslScreen(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.app_back_icon),
-                                tint = MaterialTheme.colorScheme.primary
+                                tint = GdsLocalColorScheme.current.topBarIcon
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = GdsLocalColorScheme.current
+                            .topBarScrolledBackground
+                    ),
+                    scrollBehavior = scrollBehaviour
                 )
-            }
+            },
+            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
         ) {
             OsslAboutLibrariesScreen(
                 padding = it,

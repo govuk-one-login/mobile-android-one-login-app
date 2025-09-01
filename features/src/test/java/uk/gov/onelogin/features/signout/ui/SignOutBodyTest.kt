@@ -14,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.pages.R as T
+import uk.gov.android.ui.componentsv2.R as T
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
 
@@ -54,7 +54,7 @@ class SignOutBodyTest : FragmentActivityTestCase() {
                     substring = true
                 )
             primaryButton = hasText(getString(R.string.app_signOutButton_no_wallet))
-            closeButton = hasContentDescription(getString(T.string.preview__alertPage__close))
+            closeButton = hasContentDescription(getString(T.string.close_button))
         }
     }
 
