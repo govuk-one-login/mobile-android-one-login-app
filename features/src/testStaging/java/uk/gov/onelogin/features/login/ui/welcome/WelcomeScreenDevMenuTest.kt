@@ -115,7 +115,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
 
     @Test
     fun verifyDevMenuClick() {
-        composeTestRule.onNode(devButton).performClick()
+        composeTestRule.onAllNodes(devButton)[0].performClick()
 
         verify(navigator).openDeveloperPanel()
     }

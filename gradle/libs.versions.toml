@@ -1,6 +1,6 @@
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.0" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.10" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }
@@ -14,7 +14,7 @@ paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 
 [versions]
 jose4j = "0.9.6"
-kotlin = "2.1.21"
+kotlin = "2.2.10"
 agp = "8.9.3"
 core-ktx = "1.16.0"
 androidx-test-ext-junit = "1.2.1"
@@ -36,7 +36,7 @@ kotlinxCoroutines = "1.10.2"
 lifecycleRuntimeKtx = "2.8.7"
 compose-material = "1.8.2"
 compose-material3 = "1.3.1"
-serialization = "2.1.21"
+serialization = "2.2.10"
 junit = "5.12.2"
 jacoco = "0.8.13"
 googleServices = "4.4.2"
@@ -47,7 +47,7 @@ govuk-ui = "7.40.0"
 govuk-logging = "0.32.0"
 compose-runtime = "1.8.0"
 auth = "0.30.0"
-wallet = "2.32.0"
+wallet = "2.47.0"
 cri-orchestrator = "0.59.2"
 junitVersion = "4.13.2"
 material = "1.12.0"
@@ -58,7 +58,7 @@ paparazzi = "2.0.0-alpha01" # https://github.com/cashapp/paparazzi/releases
 composeBom = "2025.06.00"
 navigationCommonAndroid = "2.9.0"
 network = "0.7.2"
-kotlinStdLib = "2.2.0"
+kotlinStdLib = "2.2.10"
 
 [libraries]
 runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
@@ -74,7 +74,7 @@ jacoco-agent = { module = "org.jacoco:org.jacoco.agent", version.ref = "jacoco" 
 jacoco-ant = { module = "org.jacoco:org.jacoco.ant", version.ref = "jacoco" }
 jacoco-core = { module = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
 jacoco-report = { module = "org.jacoco:org.jacoco.report", version.ref = "jacoco" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.8.1" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.9.0" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version = "3.1.3" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version = "3.1.3" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.4.0" }

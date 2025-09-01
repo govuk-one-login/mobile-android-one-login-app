@@ -26,7 +26,7 @@ class BottomGraphObjectTest : TestCase() {
                 navController = navController,
                 startDestination = BottomNavDestination.Home.key
             ) {
-                bottomGraph()
+                bottomGraph { false }
             }
         }
     }

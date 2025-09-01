@@ -57,6 +57,15 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
         super.onStop(owner)
     }
 
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+
+        // If a debugger is detected in release, kill the app
+        if (android.os.Debug.isDebuggerConnected() && !BuildConfig.DEBUG) {
+            android.os.Process.killProcess(android.os.Process.myPid())
+        }
+    }
+
     private fun isLocalAuthEnabled(): Boolean {
         val prefs = appEntryPoint.localAuthManager().localAuthPreference
         return !(prefs == LocalAuthPreference.Disabled || prefs == null)

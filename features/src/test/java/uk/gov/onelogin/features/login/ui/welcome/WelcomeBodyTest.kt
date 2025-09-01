@@ -47,7 +47,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
         // Then
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(subTitle1).assertIsDisplayed()
-        composeTestRule.onNode(primaryButton).assertIsDisplayed()
+        composeTestRule.onAllNodes(primaryButton)[0].assertIsDisplayed()
         // TODO: Add testTag to the icon in mobile ui to be able to test the icon on CentreAlignedScreen when contentDescription is empty
     }
 
@@ -74,7 +74,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
             )
         }
         // When clicking the `primaryButton`
-        composeTestRule.onNode(primaryButton).performClick()
+        composeTestRule.onAllNodes(primaryButton)[0].performClick()
         // Then onShare() is called and the variable is true
         assertEquals(true, actual)
     }
