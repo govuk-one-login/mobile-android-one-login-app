@@ -12,7 +12,7 @@ class SignOutRoutesTest {
             SignOutRoutes.Info.getRoute() to "/sign_out/info",
             SignOutRoutes.ReAuthError.getRoute() to "/sign_out/re_auth_error",
             SignOutRoutes.Success.getRoute() to "sign_out/success",
-            SignOutRoutes.SignOutError.getRoute() to "/sign_out/error"
+            SignOutRoutes.SignOutWalletError.getRoute() to "/sign_out/error"
         ).forEach { assertEquals(it.second, it.first) }
     }
 }

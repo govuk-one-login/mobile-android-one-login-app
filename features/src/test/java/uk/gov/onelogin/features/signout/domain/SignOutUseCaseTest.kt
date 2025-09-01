@@ -74,7 +74,7 @@ class SignOutUseCaseTest {
                     tokenRepository
                 )
 
-            // Then throw SignOutError
+            // Then throw SignOutWalletError
             val exception =
                 assertThrows<SignOutError> {
                     useCase.invoke()
@@ -100,7 +100,7 @@ class SignOutUseCaseTest {
                     tokenRepository
                 )
             // When invoking the sign out use case
-            // Then throw SignOutError
+            // Then throw SignOutWalletError
             val exception =
                 assertThrows<SignOutError> {
                     useCase.invoke()
@@ -126,7 +126,7 @@ class SignOutUseCaseTest {
                     tokenRepository
                 )
             // When invoking the sign out use case
-            // Then throw SignOutError
+            // Then throw SignOutWalletError
             val exception =
                 assertThrows<SignOutError> {
                     useCase.invoke()

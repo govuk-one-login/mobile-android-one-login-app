@@ -29,7 +29,7 @@ object ErrorGraphObject {
                 GenericErrorScreen { navController.popBackStack() }
             }
             composable(
-                route = ErrorRoutes.SignOutWalletDisabled.getRoute()
+                route = ErrorRoutes.SignOutError.getRoute()
             ) {
                 val context = LocalActivity.current as Activity
                 SignOutErrorWalletDisabledScreen {
