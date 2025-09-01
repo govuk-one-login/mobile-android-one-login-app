@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -53,10 +54,10 @@ import uk.gov.android.ui.componentsv2.list.GdsBulletedList
 import uk.gov.android.ui.componentsv2.list.ListItem
 import uk.gov.android.ui.componentsv2.list.ListTitle
 import uk.gov.android.ui.componentsv2.list.TitleType
+import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.m3.customDynamicColor
-import uk.gov.android.ui.theme.m3.temporary_link_color_dark
-import uk.gov.android.ui.theme.m3.temporary_link_color_light
+import uk.gov.android.ui.theme.m3.Switch
+import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
@@ -82,7 +83,8 @@ fun BiometricsToggleScreen(
                 analyticsViewModel.trackIconBackButton()
                 viewModel.goBack()
             }
-        }
+        },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->
         BiometricsToggleBody(
             biometricsEnabled = viewModel.biometricsEnabled,
@@ -203,7 +205,7 @@ private fun BiometricsToggleRow(
         modifier = Modifier
             .height(56.dp)
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = GdsLocalColorScheme.current.listBackground)
             .toggleable(
                 role = Role.Switch,
                 value = toggle,
@@ -230,6 +232,7 @@ private fun BiometricsToggleRow(
                 toggle = !toggle
                 onToggle(toggle)
             },
+            colors = Switch.defaultColors(),
             // Required for accessibility to not focus on the toggle first landing on the screen (TalkBack enabled)
             modifier = Modifier.clearAndSetSemantics {}
         )
@@ -260,16 +263,13 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = customDynamicColor(
-                        temporary_link_color_light,
-                        temporary_link_color_dark
-                    )
+                    color = GdsLocalColorScheme.current.topBarIcon
                 )
             }
         },
         colors = TopAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            scrolledContainerColor = GdsLocalColorScheme.current.topBarScrolledBackground,
             navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
             titleContentColor = MaterialTheme.colorScheme.background,
             actionIconContentColor = MaterialTheme.colorScheme.onBackground

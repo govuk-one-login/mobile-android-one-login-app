@@ -43,12 +43,12 @@ googleServices = "4.4.2"
 firebaseBom = "33.13.0"
 crashlytics = "3.0.3"
 classgraph = "4.8.179"
-govuk-ui = "7.40.0"
-govuk-logging = "0.32.0"
+govuk-ui = "8.0.0"
+govuk-logging = "0.32.2"
 compose-runtime = "1.8.0"
 auth = "0.30.0"
-wallet = "2.47.0"
-cri-orchestrator = "0.59.2"
+wallet = "2.50.0"
+cri-orchestrator = "0.60.0"
 junitVersion = "4.13.2"
 material = "1.12.0"
 robolectric = "4.14.1"
@@ -122,8 +122,6 @@ cri-orchestrator = { group = "uk.gov.onelogin.criorchestrator.sdk", name = "sdk"
 cri-orchestrator-dev = { module = "uk.gov.onelogin.criorchestrator.features:dev-public-api", version.ref = "cri-orchestrator" }
 uk-gov-idcheck-hilt-config = { module = "uk.gov.onelogin.idcheck:hilt-config" }
 
-components = { group = "uk.gov.android", name = "components", version.ref = "govuk-ui" }
-pages = { group = "uk.gov.android", name = "pages", version.ref = "govuk-ui" }
 componentsv2 = { group = "uk.gov.android", name = "componentsv2", version.ref = "govuk-ui" }
 patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-ui" }
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
@@ -152,5 +150,5 @@ androidx-navigation-common-android = { group = "androidx.navigation", name = "na
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
 firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
-gov-uk = ["components", "pages", "componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator", "localauth"]
+gov-uk = ["componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator", "localauth"]
 about-libraries = ["aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3"]

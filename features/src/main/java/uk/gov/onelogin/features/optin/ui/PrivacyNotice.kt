@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,9 +29,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.m3.Links
-import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.textSizeBody
 import uk.gov.onelogin.core.ui.components.TextWithLink
@@ -69,7 +69,12 @@ fun PrivacyNotice(
             privacyNoticeString?.let {
                 append(WHITE_SPACE)
             }
-            withStyle(SpanStyle(color = Links.default.toMappedColors())) {
+            withStyle(
+                SpanStyle(
+                    color = GdsLocalColorScheme.current
+                        .linkDefault
+                )
+            ) {
                 append(privacyNoticeLink)
             }
             append(WHITE_SPACE)
@@ -92,7 +97,10 @@ fun PrivacyNotice(
 private fun LinkOut() {
     val description = stringResource(R.string.app_openLinkExternally)
     Image(
-        colorFilter = ColorFilter.tint(color = Links.default.toMappedColors()),
+        colorFilter = ColorFilter.tint(
+            color = GdsLocalColorScheme.current
+                .linkDefault
+        ),
         painter = painterResource(id = R.drawable.link_out),
         modifier = Modifier
             .fillMaxSize()
@@ -108,19 +116,21 @@ private fun LinkOut() {
 @Composable
 internal fun PrivacyNoticePreview() {
     GdsTheme {
-        PrivacyNotice(
-            Modifier.padding(smallPadding),
-            privacyNoticeString =
-            stringResource(
-                R.string.app_settingsAnalyticsToggleFootnote
-            ),
-            privacyNoticeLink =
-            stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnoteLink
-            ),
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        ) {}
+        Surface {
+            PrivacyNotice(
+                Modifier.padding(smallPadding),
+                privacyNoticeString =
+                stringResource(
+                    R.string.app_settingsAnalyticsToggleFootnote
+                ),
+                privacyNoticeLink =
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
+                ),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            ) {}
+        }
     }
 }

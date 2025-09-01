@@ -20,6 +20,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
+import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
@@ -28,7 +30,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 fun EmailSection(email: String) {
     Row(
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.inverseOnSurface)
+            .background(color = GdsLocalColorScheme.current.listBackground)
             .fillMaxWidth()
             .semantics(true) {
                 traversalIndex = EMAIL_TRAVERSAL_ORDER
@@ -51,7 +53,7 @@ fun EmailSection(email: String) {
                 withStyle(
                     style = SpanStyle(
                         fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                        color = MaterialTheme.colorScheme.surface
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
                     append(email)
@@ -65,7 +67,9 @@ fun EmailSection(email: String) {
 @ScreenPreview
 @Composable
 internal fun EmailSectionPreview() {
-    EmailSection("mock@email.com")
+    GdsTheme {
+        EmailSection("mock@email.com")
+    }
 }
 
 const val DIVIDER_TEST_TAG = "divider_test_tag"
