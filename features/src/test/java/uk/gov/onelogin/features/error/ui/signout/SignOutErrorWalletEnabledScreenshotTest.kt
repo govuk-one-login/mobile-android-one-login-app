@@ -7,10 +7,10 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class SignOutErrorWalletErrorScreenshotTest(nightMode: NightMode, locale: String) :
+class SignOutErrorWalletEnabledScreenshotTest(nightMode: NightMode, locale: String) :
     BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        SignOutErrorWalletDisabledScreen {}
+        SignOutWalletPreview()
     }
 
     companion object {
