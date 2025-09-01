@@ -555,7 +555,7 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
                     isWalletEnabled = true
                 ),
                 analyticsViewModelFunctions =
-                    AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+                AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
                 uriHandler = LocalUriHandler.current,
                 settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
             )
