@@ -3,7 +3,7 @@ package uk.gov.onelogin.features.wallet.domain
 import javax.inject.Inject
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreRepository
+import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
 
 fun interface DeleteWalletDataUseCase {
     suspend fun invoke(): Boolean
@@ -27,10 +27,10 @@ class DeleteWalletDataUseCaseImpl @Inject constructor(
 
 class DeleteWalletDataUseCaseDevOption(
     private val walletSdk: WalletSdk,
-    private val secureStoreRepository: SecureStoreRepository
+    private val secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository
 ) : DeleteWalletDataUseCase {
     override suspend fun invoke(): Boolean {
-        if (secureStoreRepository.isWalletDeleteOverride()) {
+        if (secureStoreDevOptionsRepository.isWalletDeleteOverride()) {
             throw SecureStorageError(Exception("Simulate wallet deletion failure"))
         } else {
             return walletSdk.deleteWalletData()

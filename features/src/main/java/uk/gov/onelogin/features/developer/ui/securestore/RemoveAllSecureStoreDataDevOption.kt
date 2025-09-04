@@ -12,7 +12,7 @@ class RemoveAllSecureStoreDataDevOption @Inject constructor(
     private val tokenSecureStore: SecureStore,
     @Named("Open")
     private val openSecureStore: SecureStore,
-    private val secureStoreRepo: SecureStoreRepository,
+    private val secureStoreRepo: SecureStoreDevOptionsRepository,
     private val logger: Logger
 ) : RemoveAllSecureStoreData {
     override suspend fun clean(): Result<Unit> {

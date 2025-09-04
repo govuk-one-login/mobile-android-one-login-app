@@ -1,13 +1,13 @@
 package uk.gov.onelogin.features.developer.ui.securestore
 
-interface SecureStoreRepository {
+interface SecureStoreDevOptionsRepository {
     fun overrideWalletDelete(override: Boolean)
     fun isWalletDeleteOverride(): Boolean
     fun enableLocalDataDeleteFail(failEnabled: Boolean)
     fun isLocalDataDeleteFailEnabled(): Boolean
 }
 
-class SecureStoreRepositoryImpl : SecureStoreRepository {
+class SecureStoreDevOptionsRepositoryImpl : SecureStoreDevOptionsRepository {
     private var overrideWalletData = false
     private var enableLocalDataDeleteFail = false
 

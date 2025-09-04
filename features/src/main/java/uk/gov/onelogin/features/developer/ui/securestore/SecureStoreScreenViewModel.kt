@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 @HiltViewModel
 class SecureStoreScreenViewModel @Inject constructor(
-    private val secureStoreRepository: SecureStoreRepository
+    private val secureStoreRepository: SecureStoreDevOptionsRepository
 ) : ViewModel() {
     private val _overrideWallet = MutableStateFlow(
         secureStoreRepository.isWalletDeleteOverride()

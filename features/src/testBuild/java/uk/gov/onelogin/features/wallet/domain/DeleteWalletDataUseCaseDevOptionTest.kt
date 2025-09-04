@@ -8,16 +8,16 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreRepository
+import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
 
 class DeleteWalletDataUseCaseDevOptionTest {
     private val walletSdk: WalletSdk = mock()
-    private val secureStoreRepository: SecureStoreRepository = mock()
-    private val sut = DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreRepository)
+    private val secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository = mock()
+    private val sut = DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreDevOptionsRepository)
 
     @Test
     fun verifyOverrideDisabled() = runBlocking {
-        whenever(secureStoreRepository.isWalletDeleteOverride()).thenReturn(false)
+        whenever(secureStoreDevOptionsRepository.isWalletDeleteOverride()).thenReturn(false)
         val expectedResult = true
         whenever(walletSdk.deleteWalletData()).thenReturn(expectedResult)
 
@@ -28,7 +28,7 @@ class DeleteWalletDataUseCaseDevOptionTest {
 
     @Test
     fun verifyOverrideEnabled() {
-        whenever(secureStoreRepository.isWalletDeleteOverride()).thenReturn(true)
+        whenever(secureStoreDevOptionsRepository.isWalletDeleteOverride()).thenReturn(true)
 
         Assertions.assertThrows(
             SecureStorageError::class.java

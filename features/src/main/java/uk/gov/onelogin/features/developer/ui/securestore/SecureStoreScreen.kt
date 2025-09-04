@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.features.BuildConfig
+import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -42,7 +43,8 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 )
                 Switch(
                     checked = overrideWallet,
-                    onCheckedChange = { viewModel.setOverride(!overrideWallet) }
+                    onCheckedChange = { viewModel.setOverride(!overrideWallet) },
+                    colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
                 )
             }
             Row(
@@ -57,7 +59,8 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 )
                 Switch(
                     checked = enableDeletionFail,
-                    onCheckedChange = { viewModel.setDeletionFail(!enableDeletionFail) }
+                    onCheckedChange = { viewModel.setDeletionFail(!enableDeletionFail) },
+                    colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
                 )
             }
         }
