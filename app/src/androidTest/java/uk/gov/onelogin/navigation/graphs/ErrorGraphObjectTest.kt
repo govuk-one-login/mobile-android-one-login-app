@@ -62,7 +62,7 @@ class ErrorGraphObjectTest : TestCase() {
     @Test
     fun navigateToSignOutWalletDisabledError() {
         composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(ErrorRoutes.SignOutWalletDisabled.getRoute())
+            navController.setCurrentDestination(ErrorRoutes.SignOutError.getRoute())
         }
 
         composeTestRule.onNodeWithText(

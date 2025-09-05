@@ -15,7 +15,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
-class SignOutErrorScreenTest : FragmentActivityTestCase() {
+class SignOutWalletErrorScreenTest : FragmentActivityTestCase() {
     private val errorTitle = hasText(resources.getString(R.string.app_signOutErrorTitle))
     private val errorBody1 = hasText(resources.getString(R.string.app_signOutErrorBody1))
     private val errorBody2 = hasText(resources.getString(R.string.app_signOutErrorBody2))

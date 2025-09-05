@@ -41,13 +41,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.core.ui.pages.SimpleTextPage
 import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
 import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
 import uk.gov.onelogin.features.developer.ui.criorchestratormenu.CriOrchestratorDevMenuScreen
 import uk.gov.onelogin.features.developer.ui.features.FeaturesScreen
 import uk.gov.onelogin.features.developer.ui.localauth.LocalAuthTabScreen
+import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreScreen
 import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 
 @Suppress("LongMethod")
@@ -81,7 +81,7 @@ fun TabView(goBack: () -> Unit) {
             TabItem(
                 R.string.app_developer_tab_secure_store,
                 Icons.Filled.AccountBox
-            ) { SimpleTextPage(R.string.app_developer_tab_secure_store) }
+            ) { SecureStoreScreen() }
         )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()

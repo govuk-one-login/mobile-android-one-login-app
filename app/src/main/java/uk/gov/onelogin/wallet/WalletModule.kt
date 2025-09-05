@@ -15,8 +15,6 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -42,10 +40,5 @@ object WalletModule {
             logger = logger
         )
         return WalletSdkImpl(navigator, config)
-    }
-
-    @Provides
-    fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase {
-        return DeleteWalletDataUseCaseImpl(walletSdk)
     }
 }

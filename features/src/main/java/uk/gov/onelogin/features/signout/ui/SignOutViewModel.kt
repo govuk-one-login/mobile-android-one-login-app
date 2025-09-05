@@ -16,6 +16,7 @@ import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
 @HiltViewModel
 class SignOutViewModel @Inject constructor(
@@ -42,10 +43,12 @@ class SignOutViewModel @Inject constructor(
                 navigator.navigate(SignOutRoutes.Success)
             } catch (e: SignOutError) {
                 logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
-                val errorRoute = if (uiState == SignOutUIState.Wallet) {
-                    SignOutRoutes.SignOutError
+                val errorRoute = if (uiState == SignOutUIState.Wallet &&
+                    e.error is DeleteWalletDataUseCaseImpl.DeleteWalletDataError
+                ) {
+                    SignOutRoutes.SignOutWalletError
                 } else {
-                    ErrorRoutes.SignOutWalletDisabled
+                    ErrorRoutes.SignOutError
                 }
                 navigator.navigate(errorRoute, false)
             }
