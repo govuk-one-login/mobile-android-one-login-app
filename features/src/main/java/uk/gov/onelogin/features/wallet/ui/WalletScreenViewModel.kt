@@ -35,7 +35,6 @@ class WalletScreenViewModel @Inject constructor(
 
     fun getCredential(): String {
         val credential = walletRepository.getCredential()
-        walletRepository.resetCredential()
         return credential
     }
 }

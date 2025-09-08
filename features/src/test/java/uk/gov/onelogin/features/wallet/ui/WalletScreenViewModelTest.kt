@@ -83,7 +83,6 @@ class WalletScreenViewModelTest {
         val actualCredential = sut.getCredential()
 
         // THEN
-        verify(walletRepository).resetCredential()
         assertEquals(expectedCredential, actualCredential)
     }
 
