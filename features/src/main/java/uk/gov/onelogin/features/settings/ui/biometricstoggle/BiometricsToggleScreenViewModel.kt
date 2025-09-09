@@ -12,7 +12,7 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @HiltViewModel
@@ -20,7 +20,7 @@ class BiometricsToggleScreenViewModel @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val localAuthManager: LocalAuthManager,
     private val navigator: Navigator,
-    private val saveTokens: SaveTokens
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel() {
     private val _biometricsEnabled = MutableStateFlow(checkBiometricsEnabledState())
     val biometricsEnabled: StateFlow<Boolean> = _biometricsEnabled.asStateFlow()
@@ -38,18 +38,15 @@ class BiometricsToggleScreenViewModel @Inject constructor(
     }
 
     fun toggleBiometrics() {
-        // only if the initial local auth preference is disabled
-        if (localAuthManager.localAuthPreference is LocalAuthPreference.Disabled) {
-            // then we save the tokens in memory
-            // because the toggle has already been pressed AND this should never show unless the
-            // biometrics are available as we do a check when landing on teh screen (see checkBiometricsAvailable() call point)
-            viewModelScope.launch {
-                saveTokens()
+        viewModelScope.launch {
+            localAuthManager.toggleBiometrics()
+            _biometricsEnabled.value = checkBiometricsEnabledState()
+            if (_biometricsEnabled.value) {
+                // Auto-initialising the secure store each time does not create any issues/ side effects
+                // This includes saving the tokens as well
+                autoInitialiseSecureStore.initialise()
             }
         }
-        // toggle the preference
-        localAuthManager.toggleBiometrics()
-        _biometricsEnabled.value = checkBiometricsEnabledState()
     }
 
     private fun checkBiometricsEnabledState() =

@@ -24,7 +24,7 @@ import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @RunWith(AndroidJUnit4::class)
@@ -36,7 +36,7 @@ class BiometricsToggleScreenViewModelTest {
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var navigator: Navigator
-    private lateinit var saveTokens: SaveTokens
+    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var viewModel: BiometricsToggleScreenViewModel
 
     @Before
@@ -51,12 +51,12 @@ class BiometricsToggleScreenViewModelTest {
             analyticsLogger = analyticsLogger
         )
         navigator = mock()
-        saveTokens = mock()
+        autoInitialiseSecureStore = mock()
         viewModel = BiometricsToggleScreenViewModel(
             featureFlags = featureFlags,
             localAuthManager = localAuthManager,
             navigator = navigator,
-            saveTokens = saveTokens
+            autoInitialiseSecureStore = autoInitialiseSecureStore
         )
     }
 
@@ -98,7 +98,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(false),
             localAuthManager.localAuthPreference
         )
-        verify(saveTokens, times(0)).invoke()
+        verify(autoInitialiseSecureStore, times(0)).initialise()
     }
 
     @Test
@@ -114,7 +114,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(true),
             localAuthManager.localAuthPreference
         )
-        verify(saveTokens, times(0)).invoke()
+        verify(autoInitialiseSecureStore).initialise()
     }
 
     @Test
@@ -130,7 +130,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(true),
             localAuthManager.localAuthPreference
         )
-        verify(saveTokens).invoke()
+        verify(autoInitialiseSecureStore).initialise()
     }
 
     @Test

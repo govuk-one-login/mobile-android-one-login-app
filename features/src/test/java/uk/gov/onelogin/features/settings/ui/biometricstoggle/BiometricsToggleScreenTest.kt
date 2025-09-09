@@ -30,7 +30,7 @@ import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
@@ -39,7 +39,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private lateinit var featureFlags: FeatureFlags
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var navigator: Navigator
-    private lateinit var saveTokens: SaveTokens
+    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var viewModel: BiometricsToggleScreenViewModel
     private lateinit var logger: AnalyticsLogger
     private lateinit var analyticsViewModel: BiometricsToggleAnalyticsViewModel
@@ -68,12 +68,12 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         featureFlags = mock()
         localAuthManager = mock()
         navigator = mock()
-        saveTokens = mock()
+        autoInitialiseSecureStore = mock()
         viewModel = BiometricsToggleScreenViewModel(
             featureFlags = featureFlags,
             localAuthManager = localAuthManager,
             navigator = navigator,
-            saveTokens = saveTokens
+            autoInitialiseSecureStore = autoInitialiseSecureStore
         )
         logger = mock()
         analyticsViewModel = BiometricsToggleAnalyticsViewModel(context, logger)
