@@ -71,6 +71,12 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
@@ -91,6 +97,12 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
