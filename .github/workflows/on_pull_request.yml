@@ -41,9 +41,6 @@ jobs:
         id: detect-arch
         uses: ./config/actions/detect-arch
 
-      - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
-
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
@@ -77,6 +74,9 @@ jobs:
           lfs: 'true'
           fetch-depth: 0
 
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
@@ -102,6 +102,9 @@ jobs:
         with:
           lfs: 'true'
           fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
 
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
@@ -130,6 +133,9 @@ jobs:
         with:
           lfs: 'true'
           fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
 
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
