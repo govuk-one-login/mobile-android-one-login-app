@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   set-up-and-publish:
-    name: Verify code base when pushed
+    name: Set-up and publish
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     outputs:
@@ -104,7 +104,7 @@ jobs:
           version-name: ${{ steps.version-number.outputs.version }}
 
   run-instrumentation-tests:
-    name: Verify code base when pushed
+    name: Run instrumentation tests
     runs-on: ubuntu-24.04
     needs:
       - set-up-and-publish
@@ -121,6 +121,9 @@ jobs:
         with:
           lfs: 'true'
           fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
 
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
@@ -132,7 +135,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
   run-unit-tests:
-    name: Verify code base when pushed
+    name: Run unit tests
     runs-on: ubuntu-24.04
     needs:
       - set-up-and-publish
@@ -150,6 +153,9 @@ jobs:
           lfs: 'true'
           fetch-depth: 0
 
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
       - name: Run gradle unit tests
         uses: ./config/actions/gradle-check
         with:
@@ -160,7 +166,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
   run-sonar-analysis:
-    name: Verify code base when pushed
+    name: Run sonar analysis
     runs-on: ubuntu-24.04
     needs:
       - set-up-and-publish
@@ -180,6 +186,9 @@ jobs:
           lfs: 'true'
           fetch-depth: 0
 
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
         with:
@@ -188,6 +197,8 @@ jobs:
           version-code: ${{ needs.set-up-and-publish.outputs.version-code }}
           version-name: ${{ needs.set-up-and-publish.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
 
       - name: Clean workspace
         if: always()
