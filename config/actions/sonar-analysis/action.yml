@@ -41,8 +41,8 @@ runs:
           -Dsonar.pullrequest.key=${{ github.event.number }} \
           -PversionCode=$INPUT_VERSION_CODE \
           -PversionName=$INPUT_VERSION_NAME \
-          -Pgpr.user=${{ secrets.GITHUB_ACTOR }} \
-          -Pgpr.token=${{ secrets.GITHUB_TOKEN }}
+          -Pgpr.user=$GITHUB_ACTOR \
+          -Pgpr.token=$GITHUB_TOKEN
       shell: bash
       env:
         CI: true
@@ -63,7 +63,9 @@ runs:
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.projectVersion=$PROJECT_VERSION \
           -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME
+          -PversionName=$INPUT_VERSION_NAME \
+          -Pgpr.user=$GITHUB_ACTOR \
+          -Pgpr.token=$GITHUB_TOKEN
       shell: bash
       env:
         CI: true
@@ -72,3 +74,5 @@ runs:
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        GITHUB_ACTOR: ${{ inputs.github-actor }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
