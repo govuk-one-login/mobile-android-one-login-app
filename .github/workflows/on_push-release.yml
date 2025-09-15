@@ -105,7 +105,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          flavors: 'staging,integration,production'
+          flavors: 'staging,integration'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
