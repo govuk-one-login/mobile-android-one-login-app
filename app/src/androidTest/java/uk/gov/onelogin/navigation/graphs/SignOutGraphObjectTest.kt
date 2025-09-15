@@ -123,7 +123,7 @@ class SignOutGraphObjectTest : TestCase() {
     @Test
     fun signOutGraph_navigateToSignOutErrorScreen() {
         composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.SignOutError)
+            navigator.navigate(SignOutRoutes.SignOutWalletError)
         }
 
         composeTestRule.onNodeWithText(

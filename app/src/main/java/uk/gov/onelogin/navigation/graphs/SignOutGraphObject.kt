@@ -42,7 +42,7 @@ object SignOutGraphObject {
                 )
             }
             composable(
-                route = SignOutRoutes.SignOutError.getRoute()
+                route = SignOutRoutes.SignOutWalletError.getRoute()
             ) {
                 SignOutErrorScreen()
             }

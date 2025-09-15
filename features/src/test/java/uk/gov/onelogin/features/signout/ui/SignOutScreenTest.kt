@@ -32,6 +32,7 @@ import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
 @RunWith(AndroidJUnit4::class)
 class SignOutScreenTest : FragmentActivityTestCase() {
@@ -125,7 +126,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(noWalletButton).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(ErrorRoutes.SignOutWalletDisabled, false)
+        verify(navigator).navigate(ErrorRoutes.SignOutError, false)
     }
 
     @Test
@@ -141,7 +142,23 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(SignOutRoutes.SignOutError, false)
+        verify(navigator).navigate(ErrorRoutes.SignOutError, false)
+    }
+
+    @Test
+    fun verifySignOutButtonFailsWithWalletErrorAndWalletEnabled() = runTest {
+        featureFlags = InMemoryFeatureFlags(
+            setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+        )
+        viewModel = SignOutViewModel(navigator, signOutUseCase, featureFlags, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+        }
+        whenever(signOutUseCase.invoke())
+            .thenThrow(SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()))
+        composeTestRule.onNode(button).performClick()
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(SignOutRoutes.SignOutWalletError, false)
     }
 
     @Test

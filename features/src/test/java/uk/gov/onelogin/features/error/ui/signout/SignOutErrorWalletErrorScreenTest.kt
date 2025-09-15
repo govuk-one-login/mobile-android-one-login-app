@@ -12,7 +12,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
-class SignOutWalletDisabledErrorScreenTest : FragmentActivityTestCase() {
+class SignOutErrorWalletErrorScreenTest : FragmentActivityTestCase() {
     private val errorTitle = hasText(resources.getString(R.string.app_signOutErrorTitle))
     private val errorBody = hasText(resources.getString(R.string.app_signOutErrorBody))
     private val primaryButton = hasText(resources.getString(R.string.app_exitButton))

@@ -21,6 +21,7 @@ import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUIState
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -65,7 +66,7 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(SignOutRoutes.SignOutError, false)
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutError, false)
             assertThat("logger has log", logger.contains("java.lang.Exception: test"))
         }
 
@@ -80,8 +81,44 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(ErrorRoutes.SignOutWalletDisabled, false)
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutError, false)
             assertThat("logger has log", logger.contains("java.lang.Exception: test"))
+        }
+
+    @Test
+    fun `sign out use case does throw wallet error and wallet enabled`() =
+        runTest {
+            whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { true }
+            whenever(mockSignOutUseCase.invoke()).thenThrow(
+                SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError())
+            )
+
+            viewModel.signOut()
+
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(SignOutRoutes.SignOutWalletError, false)
+            assertThat(
+                "logger has log",
+                logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
+            )
+        }
+
+    @Test
+    fun `sign out use case does throw wallet error and wallet disabled`() =
+        runTest {
+            whenever(featureFlags[WalletFeatureFlag.ENABLED]).then { false }
+            whenever(mockSignOutUseCase.invoke()).thenThrow(
+                SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError())
+            )
+
+            viewModel.signOut()
+
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutError, false)
+            assertThat(
+                "logger has log",
+                logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
+            )
         }
 
     @Test
