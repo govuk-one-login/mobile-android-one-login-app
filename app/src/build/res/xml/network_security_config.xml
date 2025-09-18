@@ -9,6 +9,7 @@
         <domain includeSubdomains="true">token.build.account.gov.uk</domain>
         <domain includeSubdomains="true">auth-stub.mobile.build.account.gov.uk</domain>
         <domain includeSubdomains="true">mobile.build.account.gov.uk</domain>
+        <domain includeSubdomains="true">app.mobile.build.account.gov.uk</domain>
         <pin-set>
             <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
             <pin digest="SHA-256">f0KW/FtqTjs108NpYj42SrGvOB2PpxIVM8nWxjPqJGE=</pin>
