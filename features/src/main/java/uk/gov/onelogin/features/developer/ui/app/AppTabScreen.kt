@@ -49,6 +49,7 @@ import uk.gov.android.ui.theme.spacingDouble
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Suppress("LongMethod")
 @Composable
 fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
     val data = viewModel.appInfo.collectAsState()
@@ -115,7 +116,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
                     onValueChange = { overlayMessage = it },
                     label = { Text(text = "Status Overlay message") },
                     colors = textFieldDefaultColors(),
-                    modifier = Modifier.weight(0.7f)
+                    modifier = Modifier.weight(TEXTFIELD_WEIGHT)
                 )
                 GdsButton(
                     text = "Display overlay",
@@ -123,7 +124,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = smallPadding)
-                        .weight(0.3f),
+                        .weight(BUTTON_WEIGHT),
                     onClick = {
                         scope.launch {
                             statusOverlayState.showSnackbar(overlayMessage)
@@ -136,6 +137,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
+@Suppress("LongMethod")
 private fun AppInfoView(
     appInfoData: AppInfoData.AppInfo,
     viewModel: AppTabScreenViewModel
@@ -210,3 +212,6 @@ private fun textFieldDefaultColors() = TextFieldDefaults.colors().copy(
     focusedContainerColor = MaterialTheme.colorScheme.background,
     unfocusedContainerColor = MaterialTheme.colorScheme.background
 )
+
+const val TEXTFIELD_WEIGHT = 0.7f
+const val BUTTON_WEIGHT = 0.3f
