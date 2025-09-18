@@ -140,7 +140,7 @@
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
-
+    <string name="app_developer_status_overlay_message" translatable="false">A message to you</string>
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
     <string name="app_developer_access_token_button_expire_45_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
     <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
