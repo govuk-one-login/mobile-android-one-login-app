@@ -9,6 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -31,6 +32,10 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
         analytics = mock()
         goBack = false
         viewModel = OfflineErrorAnalyticsViewModel(context, analytics)
+    }
+
+    @Test
+    fun offlineErrorScreen() {
         composeTestRule.setContent {
             OfflineErrorScreen(
                 analyticsViewModel = viewModel
@@ -38,10 +43,6 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
                 goBack = true
             }
         }
-    }
-
-    @Test
-    fun offlineErrorScreen() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
@@ -55,7 +56,30 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
     }
 
     @Test
+    fun offlineErrorScreenNoAction() {
+        composeTestRule.setContent {
+            OfflineErrorScreen(
+                analyticsViewModel = viewModel
+            )
+        }
+        composeTestRule.onNode(errorTitle).assertIsDisplayed()
+        composeTestRule.onNode(errorBody1).assertIsDisplayed()
+        composeTestRule.onNode(errorBody2).assertIsDisplayed()
+        composeTestRule.onNode(tryAgainButton).assertIsDisplayed()
+
+        verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeScreenEvent(context))
+        verify(analytics, times(0))
+            .logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeButtonEvent(context))
+    }
+
+    @Test
     fun onBackClicked() {
+        composeTestRule.setContent {
+            OfflineErrorScreen(
+                analyticsViewModel = viewModel
+            )
+        }
+
         Espresso.pressBack()
         verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeBackEvent(context))
     }
