@@ -19,7 +19,7 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var viewModel: OfflineErrorAnalyticsViewModel
-    private var retryClicked = false
+    private var goBack = false
 
     private val errorTitle = hasText(resources.getString(R.string.app_networkErrorTitle))
     private val errorBody1 = hasText(resources.getString(R.string.app_networkErrorBody1))
@@ -29,13 +29,14 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         analytics = mock()
+        goBack = false
         viewModel = OfflineErrorAnalyticsViewModel(context, analytics)
-        retryClicked = false
         composeTestRule.setContent {
             OfflineErrorScreen(
-                analyticsViewModel = viewModel,
-                onRetryClick = { retryClicked = true }
-            )
+                analyticsViewModel = viewModel
+            ) {
+                goBack = true
+            }
         }
     }
 
@@ -48,7 +49,7 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
             assertIsDisplayed()
             performClick()
         }
-        assert(retryClicked)
+        assert(goBack)
         verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeScreenEvent(context))
         verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeButtonEvent(context))
     }

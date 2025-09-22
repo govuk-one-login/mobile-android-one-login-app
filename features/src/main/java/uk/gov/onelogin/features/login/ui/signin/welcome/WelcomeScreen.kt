@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,8 +45,7 @@ import uk.gov.onelogin.developer.DeveloperTools
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
-    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
-    shouldTryAgain: () -> Boolean = { false }
+    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel()
 ) {
     val loading by viewModel.loading.collectAsState()
     val context = LocalActivity.current as FragmentActivity
@@ -76,14 +74,6 @@ fun WelcomeScreen(
 
     BackHandler(enabled = true) {
         context.finishAndRemoveTask()
-    }
-    LaunchedEffect(key1 = Unit) {
-        if (!shouldTryAgain()) return@LaunchedEffect
-        if (viewModel.onlineChecker.isOnline()) {
-            viewModel.onPrimary(launcher)
-        } else {
-            viewModel.navigateToOfflineError()
-        }
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
