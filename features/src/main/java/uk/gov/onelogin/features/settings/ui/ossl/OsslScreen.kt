@@ -25,6 +25,8 @@ import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.GdsIconButtonDefaults
+import uk.gov.android.ui.componentsv2.topappbar.GdsTopAppBar
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 
@@ -44,33 +46,14 @@ fun OsslScreen(
     GdsTheme {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(R.string.app_osslTitle),
-                            style = MaterialTheme.typography.headlineMedium
-                        )
+                GdsTopAppBar(
+                    title = stringResource(R.string.app_osslTitle),
+                    navigationButton = GdsIconButtonDefaults.defaultBackContent(),
+                    onClick = {
+                        analyticsViewModel.trackBackIcon()
+                        onBackBehaviour()
                     },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                analyticsViewModel.trackBackIcon()
-                                onBackBehaviour()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.app_back_icon),
-                                tint = GdsLocalColorScheme.current.topBarIcon
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        scrolledContainerColor = GdsLocalColorScheme.current
-                            .topBarScrolledBackground
-                    ),
-                    scrollBehavior = scrollBehaviour
+                    scrollBehaviour = scrollBehaviour
                 )
             },
             modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)

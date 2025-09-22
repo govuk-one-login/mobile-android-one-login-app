@@ -40,6 +40,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -57,6 +58,7 @@ import uk.gov.android.ui.componentsv2.list.TitleType
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.m3.Switch
+import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -241,21 +243,24 @@ private fun BiometricsToggleRow(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, UnstableDesignSystemAPI::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun BiometricsTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navIconClick: () -> Unit
 ) {
+    // With the current set-up, we can't use the GdsTopAppBar because it breaks the TalkBack behaviour, the
+    // title does not get read first, but rather ignored and only read after all elements on the screen
     TopAppBar(
         title = {
-            GdsHeading(
+            Text(
                 text = stringResource(R.string.app_biometricsToggleTitle),
-                textAlign = GdsHeadingAlignment.LeftAligned,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth().semantics {
                     this.traversalIndex = TOP_BAR_TITLE_INDEX
                 },
-                style = GdsHeadingStyle.Title2,
-                textFontWeight = FontWeight.W400
+                style = Typography.headlineMedium,
+                fontWeight = FontWeight.W700
             )
         },
         navigationIcon = {
@@ -324,7 +329,8 @@ internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
     }
 }
 
-private const val TOP_BAR_TITLE_INDEX = -19f
+private const val TOP_BAR_TITLE_INDEX = -20f
+private const val TOP_BAR_ICON_INDEX = -19f
 private const val BIO_TOGGLE_INDEX = -18f
 private const val LIST_INDEX = -16f
 private const val CONTENT_INDEX1 = -15f
