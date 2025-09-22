@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.developer.ui.localauth
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,13 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LocalAuthTabScreen(viewModel: LocalAuthTabScreenViewModel = hiltViewModel()) {
     val activity = LocalActivity.current as FragmentActivity
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         Button(

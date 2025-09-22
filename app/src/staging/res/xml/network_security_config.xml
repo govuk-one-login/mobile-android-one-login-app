@@ -9,6 +9,7 @@
         <domain includeSubdomains="true">token.staging.account.gov.uk</domain>
         <domain includeSubdomains="true">auth-stub.mobile.staging.account.gov.uk</domain>
         <domain includeSubdomains="true">mobile.staging.account.gov.uk</domain>
+        <domain includeSubdomains="true">app.mobile.staging.account.gov.uk</domain>
         <domain includeSubdomains="false">api-backend-api.review-b.staging.account.gov.uk</domain>
         <pin-set>
             <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
