@@ -60,7 +60,7 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
 
-        // If a debugger is detected in release, kill the app
+        // If a debugger is detected in release, kill/ close the app
         if (android.os.Debug.isDebuggerConnected() && !BuildConfig.DEBUG) {
             android.os.Process.killProcess(android.os.Process.myPid())
         }
