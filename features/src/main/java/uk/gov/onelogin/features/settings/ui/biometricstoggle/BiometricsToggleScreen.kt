@@ -330,7 +330,6 @@ internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
 }
 
 private const val TOP_BAR_TITLE_INDEX = -20f
-private const val TOP_BAR_ICON_INDEX = -19f
 private const val BIO_TOGGLE_INDEX = -18f
 private const val LIST_INDEX = -16f
 private const val CONTENT_INDEX1 = -15f
