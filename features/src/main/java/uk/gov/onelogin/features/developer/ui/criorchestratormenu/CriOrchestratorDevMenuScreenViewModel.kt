@@ -10,6 +10,6 @@ class CriOrchestratorDevMenuScreenViewModel @Inject constructor(
     val criOrchestratorSdk: CriOrchestratorSdk
 ) : ViewModel() {
     fun set() {
-        criOrchestratorSdk.component
+        criOrchestratorSdk.appGraph
     }
 }
