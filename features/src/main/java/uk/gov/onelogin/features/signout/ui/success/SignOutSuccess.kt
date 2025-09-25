@@ -20,22 +20,18 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
 fun SignOutSuccess(
-    viewModel: SignOutSuccessViewModel = hiltViewModel(),
-    analyticsViewModel: SignOutSuccessAnalyticsViewModel = hiltViewModel()
+    viewModel: SignOutSuccessViewModel = hiltViewModel()
 ) {
     val walletFeatureFlag = viewModel.isWalletEnabled()
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
-        analyticsViewModel.trackBackPress()
         // Close the app
         (context as? Activity)?.finish()
     }
 
     EdgeToEdgePage { _ ->
-        analyticsViewModel.trackWalletCopyScreen(walletFeatureFlag)
         SignOutConfirmationBody(walletFeatureFlag) {
-            analyticsViewModel.trackPrimaryButton()
             viewModel.navigateStart()
         }
     }
