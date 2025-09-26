@@ -87,7 +87,7 @@ plugins {
 }
 
 setProperty("appId", "uk.gov.onelogin")
-setProperty("compileSdkVersion", 35)
+setProperty("compileSdkVersion", 36)
 setProperty("configDir", "${rootProject.rootDir}/config")
 setProperty("minSdkVersion", 29)
 // Consider DCMAW-13740 before targeting Android 16 (API level 36)

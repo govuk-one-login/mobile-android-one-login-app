@@ -30,7 +30,7 @@ fun CriOrchestratorDevMenuScreen(
             text = stringResource(R.string.app_developer_features_title),
             style = GdsHeadingStyle.Title3
         )
-        val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
-        DevMenuScreen(criOrchestratorComponent)
+        val criOrchestratorGraph = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
+        DevMenuScreen(criOrchestratorGraph)
     }
 }

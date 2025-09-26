@@ -38,7 +38,7 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
 ) {
-    val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
+    val criOrchestratorGraph = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
 
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
@@ -54,7 +54,7 @@ fun HomeScreen(
                     .padding(top = smallPadding)
             ) {
                 ProveYourIdentityCard(
-                    component = criOrchestratorComponent,
+                    graph = criOrchestratorGraph,
                     modifier = Modifier
                 )
             }
