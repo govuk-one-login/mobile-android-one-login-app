@@ -9,9 +9,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.core.issuer.verify.VerifyCredentialIssuerImpl.Companion.OID_QUERY_PARAM
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
+import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
@@ -21,7 +23,8 @@ class MainActivityViewModel @Inject constructor(
     private val analyticsOptInRepo: AnalyticsOptInRepository,
     private val walletRepository: WalletRepository,
     private val walletSdk: WalletSdk,
-    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
+    private val featureFlags: FeatureFlags
 ) : ViewModel(), DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
@@ -33,11 +36,14 @@ class MainActivityViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent?) {
-        if (intent?.action == ACTION_VIEW && intent.data != null) {
-            intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
-                viewModelScope.launch {
-                    walletRepository.toggleWallDeepLinkPathState()
-                    walletSdk.setDeeplink(deeplink = it)
+        // This check allows for the app to not go to the wallet if the feature flag is disabled
+        if (featureFlags[WalletFeatureFlag.ENABLED]) {
+            if (intent?.action == ACTION_VIEW && intent.data != null) {
+                intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
+                    viewModelScope.launch {
+                        walletRepository.toggleWallDeepLinkPathState()
+                        walletSdk.setDeeplink(deeplink = it)
+                    }
                 }
             }
         }
