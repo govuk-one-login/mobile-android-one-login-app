@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -37,7 +38,7 @@ import uk.gov.android.ui.theme.m3.NavigationElements
 import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "ForbiddenComment")
 @Composable
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
@@ -62,12 +63,15 @@ fun MainNavScreen(
         mainNavScreenViewModel.checkWalletEnabled()
     }
 
-    LaunchedEffect(mainNavScreenViewModel.walletDeepLinkReceived) {
-        if (mainNavScreenViewModel.walletDeepLinkReceived.value) {
-            bottomNav(
-                navController,
-                navItems.first { it.first == BottomNavDestination.Wallet }
-            )
+    LaunchedEffect(mainNavScreenViewModel.isDeeplinkRoute) {
+        // StateFlow seems to be working better with navigation setters, but if required we can try to switch back to State
+        mainNavScreenViewModel.isDeeplinkRoute.collect { state ->
+            if (state) {
+                bottomNav(
+                    navController,
+                    navItems.first { it.first == BottomNavDestination.Wallet }
+                )
+            }
         }
     }
 
@@ -86,19 +90,26 @@ fun MainNavScreen(
                         NavBarItem(
                             navigationDestination = navDest,
                             navController = navController,
-                            selected = navBackStackEntry?.destination?.route == navDest.first.key
+                            // Had to change this to allow for the highlight of the Wallet tab now that it has a argument passed in
+                            // TODO: Can be changed once the savedState from navigation (see comment below) gets reverted
+                            // The fallback to false should never be called as we only have 3 tabs
+                            selected = navBackStackEntry?.destination?.route?.contains(
+                                navDest.first.key
+                            ) ?: false
                         )
                     }
                 }
             }
         }
     ) { paddingValues ->
+        val state = mainNavScreenViewModel.isDeeplinkRoute
+            .collectAsState().value
         NavHost(
             navController = navController,
-            startDestination = if (
-                mainNavScreenViewModel.walletDeepLinkReceived.value
-            ) {
-                BottomNavDestination.Wallet.key
+            startDestination = if (state) {
+                // This state will always be true in this situation
+                // Argument required to force recomposition of the Wallet tab
+                BottomNavDestination.Wallet.key + "/$state"
             } else {
                 BottomNavDestination.Home.key
             },
@@ -118,6 +129,7 @@ private fun RowScope.NavBarItem(
     NavigationBarItem(
         selected = selected,
         onClick = {
+            // This should never be true as this is navigation to the wallet via user interaction, not deeplink
             bottomNav(
                 navController,
                 navigationDestination
@@ -178,15 +190,23 @@ private fun createBottomNavItems(
     }
 }
 
+@Suppress("ForbiddenComment")
 private fun bottomNav(
     navController: NavHostController,
     navDest: Pair<BottomNavDestination, () -> Unit>
 ) {
     navDest.second()
-    navController.navigate(navDest.first.key) {
-        popUpTo(navController.graph.findStartDestination().id) {
-            saveState = true
-        }
+    val destination = if (navDest.first is BottomNavDestination.Wallet) {
+        // This will always be true since it's coming via DeepLink, that would be the only situation where Wallet would be the first item in the list
+        "${BottomNavDestination.Wallet}/${true}"
+    } else {
+        navDest.first.key
+    }
+    navController.navigate(destination) {
+        // Had to remove the savedState to allow for navigation to force a recomposition of the WalletScreen
+        // Not removing it won't allow to add a deep-lnk credential (2nd attempt) if the app was still in memory and left on either Settings or Home Screen
+        // TODO: Can be reverted once Wallet implements a way to force recomposition from their side
+        popUpTo(navController.graph.findStartDestination().id)
         launchSingleTop = true
         restoreState = true
     }
