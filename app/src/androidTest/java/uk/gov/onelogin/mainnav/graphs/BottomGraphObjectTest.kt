@@ -33,9 +33,7 @@ class BottomGraphObjectTest : TestCase() {
 
     @Test
     fun navigateToHome() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(BottomNavDestination.Home.key)
-        }
+        composeTestRule.runOnUiThread { navController.navigate(BottomNavDestination.Home.key) }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_welcomeTileHeader)
@@ -45,7 +43,7 @@ class BottomGraphObjectTest : TestCase() {
     @Test
     fun navigateToWallet() {
         composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(BottomNavDestination.Wallet.key)
+            navController.navigate(BottomNavDestination.Wallet.key + "/false")
         }
 
         composeTestRule.onNodeWithText(
@@ -55,9 +53,7 @@ class BottomGraphObjectTest : TestCase() {
 
     @Test
     fun navigateToSettings() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(BottomNavDestination.Settings.key)
-        }
+        composeTestRule.runOnUiThread { navController.navigate(BottomNavDestination.Settings.key) }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_settings)

@@ -1,10 +1,10 @@
 package uk.gov.onelogin.features.wallet.ui
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -16,11 +16,11 @@ class WalletScreenViewModel @Inject constructor(
     private val features: FeatureFlags,
     private val walletRepository: WalletRepository
 ) : ViewModel() {
-    private val _walletEnabled = mutableStateOf(false)
-    val walletEnabled: State<Boolean> = _walletEnabled
+    private val _walletEnabled = MutableStateFlow(false)
+    val walletEnabled: StateFlow<Boolean> = _walletEnabled
 
-    private val _walletDeepLinkReceived = mutableStateOf(false)
-    val walletDeepLinkReceived: State<Boolean> = _walletDeepLinkReceived
+    private val _isDeeplinkRoute = MutableStateFlow(false)
+    val isDeeplinkRoute: StateFlow<Boolean> = _isDeeplinkRoute
 
     init {
         checkWalletEnabled()
@@ -28,15 +28,10 @@ class WalletScreenViewModel @Inject constructor(
 
     fun checkWalletEnabled() {
         _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
-        _walletDeepLinkReceived.value =
-            walletRepository.getDeepLinkPath() == DEEPLINK_PATH && _walletEnabled.value
-        walletRepository.resetDeepLinkPath()
-    }
-
-    fun getCredential(): String {
-        val credential = walletRepository.getCredential()
-        return credential
+        _isDeeplinkRoute.value = walletRepository.getWalletDeepLinkPathState() &&
+            walletEnabled.value
+        if (walletRepository.getWalletDeepLinkPathState()) {
+            walletRepository.toggleWallDeepLinkPathState()
+        }
     }
 }
-
-const val DEEPLINK_PATH = "/wallet/add"

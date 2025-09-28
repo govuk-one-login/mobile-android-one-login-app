@@ -27,3 +27,5 @@ sealed class BottomNavDestination(
         icon = R.drawable.ic_settings
     )
 }
+
+const val DEEP_LINK_ARG = "isDeeplinkRoute"

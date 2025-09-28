@@ -11,6 +11,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
@@ -24,7 +25,8 @@ class MainActivityViewModelTest {
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
-    private val walletRepository: WalletRepository = mock()
+    private val mockWalletRepository: WalletRepository = mock()
+    private val mockWalletSdk: WalletSdk = mock()
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -32,7 +34,8 @@ class MainActivityViewModelTest {
     fun setup() {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
-            walletRepository,
+            mockWalletRepository,
+            mockWalletSdk,
             mockAutoInitialiseSecureStore
         )
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")

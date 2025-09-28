@@ -1,10 +1,11 @@
 package uk.gov.onelogin.features.wallet.ui
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Ignore
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
@@ -24,33 +25,34 @@ class WalletScreenTest : FragmentActivityTestCase() {
         walletRepository
     )
 
-    @Ignore("Fix mockito verify composable extra arguments issue")
     @Test
     fun homeScreenDisplayed() {
-        val deeplink = ""
-        whenever(walletRepository.getCredential()).thenReturn(deeplink)
+        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
         composeTestRule.setContent {
             WalletScreen(
+                false,
                 setDisplayContentAsFullScreen = { true },
                 viewModel = viewModel
             )
 
-            verify(walletSdk).WalletApp(deeplink)
+            verify(walletSdk).WalletApp()
+            verify(walletRepository, times(0)).toggleWallDeepLinkPathState()
         }
     }
 
-    @Ignore("Fix mockito verify composable extra arguments issue")
     @Test
     fun walletSdkCalledWithDeeplink() {
-        val deeplink = "credential"
-        whenever(walletRepository.getCredential()).thenReturn(deeplink)
+        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(true)
+        whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
         composeTestRule.setContent {
             WalletScreen(
+                true,
                 setDisplayContentAsFullScreen = { true },
                 viewModel = viewModel
             )
 
-            verify(walletSdk).WalletApp(deeplink)
+            verify(walletSdk).WalletApp()
         }
     }
 }
