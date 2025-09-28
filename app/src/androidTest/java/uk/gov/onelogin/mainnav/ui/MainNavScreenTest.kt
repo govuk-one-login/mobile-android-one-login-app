@@ -73,20 +73,14 @@ class MainNavScreenTest : TestCase() {
         whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
         setupUi()
 
-        composeTestRule.waitForIdle()
-
         composeTestRule.onNode(homeTab).apply {
             isDisplayed()
             performClick()
         }
 
-        composeTestRule.waitForIdle()
-
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(settingsTab).isDisplayed()
-
-        composeTestRule.waitForIdle()
 
         assertEquals(
             BottomNavDestination.Home.key,
@@ -154,10 +148,6 @@ class MainNavScreenTest : TestCase() {
         whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(true)
         whenever(featureFlags[any()]).thenReturn(true)
         setupUi()
-
-        composeTestRule.waitUntil {
-            navController.currentBackStackEntry != null
-        }
 
         assertTrue(
             navController.currentDestination?.route?.contains(

@@ -13,9 +13,7 @@ import uk.gov.onelogin.mainnav.ui.BottomNavDestination
 import uk.gov.onelogin.mainnav.ui.DEEP_LINK_ARG
 
 object BottomNavGraph {
-    fun NavGraphBuilder.bottomGraph(
-        setDisplayContentAsFullScreen: (Boolean) -> Unit
-    ) {
+    fun NavGraphBuilder.bottomGraph(setDisplayContentAsFullScreen: (Boolean) -> Unit) {
         composable(BottomNavDestination.Home.key) {
             HomeScreen()
         }
@@ -30,9 +28,6 @@ object BottomNavGraph {
             deepLinks = listOf(
                 navDeepLink {
                     uriPattern = createUrl("wallet/{$DEEP_LINK_ARG}")
-                },
-                navDeepLink {
-                    uriPattern = createUrl("wallet-test")
                 }
             )
         ) { backStackEntry ->
