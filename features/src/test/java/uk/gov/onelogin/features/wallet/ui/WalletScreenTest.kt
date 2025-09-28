@@ -8,7 +8,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.wallet.data.WalletRepository
@@ -16,12 +15,10 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @RunWith(AndroidJUnit4::class)
 class WalletScreenTest : FragmentActivityTestCase() {
     private val walletSdk: WalletSdk = mock()
-    private val featureFlags: FeatureFlags = mock()
     private val walletRepository: WalletRepository = mock()
 
     private val viewModel = WalletScreenViewModel(
         walletSdk,
-        featureFlags,
         walletRepository
     )
 
