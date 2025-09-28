@@ -64,7 +64,7 @@ fun MainNavScreen(
     }
 
     LaunchedEffect(mainNavScreenViewModel.isDeeplinkRoute) {
-        // StateFlow seems to be working better with navigation setters, but if required we can try to switch back to State
+        // StateFlow seems to be working better with navigation
         mainNavScreenViewModel.isDeeplinkRoute.collect { state ->
             if (state) {
                 bottomNav(
@@ -90,7 +90,7 @@ fun MainNavScreen(
                         NavBarItem(
                             navigationDestination = navDest,
                             navController = navController,
-                            // Had to change this to allow for the highlight of the Wallet tab now that it has a argument passed in
+                            // Required change to allow for the highlight of the Wallet tab now that it has an argument passed in
                             // TODO: Can be changed once the savedState from navigation (see comment below) gets reverted
                             // The fallback to false should never be called as we only have 3 tabs
                             selected = navBackStackEntry?.destination?.route?.contains(
@@ -204,7 +204,7 @@ private fun bottomNav(
     }
     navController.navigate(destination) {
         // Had to remove the savedState to allow for navigation to force a recomposition of the WalletScreen
-        // Not removing it won't allow to add a deep-lnk credential (2nd attempt) if the app was still in memory and left on either Settings or Home Screen
+        // Not removing it won't allow to add a deep-lnk credential (2nd attempt) if the app was still in background and left on either Settings or Home Screen
         // TODO: Can be reverted once Wallet implements a way to force recomposition from their side
         popUpTo(navController.graph.findStartDestination().id)
         launchSingleTop = true
