@@ -13,11 +13,8 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
@@ -27,7 +24,6 @@ class MainActivityViewModelIntentTest {
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
-    private var featureFlags: FeatureFlags = InMemoryFeatureFlags(WalletFeatureFlag.ENABLED)
 
     private lateinit var viewModel: MainActivityViewModel
 
@@ -37,8 +33,7 @@ class MainActivityViewModelIntentTest {
             analyticsOptInRepo,
             walletRepository,
             walletSdk,
-            autoInitialiseSecureStore,
-            featureFlags
+            autoInitialiseSecureStore
         )
     }
 
@@ -109,12 +104,10 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_MAIN
                 data = deeplink.toUri()
             }
-        featureFlags = InMemoryFeatureFlags()
         viewModel = MainActivityViewModel(
             walletRepository = walletRepository,
             walletSdk = walletSdk,
             autoInitialiseSecureStore = autoInitialiseSecureStore,
-            featureFlags = featureFlags,
             analyticsOptInRepo = analyticsOptInRepo
         )
         viewModel.handleIntent(intent)
