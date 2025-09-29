@@ -31,8 +31,8 @@ object BottomNavGraph {
                 }
             )
         ) { backStackEntry ->
-            val argument = backStackEntry.arguments?.getBoolean(DEEP_LINK_ARG) ?: false
-            WalletScreen(argument, setDisplayContentAsFullScreen)
+            val isDeepLinkRoute = backStackEntry.arguments?.getBoolean(DEEP_LINK_ARG) ?: false
+            WalletScreen(isDeepLinkRoute, setDisplayContentAsFullScreen)
         }
         composable(BottomNavDestination.Settings.key) {
             SettingsScreen()

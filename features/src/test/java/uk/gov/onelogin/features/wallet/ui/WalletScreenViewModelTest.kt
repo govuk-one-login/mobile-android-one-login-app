@@ -16,7 +16,7 @@ class WalletScreenViewModelTest {
     @Test
     fun `no wallet deeplink`() {
         // WHEN
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         sut.checkWalletEnabled()
 
         // THEN
@@ -28,7 +28,7 @@ class WalletScreenViewModelTest {
     @Test
     fun `received wallet deeplink`() {
         // WHEN
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(true)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
         sut.checkWalletEnabled()
 
         // THEN

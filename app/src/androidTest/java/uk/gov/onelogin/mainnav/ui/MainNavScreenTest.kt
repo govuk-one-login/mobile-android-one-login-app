@@ -70,7 +70,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun checkBottomOptionsDisplayed() = runBlocking {
         whenever(featureFlags[any()]).thenReturn(true)
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         setupUi()
 
         composeTestRule.onNode(homeTab).apply {
@@ -92,7 +92,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun goesToWalletOnClick() {
         whenever(featureFlags[any()]).thenReturn(true)
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         setupUi()
 
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
@@ -113,7 +113,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun checkWalletNotDisplayed() {
         whenever(featureFlags[any()]).thenReturn(false)
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         setupUi()
         composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
         composeTestRule.onNode(walletTab).assertDoesNotExist()
@@ -128,7 +128,7 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun goesToSettingsOnClick() {
         whenever(featureFlags[any()]).thenReturn(false)
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         setupUi()
         composeTestRule.onNode(settingsTab).performClick()
 
@@ -145,7 +145,7 @@ class MainNavScreenTest : TestCase() {
     @Ignore("This is failing because the nav graph has not be 'set' in the time")
     @Test
     fun deeplinkExists() {
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(true)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
         whenever(featureFlags[any()]).thenReturn(true)
         setupUi()
 

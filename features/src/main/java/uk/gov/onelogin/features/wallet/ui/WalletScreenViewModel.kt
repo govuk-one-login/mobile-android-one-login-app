@@ -17,7 +17,7 @@ class WalletScreenViewModel @Inject constructor(
     }
 
     fun checkWalletEnabled() {
-        if (walletRepository.getWalletDeepLinkPathState()) {
+        if (walletRepository.isWalletDeepLinkPath()) {
             walletRepository.toggleWallDeepLinkPathState()
         }
     }
