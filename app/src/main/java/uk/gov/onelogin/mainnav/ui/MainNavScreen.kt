@@ -102,14 +102,14 @@ fun MainNavScreen(
             }
         }
     ) { paddingValues ->
-        val state = mainNavScreenViewModel.isDeeplinkRoute
+        val isDeeplinkRoute = mainNavScreenViewModel.isDeeplinkRoute
             .collectAsState().value
         NavHost(
             navController = navController,
-            startDestination = if (state) {
+            startDestination = if (isDeeplinkRoute) {
                 // This state will always be true in this situation
                 // Argument required to force recomposition of the Wallet tab
-                BottomNavDestination.Wallet.key + "/$state"
+                BottomNavDestination.Wallet.key + "/$isDeeplinkRoute"
             } else {
                 BottomNavDestination.Home.key
             },

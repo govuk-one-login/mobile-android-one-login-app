@@ -37,13 +37,13 @@ class MainActivityViewModel @Inject constructor(
 
     fun handleIntent(intent: Intent?) {
         // This check allows for the app to not go to the wallet if the feature flag is disabled
-        if (featureFlags[WalletFeatureFlag.ENABLED]) {
-            if (intent?.action == ACTION_VIEW && intent.data != null) {
-                intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
-                    viewModelScope.launch {
-                        walletRepository.toggleWallDeepLinkPathState()
-                        walletSdk.setDeeplink(deeplink = it)
-                    }
+        if (intent?.action == ACTION_VIEW && intent.data != null &&
+            featureFlags[WalletFeatureFlag.ENABLED]
+        ) {
+            intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
+                viewModelScope.launch {
+                    walletRepository.toggleWallDeepLinkPathState()
+                    walletSdk.setDeeplink(deeplink = it)
                 }
             }
         }

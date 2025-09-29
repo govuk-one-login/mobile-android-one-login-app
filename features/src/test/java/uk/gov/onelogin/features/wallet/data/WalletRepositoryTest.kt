@@ -9,8 +9,8 @@ class WalletRepositoryTest {
 
     @Test
     fun `verify setter and getter of deep link path state`() {
-        assertFalse(sut.getWalletDeepLinkPathState())
+        assertFalse(sut.isWalletDeepLinkPath())
         sut.toggleWallDeepLinkPathState()
-        assertTrue(sut.getWalletDeepLinkPathState())
+        assertTrue(sut.isWalletDeepLinkPath())
     }
 }

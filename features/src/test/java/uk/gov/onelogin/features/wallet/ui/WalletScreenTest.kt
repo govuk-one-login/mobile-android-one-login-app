@@ -24,7 +24,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun homeScreenDisplayed() {
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
         composeTestRule.setContent {
             WalletScreen(
@@ -40,7 +40,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun walletSdkCalledWithDeeplink() {
-        whenever(walletRepository.getWalletDeepLinkPathState()).thenReturn(true)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
         whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
         composeTestRule.setContent {
             WalletScreen(

@@ -2,7 +2,7 @@ package uk.gov.onelogin.features.wallet.data
 
 interface WalletRepository {
     fun toggleWallDeepLinkPathState()
-    fun getWalletDeepLinkPathState(): Boolean
+    fun isWalletDeepLinkPath(): Boolean
 }
 
 class WalletRepositoryImpl : WalletRepository {
@@ -12,5 +12,5 @@ class WalletRepositoryImpl : WalletRepository {
         this.isDeepLinkInit = !isDeepLinkInit
     }
 
-    override fun getWalletDeepLinkPathState() = isDeepLinkInit
+    override fun isWalletDeepLinkPath() = isDeepLinkInit
 }
