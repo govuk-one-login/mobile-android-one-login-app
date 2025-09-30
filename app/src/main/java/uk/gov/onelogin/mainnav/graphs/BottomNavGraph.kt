@@ -27,7 +27,7 @@ object BottomNavGraph {
             ),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = createUrl("wallet/{$DEEP_LINK_ARG}")
+                    uriPattern = createUrl("wallet")
                 }
             )
         ) { backStackEntry ->
@@ -39,7 +39,7 @@ object BottomNavGraph {
         }
     }
 
-    private fun createUrl(pathPrefix: String): String {
+    fun createUrl(pathPrefix: String): String {
         return if (BuildConfig.FLAVOR == "production") {
             "https://mobile.account.gov.uk/$pathPrefix"
         } else {
