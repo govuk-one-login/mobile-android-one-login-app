@@ -17,6 +17,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
@@ -32,6 +33,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var handleLocalLogin: HandleLocalLogin
     private lateinit var navigator: Navigator
     private lateinit var appInfoService: AppInfoService
+    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
@@ -46,10 +48,12 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
+        autoInitialiseSecureStore = mock()
         viewModel = SplashScreenViewModel(
             navigator,
             handleLocalLogin,
-            appInfoService
+            appInfoService,
+            autoInitialiseSecureStore
         )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
