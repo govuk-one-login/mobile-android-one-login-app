@@ -36,7 +36,6 @@ class MainNavViewModel @Inject constructor(
 
     fun checkWalletEnabled() {
         _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
-        _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
         _isDeeplinkRoute.value = walletRepository.isWalletDeepLinkPath() &&
             walletEnabled.value
     }

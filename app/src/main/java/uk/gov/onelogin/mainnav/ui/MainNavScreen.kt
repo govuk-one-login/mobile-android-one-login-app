@@ -65,8 +65,8 @@ fun MainNavScreen(
 
     LaunchedEffect(mainNavScreenViewModel.isDeeplinkRoute) {
         // StateFlow seems to be working better with navigation
-        mainNavScreenViewModel.isDeeplinkRoute.collect { state ->
-            if (state) {
+        mainNavScreenViewModel.isDeeplinkRoute.collect { isDeeplinkRoute ->
+            if (isDeeplinkRoute) {
                 bottomNav(
                     navController,
                     navItems.first { it.first == BottomNavDestination.Wallet }
