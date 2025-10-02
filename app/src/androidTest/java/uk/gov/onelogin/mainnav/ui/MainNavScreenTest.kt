@@ -11,7 +11,6 @@ import androidx.navigation.testing.TestNavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -68,7 +67,7 @@ class MainNavScreenTest : TestCase() {
     }
 
     @Test
-    fun checkBottomOptionsDisplayed() = runBlocking {
+    fun checkBottomOptionsDisplayed() {
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
         setupUi()
