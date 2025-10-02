@@ -17,6 +17,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
@@ -25,7 +26,8 @@ import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLocalLogin: HandleLocalLogin,
-    private val appInfoService: AppInfoService
+    private val appInfoService: AppInfoService,
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel(), DefaultLifecycleObserver {
     private val _showUnlock = MutableStateFlow(false)
     val showUnlock: StateFlow<Boolean> = _showUnlock
@@ -35,6 +37,7 @@ class SplashScreenViewModel @Inject constructor(
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
+            autoInitialiseSecureStore.initialise()
             handleLocalLogin(
                 fragmentActivity,
                 callback = {

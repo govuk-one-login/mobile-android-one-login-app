@@ -11,7 +11,6 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.wallet.core.issuer.verify.VerifyCredentialIssuerImpl.Companion.OID_QUERY_PARAM
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
@@ -20,15 +19,13 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 class MainActivityViewModel @Inject constructor(
     private val analyticsOptInRepo: AnalyticsOptInRepository,
     private val walletRepository: WalletRepository,
-    private val walletSdk: WalletSdk,
-    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private val walletSdk: WalletSdk
 ) : ViewModel(), DefaultLifecycleObserver {
 
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
         viewModelScope.launch {
             analyticsOptInRepo.synchronise()
-            autoInitialiseSecureStore.initialise()
         }
     }
 
