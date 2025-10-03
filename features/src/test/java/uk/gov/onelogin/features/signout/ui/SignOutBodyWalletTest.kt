@@ -46,7 +46,7 @@ class SignOutBodyWalletTest : FragmentActivityTestCase() {
             bullet3 = hasText(getString(R.string.app_signOutConfirmationBullet3), substring = true)
             footer = hasText(getString(R.string.app_signOutConfirmationBody3), substring = true)
             primaryButton = hasText(getString(R.string.app_signOutAndDeleteAppDataButton))
-            closeButton = hasContentDescription(getString(T.string.close_button))
+            closeButton = hasContentDescription(getString(T.string.close_icon_button))
         }
     }
 

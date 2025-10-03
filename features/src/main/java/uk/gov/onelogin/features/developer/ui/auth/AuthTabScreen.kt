@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.GdsButton
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 
@@ -34,7 +35,7 @@ fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.navigationBarsPadding().fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         AuthTokensSection(viewModel)
@@ -48,38 +49,44 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     val email = viewModel.email
     Text(
         text = "Authentication Tokens",
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider()
     EmailSection(email)
     Text(
         text = "Access Token",
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider()
     Text(
         text = "ID Token",
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
         modifier = Modifier
-            .padding(16.dp)
+            .padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider()
     Text(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier.padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
@@ -87,7 +94,8 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
         modifier = Modifier
             .padding(
                 all = 16.dp
-            )
+            ),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider()
 }
@@ -129,6 +137,7 @@ private fun ButtonRow(
     buttonText: Int,
     buttonLoading: Boolean,
     apiResponse: String,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Row(
@@ -138,19 +147,14 @@ private fun ButtonRow(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (!buttonLoading) {
-            GdsButton(
-                text = stringResource(buttonText),
-                buttonType = uk.gov.android.ui.componentsv2.button.ButtonType.Primary,
-                onClick = onClick,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        } else {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        }
+        GdsButton(
+            text = stringResource(buttonText),
+            buttonType = uk.gov.android.ui.componentsv2.button.ButtonTypeV2.Primary(),
+            onClick = onClick,
+            enabled = enabled,
+            modifier = Modifier.padding(bottom = 8.dp),
+            loading = buttonLoading
+        )
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
             text = buildAnnotatedString {
@@ -163,7 +167,8 @@ private fun ButtonRow(
                 ) {
                     append(apiResponse)
                 }
-            }
+            },
+            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
         )
     }
 }

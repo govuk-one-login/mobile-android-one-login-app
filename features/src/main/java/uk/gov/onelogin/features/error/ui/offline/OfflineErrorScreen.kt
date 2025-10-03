@@ -19,8 +19,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 @Composable
 fun OfflineErrorScreen(
     analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel(),
-    goBack: () -> Unit = {},
-    onRetryClick: () -> Unit = {}
+    goBack: () -> Unit = {}
 ) {
     GdsTheme {
         BackHandler(true) {
@@ -31,7 +30,7 @@ fun OfflineErrorScreen(
         EdgeToEdgePage { _ ->
             OfflineErrorBody {
                 analyticsViewModel.trackButton()
-                onRetryClick()
+                goBack()
             }
         }
     }
