@@ -39,6 +39,6 @@ object WalletModule {
             deleteAllDataUseCase = deleteAllDataUseCase,
             logger = logger
         )
-        return WalletSdkImpl(navigator, config)
+        return WalletSdkImpl(navigator, config, context)
     }
 }

@@ -57,6 +57,14 @@
                 <data android:host="mobile${flavorSuffix}.account.gov.uk"/>
                 <data android:path="/redirect"/>
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https"/>
+                <data android:host="app.mobile${flavorSuffix}.account.gov.uk"/>
+                <data android:path="/redirect"/>
+            </intent-filter>
         </activity>
 
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
