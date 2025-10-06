@@ -80,15 +80,13 @@ class HandleLoginRedirectTest {
         }
 
     @Test
-    fun `handle() should call onFailure when getProofOfPossession returns Failure`() =
+    fun `handle() should call onFailure when getProofOfPossession returns Failure with error`() =
         runTest {
+            val expectedResult = SignedPoP.Failure("test", Error("error"))
+            val expectedError = AppIntegrity.Companion
+                .ProofOfPossessionException(expectedResult.error)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(
-                SignedPoP.Failure(
-                    "test",
-                    Error("error")
-                )
-            )
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
             // When
             handleLoginRedirect.handle(
@@ -99,6 +97,37 @@ class HandleLoginRedirectTest {
                 { }
             )
 
+            verify(mockLogger).error(
+                expectedError.javaClass.simpleName,
+                expectedError.message ?: expectedResult.reason,
+                expectedError
+            )
+            verifyNoInteractions(mockLoginSession)
+        }
+
+    @Test
+    fun `handle() should call onFailure when getProofOfPossession returns Failure without error`() =
+        runTest {
+            val expectedResult = SignedPoP.Failure("test")
+            val expectedError = AppIntegrity.Companion
+                .ProofOfPossessionException(null)
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
+
+            // When
+            handleLoginRedirect.handle(
+                mockIntent,
+                {
+                    assertEquals(null, it?.message)
+                },
+                { }
+            )
+
+            verify(mockLogger).error(
+                expectedError.javaClass.simpleName,
+                expectedError.message ?: expectedResult.reason,
+                expectedError
+            )
             verifyNoInteractions(mockLoginSession)
         }
 
@@ -155,6 +184,7 @@ class HandleLoginRedirectTest {
     @Test
     fun `onFailure, savedAttestation is null and getClientAttestation returns Failure`() =
         runTest {
+            val expectedError = AppIntegrity.Companion.ClientAttestationException("error")
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
             whenever(mockAppIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Failure("error"))

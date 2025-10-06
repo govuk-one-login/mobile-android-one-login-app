@@ -109,8 +109,10 @@ class HandleLoginRedirectImpl @Inject constructor(
                         onFailure(e)
                     }
 
-                is SignedPoP.Failure ->
+                is SignedPoP.Failure -> {
+                    logError(popResult.error, popResult.reason)
                     onFailure(popResult.error)
+                }
             }
         } else {
             try {
@@ -121,6 +123,15 @@ class HandleLoginRedirectImpl @Inject constructor(
                 onFailure(e)
             }
         }
+    }
+
+    private fun logError(e: Throwable?, reason: String) {
+        val error = AppIntegrity.Companion.ProofOfPossessionException(e)
+        logger.error(
+            error.javaClass.simpleName,
+            error.message ?: reason,
+            error
+        )
     }
 
     companion object {

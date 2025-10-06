@@ -11,7 +11,9 @@ import kotlinx.coroutines.tasks.await
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 
+@Suppress("TooGenericExceptionCaught")
 class FirebaseAppCheck @Inject constructor(
     appCheckFactory: AppCheckProviderFactory,
     context: Context,
@@ -20,10 +22,14 @@ class FirebaseAppCheck @Inject constructor(
     private val appCheck = Firebase.appCheck
 
     init {
-        Firebase.appCheck.installAppCheckProviderFactory(
-            appCheckFactory
-        )
-        Firebase.initialize(context)
+        try {
+            Firebase.appCheck.installAppCheckProviderFactory(
+                appCheckFactory
+            )
+            Firebase.initialize(context)
+        } catch (e: Throwable) {
+            logError(e)
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -33,20 +39,21 @@ class FirebaseAppCheck @Inject constructor(
                 AppCheckToken(appCheck.limitedUseAppCheckToken.await().token)
             )
         } catch (e: FirebaseException) {
-            logger.error(
-                e.javaClass.simpleName,
-                e.message ?: NO_MESSAGE,
-                e
-            )
+            logError(e)
             Result.failure(e)
         } catch (e: Throwable) {
-            logger.error(
-                e.javaClass.simpleName,
-                e.message ?: NO_MESSAGE,
-                e
-            )
+            logError(e)
             Result.failure(e)
         }
+    }
+
+    private fun logError(e: Throwable) {
+        val error = AppIntegrity.Companion.FirebaseException(e)
+        logger.error(
+            error.javaClass.simpleName,
+            error.message ?: NO_MESSAGE,
+            error
+        )
     }
 
     companion object {

@@ -48,6 +48,7 @@ object AppIntegrityModule {
         return FirebaseAppIntegrityManager(logger, config)
     }
 
+    @Suppress("LongParameterList")
     @Provides
     fun provideAppIntegrityCheck(
         @ApplicationContext
@@ -55,14 +56,16 @@ object AppIntegrityModule {
         featureFlags: FeatureFlags,
         appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
-        getFromOpenSecureStore: GetFromOpenSecureStore
+        getFromOpenSecureStore: GetFromOpenSecureStore,
+        logger: Logger
     ): AppIntegrity {
         return AppIntegrityImpl(
             context,
             featureFlags,
             appCheck,
             saveToOpenSecureStore,
-            getFromOpenSecureStore
+            getFromOpenSecureStore,
+            logger
         )
     }
 
