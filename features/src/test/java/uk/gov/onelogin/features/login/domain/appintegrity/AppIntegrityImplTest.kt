@@ -17,6 +17,7 @@ import uk.gov.android.authentication.integrity.appcheck.model.AttestationRespons
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
@@ -29,6 +30,7 @@ class AppIntegrityImplTest {
     private lateinit var appCheck: AppIntegrityManager
     private lateinit var saveToOpenSecureStore: SaveToOpenSecureStore
     private lateinit var getFromOpenSecureStore: GetFromOpenSecureStore
+    private lateinit var logger: Logger
 
     private lateinit var sut: AppIntegrity
 
@@ -39,13 +41,15 @@ class AppIntegrityImplTest {
         saveToOpenSecureStore = mock()
         getFromOpenSecureStore = mock()
         context = mock()
+        logger = mock()
         sut =
             AppIntegrityImpl(
                 context,
                 featureFlags,
                 appCheck,
                 saveToOpenSecureStore,
-                getFromOpenSecureStore
+                getFromOpenSecureStore,
+                logger
             )
     }
 
@@ -250,12 +254,19 @@ class AppIntegrityImplTest {
     @Test
     fun `get client attestation - attestation call failure`() =
         runBlocking {
+            val expectedError = AppIntegrity.Companion.ClientAttestationException(FAILURE)
             whenever(featureFlags[any()]).thenReturn(true)
             whenever(appCheck.getAttestation()).thenReturn(
                 AttestationResponse.Failure(reason = FAILURE, error = Exception(FAILURE))
             )
             val result = sut.getClientAttestation()
 
+            verify(logger).error(
+                eq(expectedError.javaClass.simpleName),
+                eq(expectedError.message!!),
+                // Requires this because the error is a class so the equals will always fail
+                any()
+            )
             assertEquals(AttestationResult.Failure(FAILURE), result)
         }
 
@@ -263,6 +274,7 @@ class AppIntegrityImplTest {
     fun `get client attestation - save to secure store failure`() =
         runBlocking {
             val sse = SecureStorageError(Exception(FAILURE))
+            val expectedError = AppIntegrity.Companion.ClientAttestationException(sse)
             whenever(featureFlags[any()]).thenReturn(true)
             whenever(appCheck.getAttestation())
                 .thenReturn(AttestationResponse.Success(SUCCESS, 0))
@@ -270,7 +282,13 @@ class AppIntegrityImplTest {
                 .thenThrow(sse)
             val result = sut.getClientAttestation()
 
-            assertEquals(AttestationResult.Failure(sse.message!!), result)
+            verify(logger).error(
+                eq(expectedError.javaClass.simpleName),
+                eq(expectedError.message!!),
+                // Requires this because the error is a class so the equals will always fail
+                any()
+            )
+            assertEquals(AttestationResult.Failure(sse.toString()), result)
         }
 
     @Test
@@ -325,6 +343,7 @@ class AppIntegrityImplTest {
         private const val SUCCESS = "Success"
         private const val FAILURE = "Failure"
         private const val ATTESTATION = "testAttestation"
+        private const val NO_MESSAGE = "No message"
         private val attestationSsResult = mapOf(CLIENT_ATTESTATION to ATTESTATION)
         private val VALID_ATTESTATION_EXP = "${(getTimeMillis() + getFiveMinInMillis()) / 1000}"
         private val INVALID_ATTESTATION_EXP = "${(getTimeMillis() - (getFiveMinInMillis())) / 1000}"

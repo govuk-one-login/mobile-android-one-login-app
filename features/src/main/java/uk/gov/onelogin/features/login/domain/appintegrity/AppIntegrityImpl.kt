@@ -9,11 +9,13 @@ import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.ClientAttestationException
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.SECURE_STORE_ERROR
 
 class AppIntegrityImpl @Inject constructor(
@@ -21,14 +23,22 @@ class AppIntegrityImpl @Inject constructor(
     private val featureFlags: FeatureFlags,
     private val appCheck: AppIntegrityManager,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
-    private val getFromOpenSecureStore: GetFromOpenSecureStore
+    private val getFromOpenSecureStore: GetFromOpenSecureStore,
+    private val logger: Logger
 ) : AppIntegrity {
     override suspend fun getClientAttestation(): AttestationResult {
         return if (isAttestationCallRequired()) {
-            val result = appCheck.getAttestation()
-            when (result) {
+            when (val result = appCheck.getAttestation()) {
                 is AttestationResponse.Success -> handleClientAttestation(result)
-                is AttestationResponse.Failure -> AttestationResult.Failure(result.reason)
+                is AttestationResponse.Failure -> {
+                    val error = ClientAttestationException(result.reason)
+                    logger.error(
+                        error.javaClass.simpleName,
+                        error.message ?: NO_MESSAGE,
+                        error
+                    )
+                    AttestationResult.Failure(result.reason)
+                }
             }
         } else {
             AttestationResult.NotRequired(retrieveSavedClientAttestation())
@@ -59,7 +69,13 @@ class AppIntegrityImpl @Inject constructor(
             }
             AttestationResult.Success(result.attestationJwt)
         } catch (e: SecureStorageError) {
-            AttestationResult.Failure(e.message ?: SECURE_STORE_ERROR)
+            val error = ClientAttestationException(e)
+            logger.error(
+                error.javaClass.simpleName,
+                error.message ?: SECURE_STORE_ERROR,
+                error
+            )
+            AttestationResult.Failure(error.message ?: SECURE_STORE_ERROR)
         }
 
     private suspend fun isAttestationCallRequired(): Boolean {
@@ -86,5 +102,6 @@ class AppIntegrityImpl @Inject constructor(
 
     companion object {
         private const val CONVERT_TO_SECONDS = 1000
+        private const val NO_MESSAGE = "No message"
     }
 }
