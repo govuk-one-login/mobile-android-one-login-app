@@ -47,7 +47,7 @@ class FirebaseAppCheck @Inject constructor(
     }
 
     private fun logError(e: Throwable) {
-        val error = AppIntegrity.Companion.AppIntegrityFirebaseException(e)
+        val error = AppIntegrity.Companion.FirebaseException(e)
         logger.error(
             error.javaClass.simpleName,
             error.message ?: NO_MESSAGE,

@@ -55,14 +55,16 @@ object AppIntegrityModule {
         featureFlags: FeatureFlags,
         appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
-        getFromOpenSecureStore: GetFromOpenSecureStore
+        getFromOpenSecureStore: GetFromOpenSecureStore,
+        logger: Logger
     ): AppIntegrity {
         return AppIntegrityImpl(
             context,
             featureFlags,
             appCheck,
             saveToOpenSecureStore,
-            getFromOpenSecureStore
+            getFromOpenSecureStore,
+            logger
         )
     }
 

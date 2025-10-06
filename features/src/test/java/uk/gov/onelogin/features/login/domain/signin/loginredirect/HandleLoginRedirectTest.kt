@@ -84,7 +84,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test", Error("error"))
             val expectedError = AppIntegrity.Companion
-                .AppIntegrityProofOfPossessionException(expectedResult.error)
+                .ProofOfPossessionException(expectedResult.error)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -110,7 +110,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test")
             val expectedError = AppIntegrity.Companion
-                .AppIntegrityProofOfPossessionException(null)
+                .ProofOfPossessionException(null)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 

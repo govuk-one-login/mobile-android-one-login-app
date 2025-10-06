@@ -126,7 +126,7 @@ class HandleLoginRedirectImpl @Inject constructor(
     }
 
     private fun logError(e: Throwable?, reason: String) {
-        val error = AppIntegrity.Companion.AppIntegrityProofOfPossessionException(e)
+        val error = AppIntegrity.Companion.ProofOfPossessionException(e)
         logger.error(
             error.javaClass.simpleName,
             error.message ?: reason,
