@@ -13,6 +13,7 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 
+@Suppress("TooGenericExceptionCaught")
 class FirebaseAppCheck @Inject constructor(
     appCheckFactory: AppCheckProviderFactory,
     context: Context,

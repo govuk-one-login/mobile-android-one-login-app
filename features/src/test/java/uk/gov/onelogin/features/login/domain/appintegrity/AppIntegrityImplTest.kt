@@ -343,7 +343,6 @@ class AppIntegrityImplTest {
         private const val SUCCESS = "Success"
         private const val FAILURE = "Failure"
         private const val ATTESTATION = "testAttestation"
-        private const val NO_MESSAGE = "No message"
         private val attestationSsResult = mapOf(CLIENT_ATTESTATION to ATTESTATION)
         private val VALID_ATTESTATION_EXP = "${(getTimeMillis() + getFiveMinInMillis()) / 1000}"
         private val INVALID_ATTESTATION_EXP = "${(getTimeMillis() - (getFiveMinInMillis())) / 1000}"
