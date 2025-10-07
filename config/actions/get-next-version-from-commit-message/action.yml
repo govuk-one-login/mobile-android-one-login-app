@@ -15,16 +15,15 @@ runs:
     - name: Get latest tagged version
       id: get-latest-tag-from-commit-msg
       run: |
-        commit_title=$(git log -1 --pretty=%s | tail -n1)
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
         
-        merged_branch=$(echo "$commit_title" | head -n1)
-        IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX BRANCH_VERSION <<< "${merged_branch}"
+        IFS=/ read -r BRANCH_PREFIX BRANCH_SUFFIX <<< "$branch_name"
         
-        if [[ "$BRANCH_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+        if [[ "BRANCH_SUFFIX" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
         then
           NEXT_VERSION="${BASH_REMATCH[0]}"
         else
-          echo "Invalid version in branch name ($commit_title)"
+          echo "Invalid version in branch name ($branch_name)"
           exit 1
         fi
         
