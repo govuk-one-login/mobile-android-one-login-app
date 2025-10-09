@@ -26,4 +26,10 @@
             <pin digest="SHA-256">R3hcMOAGw0WFztuG2skTodoHp8IGid3Qg63Cn7YUYoM=</pin>
         </pin-set>
     </domain-config>
+    <domain-config>
+        <domain includeSubdomains="false">credential-issuer-nonprod.dvla.gov.uk/</domain>
+        <pin-set>
+            <pin digest="SHA-256">i7WTqTvh0OioIruIfFR4kMPnBqrS2rdiVPl/s2uC/CY=</pin>
+        </pin-set>
+    </domain-config>
 </network-security-config>
