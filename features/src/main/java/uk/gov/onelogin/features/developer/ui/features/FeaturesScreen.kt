@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.m3.defaultColors
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -33,7 +34,8 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
     ) {
         Text(
             text = stringResource(R.string.app_developer_features_title),
-            style = TextStyle(fontWeight = FontWeight.Bold)
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
         )
         Column {
             availableFeatures.forEach { feature ->
@@ -59,7 +61,8 @@ private fun FeatureToggle(
             modifier = Modifier.weight(1F),
             text = featureFlag.id,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
         )
         Switch(
             checked = checked,

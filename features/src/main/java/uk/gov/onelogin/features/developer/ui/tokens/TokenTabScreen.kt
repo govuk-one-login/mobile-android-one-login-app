@@ -17,9 +17,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.largePadding
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -61,11 +62,12 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
             Text(
                 modifier = Modifier.weight(1F)
                     .padding(end = smallPadding),
-                text = "Persistent ID: ${persistentId.ifEmpty { "<Empty>" }}"
+                text = "Persistent ID: ${persistentId.ifEmpty { "<Empty>" }}",
+                color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
             )
             GdsButton(
                 text = stringResource(R.string.app_developer_reset_persistent_id_button),
-                buttonType = ButtonType.Primary,
+                buttonType = ButtonTypeV2.Primary(),
                 onClick = {
                     viewModel.resetPersistentId()
                 },
@@ -89,7 +91,7 @@ private fun ButtonRow(
     ) {
         GdsButton(
             text = text,
-            buttonType = ButtonType.Primary,
+            buttonType = ButtonTypeV2.Primary(),
             onClick = onClick
         )
     }

@@ -13,7 +13,6 @@ import uk.gov.onelogin.features.error.ui.signin.SignInErrorUnrecoverableScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
 import uk.gov.onelogin.features.optin.ui.OptInScreen
-import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
 
 object LoginGraphObject {
     @Suppress("LongMethod")
@@ -37,14 +36,7 @@ object LoginGraphObject {
             composable(
                 route = LoginRoutes.Welcome.getRoute()
             ) {
-                WelcomeScreen(
-                    shouldTryAgain = {
-                        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-                        val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
-                        savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
-                        tryAgain
-                    }
-                )
+                WelcomeScreen()
             }
 
             composable(

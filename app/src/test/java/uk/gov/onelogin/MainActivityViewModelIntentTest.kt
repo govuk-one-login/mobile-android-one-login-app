@@ -14,14 +14,12 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityViewModelIntentTest {
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
-    private val autoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
 
@@ -32,8 +30,7 @@ class MainActivityViewModelIntentTest {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
             walletRepository,
-            walletSdk,
-            autoInitialiseSecureStore
+            walletSdk
         )
     }
 
@@ -107,7 +104,6 @@ class MainActivityViewModelIntentTest {
         viewModel = MainActivityViewModel(
             walletRepository = walletRepository,
             walletSdk = walletSdk,
-            autoInitialiseSecureStore = autoInitialiseSecureStore,
             analyticsOptInRepo = analyticsOptInRepo
         )
         viewModel.handleIntent(intent)

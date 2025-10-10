@@ -12,7 +12,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
@@ -23,7 +22,6 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 class MainActivityViewModelTest {
     private val mockContext: Context = mock()
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
-    private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
     private val mockWalletRepository: WalletRepository = mock()
     private val mockWalletSdk: WalletSdk = mock()
@@ -35,8 +33,7 @@ class MainActivityViewModelTest {
         viewModel = MainActivityViewModel(
             analyticsOptInRepo,
             mockWalletRepository,
-            mockWalletSdk,
-            mockAutoInitialiseSecureStore
+            mockWalletSdk
         )
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
         whenever(mockContext.getString(any())).thenReturn("test")
@@ -46,6 +43,5 @@ class MainActivityViewModelTest {
     fun `synchronise analytics on each app start`() = runTest {
         viewModel.onStart(owner = mockLifecycleOwner)
         verify(analyticsOptInRepo).synchronise()
-        verify(mockAutoInitialiseSecureStore).initialise()
     }
 }

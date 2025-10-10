@@ -20,6 +20,7 @@ import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
@@ -35,6 +36,7 @@ class SplashScreenViewModelTest {
     private val mockLifeCycleOwner: LifecycleOwner = mock()
     private val mockActivity: FragmentActivity = mock()
     private val mockAppInfoService: AppInfoService = mock()
+    private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
 
     private val data = uk.gov.onelogin.features.TestUtils.appInfoData
 
@@ -42,7 +44,8 @@ class SplashScreenViewModelTest {
         SplashScreenViewModel(
             mockNavigator,
             mockHandleLocalLogin,
-            mockAppInfoService
+            mockAppInfoService,
+            mockAutoInitialiseSecureStore
         )
 
     @Test
@@ -56,6 +59,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(SignOutRoutes.Info, false)
         }
@@ -71,6 +75,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verifyNoInteractions(mockNavigator)
         }
 
@@ -85,6 +90,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(MainNavRoutes.Start, false)
         }
@@ -100,6 +106,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
         }
@@ -115,6 +122,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(SignOutRoutes.Info, false)
         }
@@ -130,6 +138,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             verifyNoInteractions(mockNavigator)
             assertTrue(viewModel.showUnlock.value)
             assertFalse(viewModel.loading.value)
@@ -145,6 +154,7 @@ class SplashScreenViewModelTest {
             // WHEN we call login
             viewModel.login(mockActivity)
 
+            verify(mockAutoInitialiseSecureStore).initialise()
             // THEN do NOT login (as the app will be going to background)
             verify(mockHandleLocalLogin, times(1)).invoke(any(), any())
         }
