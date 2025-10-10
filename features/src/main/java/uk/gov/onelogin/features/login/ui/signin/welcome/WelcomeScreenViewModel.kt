@@ -218,3 +218,4 @@ class WelcomeScreenViewModel @Inject constructor(
 }
 
 private const val MAX_ATTEMPTS = 3
+private const val DPOP_INVALID_HTU_CODE = 2007
