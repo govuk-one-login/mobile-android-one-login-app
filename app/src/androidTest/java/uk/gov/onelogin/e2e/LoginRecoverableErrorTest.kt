@@ -178,9 +178,9 @@ class LoginRecoverableErrorTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
+            (it.arguments[4] as (Throwable) -> Unit).invoke(authenticationError)
         }
         setupActivityForResult(
             Intent(

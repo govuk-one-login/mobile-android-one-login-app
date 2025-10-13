@@ -329,7 +329,7 @@ class LoginTest : TestCase() {
 
         composeRule.waitForIdle()
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -346,7 +346,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -362,9 +362,9 @@ class LoginTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
+            (it.arguments[4] as (Throwable) -> Unit).invoke(authenticationError)
         }
         setupActivityForResult(
             Intent(
@@ -572,9 +572,9 @@ class LoginTest : TestCase() {
     }
 
     private fun mockGoodLogin() {
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[2] as (TokenResponse) -> Unit).invoke(tokenResponse)
+            (it.arguments[3] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
     }
 
