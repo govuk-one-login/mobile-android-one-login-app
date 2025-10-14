@@ -28,6 +28,8 @@
 -dontwarn com.squareup.anvil.annotations.internal.InternalMergedTypeMarker
 -dontwarn com.squareup.anvil.annotations.ContributesMultibinding
 -dontwarn com.squareup.anvil.annotations.MergeComponent
+-dontwarn com.squareup.anvil.annotations.MergeComponent$Factory
+-dontwarn com.squareup.anvil.annotations.internal.InternalBindingMarker
 -dontwarn org.apiguardian.api.API
 -keep class com.squareup.anvil.annotations.** { *; }
 -assumenosideeffects class android.util.Log {
