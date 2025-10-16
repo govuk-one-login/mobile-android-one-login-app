@@ -59,7 +59,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(SignOutRoutes.Info, false)
         }
@@ -75,7 +75,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verifyNoInteractions(mockNavigator)
         }
 
@@ -90,7 +90,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(MainNavRoutes.Start, false)
         }
@@ -106,7 +106,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
         }
@@ -122,7 +122,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
             verify(mockNavigator).navigate(SignOutRoutes.Info, false)
         }
@@ -138,7 +138,7 @@ class SplashScreenViewModelTest {
                 }
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verifyNoInteractions(mockNavigator)
             assertTrue(viewModel.showUnlock.value)
             assertFalse(viewModel.loading.value)
@@ -154,7 +154,7 @@ class SplashScreenViewModelTest {
             // WHEN we call login
             viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             // THEN do NOT login (as the app will be going to background)
             verify(mockHandleLocalLogin, times(1)).invoke(any(), any())
         }

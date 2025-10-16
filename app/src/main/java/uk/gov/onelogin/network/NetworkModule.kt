@@ -21,7 +21,8 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.network.domain.StsAuthenticationProvider
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpired
+import uk.gov.onelogin.core.utils.AccessToken
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -61,6 +62,7 @@ object NetworkModule {
         context: Context,
         userAgentGenerator: UserAgentGenerator,
         tokenRepository: TokenRepository,
+        @AccessToken
         isAccessTokenExpired: IsAccessTokenExpired,
         navigator: Navigator,
 

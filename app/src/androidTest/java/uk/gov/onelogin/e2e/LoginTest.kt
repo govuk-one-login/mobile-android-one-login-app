@@ -613,7 +613,8 @@ class LoginTest : TestCase() {
                 "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
                 "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
                 "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
+                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg",
+            refreshToken = null
         )
     }
 }

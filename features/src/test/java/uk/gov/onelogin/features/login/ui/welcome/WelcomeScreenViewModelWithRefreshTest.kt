@@ -42,8 +42,11 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -55,7 +58,7 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
-class WelcomeScreenViewModelTest {
+class WelcomeScreenViewModelWithRefreshTest {
     private val mockContext: Context = mock()
     private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepository
@@ -79,13 +82,15 @@ class WelcomeScreenViewModelTest {
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
+    private val validRefreshToken = "ewogICJhbGciOiAiRVMyNTYiLAogICJ0eXAiOiAiSldUIiwKICAia2lkI" +
+        "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
     private val tokenResponse =
         TokenResponse(
             "testType",
             testAccessToken,
             1L,
             testIdToken,
-            "testRefreshToken"
+            validRefreshToken
         )
     private val accessDeniedError = AuthenticationError(
         "access_denied",
@@ -136,10 +141,20 @@ class WelcomeScreenViewModelTest {
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
-            verify(mockAutoInitialiseSecureStore, times(1)).initialise()
+            verify(mockAutoInitialiseSecureStore, times(1))
+                .initialise(validRefreshToken)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
             verify(mockCounter).reset()
         }
@@ -173,9 +188,19 @@ class WelcomeScreenViewModelTest {
 
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
-            verify(mockAutoInitialiseSecureStore, times(1)).initialise()
+            verify(mockAutoInitialiseSecureStore, times(1))
+                .initialise(validRefreshToken)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -202,7 +227,16 @@ class WelcomeScreenViewModelTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
@@ -233,7 +267,16 @@ class WelcomeScreenViewModelTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
@@ -261,7 +304,16 @@ class WelcomeScreenViewModelTest {
             )
 
             verifyNoInteractions(mockSaveTokens)
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo).setLocalAuthPref(LocalAuthPreference.Disabled)
@@ -293,7 +345,16 @@ class WelcomeScreenViewModelTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
@@ -325,11 +386,20 @@ class WelcomeScreenViewModelTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockSaveTokenExpiry).invoke(tokenResponse.accessTokenExpirationTime)
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                ),
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verify(mockSaveTokens).invoke()
+            verify(mockSaveTokens).save(validRefreshToken)
         }
 
     @Test

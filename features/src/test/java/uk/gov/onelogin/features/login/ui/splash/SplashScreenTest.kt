@@ -126,8 +126,6 @@ class SplashScreenTest : FragmentActivityTestCase() {
 
         // And
         wheneverBlocking {
-            verify(autoInitialiseSecureStore).initialise()
-
             handleLocalLogin.invoke(any(), any())
         }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
