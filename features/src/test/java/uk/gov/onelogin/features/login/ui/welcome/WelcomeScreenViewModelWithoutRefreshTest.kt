@@ -46,6 +46,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -144,6 +145,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
             verify(mockAutoInitialiseSecureStore, times(1)).initialise(null)
@@ -186,6 +193,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
             verify(mockAutoInitialiseSecureStore, times(1)).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
@@ -218,6 +231,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -256,6 +275,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
@@ -287,6 +312,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -324,6 +355,12 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)

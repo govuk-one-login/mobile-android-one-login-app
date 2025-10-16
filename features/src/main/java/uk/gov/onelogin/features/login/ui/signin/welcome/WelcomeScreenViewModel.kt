@@ -181,7 +181,7 @@ class WelcomeScreenViewModel @Inject constructor(
         activity: FragmentActivity
     ) {
         tokenRepository.setTokenResponse(tokens)
-        saveExpiryToOpenStore(tokens)
+        saveAccessTokenExpiryToOpenStore(tokens)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
@@ -191,6 +191,7 @@ class WelcomeScreenViewModel @Inject constructor(
             callbackHandler = object : LocalAuthManagerCallbackHandler {
                 override fun onSuccess(backButtonPressed: Boolean) {
                     val pref = localAuthManager.localAuthPreference
+                    saveRefreshTokenExpiryToOpenStore(tokens)
                     when {
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {
@@ -199,6 +200,7 @@ class WelcomeScreenViewModel @Inject constructor(
                                     navigator.goBack()
                                 }
                             } else {
+
                                 navigator.goBack()
                             }
                         }
@@ -219,20 +221,20 @@ class WelcomeScreenViewModel @Inject constructor(
         )
     }
 
-    private fun saveExpiryToOpenStore(tokens: TokenResponse) {
+    private fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
         tokens.refreshToken?.let {
             val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
             saveTokenExpiry.saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
                     value = extractedExp
-                ),
-                ExpiryInfo(
-                    key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokens.accessTokenExpirationTime
                 )
             )
-        } ?: saveTokenExpiry.saveExp(
+        }
+    }
+
+    private fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
+        saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,
                 value = tokens.accessTokenExpirationTime

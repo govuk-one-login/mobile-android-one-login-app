@@ -232,9 +232,11 @@ class WelcomeScreenViewModelWithRefreshTest {
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
                 ),
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                    value = 1763108617
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -271,10 +273,12 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                    value = 1763108617
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
@@ -349,10 +353,6 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
