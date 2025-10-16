@@ -191,22 +191,24 @@ class WelcomeScreenViewModel @Inject constructor(
             callbackHandler = object : LocalAuthManagerCallbackHandler {
                 override fun onSuccess(backButtonPressed: Boolean) {
                     val pref = localAuthManager.localAuthPreference
-                    saveRefreshTokenExpiryToOpenStore(tokens)
                     when {
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {
                                 viewModelScope.launch {
                                     saveTokens.save(tokens.refreshToken)
+                                    saveRefreshTokenExpiryToOpenStore(tokens)
                                     navigator.goBack()
                                 }
                             } else {
-
                                 navigator.goBack()
                             }
                         }
 
                         else -> {
                             viewModelScope.launch {
+                                if (pref is LocalAuthPreference.Enabled) {
+                                    saveRefreshTokenExpiryToOpenStore(tokens)
+                                }
                                 autoInitialiseSecureStore.initialise(tokens.refreshToken)
                                 navigator.navigate(MainNavRoutes.Start, true)
                             }

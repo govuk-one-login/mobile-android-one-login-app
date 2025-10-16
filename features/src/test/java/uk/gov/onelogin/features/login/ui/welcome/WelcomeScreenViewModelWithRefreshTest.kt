@@ -127,6 +127,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(deviceBiometricsManager.getCredentialStatus())
                 .thenReturn(DeviceBiometricsStatus.UNKNOWN)
+            whenever(mockSaveTokenExpiry.extractExpFromRefreshToken(any())).thenReturn(0)
             whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
@@ -145,10 +146,6 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
                 )
             )
             verify(localAuthPreferenceRepo)
@@ -231,7 +228,7 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
+                )
             )
             verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
@@ -312,10 +309,12 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                    value = 1763108617
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
