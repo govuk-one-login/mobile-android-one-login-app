@@ -2,6 +2,7 @@ package uk.gov.onelogin.core.tokens.domain.save
 
 import android.content.Context
 import android.content.SharedPreferences
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.eq
@@ -13,17 +14,24 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl.Companion.THIRTY_DAYS_IN_SECONDS
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.utils.SystemTimeProvider
 
 class SaveTokenExpiryTest {
+    private val validRefreshToken = "ewogICJhbGciOiAiRVMyNTYiLAogICJ0eXAiOiAiSldUIiwKICAia2lkI" +
+        "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
+    private val invalidRefreshToken = "e30.eyJhdWQiOiJ0ZXN0In0"
+
     private lateinit var useCase: SaveTokenExpiry
 
     private val mockContext: Context = mock()
     private val mockLogger: Logger = mock()
     private val mockSharedPreferences: SharedPreferences = mock()
     private val mockEditor: SharedPreferences.Editor = mock()
+    private val mockSystemTimeProvider: SystemTimeProvider = mock()
 
     @BeforeEach
     fun setup() {
@@ -36,7 +44,7 @@ class SaveTokenExpiryTest {
             .thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
 
-        useCase = SaveTokenExpiryImpl(mockContext, mockLogger)
+        useCase = SaveTokenExpiryImpl(mockContext, mockLogger, mockSystemTimeProvider)
     }
 
     @Test
@@ -56,5 +64,22 @@ class SaveTokenExpiryTest {
         verify(mockEditor).putLong(ACCESS_TOKEN_EXPIRY_KEY, expiry)
         verify(mockEditor).putLong(REFRESH_TOKEN_EXPIRY_KEY, expiry)
         verify(mockEditor, times(2)).apply()
+    }
+
+    @Test
+    fun `check extract exp from refresh successful`() {
+        val result = useCase.extractExpFromRefreshToken(validRefreshToken)
+
+        assertEquals(1763108617, result)
+    }
+
+    @Test
+    fun `check extract exp from refresh unsuccessful and create exp manually`() {
+        val mockSec: Long = 1763108617
+        whenever(mockSystemTimeProvider.nowInSeconds()).thenReturn(mockSec)
+        val expected: Long = mockSec + THIRTY_DAYS_IN_SECONDS
+        val result = useCase.extractExpFromRefreshToken(invalidRefreshToken)
+
+        assertEquals(expected, result)
     }
 }

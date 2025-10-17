@@ -5,17 +5,17 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlinx.serialization.json.Json
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.RefreshTokenPayload
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
+import uk.gov.onelogin.core.utils.SystemTimeProvider
 
 class SaveTokenExpiryImpl @Inject constructor(
     @ApplicationContext
     context: Context,
-    private val logger: Logger
+    private val logger: Logger,
+    private val systemTimeProvider: SystemTimeProvider = SystemTimeProvider
 ) : SaveTokenExpiry {
     private val sharedPrefs = context.getSharedPreferences(
         TOKEN_SHARED_PREFS,
@@ -32,7 +32,6 @@ class SaveTokenExpiryImpl @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    @OptIn(ExperimentalTime::class)
     override fun extractExpFromRefreshToken(jwt: String): Long {
         try {
             val jsonDecoder = Json { ignoreUnknownKeys = true }
@@ -47,7 +46,7 @@ class SaveTokenExpiryImpl @Inject constructor(
                 e.message ?: EXTRACT_REFRESH_TOKEN_EXP,
                 e
             )
-            val thirtyDaysExp = Clock.System.now().epochSeconds + THIRTY_DAYS_IN_SECONDS
+            val thirtyDaysExp = systemTimeProvider.nowInSeconds() + THIRTY_DAYS_IN_SECONDS
             return thirtyDaysExp
         }
     }
