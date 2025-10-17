@@ -22,6 +22,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 
@@ -54,10 +55,19 @@ class TokenTabScreenViewModel @Inject constructor(
         } ?: NO_ACCESS_TOKEN_EXP
     }
 
-    fun resetAccessToken() {
+    fun resetAccessTokenExp() {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,
+                value = currentTimeMillis() - 1
+            )
+        )
+    }
+
+    fun resetRefreshTokenExp() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
                 value = currentTimeMillis() - 1
             )
         )
@@ -67,6 +77,24 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,
+                value = getTimeMillis() + SECONDS_TO_MILLIS_30
+            )
+        )
+    }
+
+    fun setRefreshTokenExpireTo30Seconds() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
+                value = getTimeMillis() + SECONDS_TO_MILLIS_30
+            )
+        )
+    }
+
+    fun setRefreshTokenExpireTo5Minutes() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
                 value = getTimeMillis() + SECONDS_TO_MILLIS_30
             )
         )
@@ -106,6 +134,7 @@ class TokenTabScreenViewModel @Inject constructor(
 
     companion object {
         private const val SECONDS_TO_MILLIS_30 = 30000
+        private const val SECONDS_TO_MILLIS_5_MIN = 60000 * 5
         private const val NO_ACCESS_TOKEN_EXP = "No access token expiry stored/ existing."
         private const val NO_REFRESH_TOKEN_EXP = "No refresh token expiry stored/ existing."
     }

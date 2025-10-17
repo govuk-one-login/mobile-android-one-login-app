@@ -37,14 +37,7 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
         verticalArrangement = Arrangement.Center
     ) {
         AccessTokenSection(viewModel, context)
-        Row {
-            Text(
-                modifier = Modifier.weight(1F)
-                    .padding(end = smallPadding),
-                text = "Refresh Token Expiry: ${viewModel.getRefreshTokenExp()}",
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
+        RefreshTokenSection(viewModel, context)
         PersistentIdSection(persistentId, viewModel)
     }
 }
@@ -99,17 +92,63 @@ private fun AccessTokenSection(
     ButtonRow(
         text = stringResource(R.string.app_developer_reset_access_token_button)
     ) {
-        viewModel.resetAccessToken()
-        Toast.makeText(context, "Token expiry set to now!", Toast.LENGTH_SHORT)
+        viewModel.resetAccessTokenExp()
+        Toast.makeText(context, "Access token expiry set to now!", Toast.LENGTH_SHORT)
             .show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_access_token_button_expire_45_sec)
+        text = stringResource(R.string.app_developer_access_token_button_expire_30_sec)
     ) {
         viewModel.setAccessTokenExpireTo30Seconds()
         Toast.makeText(
             context,
-            "Token expiry set to 30 seconds from now!",
+            "Access token expiry set to 30 seconds from now!",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
+@Composable
+private fun RefreshTokenSection(
+    viewModel: TokenTabScreenViewModel,
+    context: Context
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            modifier = Modifier
+                .weight(1F)
+                .padding(end = smallPadding),
+            text = "Refresh Token Expiry: ${viewModel.getRefreshTokenExp()}",
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    }
+    ButtonRow(
+        text = stringResource(R.string.app_developer_reset_refresh_token_button)
+    ) {
+        viewModel.resetRefreshTokenExp()
+        Toast.makeText(context, "Refresh token expiry set to now!", Toast.LENGTH_SHORT)
+            .show()
+    }
+    ButtonRow(
+        text = stringResource(R.string.app_developer_refresh_token_button_expire_30_sec)
+    ) {
+        viewModel.setRefreshTokenExpireTo30Seconds()
+        Toast.makeText(
+            context,
+            "Refresh token expiry set to 30 seconds from now!",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    ButtonRow(
+        text = stringResource(R.string.app_developer_refresh_token_button_expire_5_min)
+    ) {
+        viewModel.setRefreshTokenExpireTo5Minutes()
+        Toast.makeText(
+            context,
+            "Refresh token expiry set to 5 minutes from now!",
             Toast.LENGTH_SHORT
         ).show()
     }
