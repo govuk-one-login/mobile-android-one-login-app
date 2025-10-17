@@ -26,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
@@ -57,34 +58,19 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     )
     HorizontalDivider()
     EmailSection(email)
-    Text(
-        text = "Access Token",
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
-    )
-    HorizontalDivider(Modifier.padding(start = 16.dp))
-    Text(
-        tokens?.accessToken ?: "No access token set!",
-        modifier = Modifier
-            .padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
-    )
+    AccessTokenSection(tokens)
     HorizontalDivider()
-    Text(
-        text = "ID Token",
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
-    )
-    HorizontalDivider(Modifier.padding(start = 16.dp))
-    Text(
-        text = tokens?.idToken ?: "No id token set!",
-        modifier = Modifier
-            .padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
-    )
+    IdTokenSection(tokens)
     HorizontalDivider()
+    RefreshTokenSection(tokens, viewModel)
+    HorizontalDivider()
+}
+
+@Composable
+private fun RefreshTokenSection(
+    tokens: TokenResponse?,
+    viewModel: AuthTabScreenViewModel
+) {
     Text(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
@@ -119,9 +105,40 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
         enabled = true,
         modifier = Modifier.padding(bottom = smallPadding)
     )
-    Row {
-    }
-    HorizontalDivider()
+}
+
+@Composable
+private fun IdTokenSection(tokens: TokenResponse?) {
+    Text(
+        text = "ID Token",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Text(
+        text = tokens?.idToken ?: "No id token set!",
+        modifier = Modifier
+            .padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+    )
+}
+
+@Composable
+private fun AccessTokenSection(tokens: TokenResponse?) {
+    Text(
+        text = "Access Token",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Text(
+        tokens?.accessToken ?: "No access token set!",
+        modifier = Modifier
+            .padding(16.dp),
+        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+    )
 }
 
 @Composable

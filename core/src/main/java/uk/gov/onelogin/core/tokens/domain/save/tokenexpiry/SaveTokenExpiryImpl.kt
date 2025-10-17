@@ -31,6 +31,7 @@ class SaveTokenExpiryImpl @Inject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     @OptIn(ExperimentalTime::class)
     override fun extractExpFromRefreshToken(jwt: String): Long {
         try {

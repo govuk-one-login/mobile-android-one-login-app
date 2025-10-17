@@ -44,7 +44,7 @@ import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogi
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @HiltViewModel
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 class WelcomeScreenViewModel @Inject constructor(
     @ApplicationContext
     private val context: Context,
