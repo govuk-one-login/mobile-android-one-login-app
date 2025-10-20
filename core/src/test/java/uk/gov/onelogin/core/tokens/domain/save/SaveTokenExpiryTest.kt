@@ -2,6 +2,8 @@ package uk.gov.onelogin.core.tokens.domain.save
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,7 +16,6 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
-import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl.Companion.THIRTY_DAYS_IN_SECONDS
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
@@ -75,9 +76,11 @@ class SaveTokenExpiryTest {
 
     @Test
     fun `check extract exp from refresh unsuccessful and create exp manually`() {
-        val mockSec: Long = 1763108617
-        whenever(mockSystemTimeProvider.nowInSeconds()).thenReturn(mockSec)
-        val expected: Long = mockSec + THIRTY_DAYS_IN_SECONDS
+        val mockSec: Long = Instant.ofEpochSecond(1763108617)
+            .plus(30, ChronoUnit.DAYS)
+            .epochSecond
+        whenever(mockSystemTimeProvider.thirtyDaysFromNowTimestampInSeconds()).thenReturn(mockSec)
+        val expected: Long = mockSec
         val result = useCase.extractExpFromRefreshToken(invalidRefreshToken)
 
         assertEquals(expected, result)

@@ -48,7 +48,6 @@ class TokenTabScreenViewModel @Inject constructor(
     @OptIn(ExperimentalTime::class)
     fun getAccessTokenExp(): String {
         val epochExp = getAccessTokenExpiry()
-        println("Access EXP $epochExp")
         return epochExp?.let {
             val date = Instant.fromEpochMilliseconds(it)
             formatDateInstate(date)
@@ -76,7 +75,6 @@ class TokenTabScreenViewModel @Inject constructor(
     @OptIn(ExperimentalTime::class)
     fun getRefreshTokenExp(): String {
         val epochExp = getRefreshTokenExpiry()
-        println("Refresh EXP $epochExp")
         return epochExp?.let {
             val date = Instant.fromEpochSeconds(it)
             formatDateInstate(date)

@@ -9,13 +9,13 @@ import kotlinx.serialization.json.Json
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.RefreshTokenPayload
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
-import uk.gov.onelogin.core.utils.SystemTimeProvider
+import uk.gov.onelogin.core.utils.TimeProvider
 
 class SaveTokenExpiryImpl @Inject constructor(
     @ApplicationContext
     context: Context,
     private val logger: Logger,
-    private val systemTimeProvider: SystemTimeProvider = SystemTimeProvider
+    private val systemTimeProvider: TimeProvider
 ) : SaveTokenExpiry {
     private val sharedPrefs = context.getSharedPreferences(
         TOKEN_SHARED_PREFS,
@@ -46,15 +46,12 @@ class SaveTokenExpiryImpl @Inject constructor(
                 e.message ?: EXTRACT_REFRESH_TOKEN_EXP,
                 e
             )
-            val thirtyDaysExp = systemTimeProvider.nowInSeconds() + THIRTY_DAYS_IN_SECONDS
+            val thirtyDaysExp = systemTimeProvider.thirtyDaysFromNowTimestampInSeconds()
             return thirtyDaysExp
         }
     }
 
     companion object {
-        private const val ONE_HOUR_IN_SECONDS = 360 * 60
-        private const val ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24
-        const val THIRTY_DAYS_IN_SECONDS = ONE_DAY_IN_SECONDS * 30
         const val EXTRACT_REFRESH_TOKEN_EXP = "Error when extracting the refresh token expiry."
     }
 }

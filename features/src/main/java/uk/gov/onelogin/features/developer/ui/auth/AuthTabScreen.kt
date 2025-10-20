@@ -103,7 +103,11 @@ private fun RefreshTokenSection(
             viewModel.checkRefreshTokenSaved(context)
         },
         enabled = true,
-        modifier = Modifier.padding(bottom = smallPadding)
+        modifier = Modifier.padding(
+            bottom = smallPadding,
+            start = smallPadding,
+            end = smallPadding
+        )
     )
 }
 
