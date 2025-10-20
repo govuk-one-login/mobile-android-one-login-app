@@ -145,7 +145,7 @@
     <string name="app_developer_access_token_button_expire_30_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
     <string name="app_developer_reset_refresh_token_button" translatable="false">Set Access Token Expiry to Now</string>
     <string name="app_developer_refresh_token_button_expire_30_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
-    <string name="app_developer_refresh_token_button_expire_5_min" translatable="false">Set Access Token to Expire in 30 Seconds</string>
+    <string name="app_developer_refresh_token_button_expire_5_min" translatable="false">Set Access Token to Expire in 5 Minutes</string>
     <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
