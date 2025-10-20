@@ -52,7 +52,6 @@ fun SignedOutInfoScreen(
                         isReAuth = signOutViewModel.shouldReAuth(),
                         activity = activity
                     )
-                    signOutViewModel.saveTokens()
                 }
             }
         }

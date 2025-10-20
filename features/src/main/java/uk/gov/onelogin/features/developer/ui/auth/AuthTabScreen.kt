@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.developer.ui.auth
 
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,8 +24,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
@@ -54,20 +58,61 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     )
     HorizontalDivider()
     EmailSection(email)
+    AccessTokenSection(tokens)
+    HorizontalDivider()
+    IdTokenSection(tokens)
+    HorizontalDivider()
+    RefreshTokenSection(tokens, viewModel)
+    HorizontalDivider()
+}
+
+@Composable
+private fun RefreshTokenSection(
+    tokens: TokenResponse?,
+    viewModel: AuthTabScreenViewModel
+) {
     Text(
-        text = "Access Token",
+        text = "Refresh Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
         color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
-        tokens?.accessToken ?: "No access token set!",
+        text = if (tokens?.refreshToken != null) {
+            "Something went wrong - the refresh token is saved in memory: ${tokens.refreshToken}"
+        } else {
+            "Refresh token in temporary memory is null - this is expected behaviour."
+        },
         modifier = Modifier
-            .padding(16.dp),
+            .padding(
+                all = 16.dp
+            ),
         color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
-    HorizontalDivider()
+    val isRefreshTokenSaved by viewModel.isRefreshTokenSaved
+    val context = LocalActivity.current as FragmentActivity
+    Text(
+        "Is refresh token saved: $isRefreshTokenSaved",
+        modifier = Modifier.padding(bottom = smallPadding)
+    )
+    GdsButton(
+        text = stringResource(R.string.check_refresh_token_saved_button),
+        buttonType = ButtonTypeV2.Primary(),
+        onClick = {
+            viewModel.checkRefreshTokenSaved(context)
+        },
+        enabled = true,
+        modifier = Modifier.padding(
+            bottom = smallPadding,
+            start = smallPadding,
+            end = smallPadding
+        )
+    )
+}
+
+@Composable
+private fun IdTokenSection(tokens: TokenResponse?) {
     Text(
         text = "ID Token",
         fontWeight = FontWeight.Bold,
@@ -81,23 +126,23 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
             .padding(16.dp),
         color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
-    HorizontalDivider()
+}
+
+@Composable
+private fun AccessTokenSection(tokens: TokenResponse?) {
     Text(
-        text = "Refresh Token",
+        text = "Access Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
         color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
-        text = tokens?.refreshToken ?: "No refresh token set!",
+        tokens?.accessToken ?: "No access token set!",
         modifier = Modifier
-            .padding(
-                all = 16.dp
-            ),
+            .padding(16.dp),
         color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
     )
-    HorizontalDivider()
 }
 
 @Composable

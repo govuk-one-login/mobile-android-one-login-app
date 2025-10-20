@@ -5,19 +5,19 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpiredImpl
+import uk.gov.onelogin.core.tokens.domain.expirychecks.IsRefreshTokenExpiredImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 
-class IsAccessTokenExpiredImplTest {
+class IsRefreshTokenExpiredImplTest {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
 
-    private val isAccessTokenExpired = IsAccessTokenExpiredImpl(mockGetTokenExpiry)
+    private val isRefreshTokenExpired = IsRefreshTokenExpiredImpl(mockGetTokenExpiry)
 
     @Test
     fun `token not expired`() {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(System.currentTimeMillis() + 100)
 
-        val result = isAccessTokenExpired()
+        val result = isRefreshTokenExpired()
 
         assertFalse(result)
     }
@@ -26,7 +26,7 @@ class IsAccessTokenExpiredImplTest {
     fun `token expired`() {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(System.currentTimeMillis() - 100)
 
-        val result = isAccessTokenExpired()
+        val result = isRefreshTokenExpired()
 
         assertTrue(result)
     }
@@ -35,7 +35,7 @@ class IsAccessTokenExpiredImplTest {
     fun `token expiry is null`() {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(null)
 
-        val result = isAccessTokenExpired()
+        val result = isRefreshTokenExpired()
 
         assertTrue(result)
     }

@@ -30,6 +30,38 @@ class SaveTokensTest {
     }
 
     @Test
+    fun saveTokenWhenTokensNotNullWithRefresh() =
+        runTest {
+            val testResponse =
+                TokenResponse(
+                    tokenType = "test",
+                    accessToken = "access",
+                    accessTokenExpirationTime = 1L,
+                    idToken = idToken,
+                    refreshToken = "refresh"
+                )
+
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+
+            saveTokens.save(testResponse.refreshToken)
+
+            runBlocking {
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
+                    "access"
+                )
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.ID_TOKEN_KEY,
+                    idToken
+                )
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+                    "refresh"
+                )
+            }
+        }
+
+    @Test
     fun saveTokenWhenTokensNotNull() =
         runTest {
             val testResponse =
@@ -42,7 +74,7 @@ class SaveTokensTest {
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            saveTokens()
+            saveTokens.save(testResponse.refreshToken)
 
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
@@ -69,7 +101,7 @@ class SaveTokensTest {
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            saveTokens()
+            saveTokens.save(testResponse.refreshToken)
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
@@ -83,11 +115,42 @@ class SaveTokensTest {
         }
 
     @Test
+    fun saveTokenWhenTokensNotNullMissingPersistentIdWithRefresh() =
+        runTest {
+            val testResponse =
+                TokenResponse(
+                    tokenType = "test",
+                    accessToken = "access",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "id",
+                    refreshToken = "refresh"
+                )
+
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+
+            saveTokens.save(testResponse.refreshToken)
+            runBlocking {
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
+                    "access"
+                )
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.ID_TOKEN_KEY,
+                    "id"
+                )
+                verify(mockSaveToTokenSecureStore).invoke(
+                    AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+                    "refresh"
+                )
+            }
+        }
+
+    @Test
     fun noSaveTokenWhenTokensIsNull() {
         runBlocking {
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
 
-            saveTokens()
+            saveTokens.save(null)
 
             verifyNoInteractions(mockSaveToTokenSecureStore)
         }

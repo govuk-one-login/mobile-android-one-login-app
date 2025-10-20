@@ -1,13 +1,11 @@
-package uk.gov.onelogin.core.tokens.domain
+package uk.gov.onelogin.core.tokens.domain.expirychecks
 
 import javax.inject.Inject
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.utils.RefreshToken
 
-fun interface IsAccessTokenExpired {
-    operator fun invoke(): Boolean
-}
-
-class IsAccessTokenExpiredImpl @Inject constructor(
+class IsRefreshTokenExpiredImpl @Inject constructor(
+    @RefreshToken
     private val getTokenExpiry: GetTokenExpiry
 ) : IsAccessTokenExpired {
     override fun invoke(): Boolean {

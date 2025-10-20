@@ -25,7 +25,12 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
     @DefaultDispatcher
     private val coroutineContext: CoroutineDispatcher
 ) : AutoInitialiseSecureStore {
-    override suspend fun initialise() {
+    /**
+     * Initializes the secure store and saves the tokens stored in the TokenRepository (in temporary memory).
+     *
+     * @param refreshToken - the refresh token cannot be stored in temporary memory, so it is required when processing ti if it's available to be passed in directly
+     */
+    override suspend fun initialise(refreshToken: String?) {
         val localAuthPref = localAuthManager.localAuthPreference
         if (localAuthPref == null || localAuthPref == LocalAuthPreference.Disabled) return
         val configuration = SecureStorageConfiguration(
@@ -34,7 +39,7 @@ class AutoInitialiseSecureStoreImpl @Inject constructor(
         )
         withContext(coroutineContext) {
             secureStore.init(context, configuration)
-            saveTokens()
+            saveTokens.save(refreshToken)
         }
     }
 }

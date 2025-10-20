@@ -12,7 +12,6 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
@@ -21,7 +20,6 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 class SignedOutInfoViewModel @Inject constructor(
     private val navigator: Navigator,
     private val tokenRepository: TokenRepository,
-    private val saveTokens: SaveTokens,
     private val getPersistentId: GetPersistentId,
     private val signOutUseCase: SignOutUseCase,
     private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
@@ -30,12 +28,6 @@ class SignedOutInfoViewModel @Inject constructor(
 ) : ViewModel() {
     fun resetTokens() {
         tokenRepository.clearTokenResponse()
-    }
-
-    fun saveTokens() {
-        viewModelScope.launch {
-            saveTokens.invoke()
-        }
     }
 
     fun shouldReAuth() = navigator.hasBackStack()
