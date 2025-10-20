@@ -68,7 +68,7 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = currentTimeMillis() - 1
+                value = java.time.Instant.now().epochSecond - 1
             )
         )
     }
@@ -86,16 +86,17 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = getTimeMillis() + SECONDS_TO_MILLIS_30
+                value = java.time.Instant.now().epochSecond + SECONDS_30
             )
         )
     }
 
+    @OptIn(ExperimentalTime::class)
     fun setRefreshTokenExpireTo5Minutes() {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = getTimeMillis() + SECONDS_TO_MILLIS_30
+                value = java.time.Instant.now().epochSecond + SECONDS_TO_5_MIN
             )
         )
     }
@@ -134,7 +135,8 @@ class TokenTabScreenViewModel @Inject constructor(
 
     companion object {
         private const val SECONDS_TO_MILLIS_30 = 30000
-        private const val SECONDS_TO_MILLIS_5_MIN = 60000 * 5
+        private const val SECONDS_30 = 30
+        private const val SECONDS_TO_5_MIN = 60 * 5
         private const val NO_ACCESS_TOKEN_EXP = "No access token expiry stored/ existing."
         private const val NO_REFRESH_TOKEN_EXP = "No refresh token expiry stored/ existing."
     }
