@@ -57,8 +57,8 @@
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
     <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
-    <string name="app_youveBeenSignedOutBody1">Mae mwy na 30 munud wedi mynd heibio ers i chi fewngofnodi ddiwethaf i ap GOV.UK  One Login.</string>
-    <string name="app_youveBeenSignedOutBody2">Mewngofnodwch eto i barhau.</string>
+    <string name="app_youveBeenSignedOutBody1">Mewngofnodwch gyda\'ch manylion GOV.UK One Login i barhau.</string>
+    <string name="app_youveBeenSignedOutBody2">Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
     <string name="app_signOutConfirmationTitle_no_wallet">Ydych chi\'n siŵr eich bod eisiau allgofnodi?</string>
