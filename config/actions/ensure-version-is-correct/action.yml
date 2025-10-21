@@ -24,8 +24,8 @@ runs:
         script: |
           const current = process.env.CURRENT
           const next = process.env.NEXT
-          const [cMaj, cMin, cPat] = current.split(".")
-          const [nMaj, nMin, nPat] = next.split(".")
+          const [cMaj, cMin, cPat] = current.split(".").map(Number)
+          const [nMaj, nMin, nPat] = next.split(".").map(Number)
 
           if (
             nMaj > cMaj ||
