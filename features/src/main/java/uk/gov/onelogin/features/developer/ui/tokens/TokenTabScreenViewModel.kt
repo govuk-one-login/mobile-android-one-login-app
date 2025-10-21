@@ -3,8 +3,7 @@ package uk.gov.onelogin.features.developer.ui.tokens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.ktor.util.date.getTimeMillis
-import java.lang.System.currentTimeMillis
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -22,6 +21,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 
@@ -54,11 +54,24 @@ class TokenTabScreenViewModel @Inject constructor(
         } ?: NO_ACCESS_TOKEN_EXP
     }
 
-    fun resetAccessToken() {
+    fun resetAccessTokenExp() {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,
-                value = currentTimeMillis() - 1
+                value = java.time.Instant.now()
+                    .minus(MINUTES_1, ChronoUnit.MINUTES)
+                    .toEpochMilli()
+            )
+        )
+    }
+
+    fun resetRefreshTokenExp() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
+                value = java.time.Instant.now()
+                    .minus(MINUTES_1, ChronoUnit.MINUTES)
+                    .epochSecond
             )
         )
     }
@@ -67,7 +80,32 @@ class TokenTabScreenViewModel @Inject constructor(
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,
-                value = getTimeMillis() + SECONDS_TO_MILLIS_30
+                value = java.time.Instant.now()
+                    .plus(SECONDS_30, ChronoUnit.SECONDS)
+                    .toEpochMilli()
+            )
+        )
+    }
+
+    fun setRefreshTokenExpireTo30Seconds() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
+                value = java.time.Instant.now()
+                    .plus(SECONDS_30, ChronoUnit.SECONDS)
+                    .epochSecond
+            )
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun setRefreshTokenExpireTo5Minutes() {
+        saveTokenExpiry.saveExp(
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
+                value = java.time.Instant.now()
+                    .plus(MINUTES_5, ChronoUnit.MINUTES)
+                    .epochSecond
             )
         )
     }
@@ -105,7 +143,9 @@ class TokenTabScreenViewModel @Inject constructor(
     }
 
     companion object {
-        private const val SECONDS_TO_MILLIS_30 = 30000
+        private const val MINUTES_1: Long = 1
+        private const val MINUTES_5: Long = 5
+        private const val SECONDS_30: Long = 30
         private const val NO_ACCESS_TOKEN_EXP = "No access token expiry stored/ existing."
         private const val NO_REFRESH_TOKEN_EXP = "No refresh token expiry stored/ existing."
     }
