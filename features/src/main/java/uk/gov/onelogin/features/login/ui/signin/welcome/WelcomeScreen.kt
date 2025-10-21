@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
@@ -163,7 +163,7 @@ internal fun WelcomeBody(
             primaryButton = {
                 GdsButton(
                     text = buttonText,
-                    buttonType = ButtonType.Primary,
+                    buttonType = ButtonTypeV2.Primary(),
                     onClick = onSignIn,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -172,7 +172,7 @@ internal fun WelcomeBody(
                 if (DeveloperTools.isDeveloperPanelEnabled()) {
                     GdsButton(
                         text = devButtonText,
-                        buttonType = ButtonType.Secondary,
+                        buttonType = ButtonTypeV2.Secondary(),
                         onClick = openDevMenu,
                         modifier = Modifier.fillMaxWidth()
                     )

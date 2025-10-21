@@ -20,7 +20,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
@@ -120,7 +120,7 @@ private fun OptInButtons(
 ) {
     GdsButton(
         text = stringResource(R.string.app_shareAnalyticsButton),
-        buttonType = ButtonType.Primary,
+        buttonType = ButtonTypeV2.Primary(),
         onClick = onShare,
         modifier = Modifier
             .padding(horizontal = smallPadding)
@@ -130,7 +130,7 @@ private fun OptInButtons(
     )
     GdsButton(
         text = stringResource(R.string.app_doNotShareAnalytics),
-        buttonType = ButtonType.Secondary,
+        buttonType = ButtonTypeV2.Secondary(),
         onClick = onDoNotShare,
         modifier = Modifier
             .padding(horizontal = smallPadding, vertical = xsmallPadding)

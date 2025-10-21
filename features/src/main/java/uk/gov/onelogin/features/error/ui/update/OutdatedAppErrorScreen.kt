@@ -25,7 +25,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
@@ -107,7 +107,7 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
                 }
                 GdsButton(
                     text = buttonText,
-                    buttonType = ButtonType.Primary,
+                    buttonType = ButtonTypeV2.Primary(),
                     onClick = onPrimary,
                     modifier = Modifier
                         .fillMaxWidth()
