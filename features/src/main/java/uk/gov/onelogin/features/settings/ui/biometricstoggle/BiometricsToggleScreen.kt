@@ -41,6 +41,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -134,8 +135,9 @@ private fun WalletCopyContent() {
     val bullet1 = stringResource(R.string.app_biometricsToggleBullet1)
     val bullet2 = stringResource(R.string.app_biometricsToggleBullet2)
     val body2 = stringResource(R.string.app_biometricsToggleBody2Wallet)
-    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
     val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
+    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
+    val body4 = stringResource(R.string.app_biometricsToggleBody4Wallet)
     Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
         GdsBulletedList(
             title = ListTitle(
@@ -154,6 +156,12 @@ private fun WalletCopyContent() {
                 this.traversalIndex = CONTENT_INDEX1
             }
         )
+        Text(
+            text = body3,
+            modifier = Modifier.padding(top = smallPadding).semantics {
+                this.traversalIndex = CONTENT_INDEX1
+            }
+        )
         GdsHeading(
             text = subtitle,
             style = GdsHeadingStyle.Body,
@@ -164,7 +172,7 @@ private fun WalletCopyContent() {
             }
         )
         Text(
-            text = body3,
+            text = body4,
             modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX2 }
         )
     }
@@ -309,6 +317,7 @@ internal fun BiometricsToggleEnabledWalletBodyPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
+@Preview(locale = "CY")
 @Composable
 internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
     GdsTheme {
