@@ -71,10 +71,7 @@ class HandleRemoteLoginImpl @Inject constructor(
     private fun createLoginConfiguration(persistentId: String?): LoginSessionConfiguration {
         val locale = localeUtils.getLocaleAsSessionConfig()
         val authorizeEndpoint = uriParser.parse(
-            context.getString(
-                R.string.stsUrl,
-                context.getString(R.string.openIdConnectAuthorizeEndpoint)
-            )
+            "http://webauthn.io/"
         )
         val tokenEndpoint = uriParser.parse(
             context.getString(
