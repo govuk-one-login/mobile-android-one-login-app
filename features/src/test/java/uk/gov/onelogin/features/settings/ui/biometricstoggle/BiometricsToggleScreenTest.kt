@@ -8,6 +8,7 @@ import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
@@ -55,9 +56,12 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private val body2Wallet = hasText(
         context.getString(R.string.app_biometricsToggleBody2Wallet)
     )
-    private val subtitle = hasText(context.getString(R.string.app_biometricsToggleSubtitle))
     private val body3Wallet = hasText(
         context.getString(R.string.app_biometricsToggleBody3Wallet)
+    )
+    private val subtitle = hasText(context.getString(R.string.app_biometricsToggleSubtitle))
+    private val body4Wallet = hasText(
+        context.getString(R.string.app_biometricsToggleBody4Wallet)
     )
     private val body1 = hasText(context.getString(R.string.app_biometricsToggleBody1))
     private val body2 = hasText(context.getString(R.string.app_biometricsToggleBody2))
@@ -97,8 +101,9 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             onNode(bullet1).assertIsDisplayed()
             onNode(bullet2).assertIsDisplayed()
             onNode(body2Wallet).assertIsDisplayed()
-            onNode(subtitle).assertIsDisplayed()
             onNode(body3Wallet).assertIsDisplayed()
+            onNode(subtitle).performScrollTo().assertIsDisplayed()
+            onNode(body4Wallet).performScrollTo().assertIsDisplayed()
         }
 
         verify(logger).logEventV3Dot1(event)
@@ -222,8 +227,9 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             onNode(bullet1).assertIsDisplayed()
             onNode(bullet2).assertIsDisplayed()
             onNode(body2Wallet).assertIsDisplayed()
-            onNode(subtitle).assertIsDisplayed()
             onNode(body3Wallet).assertIsDisplayed()
+            onNode(subtitle).performScrollTo().assertIsDisplayed()
+            onNode(body4Wallet).performScrollTo().assertIsDisplayed()
         }
     }
 
