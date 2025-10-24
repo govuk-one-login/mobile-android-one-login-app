@@ -282,7 +282,10 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = GdsLocalColorScheme.current.topBarIcon
+                    color = GdsLocalColorScheme.current.topBarIcon,
+                    modifier = Modifier.semantics {
+                        this.traversalIndex = TOP_BAR_ICON_INDEX
+                    }
                 )
             }
         },
@@ -345,9 +348,10 @@ internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
 }
 
 private const val TOP_BAR_TITLE_INDEX = -20f
+private const val TOP_BAR_ICON_INDEX = -11f
 private const val BIO_TOGGLE_INDEX = -18f
 private const val LIST_INDEX = -16f
 private const val CONTENT_INDEX1 = -15f
-private const val SUBTITLE_INDEX = -14f
-private const val CONTENT_INDEX2 = -13f
+private const val CONTENT_INDEX2 = -14f
+private const val SUBTITLE_INDEX = -13f
 private const val CONTENT_INDEX3 = -12f
