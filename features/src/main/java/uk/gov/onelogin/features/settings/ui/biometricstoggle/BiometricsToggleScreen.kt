@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -138,7 +140,11 @@ private fun WalletCopyContent() {
     val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
     val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
     val body4 = stringResource(R.string.app_biometricsToggleBody4Wallet)
-    Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
+    Column(
+        modifier = Modifier
+            .padding(vertical = smallPadding, horizontal = smallPadding)
+            .verticalScroll(rememberScrollState())
+    ) {
         GdsBulletedList(
             title = ListTitle(
                 text = bulletListTitle,
@@ -159,7 +165,7 @@ private fun WalletCopyContent() {
         Text(
             text = body3,
             modifier = Modifier.padding(top = smallPadding).semantics {
-                this.traversalIndex = CONTENT_INDEX1
+                this.traversalIndex = CONTENT_INDEX2
             }
         )
         GdsHeading(
@@ -173,7 +179,7 @@ private fun WalletCopyContent() {
         )
         Text(
             text = body4,
-            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX2 }
+            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX3 }
         )
     }
 }
@@ -344,3 +350,4 @@ private const val LIST_INDEX = -16f
 private const val CONTENT_INDEX1 = -15f
 private const val SUBTITLE_INDEX = -14f
 private const val CONTENT_INDEX2 = -13f
+private const val CONTENT_INDEX3 = -12f
