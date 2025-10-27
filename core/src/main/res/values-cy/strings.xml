@@ -34,19 +34,20 @@
     <!-- Biometrics Toggle Opt In Screen NO Wallet -->
     <string name="app_biometricsToggleTitle">Biometreg</string>
     <string name="app_biometricsToggleLabel">Defnyddiwch biometreg</string>
-    <string name="app_biometricsToggleBody1">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK One Login.</string>
-    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap.</string>
+    <string name="app_biometricsToggleBody1">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
+    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
     <string name="app_biometricsToggleSubtitle">Os ydych yn troi biometreg i ffwrdd</string>
-    <string name="app_biometricsToggleBody3">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i ddatglo\'r ap.</string>
+    <string name="app_biometricsToggleBody3">Weithiau efallai y gofynnir i chi ddal i roi manylion eich GOV.UK One Login pan fyddwch yn mewngofnodi. Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
 
     <!-- Biometrics Toggle Opt In Screen Wallet -->
     <string name="app_biometricsToggleBody1Wallet">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
-    <string name="app_biometricsToggleBullet1">ddatgloi\'r ap o fewn 30 munud ar ôl mewngofnodi gyda GOV.UK  One Login</string>
+    <string name="app_biometricsToggleBullet1">mewngofnodi</string>
     <string name="app_biometricsToggleBullet2">gweld ac ychwanegu dogfennau</string>
     <string name="app_biometricsToggleBody2Wallet">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
-    <string name="app_biometricsToggleBody3Wallet">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
+    <string name="app_biometricsToggleBody3Wallet">Os ydych yn troi biometreg i ffwrdd</string>
 
     <!-- Sign Out -->
+    <string name="app_biometricsToggleBody4Wallet">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
