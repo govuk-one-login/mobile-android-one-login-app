@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class GenericErrorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class GenericErrScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         GenericErrorPreview()
     }
