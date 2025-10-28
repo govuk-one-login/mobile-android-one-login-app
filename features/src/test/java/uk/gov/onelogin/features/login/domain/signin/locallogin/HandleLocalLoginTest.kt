@@ -1,6 +1,8 @@
 package uk.gov.onelogin.features.login.domain.signin.locallogin
 
 import androidx.fragment.app.FragmentActivity
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -448,6 +450,8 @@ class HandleLocalLoginTest {
     }
 
     companion object {
-        val unexpiredTime = System.currentTimeMillis() + 100000L
+        val unexpiredTime = Instant.now()
+            .plus(1, ChronoUnit.HOURS)
+            .toEpochMilli()
     }
 }

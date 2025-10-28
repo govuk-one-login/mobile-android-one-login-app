@@ -14,6 +14,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 
+@Suppress("LongParameterList")
 class HandleLocalLoginImpl @Inject constructor(
     @param:AccessToken
     private val getAccessTokenExpiry: GetTokenExpiry,

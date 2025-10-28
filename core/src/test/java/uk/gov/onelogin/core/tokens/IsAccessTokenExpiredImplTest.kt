@@ -1,5 +1,7 @@
 package uk.gov.onelogin.core.tokens
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -15,7 +17,11 @@ class IsAccessTokenExpiredImplTest {
 
     @Test
     fun `token not expired`() {
-        whenever(mockGetTokenExpiry.invoke()).thenReturn(System.currentTimeMillis() + 100)
+        whenever(mockGetTokenExpiry.invoke()).thenReturn(
+            Instant.now()
+                .plus(1, ChronoUnit.MINUTES)
+                .epochSecond
+        )
 
         val result = isAccessTokenExpired()
 
@@ -24,7 +30,11 @@ class IsAccessTokenExpiredImplTest {
 
     @Test
     fun `token expired`() {
-        whenever(mockGetTokenExpiry.invoke()).thenReturn(System.currentTimeMillis() - 100)
+        whenever(mockGetTokenExpiry.invoke()).thenReturn(
+            Instant.now()
+                .minus(1, ChronoUnit.MINUTES)
+                .epochSecond
+        )
 
         val result = isAccessTokenExpired()
 

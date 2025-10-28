@@ -136,6 +136,7 @@ class SplashScreenViewModel @Inject constructor(
         }
     }
 
+    @Suppress("SwallowedException")
     private suspend fun handleDeletingAllData() {
         try {
             signOutUseCase.invoke()
