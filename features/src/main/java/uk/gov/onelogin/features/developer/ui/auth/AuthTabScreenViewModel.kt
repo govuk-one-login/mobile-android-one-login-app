@@ -12,6 +12,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.core.network.domain.HelloWorldApiCall
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
@@ -21,6 +22,7 @@ class AuthTabScreenViewModel @Inject constructor(
     private val helloWorldApiCall: HelloWorldApiCall,
     private val tokenRepository: TokenRepository,
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
+    private val removeAllSecureStoreData: RemoveAllSecureStoreData,
     getEmail: GetEmail
 ) : ViewModel() {
     private val _happyHelloWorldResponse = mutableStateOf("")
@@ -71,6 +73,12 @@ class AuthTabScreenViewModel @Inject constructor(
                     false
                 }
             }
+        }
+    }
+
+    fun clearSecureStoreData() {
+        viewModelScope.launch {
+            removeAllSecureStoreData.clean()
         }
     }
 

@@ -30,7 +30,6 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
-import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.components.EmailSection
 
@@ -54,7 +53,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     Text(
         text = "Authentication Tokens",
         style = MaterialTheme.typography.titleMedium,
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
     HorizontalDivider()
     EmailSection(email)
@@ -75,7 +74,7 @@ private fun RefreshTokenSection(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
@@ -88,7 +87,7 @@ private fun RefreshTokenSection(
             .padding(
                 all = 16.dp
             ),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
     val isRefreshTokenSaved by viewModel.isRefreshTokenSaved
     val context = LocalActivity.current as FragmentActivity
@@ -109,6 +108,19 @@ private fun RefreshTokenSection(
             end = smallPadding
         )
     )
+    GdsButton(
+        text = stringResource(R.string.clear_secure_store_data_button),
+        buttonType = ButtonTypeV2.Primary(),
+        onClick = {
+            viewModel.clearSecureStoreData()
+        },
+        enabled = true,
+        modifier = Modifier.padding(
+            bottom = smallPadding,
+            start = smallPadding,
+            end = smallPadding
+        )
+    )
 }
 
 @Composable
@@ -117,14 +129,14 @@ private fun IdTokenSection(tokens: TokenResponse?) {
         text = "ID Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
         modifier = Modifier
             .padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -134,14 +146,14 @@ private fun AccessTokenSection(tokens: TokenResponse?) {
         text = "Access Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
         modifier = Modifier
             .padding(16.dp),
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color = MaterialTheme.colorScheme.onBackground
     )
 }
 
@@ -194,7 +206,7 @@ private fun ButtonRow(
     ) {
         GdsButton(
             text = stringResource(buttonText),
-            buttonType = uk.gov.android.ui.componentsv2.button.ButtonTypeV2.Primary(),
+            buttonType = ButtonTypeV2.Primary(),
             onClick = onClick,
             enabled = enabled,
             modifier = Modifier.padding(bottom = 8.dp),
@@ -213,7 +225,7 @@ private fun ButtonRow(
                     append(apiResponse)
                 }
             },
-            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
