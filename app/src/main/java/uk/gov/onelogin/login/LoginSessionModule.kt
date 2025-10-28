@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.authentication.login.AppAuthSession
 import uk.gov.android.authentication.login.LoginSession
+import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -15,6 +16,7 @@ object LoginSessionModule {
     @Provides
     fun providesLoginSession(
         @ApplicationContext
-        context: Context
-    ): LoginSession = AppAuthSession(context)
+        context: Context,
+        demonstratingProofOfPossessionManager: DemonstratingProofOfPossessionManager
+    ): LoginSession = AppAuthSession(context, demonstratingProofOfPossessionManager)
 }

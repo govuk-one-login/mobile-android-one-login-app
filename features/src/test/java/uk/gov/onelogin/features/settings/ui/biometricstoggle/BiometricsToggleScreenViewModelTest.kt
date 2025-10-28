@@ -98,7 +98,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(false),
             localAuthManager.localAuthPreference
         )
-        verify(autoInitialiseSecureStore, times(0)).initialise()
+        verify(autoInitialiseSecureStore, times(0)).initialise(null)
     }
 
     @Test
@@ -114,7 +114,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(true),
             localAuthManager.localAuthPreference
         )
-        verify(autoInitialiseSecureStore).initialise()
+        verify(autoInitialiseSecureStore).initialise(null)
     }
 
     @Test
@@ -130,7 +130,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthPreference.Enabled(true),
             localAuthManager.localAuthPreference
         )
-        verify(autoInitialiseSecureStore).initialise()
+        verify(autoInitialiseSecureStore).initialise(null)
     }
 
     @Test

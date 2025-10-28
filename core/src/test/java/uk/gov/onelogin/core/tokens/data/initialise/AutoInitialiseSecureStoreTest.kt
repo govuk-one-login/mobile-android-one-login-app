@@ -58,7 +58,7 @@ class AutoInitialiseSecureStoreTest {
                     dispatcher
                 )
 
-            useCase.initialise()
+            useCase.initialise(null)
 
             verify(mockSecureStore, never()).init(any(), any())
         }
@@ -77,7 +77,7 @@ class AutoInitialiseSecureStoreTest {
                     dispatcher
                 )
 
-            useCase.initialise()
+            useCase.initialise(null)
 
             verify(mockSecureStore, never()).init(any(), any())
         }
@@ -96,7 +96,7 @@ class AutoInitialiseSecureStoreTest {
                     dispatcher
                 )
 
-            useCase.initialise()
+            useCase.initialise(null)
 
             val expectedConfiguration =
                 SecureStorageConfiguration(
@@ -120,7 +120,7 @@ class AutoInitialiseSecureStoreTest {
                     dispatcher
                 )
 
-            useCase.initialise()
+            useCase.initialise(null)
 
             val expectedConfiguration =
                 SecureStorageConfiguration(

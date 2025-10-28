@@ -38,7 +38,8 @@ class RemoveTokenExpiryTest {
         runTest {
             val result = useCase.clean()
 
-            verify(mockEditor).remove(AuthTokenStoreKeys.TOKEN_EXPIRY_KEY)
+            verify(mockEditor).remove(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY)
+            verify(mockEditor).remove(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)
             verify(mockEditor).commit()
             assertEquals(Result.success(Unit), result)
         }

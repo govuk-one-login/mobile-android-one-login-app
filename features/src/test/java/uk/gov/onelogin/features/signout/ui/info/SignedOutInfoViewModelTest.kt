@@ -23,7 +23,6 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.signout.domain.SignOutError
@@ -33,7 +32,6 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignedOutInfoViewModelTest {
     private val tokenRepository: TokenRepository = mock()
-    private val saveTokens: SaveTokens = mock()
     private val navigator: Navigator = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val signOutUseCase: SignOutUseCase = mock()
@@ -56,7 +54,6 @@ class SignedOutInfoViewModelTest {
         SignedOutInfoViewModel(
             navigator,
             tokenRepository,
-            saveTokens,
             getPersistentId,
             signOutUseCase,
             localAuthPrefResetUseCase,
@@ -70,14 +67,6 @@ class SignedOutInfoViewModelTest {
 
         verify(tokenRepository).clearTokenResponse()
     }
-
-    @Test
-    fun `save tokens calls use case`() =
-        runTest {
-            viewModel.saveTokens()
-
-            verify(saveTokens).invoke()
-        }
 
     @Test
     fun `navigator has back stack, reauth is true`() {

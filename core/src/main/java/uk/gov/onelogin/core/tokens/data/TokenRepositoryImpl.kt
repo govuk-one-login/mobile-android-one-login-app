@@ -7,7 +7,13 @@ class TokenRepositoryImpl @Inject constructor() : TokenRepository {
     private var tokenResponse: TokenResponse? = null
 
     override fun setTokenResponse(tokens: TokenResponse) {
-        tokenResponse = tokens
+        tokenResponse = TokenResponse(
+            idToken = tokens.idToken,
+            tokenType = tokens.tokenType,
+            accessToken = tokens.accessToken,
+            accessTokenExpirationTime = tokens.accessTokenExpirationTime,
+            refreshToken = null
+        )
     }
 
     override fun getTokenResponse(): TokenResponse? {

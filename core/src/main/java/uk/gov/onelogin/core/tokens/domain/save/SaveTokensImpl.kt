@@ -8,7 +8,7 @@ class SaveTokensImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveToTokenSecureStore: SaveToTokenSecureStore
 ) : SaveTokens {
-    override suspend fun invoke() {
+    override suspend fun save(refreshToken: String?) {
         val tokens = tokenRepository.getTokenResponse()
         tokens?.let { tokenResponse ->
             saveToTokenSecureStore(
@@ -19,6 +19,13 @@ class SaveTokensImpl @Inject constructor(
                 key = AuthTokenStoreKeys.ID_TOKEN_KEY,
                 value = tokenResponse.idToken
             )
+            refreshToken?.let {
+                println("Set Token + $it")
+                saveToTokenSecureStore(
+                    key = AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+                    value = it
+                )
+            }
         }
     }
 }

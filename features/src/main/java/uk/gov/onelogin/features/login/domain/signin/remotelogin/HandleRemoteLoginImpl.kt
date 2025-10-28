@@ -60,7 +60,9 @@ class HandleRemoteLoginImpl @Inject constructor(
         onFailure: () -> Unit
     ) {
         when (appIntegrity.getClientAttestation()) {
-            is AttestationResult.Failure -> onFailure()
+            is AttestationResult.Failure -> {
+                onFailure()
+            }
 
             else -> onSuccess()
         }

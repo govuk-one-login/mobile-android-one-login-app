@@ -37,13 +37,14 @@ class SplashScreenViewModel @Inject constructor(
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
-            autoInitialiseSecureStore.initialise()
+            autoInitialiseSecureStore.initialise(null)
             handleLocalLogin(
                 fragmentActivity,
                 callback = {
                     when (it) {
-                        LocalAuthStatus.SecureStoreError ->
+                        LocalAuthStatus.SecureStoreError -> {
                             nextScreen(SignOutRoutes.Info)
+                        }
 
                         LocalAuthStatus.ManualSignIn ->
                             nextScreen(LoginRoutes.Welcome)
@@ -60,8 +61,9 @@ class SplashScreenViewModel @Inject constructor(
                             // Allow user to make multiple fails... do nothing for now
                         }
 
-                        LocalAuthStatus.ReAuthSignIn ->
+                        LocalAuthStatus.ReAuthSignIn -> {
                             nextScreen(SignOutRoutes.Info)
+                        }
                     }
                 }
             )

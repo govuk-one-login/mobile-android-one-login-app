@@ -1,16 +1,21 @@
 package uk.gov.onelogin.features.login.domain.signin.loginredirect
 
+import android.content.Context
 import android.content.Intent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
 class HandleLoginRedirectImpl @Inject constructor(
+    @ApplicationContext
+    private val context: Context,
     private val appIntegrity: AppIntegrity,
     private val loginSession: LoginSession,
     private val logger: Logger
@@ -55,9 +60,15 @@ class HandleLoginRedirectImpl @Inject constructor(
         onSuccess: (TokenResponse) -> Unit,
         onFailure: (Throwable?) -> Unit
     ) {
+        val tokenEndpoint = context.getString(
+            R.string.stsUrl,
+            context.getString(R.string.tokenExchangeEndpoint)
+        )
+
         loginSession.finalise(
             intent = intent,
             appIntegrity = AppIntegrityParameters(attestation, jwt),
+            httpServiceDomain = tokenEndpoint,
             { tokens ->
                 onSuccess(tokens)
             },
@@ -109,8 +120,10 @@ class HandleLoginRedirectImpl @Inject constructor(
                         onFailure(e)
                     }
 
-                is SignedPoP.Failure ->
+                is SignedPoP.Failure -> {
+                    logError(popResult.error, popResult.reason)
                     onFailure(popResult.error)
+                }
             }
         } else {
             try {
@@ -121,6 +134,15 @@ class HandleLoginRedirectImpl @Inject constructor(
                 onFailure(e)
             }
         }
+    }
+
+    private fun logError(e: Throwable?, reason: String) {
+        val error = AppIntegrity.Companion.ProofOfPossessionException(e)
+        logger.error(
+            error.javaClass.simpleName,
+            error.message ?: reason,
+            error
+        )
     }
 
     companion object {
