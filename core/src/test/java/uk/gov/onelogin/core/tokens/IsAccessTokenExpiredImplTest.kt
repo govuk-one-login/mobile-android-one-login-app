@@ -8,7 +8,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpiredImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 
-class IsAccessTokenExpiredImplTest {
+class IsTokenExpiredImplTest {
     private val mockGetTokenExpiry: GetTokenExpiry = mock()
 
     private val isAccessTokenExpired = IsAccessTokenExpiredImpl(mockGetTokenExpiry)
