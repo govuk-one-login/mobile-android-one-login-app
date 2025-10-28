@@ -57,6 +57,11 @@ jobs:
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
+      - name: Clean workspace
+        if: always()
+        uses: ./config/actions/clean-workspace
+
   run-instrumentation-tests:
     name: Run instrumentation tests
     runs-on: ubuntu-24.04
@@ -86,6 +91,15 @@ jobs:
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
+      - name: Upload test coverage report
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        with:
+          artifact-name: instrumentation-test-coverage
+
+      - name: Clean workspace
+        if: always()
+        uses: ./config/actions/clean-workspace
+
   run-unit-tests:
     name: Run unit tests
     runs-on: ubuntu-24.04
@@ -114,6 +128,15 @@ jobs:
           version-code: ${{ needs.set-up-runner.outputs.version-code }}
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
+      - name: Upload test coverage report
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        with:
+          artifact-name: unit-test-coverage
+
+      - name: Clean workspace
+        if: always()
+        uses: ./config/actions/clean-workspace
 
   run-sonar-analysis-and-clean-up:
     name: Sonar analysis and clean-up
@@ -155,3 +178,7 @@ jobs:
         uses: ./config/actions/sonar-quality-gate
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Clean workspace
+        if: always()
+        uses: ./config/actions/clean-workspace
