@@ -26,6 +26,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -48,6 +49,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var appInfoService: AppInfoService
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
+    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
     private var repository: OptInRepository = mock()
     private lateinit var optInViewModel: OptInRequirementViewModel
@@ -65,11 +67,13 @@ class SplashScreenTest : FragmentActivityTestCase() {
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
+        autoInitialiseSecureStore = mock()
         viewModel =
             SplashScreenViewModel(
                 navigator,
                 handleLocalLogin,
-                appInfoService
+                appInfoService,
+                autoInitialiseSecureStore
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
@@ -115,11 +119,15 @@ class SplashScreenTest : FragmentActivityTestCase() {
             SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
 
+        // Then
         composeTestRule.waitUntil(15000) {
             composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
         }
 
-        wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
+        // And
+        wheneverBlocking {
+            handleLocalLogin.invoke(any(), any())
+        }.thenAnswer {
             (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
 

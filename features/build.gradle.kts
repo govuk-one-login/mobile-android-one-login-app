@@ -171,7 +171,8 @@ dependencies {
         libs.hilt.android,
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.tooling.preview,
-        libs.bundles.about.libraries
+        libs.bundles.about.libraries,
+        libs.kotlinx.datetime
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

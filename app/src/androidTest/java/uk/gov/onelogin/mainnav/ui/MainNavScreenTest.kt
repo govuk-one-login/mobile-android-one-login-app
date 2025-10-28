@@ -1,11 +1,9 @@
 package uk.gov.onelogin.mainnav.ui
 
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
@@ -14,6 +12,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -31,7 +31,6 @@ import uk.gov.onelogin.core.AnalyticsModule
 import uk.gov.onelogin.featureflags.FeaturesModule
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.wallet.data.WalletRepository
-import uk.gov.onelogin.features.wallet.ui.DEEPLINK_PATH
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.wallet.WalletRepositoryModule
 
@@ -60,15 +59,24 @@ class MainNavScreenTest : TestCase() {
     @BindValue
     val walletRepository: WalletRepository = mock()
 
+    @Before
+    fun setup() {
+        navController = TestNavHostController(context).apply {
+            navigatorProvider.addNavigator(ComposeNavigator())
+        }
+    }
+
     @Test
     fun checkBottomOptionsDisplayed() {
         whenever(featureFlags[any()]).thenReturn(true)
-        whenever(walletRepository.getCredential()).thenReturn("")
-        setup()
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
+        setupUi()
+
         composeTestRule.onNode(homeTab).apply {
             isDisplayed()
             performClick()
         }
+
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).isDisplayed()
         composeTestRule.onNode(settingsTab).isDisplayed()
@@ -83,14 +91,15 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun goesToWalletOnClick() {
         whenever(featureFlags[any()]).thenReturn(true)
-        whenever(walletRepository.getCredential()).thenReturn("")
-        setup()
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
+        setupUi()
+
         composeTestRule.waitUntil(5000L) { composeTestRule.onNode(walletTab).isDisplayed() }
         composeTestRule.onNode(walletTab).performClick()
-
-        assertEquals(
-            BottomNavDestination.Wallet.key,
-            navController.currentDestination?.route
+        assertTrue(
+            navController.currentDestination?.route?.contains(
+                BottomNavDestination.Wallet.key
+            ) ?: false
         )
 
         composeTestRule.onNodeWithText(
@@ -103,10 +112,10 @@ class MainNavScreenTest : TestCase() {
     @Test
     fun checkWalletNotDisplayed() {
         whenever(featureFlags[any()]).thenReturn(false)
-        whenever(walletRepository.getCredential()).thenReturn("")
-        setup()
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
+        setupUi()
         composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
-        composeTestRule.onNode(walletTab).isNotDisplayed()
+        composeTestRule.onNode(walletTab).assertDoesNotExist()
         composeTestRule.onNode(settingsTab).isDisplayed()
 
         assertEquals(
@@ -117,8 +126,9 @@ class MainNavScreenTest : TestCase() {
 
     @Test
     fun goesToSettingsOnClick() {
-        whenever(walletRepository.getCredential()).thenReturn("")
-        setup()
+        whenever(featureFlags[any()]).thenReturn(false)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
+        setupUi()
         composeTestRule.onNode(settingsTab).performClick()
 
         assertEquals(
@@ -134,21 +144,19 @@ class MainNavScreenTest : TestCase() {
     @Ignore("This is failing because the nav graph has not be 'set' in the time")
     @Test
     fun deeplinkExists() {
-        whenever(walletRepository.getCredential()).thenReturn("credential")
-        whenever(walletRepository.getDeepLinkPath()).thenReturn(DEEPLINK_PATH)
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
         whenever(featureFlags[any()]).thenReturn(true)
-        setup()
+        setupUi()
 
-        assertEquals(
-            BottomNavDestination.Wallet.key,
-            navController.currentDestination?.route
+        assertTrue(
+            navController.currentDestination?.route?.contains(
+                BottomNavDestination.Wallet.key
+            ) ?: false
         )
     }
 
-    private fun setup() {
+    private fun setupUi() {
         composeTestRule.setContent {
-            navController = TestNavHostController(LocalContext.current)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
             MainNavScreen(navController)
         }
     }

@@ -12,6 +12,7 @@ import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.core.ApplicationEntryPoint
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 
 @HiltAndroidApp
 class OneLoginApplication : Application(), DefaultLifecycleObserver {
@@ -60,9 +61,13 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
 
-        // If a debugger is detected in release, kill the app
+        // If a debugger is detected in release, kill/ close the app
         if (android.os.Debug.isDebuggerConnected() && !BuildConfig.DEBUG) {
             android.os.Process.killProcess(android.os.Process.myPid())
+        }
+
+        if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() && !isLocalAuthEnabled()) {
+            appEntryPoint.navigator().navigate(MainNavRoutes.Start)
         }
     }
 

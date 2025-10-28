@@ -7,14 +7,17 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpired
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.core.utils.AccessToken
 
 class HandleLocalLoginImpl @Inject constructor(
-    private val getTokenExpiry: GetTokenExpiry,
+    @param:AccessToken
+    private val getAccessTokenExpiry: GetTokenExpiry,
     private val tokenRepository: TokenRepository,
+    @param:AccessToken
     private val isAccessTokenExpired: IsAccessTokenExpired,
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
     private val localAuthManager: LocalAuthManager
@@ -39,7 +42,7 @@ class HandleLocalLoginImpl @Inject constructor(
                                 accessToken = accessToken,
                                 idToken = idToken,
                                 tokenType = "",
-                                accessTokenExpirationTime = getTokenExpiry() ?: 0
+                                accessTokenExpirationTime = getAccessTokenExpiry() ?: 0
                             )
                         )
                     } else {
@@ -49,7 +52,7 @@ class HandleLocalLoginImpl @Inject constructor(
                 callback(it)
             }
         } else {
-            if (getTokenExpiry() == null) {
+            if (getAccessTokenExpiry() == null) {
                 callback(LocalAuthStatus.ManualSignIn)
             } else {
                 callback(LocalAuthStatus.ReAuthSignIn)

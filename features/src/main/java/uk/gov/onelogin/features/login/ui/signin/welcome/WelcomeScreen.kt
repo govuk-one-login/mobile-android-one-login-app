@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -28,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
@@ -46,8 +45,7 @@ import uk.gov.onelogin.developer.DeveloperTools
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
-    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
-    shouldTryAgain: () -> Boolean = { false }
+    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel()
 ) {
     val loading by viewModel.loading.collectAsState()
     val context = LocalActivity.current as FragmentActivity
@@ -76,14 +74,6 @@ fun WelcomeScreen(
 
     BackHandler(enabled = true) {
         context.finishAndRemoveTask()
-    }
-    LaunchedEffect(key1 = Unit) {
-        if (!shouldTryAgain()) return@LaunchedEffect
-        if (viewModel.onlineChecker.isOnline()) {
-            viewModel.onPrimary(launcher)
-        } else {
-            viewModel.navigateToOfflineError()
-        }
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
@@ -173,7 +163,7 @@ internal fun WelcomeBody(
             primaryButton = {
                 GdsButton(
                     text = buttonText,
-                    buttonType = ButtonType.Primary,
+                    buttonType = ButtonTypeV2.Primary(),
                     onClick = onSignIn,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -182,7 +172,7 @@ internal fun WelcomeBody(
                 if (DeveloperTools.isDeveloperPanelEnabled()) {
                     GdsButton(
                         text = devButtonText,
-                        buttonType = ButtonType.Secondary,
+                        buttonType = ButtonTypeV2.Secondary(),
                         onClick = openDevMenu,
                         modifier = Modifier.fillMaxWidth()
                     )

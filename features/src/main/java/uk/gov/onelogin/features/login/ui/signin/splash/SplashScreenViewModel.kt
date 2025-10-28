@@ -17,6 +17,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
@@ -25,7 +26,8 @@ import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLocalLogin: HandleLocalLogin,
-    private val appInfoService: AppInfoService
+    private val appInfoService: AppInfoService,
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel(), DefaultLifecycleObserver {
     private val _showUnlock = MutableStateFlow(false)
     val showUnlock: StateFlow<Boolean> = _showUnlock
@@ -35,12 +37,14 @@ class SplashScreenViewModel @Inject constructor(
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
+            autoInitialiseSecureStore.initialise(null)
             handleLocalLogin(
                 fragmentActivity,
                 callback = {
                     when (it) {
-                        LocalAuthStatus.SecureStoreError ->
+                        LocalAuthStatus.SecureStoreError -> {
                             nextScreen(SignOutRoutes.Info)
+                        }
 
                         LocalAuthStatus.ManualSignIn ->
                             nextScreen(LoginRoutes.Welcome)
@@ -57,8 +61,9 @@ class SplashScreenViewModel @Inject constructor(
                             // Allow user to make multiple fails... do nothing for now
                         }
 
-                        LocalAuthStatus.ReAuthSignIn ->
+                        LocalAuthStatus.ReAuthSignIn -> {
                             nextScreen(SignOutRoutes.Info)
+                        }
                     }
                 }
             )

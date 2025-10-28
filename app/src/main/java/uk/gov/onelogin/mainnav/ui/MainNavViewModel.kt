@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.wallet.data.WalletRepository
@@ -24,18 +26,17 @@ class MainNavViewModel @Inject constructor(
         _displayContentAsFullScreenState.value = newValue
     }
 
-    private val _walletDeepLinkReceived = mutableStateOf(false)
-    val walletDeepLinkReceived: State<Boolean> = _walletDeepLinkReceived
+    private val _isDeeplinkRoute = MutableStateFlow(false)
+    val isDeeplinkRoute: StateFlow<Boolean> = _isDeeplinkRoute
 
     init {
+        // Check if wallet is enabled and user comes in via deeplink
         checkWalletEnabled()
     }
 
     fun checkWalletEnabled() {
         _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
-        _walletDeepLinkReceived.value =
-            walletRepository.getDeepLinkPath() == DEEPLINK_PATH && _walletEnabled.value
+        _isDeeplinkRoute.value = walletRepository.isWalletDeepLinkPath() &&
+            walletEnabled.value
     }
 }
-
-const val DEEPLINK_PATH = "/wallet/add"

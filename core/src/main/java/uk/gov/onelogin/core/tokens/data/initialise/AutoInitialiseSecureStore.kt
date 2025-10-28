@@ -11,5 +11,5 @@ fun interface AutoInitialiseSecureStore {
      *
      * Also attempts to save any tokens in the [uk.gov.onelogin.core.tokens.data.TokenRepository]
      */
-    suspend fun initialise()
+    suspend fun initialise(refreshToken: String?)
 }

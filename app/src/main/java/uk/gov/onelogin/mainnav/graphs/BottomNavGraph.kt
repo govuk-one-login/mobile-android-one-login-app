@@ -1,13 +1,16 @@
 package uk.gov.onelogin.mainnav.graphs
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.features.home.ui.HomeScreen
 import uk.gov.onelogin.features.settings.ui.SettingsScreen
 import uk.gov.onelogin.features.wallet.ui.WalletScreen
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
+import uk.gov.onelogin.mainnav.ui.DEEP_LINK_ARG
 
 object BottomNavGraph {
     fun NavGraphBuilder.bottomGraph(setDisplayContentAsFullScreen: (Boolean) -> Unit) {
@@ -15,17 +18,21 @@ object BottomNavGraph {
             HomeScreen()
         }
         composable(
-            BottomNavDestination.Wallet.key,
+            BottomNavDestination.Wallet.key + "/{$DEEP_LINK_ARG}",
+            arguments = listOf(
+                navArgument(DEEP_LINK_ARG) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            ),
             deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = createUrl("wallet-test")
-                },
                 navDeepLink {
                     uriPattern = createUrl("wallet")
                 }
             )
-        ) {
-            WalletScreen(setDisplayContentAsFullScreen)
+        ) { backStackEntry ->
+            val isDeepLinkRoute = backStackEntry.arguments?.getBoolean(DEEP_LINK_ARG) ?: false
+            WalletScreen(isDeepLinkRoute, setDisplayContentAsFullScreen)
         }
         composable(BottomNavDestination.Settings.key) {
             SettingsScreen()

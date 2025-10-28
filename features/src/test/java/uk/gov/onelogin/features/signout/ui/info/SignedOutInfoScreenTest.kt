@@ -49,8 +49,8 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -152,7 +152,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         viewModel = SignedOutInfoViewModel(
             navigator,
             tokenRepository,
-            saveTokens,
             getPersistentId,
             signOutUseCase,
             localAuthPrefResetUseCase,

@@ -9,6 +9,7 @@
         <domain includeSubdomains="true">token.integration.account.gov.uk</domain>
         <domain includeSubdomains="true">auth-stub.mobile.integration.account.gov.uk</domain>
         <domain includeSubdomains="true">mobile.integration.account.gov.uk</domain>
+        <domain includeSubdomains="true">app.mobile.integration.account.gov.uk</domain>
         <domain includeSubdomains="false">api-backend-api.review-b.integration.account.gov.uk</domain>
         <pin-set>
             <pin digest="SHA-256">++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=</pin>
@@ -23,6 +24,12 @@
         <pin-set>
             <pin digest="SHA-256">CLcBxJ0axyguKJiapmJ5QQHO6hpXTbn7atGEto6ruSY=</pin>
             <pin digest="SHA-256">R3hcMOAGw0WFztuG2skTodoHp8IGid3Qg63Cn7YUYoM=</pin>
+        </pin-set>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="false">credential-issuer-nonprod.dvla.gov.uk/</domain>
+        <pin-set>
+            <pin digest="SHA-256">i7WTqTvh0OioIruIfFR4kMPnBqrS2rdiVPl/s2uC/CY=</pin>
         </pin-set>
     </domain-config>
 </network-security-config>

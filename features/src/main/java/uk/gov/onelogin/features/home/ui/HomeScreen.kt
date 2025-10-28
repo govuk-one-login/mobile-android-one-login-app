@@ -54,7 +54,7 @@ fun HomeScreen(
                     .padding(top = smallPadding)
             ) {
                 ProveYourIdentityCard(
-                    component = criOrchestratorComponent,
+                    graph = criOrchestratorComponent,
                     modifier = Modifier
                 )
             }

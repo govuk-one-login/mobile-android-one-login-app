@@ -21,7 +21,7 @@ This project uses a git-flow branching strategy, briefly:
 
 ## Getting started
 
-A number of how-to documents are provided to get a new developer up to speed with:
+A number of how-to documents are provided to get a new developer up to speed with
 
 ### Developer setup
 

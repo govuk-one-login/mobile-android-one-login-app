@@ -40,17 +40,18 @@
     <!-- Biometrics Toggle Opt In Screen NO Wallet -->
     <string name="app_biometricsToggleTitle">Biometrics</string>
     <string name="app_biometricsToggleLabel">Use biometrics</string>
-    <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to unlock the app within 30 minutes of signing in with GOV.UK One Login.</string>
+    <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to:</string>
     <string name="app_biometricsToggleBody2">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
     <string name="app_biometricsToggleSubtitle">If you turn off biometrics</string>
     <string name="app_biometricsToggleBody3">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app.</string>
 
     <!-- Biometrics Toggle Opt In Screen Wallet -->
     <string name="app_biometricsToggleBody1Wallet">You can use your face, fingerprint or iris to:</string>
-    <string name="app_biometricsToggleBullet1">unlock the app within 30 minutes of signing in with GOV.UK  One Login</string>
+    <string name="app_biometricsToggleBullet1">sign in</string>
     <string name="app_biometricsToggleBullet2">view and add documents</string>
     <string name="app_biometricsToggleBody2Wallet">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
-    <string name="app_biometricsToggleBody3Wallet">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
+    <string name="app_biometricsToggleBody3Wallet">Sometimes you might still be asked to enter your GOV.UK One Login details when you sign in. This is to keep your information secure.</string>
+    <string name="app_biometricsToggleBody4Wallet">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
 
     <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Are you sure you want to sign out?</string>
@@ -63,8 +64,7 @@
     <string name="app_signOutAndDeleteAppDataButton">Sign out and delete information</string>
 
     <string name="app_youveBeenSignedOutTitle">You need to sign in again</string>
-    <string name="app_youveBeenSignedOutBody1">It’s been more than 30 minutes since you last signed in to the GOV.UK One Login app.</string>
-    <string name="app_youveBeenSignedOutBody2">Sign in again to continue.</string>
+    <string name="app_youveBeenSignedOutBody1">Sign in with your GOV.UK One Login details to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
     <string name="app_signOutConfirmationTitle_no_wallet">Are you sure you want to sign out?</string>
@@ -140,14 +140,18 @@
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
-
+    <string name="app_developer_status_overlay_message" translatable="false">A message to you</string>
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
-    <string name="app_developer_access_token_button_expire_45_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
+    <string name="app_developer_access_token_button_expire_30_sec" translatable="false">Set Access Token to Expire in 30 Seconds</string>
+    <string name="app_developer_reset_refresh_token_button" translatable="false">Set Refresh Token Expiry to Now</string>
+    <string name="app_developer_refresh_token_button_expire_30_sec" translatable="false">Set Refresh Token to Expire in 30 Seconds</string>
+    <string name="app_developer_refresh_token_button_expire_5_min" translatable="false">Set Refresh Token to Expire in 5 Minutes</string>
     <string name="app_developer_reset_persistent_id_button" translatable="false">Delete Persistent ID</string>
 
     <string name="app_helloworld_happy_button" translatable="false">Successful Hello World Call</string>
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
     <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
+    <string name="check_refresh_token_saved_button" translatable="false">Check if refresh token is saved in the encrypted secure store</string>
 
     <!-- Analytics Opt In -->
     <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>
@@ -207,4 +211,5 @@
     <!-- How to prove your identity tile -->
     <string name="app_appPurposeTileHeader">How to prove your identity</string>
     <string name="app_appPurposeTileBody1">If you need to prove your identity with GOV.UK One Login to access a service, you\'ll be asked to open this app. It works by matching your face to your photo ID.</string>
+    <string name="app_youveBeenSignedOutBody2">This is to keep your information secure.</string>
 </resources>

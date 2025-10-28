@@ -7,7 +7,6 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,8 +32,8 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
@@ -69,8 +68,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private lateinit var loadingAnalyticsVM: LoadingScreenAnalyticsViewModel
     private lateinit var counter: Counter
     private val logger = SystemLogger()
-
-    private var shouldTryAgainCalled = false
 
     private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
     private val signInSubTitle1 = hasText(resources.getString(R.string.app_signInBody1))
@@ -124,7 +121,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsVM = LoadingScreenAnalyticsViewModel(context, analytics)
-        shouldTryAgainCalled = false
     }
 
     @Suppress("ForbiddenComment")
@@ -161,57 +157,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             whenWeClickSignIn()
 
             verify(handleRemoteLogin).login(any(), any())
-        }
-
-    @Test
-    fun shouldTryAgainCalledOnPageLoad() {
-        composeTestRule.setContent {
-            WelcomeScreen(
-                analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM,
-                shouldTryAgain = {
-                    shouldTryAgainCalled = true
-                    false
-                }
-            )
-        }
-        assertTrue(shouldTryAgainCalled)
-    }
-
-    @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            composeTestRule.setContent {
-                WelcomeScreen(
-                    analyticsViewModel = analyticsViewModel,
-                    viewModel = viewModel,
-                    loadingAnalyticsViewModel = loadingAnalyticsVM,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
-
-            verify(handleRemoteLogin).login(any(), any())
-        }
-
-    @Test
-    fun navigateToErrorScreenIfNotOnlineAndShouldTryAgainIsTrue() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(false)
-            composeTestRule.setContent {
-                WelcomeScreen(
-                    analyticsViewModel = analyticsViewModel,
-                    viewModel = viewModel,
-                    loadingAnalyticsViewModel = loadingAnalyticsVM,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
-            verify(navigator).navigate(ErrorRoutes.Offline)
         }
 
     @Test
@@ -261,11 +206,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM,
-                shouldTryAgain = {
-                    shouldTryAgainCalled = true
-                    false
-                }
+                loadingAnalyticsViewModel = loadingAnalyticsVM
             )
         }
 

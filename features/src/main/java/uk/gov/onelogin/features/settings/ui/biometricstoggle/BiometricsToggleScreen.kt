@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,6 +42,8 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
@@ -57,6 +61,7 @@ import uk.gov.android.ui.componentsv2.list.TitleType
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.m3.Switch
+import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -132,9 +137,14 @@ private fun WalletCopyContent() {
     val bullet1 = stringResource(R.string.app_biometricsToggleBullet1)
     val bullet2 = stringResource(R.string.app_biometricsToggleBullet2)
     val body2 = stringResource(R.string.app_biometricsToggleBody2Wallet)
-    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
     val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
-    Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
+    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
+    val body4 = stringResource(R.string.app_biometricsToggleBody4Wallet)
+    Column(
+        modifier = Modifier
+            .padding(vertical = smallPadding, horizontal = smallPadding)
+            .verticalScroll(rememberScrollState())
+    ) {
         GdsBulletedList(
             title = ListTitle(
                 text = bulletListTitle,
@@ -152,6 +162,12 @@ private fun WalletCopyContent() {
                 this.traversalIndex = CONTENT_INDEX1
             }
         )
+        Text(
+            text = body3,
+            modifier = Modifier.padding(top = smallPadding).semantics {
+                this.traversalIndex = CONTENT_INDEX2
+            }
+        )
         GdsHeading(
             text = subtitle,
             style = GdsHeadingStyle.Body,
@@ -162,8 +178,8 @@ private fun WalletCopyContent() {
             }
         )
         Text(
-            text = body3,
-            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX2 }
+            text = body4,
+            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX3 }
         )
     }
 }
@@ -241,21 +257,24 @@ private fun BiometricsToggleRow(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class, UnstableDesignSystemAPI::class)
+@OptIn(ExperimentalMaterial3Api::class)
 private fun BiometricsTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navIconClick: () -> Unit
 ) {
+    // With the current set-up, we can't use the GdsTopAppBar because it breaks the TalkBack behaviour, the
+    // title does not get read first, but rather ignored and only read after all elements on the screen
     TopAppBar(
         title = {
-            GdsHeading(
+            Text(
                 text = stringResource(R.string.app_biometricsToggleTitle),
-                textAlign = GdsHeadingAlignment.LeftAligned,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Start,
                 modifier = Modifier.fillMaxWidth().semantics {
                     this.traversalIndex = TOP_BAR_TITLE_INDEX
                 },
-                style = GdsHeadingStyle.Title2,
-                textFontWeight = FontWeight.W400
+                style = Typography.headlineMedium,
+                fontWeight = FontWeight.W700
             )
         },
         navigationIcon = {
@@ -263,7 +282,10 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = GdsLocalColorScheme.current.topBarIcon
+                    color = GdsLocalColorScheme.current.topBarIcon,
+                    modifier = Modifier.semantics {
+                        this.traversalIndex = TOP_BAR_ICON_INDEX
+                    }
                 )
             }
         },
@@ -304,6 +326,7 @@ internal fun BiometricsToggleEnabledWalletBodyPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
+@Preview(locale = "CY")
 @Composable
 internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
     GdsTheme {
@@ -324,9 +347,11 @@ internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
     }
 }
 
-private const val TOP_BAR_TITLE_INDEX = -19f
+private const val TOP_BAR_TITLE_INDEX = -20f
+private const val TOP_BAR_ICON_INDEX = -11f
 private const val BIO_TOGGLE_INDEX = -18f
 private const val LIST_INDEX = -16f
 private const val CONTENT_INDEX1 = -15f
-private const val SUBTITLE_INDEX = -14f
-private const val CONTENT_INDEX2 = -13f
+private const val CONTENT_INDEX2 = -14f
+private const val SUBTITLE_INDEX = -13f
+private const val CONTENT_INDEX3 = -12f

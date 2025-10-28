@@ -72,7 +72,7 @@ fun LoadingBody() {
                 .padding(bottom = mediumPadding)
                 .semantics { hideFromAccessibility() }
                 .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
-            color = colorScheme.primary,
+            color = colorScheme.background,
             trackColor = colorScheme.secondary
         )
         Text(

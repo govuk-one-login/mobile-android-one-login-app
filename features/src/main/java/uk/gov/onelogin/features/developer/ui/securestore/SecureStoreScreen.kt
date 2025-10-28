@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.theme.m3.defaultColors
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
@@ -39,7 +40,8 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                     modifier = Modifier.weight(1F),
                     text = "Override Delete Wallet Data",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
                 )
                 Switch(
                     checked = overrideWallet,
@@ -55,7 +57,8 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                     modifier = Modifier.weight(1F),
                     text = "Enable local data deletion fail",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
                 )
                 Switch(
                     checked = enableDeletionFail,
