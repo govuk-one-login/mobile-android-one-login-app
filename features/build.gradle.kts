@@ -19,6 +19,7 @@ plugins {
 
 apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
 apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
+apply(from = rootProject.file("gradle/snapshot-test-filter.gradle.kts"))
 
 android {
     namespace = "uk.gov.android.onelogin.features"
@@ -172,7 +173,8 @@ dependencies {
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.tooling.preview,
         libs.bundles.about.libraries,
-        libs.kotlinx.datetime
+        libs.kotlinx.datetime,
+        libs.androidx.compose.material.icons
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

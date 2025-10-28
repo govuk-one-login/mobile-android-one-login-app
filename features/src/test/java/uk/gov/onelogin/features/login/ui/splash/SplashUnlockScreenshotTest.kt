@@ -10,7 +10,7 @@ import uk.gov.onelogin.features.BaseScreenshotTest
 import uk.gov.onelogin.features.login.ui.signin.splash.UnlockScreenPreview
 
 @RunWith(Parameterized::class)
-class SplashScreenshotUnlockTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SplashUnlockScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         UnlockScreenPreview()
     }

@@ -1,4 +1,5 @@
 import com.android.build.api.variant.BuildConfigField
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -65,8 +66,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
     }
     buildFeatures {
         compose = true
@@ -142,34 +145,44 @@ android {
 
 androidComponents {
     onVariants {
-        if (it.buildType == "debug") {
-            if (it.flavorName == "build") {
-                it.buildConfigFields.put(
-                    "AppCheckDebugSecret",
-                    BuildConfigField(
-                        "String",
-                        "\"" + rootProject.ext["debugBuildAppCheckToken"] as String + "\"",
-                        "debug token"
-                    )
-                )
-            } else if (it.flavorName == "staging") {
-                it.buildConfigFields.put(
-                    "AppCheckDebugSecret",
-                    BuildConfigField(
-                        "String",
-                        "\"" + rootProject.ext["debugStagingAppCheckToken"] as String + "\"",
-                        "debug token"
-                    )
-                )
-            } else {
-                it.buildConfigFields.put(
-                    "AppCheckDebugSecret",
-                    BuildConfigField(
-                        "String",
-                        "\"\"",
-                        "debug token"
-                    )
-                )
+        it.buildType?.let { builtType ->
+            if (builtType == "debug") {
+                it.flavorName?.let { flavourName ->
+                    when (flavourName) {
+                        "build" -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"" + rootProject.ext["debugBuildAppCheckToken"]
+                                        as String + "\"",
+                                    "debug token"
+                                )
+                            )
+                        }
+                        "staging" -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"" + rootProject.ext["debugStagingAppCheckToken"]
+                                        as String + "\"",
+                                    "debug token"
+                                )
+                            )
+                        }
+                        else -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"\"",
+                                    "debug token"
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }
