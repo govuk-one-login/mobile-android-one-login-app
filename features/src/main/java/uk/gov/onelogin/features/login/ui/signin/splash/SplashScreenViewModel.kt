@@ -9,6 +9,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
@@ -21,12 +22,15 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
+import uk.gov.onelogin.features.signout.domain.SignOutError
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLocalLogin: HandleLocalLogin,
     private val appInfoService: AppInfoService,
+    private val signOutUseCase: SignOutUseCase,
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore
 ) : ViewModel(), DefaultLifecycleObserver {
     private val _showUnlock = MutableStateFlow(false)
@@ -34,6 +38,20 @@ class SplashScreenViewModel @Inject constructor(
 
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading
+
+    private val _deleteData = MutableStateFlow(false)
+
+    init {
+        viewModelScope.launch {
+            _deleteData.collectLatest {
+                if (it) {
+                    handleDeletingAllData()
+                    nextScreen(LoginRoutes.AnalyticsOptIn)
+                    _deleteData.value = false
+                }
+            }
+        }
+    }
 
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
@@ -46,8 +64,9 @@ class SplashScreenViewModel @Inject constructor(
                             nextScreen(SignOutRoutes.Info)
                         }
 
-                        LocalAuthStatus.ManualSignIn ->
-                            nextScreen(LoginRoutes.Welcome)
+                        LocalAuthStatus.ManualSignIn -> {
+                            _deleteData.value = true
+                        }
 
                         is LocalAuthStatus.Success ->
                             nextScreen(MainNavRoutes.Start)
@@ -114,6 +133,14 @@ class SplashScreenViewModel @Inject constructor(
         } else {
             navigator.goBack()
             navigator.navigate(route)
+        }
+    }
+
+    private suspend fun handleDeletingAllData() {
+        try {
+            signOutUseCase.invoke()
+        } catch (e: SignOutError) {
+            navigator.navigate(SignOutRoutes.Info)
         }
     }
 }

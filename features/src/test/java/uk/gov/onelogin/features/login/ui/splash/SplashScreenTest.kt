@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,6 +42,7 @@ import uk.gov.onelogin.features.login.ui.signin.splash.UnlockScreenPreview
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class SplashScreenTest : FragmentActivityTestCase() {
@@ -49,6 +51,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var appInfoService: AppInfoService
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
+    private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
     private var repository: OptInRepository = mock()
@@ -68,11 +71,13 @@ class SplashScreenTest : FragmentActivityTestCase() {
         navigator = mock()
         appInfoService = mock()
         autoInitialiseSecureStore = mock()
+        signOutUseCase = mock()
         viewModel =
             SplashScreenViewModel(
                 navigator,
                 handleLocalLogin,
                 appInfoService,
+                signOutUseCase,
                 autoInitialiseSecureStore
             )
         analytics = mock()
@@ -140,7 +145,8 @@ class SplashScreenTest : FragmentActivityTestCase() {
 
         // Then
         verify(navigator).goBack()
-        verify(navigator).navigate(LoginRoutes.Welcome, false)
+        runBlocking { verify(signOutUseCase).invoke() }
+        verify(navigator).navigate(LoginRoutes.AnalyticsOptIn, false)
     }
 
     @Test

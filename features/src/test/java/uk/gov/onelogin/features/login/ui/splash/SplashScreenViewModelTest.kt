@@ -6,6 +6,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
@@ -27,6 +28,7 @@ import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -36,17 +38,23 @@ class SplashScreenViewModelTest {
     private val mockLifeCycleOwner: LifecycleOwner = mock()
     private val mockActivity: FragmentActivity = mock()
     private val mockAppInfoService: AppInfoService = mock()
+    private val mockSignOutUseCase: SignOutUseCase = mock()
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
 
     private val data = uk.gov.onelogin.features.TestUtils.appInfoData
 
-    private val viewModel =
-        SplashScreenViewModel(
+    private lateinit var viewModel: SplashScreenViewModel
+
+    @BeforeEach
+    fun setup() {
+        viewModel = SplashScreenViewModel(
             mockNavigator,
             mockHandleLocalLogin,
             mockAppInfoService,
+            mockSignOutUseCase,
             mockAutoInitialiseSecureStore
         )
+    }
 
     @Test
     fun loginFailsWithSecureStoreError() =
@@ -108,7 +116,8 @@ class SplashScreenViewModelTest {
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(LoginRoutes.Welcome, false)
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
         }
 
     @Test
