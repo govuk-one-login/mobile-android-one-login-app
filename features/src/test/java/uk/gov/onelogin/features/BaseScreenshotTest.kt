@@ -35,7 +35,8 @@ abstract class BaseScreenshotTest(
                 locale = locale
             ),
             renderingMode = SHRINK,
-            showSystemUi = false
+            showSystemUi = false,
+            maxPercentDifference = 0.1
         )
 
     @Test
