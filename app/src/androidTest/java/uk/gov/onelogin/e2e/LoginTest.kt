@@ -34,6 +34,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -263,10 +264,7 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() {
-        runBlocking {
-            setPersistentId()
-        }
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
@@ -276,6 +274,7 @@ class LoginTest : TestCase() {
 
         startApp()
         clickOptOut()
+        setPersistentId()
         clickLogin()
 
         val authorizeUrl = Uri.parse(
