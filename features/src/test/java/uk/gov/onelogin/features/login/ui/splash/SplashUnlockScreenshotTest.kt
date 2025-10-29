@@ -7,12 +7,12 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.login.ui.signin.splash.LoadingSplashScreenPreview
+import uk.gov.onelogin.features.login.ui.signin.splash.UnlockScreenPreview
 
 @RunWith(Parameterized::class)
-class SplashScreenshotLoadingTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SplashUnlockScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        LoadingSplashScreenPreview()
+        UnlockScreenPreview()
     }
 
     companion object {
