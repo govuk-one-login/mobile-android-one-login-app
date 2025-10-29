@@ -95,6 +95,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: instrumentation-test-coverage
+          path: "**/reports/coverage/**/*.xml"
 
       - name: Clean workspace
         if: always()
@@ -134,6 +135,12 @@ jobs:
         with:
           artifact-name: unit-test-coverage
 
+      - name: Upload jars
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: jars
+          path: "**/build/**/*.jar"
+
       - name: Clean workspace
         if: always()
         uses: ./config/actions/clean-workspace
@@ -159,6 +166,21 @@ jobs:
 
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
+
+      - name: Download jars
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+        with:
+          name: jars
+
+      - name: Download unit test coverage reports
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+        with:
+          name: unit-test-coverage
+
+      - name: Download instrumentation test coverage reports
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+        with:
+          name: instrumentation-test-coverage
 
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis

@@ -4,6 +4,10 @@ inputs:
   artifact-name:
     description: 'Name for the uploaded artifact'
     required: true
+  path:
+    description: "Path for the reports"
+    required: false
+    default: "**/reports/jacoco/**/*.xml"
 
 runs:
   using: "composite"
