@@ -92,7 +92,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: instrumentation-test-coverage
           path: "**/reports/coverage/**/*.xml"
@@ -131,7 +131,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
+        uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: unit-test-coverage
 
