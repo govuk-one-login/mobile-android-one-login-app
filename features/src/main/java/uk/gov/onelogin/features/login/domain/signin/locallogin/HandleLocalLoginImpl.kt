@@ -63,7 +63,11 @@ class HandleLocalLoginImpl @Inject constructor(
                             )
                         } else {
                             // Finish the function here and break - this handles if one of the tokens is null unexpectedly
+                            println(
+                                "Refresh token - something went wrong with getting tokens from secure store"
+                            )
                             callback(LocalAuthStatus.ManualSignIn)
+                            return@getFromEncryptedSecureStore
                         }
                     }
                     // Call the lambda with the result (it doesn't necessarily mean it will be success
@@ -104,6 +108,7 @@ class HandleLocalLoginImpl @Inject constructor(
                         )
                     } else {
                         callback(LocalAuthStatus.ManualSignIn)
+                        return@getFromEncryptedSecureStore
                     }
                 }
                 callback(it)

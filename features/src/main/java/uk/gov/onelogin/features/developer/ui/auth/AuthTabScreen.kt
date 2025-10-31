@@ -63,6 +63,19 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider()
     RefreshTokenSection(tokens, viewModel)
     HorizontalDivider()
+    GdsButton(
+        text = stringResource(R.string.clear_secure_store_data_button),
+        buttonType = ButtonTypeV2.Primary(),
+        onClick = {
+            viewModel.clearSecureStoreData()
+        },
+        enabled = true,
+        modifier = Modifier.padding(
+            bottom = smallPadding,
+            start = smallPadding,
+            end = smallPadding
+        )
+    )
 }
 
 @Composable
@@ -109,10 +122,10 @@ private fun RefreshTokenSection(
         )
     )
     GdsButton(
-        text = stringResource(R.string.clear_secure_store_data_button),
+        text = stringResource(R.string.set_refresh_token_invalid),
         buttonType = ButtonTypeV2.Primary(),
         onClick = {
-            viewModel.clearSecureStoreData()
+            viewModel.makeRefreshTokenInvalid()
         },
         enabled = true,
         modifier = Modifier.padding(

@@ -15,6 +15,8 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
+import uk.gov.onelogin.core.tokens.domain.save.SaveTokensImpl
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 @HiltViewModel
@@ -23,6 +25,7 @@ class AuthTabScreenViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
     private val removeAllSecureStoreData: RemoveAllSecureStoreData,
+    private val saveToTokenSecureStore: SaveToTokenSecureStore,
     getEmail: GetEmail
 ) : ViewModel() {
     private val _happyHelloWorldResponse = mutableStateOf("")
@@ -79,6 +82,15 @@ class AuthTabScreenViewModel @Inject constructor(
     fun clearSecureStoreData() {
         viewModelScope.launch {
             removeAllSecureStoreData.clean()
+        }
+    }
+
+    fun makeRefreshTokenInvalid() {
+        viewModelScope.launch {
+            saveToTokenSecureStore.invoke(
+                key = AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+                value = ""
+            )
         }
     }
 

@@ -98,6 +98,22 @@ class TokenTabScreenViewModel @Inject constructor(
         )
     }
 
+    fun updateRefreshTokenToNull() {
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(REFRESH_TOKEN_EXPIRY_KEY, 0)
+            )
+        }
+    }
+
+    fun updateAccessTokenToNull() {
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(ACCESS_TOKEN_EXPIRY_KEY, 0)
+            )
+        }
+    }
+
     @OptIn(ExperimentalTime::class)
     fun setRefreshTokenExpireTo5Minutes() {
         saveTokenExpiry.saveExp(
