@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.auth
+package uk.gov.onelogin.features.settings.ui
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -9,9 +9,9 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class AuthErrorScreenshotNoWalletTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SettingsOptOutScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        AuthErrorScreenNoWalletPreview()
+        SettingsScreenOptOutShowBiometricsPreview()
     }
 
     companion object {

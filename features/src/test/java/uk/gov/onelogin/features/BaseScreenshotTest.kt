@@ -20,7 +20,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
  * Implementations may also use the [org.junit.runners.Parameterized] runner if requiring more than
  * one UI composition for screenshot purposes.
  *
- * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenShotTest
+ * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenshotTest
  */
 abstract class BaseScreenshotTest(
     nightMode: NightMode = NOTNIGHT,
@@ -35,7 +35,8 @@ abstract class BaseScreenshotTest(
                 locale = locale
             ),
             renderingMode = SHRINK,
-            showSystemUi = false
+            showSystemUi = false,
+            maxPercentDifference = 0.1
         )
 
     @Test

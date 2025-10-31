@@ -10,7 +10,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
-class GetTokenExpiryTest {
+class GetAccessTokenExpiryTest {
     private lateinit var useCase: GetTokenExpiry
 
     private val mockContext: Context = mock()
@@ -25,12 +25,12 @@ class GetTokenExpiryTest {
             )
         ).thenReturn(mockSharedPreferences)
 
-        useCase = GetTokenExpiryImpl(mockContext)
+        useCase = GetAccessTokenExpiryImpl(mockContext)
     }
 
     @Test
     fun `returns null when value does not exist`() {
-        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.TOKEN_EXPIRY_KEY, 0))
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
             .thenReturn(0)
 
         val result = useCase()
@@ -41,9 +41,8 @@ class GetTokenExpiryTest {
     @Test
     fun `returns expiry value successfully`() {
         val expectedExpiryValue = 123L
-        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.TOKEN_EXPIRY_KEY, 0)).thenReturn(
-            expectedExpiryValue
-        )
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(expectedExpiryValue)
 
         val result = useCase()
 

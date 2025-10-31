@@ -2,7 +2,7 @@ package uk.gov.onelogin.features.signout.domain
 
 import androidx.annotation.StringRes
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonType
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 
 @Suppress("LongParameterList")
 enum class SignOutUIState(
@@ -12,7 +12,7 @@ enum class SignOutUIState(
     val bullets: List<Int>,
     @StringRes val footer: Int,
     @StringRes val button: Int,
-    val buttonType: ButtonType
+    val buttonType: ButtonTypeV2
 ) {
     Wallet(
         title = R.string.app_signOutConfirmationTitle,
@@ -25,7 +25,7 @@ enum class SignOutUIState(
         ),
         footer = R.string.app_signOutConfirmationBody3,
         button = R.string.app_signOutAndDeleteAppDataButton,
-        buttonType = ButtonType.Error
+        buttonType = ButtonTypeV2.Destructive()
     ),
     NoWallet(
         title = R.string.app_signOutConfirmationTitle_no_wallet,
@@ -37,6 +37,6 @@ enum class SignOutUIState(
         ),
         footer = R.string.app_signOutConfirmationBody2_no_wallet,
         button = R.string.app_signOutButton_no_wallet,
-        buttonType = ButtonType.Primary
+        buttonType = ButtonTypeV2.Primary()
     )
 }

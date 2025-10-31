@@ -3,10 +3,10 @@ package uk.gov.onelogin.core.tokens.domain.retrieve
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
 
-class GetTokenExpiryImpl @Inject constructor(
+class GetAccessTokenExpiryImpl @Inject constructor(
     @ApplicationContext
     context: Context
 ) : GetTokenExpiry {
@@ -16,7 +16,7 @@ class GetTokenExpiryImpl @Inject constructor(
     )
 
     override fun invoke(): Long? {
-        val expiryTimestamp = sharedPrefs.getLong(TOKEN_EXPIRY_KEY, 0)
+        val expiryTimestamp = sharedPrefs.getLong(ACCESS_TOKEN_EXPIRY_KEY, 0)
         return if (expiryTimestamp == 0L) {
             null
         } else {

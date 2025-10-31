@@ -44,7 +44,7 @@ class BiometricsToggleScreenViewModel @Inject constructor(
             if (_biometricsEnabled.value) {
                 // Auto-initialising the secure store each time does not create any issues/ side effects
                 // This includes saving the tokens as well
-                autoInitialiseSecureStore.initialise()
+                autoInitialiseSecureStore.initialise(null)
             }
         }
     }

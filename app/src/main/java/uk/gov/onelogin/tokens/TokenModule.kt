@@ -20,8 +20,8 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStoreImpl
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiry
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokenExpiryImpl
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
+import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
 
 @Module
 @InstallIn(ViewModelComponent::class)

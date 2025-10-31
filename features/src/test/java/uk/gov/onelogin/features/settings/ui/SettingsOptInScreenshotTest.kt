@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class SettingsScreenshotOptInTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SettingsOptInScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SettingsScreenOptInNoShowBiometricsPreview()
     }

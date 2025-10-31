@@ -329,7 +329,7 @@ class LoginTest : TestCase() {
 
         composeRule.waitForIdle()
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -346,7 +346,7 @@ class LoginTest : TestCase() {
         clickLogin()
 
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
-        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any())
+        verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -362,9 +362,9 @@ class LoginTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[3] as (Throwable) -> Unit).invoke(authenticationError)
+            (it.arguments[4] as (Throwable) -> Unit).invoke(authenticationError)
         }
         setupActivityForResult(
             Intent(
@@ -572,9 +572,9 @@ class LoginTest : TestCase() {
     }
 
     private fun mockGoodLogin() {
-        whenever(mockLoginSession.finalise(any(), any(), any(), any())).thenAnswer {
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
-            (it.arguments[2] as (TokenResponse) -> Unit).invoke(tokenResponse)
+            (it.arguments[3] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
     }
 
@@ -613,7 +613,8 @@ class LoginTest : TestCase() {
                 "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
                 "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
                 "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg"
+                "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg",
+            refreshToken = null
         )
     }
 }
