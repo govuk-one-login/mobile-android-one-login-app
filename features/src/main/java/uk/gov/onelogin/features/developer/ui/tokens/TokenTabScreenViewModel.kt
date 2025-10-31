@@ -25,6 +25,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 
+@Suppress("TooManyFunctions")
 @HiltViewModel
 class TokenTabScreenViewModel @Inject constructor(
     private val saveTokenExpiry: SaveTokenExpiry,
