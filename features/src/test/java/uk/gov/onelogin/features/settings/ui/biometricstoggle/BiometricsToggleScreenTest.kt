@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.settings.ui.biometricstoggle
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsToggleable
@@ -47,6 +46,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
 
     private val title = hasText(context.getString(R.string.app_biometricsToggleTitle))
     private val navIcon = hasContentDescription(context.getString(R.string.app_back_icon))
+    private val toggleLabel = hasText(context.getString(R.string.app_biometricsToggleLabel))
     private val toggle = hasTestTag(context.getString(R.string.optInSwitchTestTag))
     private val bulletListTitle = hasText(
         context.getString(R.string.app_biometricsToggleBody1Wallet)
@@ -94,7 +94,8 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         setContent()
 
         composeTestRule.apply {
-            onAllNodes(title).assertCountEquals(2)
+            onNode(title).assertIsDisplayed()
+            onNode(toggleLabel).assertIsDisplayed()
             onNode(navIcon).assertIsDisplayed().assertHasClickAction()
             onNode(toggle, useUnmergedTree = true).assertIsToggleable()
             onNode(bulletListTitle).assertIsDisplayed()
@@ -120,7 +121,8 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         setContent()
 
         composeTestRule.apply {
-            onAllNodes(title).assertCountEquals(2)
+            onNode(title).assertIsDisplayed()
+            onNode(toggleLabel).assertIsDisplayed()
             onNode(toggle, useUnmergedTree = true).assertIsToggleable()
             onNode(body1).assertIsDisplayed()
             onNode(body2).assertIsDisplayed()
@@ -220,7 +222,8 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-            onAllNodes(title).assertCountEquals(2)
+            onNode(title).assertIsDisplayed()
+            onNode(toggleLabel).assertIsDisplayed()
             onNode(navIcon).assertIsDisplayed().assertHasClickAction()
             onNode(toggle, useUnmergedTree = true).assertIsToggleable()
             onNode(bulletListTitle).assertIsDisplayed()
@@ -240,7 +243,8 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         }
 
         composeTestRule.apply {
-            onAllNodes(title).assertCountEquals(2)
+            onNode(title).assertIsDisplayed()
+            onNode(toggleLabel).assertIsDisplayed()
             onNode(toggle, useUnmergedTree = true).assertIsToggleable()
             onNode(body1).assertIsDisplayed()
             onNode(body2).assertIsDisplayed()

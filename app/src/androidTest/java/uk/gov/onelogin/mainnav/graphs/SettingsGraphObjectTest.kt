@@ -45,10 +45,10 @@ class SettingsGraphObjectTest : TestCase() {
             navController.setCurrentDestination(SettingsRoutes.BiometricsOptIn.getRoute())
         }
 
-        // Screen title and toggle label
-        composeTestRule.onAllNodesWithText(
+        // Screen title is displayed
+        composeTestRule.onNodeWithText(
             context.getString(R.string.app_biometricsToggleTitle),
             substring = true
-        ).assertCountEquals(2)
+        ).assertIsDisplayed()
     }
 }
