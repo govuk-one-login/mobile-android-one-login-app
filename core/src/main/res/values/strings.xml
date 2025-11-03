@@ -152,6 +152,10 @@
     <string name="app_helloworld_auth_failing_button" translatable="false">Auth Failing Hello World Call</string>
     <string name="app_helloworld_service_failing_button" translatable="false">Service Failing Hello World Call</string>
     <string name="check_refresh_token_saved_button" translatable="false">Check if refresh token is saved in the encrypted secure store</string>
+    <string name="clear_secure_store_data_button" translatable="false">Delete all data from the encrypted secure store</string>
+    <string name="set_refresh_token_invalid" translatable="false">Set refresh token to invalid format</string>
+    <string name="set_access_token_empty_button" translatable="false">Set Access Token to null</string>
+    <string name="set_refresh_token_empty_button" translatable="false">Set Refresh Token to null</string>
 
     <!-- Analytics Opt In -->
     <string name="app_analyticsPermissionTitle">Help improve the app by sharing analytics</string>

@@ -154,6 +154,10 @@ class WelcomeScreenViewModel @Inject constructor(
         navigator.navigate(ErrorRoutes.Offline)
     }
 
+    fun navigateToOptInAnalytics() {
+        navigator.navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
     fun stopLoading() {
         _loading.value = false
     }

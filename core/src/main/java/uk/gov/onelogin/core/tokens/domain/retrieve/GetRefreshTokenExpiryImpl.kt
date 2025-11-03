@@ -20,7 +20,6 @@ class GetRefreshTokenExpiryImpl @Inject constructor(
         return if (expiryTimestamp == 0L) {
             null
         } else {
-            println("Refresh Token Exp $expiryTimestamp")
             expiryTimestamp
         }
     }
