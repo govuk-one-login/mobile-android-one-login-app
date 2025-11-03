@@ -44,7 +44,7 @@
     <string name="app_biometricsToggleBullet1">mewngofnodi</string>
     <string name="app_biometricsToggleBullet2">gweld ac ychwanegu dogfennau</string>
     <string name="app_biometricsToggleBody2Wallet">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
-    <string name="app_biometricsToggleBody3Wallet">Os ydych yn troi biometreg i ffwrdd</string>
+    <string name="app_biometricsToggleBody3Wallet">Weithiau efallai y gofynnir i chi ddal i roi manylion eich GOV.UK One Login pan fyddwch yn mewngofnodi. Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
 
     <!-- Sign Out -->
     <string name="app_biometricsToggleBody4Wallet">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
