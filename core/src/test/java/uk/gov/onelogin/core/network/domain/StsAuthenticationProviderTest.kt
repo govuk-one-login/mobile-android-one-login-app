@@ -17,11 +17,11 @@ import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 
 class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
-    private val mockIsAccessTokenExpired: IsAccessTokenExpired = mock()
+    private val mockIsAccessTokenExpired: IsTokenExpired = mock()
     private val mockNavigator: Navigator = mock()
     private val logger = SystemLogger()
     private lateinit var stubHttpClient: GenericHttpClient

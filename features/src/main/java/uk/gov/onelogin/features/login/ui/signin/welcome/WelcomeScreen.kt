@@ -53,7 +53,6 @@ fun WelcomeScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult ->
-
             handleResult(result, viewModel, context)
         }
 

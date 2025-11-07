@@ -25,6 +25,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 
+@Suppress("TooManyFunctions")
 @HiltViewModel
 class TokenTabScreenViewModel @Inject constructor(
     private val saveTokenExpiry: SaveTokenExpiry,
@@ -96,6 +97,22 @@ class TokenTabScreenViewModel @Inject constructor(
                     .epochSecond
             )
         )
+    }
+
+    fun updateRefreshTokenToNull() {
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(REFRESH_TOKEN_EXPIRY_KEY, 0)
+            )
+        }
+    }
+
+    fun updateAccessTokenToNull() {
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(ACCESS_TOKEN_EXPIRY_KEY, 0)
+            )
+        }
     }
 
     @OptIn(ExperimentalTime::class)

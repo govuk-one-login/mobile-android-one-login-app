@@ -12,7 +12,6 @@ class SystemTimeProvider : TimeProvider {
         val result = Instant.now()
             .plus(THIRTY, ChronoUnit.DAYS)
             .epochSecond
-        println(result)
         return result
     }
 

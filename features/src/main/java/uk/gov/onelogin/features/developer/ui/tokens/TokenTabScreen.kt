@@ -90,6 +90,13 @@ private fun AccessTokenSection(
         )
     }
     ButtonRow(
+        text = stringResource(R.string.set_access_token_empty_button)
+    ) {
+        viewModel.updateAccessTokenToNull()
+        Toast.makeText(context, "Access token expiry set to null!", Toast.LENGTH_SHORT)
+            .show()
+    }
+    ButtonRow(
         text = stringResource(R.string.app_developer_reset_access_token_button)
     ) {
         viewModel.resetAccessTokenExp()
@@ -124,6 +131,13 @@ private fun RefreshTokenSection(
             text = "Refresh Token Expiry: ${viewModel.getRefreshTokenExp()}",
             color = MaterialTheme.colorScheme.onBackground
         )
+    }
+    ButtonRow(
+        text = stringResource(R.string.set_refresh_token_empty_button)
+    ) {
+        viewModel.updateRefreshTokenToNull()
+        Toast.makeText(context, "Refresh token expiry set to null!", Toast.LENGTH_SHORT)
+            .show()
     }
     ButtonRow(
         text = stringResource(R.string.app_developer_reset_refresh_token_button)
