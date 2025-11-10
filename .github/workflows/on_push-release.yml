@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   prepareForRelease:
-    name: Verify code base when pushed
+    name: Set-up for release
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
@@ -68,7 +68,7 @@ jobs:
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
   buildAndPublishRelease:
-    name: Verify code base when pushed
+    name: Publish release candidates to STG and INT
     needs: prepareForRelease
     runs-on: ubuntu-22.04
     environment: release
