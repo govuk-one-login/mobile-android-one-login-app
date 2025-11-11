@@ -4,7 +4,7 @@ import javax.inject.Inject
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.idchecksdkactivestate.isIdCheckSdkActive
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 
-interface CheckIdCheckSessionState {
+fun interface CheckIdCheckSessionState {
     fun isIdCheckActive(): Boolean
 }
 
