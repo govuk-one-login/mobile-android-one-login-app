@@ -20,7 +20,6 @@ class SaveTokensImpl @Inject constructor(
                 value = tokenResponse.idToken
             )
             refreshToken?.let {
-                println("Set Token + $it")
                 saveToTokenSecureStore(
                     key = AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
                     value = it

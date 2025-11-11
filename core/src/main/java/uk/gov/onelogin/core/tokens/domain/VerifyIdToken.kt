@@ -2,7 +2,6 @@ package uk.gov.onelogin.core.tokens.domain
 
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -26,7 +25,6 @@ class VerifyIdTokenImpl @Inject constructor(
     private val httpClient: GenericHttpClient,
     private val verifier: JwtVerifier,
     private val getEmail: GetEmail,
-
     private val logger: Logger
 ) : VerifyIdToken {
     override suspend fun invoke(
@@ -100,7 +98,6 @@ class VerifyIdTokenImpl @Inject constructor(
         return null
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
     private fun getKeyId(idToken: String): String? {
         try {
             val headerEncoded = idToken.split(".")[0]

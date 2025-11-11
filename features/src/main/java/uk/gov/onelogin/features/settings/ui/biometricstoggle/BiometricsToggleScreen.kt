@@ -116,7 +116,7 @@ private fun BiometricsToggleBody(
     Column(
         modifier = Modifier.padding(padding)
     ) {
-        BiometricsToggleRow(R.string.app_settingsBiometricsField, biometricsEnabled) {
+        BiometricsToggleRow(R.string.app_biometricsToggleLabel, biometricsEnabled) {
             toggleBiometrics()
             trackToggle(it)
         }
@@ -303,6 +303,7 @@ private fun BiometricsTopAppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
+@Preview(locale = "CY")
 @Composable
 internal fun BiometricsToggleEnabledWalletBodyPreview() {
     GdsTheme {

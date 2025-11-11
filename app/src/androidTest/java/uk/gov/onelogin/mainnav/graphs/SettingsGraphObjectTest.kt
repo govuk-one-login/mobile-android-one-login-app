@@ -1,8 +1,6 @@
 package uk.gov.onelogin.mainnav.graphs
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
@@ -45,10 +43,10 @@ class SettingsGraphObjectTest : TestCase() {
             navController.setCurrentDestination(SettingsRoutes.BiometricsOptIn.getRoute())
         }
 
-        // Screen title and toggle label
-        composeTestRule.onAllNodesWithText(
+        // Screen title is displayed
+        composeTestRule.onNodeWithText(
             context.getString(R.string.app_biometricsToggleTitle),
             substring = true
-        ).assertCountEquals(2)
+        ).assertIsDisplayed()
     }
 }

@@ -26,12 +26,14 @@ import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsView
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var handleLocalLogin: HandleLocalLogin
     private lateinit var navigator: Navigator
     private lateinit var appInfoService: AppInfoService
+    private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -47,11 +49,13 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         handleLocalLogin = mock()
         navigator = mock()
         appInfoService = mock()
+        signOutUseCase = mock()
         autoInitialiseSecureStore = mock()
         viewModel = SplashScreenViewModel(
             navigator,
             handleLocalLogin,
             appInfoService,
+            signOutUseCase,
             autoInitialiseSecureStore
         )
         analytics = mock()

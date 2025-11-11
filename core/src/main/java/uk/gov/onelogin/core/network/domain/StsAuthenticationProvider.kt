@@ -14,12 +14,14 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpired
+import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
+import uk.gov.onelogin.core.utils.AccessToken
 
 class StsAuthenticationProvider(
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
-    private val isAccessTokenExpired: IsAccessTokenExpired,
+    @AccessToken
+    private val isAccessTokenExpired: IsTokenExpired,
     private val httpClient: GenericHttpClient,
     private val navigator: Navigator,
     private val logger: Logger
