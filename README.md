@@ -15,7 +15,7 @@ This project uses a git-flow branching strategy, briefly:
     - The initial version number for the release is taken from the branch name; `v1.0.0`
 - Any required fixes for the release should be pull requested into the release branch
 - Once approval has been granted for the release to be published the release branch should be merged
-  into `main` with title `Merge pull request #681 from govuk-one-login/release/1.0.0`
+  into `main` with default title in format `Merge pull request #xxx from govuk-one-login/release/M.m.p`
 - The new tag will be pushed on the merge to `main` with the default merge title
 - `main` should then be merged back into `develop`
 
