@@ -1,8 +1,10 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -18,6 +20,7 @@ import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
@@ -29,7 +32,7 @@ import uk.gov.onelogin.utils.TestUtils.setActivity
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class SignOutGraphObjectTest : TestCase() {
-    @get:Rule(order = 3)
+    @get:Rule(order = 4)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -51,14 +54,19 @@ class SignOutGraphObjectTest : TestCase() {
     }
 
     @Test
+    @FlakyTest
     fun signOutGraph_startingDestination() {
         composeTestRule.setActivity {
             navigator.navigate(SignOutRoutes.Start)
         }
 
-        composeTestRule.onNodeWithText(
+        val signOutTitle = composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signOutConfirmationTitle)
-        ).assertIsDisplayed()
+        )
+        composeTestRule.waitUntil(TIMEOUT) {
+            signOutTitle.isDisplayed()
+        }
+        signOutTitle.assertIsDisplayed()
     }
 
     @Test

@@ -15,7 +15,7 @@ open class TestCase {
     @get:Rule(order = 2)
     var testNameRule: TestCaseNameWatcher = TestCaseNameWatcher()
 
-    @get:Rule(order = 4)
+    @get:Rule(order = 3)
     var flakyTestRule = FlakyTestRule()
 
     private var screenshotName: String? = null

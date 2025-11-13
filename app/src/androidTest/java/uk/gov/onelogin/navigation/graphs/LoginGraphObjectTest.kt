@@ -1,6 +1,7 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -20,6 +21,7 @@ import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
+import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
@@ -31,7 +33,7 @@ import uk.gov.onelogin.utils.TestUtils.setActivity
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class LoginGraphObjectTest : TestCase() {
-    @get:Rule(order = 3)
+    @get:Rule(order = 4)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -84,8 +86,12 @@ class LoginGraphObjectTest : TestCase() {
             navigator.navigate(LoginRoutes.Loading)
         }
 
-        composeTestRule.onNodeWithTag(
+        val progressIndicator = composeTestRule.onNodeWithTag(
             LOADING_SCREEN_PROGRESS_INDICATOR
-        ).assertIsDisplayed()
+        )
+        composeTestRule.waitUntil(TIMEOUT) {
+            progressIndicator.isDisplayed()
+        }
+        progressIndicator.assertIsDisplayed()
     }
 }

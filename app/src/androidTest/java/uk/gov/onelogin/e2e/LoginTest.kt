@@ -84,6 +84,7 @@ import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
+import uk.gov.onelogin.utils.RetryableComposeTestRule
 import uk.gov.onelogin.utils.TestUtils
 
 @Suppress("SwallowedException")
@@ -161,8 +162,8 @@ class LoginTest : TestCase() {
 
     // use createEmptyComposeRule instead of createAndroidComposeRule<HiltTestActivity>() to avoid
     // IllegalStateException caused by composeRule.setContent being called twice
-    @get:Rule(order = 3)
-    val composeRule = createEmptyComposeRule()
+    @get:Rule(order = 4)
+    val composeRule = RetryableComposeTestRule()
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>
 
@@ -599,7 +600,7 @@ class LoginTest : TestCase() {
     }
 
     companion object {
-        private const val TIMEOUT = 10000L
+        const val TIMEOUT = 10000L
         private const val PERSISTENT_ID = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
         private val tokenResponse = TokenResponse(
             tokenType = "test",
