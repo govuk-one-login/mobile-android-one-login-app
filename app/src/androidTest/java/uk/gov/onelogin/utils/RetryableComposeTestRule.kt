@@ -20,7 +20,8 @@ import org.junit.runners.model.Statement
  * This is necessary because there is currently no ability to reset the
  * [AndroidComposeUiTestEnvironment] in the standard [AndroidComposeTestRule].
  *
- * @param ruleProvider Function to create the underlying ComposeTestRule rule, defaults to [createEmptyComposeRule]
+ * @param ruleProvider Function to create the underlying ComposeTestRule rule, defaults to
+ * [createEmptyComposeRule]
  */
 class RetryableComposeTestRule constructor(
     private val ruleProvider: () -> ComposeTestRule = ::createEmptyComposeRule
@@ -52,8 +53,8 @@ class RetryableComposeTestRule constructor(
         useUnmergedTree: Boolean
     ): SemanticsNodeInteractionCollection = rule.onAllNodes(matcher, useUnmergedTree)
 
-    override fun onNode(matcher: SemanticsMatcher, useUnmergedTree: Boolean): SemanticsNodeInteraction =
-        rule.onNode(matcher, useUnmergedTree)
+    override fun onNode(matcher: SemanticsMatcher, useUnmergedTree: Boolean):
+        SemanticsNodeInteraction = rule.onNode(matcher, useUnmergedTree)
 
     override fun registerIdlingResource(idlingResource: IdlingResource) =
         rule.registerIdlingResource(idlingResource)
