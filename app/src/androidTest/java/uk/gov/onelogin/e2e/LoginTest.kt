@@ -161,7 +161,7 @@ class LoginTest : TestCase() {
 
     // use createEmptyComposeRule instead of createAndroidComposeRule<HiltTestActivity>() to avoid
     // IllegalStateException caused by composeRule.setContent being called twice
-    @get:Rule(order = 4)
+    @get:Rule(order = 3)
     val composeRule = RetryableComposeTestRule()
 
     private lateinit var scenario: ActivityScenario<HiltTestActivity>

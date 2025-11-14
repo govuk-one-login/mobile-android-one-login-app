@@ -139,7 +139,7 @@ class LoginRecoverableErrorTest : TestCase() {
 
     private val appInfoData = TestUtils.appInfoData
 
-    @get:Rule(order = 4)
+    @get:Rule(order = 3)
     val composeRule = createAndroidComposeRule<HiltTestActivity>()
 
     @Before
