@@ -16,7 +16,6 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.core.R
@@ -32,11 +31,9 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @RunWith(AndroidJUnit4::class)
 class BiometricsToggleScreenTest : FragmentActivityTestCase() {
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var navigator: Navigator
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
@@ -49,32 +46,27 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private val toggleLabel = hasText(context.getString(R.string.app_biometricsToggleLabel))
     private val toggle = hasTestTag(context.getString(R.string.optInSwitchTestTag))
     private val bulletListTitle = hasText(
-        context.getString(R.string.app_biometricsToggleBody1Wallet)
+        context.getString(R.string.app_biometricsToggleBody1)
     )
     private val bullet1 = hasText(context.getString(R.string.app_biometricsToggleBullet1))
     private val bullet2 = hasText(context.getString(R.string.app_biometricsToggleBullet2))
     private val body2Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody2Wallet)
+        context.getString(R.string.app_biometricsToggleBody2)
     )
     private val body3Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody3Wallet)
+        context.getString(R.string.app_biometricsToggleBody3)
     )
     private val subtitle = hasText(context.getString(R.string.app_biometricsToggleSubtitle))
     private val body4Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody4Wallet)
+        context.getString(R.string.app_biometricsToggleBody4)
     )
-    private val body1 = hasText(context.getString(R.string.app_biometricsToggleBody1))
-    private val body2 = hasText(context.getString(R.string.app_biometricsToggleBody2))
-    private val body3 = hasText(context.getString(R.string.app_biometricsToggleBody3))
 
     @Before
     fun setup() {
-        featureFlags = mock()
         localAuthManager = mock()
         navigator = mock()
         autoInitialiseSecureStore = mock()
         viewModel = BiometricsToggleScreenViewModel(
-            featureFlags = featureFlags,
             localAuthManager = localAuthManager,
             navigator = navigator,
             autoInitialiseSecureStore = autoInitialiseSecureStore
@@ -85,7 +77,6 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun bodyDisplayedWallet() {
-        whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(true)
         val event = ViewEvent.Screen(
             name = context.getEnglishString(R.string.app_biometricsToggleTitle),
             id = context.getEnglishString(R.string.biometrics_toggle_wallet_id),
@@ -105,29 +96,6 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             onNode(body3Wallet).assertIsDisplayed()
             onNode(subtitle).performScrollTo().assertIsDisplayed()
             onNode(body4Wallet).performScrollTo().assertIsDisplayed()
-        }
-
-        verify(logger).logEventV3Dot1(event)
-    }
-
-    @Test
-    fun bodyDisplayedNoWallet() {
-        whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(false)
-        val event = ViewEvent.Screen(
-            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-            id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id),
-            params = requiredParams
-        )
-        setContent()
-
-        composeTestRule.apply {
-            onNode(title).assertIsDisplayed()
-            onNode(toggleLabel).assertIsDisplayed()
-            onNode(toggle, useUnmergedTree = true).assertIsToggleable()
-            onNode(body1).assertIsDisplayed()
-            onNode(body2).assertIsDisplayed()
-            onNode(subtitle).assertIsDisplayed()
-            onNode(body3).assertIsDisplayed()
         }
 
         verify(logger).logEventV3Dot1(event)
@@ -233,23 +201,6 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             onNode(body3Wallet).assertIsDisplayed()
             onNode(subtitle).performScrollTo().assertIsDisplayed()
             onNode(body4Wallet).performScrollTo().assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun testNoWalletPreview() {
-        composeTestRule.setContent {
-            BiometricsToggleDisabledNoWalletBodyPreview()
-        }
-
-        composeTestRule.apply {
-            onNode(title).assertIsDisplayed()
-            onNode(toggleLabel).assertIsDisplayed()
-            onNode(toggle, useUnmergedTree = true).assertIsToggleable()
-            onNode(body1).assertIsDisplayed()
-            onNode(body2).assertIsDisplayed()
-            onNode(subtitle).assertIsDisplayed()
-            onNode(body3).assertIsDisplayed()
         }
     }
 

@@ -16,9 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.collections.immutable.toPersistentList
+import kotlinx.collections.immutable.persistentListOf
+import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
@@ -31,11 +34,9 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
-import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
-import uk.gov.onelogin.features.signout.domain.SignOutUIState
 
 @Composable
 fun SignOutScreen(
@@ -53,7 +54,6 @@ fun SignOutScreen(
             }
         } else {
             SignOutBody(
-                uiState = viewModel.uiState,
                 onClose = {
                     analyticsViewModel.trackCloseIcon()
                     viewModel.goBack()
@@ -67,7 +67,7 @@ fun SignOutScreen(
                     viewModel.signOut()
                 }
             )
-            analyticsViewModel.trackSignOutView(viewModel.uiState)
+            analyticsViewModel.trackSignOutView()
         }
     }
 }
@@ -75,7 +75,6 @@ fun SignOutScreen(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 internal fun SignOutBody(
-    uiState: SignOutUIState,
     onPrimary: () -> Unit,
     onClose: () -> Unit,
     onBack: () -> Unit
@@ -84,7 +83,6 @@ internal fun SignOutBody(
         onDismissRequest = onClose,
         onBack = onBack
     ) { scrollState ->
-        val bulletList = uiState.bullets.map { ListItem(stringResource(it)) }
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = smallPadding)) {
             Column(
                 modifier = Modifier.verticalScroll(scrollState)
@@ -93,26 +91,25 @@ internal fun SignOutBody(
                     .focusGroup()
             ) {
                 GdsHeading(
-                    text = stringResource(id = uiState.title),
+                    text = stringResource(id = R.string.app_signOutConfirmationTitle),
                     textAlign = GdsHeadingAlignment.LeftAligned
                 )
                 Text(
-                    text = stringResource(id = uiState.header),
+                    text = stringResource(id = R.string.app_signOutConfirmationBody1),
                     modifier = Modifier.padding(vertical = smallPadding)
                 )
-                val listTitle = uiState.subTitle?.let { stringResource(it) }
+                val listTitle = stringResource(R.string.app_signOutConfirmationSubtitle)
                 GdsBulletedList(
-                    bulletListItems = bulletList.toPersistentList(),
-                    title = listTitle?.let {
-                        ListTitle(
-                            text = listTitle,
-                            titleType = TitleType.Text
-                        )
-                    },
+                    bulletListItems = persistentListOf(
+                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet1)),
+                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet2)),
+                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet3))
+                    ),
+                    title = ListTitle(text = listTitle, titleType = TitleType.Text),
                     modifier = Modifier.padding()
                 )
                 Text(
-                    text = stringResource(uiState.footer),
+                    text = stringResource(R.string.app_signOutConfirmationBody3),
                     modifier = Modifier.padding(top = smallPadding)
                 )
             }
@@ -121,8 +118,8 @@ internal fun SignOutBody(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GdsButton(
-                    text = stringResource(uiState.button),
-                    buttonType = uiState.buttonType,
+                    text = stringResource(R.string.app_signOutAndDeleteAppDataButton),
+                    buttonType = ButtonTypeV2.Destructive(),
                     onClick = onPrimary,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -132,26 +129,12 @@ internal fun SignOutBody(
 }
 
 @ExcludeFromJacocoGeneratedReport
+@PreviewScreenSizes
 @Preview
-@Composable
-internal fun SignOutWalletPreview() {
-    GdsTheme {
-        SignOutBody(
-            uiState = SignOutUIState.Wallet,
-            onPrimary = {},
-            onClose = {},
-            onBack = {}
-        )
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@ScreenPreview
 @Composable
 internal fun SignOutPreview() {
     GdsTheme {
         SignOutBody(
-            uiState = SignOutUIState.NoWallet,
             onPrimary = {},
             onClose = {},
             onBack = {}

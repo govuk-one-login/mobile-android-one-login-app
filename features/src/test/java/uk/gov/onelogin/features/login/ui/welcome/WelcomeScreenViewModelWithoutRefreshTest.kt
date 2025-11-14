@@ -21,8 +21,6 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
@@ -49,7 +47,6 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
@@ -69,7 +66,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
     private lateinit var mockAutoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var mockVerifyIdToken: VerifyIdToken
     private lateinit var mockNavigator: Navigator
-    private lateinit var mockFeatureFlags: FeatureFlags
     private lateinit var mockOnlineChecker: OnlineChecker
     private lateinit var mockSaveTokens: SaveTokens
     private lateinit var mockSaveTokenExpiry: SaveTokenExpiry
@@ -698,29 +694,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
     }
 
     @Test
-    fun `When login successful and wallet disabled - show BioOptIn`() = runTest {
-        createMocks(true, true)
-        (mockFeatureFlags as InMemoryFeatureFlags).minus(WalletFeatureFlag.ENABLED)
-        val mockIntent: Intent = mock()
-        val mockUri: Uri = mock()
-
-        whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-            }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-            .thenReturn(true)
-
-        viewModel.handleActivityResult(
-            mockIntent,
-            activity = mockFragmentActivity
-        )
-
-        verify(localAuthManager).enforceAndSet(eq(false), any(), any(), any())
-    }
-
-    @Test
     fun `check nav to dev panel calls navigator correctly`() {
         createMocks()
 
@@ -779,13 +752,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
         mockHandleRemoteLogin = mock()
         mockHandleLoginRedirect = mock()
         mockSignOutUseCase = mock()
-        mockFeatureFlags = if (noFeatureFlags) {
-            InMemoryFeatureFlags()
-        } else {
-            InMemoryFeatureFlags(
-                WalletFeatureFlag.ENABLED
-            )
-        }
         mockOnlineChecker = mock()
         mockCounter = mock()
 
@@ -804,7 +770,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 mockHandleLoginRedirect,
                 mockSignOutUseCase,
                 logger,
-                mockFeatureFlags,
                 mockOnlineChecker,
                 mockCounter
             )
