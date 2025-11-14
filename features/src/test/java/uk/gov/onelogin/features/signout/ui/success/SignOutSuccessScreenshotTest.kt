@@ -25,6 +25,8 @@ class SignOutSuccessScreenshotTest(
         fun values(): Iterable<Array<Any>> {
             return arrayListOf(
                 arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_EN),
                 arrayOf(NIGHT, LOCALE_CY)
             )
         }

@@ -40,7 +40,6 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsViewModel: SignOutAnalyticsViewModel
     private lateinit var title: SemanticsMatcher
     private lateinit var button: SemanticsMatcher
-    private lateinit var noWalletButton: SemanticsMatcher
     private lateinit var closeButton: SemanticsMatcher
     private val logger = SystemLogger()
 

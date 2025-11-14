@@ -186,7 +186,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     @Test
     fun testWalletPreview() {
         composeTestRule.setContent {
-            BiometricsToggleEnabledWalletBodyPreview()
+            BiometricsToggleBodyPreview()
         }
 
         composeTestRule.apply {

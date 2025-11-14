@@ -728,7 +728,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
         assertFalse(viewModel.loading.value)
     }
 
-    private fun createMocks(isLocalAuthMocked: Boolean = false, noFeatureFlags: Boolean = false) {
+    private fun createMocks(isLocalAuthMocked: Boolean = false) {
         mockFragmentActivity = mock()
         localAuthPreferenceRepo = mock()
         deviceBiometricsManager = mock()

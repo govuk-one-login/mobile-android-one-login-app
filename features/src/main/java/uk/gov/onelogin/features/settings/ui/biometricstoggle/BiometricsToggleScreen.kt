@@ -272,7 +272,7 @@ private fun BiometricsTopAppBar(
 @ScreenPreview
 @Preview(locale = "CY")
 @Composable
-internal fun BiometricsToggleEnabledWalletBodyPreview() {
+internal fun BiometricsToggleBodyPreview() {
     GdsTheme {
         Scaffold(
             topBar = {
