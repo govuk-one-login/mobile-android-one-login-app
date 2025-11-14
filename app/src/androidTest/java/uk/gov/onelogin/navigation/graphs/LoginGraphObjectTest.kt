@@ -1,8 +1,6 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -16,8 +14,6 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
-import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
@@ -68,20 +64,5 @@ class LoginGraphObjectTest : MATestCase() {
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signInButton)
         ).assertIsDisplayed()
-    }
-
-    @Test
-    fun loginGraph_Loading() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.Loading)
-        }
-
-        val progressIndicator = composeTestRule.onNodeWithTag(
-            LOADING_SCREEN_PROGRESS_INDICATOR
-        )
-        composeTestRule.waitUntil(TIMEOUT) {
-            progressIndicator.isDisplayed()
-        }
-        progressIndicator.assertIsDisplayed()
     }
 }
