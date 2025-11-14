@@ -186,8 +186,7 @@ class WelcomeScreenViewModel @Inject constructor(
         savePersistentId()
 
         localAuthManager.enforceAndSet(
-            // Wallet is now permanently turned on - work to remove this will come in a future Sprint/ ticket
-            // This was required as a strategic fix for a P4 incident https://gds.slack.com/archives/C063480CCCT/p1763118384096029
+            // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
             true,
             false,
             activity = activity,
