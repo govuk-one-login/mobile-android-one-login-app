@@ -110,21 +110,6 @@ class MainNavScreenTest : TestCase() {
     }
 
     @Test
-    fun checkWalletNotDisplayed() {
-        whenever(featureFlags[any()]).thenReturn(false)
-        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
-        setupUi()
-        composeTestRule.onAllNodes(homeTab)[1].isDisplayed() // we have double match of `Home` text
-        composeTestRule.onNode(walletTab).assertDoesNotExist()
-        composeTestRule.onNode(settingsTab).isDisplayed()
-
-        assertEquals(
-            BottomNavDestination.Home.key,
-            navController.currentDestination?.route
-        )
-    }
-
-    @Test
     fun goesToSettingsOnClick() {
         whenever(featureFlags[any()]).thenReturn(false)
         whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)

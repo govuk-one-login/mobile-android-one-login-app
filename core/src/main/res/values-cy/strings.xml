@@ -31,23 +31,18 @@
     <string name="app_addDocumentsLink">Ychwanegu dogfennau at eich ap</string>
     <string name="app_termsAndConditionsLink">Telerau ac amodau</string>
 
-    <!-- Biometrics Toggle Opt In Screen NO Wallet -->
+    <!-- Biometrics Toggle Opt In Screen -->
     <string name="app_biometricsToggleTitle">Biometreg</string>
     <string name="app_biometricsToggleLabel">Defnyddiwch biometreg</string>
     <string name="app_biometricsToggleBody1">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
-    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
     <string name="app_biometricsToggleSubtitle">Os ydych yn troi biometreg i ffwrdd</string>
-    <string name="app_biometricsToggleBody3">Weithiau efallai y gofynnir i chi ddal i roi manylion eich GOV.UK One Login pan fyddwch yn mewngofnodi. Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
-
-    <!-- Biometrics Toggle Opt In Screen Wallet -->
-    <string name="app_biometricsToggleBody1Wallet">Gallwch ddefnyddio eich wyneb, eich olion bysedd neu\'ch iris i:</string>
     <string name="app_biometricsToggleBullet1">mewngofnodi</string>
     <string name="app_biometricsToggleBullet2">gweld ac ychwanegu dogfennau</string>
-    <string name="app_biometricsToggleBody2Wallet">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
-    <string name="app_biometricsToggleBody3Wallet">Weithiau efallai y gofynnir i chi ddal i roi manylion eich GOV.UK One Login pan fyddwch yn mewngofnodi. Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
+    <string name="app_biometricsToggleBody2">Pan fyddwch yn defnyddio biometreg, bydd unrhyw un sy\'n gallu datgloi eich ffôn gyda\'u biometreg neu gyda phin neu batrwm eich ffôn yn gallu cael mynediad i\'ch ap</string>
+    <string name="app_biometricsToggleBody3">Weithiau efallai y gofynnir i chi ddal i roi manylion eich GOV.UK One Login pan fyddwch yn mewngofnodi. Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
+    <string name="app_biometricsToggleBody4">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
 
     <!-- Sign Out -->
-    <string name="app_biometricsToggleBody4Wallet">Os ydych yn troi biometreg i ffwrdd, byddwch angen defnyddio eich pin neu batrwm i weld neu ychwanegu dogfennau.</string>
     <string name="app_signOutConfirmationTitle">Ydych chi\'n siwr eich bod chi eisiau allgofnodi?</string>
     <string name="app_signOutConfirmationBody1">Os byddwch yn allgofnodi, bydd y wybodaeth a gedwir yn eich ap yn cael ei dileu. Mae hyn er mwyn lleihau\'r risg y bydd rhywun arall yn gweld eich gwybodaeth.</string>
     <string name="app_signOutConfirmationSubtitle">Mae hyn yn golygu:</string>
@@ -62,21 +57,11 @@
     <string name="app_youveBeenSignedOutBody2">Mae hyn er mwyn cadw\'ch gwybodaeth yn ddiogel.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
-    <string name="app_signOutConfirmationTitle_no_wallet">Ydych chi\'n siŵr eich bod eisiau allgofnodi?</string>
-    <string name="app_signOutConfirmationBody1_no_wallet">Bydd allgofnodi yn difodd eich dewisiadau am:</string>
-    <string name="app_signOutConfirmationBullet1_no_wallet">defnyddio biometreg neu bin neu batrwm eich ffôn i ddatgloi\'r ap</string>
-    <string name="app_signOutConfirmationBullet2_no_wallet">rhannu dadansoddeg am sut rydych yn defnyddio\'r ap</string>
-    <string name="app_signOutConfirmationBody2_no_wallet">Gofynnir i chi osod y dewisiadau hyn eto y tro nesaf y byddwch yn mewngofnodi.</string>
-    <string name="app_signOutButton_no_wallet">Allgofnodi a dileu dewisiadau</string>
-
+    <!-- Sign Out Confirmation -->
     <string name="app_signOutTitle">Rydych wedi allfognodi</string>
     <string name="app_signOutSuccessButton">Parhau</string>
-    <!-- Without Wallet -->
-    <string name="app_signOutBody">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae eich dewisiadau ap wedi\'u hailosod.</string>
-    <string name="app_signOutBody2">Mae angen i chi fewngofnodi a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap.</string>
-    <!-- With Wallet -->
-    <string name="app_signOutWalletBody">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn yr ap hwn wedi\'u dileu ac mae eich dewisiadau wedi\'u hailosod.</string>
-    <string name="app_signOutWalletBody2">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
+    <string name="app_signOutBody">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn yr ap hwn wedi\'u dileu ac mae eich dewisiadau wedi\'u hailosod.</string>
+    <string name="app_signOutBody2">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
 
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
@@ -131,9 +116,6 @@
     <!--  Re-Auth Error  -->
     <string name="app_dataDeletedErrorTitle">Mae rhywbeth wedi mynd o\'i le</string>
     <string name="app_dataDeletedButton">Mewngofnodi</string>
-    <string name="app_dataDeletedBody1_no_wallet">Ni allem gadarnhau eich manylion mewngofnodi.</string>
-    <string name="app_dataDeletedBody2_no_wallet">Er mwyn cadw\'ch gwybodaeth yn ddiogel, mae eich dewis o ddefnyddio biometreg i ddatgloi\'r ap wedi\'i ailosod.</string>
-    <string name="app_dataDeletedBody3_no_wallet">Mae angen i chi fewngofnodi a gosod eich dewisiadau eto i barhau i ddefnyddio\'r ap.</string>
     <string name="app_dataDeletedBody1">Ni allem gadarnhau eich manylion mewngofnodi.</string>
     <string name="app_dataDeletedBody2">Er mwyn cadw eich gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn eich ap wedi cael eu dileu ac mae eich dewisiadau wedi cael eu hailosod.</string>
     <string name="app_dataDeletedBody3">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\'r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>

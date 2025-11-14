@@ -9,17 +9,14 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 import uk.gov.onelogin.features.LOCALE_CY
 import uk.gov.onelogin.features.LOCALE_EN
-import uk.gov.onelogin.features.signout.domain.SignOutUIState
 
 @RunWith(Parameterized::class)
 class SignOutScreenshotTest(
-    signOutUIState: SignOutUIState,
     nightMode: NightMode,
     locale: String
 ) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignOutBody(
-            uiState = signOutUIState,
             onPrimary = {},
             onClose = {},
             onBack = {}
@@ -31,14 +28,10 @@ class SignOutScreenshotTest(
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> {
             return arrayListOf(
-                arrayOf(SignOutUIState.NoWallet, NOTNIGHT, LOCALE_EN),
-                arrayOf(SignOutUIState.NoWallet, NIGHT, LOCALE_EN),
-                arrayOf(SignOutUIState.Wallet, NOTNIGHT, LOCALE_EN),
-                arrayOf(SignOutUIState.Wallet, NIGHT, LOCALE_EN),
-                arrayOf(SignOutUIState.NoWallet, NOTNIGHT, LOCALE_CY),
-                arrayOf(SignOutUIState.NoWallet, NIGHT, LOCALE_CY),
-                arrayOf(SignOutUIState.Wallet, NOTNIGHT, LOCALE_CY),
-                arrayOf(SignOutUIState.Wallet, NIGHT, LOCALE_CY)
+                arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_EN),
+                arrayOf(NIGHT, LOCALE_CY)
             )
         }
     }

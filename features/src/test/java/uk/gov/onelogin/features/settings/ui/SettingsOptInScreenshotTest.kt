@@ -7,9 +7,14 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
+import uk.gov.onelogin.features.LOCALE_CY
+import uk.gov.onelogin.features.LOCALE_EN
 
 @RunWith(Parameterized::class)
-class SettingsOptInScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class SettingsOptInScreenshotTest(
+    nightMode: NightMode,
+    locale: String
+) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SettingsScreenOptInNoShowBiometricsPreview()
     }
@@ -19,8 +24,10 @@ class SettingsOptInScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nig
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> {
             return arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
+                arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_EN),
+                arrayOf(NIGHT, LOCALE_CY)
             )
         }
     }

@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +12,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
@@ -25,12 +22,10 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 
 @RunWith(AndroidJUnit4::class)
 class BiometricsToggleScreenViewModelTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var localAuthPrefRepo: LocalAuthPreferenceRepo
     private lateinit var deviceBiometricsManager: DeviceBiometricsManager
     private lateinit var analyticsLogger: AnalyticsLogger
@@ -41,7 +36,6 @@ class BiometricsToggleScreenViewModelTest {
 
     @Before
     fun setup() {
-        featureFlags = mock()
         localAuthPrefRepo = LocalAuthPreferenceRepositoryImpl(context)
         deviceBiometricsManager = mock()
         analyticsLogger = mock()
@@ -53,7 +47,6 @@ class BiometricsToggleScreenViewModelTest {
         navigator = mock()
         autoInitialiseSecureStore = mock()
         viewModel = BiometricsToggleScreenViewModel(
-            featureFlags = featureFlags,
             localAuthManager = localAuthManager,
             navigator = navigator,
             autoInitialiseSecureStore = autoInitialiseSecureStore
@@ -131,16 +124,5 @@ class BiometricsToggleScreenViewModelTest {
             localAuthManager.localAuthPreference
         )
         verify(autoInitialiseSecureStore).initialise(null)
-    }
-
-    @Test
-    fun `test wallet feature flag`() {
-        whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(true)
-
-        assertTrue(viewModel.walletEnabled)
-
-        whenever(featureFlags[WalletFeatureFlag.ENABLED]).thenReturn(false)
-
-        assertFalse(viewModel.walletEnabled)
     }
 }

@@ -37,21 +37,16 @@
     <string name="app_addDocumentsLink">Adding documents to your app</string>
     <string name="app_termsAndConditionsLink">Terms and conditions</string>
 
-    <!-- Biometrics Toggle Opt In Screen NO Wallet -->
+    <!-- Biometrics Toggle Opt In Screen -->
     <string name="app_biometricsToggleTitle">Biometrics</string>
     <string name="app_biometricsToggleLabel">Use biometrics</string>
-    <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to:</string>
-    <string name="app_biometricsToggleBody2">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
     <string name="app_biometricsToggleSubtitle">If you turn off biometrics</string>
-    <string name="app_biometricsToggleBody3">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app.</string>
-
-    <!-- Biometrics Toggle Opt In Screen Wallet -->
-    <string name="app_biometricsToggleBody1Wallet">You can use your face, fingerprint or iris to:</string>
+    <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to:</string>
     <string name="app_biometricsToggleBullet1">sign in</string>
     <string name="app_biometricsToggleBullet2">view and add documents</string>
-    <string name="app_biometricsToggleBody2Wallet">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
-    <string name="app_biometricsToggleBody3Wallet">Sometimes you might still be asked to enter your GOV.UK One Login details when you sign in. This is to keep your information secure.</string>
-    <string name="app_biometricsToggleBody4Wallet">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
+    <string name="app_biometricsToggleBody2">When you use biometrics, anyone who can unlock your phone with their biometrics or with your phone’s pin or pattern will be able to access your app.</string>
+    <string name="app_biometricsToggleBody3">Sometimes you might still be asked to enter your GOV.UK One Login details when you sign in. This is to keep your information secure.</string>
+    <string name="app_biometricsToggleBody4">If you turn off biometrics, you’ll need to use your pin or pattern to unlock the app and to view or add documents.</string>
 
     <!-- Sign Out -->
     <string name="app_signOutConfirmationTitle">Are you sure you want to sign out?</string>
@@ -67,21 +62,11 @@
     <string name="app_youveBeenSignedOutBody1">Sign in with your GOV.UK One Login details to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
-    <string name="app_signOutConfirmationTitle_no_wallet">Are you sure you want to sign out?</string>
-    <string name="app_signOutConfirmationBody1_no_wallet">Signing out will switch off your preferences for:</string>
-    <string name="app_signOutConfirmationBullet1_no_wallet">using biometrics or your phone’s pin or pattern to unlock the app</string>
-    <string name="app_signOutConfirmationBullet2_no_wallet">sharing analytics about how you use the app</string>
-    <string name="app_signOutConfirmationBody2_no_wallet">You’ll be asked to set these preferences again next time you sign in.</string>
-    <string name="app_signOutButton_no_wallet">Sign out and delete preferences</string>
-
+    <!-- Sign Out Confirmation -->
     <string name="app_signOutTitle">You have signed out</string>
     <string name="app_signOutSuccessButton">Continue</string>
-    <!-- Without Wallet -->
-    <string name="app_signOutBody">To keep your information secure, your app preferences have been reset.</string>
-    <string name="app_signOutBody2">You need to sign in and set your preferences again to continue using the app.</string>
-    <!-- With Wallet -->
-    <string name="app_signOutWalletBody">To keep your information secure, any documents in this app have been removed and your preferences have been reset.</string>
-    <string name="app_signOutWalletBody2">You need to sign in and reset your preferences to continue using the app. You’ll then be able to add your documents again.</string>
+    <string name="app_signOutBody">To keep your information secure, any documents in this app have been removed and your preferences have been reset.</string>
+    <string name="app_signOutBody2">You need to sign in and reset your preferences to continue using the app. You’ll then be able to add your documents again.</string>
 
     <!-- Splash Screen -->
     <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
@@ -175,9 +160,6 @@
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
     <string name="app_dataDeletedButton">Sign in</string>
-    <string name="app_dataDeletedBody1_no_wallet">We could not confirm your sign in details.</string>
-    <string name="app_dataDeletedBody2_no_wallet">To keep your information secure, your preference for using biometrics to unlock the app has been reset.</string>
-    <string name="app_dataDeletedBody3_no_wallet">You need to sign in and set your preferences again to continue using the app.</string>
     <string name="app_dataDeletedBody1">We could not confirm your sign in details.</string>
     <string name="app_dataDeletedBody2">To keep your information secure, any documents in your app have been removed and your app preferences have been reset.</string>
     <string name="app_dataDeletedBody3">You need to sign in and reset your preferences to continue using the app. You\'ll then be able to add your documents again.</string>
