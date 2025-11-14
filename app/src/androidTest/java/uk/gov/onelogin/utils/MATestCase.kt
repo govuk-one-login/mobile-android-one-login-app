@@ -7,14 +7,14 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import dagger.hilt.android.testing.HiltAndroidRule
 import org.junit.Rule
-import uk.gov.onelogin.HiltTestActivity
+import uk.gov.onelogin.MainActivity
 
-abstract class TestCase {
+abstract class MATestCase {
     @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 2)
-    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     lateinit var navController: TestNavHostController
 

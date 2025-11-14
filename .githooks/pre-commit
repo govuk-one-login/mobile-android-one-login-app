@@ -1,4 +1,7 @@
 #!/bin/bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
 
 # Run checks
 # Linting is done on a per-environment basis, due to the differing values that exist.

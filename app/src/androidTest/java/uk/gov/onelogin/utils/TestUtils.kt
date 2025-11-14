@@ -2,6 +2,7 @@ package uk.gov.onelogin.utils
 
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 
@@ -27,7 +28,15 @@ object TestUtils {
         this.activityRule.scenario.onActivity { action() }
     }
 
+    @JvmName("mainActivityBack")
     fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.back() {
+        this.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    @JvmName("hiltTestActivityBack")
+    fun AndroidComposeTestRule<ActivityScenarioRule<HiltTestActivity>, HiltTestActivity>.back() {
         this.activityRule.scenario.onActivity { activity ->
             activity.onBackPressedDispatcher.onBackPressed()
         }
