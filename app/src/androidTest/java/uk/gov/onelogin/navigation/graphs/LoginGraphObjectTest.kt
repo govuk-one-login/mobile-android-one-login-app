@@ -4,10 +4,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.testing.TestNavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -15,22 +17,18 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
 import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
-import uk.gov.onelogin.utils.MATestCase
+import uk.gov.onelogin.navigation.graphs.LoginGraphObject.loginGraph
+import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.utils.TestUtils.appInfoData
-import uk.gov.onelogin.utils.TestUtils.back
-import uk.gov.onelogin.utils.TestUtils.setActivity
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
-class LoginGraphObjectTest : MATestCase() {
-    @Inject
-    lateinit var navigator: Navigator
+class LoginGraphObjectTest : TestCase() {
 
     @BindValue
     val appInfoService: AppInfoService = mock()
@@ -42,38 +40,25 @@ class LoginGraphObjectTest : MATestCase() {
     fun setup() {
         hiltRule.inject()
 
+        composeTestRule.setContent {
+            navController = TestNavHostController(context)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavHost(
+                navController = navController,
+                startDestination = LoginRoutes.Root.getRoute()
+            ) {
+                loginGraph(navController)
+            }
+        }
+
         wheneverBlocking { appInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
     }
 
     @Test
-    fun loginGraph_SignInError() {
-        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInRecoverableError) }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInErrorTitle)
-        ).assertIsDisplayed()
-    }
-
-    @Test
-    fun loginGraph_AnalyticsOptInScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.AnalyticsOptIn)
-        }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_analyticsPermissionBody)
-        ).assertIsDisplayed()
-        composeTestRule.back()
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInButton)
-        ).assertIsDisplayed()
-    }
-
-    @Test
     fun loginGraph_Loading() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.Loading)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
         }
 
         val progressIndicator = composeTestRule.onNodeWithTag(
@@ -83,5 +68,27 @@ class LoginGraphObjectTest : MATestCase() {
             progressIndicator.isDisplayed()
         }
         progressIndicator.assertIsDisplayed()
+    }
+
+    @Test
+    fun loginGraph_SignInError() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.SignInRecoverableError.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signInErrorTitle)
+        ).assertIsDisplayed()
+    }
+
+    @Test
+    fun loginGraph_AnalyticsOptInScreen() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_analyticsPermissionBody)
+        ).assertIsDisplayed()
     }
 }

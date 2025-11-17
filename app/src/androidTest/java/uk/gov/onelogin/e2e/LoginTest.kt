@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.LocalActivityResultRegistryOwner
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -23,9 +22,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.compose.rememberNavController
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
-import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -36,7 +33,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeast
@@ -62,7 +58,6 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.securestore.SecureStore
-import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.appcheck.AppCheckerModule
 import uk.gov.onelogin.appinfo.AppInfoApiModule
@@ -73,7 +68,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.LocaleUtils
-import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
@@ -83,7 +77,7 @@ import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
-import uk.gov.onelogin.utils.RetryableComposeTestRule
+import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.utils.TestUtils
 
 @Suppress("SwallowedException")
@@ -159,18 +153,8 @@ class LoginTest : TestCase() {
 
     private val appInfoData = TestUtils.appInfoData
 
-    // use createEmptyComposeRule instead of createAndroidComposeRule<HiltTestActivity>() to avoid
-    // IllegalStateException caused by composeRule.setContent being called twice
-    @get:Rule(order = 3)
-    val composeRule = RetryableComposeTestRule()
-
-    private lateinit var scenario: ActivityScenario<HiltTestActivity>
-
-    private var injectCounter = 0
-
     @Before
     fun setup() {
-        scenario = ActivityScenario.launch(HiltTestActivity::class.java)
         Intents.init()
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
@@ -189,14 +173,11 @@ class LoginTest : TestCase() {
 
     @After
     fun tearDown() {
-        scenario.close()
         Intents.release()
         ArchTaskExecutor.getInstance().setDelegate(null)
-        injectCounter = 0
     }
 
     @Test
-    @FlakyTest
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         runBlocking {
             whenever(mockAppInfoService.get()).thenReturn(
@@ -220,7 +201,7 @@ class LoginTest : TestCase() {
 
         startApp()
 
-        composeRule.apply {
+        composeTestRule.apply {
             onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
                 .clickIfExisting()
             onNodeWithText(context.getString(R.string.app_dataDeletedButton))
@@ -326,7 +307,7 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        composeRule.waitForIdle()
+        composeTestRule.waitForIdle()
         nodeWithTextExists(resources.getString(R.string.app_signInTitle))
         verify(mockLoginSession, times(0)).finalise(any(), any(), any(), any(), any())
     }
@@ -349,7 +330,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
     fun handleActivityResultWithDataButLoginThrowsUnrecoverableError() {
         val authenticationError = AuthenticationError(
             message = "Error",
@@ -361,7 +341,15 @@ class LoginTest : TestCase() {
             .thenReturn(AttestationResult.Success("Success"))
         whenever(mockAppIntegrity.getProofOfPossession())
             .thenReturn(SignedPoP.Success("Success"))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+        whenever(
+            mockLoginSession.finalise(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        ).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[4] as (Throwable) -> Unit).invoke(authenticationError)
         }
@@ -372,12 +360,12 @@ class LoginTest : TestCase() {
             )
         )
         clickOptOut()
-        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+            .performClick()
         nodeWithTextExists("Try again later.")
     }
 
     @Test
-    @FlakyTest
     fun handleActivityResultWithDataUnsecured() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -396,7 +384,7 @@ class LoginTest : TestCase() {
             )
         )
 
-        composeRule.apply {
+        composeTestRule.apply {
             onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
                 .clickIfExisting()
             onNodeWithText(context.getString(R.string.app_dataDeletedButton))
@@ -406,7 +394,7 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        composeRule.onNodeWithTag(
+        composeTestRule.onNodeWithTag(
             resources.getString(R.string.welcomeCardTestTag)
         ).isDisplayed()
     }
@@ -430,7 +418,7 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        composeRule.apply {
+        composeTestRule.apply {
             nodeWithTextExists(resources.getString(LocalAuthR.string.app_enableBiometricsTitle))
 
             onNodeWithText(
@@ -444,7 +432,6 @@ class LoginTest : TestCase() {
     }
 
     @Test
-    @FlakyTest
     fun handleActivityResultWithDataPasscode() {
         deletePersistentId()
         wheneverBlocking { mockAppInfoService.get() }
@@ -462,7 +449,7 @@ class LoginTest : TestCase() {
             Intent(Intent.ACTION_VIEW, Uri.EMPTY)
         )
 
-        composeRule.apply {
+        composeTestRule.apply {
             onNodeWithText(context.getString(R.string.app_SignInWithGovUKOneLoginButton))
                 .clickIfExisting()
             onNodeWithText(context.getString(R.string.app_dataDeletedButton))
@@ -472,7 +459,7 @@ class LoginTest : TestCase() {
         clickOptOut()
         clickLogin()
 
-        composeRule.onNodeWithTag(
+        composeTestRule.onNodeWithTag(
             resources.getString(R.string.welcomeCardTestTag)
         ).isDisplayed()
     }
@@ -486,41 +473,21 @@ class LoginTest : TestCase() {
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())
         }
 
-        scenario.onActivity { activity ->
-            activity.setContent {
-                val registryOwner = object : ActivityResultRegistryOwner {
-                    override val activityResultRegistry: ActivityResultRegistry
-                        get() = object : ActivityResultRegistry() {
-                            override fun <I : Any?, O : Any?> onLaunch(
-                                requestCode: Int,
-                                contract: ActivityResultContract<I, O>,
-                                input: I,
-                                options: ActivityOptionsCompat?
-                            ) {
-                                this.dispatchResult(requestCode, resultCode, returnedIntent)
-                            }
-                        }
-                }
-                CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
-                    val navController = rememberNavController()
-
-                    DisposableEffect(key1 = navController) {
-                        navigator.setController(navController)
-
-                        onDispose {
-                            navigator.reset()
+        composeTestRule.setContent {
+            val registryOwner = object : ActivityResultRegistryOwner {
+                override val activityResultRegistry: ActivityResultRegistry
+                    get() = object : ActivityResultRegistry() {
+                        override fun <I : Any?, O : Any?> onLaunch(
+                            requestCode: Int,
+                            contract: ActivityResultContract<I, O>,
+                            input: I,
+                            options: ActivityOptionsCompat?
+                        ) {
+                            this.dispatchResult(requestCode, resultCode, returnedIntent)
                         }
                     }
-
-                    OneLoginApp(navController = navController)
-                }
             }
-        }
-    }
-
-    private fun startApp() {
-        scenario.onActivity { activity ->
-            activity.setContent {
+            CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
                 val navController = rememberNavController()
 
                 DisposableEffect(key1 = navController) {
@@ -536,9 +503,25 @@ class LoginTest : TestCase() {
         }
     }
 
+    private fun startApp() {
+        composeTestRule.setContent {
+            val navController = rememberNavController()
+
+            DisposableEffect(key1 = navController) {
+                navigator.setController(navController)
+
+                onDispose {
+                    navigator.reset()
+                }
+            }
+
+            OneLoginApp(navController = navController)
+        }
+    }
+
     private fun clickOptOut() {
-        composeRule.waitForIdle()
-        val doNotShare = composeRule.onNodeWithText(
+        composeTestRule.waitForIdle()
+        val doNotShare = composeTestRule.onNodeWithText(
             resources.getString(R.string.app_doNotShareAnalytics)
         )
         val isOnOptInScreen = doNotShare.isDisplayed()
@@ -548,16 +531,17 @@ class LoginTest : TestCase() {
     }
 
     private fun clickLogin() {
-        composeRule.waitUntil(TIMEOUT) {
-            composeRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+        composeTestRule.waitUntil(TIMEOUT) {
+            composeTestRule.onNodeWithText(resources.getString(R.string.app_signInButton))
                 .isDisplayed()
         }
-        composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
+        composeTestRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+            .performClick()
     }
 
     private fun nodeWithTextExists(text: String) {
-        composeRule.waitUntil(5000) {
-            composeRule.onNodeWithText(text).isDisplayed()
+        composeTestRule.waitUntil(5000) {
+            composeTestRule.onNodeWithText(text).isDisplayed()
         }
     }
 
@@ -571,7 +555,15 @@ class LoginTest : TestCase() {
     }
 
     private fun mockGoodLogin() {
-        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+        whenever(
+            mockLoginSession.finalise(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        ).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[3] as (TokenResponse) -> Unit).invoke(tokenResponse)
         }
@@ -592,14 +584,11 @@ class LoginTest : TestCase() {
     }
 
     private fun hiltInject() {
-        if (injectCounter < 1) {
-            hiltRule.inject()
-        }
-        injectCounter++
+        hiltRule.inject()
     }
 
     companion object {
-        const val TIMEOUT = 10000L
+        internal const val TIMEOUT = 10000L
         private const val PERSISTENT_ID = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
         private val tokenResponse = TokenResponse(
             tokenType = "test",
