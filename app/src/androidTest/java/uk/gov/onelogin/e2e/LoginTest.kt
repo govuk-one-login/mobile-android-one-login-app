@@ -588,7 +588,7 @@ class LoginTest : TestCase() {
     }
 
     companion object {
-        const val TIMEOUT = 10000L
+        internal const val TIMEOUT = 10000L
         private const val PERSISTENT_ID = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
         private val tokenResponse = TokenResponse(
             tokenType = "test",

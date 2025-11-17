@@ -3,6 +3,7 @@ package uk.gov.onelogin.navigation.graphs
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.testing.TestNavHostController
@@ -13,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
+import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
@@ -26,7 +28,7 @@ import uk.gov.onelogin.utils.TestUtils.appInfoData
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
-class LoginGraphObjectLoadingTest : TestCase() {
+class LoginGraphObjectLoadingSignInErrorTest : TestCase() {
 
     @BindValue
     val appInfoService: AppInfoService = mock()
@@ -66,5 +68,16 @@ class LoginGraphObjectLoadingTest : TestCase() {
             progressIndicator.isDisplayed()
         }
         progressIndicator.assertIsDisplayed()
+    }
+
+    @Test
+    fun loginGraph_SignInError() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.SignInRecoverableError.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_signInErrorTitle)
+        ).assertIsDisplayed()
     }
 }

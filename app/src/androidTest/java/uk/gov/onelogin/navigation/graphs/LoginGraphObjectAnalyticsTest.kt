@@ -24,7 +24,7 @@ import uk.gov.onelogin.utils.TestUtils.setActivity
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
-class LoginGraphObjectTest : MATestCase() {
+class LoginGraphObjectAnalyticsTest : MATestCase() {
     @Inject
     lateinit var navigator: Navigator
 
@@ -40,15 +40,6 @@ class LoginGraphObjectTest : MATestCase() {
 
         wheneverBlocking { appInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
-    }
-
-    @Test
-    fun loginGraph_SignInError() {
-        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInRecoverableError) }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInErrorTitle)
-        ).assertIsDisplayed()
     }
 
     @Test
