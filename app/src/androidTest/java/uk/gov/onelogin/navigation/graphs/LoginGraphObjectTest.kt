@@ -28,7 +28,7 @@ import uk.gov.onelogin.utils.TestUtils.appInfoData
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
-class LoginGraphObjectLoadingSignInErrorTest : TestCase() {
+class LoginGraphObjectTest : TestCase() {
 
     @BindValue
     val appInfoService: AppInfoService = mock()
@@ -78,6 +78,17 @@ class LoginGraphObjectLoadingSignInErrorTest : TestCase() {
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signInErrorTitle)
+        ).assertIsDisplayed()
+    }
+
+    @Test
+    fun loginGraph_AnalyticsOptInScreen() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
+        }
+
+        composeTestRule.onNodeWithText(
+            resources.getString(R.string.app_analyticsPermissionBody)
         ).assertIsDisplayed()
     }
 }
