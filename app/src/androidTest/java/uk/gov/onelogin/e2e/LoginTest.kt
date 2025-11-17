@@ -73,6 +73,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import uk.gov.onelogin.features.login.ui.signin.welcome.WELCOME_SIGNIN_BUTTON_TAG
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
@@ -532,10 +533,10 @@ class LoginTest : TestCase() {
 
     private fun clickLogin() {
         composeTestRule.waitUntil(TIMEOUT) {
-            composeTestRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+            composeTestRule.onNodeWithTag(WELCOME_SIGNIN_BUTTON_TAG)
                 .isDisplayed()
         }
-        composeTestRule.onNodeWithText(resources.getString(R.string.app_signInButton))
+        composeTestRule.onNodeWithTag(WELCOME_SIGNIN_BUTTON_TAG)
             .performClick()
     }
 
