@@ -63,6 +63,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import uk.gov.onelogin.login.KeyManagerModule
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
@@ -77,7 +78,8 @@ import uk.gov.onelogin.utils.TestUtils
     AppInfoApiModule::class,
     AppCheckerModule::class,
     AppIntegrityModule::class,
-    VerifyIdModule::class
+    VerifyIdModule::class,
+    KeyManagerModule::class
 )
 class LoginRecoverableErrorTest : TestCase() {
     @BindValue
