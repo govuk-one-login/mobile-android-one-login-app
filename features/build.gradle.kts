@@ -136,7 +136,8 @@ dependencies {
         libs.androidx.navigation.testing,
         libs.androidx.espresso.intents,
         libs.logging.test,
-        testFixtures(projects.core)
+        testFixtures(projects.core),
+        libs.logging.test
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)

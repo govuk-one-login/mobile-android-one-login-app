@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -164,7 +165,7 @@ internal fun WelcomeBody(
                     text = buttonText,
                     buttonType = ButtonTypeV2.Primary(),
                     onClick = onSignIn,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().testTag(WELCOME_SIGNIN_BUTTON_TAG)
                 )
             },
             secondaryButton = {
@@ -180,6 +181,8 @@ internal fun WelcomeBody(
         )
     }
 }
+
+const val WELCOME_SIGNIN_BUTTON_TAG = "WelcomeSignInButtonTag"
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
