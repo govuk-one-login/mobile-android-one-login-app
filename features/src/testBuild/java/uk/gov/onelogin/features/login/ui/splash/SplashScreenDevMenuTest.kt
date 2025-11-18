@@ -13,12 +13,15 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
@@ -35,6 +38,9 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var appInfoService: AppInfoService
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private lateinit var onlineChecker: OnlineChecker
+    private lateinit var refreshExchange: RefreshExchange
+    private lateinit var getTokenExpiry: GetTokenExpiry
     private lateinit var viewModel: SplashScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SplashScreenAnalyticsViewModel
@@ -51,12 +57,18 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         appInfoService = mock()
         signOutUseCase = mock()
         autoInitialiseSecureStore = mock()
+        onlineChecker = mock()
+        refreshExchange = mock()
+        getTokenExpiry = mock()
         viewModel = SplashScreenViewModel(
             navigator,
             handleLocalLogin,
             appInfoService,
             signOutUseCase,
-            autoInitialiseSecureStore
+            autoInitialiseSecureStore,
+            onlineChecker,
+            refreshExchange,
+            getTokenExpiry
         )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
