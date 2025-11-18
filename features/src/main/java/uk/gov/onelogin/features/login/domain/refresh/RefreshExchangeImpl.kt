@@ -32,6 +32,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.core.utils.SystemTimeProvider
+import uk.gov.onelogin.core.utils.TimeProvider
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 
@@ -50,7 +51,7 @@ class RefreshExchangeImpl @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val saveTokens: SaveTokens,
     private val logger: Logger,
-    private val timeProvider: SystemTimeProvider
+    private val timeProvider: TimeProvider
 ) : RefreshExchange {
     private val jsonDecoder = Json { ignoreUnknownKeys = true }
 
