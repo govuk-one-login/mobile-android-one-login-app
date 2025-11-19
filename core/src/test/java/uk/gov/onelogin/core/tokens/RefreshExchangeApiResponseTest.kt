@@ -1,9 +1,9 @@
 package uk.gov.onelogin.core.tokens
 
+import kotlin.test.assertEquals
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class RefreshExchangeApiResponseTest {
     private val json = Json
@@ -14,7 +14,7 @@ class RefreshExchangeApiResponseTest {
         refreshToken = "test"
     )
     private val expectedEncoded = "{\"tokenType\":\"test\",\"accessToken\":\"test\"," +
-            "\"expiresIn\":100,\"refreshToken\":\"test\"}"
+        "\"expiresIn\":100,\"refreshToken\":\"test\"}"
 
     @Test
     fun serialisationSuccess() {
@@ -23,7 +23,7 @@ class RefreshExchangeApiResponseTest {
             json.encodeToJsonElement(sut).toString()
         )
     }
-    
+
     @Test
     fun deserialisationSuccess() {
         assertEquals(
