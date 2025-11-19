@@ -6,8 +6,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
@@ -24,7 +22,6 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
@@ -46,7 +43,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
     private lateinit var signOutUseCase: SignOutUseCase
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var viewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -72,9 +68,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         handleLoginRedirect = mock()
         signOutUseCase = mock()
         counter = mock()
-        featureFlags = InMemoryFeatureFlags(
-            WalletFeatureFlag.ENABLED
-        )
         onlineChecker = mock()
         viewModel =
             WelcomeScreenViewModel(
@@ -91,7 +84,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 handleLoginRedirect,
                 signOutUseCase,
                 logger,
-                featureFlags,
                 onlineChecker,
                 counter
             )

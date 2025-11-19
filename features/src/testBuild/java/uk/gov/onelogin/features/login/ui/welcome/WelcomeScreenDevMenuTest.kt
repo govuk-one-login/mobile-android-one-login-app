@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
@@ -49,7 +48,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
     private lateinit var signOutUseCase: SignOutUseCase
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var viewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -74,7 +72,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
         signOutUseCase = mock()
-        featureFlags = mock()
         onlineChecker = mock()
         analytics = mock()
         errorCounter = mock()
@@ -98,7 +95,6 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 handleLoginRedirect,
                 signOutUseCase,
                 logger,
-                featureFlags,
                 onlineChecker,
                 errorCounter
             )

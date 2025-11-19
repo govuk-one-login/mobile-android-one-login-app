@@ -7,14 +7,16 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
+import uk.gov.onelogin.features.LOCALE_CY
+import uk.gov.onelogin.features.LOCALE_EN
 
 @RunWith(Parameterized::class)
 class SignOutSuccessScreenshotTest(
-    walletEnabled: Boolean,
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+    nightMode: NightMode,
+    locale: String
+) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        SignOutConfirmationBody(walletEnabled) {}
+        SignOutConfirmationBody {}
     }
 
     companion object {
@@ -22,10 +24,10 @@ class SignOutSuccessScreenshotTest(
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> {
             return arrayListOf(
-                arrayOf(true, NOTNIGHT),
-                arrayOf(true, NIGHT),
-                arrayOf(false, NOTNIGHT),
-                arrayOf(false, NIGHT)
+                arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_EN),
+                arrayOf(NIGHT, LOCALE_CY)
             )
         }
     }

@@ -18,7 +18,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
     GdsTheme {
         EdgeToEdgePage { _ ->
-            AuthErrorBody(viewModel.walletEnabled) {
+            AuthErrorBody {
                 viewModel.navigateToSignIn()
             }
         }
@@ -27,34 +27,20 @@ fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
 
 @Composable
 private fun AuthErrorBody(
-    walletEnabled: Boolean,
     goToSignIn: () -> Unit = {}
 ) {
-    val bodyContent = if (walletEnabled) {
-        persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody1)
-            ),
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody2)
-            ),
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody3)
-            )
+    val bodyContent = persistentListOf(
+        CentreAlignedScreenBodyContent.Text(
+            bodyText = stringResource(R.string.app_dataDeletedBody1)
+        ),
+        CentreAlignedScreenBodyContent.Text(
+            bodyText = stringResource(R.string.app_dataDeletedBody2)
+        ),
+        CentreAlignedScreenBodyContent.Text(
+            bodyText = stringResource(R.string.app_dataDeletedBody3)
         )
-    } else {
-        persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody1_no_wallet)
-            ),
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody2_no_wallet)
-            ),
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_dataDeletedBody3_no_wallet)
-            )
-        )
-    }
+    )
+
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_dataDeletedErrorTitle),
@@ -72,15 +58,6 @@ private fun AuthErrorBody(
 @Composable
 internal fun AuthErrorScreenPreview() {
     GdsTheme {
-        AuthErrorBody(true)
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@ScreenPreview
-@Composable
-internal fun AuthErrorScreenNoWalletPreview() {
-    GdsTheme {
-        AuthErrorBody(false)
+        AuthErrorBody()
     }
 }
