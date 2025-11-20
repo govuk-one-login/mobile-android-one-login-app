@@ -143,8 +143,8 @@ jobs:
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.version-name.outputs.version-name }}
+          version-code: ${{ needs.run-checks.outputs.version-code }}
+          version-name: ${{ needs.run-checks.outputs.version-name }}
 
       - name: Clean workspace
         if: always()
