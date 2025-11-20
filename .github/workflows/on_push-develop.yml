@@ -131,7 +131,7 @@ jobs:
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.run-checks.outputs.version-code }}
-          version-name: ${{ needs.run-checks.outputs..version-name }}
+          version-name: ${{ needs.run-checks.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload to play store
