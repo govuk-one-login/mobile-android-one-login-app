@@ -35,8 +35,6 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -48,7 +46,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 
@@ -62,7 +59,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SettingsAnalyticsViewModel
-    private lateinit var featureFlags: FeatureFlags
 
     private lateinit var yourDetailsHeader: SemanticsMatcher
     private lateinit var yourDetailsTitle: SemanticsMatcher
@@ -91,14 +87,10 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         getEmail = mock()
         tokenRepository = mock()
         localAuthManager = mock()
-        featureFlags = InMemoryFeatureFlags(
-            emptySet()
-        )
         viewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
-            featureFlags,
             tokenRepository,
             getEmail
         )
@@ -138,30 +130,12 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun yourDetailsGroupDisplayedWalletDisabled() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
-        composeTestRule.onNode(proveIdentityLink).assertIsDisplayed()
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
-    }
-
-    @Test
-    fun yourDetailsGroupDisplayedWalletEnabled() = runTest {
+    fun yourDetailsGroupDisplayed() = runTest {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
         val settingsViewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
-            InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            ),
             tokenRepository,
             getEmail
         )
@@ -178,27 +152,12 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun legalGroupDisplayedWalletDisabled() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
-    }
-
-    @Test
-    fun legalGroupDisplayedWalletEnabled() = runTest {
+    fun legalGroupDisplayed() = runTest {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
         val settingsViewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
-            InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            ),
             tokenRepository,
             getEmail
         )
@@ -400,9 +359,6 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             optInRepository,
             navigator,
             localAuthManager,
-            InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            ),
             tokenRepository,
             getEmail
         )
@@ -416,16 +372,10 @@ class SettingsScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun termsAndConditionsLaunchesBrowser() = runTest {
-        featureFlags = InMemoryFeatureFlags(
-            setOf(WalletFeatureFlag.ENABLED)
-        )
         val settingsViewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
-            InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            ),
             tokenRepository,
             getEmail
         )
