@@ -14,7 +14,6 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
-import uk.gov.onelogin.features.signout.domain.SignOutUIState
 
 @HiltViewModel
 class SignOutAnalyticsViewModel @Inject constructor(
@@ -24,8 +23,7 @@ class SignOutAnalyticsViewModel @Inject constructor(
     private val onPrimaryEvent = onPrimaryEvent(context)
     private val onCloseIcon = onCloseIcon()
     private val onBackPressed = onBackPressed()
-    private val signOutNoWalletViewEvent = makeSignOutNoWalletViewEvent(context)
-    private val signOutWalletViewEvent = makeSignOutWalletViewEvent(context)
+    private val signOutViewEvent = makeSignOutViewEvent(context)
 
     fun trackPrimary() {
         analyticsLogger.logEventV3Dot1(onPrimaryEvent)
@@ -39,12 +37,8 @@ class SignOutAnalyticsViewModel @Inject constructor(
         analyticsLogger.logEventV3Dot1(onBackPressed)
     }
 
-    fun trackSignOutView(uiState: SignOutUIState) {
-        if (uiState == SignOutUIState.Wallet) {
-            analyticsLogger.logEventV3Dot1(signOutWalletViewEvent)
-        } else {
-            analyticsLogger.logEventV3Dot1(signOutNoWalletViewEvent)
-        }
+    fun trackSignOutView() {
+        analyticsLogger.logEventV3Dot1(signOutViewEvent)
     }
 
     companion object {
@@ -69,18 +63,10 @@ class SignOutAnalyticsViewModel @Inject constructor(
             params = requiredParameters
         )
 
-        fun makeSignOutWalletViewEvent(context: Context) = with(context) {
+        fun makeSignOutViewEvent(context: Context) = with(context) {
             ViewEvent.Screen(
                 name = getEnglishString(R.string.app_signOutConfirmationTitle),
                 id = getEnglishString(R.string.sign_out_wallet_page_id),
-                params = requiredParameters
-            )
-        }
-
-        fun makeSignOutNoWalletViewEvent(context: Context) = with(context) {
-            ViewEvent.Screen(
-                name = getEnglishString(R.string.app_signOutConfirmationTitle),
-                id = getEnglishString(R.string.sign_out_no_wallet_page_id),
                 params = requiredParameters
             )
         }
