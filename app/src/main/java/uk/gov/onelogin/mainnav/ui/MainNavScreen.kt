@@ -13,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -54,13 +53,12 @@ fun MainNavScreen(
     }
 
     val navItems = createBottomNavItems(
-        mainNavScreenViewModel.walletEnabled,
         { analyticsViewModel.trackHomeTabButton() },
         { analyticsViewModel.trackWalletTabButton() },
         { analyticsViewModel.trackSettingsTabButton() }
     )
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
-        mainNavScreenViewModel.checkWalletEnabled()
+        mainNavScreenViewModel.checkIsDeeplinkRoute()
     }
 
     LaunchedEffect(mainNavScreenViewModel.isDeeplinkRoute) {
@@ -175,7 +173,6 @@ private fun Label(text: Int) {
  * @param trackProfile - GA4 `trackEventIcon` for Profile tab button
  */
 private fun createBottomNavItems(
-    walletEnabled: State<Boolean>,
     trackHome: () -> Unit,
     trackWallet: () -> Unit,
     trackProfile: () -> Unit
@@ -183,11 +180,7 @@ private fun createBottomNavItems(
     val home = BottomNavDestination.Home to trackHome
     val wallet = BottomNavDestination.Wallet to trackWallet
     val profile = BottomNavDestination.Settings to trackProfile
-    return if (walletEnabled.value) {
-        listOf(home, wallet, profile)
-    } else {
-        listOf(home, profile)
-    }
+    return listOf(home, wallet, profile)
 }
 
 @Suppress("ForbiddenComment")

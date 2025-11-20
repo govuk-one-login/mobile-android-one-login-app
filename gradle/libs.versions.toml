@@ -15,7 +15,7 @@ paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 [versions]
 jose4j = "0.9.6"
 kotlin = "2.2.10"
-agp = "8.10.1"
+agp = "8.13.1"
 core-ktx = "1.16.0"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
@@ -45,9 +45,9 @@ crashlytics = "3.0.3"
 classgraph = "4.8.179"
 govuk-ui = "8.13.0"
 govuk-logging = "0.32.2"
-compose-runtime = "1.8.0"
+compose-runtime = "1.9.4"
 auth = "0.35.0"
-wallet = "2.106.0"
+wallet = "2.113.0"
 cri-orchestrator = "0.61.24"
 junitVersion = "4.13.2"
 material = "1.12.0"
@@ -55,14 +55,12 @@ robolectric = "4.16"
 aboutLibraries = "12.1.0-rc01"
 secureStore = "0.15.0"
 paparazzi = "2.0.0-alpha02" # https://github.com/cashapp/paparazzi/releases
-composeBom = "2025.06.00"
+composeBom = "2025.11.00"
 navigationCommonAndroid = "2.9.0"
 network = "0.7.2"
 kotlinStdLib = "2.2.10"
 
 [libraries]
-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-runtime" }
-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose-runtime" }
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
 gson = { group = "com.google.code.gson", name = "gson", version = "2.13.1" }
@@ -99,6 +97,8 @@ androidx-compose-ui-junit4 = { group = "androidx.compose.ui", name = "ui-test-ju
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout" }
 androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espresso-core" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHilt" }
