@@ -71,7 +71,7 @@ class RefreshExchangeImpl @Inject constructor(
                 // Attempt to get Client Attestation
                 getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
             } else {
-                // When Refresh token is invalid - prompt for re-auth to be able to get a v new Refresh token
+                // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
                 // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
                 handleResult(LocalAuthStatus.ReAuthSignIn)
                 return
@@ -97,13 +97,7 @@ class RefreshExchangeImpl @Inject constructor(
                 // Attempt to retrieve the Refresh token from the secure store
                 handleRefreshTokenRetrieval(
                     context = context,
-                    onSuccess = { refreshToken, idToken ->
-                        // Update the local fields for the required parameters
-                        this@RefreshExchangeImpl.refreshToken = refreshToken
-                        this@RefreshExchangeImpl.idToken = idToken
-                        clientAttestation = attestation.clientAttestation
-                        areChecksSuccessful = true
-                    },
+                    clientAttestation = attestation.clientAttestation,
                     onFailure = {
                         handleResult(it)
                         areChecksSuccessful = false
@@ -114,12 +108,7 @@ class RefreshExchangeImpl @Inject constructor(
                 // Attempt to retrieve the Refresh token from the secure store
                 handleRefreshTokenRetrieval(
                     context = context,
-                    onSuccess = { refreshToken, idToken ->
-                        this@RefreshExchangeImpl.refreshToken = refreshToken
-                        this@RefreshExchangeImpl.idToken = idToken
-                        clientAttestation = attestation.savedAttestation ?: ""
-                        areChecksSuccessful = true
-                    },
+                    clientAttestation = attestation.savedAttestation,
                     onFailure = {
                         handleResult(it)
                         areChecksSuccessful = false
@@ -137,7 +126,7 @@ class RefreshExchangeImpl @Inject constructor(
 
     private suspend fun handleRefreshTokenRetrieval(
         context: FragmentActivity,
-        onSuccess: (refreshToken: String, idToken: String) -> Unit,
+        clientAttestation: String?,
         onFailure: (LocalAuthStatus) -> Unit
     ) {
         // Attempt to retrieve the Refresh token from the secure store
@@ -153,8 +142,11 @@ class RefreshExchangeImpl @Inject constructor(
                     val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
                     // Check is valid (should never be returned null)
                     if (!refreshToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
-                        // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
-                        onSuccess(refreshToken, idToken)
+                        // Set all required values to enable teh refresh request to be made/ continue
+                        this@RefreshExchangeImpl.refreshToken = refreshToken
+                        this@RefreshExchangeImpl.idToken = idToken
+                        this@RefreshExchangeImpl.clientAttestation = clientAttestation ?: ""
+                        areChecksSuccessful = true
                     } else {
                         // When Refresh token is invalid then prompt user to re-auth as the refresh token won't be able to be exchanged for a new one
                         onFailure(LocalAuthStatus.ReAuthSignIn)
