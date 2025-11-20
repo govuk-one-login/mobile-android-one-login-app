@@ -16,6 +16,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.appinfo.AppInfoApiModule
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -132,7 +133,7 @@ class SignOutGraphObjectTest : TestCase() {
     @Test
     fun signOutGraph_navigateToSignOutErrorScreen() {
         composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(SignOutRoutes.SignOutWalletError.getRoute())
+            navController.setCurrentDestination(ErrorRoutes.SignOutWalletError.getRoute())
         }
 
         composeTestRule.onNodeWithText(

@@ -158,7 +158,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(SignOutRoutes.SignOutWalletError, false)
+        verify(navigator).navigate(ErrorRoutes.SignOutWalletError, false)
     }
 
     @Test

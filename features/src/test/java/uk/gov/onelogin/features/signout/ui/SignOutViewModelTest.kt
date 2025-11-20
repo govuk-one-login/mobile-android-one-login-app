@@ -96,7 +96,7 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(SignOutRoutes.SignOutWalletError, false)
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutWalletError, false)
             assertThat(
                 "logger has log",
                 logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
