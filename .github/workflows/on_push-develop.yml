@@ -18,6 +18,9 @@ jobs:
     name: Verify code base when pushed
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    outputs:
+      version-code: ${{ steps.version-code.outputs.version-code }}
+      version-name: ${{ steps.latest-tag.outputs.current-tag }}
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -104,6 +107,12 @@ jobs:
       contents: write
       packages: read
     steps:
+      - name: Run checkout github action
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: 'true'
+          fetch-depth: 0
+
       - name: Setup GitHub Runner workflow
         uses: ./config/actions/setup-runner
 
@@ -111,23 +120,6 @@ jobs:
         uses: ./config/actions/retrieve-secrets
         with:
           actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
-
-      - name: Get latest tag
-        id: latest-tag
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: 'v*'
-
-      - name: Generate version code
-        id: version-code
-        uses: ./config/actions/generate-version-code
-
-      - name: Generate version name
-        id: version-name
-        uses: ./config/actions/version-name
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-tag }}
 
       - name: Bundle release
         id: bundle-release
@@ -138,8 +130,8 @@ jobs:
           flavors: 'build,staging'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.version-name.outputs.version-name }}
+          version-code: ${{ needs.run-checks.outputs.version-code }}
+          version-name: ${{ needs.run-checks.outputs..version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload to play store
