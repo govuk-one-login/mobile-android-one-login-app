@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,9 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
@@ -68,8 +67,8 @@ fun LoadingBody() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .width(64.dp)
-                .padding(bottom = mediumPadding)
+                .width(PROGRESS_BAR)
+                .height(PROGRESS_BAR)
                 .semantics { hideFromAccessibility() }
                 .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
             color = colorScheme.background,
@@ -77,7 +76,7 @@ fun LoadingBody() {
         )
         Text(
             modifier = Modifier
-                .padding(top = largePadding)
+                .padding(top = PROGRESS_TEXT_PADDING)
                 .semantics { contentDescription = loadingContentDescription }
                 .focusRequester(focusRequester)
                 .testTag(LOADING_SCREEN_TEXT),
@@ -108,3 +107,5 @@ internal fun LoadingPreview() {
 internal const val LOADING_SCREEN_BOX = "loadingScreen_box"
 internal const val LOADING_SCREEN_TEXT = "loadingScreen_text"
 const val LOADING_SCREEN_PROGRESS_INDICATOR = "loadingScreen_progressIndicator"
+private val PROGRESS_BAR = 64.dp
+private val PROGRESS_TEXT_PADDING = 48.dp
