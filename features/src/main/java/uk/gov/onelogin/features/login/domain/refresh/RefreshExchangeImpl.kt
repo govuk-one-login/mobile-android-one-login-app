@@ -87,7 +87,7 @@ class RefreshExchangeImpl @Inject constructor(
         if (areChecksSuccessful) makeRefreshTokenCall(handleResult)
     }
 
-    override suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
+    private suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
         context: FragmentActivity,
         handleResult: (LocalAuthStatus) -> Unit
     ) {
