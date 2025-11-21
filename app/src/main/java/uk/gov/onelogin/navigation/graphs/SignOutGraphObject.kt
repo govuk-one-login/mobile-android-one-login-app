@@ -7,7 +7,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreen
-import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
 import uk.gov.onelogin.features.signout.ui.SignOutScreen
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoScreen
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccess
@@ -40,11 +39,6 @@ object SignOutGraphObject {
                         tryAgain
                     }
                 )
-            }
-            composable(
-                route = SignOutRoutes.SignOutWalletError.getRoute()
-            ) {
-                SignOutErrorScreen()
             }
             composable(
                 route = SignOutRoutes.ReAuthError.getRoute()

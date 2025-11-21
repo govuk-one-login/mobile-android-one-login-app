@@ -13,7 +13,5 @@ sealed class SignOutRoutes(private val route: String) : NavRoute {
 
     data object Success : SignOutRoutes("sign_out/success")
 
-    data object SignOutWalletError : ErrorRoutes("/sign_out/error")
-
     override fun getRoute() = route
 }

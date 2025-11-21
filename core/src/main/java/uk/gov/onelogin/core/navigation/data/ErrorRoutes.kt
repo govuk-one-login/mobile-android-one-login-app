@@ -9,9 +9,9 @@ sealed class ErrorRoutes(private val route: String) : NavRoute {
 
     data object Offline : ErrorRoutes("/error/offline")
 
-    data object SignOutError : ErrorRoutes("/error/sign_out_wallet_disabled")
+    data object SignOutError : ErrorRoutes("/error/sign_out")
 
-    data object SignOut : ErrorRoutes("/error/sign_out")
+    data object SignOutWalletError : ErrorRoutes("/error/sign_out_wallet_error")
 
     data object UpdateRequired : ErrorRoutes("/error/update_required")
 

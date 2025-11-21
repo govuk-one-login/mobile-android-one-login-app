@@ -33,7 +33,7 @@ class SignOutViewModel @Inject constructor(
             } catch (e: SignOutError) {
                 logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
                 val errorRoute = if (e.error is DeleteWalletDataUseCaseImpl.DeleteWalletDataError) {
-                    SignOutRoutes.SignOutWalletError
+                    ErrorRoutes.SignOutWalletError
                 } else {
                     ErrorRoutes.SignOutError
                 }
