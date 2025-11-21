@@ -170,11 +170,11 @@ class SplashScreenOfflineViewModelTest {
     @Test
     fun allowsSubsequentLoginCallsFromLockScreen() =
         runTest {
-            // AND on resume called more than once
+            // WHEN on resume called more than once
             viewModel.onResume(mockLifeCycleOwner)
             viewModel.onResume(mockLifeCycleOwner)
 
-            // WHEN we call login
+            // AND we call login
             viewModel.login(mockActivity)
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
@@ -186,7 +186,7 @@ class SplashScreenOfflineViewModelTest {
     fun retrieveAppInfoOffline() =
         runTest {
             // WHEN AppInfo has not been called yet - initial state
-            // THEN loading progress indicator will be set to false
+            // AND loading progress indicator will be set to false
             assertFalse(viewModel.loading.value)
             // AND AppInfo call is offline and local source has failed/ null
             whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
@@ -198,7 +198,7 @@ class SplashScreenOfflineViewModelTest {
 
             // THEN loading progress indicator will be set to true
             assertTrue(viewModel.loading.value)
-            // THEN it navigates to Offline Error screen
+            // AND it navigates to Offline Error screen
             verify(mockNavigator).navigate(ErrorRoutes.Offline)
         }
 
@@ -208,7 +208,7 @@ class SplashScreenOfflineViewModelTest {
             // WHEN AppInfo has not been called yet - initial state
             // THEN loading progress indicator will be set to false
             assertFalse(viewModel.loading.value)
-            // AND AppInfo call is offline and local source has failed/ null
+            // AND WHEN AppInfo call is offline and local source has failed/ null
             whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
 
             // AND it calls retrieveAppInfo
@@ -218,7 +218,7 @@ class SplashScreenOfflineViewModelTest {
 
             // THEN loading progress indicator will be set to true
             assertTrue(viewModel.loading.value)
-            // THEN it navigates to Unavailable Error screen
+            // AND it navigates to Unavailable Error screen
             verify(mockNavigator).navigate(ErrorRoutes.Unavailable)
         }
 
@@ -255,7 +255,7 @@ class SplashScreenOfflineViewModelTest {
             // THEN loading progress indicator will be set to false
             assertFalse(viewModel.loading.value)
 
-            // AND AppInfo call is successful remote
+            // AND WHEN AppInfo call is successful remote
             whenever(mockAppInfoService.get()).thenAnswer {
                 assertTrue(viewModel.loading.value)
                 AppInfoServiceState.Successful(data)
@@ -276,7 +276,7 @@ class SplashScreenOfflineViewModelTest {
             // THEN loading progress indicator will be set to false
             assertFalse(viewModel.loading.value)
 
-            // AND AppInfo call is successful remote
+            // AND WHEN AppInfo call is successful remote
             whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.UpdateRequired)
             // AND it calls retrieveAppInfo
             viewModel.retrieveAppInfo {

@@ -165,13 +165,14 @@ class SplashScreenViewModelTest {
     @Test
     fun allowsSubsequentLoginCallsFromLockScreen() =
         runTest {
-            // AND on resume called more than once
+            // WHEN on resume called more than once
             viewModel.onResume(mockLifeCycleOwner)
             viewModel.onResume(mockLifeCycleOwner)
 
-            // WHEN we call login
+            // AND we call login
             viewModel.login(mockActivity)
 
+            // THEN the autoinitialise is being called
             verify(mockAutoInitialiseSecureStore).initialise(null)
             // THEN do NOT login (as the app will be going to background)
             verify(mockRefreshExchange, times(1))
