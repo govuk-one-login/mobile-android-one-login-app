@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uk.gov.android.network.online.OnlineChecker
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -19,19 +20,27 @@ import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val navigator: Navigator,
     private val handleLocalLogin: HandleLocalLogin,
     private val appInfoService: AppInfoService,
     private val signOutUseCase: SignOutUseCase,
-    private val autoInitialiseSecureStore: AutoInitialiseSecureStore
+    private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
+    private val onlineChecker: OnlineChecker,
+    private val refreshExchange: RefreshExchange,
+    @param:RefreshToken
+    private val getTokenExpiry: GetTokenExpiry
 ) : ViewModel(), DefaultLifecycleObserver {
     private val _showUnlock = MutableStateFlow(false)
     val showUnlock: StateFlow<Boolean> = _showUnlock
@@ -56,37 +65,48 @@ class SplashScreenViewModel @Inject constructor(
     fun login(fragmentActivity: FragmentActivity) {
         viewModelScope.launch {
             autoInitialiseSecureStore.initialise(null)
-            handleLocalLogin(
-                fragmentActivity,
-                callback = {
-                    when (it) {
-                        LocalAuthStatus.SecureStoreError -> {
-                            nextScreen(SignOutRoutes.Info)
-                        }
+            if (onlineChecker.isOnline() && getTokenExpiry() != null && getTokenExpiry() != 0L) {
+                _loading.emit(true)
+                refreshExchange.getTokens(
+                    fragmentActivity,
+                    handleResult = { handleLocalAuthBehaviour(it) }
+                )
+            } else {
+                _loading.emit(true)
+                handleLocalLogin(
+                    fragmentActivity,
+                    callback = { handleLocalAuthBehaviour(it) }
+                )
+            }
+        }
+    }
 
-                        LocalAuthStatus.ManualSignIn -> {
-                            _deleteData.value = true
-                        }
+    private fun handleLocalAuthBehaviour(status: LocalAuthStatus) {
+        when (status) {
+            LocalAuthStatus.SecureStoreError -> {
+                nextScreen(SignOutRoutes.Info)
+            }
 
-                        is LocalAuthStatus.Success ->
-                            nextScreen(MainNavRoutes.Start)
+            LocalAuthStatus.ManualSignIn -> {
+                _deleteData.value = true
+            }
 
-                        LocalAuthStatus.UserCancelled -> {
-                            _loading.value = false
-                            _showUnlock.value = true
-                        }
+            is LocalAuthStatus.Success ->
+                nextScreen(MainNavRoutes.Start)
 
-                        LocalAuthStatus.BioCheckFailed -> {
-                            // Allow user to make multiple fails... do nothing for now
-                        }
+            LocalAuthStatus.UserCancelled -> {
+                _loading.value = false
+                _showUnlock.value = true
+            }
 
-                        // Handles ReuAuth and ClientAttestationFailure (this is not used in this flow yet)
-                        else -> {
-                            nextScreen(SignOutRoutes.Info)
-                        }
-                    }
-                }
-            )
+            LocalAuthStatus.BioCheckFailed -> {
+                // Allow user to make multiple fails... do nothing for now
+            }
+
+            // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
+            else -> {
+                nextScreen(SignOutRoutes.Info)
+            }
         }
     }
 
