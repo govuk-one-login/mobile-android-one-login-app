@@ -1,0 +1,19 @@
+name: 'Upload coverage reports'
+
+inputs:
+  artifact-name:
+    description: 'Name for the uploaded artifact'
+    required: true
+  path:
+    description: "Path for the reports"
+    required: false
+    default: "**/reports/jacoco/**/*.xml"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: "**/reports/jacoco/**/*.xml"
