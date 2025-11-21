@@ -80,7 +80,8 @@ class SplashScreenViewModel @Inject constructor(
                             // Allow user to make multiple fails... do nothing for now
                         }
 
-                        LocalAuthStatus.ReAuthSignIn -> {
+                        // Handles ReuAuth and ClientAttestationFailure (this is not used in this flow yet)
+                        else -> {
                             nextScreen(SignOutRoutes.Info)
                         }
                     }
