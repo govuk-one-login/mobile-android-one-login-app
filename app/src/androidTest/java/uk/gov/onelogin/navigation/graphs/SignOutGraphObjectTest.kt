@@ -128,15 +128,4 @@ class SignOutGraphObjectTest : TestCase() {
             }
         }
     }
-
-    @Test
-    fun signOutGraph_navigateToSignOutErrorScreen() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(SignOutRoutes.SignOutWalletError.getRoute())
-        }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorBody1)
-        )
-    }
 }

@@ -22,7 +22,6 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 fun SignOutSuccess(
     viewModel: SignOutSuccessViewModel = hiltViewModel()
 ) {
-    val walletFeatureFlag = viewModel.isWalletEnabled()
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
@@ -31,7 +30,7 @@ fun SignOutSuccess(
     }
 
     EdgeToEdgePage { _ ->
-        SignOutConfirmationBody(walletFeatureFlag) {
+        SignOutConfirmationBody {
             viewModel.navigateStart()
         }
     }
@@ -39,20 +38,12 @@ fun SignOutSuccess(
 
 @Composable
 fun SignOutConfirmationBody(
-    walletEnabled: Boolean,
     onPrimary: () -> Unit
 ) {
-    val content = if (walletEnabled) {
-        listOf(
-            stringResource(R.string.app_signOutWalletBody),
-            stringResource(R.string.app_signOutWalletBody2)
-        )
-    } else {
-        listOf(
-            stringResource(R.string.app_signOutBody),
-            stringResource(R.string.app_signOutBody2)
-        )
-    }
+    val content = listOf(
+        stringResource(R.string.app_signOutBody),
+        stringResource(R.string.app_signOutBody2)
+    )
     val buttonText = stringResource(R.string.app_signOutSuccessButton)
     CentreAlignedScreen(
         title = stringResource(R.string.app_signOutTitle),
@@ -73,15 +64,6 @@ fun SignOutConfirmationBody(
 @Composable
 internal fun SignOutSuccessPreview() {
     GdsTheme {
-        SignOutConfirmationBody(false) {}
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@ScreenPreview
-@Composable
-internal fun SignOutSuccessWalletPreview() {
-    GdsTheme {
-        SignOutConfirmationBody(true) {}
+        SignOutConfirmationBody {}
     }
 }

@@ -1,27 +1,23 @@
-package uk.gov.onelogin.features.settings.ui.biometricstoggle
+package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
-import com.android.resources.NightMode.NIGHT
-import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class BiometricsToggleDisabledScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class AuthErrorScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        BiometricsToggleDisabledNoWalletBodyPreview()
+        AuthErrorScreenPreview()
     }
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> {
-            return arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+            return applyNightModeAndLocale()
         }
     }
 }

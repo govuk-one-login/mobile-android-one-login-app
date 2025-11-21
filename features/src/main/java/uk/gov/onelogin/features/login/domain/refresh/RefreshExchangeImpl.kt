@@ -57,8 +57,6 @@ class RefreshExchangeImpl @Inject constructor(
     // Initialise token and client attestation field
     private var refreshToken = ""
     private var idToken = ""
-
-    // This could be empty if it's not required - check with Hamish/ Jamie
     private var clientAttestation: String = ""
     private var areChecksSuccessful = false
 
@@ -73,14 +71,14 @@ class RefreshExchangeImpl @Inject constructor(
                 // Attempt to get Client Attestation
                 getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
             } else {
-                // When Refresh token is invalid - prompt for re-auth to be able to get a v new Refresh token
-                // Call lambda to handle the result form the consumer/ call point based on the LocalAuthStatus passed in
+                // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
+                // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
                 handleResult(LocalAuthStatus.ReAuthSignIn)
                 return
             }
         } else {
             // When a persistent session ID couldn't be retrieved or is invalid
-            // Call lambda to handle the result form the consumer/ call point based on the LocalAuthStatus passed in
+            // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
             handleResult(LocalAuthStatus.ManualSignIn)
             return
         }
@@ -89,23 +87,17 @@ class RefreshExchangeImpl @Inject constructor(
         if (areChecksSuccessful) makeRefreshTokenCall(handleResult)
     }
 
-    override suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
+    private suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
         context: FragmentActivity,
         handleResult: (LocalAuthStatus) -> Unit
     ) {
         when (val attestation = appIntegrity.getClientAttestation()) {
             // If attestation exists and is valid OR if required, a new one is successfully retrieved
             is AttestationResult.Success -> {
-                // Attempt to retrieve the Refresh token form the secure store
+                // Attempt to retrieve the Refresh token from the secure store
                 handleRefreshTokenRetrieval(
                     context = context,
-                    onSuccess = { refreshToken, idToken ->
-                        // Update the local fields for the required parameters
-                        this@RefreshExchangeImpl.refreshToken = refreshToken
-                        this@RefreshExchangeImpl.idToken = idToken
-                        clientAttestation = attestation.clientAttestation
-                        areChecksSuccessful = true
-                    },
+                    clientAttestation = attestation.clientAttestation,
                     onFailure = {
                         handleResult(it)
                         areChecksSuccessful = false
@@ -113,23 +105,18 @@ class RefreshExchangeImpl @Inject constructor(
                 )
             }
             is AttestationResult.NotRequired -> {
-                // Attempt to retrieve the Refresh token form the secure store
+                // Attempt to retrieve the Refresh token from the secure store
                 handleRefreshTokenRetrieval(
                     context = context,
-                    onSuccess = { refreshToken, idToken ->
-                        this@RefreshExchangeImpl.refreshToken = refreshToken
-                        this@RefreshExchangeImpl.idToken = idToken
-                        clientAttestation = attestation.savedAttestation ?: ""
-                        areChecksSuccessful = true
-                    },
+                    clientAttestation = attestation.savedAttestation,
                     onFailure = {
                         handleResult(it)
                         areChecksSuccessful = false
                     }
                 )
             }
-            // For any errors returned form the attempt to get a new client attestation/ retrieve existing one
-            // Call lambda to handle the result form the consumer/ call point based on the LocalAuthStatus passed in
+            // For any errors returned from the attempt to get a new client attestation/ retrieve existing one
+            // Call lambda to handle the result fromm the consumer/ call point based on the LocalAuthStatus passed in
             else -> {
                 areChecksSuccessful = false
                 handleResult(LocalAuthStatus.ClientAttestationFailure)
@@ -139,10 +126,10 @@ class RefreshExchangeImpl @Inject constructor(
 
     private suspend fun handleRefreshTokenRetrieval(
         context: FragmentActivity,
-        onSuccess: (refreshToken: String, idToken: String) -> Unit,
+        clientAttestation: String?,
         onFailure: (LocalAuthStatus) -> Unit
     ) {
-        // Attempt to retrieve the Refresh token form the secure store
+        // Attempt to retrieve the Refresh token from the secure store
         getFromEncryptedSecureStore(
             context = context,
             AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -155,15 +142,18 @@ class RefreshExchangeImpl @Inject constructor(
                     val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
                     // Check is valid (should never be returned null)
                     if (!refreshToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
-                        // Call lambda to handle the result form the consumer/ call point based on the LocalAuthStatus passed in
-                        onSuccess(refreshToken, idToken)
+                        // Set all required values to enable teh refresh request to be made/ continue
+                        this@RefreshExchangeImpl.refreshToken = refreshToken
+                        this@RefreshExchangeImpl.idToken = idToken
+                        this@RefreshExchangeImpl.clientAttestation = clientAttestation ?: ""
+                        areChecksSuccessful = true
                     } else {
                         // When Refresh token is invalid then prompt user to re-auth as the refresh token won't be able to be exchanged for a new one
                         onFailure(LocalAuthStatus.ReAuthSignIn)
                     }
                 } else {
                     // If the retrieval failed
-                    // Call lambda to handle the result form the consumer/ call point based on the LocalAuthStatus passed in
+                    // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
                     onFailure(it)
                 }
             }
@@ -210,7 +200,7 @@ class RefreshExchangeImpl @Inject constructor(
                 // Update access and refresh token in secure store
                 saveTokens.save(decodedTokens.refreshToken)
                 // Call lambda to exit the function with a LocalAuthStatus.Success
-                // To be determined when implementing if it requires the refresh toke to be passed to the consumer
+                // To be determined when implementing if it requires the refresh token to be passed to the consumer
                 handleResult(LocalAuthStatus.Success(mapOf()))
             }
             is ApiResponse.Failure -> {

@@ -64,7 +64,7 @@ class SignOutWalletErrorScreenTest : FragmentActivityTestCase() {
 
     private fun setUpPreview() {
         composeTestRule.setContent {
-            SignOutWalletPreview()
+            SignOutPreview()
         }
     }
 }

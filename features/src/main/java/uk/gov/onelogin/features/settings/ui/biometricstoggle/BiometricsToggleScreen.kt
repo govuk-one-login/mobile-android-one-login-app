@@ -93,11 +93,9 @@ fun BiometricsToggleScreen(
     ) { paddingValues ->
         BiometricsToggleBody(
             biometricsEnabled = viewModel.biometricsEnabled,
-            walletAvailable = viewModel.walletEnabled,
             toggleBiometrics = { viewModel.toggleBiometrics() },
             padding = paddingValues,
-            trackWalletCopy = { analyticsViewModel.trackWalletCopyView() },
-            trackNokWalletCopy = { analyticsViewModel.trackNoWalletCopyView() },
+            trackScreen = { analyticsViewModel.trackWalletCopyView() },
             trackToggle = { analyticsViewModel.trackToggleEvent(it) }
         )
     }
@@ -106,40 +104,33 @@ fun BiometricsToggleScreen(
 @Composable
 private fun BiometricsToggleBody(
     biometricsEnabled: StateFlow<Boolean>,
-    walletAvailable: Boolean,
     padding: PaddingValues,
     toggleBiometrics: () -> Unit,
-    trackWalletCopy: () -> Unit,
-    trackNokWalletCopy: () -> Unit,
+    trackScreen: () -> Unit,
     trackToggle: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(padding)
     ) {
+        trackScreen()
         BiometricsToggleRow(R.string.app_biometricsToggleLabel, biometricsEnabled) {
             toggleBiometrics()
             trackToggle(it)
         }
-        if (walletAvailable) {
-            trackWalletCopy()
-            WalletCopyContent()
-        } else {
-            trackNokWalletCopy()
-            NoWalletCopyContent()
-        }
+        WalletCopyContent()
     }
 }
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun WalletCopyContent() {
-    val bulletListTitle = stringResource(R.string.app_biometricsToggleBody1Wallet)
+    val bulletListTitle = stringResource(R.string.app_biometricsToggleBody1)
     val bullet1 = stringResource(R.string.app_biometricsToggleBullet1)
     val bullet2 = stringResource(R.string.app_biometricsToggleBullet2)
-    val body2 = stringResource(R.string.app_biometricsToggleBody2Wallet)
-    val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
+    val body2 = stringResource(R.string.app_biometricsToggleBody2)
+    val body3 = stringResource(R.string.app_biometricsToggleBody3)
     val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
-    val body4 = stringResource(R.string.app_biometricsToggleBody4Wallet)
+    val body4 = stringResource(R.string.app_biometricsToggleBody4)
     Column(
         modifier = Modifier
             .padding(vertical = smallPadding, horizontal = smallPadding)
@@ -181,30 +172,6 @@ private fun WalletCopyContent() {
             text = body4,
             modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX3 }
         )
-    }
-}
-
-@OptIn(UnstableDesignSystemAPI::class)
-@Composable
-private fun NoWalletCopyContent() {
-    val body1 = stringResource(R.string.app_biometricsToggleBody1)
-    val body2 = stringResource(R.string.app_biometricsToggleBody2)
-    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
-    val body3 = stringResource(R.string.app_biometricsToggleBody3)
-    Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
-        Text(text = body1)
-        Text(
-            text = body2,
-            modifier = Modifier.padding(top = smallPadding)
-        )
-        GdsHeading(
-            text = subtitle,
-            style = GdsHeadingStyle.Body,
-            textAlign = GdsHeadingAlignment.LeftAligned,
-            textFontWeight = FontWeight.W700,
-            modifier = Modifier.padding(vertical = smallPadding)
-        )
-        Text(body3)
     }
 }
 
@@ -305,7 +272,7 @@ private fun BiometricsTopAppBar(
 @ScreenPreview
 @Preview(locale = "CY")
 @Composable
-internal fun BiometricsToggleEnabledWalletBodyPreview() {
+internal fun BiometricsToggleBodyPreview() {
     GdsTheme {
         Scaffold(
             topBar = {
@@ -314,36 +281,11 @@ internal fun BiometricsToggleEnabledWalletBodyPreview() {
         ) { paddingValues ->
             BiometricsToggleBody(
                 MutableStateFlow(false),
-                true,
                 paddingValues,
                 {},
                 {},
                 {}
-            ) {}
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@ExcludeFromJacocoGeneratedReport
-@ScreenPreview
-@Preview(locale = "CY")
-@Composable
-internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
-    GdsTheme {
-        Scaffold(
-            topBar = {
-                BiometricsTopAppBar {}
-            }
-        ) { paddingValues ->
-            BiometricsToggleBody(
-                MutableStateFlow(true),
-                false,
-                paddingValues,
-                {},
-                {},
-                {}
-            ) {}
+            )
         }
     }
 }

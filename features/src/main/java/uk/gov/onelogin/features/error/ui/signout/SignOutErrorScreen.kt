@@ -51,6 +51,6 @@ internal fun SignOutErrorBody(onBackToSettings: () -> Unit) {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-fun SignOutWalletPreview() {
+fun SignOutPreview() {
     SignOutErrorBody {}
 }

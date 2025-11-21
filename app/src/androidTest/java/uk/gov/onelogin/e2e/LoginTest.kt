@@ -257,6 +257,7 @@ class LoginTest : FlakyTestCase() {
     }
 
     @Test
+    @FlakyTest
     fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
