@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.DisposableEffect
 import androidx.navigation.compose.rememberNavController
@@ -17,14 +16,14 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigator: Navigator
 
-    private val viewModel: MainActivityViewModel by viewModels()
+//    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
 
-        viewModel.handleIntent(intent)
+//        viewModel.handleIntent(intent)
 
         setContent {
             val navController = rememberNavController()
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        setIntent(intent)
-        viewModel.handleIntent(intent)
+//        setIntent(intent)
+//        viewModel.handleIntent(intent)
     }
 }
