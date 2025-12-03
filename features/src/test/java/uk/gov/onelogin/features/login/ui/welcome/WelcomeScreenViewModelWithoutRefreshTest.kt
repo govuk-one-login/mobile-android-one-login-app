@@ -395,7 +395,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
-            verify(mockNavigator).goBack()
             verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
