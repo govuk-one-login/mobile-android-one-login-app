@@ -16,14 +16,10 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigator: Navigator
 
-//    private val viewModel: MainActivityViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
-
-//        viewModel.handleIntent(intent)
 
         setContent {
             val navController = rememberNavController()
@@ -42,7 +38,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-//        setIntent(intent)
-//        viewModel.handleIntent(intent)
     }
 }
