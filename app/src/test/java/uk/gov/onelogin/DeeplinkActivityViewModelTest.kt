@@ -14,21 +14,18 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
-class MainActivityViewModelIntentTest {
-    private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
+class DeeplinkActivityViewModelTest {
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: DeeplinkActivityViewModel
 
     @Before
     fun setup() {
-        viewModel = MainActivityViewModel(
-            analyticsOptInRepo,
+        viewModel = DeeplinkActivityViewModel(
             walletRepository,
             walletSdk
         )
@@ -101,10 +98,9 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_MAIN
                 data = deeplink.toUri()
             }
-        viewModel = MainActivityViewModel(
+        viewModel = DeeplinkActivityViewModel(
             walletRepository = walletRepository,
-            walletSdk = walletSdk,
-            analyticsOptInRepo = analyticsOptInRepo
+            walletSdk = walletSdk
         )
         viewModel.handleIntent(intent)
 

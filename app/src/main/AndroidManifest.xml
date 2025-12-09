@@ -1,78 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-<!--    Needs this because of using Firebase    -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+    <!--    Needs this because of using Firebase    -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
 
     <application
-        tools:replace="android:theme"
         android:name="uk.gov.onelogin.OneLoginApplication"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/one_login_app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OneLogin"
+        tools:replace="android:theme"
         tools:targetApi="31">
         <activity
-            android:launchMode="singleTop"
             android:name="uk.gov.onelogin.MainActivity"
-            android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:permission="">
+            android:launchMode="singleTop"
+            android:permission=""
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!--      This should only be kept on develop, do not keep this in release/ main (until Wallet release)      -->
+        </activity>
+        <activity
+            android:name="uk.gov.onelogin.DeeplinkActivity"
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="https"/>
-                <data android:host="mobile${flavorSuffix}.account.gov.uk"/>
-                <data android:pathPrefix="/wallet"/>
-                <data android:pathPrefix="/wallet-test"/>
+
+                <data android:scheme="https" />
+                <data android:host="mobile${flavorSuffix}.account.gov.uk" />
+                <data android:pathPrefix="/wallet" />
+                <data android:pathPrefix="/wallet-test" />
             </intent-filter>
         </activity>
         <activity
-            android:launchMode="singleTop"
             android:name="net.openid.appauth.RedirectUriReceiverActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:permission=""
-            tools:node="replace"
-            tools:ignore="MissingClass">
+            tools:ignore="MissingClass"
+            tools:node="replace">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"/>
-                <data android:host="mobile${flavorSuffix}.account.gov.uk"/>
-                <data android:path="/redirect"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="mobile${flavorSuffix}.account.gov.uk" />
+                <data android:path="/redirect" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"/>
-                <data android:host="app.mobile${flavorSuffix}.account.gov.uk"/>
-                <data android:path="/redirect"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:host="app.mobile${flavorSuffix}.account.gov.uk" />
+                <data android:path="/redirect" />
             </intent-filter>
         </activity>
 
-        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
-        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
         <meta-data
             android:name="google_analytics_automatic_screen_reporting_enabled"
-            android:value="false"
-            />
+            android:value="false" />
     </application>
 
     <queries>

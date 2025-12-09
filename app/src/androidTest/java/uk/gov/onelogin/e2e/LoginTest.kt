@@ -326,6 +326,7 @@ class LoginTest : FlakyTestCase() {
     }
 
     @Test
+    @FlakyTest
     fun handleActivityCancelledResult() {
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))

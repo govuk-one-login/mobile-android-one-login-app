@@ -47,7 +47,6 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -65,7 +64,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var navigator: Navigator
-    private lateinit var saveTokens: SaveTokens
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var savePersistentId: SavePersistentId
     private lateinit var handleRemoteLogin: HandleRemoteLogin
@@ -104,7 +102,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
         navigator = mock()
-        saveTokens = mock()
         savePersistentId = mock()
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
@@ -129,7 +126,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             autoInitialiseSecureStore,
             verifyIdToken,
             navigator,
-            saveTokens,
             savePersistentId,
             saveTokenExpiry,
             handleRemoteLogin,
