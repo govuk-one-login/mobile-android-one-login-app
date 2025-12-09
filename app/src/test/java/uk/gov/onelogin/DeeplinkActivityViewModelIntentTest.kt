@@ -18,16 +18,16 @@ import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
-class MainActivityViewModelIntentTest {
+class DeeplinkActivityViewModelIntentTest {
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: DeeplinkActivityViewModel
 
     @Before
     fun setup() {
-        viewModel = MainActivityViewModel(
+        viewModel = DeeplinkActivityViewModel(
             analyticsOptInRepo,
             walletRepository,
             walletSdk
@@ -101,7 +101,7 @@ class MainActivityViewModelIntentTest {
                 action = ACTION_MAIN
                 data = deeplink.toUri()
             }
-        viewModel = MainActivityViewModel(
+        viewModel = DeeplinkActivityViewModel(
             walletRepository = walletRepository,
             walletSdk = walletSdk,
             analyticsOptInRepo = analyticsOptInRepo

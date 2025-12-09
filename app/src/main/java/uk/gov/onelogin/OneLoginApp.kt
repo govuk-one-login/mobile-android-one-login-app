@@ -18,7 +18,7 @@ import uk.gov.onelogin.navigation.graphs.SignOutGraphObject.signOutGraph
 
 @Composable
 fun OneLoginApp(
-    viewModel: MainActivityViewModel = hiltViewModel(),
+    viewModel: DeeplinkActivityViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current

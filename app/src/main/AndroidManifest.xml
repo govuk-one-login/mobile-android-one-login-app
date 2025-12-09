@@ -37,7 +37,6 @@
             android:name="uk.gov.onelogin.DeeplinkActivity"
             android:launchMode="singleTask"
             android:exported="true">
-            <!--      This should only be kept on develop, do not keep this in release/ main (until Wallet release)      -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

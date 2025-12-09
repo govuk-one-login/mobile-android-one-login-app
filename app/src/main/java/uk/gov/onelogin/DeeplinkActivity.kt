@@ -8,7 +8,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DeeplinkActivity : AppCompatActivity() {
-    private val viewModel: MainActivityViewModel by viewModels()
+    private val viewModel: DeeplinkActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

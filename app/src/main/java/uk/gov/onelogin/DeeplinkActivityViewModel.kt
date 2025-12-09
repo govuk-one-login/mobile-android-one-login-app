@@ -16,7 +16,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @HiltViewModel
 @Suppress("LongParameterList")
-class MainActivityViewModel @Inject constructor(
+class DeeplinkActivityViewModel @Inject constructor(
     private val analyticsOptInRepo: AnalyticsOptInRepository,
     private val walletRepository: WalletRepository,
     private val walletSdk: WalletSdk

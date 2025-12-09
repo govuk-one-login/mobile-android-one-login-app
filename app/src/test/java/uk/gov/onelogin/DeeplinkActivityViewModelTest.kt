@@ -19,18 +19,18 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
-class MainActivityViewModelTest {
+class DeeplinkActivityViewModelTest {
     private val mockContext: Context = mock()
     private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
     private val mockLifecycleOwner: LifecycleOwner = mock()
     private val mockWalletRepository: WalletRepository = mock()
     private val mockWalletSdk: WalletSdk = mock()
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModel: DeeplinkActivityViewModel
 
     @BeforeEach
     fun setup() {
-        viewModel = MainActivityViewModel(
+        viewModel = DeeplinkActivityViewModel(
             analyticsOptInRepo,
             mockWalletRepository,
             mockWalletSdk
