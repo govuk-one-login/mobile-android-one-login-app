@@ -1,47 +1,110 @@
 package uk.gov.onelogin
 
-import android.content.Context
-import androidx.lifecycle.LifecycleOwner
-import kotlin.test.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import android.content.Intent
+import android.content.Intent.ACTION_MAIN
+import android.content.Intent.ACTION_VIEW
+import androidx.core.net.toUri
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.extensions.CoroutinesTestExtension
-import uk.gov.onelogin.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
-@OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
+@RunWith(AndroidJUnit4::class)
 class DeeplinkActivityViewModelTest {
-    private val mockContext: Context = mock()
-    private val analyticsOptInRepo: AnalyticsOptInRepository = mock()
-    private val mockLifecycleOwner: LifecycleOwner = mock()
-    private val mockWalletRepository: WalletRepository = mock()
-    private val mockWalletSdk: WalletSdk = mock()
+    private val walletRepository: WalletRepository = mock()
+    private val walletSdk: WalletSdk = mock()
 
     private lateinit var viewModel: DeeplinkActivityViewModel
 
-    @BeforeEach
+    @Before
     fun setup() {
         viewModel = DeeplinkActivityViewModel(
-            analyticsOptInRepo,
-            mockWalletRepository,
-            mockWalletSdk
+            walletRepository,
+            walletSdk
         )
-        whenever(mockContext.getString(any(), any())).thenReturn("testUrl")
-        whenever(mockContext.getString(any())).thenReturn("test")
     }
 
     @Test
-    fun `synchronise analytics on each app start`() = runTest {
-        viewModel.onStart(owner = mockLifecycleOwner)
-        verify(analyticsOptInRepo).synchronise()
+    fun validDeepLink() = runTest {
+        val credentialOffer = "xxx"
+        val deeplink = "app://route?credential_offer=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_VIEW
+                data = deeplink.toUri()
+            }
+        viewModel.handleIntent(intent)
+
+        verify(walletRepository).toggleWallDeepLinkPathState()
+        verify(walletSdk).setDeeplink(any())
+    }
+
+    @Test
+    fun invalidDeepLink() = runTest {
+        val credentialOffer = "xxx"
+        val deeplink = "https://mobile.build.account.gov.uk/wallet/add?invalid=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_VIEW
+                data = deeplink.toUri()
+            }
+        viewModel.handleIntent(intent)
+
+        verifyNoInteractions(walletRepository)
+        verifyNoInteractions(walletSdk)
+    }
+
+    @Test
+    fun nullIntentData() {
+        val intent =
+            Intent().apply {
+                action = ACTION_VIEW
+                data = null
+            }
+        viewModel.handleIntent(intent)
+
+        verifyNoInteractions(walletRepository)
+        verifyNoInteractions(walletSdk)
+    }
+
+    @Test
+    fun invalidIntentAction() {
+        val credentialOffer = "xxx"
+        val deeplink = "app://route?credential_offer=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_MAIN
+                data = deeplink.toUri()
+            }
+        viewModel.handleIntent(intent)
+
+        verifyNoInteractions(walletRepository)
+        verifyNoInteractions(walletSdk)
+    }
+
+    @Test
+    fun walletFeatureDisabled() {
+        val credentialOffer = "xxx"
+        val deeplink = "app://route?credential_offer=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_MAIN
+                data = deeplink.toUri()
+            }
+        viewModel = DeeplinkActivityViewModel(
+            walletRepository = walletRepository,
+            walletSdk = walletSdk
+        )
+        viewModel.handleIntent(intent)
+
+        verifyNoInteractions(walletRepository)
+        verifyNoInteractions(walletSdk)
     }
 }

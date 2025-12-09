@@ -1,16 +1,21 @@
 package uk.gov.onelogin
 
+import android.os.Looper
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.robolectric.Shadows.shadowOf
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
@@ -18,9 +23,14 @@ import uk.gov.onelogin.core.ApplicationEntryPoint
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
+import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
+@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class OneLoginApplicationTest {
     private lateinit var app: OneLoginApplication
 
@@ -29,6 +39,7 @@ class OneLoginApplicationTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockNavigator: Navigator = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
+    private val mockAnalyticsOptInRepo: AnalyticsOptInRepository = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -49,6 +60,7 @@ class OneLoginApplicationTest {
         whenever(entryPoint.tokenRepository()).thenReturn(mockTokenRepository)
         whenever(entryPoint.navigator()).thenReturn(mockNavigator)
         whenever(entryPoint.localAuthManager()).thenReturn(mockLocalAuthManager)
+        whenever(entryPoint.analyticsOptInRepo()).thenReturn(mockAnalyticsOptInRepo)
 
         app.appEntryPointProvider = { entryPoint }
     }
@@ -113,5 +125,12 @@ class OneLoginApplicationTest {
 
         verify(mockTokenRepository, never()).clearTokenResponse()
         verify(mockNavigator, never()).navigate(any(), any())
+    }
+
+    @Test
+    fun `AnalyticsRepo Synchronise is called from onStart`() = runTest {
+        app.onStart(ProcessLifecycleOwner.get())
+        shadowOf(Looper.getMainLooper()).idle()
+        verify(mockAnalyticsOptInRepo).synchronise()
     }
 }

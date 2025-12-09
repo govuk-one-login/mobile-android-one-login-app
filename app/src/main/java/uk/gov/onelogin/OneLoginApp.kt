@@ -1,9 +1,6 @@
 package uk.gov.onelogin
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -18,11 +15,8 @@ import uk.gov.onelogin.navigation.graphs.SignOutGraphObject.signOutGraph
 
 @Composable
 fun OneLoginApp(
-    viewModel: DeeplinkActivityViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-
     GdsTheme {
         NavHost(
             navController = navController,
@@ -34,14 +28,6 @@ fun OneLoginApp(
             signOutGraph(navController)
             developerFlowRoutes(navController)
             settingsGraph(navController)
-        }
-    }
-
-    DisposableEffect(key1 = lifecycleOwner) {
-        lifecycleOwner.lifecycle.addObserver(viewModel)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(viewModel)
         }
     }
 }

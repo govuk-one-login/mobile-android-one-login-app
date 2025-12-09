@@ -8,6 +8,10 @@ import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.HiltAndroidApp
 import java.io.OutputStream
 import java.io.PrintStream
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.core.ApplicationEntryPoint
@@ -24,6 +28,8 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
     }
 
     private val appEntryPoint: ApplicationEntryPoint by lazy { appEntryPointProvider() }
+
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
         super<Application>.onCreate()
@@ -68,6 +74,14 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
 
         if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() && !isLocalAuthEnabled()) {
             appEntryPoint.navigator().navigate(MainNavRoutes.Start)
+        }
+    }
+
+    override fun onStart(owner: LifecycleOwner) {
+        super.onStart(owner)
+
+        applicationScope.launch {
+            appEntryPoint.analyticsOptInRepo().synchronise()
         }
     }
 
