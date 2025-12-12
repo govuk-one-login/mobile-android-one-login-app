@@ -75,6 +75,9 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
         if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() && !isLocalAuthEnabled()) {
             appEntryPoint.navigator().navigate(MainNavRoutes.Start)
         }
+
+//        println("OneLoginApplication.onResume setWalletDeepLinkPathState false")
+//        appEntryPoint.walletDeeplinkRepo().setWalletDeepLinkPathState(deepLink = false)
     }
 
     override fun onStart(owner: LifecycleOwner) {

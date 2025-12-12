@@ -23,4 +23,9 @@ class DeeplinkActivity : AppCompatActivity() {
         viewModel.handleIntent(intent)
         startActivity(Intent(this, MainActivity::class.java))
     }
+
+    override fun onStop() {
+        super.onStop()
+        println("Wallet DeeplinkActivity.onStop() called")
+    }
 }

@@ -34,4 +34,9 @@ class MainActivity : AppCompatActivity() {
             OneLoginApp(navController = navController)
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        println("Wallet MainActivity.onStop() called")
+    }
 }

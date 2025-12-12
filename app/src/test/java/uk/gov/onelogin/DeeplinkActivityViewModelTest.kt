@@ -42,7 +42,7 @@ class DeeplinkActivityViewModelTest {
             }
         viewModel.handleIntent(intent)
 
-        verify(walletRepository).toggleWallDeepLinkPathState()
+        verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
         verify(walletSdk).setDeeplink(any())
     }
 

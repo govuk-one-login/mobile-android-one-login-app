@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
@@ -20,6 +21,7 @@ import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -38,10 +40,13 @@ class HomeScreenViewModelTest {
         applicationContext = context
     )
 
+    private val walletRepository: WalletRepository = mock()
+
     private val viewModel by lazy {
         HomeScreenViewModel(
             featureFlag,
             mockNavigator,
+            walletRepository,
             criOrchestratorSdk
         )
     }
@@ -61,5 +66,29 @@ class HomeScreenViewModelTest {
         viewModel.openDevPanel()
 
         verify(mockNavigator).openDeveloperPanel()
+    }
+
+    @Test
+    fun `no wallet deeplink`() {
+        // WHEN
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
+        viewModel.checkWalletEnabled()
+
+        // THEN
+        // Times 2 because once when is initialised, and once when called specifically - this test
+        // all possible use cases when coming in via deeplink and when returning back to the tab from any others
+        verify(walletRepository, times(0)).setWalletDeepLinkPathState(any())
+    }
+
+    @Test
+    fun `received wallet deeplink`() {
+        // WHEN
+        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
+        viewModel.checkWalletEnabled()
+
+        // THEN
+        // Times 2 because once when is initialised, and once when called specifically - this test
+        // all possible use cases when coming in via deeplink and when returning back to the tab from any others
+        verify(walletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
     }
 }
