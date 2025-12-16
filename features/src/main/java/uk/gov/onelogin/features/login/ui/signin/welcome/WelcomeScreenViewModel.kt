@@ -182,6 +182,7 @@ class WelcomeScreenViewModel @Inject constructor(
         tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
         savePersistentId()
+        tokenRepository.setNavigateToReAuthState(navToReAuth = true)
 
         localAuthManager.enforceAndSet(
             // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time

@@ -90,6 +90,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             analytics
         )
         counter = mock()
+
         viewModel =
             WelcomeScreenViewModel(
                 context,

@@ -32,16 +32,8 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun checkWalletEnabled() {
-        println(
-            "HomeScreenViewModel.checkWalletEnabled start isWalletDeepLinkPath: " +
-                "${walletRepository.isWalletDeepLinkPath()}"
-        )
         if (walletRepository.isWalletDeepLinkPath()) {
             walletRepository.setWalletDeepLinkPathState(deepLink = false)
         }
-        println(
-            "HomeScreenViewModel.checkWalletEnabled end: isWalletDeepLinkPath: " +
-                "${walletRepository.isWalletDeepLinkPath()}"
-        )
     }
 }

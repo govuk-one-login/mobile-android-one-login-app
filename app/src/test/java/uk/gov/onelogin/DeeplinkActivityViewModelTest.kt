@@ -14,12 +14,14 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.android.wallet.sdk.WalletSdk
+import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
 class DeeplinkActivityViewModelTest {
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
+    private val tokenRepository: TokenRepository = mock()
 
     private lateinit var viewModel: DeeplinkActivityViewModel
 
@@ -27,6 +29,7 @@ class DeeplinkActivityViewModelTest {
     fun setup() {
         viewModel = DeeplinkActivityViewModel(
             walletRepository,
+            tokenRepository,
             walletSdk
         )
     }
@@ -43,6 +46,7 @@ class DeeplinkActivityViewModelTest {
         viewModel.handleIntent(intent)
 
         verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
+        verify(tokenRepository).setNavigateToReAuthState(navToReAuth = false)
         verify(walletSdk).setDeeplink(any())
     }
 
@@ -58,6 +62,7 @@ class DeeplinkActivityViewModelTest {
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)
+        verifyNoInteractions(tokenRepository)
         verifyNoInteractions(walletSdk)
     }
 
@@ -71,6 +76,7 @@ class DeeplinkActivityViewModelTest {
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)
+        verifyNoInteractions(tokenRepository)
         verifyNoInteractions(walletSdk)
     }
 
@@ -86,6 +92,7 @@ class DeeplinkActivityViewModelTest {
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)
+        verifyNoInteractions(tokenRepository)
         verifyNoInteractions(walletSdk)
     }
 
@@ -100,11 +107,13 @@ class DeeplinkActivityViewModelTest {
             }
         viewModel = DeeplinkActivityViewModel(
             walletRepository = walletRepository,
+            tokenRepository = tokenRepository,
             walletSdk = walletSdk
         )
         viewModel.handleIntent(intent)
 
         verifyNoInteractions(walletRepository)
+        verifyNoInteractions(tokenRepository)
         verifyNoInteractions(walletSdk)
     }
 }
