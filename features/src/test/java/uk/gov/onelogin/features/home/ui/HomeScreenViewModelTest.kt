@@ -75,8 +75,6 @@ class HomeScreenViewModelTest {
         viewModel.checkWalletEnabled()
 
         // THEN
-        // Times 2 because once when is initialised, and once when called specifically - this test
-        // all possible use cases when coming in via deeplink and when returning back to the tab from any others
         verify(walletRepository, times(0)).setWalletDeepLinkPathState(any())
     }
 
@@ -87,8 +85,6 @@ class HomeScreenViewModelTest {
         viewModel.checkWalletEnabled()
 
         // THEN
-        // Times 2 because once when is initialised, and once when called specifically - this test
-        // all possible use cases when coming in via deeplink and when returning back to the tab from any others
         verify(walletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
     }
 }
