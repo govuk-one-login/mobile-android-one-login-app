@@ -19,18 +19,9 @@ class MainNavViewModelTest {
     }
 
     @Test
-    fun verifyCheckIsDeeplinkRoutePasses() {
+    fun verifyCheckIsDeeplinkRoute() {
         whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
-        whenever(mockWalletRepository.isTokensStored()).thenReturn(true)
         sut.checkIsDeeplinkRoute()
         assertEquals(true, sut.isDeeplinkRoute.value)
-    }
-
-    @Test
-    fun verifyCheckIsDeeplinkRouteFails() {
-        whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
-        whenever(mockWalletRepository.isTokensStored()).thenReturn(false)
-        sut.checkIsDeeplinkRoute()
-        assertEquals(false, sut.isDeeplinkRoute.value)
     }
 }
