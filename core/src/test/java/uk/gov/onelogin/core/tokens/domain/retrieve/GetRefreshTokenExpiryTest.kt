@@ -28,6 +28,16 @@ class GetRefreshTokenExpiryTest {
     }
 
     @Test
+    fun `returns null when value is not a number`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY to "a"))
+
+        val result = useCase()
+
+        assertEquals(null, result)
+    }
+
+    @Test
     fun `returns null when value null`() = runTest {
         whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
             .thenReturn(null)

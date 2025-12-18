@@ -8,12 +8,16 @@ class GetAccessTokenExpiryImpl @Inject constructor(
     private val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : GetTokenExpiry {
     override suspend fun invoke(): Long? {
-        val expiryTimestamp = getFromOpenSecureStore(ACCESS_TOKEN_EXPIRY_KEY)
-            ?.get(ACCESS_TOKEN_EXPIRY_KEY)?.toLong()
-        return if (expiryTimestamp == 0L) {
-            null
-        } else {
-            expiryTimestamp
+        try {
+            val expiryTimestamp = getFromOpenSecureStore(ACCESS_TOKEN_EXPIRY_KEY)
+                ?.get(ACCESS_TOKEN_EXPIRY_KEY)?.toLong()
+            return if (expiryTimestamp == 0L) {
+                null
+            } else {
+                expiryTimestamp
+            }
+        } catch (_: NumberFormatException) {
+            return null
         }
     }
 }

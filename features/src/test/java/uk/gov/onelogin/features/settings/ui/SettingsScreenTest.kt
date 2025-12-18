@@ -48,6 +48,7 @@ import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
 class SettingsScreenTest : FragmentActivityTestCase() {
@@ -56,6 +57,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private lateinit var getEmail: GetEmail
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var tokenRepository: TokenRepository
+    private lateinit var mockWalletRepository: WalletRepository
     private lateinit var viewModel: SettingsScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SettingsAnalyticsViewModel
@@ -87,10 +89,12 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         getEmail = mock()
         tokenRepository = mock()
         localAuthManager = mock()
+        mockWalletRepository = mock()
         viewModel = SettingsScreenViewModel(
             optInRepository,
             navigator,
             localAuthManager,
+            mockWalletRepository,
             tokenRepository,
             getEmail
         )
@@ -136,6 +140,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             optInRepository,
             navigator,
             localAuthManager,
+            mockWalletRepository,
             tokenRepository,
             getEmail
         )
@@ -158,6 +163,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             optInRepository,
             navigator,
             localAuthManager,
+            mockWalletRepository,
             tokenRepository,
             getEmail
         )
@@ -359,6 +365,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             optInRepository,
             navigator,
             localAuthManager,
+            mockWalletRepository,
             tokenRepository,
             getEmail
         )
@@ -376,6 +383,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             optInRepository,
             navigator,
             localAuthManager,
+            mockWalletRepository,
             tokenRepository,
             getEmail
         )
