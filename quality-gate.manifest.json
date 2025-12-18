@@ -66,6 +66,16 @@
           "config": {
             "file": ".github/workflows/on_push-release.yml",
             "name": "Verify code base pre-release",
+            "path": "jobs.onPushPreRelease"
+          },
+          "phase": "pre-upload",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [],
+          "config": {
+            "file": ".github/workflows/on_push-release.yml",
+            "name": "Verify code base when pushed on release",
             "path": "jobs.onPushRelease"
           },
           "phase": "pre-upload",
