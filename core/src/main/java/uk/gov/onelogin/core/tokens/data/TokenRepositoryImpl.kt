@@ -5,7 +5,7 @@ import uk.gov.android.authentication.login.TokenResponse
 
 class TokenRepositoryImpl @Inject constructor() : TokenRepository {
     private var tokenResponse: TokenResponse? = null
-    private var navigateToReAuth: Boolean = true
+    private var navigateToReAuth: Boolean = false
 
     override fun setTokenResponse(tokens: TokenResponse) {
         tokenResponse = TokenResponse(
@@ -25,11 +25,11 @@ class TokenRepositoryImpl @Inject constructor() : TokenRepository {
         tokenResponse = null
     }
 
-    override fun shouldNavigateToReAuth(): Boolean {
+    override fun areTokensPersisted(): Boolean {
         return navigateToReAuth
     }
 
-    override fun setNavigateToReAuthState(navToReAuth: Boolean) {
-        navigateToReAuth = navToReAuth
+    override fun setTokensPersistedState(state: Boolean) {
+        navigateToReAuth = state
     }
 }

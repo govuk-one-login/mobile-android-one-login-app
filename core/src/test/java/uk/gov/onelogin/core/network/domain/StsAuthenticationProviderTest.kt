@@ -5,8 +5,6 @@ import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
@@ -89,7 +87,6 @@ class StsAuthenticationProviderTest {
     fun `access token is expired, `() =
         runTest {
             setupProvider(ApiResponse.Success("hello"), true)
-            whenever(mockTokenRepository.shouldNavigateToReAuth()).thenReturn(true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
                 TokenResponse(
                     tokenType = "type",
@@ -110,33 +107,6 @@ class StsAuthenticationProviderTest {
                 (response as AuthenticationResponse.Failure).error.message
             )
             verify(mockNavigator).navigate(SignOutRoutes.Info)
-        }
-
-    @Test
-    fun `access token is expired, no re-auth nav`() =
-        runTest {
-            setupProvider(ApiResponse.Success("hello"), true)
-            whenever(mockTokenRepository.shouldNavigateToReAuth()).thenReturn(false)
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
-                    tokenType = "type",
-                    accessToken = "accessToken",
-                    accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
-            )
-
-            val response = provider.fetchBearerToken("scope")
-
-            assertThat(
-                "response is AccessTokenExpired",
-                response is AuthenticationResponse.Failure
-            )
-            assertEquals(
-                "Access token expired",
-                (response as AuthenticationResponse.Failure).error.message
-            )
-            verify(mockNavigator, never()).navigate(SignOutRoutes.Info)
         }
 
     @Test
@@ -169,7 +139,7 @@ class StsAuthenticationProviderTest {
             )
         }
 
-    private fun setupProvider(
+    private suspend fun setupProvider(
         httpResponse: ApiResponse,
         isAccessTokenExpired: Boolean = false
     ) {

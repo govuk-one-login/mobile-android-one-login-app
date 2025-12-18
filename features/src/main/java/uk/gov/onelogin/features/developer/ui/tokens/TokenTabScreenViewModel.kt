@@ -39,64 +39,80 @@ class TokenTabScreenViewModel @Inject constructor(
     private val _persistentId = MutableStateFlow("")
     val persistentId: StateFlow<String>
         get() = _persistentId.asStateFlow()
+    private val _accessTokenExpiry = MutableStateFlow("")
+    val accessTokenExpiry: StateFlow<String>
+        get() = _accessTokenExpiry.asStateFlow()
+    private val _refreshTokenExpiry = MutableStateFlow("")
+    val refreshTokenExpiry: StateFlow<String>
+        get() = _refreshTokenExpiry.asStateFlow()
 
     init {
         viewModelScope.launch {
             setPersistentId()
+            getAccessTokenExp()
+            getRefreshTokenExp()
         }
     }
 
     @OptIn(ExperimentalTime::class)
-    fun getAccessTokenExp(): String {
+    suspend fun getAccessTokenExp() {
         val epochExp = getAccessTokenExpiry()
-        return epochExp?.let {
+        _accessTokenExpiry.value = epochExp?.let {
             val date = Instant.fromEpochMilliseconds(it)
             formatDateInstate(date)
         } ?: NO_ACCESS_TOKEN_EXP
     }
 
     fun resetAccessTokenExp() {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = ACCESS_TOKEN_EXPIRY_KEY,
-                value = java.time.Instant.now()
-                    .minus(MINUTES_1, ChronoUnit.MINUTES)
-                    .toEpochMilli()
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = java.time.Instant.now()
+                        .minus(MINUTES_1, ChronoUnit.MINUTES)
+                        .toEpochMilli()
+                )
             )
-        )
+        }
     }
 
     fun resetRefreshTokenExp() {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = java.time.Instant.now()
-                    .minus(MINUTES_1, ChronoUnit.MINUTES)
-                    .epochSecond
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = java.time.Instant.now()
+                        .minus(MINUTES_1, ChronoUnit.MINUTES)
+                        .epochSecond
+                )
             )
-        )
+        }
     }
 
     fun setAccessTokenExpireTo30Seconds() {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = ACCESS_TOKEN_EXPIRY_KEY,
-                value = java.time.Instant.now()
-                    .plus(SECONDS_30, ChronoUnit.SECONDS)
-                    .toEpochMilli()
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = java.time.Instant.now()
+                        .plus(SECONDS_30, ChronoUnit.SECONDS)
+                        .toEpochMilli()
+                )
             )
-        )
+        }
     }
 
     fun setRefreshTokenExpireTo30Seconds() {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = java.time.Instant.now()
-                    .plus(SECONDS_30, ChronoUnit.SECONDS)
-                    .epochSecond
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = java.time.Instant.now()
+                        .plus(SECONDS_30, ChronoUnit.SECONDS)
+                        .epochSecond
+                )
             )
-        )
+        }
     }
 
     fun updateRefreshTokenToNull() {
@@ -117,20 +133,22 @@ class TokenTabScreenViewModel @Inject constructor(
 
     @OptIn(ExperimentalTime::class)
     fun setRefreshTokenExpireTo5Minutes() {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = REFRESH_TOKEN_EXPIRY_KEY,
-                value = java.time.Instant.now()
-                    .plus(MINUTES_5, ChronoUnit.MINUTES)
-                    .epochSecond
+        viewModelScope.launch {
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = java.time.Instant.now()
+                        .plus(MINUTES_5, ChronoUnit.MINUTES)
+                        .epochSecond
+                )
             )
-        )
+        }
     }
 
     @OptIn(ExperimentalTime::class)
-    fun getRefreshTokenExp(): String {
+    suspend fun getRefreshTokenExp() {
         val epochExp = getRefreshTokenExpiry()
-        return epochExp?.let {
+        _refreshTokenExpiry.value = epochExp?.let {
             val date = Instant.fromEpochSeconds(it)
             formatDateInstate(date)
         } ?: NO_REFRESH_TOKEN_EXP

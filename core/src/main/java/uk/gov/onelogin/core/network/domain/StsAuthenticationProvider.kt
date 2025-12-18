@@ -20,7 +20,7 @@ import uk.gov.onelogin.core.utils.AccessToken
 class StsAuthenticationProvider(
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
-    @AccessToken
+    @param:AccessToken
     private val isAccessTokenExpired: IsTokenExpired,
     private val httpClient: GenericHttpClient,
     private val navigator: Navigator,
@@ -31,14 +31,7 @@ class StsAuthenticationProvider(
         val jsonDecoder = Json { ignoreUnknownKeys = true }
 
         if (isAccessTokenExpired()) {
-            // An API call using this class can sometimes be made before the access token expiry
-            // value has been persisted. In this scenario it is not appropriate to navigate to the
-            // re-auth screen (SignOutRoutes.Info). Therefore the check below is made to determine
-            // whether to navigate to the re-auth screen or not. shouldNavigateToReAuth() returns
-            // true by default.
-            if (tokenRepository.shouldNavigateToReAuth()) {
-                navigator.navigate(SignOutRoutes.Info)
-            }
+            navigator.navigate(SignOutRoutes.Info)
             return AuthenticationResponse.Failure(ApiResponseException("Access token expired"))
         }
 

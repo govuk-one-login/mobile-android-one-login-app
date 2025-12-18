@@ -55,7 +55,7 @@ class TokenRepositoryTest {
     @Test
     fun `verify getter and setter of token storage state`() {
         val expectedState = false
-        repo.setNavigateToReAuthState(expectedState)
-        assertEquals(expectedState, repo.shouldNavigateToReAuth())
+        repo.setTokensPersistedState(expectedState)
+        assertEquals(expectedState, repo.areTokensPersisted())
     }
 }

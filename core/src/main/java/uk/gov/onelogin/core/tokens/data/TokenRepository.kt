@@ -27,15 +27,14 @@ interface TokenRepository {
     fun clearTokenResponse()
 
     /**
-     * Should the app should navigate to the re auth screen when the access token has expired?
+     * Check if the login tokens been persisted
      */
-    fun shouldNavigateToReAuth(): Boolean
+    fun areTokensPersisted(): Boolean
 
     /**
-     * Set a value to determine whether the app should navigate to the re-auth screen when the
-     * access token has expired
+     * Set a value to determine whether the login tokens have been saved to memory (token repository)
      *
-     * @param navToReAuth Navigate to re-auth screen
+     * @param state token persisted state
      */
-    fun setNavigateToReAuthState(navToReAuth: Boolean)
+    fun setTokensPersistedState(state: Boolean)
 }

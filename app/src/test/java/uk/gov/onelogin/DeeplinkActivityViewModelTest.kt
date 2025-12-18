@@ -46,7 +46,7 @@ class DeeplinkActivityViewModelTest {
         viewModel.handleIntent(intent)
 
         verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
-        verify(tokenRepository).setNavigateToReAuthState(navToReAuth = false)
+        verify(tokenRepository).setTokensPersistedState(state = false)
         verify(walletSdk).setDeeplink(any())
     }
 

@@ -72,7 +72,10 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
             android.os.Process.killProcess(android.os.Process.myPid())
         }
 
-        if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() && !isLocalAuthEnabled()) {
+        if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() &&
+            !isLocalAuthEnabled() &&
+            appEntryPoint.tokenRepository().areTokensPersisted()
+        ) {
             appEntryPoint.navigator().navigate(MainNavRoutes.Start)
         }
     }

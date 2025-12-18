@@ -182,7 +182,6 @@ class WelcomeScreenViewModel @Inject constructor(
         tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
         savePersistentId()
-        tokenRepository.setNavigateToReAuthState(navToReAuth = true)
 
         localAuthManager.enforceAndSet(
             // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
@@ -191,6 +190,7 @@ class WelcomeScreenViewModel @Inject constructor(
             activity = activity,
             callbackHandler = object : LocalAuthManagerCallbackHandler {
                 override fun onSuccess(backButtonPressed: Boolean) {
+                    tokenRepository.setTokensPersistedState(state = true)
                     val pref = localAuthManager.localAuthPreference
                     when {
                         isReAuth -> {
@@ -217,13 +217,14 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
 
                 override fun onFailure(backButtonPressed: Boolean) {
+                    tokenRepository.setTokensPersistedState(state = true)
                     navigator.navigate(MainNavRoutes.Start, true)
                 }
             }
         )
     }
 
-    private fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
         tokens.refreshToken?.let {
             val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
             saveTokenExpiry.saveExp(
@@ -235,7 +236,7 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,

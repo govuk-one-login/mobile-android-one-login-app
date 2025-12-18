@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.splash
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -62,7 +63,9 @@ class SplashScreenViewModelTest {
             mockGetRefreshTokenExp
         )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
-        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        runBlocking {
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        }
     }
 
     @Test

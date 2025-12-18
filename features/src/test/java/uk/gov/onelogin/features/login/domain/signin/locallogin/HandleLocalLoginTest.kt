@@ -51,57 +51,51 @@ class HandleLocalLoginTest {
     }
 
     @Test
-    fun accessTokenExpiredAndNotNull_reAuthLogin() {
+    fun accessTokenExpiredAndNotNull_reAuthLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
         whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(1)
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            useCase(
-                mockActivity
-            ) {
-                assertEquals(LocalAuthStatus.ReAuthSignIn, it)
-            }
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(LocalAuthStatus.ReAuthSignIn, it)
         }
     }
 
     @Test
-    fun refreshTokenExpiredAndNotNull_reAuthLogin() {
+    fun refreshTokenExpiredAndNotNull_reAuthLogin() = runBlocking {
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            useCase(
-                mockActivity
-            ) {
-                assertEquals(LocalAuthStatus.ReAuthSignIn, it)
-            }
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(LocalAuthStatus.ReAuthSignIn, it)
         }
     }
 
     @Test
-    fun accessTokenExpiredAndNull_refreshLogin() {
+    fun accessTokenExpiredAndNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
         whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(null)
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            useCase(
-                mockActivity
-            ) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshTokenNull_fallBackToAccessTokenFlow() {
+    fun refreshTokenNull_fallBackToAccessTokenFlow() = runBlocking {
         val expectedResult = LocalAuthStatus.Success(
             payload = mapOf(
                 AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "accessToken",
@@ -123,17 +117,15 @@ class HandleLocalLoginTest {
             (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(expectedResult)
         }
 
-        runBlocking {
-            useCase(
-                mockActivity
-            ) {
-                assertEquals(expectedResult, it)
-            }
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(expectedResult, it)
         }
     }
 
     @Test
-    fun accessToken_idTokenNull_refreshLogin() {
+    fun accessToken_idTokenNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
@@ -156,15 +148,13 @@ class HandleLocalLoginTest {
             )
         }
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshToken_idTokenNull_refreshLogin() {
+    fun refreshToken_idTokenNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
@@ -189,15 +179,13 @@ class HandleLocalLoginTest {
             )
         }
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshToken_accessTokenNull_refreshLogin() {
+    fun refreshToken_accessTokenNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
@@ -222,15 +210,13 @@ class HandleLocalLoginTest {
             )
         }
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshToken_refreshTokenNull_refreshLogin() {
+    fun refreshToken_refreshTokenNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
@@ -255,113 +241,100 @@ class HandleLocalLoginTest {
             )
         }
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun accessToken_bioPrefNone_refreshLogin_biometricsNone() {
+    fun accessToken_bioPrefNone_refreshLogin_biometricsNone() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetAccessTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshToken_bioPrefNone_refreshLogin_biometricsNone() {
+    fun refreshToken_bioPrefNone_refreshLogin_biometricsNone() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetAccessTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun accessToken_bioPrefNone_refreshLogin_biometricsNull() {
+    fun accessToken_bioPrefNone_refreshLogin_biometricsNull() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetAccessTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun refreshToken_bioPrefNone_refreshLogin_biometricsNull() {
+    fun refreshToken_bioPrefNone_refreshLogin_biometricsNull() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockGetAccessTokenExpiry()).thenReturn(null)
         whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
-        runBlocking {
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
         }
     }
 
     @Test
-    fun accessTokenNonSuccessResponseFromGetFromSecureStore() {
+    fun accessTokenNonSuccessResponseFromGetFromSecureStore() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
-            }
-
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
-
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+        whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
+
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
+        }
+
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
     }
 
     @Test
-    fun refreshTokenNonSuccessResponseFromGetFromSecureStore() {
+    fun refreshTokenNonSuccessResponseFromGetFromSecureStore() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
-            }
-
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
-            }
-
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+        whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
         }
+
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.ManualSignIn, it)
+        }
+
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
     }
 
     @Test
-    fun accessToken_goodLogin() {
+    fun accessToken_goodLogin() = runBlocking {
         val accessToken = "Token"
         val idToken = "IdToken"
         val tokenResponse =
@@ -405,7 +378,7 @@ class HandleLocalLoginTest {
     }
 
     @Test
-    fun refreshToken_goodLogin() {
+    fun refreshToken_goodLogin() = runBlocking {
         val accessToken = "Token"
         val idToken = "IdToken"
         val refreshToken = "RefreshToken"
@@ -421,32 +394,30 @@ class HandleLocalLoginTest {
         whenever(mockBioPrefHandler.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(false))
 
-        runBlocking {
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(tokenResponse)
-                )
-            }
-
-            useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.Success(tokenResponse), it)
-            }
-
-            verify(mockTokenRepository).setTokenResponse(
-                TokenResponse(
-                    accessToken = accessToken,
-                    idToken = idToken,
-                    tokenType = "",
-                    accessTokenExpirationTime = unexpiredTime
-                )
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any()
+            )
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(tokenResponse)
             )
         }
+
+        useCase(mockActivity) {
+            assertEquals(LocalAuthStatus.Success(tokenResponse), it)
+        }
+
+        verify(mockTokenRepository).setTokenResponse(
+            TokenResponse(
+                accessToken = accessToken,
+                idToken = idToken,
+                tokenType = "",
+                accessTokenExpirationTime = unexpiredTime
+            )
+        )
     }
 
     companion object {

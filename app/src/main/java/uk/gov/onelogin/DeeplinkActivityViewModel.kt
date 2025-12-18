@@ -24,7 +24,7 @@ class DeeplinkActivityViewModel @Inject constructor(
             intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
                 viewModelScope.launch {
                     walletRepository.setWalletDeepLinkPathState(deepLink = true)
-                    tokenRepository.setNavigateToReAuthState(navToReAuth = false)
+                    tokenRepository.setTokensPersistedState(state = false)
                     walletSdk.setDeeplink(deeplink = it)
                 }
             }
