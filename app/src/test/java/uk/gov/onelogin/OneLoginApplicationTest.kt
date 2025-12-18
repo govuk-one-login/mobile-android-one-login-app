@@ -21,12 +21,14 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.ApplicationEntryPoint
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -40,6 +42,7 @@ class OneLoginApplicationTest {
     private val mockNavigator: Navigator = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
     private val mockAnalyticsOptInRepo: AnalyticsOptInRepository = mock()
+    private val mockWalletRepository: WalletRepository = mock()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -61,6 +64,7 @@ class OneLoginApplicationTest {
         whenever(entryPoint.navigator()).thenReturn(mockNavigator)
         whenever(entryPoint.localAuthManager()).thenReturn(mockLocalAuthManager)
         whenever(entryPoint.analyticsOptInRepo()).thenReturn(mockAnalyticsOptInRepo)
+        whenever(entryPoint.walletDeeplinkRepo()).thenReturn(mockWalletRepository)
 
         app.appEntryPointProvider = { entryPoint }
     }
@@ -132,5 +136,17 @@ class OneLoginApplicationTest {
         app.onStart(ProcessLifecycleOwner.get())
         shadowOf(Looper.getMainLooper()).idle()
         verify(mockAnalyticsOptInRepo).synchronise()
+    }
+
+    @Test
+    fun `navigate to MainNavRoutes Start when onResume called`() {
+        whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
+            LocalAuthPreference.Disabled
+        )
+        whenever(mockTokenRepository.areTokensPersisted()).thenReturn(true)
+        whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
+
+        app.onResume(ProcessLifecycleOwner.get())
+        verify(mockNavigator).navigate(MainNavRoutes.Start)
     }
 }

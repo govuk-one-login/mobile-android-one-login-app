@@ -125,6 +125,66 @@ class HandleLocalLoginTest {
     }
 
     @Test
+    fun refreshAndAccessTokenNull_fallBackToAccessTokenFlow() = runBlocking {
+        val encryptedStoreResult = LocalAuthStatus.Success(
+            payload = mapOf(
+                AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
+            )
+        )
+        val expectedResult = LocalAuthStatus.ManualSignIn
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                ArgumentMatchers.contains(AuthTokenStoreKeys.ID_TOKEN_KEY),
+                callback = any()
+            )
+        }.thenAnswer {
+            (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(encryptedStoreResult)
+        }
+
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(expectedResult, it)
+        }
+    }
+
+    @Test
+    fun refreshTokenNullAccessTokenNotNull_fallBackToAccessTokenFlow() = runBlocking {
+        val expectedResult = LocalAuthStatus.Success(
+            payload = mapOf(
+                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
+            )
+        )
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                ArgumentMatchers.contains(AuthTokenStoreKeys.ID_TOKEN_KEY),
+                callback = any()
+            )
+        }.thenAnswer {
+            (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(expectedResult)
+        }
+
+        useCase(
+            mockActivity
+        ) {
+            assertEquals(expectedResult, it)
+        }
+    }
+
+    @Test
     fun accessToken_idTokenNull_refreshLogin() = runBlocking {
         whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
