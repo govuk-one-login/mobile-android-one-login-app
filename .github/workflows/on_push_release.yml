@@ -1,3 +1,4 @@
+# When making structure changes to teh workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Branch Push (release)
 
 on:
@@ -68,7 +69,7 @@ jobs:
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
   buildAndPublishRelease:
-    name: Verify code base when pushed
+    name: Verify code base when pushed on release
     needs: prepareForRelease
     runs-on: ubuntu-22.04
     environment: release

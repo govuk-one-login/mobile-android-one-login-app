@@ -1,3 +1,4 @@
+# When making structure changes to teh workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Branch Push (develop)
 
 on:
