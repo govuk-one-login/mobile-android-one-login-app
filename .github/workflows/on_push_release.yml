@@ -1,9 +1,9 @@
-name: On Branch Push (main)
+name: On Branch Push (release)
 
 on:
   push:
     branches:
-      - "main"
+      - "release/**"
   workflow_dispatch:
 
 concurrency:
@@ -11,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  onPushMain:
-    name: Verify code base when pushed
+  prepareForRelease:
+    name: Verify code base pre-release
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
@@ -20,7 +20,9 @@ jobs:
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       packages: read
       id-token: write
-      contents: write
+      contents: read
+    outputs:
+      version: ${{ steps.version-number.outputs.version }}
     steps:
       - name: Run checkout github action
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -46,9 +48,9 @@ jobs:
         with:
           pattern: 'v*'
 
-      - name: Get next version from last commit
+      - name: Get next version from branch
         id: next-version
-        uses: ./config/actions/get-next-version-from-commit-message
+        uses: ./config/actions/get-next-version-from-branch
 
       - name: Ensure version is correct
         id: version-number
@@ -65,11 +67,33 @@ jobs:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
-      - name: Push tag
-        id: git-tag
-        uses: ./config/actions/push-tag
+  buildAndPublishRelease:
+    name: Verify code base when pushed
+    needs: prepareForRelease
+    runs-on: ubuntu-22.04
+    environment: release
+    permissions:
+      contents: write
+      packages: read
+      id-token: write
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          version-name: ${{ steps.version-number.outputs.version }}
+          lfs: 'true'
+          fetch-depth: 0
+
+      - name: Detect Arch
+        id: detect-arch
+        uses: ./config/actions/detect-arch
+
+      - name: Setup GitHub Runner workflow
+        uses: ./config/actions/setup-runner
+
+      - name: Retrieve secrets
+        uses: ./config/actions/retrieve-secrets
+        with:
+          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
       - name: Generate version code
         id: version-code
@@ -81,11 +105,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          flavors: 'production'
+          flavors: 'staging,integration'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.version-number.outputs.version }}
+          version-name: ${{ needs.prepareForRelease.outputs.version }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload to play store
@@ -93,32 +117,12 @@ jobs:
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
 
-      - name: Run gradle instrumentation tests
-        uses: ./config/actions/gradle-connected-test-managed
+      - name: Git tag bundles
+        uses: ./config/actions/git-tag-bundles
         with:
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Run gradle unit tests
-        uses: ./config/actions/gradle-check
-        with:
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Run sonar analysis
-        uses: ./config/actions/sonar-analysis
-        with:
-          project-version: ${{ steps.version-name.outputs.version-name }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.version-name.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+          version-name: ${{ needs.prepareForRelease.outputs.version }}
 
       - name: Clean workspace
         if: always()
