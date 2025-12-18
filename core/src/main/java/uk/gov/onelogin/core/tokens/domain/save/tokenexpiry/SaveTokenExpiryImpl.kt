@@ -21,11 +21,11 @@ class SaveTokenExpiryImpl @Inject constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override fun extractExpFromRefreshToken(token: String): Long {
+    override fun extractExpFromRefreshToken(tokenJwt: String): Long {
         try {
             val jsonDecoder = Json { ignoreUnknownKeys = true }
             val definedBase64 = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT)
-            val jwtParts = token.split(".")
+            val jwtParts = tokenJwt.split(".")
             val payloadJson = String(definedBase64.decode(jwtParts[1]), StandardCharsets.UTF_8)
             val expiry: RefreshTokenPayload = jsonDecoder.decodeFromString(payloadJson)
             return expiry.exp

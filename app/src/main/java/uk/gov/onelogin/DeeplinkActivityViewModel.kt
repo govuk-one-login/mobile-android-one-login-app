@@ -9,14 +9,12 @@ import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.wallet.core.issuer.verify.VerifyCredentialIssuerImpl.Companion.OID_QUERY_PARAM
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @HiltViewModel
 @Suppress("LongParameterList")
 class DeeplinkActivityViewModel @Inject constructor(
     private val walletRepository: WalletRepository,
-    private val tokenRepository: TokenRepository,
     private val walletSdk: WalletSdk
 ) : ViewModel() {
     fun handleIntent(intent: Intent?) {
@@ -24,7 +22,6 @@ class DeeplinkActivityViewModel @Inject constructor(
             intent.data?.getQueryParameter(OID_QUERY_PARAM)?.let {
                 viewModelScope.launch {
                     walletRepository.setWalletDeepLinkPathState(deepLink = true)
-                    tokenRepository.setTokensPersistedState(state = false)
                     walletSdk.setDeeplink(deeplink = it)
                 }
             }

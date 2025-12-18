@@ -72,6 +72,10 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
             android.os.Process.killProcess(android.os.Process.myPid())
         }
 
+        // On entry to app via deeplink with local auth not enabled, navigate to
+        // MainNavRoutes.Start to determine whether to display the home or wallet screen.
+        // The login tokens must also have been persisted or else the app will incorrectly
+        // navigate to the re-auth screen
         if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() &&
             !isLocalAuthEnabled() &&
             appEntryPoint.tokenRepository().areTokensPersisted()
