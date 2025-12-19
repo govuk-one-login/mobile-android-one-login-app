@@ -42,7 +42,7 @@ fun HomeScreen(
 
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
-        viewModel.checkWalletEnabled()
+        viewModel.resetWalletDeepLinkPath()
         viewModel.getUiCardFlagState()
         analyticsViewModel.trackScreen()
     }

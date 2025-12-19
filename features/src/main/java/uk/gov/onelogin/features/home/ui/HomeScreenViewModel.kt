@@ -31,9 +31,7 @@ class HomeScreenViewModel @Inject constructor(
         _uiCardEnabled.value = featureFlag[CriOrchestratorFeatureFlag.ENABLED]
     }
 
-    fun checkWalletEnabled() {
-        if (walletRepository.isWalletDeepLinkPath()) {
-            walletRepository.setWalletDeepLinkPathState(deepLink = false)
-        }
+    fun resetWalletDeepLinkPath() {
+        walletRepository.setWalletDeepLinkPathState(deepLink = false)
     }
 }

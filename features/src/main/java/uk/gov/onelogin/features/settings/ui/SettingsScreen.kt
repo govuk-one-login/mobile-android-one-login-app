@@ -80,7 +80,7 @@ fun SettingsScreen(
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.checkDeviceBiometricsStatus()
-        viewModel.checkWalletEnabled()
+        viewModel.resetWalletDeepLinkPath()
         analyticsViewModel.trackSettingsView()
     }
     val uriHandler = LocalUriHandler.current

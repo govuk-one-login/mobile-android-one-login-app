@@ -75,9 +75,7 @@ class SettingsScreenViewModel @Inject constructor(
         }
     }
 
-    fun checkWalletEnabled() {
-        if (walletRepository.isWalletDeepLinkPath()) {
-            walletRepository.setWalletDeepLinkPathState(deepLink = false)
-        }
+    fun resetWalletDeepLinkPath() {
+        walletRepository.setWalletDeepLinkPathState(deepLink = false)
     }
 }

@@ -69,20 +69,9 @@ class HomeScreenViewModelTest {
     }
 
     @Test
-    fun `no wallet deeplink`() {
-        // WHEN
-        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(false)
-        viewModel.checkWalletEnabled()
-
-        // THEN
-        verify(walletRepository, times(0)).setWalletDeepLinkPathState(any())
-    }
-
-    @Test
     fun `received wallet deeplink`() {
         // WHEN
-        whenever(walletRepository.isWalletDeepLinkPath()).thenReturn(true)
-        viewModel.checkWalletEnabled()
+        viewModel.resetWalletDeepLinkPath()
 
         // THEN
         verify(walletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
