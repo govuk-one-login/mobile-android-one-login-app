@@ -18,7 +18,7 @@
           "config": {
             "file": ".github/workflows/on_pull_request.yml",
             "name": "Verify code base when pull request is published/updated",
-            "path": "jobs.onPullRequest"
+            "path": "jobs.on-pull-request-job"
           },
           "phase": "pre-merge",
           "provider": "GitHub"
@@ -36,8 +36,8 @@
           ],
           "config": {
             "file": ".github/workflows/on_push_develop.yml",
-            "name": "Verify code base when pushed",
-            "path": "jobs.onPushDevelop"
+            "name": "Verify code base when pushed on develop",
+            "path": "jobs.run-checks"
           },
           "phase": "pre-upload",
           "provider": "GitHub"
@@ -56,7 +56,7 @@
           "config": {
             "file": ".github/workflows/on_schedule.yml",
             "name": "Verify code base regularly",
-            "path": "jobs.onSchedule"
+            "path": "jobs.on-schedule-job"
           },
           "phase": "build",
           "provider": "GitHub"
@@ -66,7 +66,7 @@
           "config": {
             "file": ".github/workflows/on_push-release.yml",
             "name": "Verify code base pre-release",
-            "path": "jobs.onPushPreRelease"
+            "path": "jobs.prepare-for-release"
           },
           "phase": "pre-upload",
           "provider": "GitHub"
@@ -76,7 +76,7 @@
           "config": {
             "file": ".github/workflows/on_push-release.yml",
             "name": "Verify code base when pushed on release",
-            "path": "jobs.onPushRelease"
+            "path": "jobs.build-and-publish-release"
           },
           "phase": "pre-upload",
           "provider": "GitHub"
@@ -95,7 +95,7 @@
           "config": {
             "file": ".github/workflows/on_push_main.yml",
             "name": "Verify code base on release to Prod",
-            "path": "jobs.onPushMain"
+            "path": "jobs.on-push-main"
           },
           "phase": "pre-upload",
           "provider": "GitHub"

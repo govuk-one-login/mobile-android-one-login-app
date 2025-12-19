@@ -1,4 +1,4 @@
-# When making structure changes to teh workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
+# When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Pull Request (develop/release/main)
 
 on:
@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  onPullRequestJob:
+  on-pull-request-job:
     name: Verify code base when pull request is published/updated
     runs-on: ubuntu-24.04
     permissions:
