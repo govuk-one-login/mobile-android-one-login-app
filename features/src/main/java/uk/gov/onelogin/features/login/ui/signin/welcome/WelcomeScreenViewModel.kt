@@ -179,8 +179,8 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
-        tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
+        tokenRepository.setTokenResponse(tokens)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
@@ -190,7 +190,6 @@ class WelcomeScreenViewModel @Inject constructor(
             activity = activity,
             callbackHandler = object : LocalAuthManagerCallbackHandler {
                 override fun onSuccess(backButtonPressed: Boolean) {
-                    tokenRepository.setTokensPersistedState(state = true)
                     val pref = localAuthManager.localAuthPreference
                     when {
                         isReAuth -> {
@@ -217,7 +216,6 @@ class WelcomeScreenViewModel @Inject constructor(
                 }
 
                 override fun onFailure(backButtonPressed: Boolean) {
-                    tokenRepository.setTokensPersistedState(state = true)
                     navigator.navigate(MainNavRoutes.Start, true)
                 }
             }

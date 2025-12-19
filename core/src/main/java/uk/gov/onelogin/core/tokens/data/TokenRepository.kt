@@ -27,14 +27,7 @@ interface TokenRepository {
     fun clearTokenResponse()
 
     /**
-     * Check if the login tokens been persisted
+     * Confirm if [TokenResponse] is null
      */
-    fun areTokensPersisted(): Boolean
-
-    /**
-     * Set a value to determine whether the login tokens have been saved to memory (token repository)
-     *
-     * @param state token persisted state
-     */
-    fun setTokensPersistedState(state: Boolean)
+    fun isTokenResponseClear(): Boolean
 }

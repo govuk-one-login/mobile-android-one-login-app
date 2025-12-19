@@ -143,7 +143,7 @@ class OneLoginApplicationTest {
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
             LocalAuthPreference.Disabled
         )
-        whenever(mockTokenRepository.areTokensPersisted()).thenReturn(true)
+        whenever(mockTokenRepository.isTokenResponseClear()).thenReturn(false)
         whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
 
         app.onResume(ProcessLifecycleOwner.get())

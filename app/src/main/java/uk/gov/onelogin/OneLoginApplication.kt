@@ -78,7 +78,7 @@ class OneLoginApplication : Application(), DefaultLifecycleObserver {
         // navigate to the re-auth screen
         if (appEntryPoint.walletDeeplinkRepo().isWalletDeepLinkPath() &&
             !isLocalAuthEnabled() &&
-            appEntryPoint.tokenRepository().areTokensPersisted()
+            !appEntryPoint.tokenRepository().isTokenResponseClear()
         ) {
             appEntryPoint.navigator().navigate(MainNavRoutes.Start)
         }
