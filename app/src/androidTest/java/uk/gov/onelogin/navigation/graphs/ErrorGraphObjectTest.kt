@@ -60,17 +60,6 @@ class ErrorGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun navigateToSignOutWalletDisabledError() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(ErrorRoutes.SignOutError.getRoute())
-        }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorBody)
-        ).assertExists()
-    }
-
-    @Test
     fun navigateToGenericError() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(ErrorRoutes.Generic.getRoute())

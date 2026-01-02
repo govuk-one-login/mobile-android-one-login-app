@@ -58,7 +58,7 @@ class SignOutViewModelTest {
             viewModel.signOut()
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(ErrorRoutes.SignOutError, false)
+            verify(mockNavigator).navigate(ErrorRoutes.SignOutWalletError, false)
             assertThat("logger has log", logger.contains("java.lang.Exception: test"))
         }
 
