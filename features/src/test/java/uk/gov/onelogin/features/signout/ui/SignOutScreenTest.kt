@@ -93,7 +93,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(Exception("something went wrong")))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(ErrorRoutes.SignOutWalletError, false)
+        verify(navigator).navigate(ErrorRoutes.SignOut, false)
     }
 
     @Test
@@ -106,7 +106,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             .thenThrow(SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()))
         composeTestRule.onNode(button).performClick()
         verify(signOutUseCase).invoke()
-        verify(navigator).navigate(ErrorRoutes.SignOutWalletError, false)
+        verify(navigator).navigate(ErrorRoutes.SignOut, false)
     }
 
     @Test

@@ -31,7 +31,7 @@ class SignOutViewModel @Inject constructor(
                 navigator.navigate(SignOutRoutes.Success)
             } catch (e: SignOutError) {
                 logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
-                navigator.navigate(ErrorRoutes.SignOutWalletError, false)
+                navigator.navigate(ErrorRoutes.SignOut, false)
             }
         }
     }

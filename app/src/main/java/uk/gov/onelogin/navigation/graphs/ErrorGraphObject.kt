@@ -28,7 +28,7 @@ object ErrorGraphObject {
                 GenericErrorScreen { navController.popBackStack() }
             }
             composable(
-                route = ErrorRoutes.SignOutWalletError.getRoute()
+                route = ErrorRoutes.SignOut.getRoute()
             ) {
                 SignOutErrorScreen()
             }
