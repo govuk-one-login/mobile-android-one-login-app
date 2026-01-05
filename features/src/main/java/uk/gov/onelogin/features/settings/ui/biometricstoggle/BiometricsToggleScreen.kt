@@ -39,8 +39,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -144,34 +142,24 @@ private fun WalletCopyContent() {
             bulletListItems = persistentListOf(
                 ListItem(bullet1),
                 ListItem(bullet2)
-            ),
-            accessibilityIndex = LIST_INDEX
+            )
         )
         Text(
             text = body2,
-            modifier = Modifier.padding(top = smallPadding).semantics {
-                this.traversalIndex = CONTENT_INDEX1
-            }
+            modifier = Modifier.padding(top = smallPadding)
         )
         Text(
             text = body3,
-            modifier = Modifier.padding(top = smallPadding).semantics {
-                this.traversalIndex = CONTENT_INDEX2
-            }
+            modifier = Modifier.padding(top = smallPadding)
         )
         GdsHeading(
             text = subtitle,
             style = GdsHeadingStyle.Body,
             textAlign = GdsHeadingAlignment.LeftAligned,
             textFontWeight = FontWeight.W700,
-            modifier = Modifier.padding(vertical = smallPadding).semantics {
-                this.traversalIndex = SUBTITLE_INDEX
-            }
+            modifier = Modifier.padding(vertical = smallPadding)
         )
-        Text(
-            text = body4,
-            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX3 }
-        )
+        Text(text = body4)
     }
 }
 
@@ -201,7 +189,6 @@ private fun BiometricsToggleRow(
                 start = smallPadding,
                 end = smallPadding
             )
-            .semantics { this.traversalIndex = BIO_TOGGLE_INDEX }
             .testTag(stringResource(id = R.string.optInSwitchTestTag))
     ) {
         Text(
@@ -237,9 +224,6 @@ private fun BiometricsTopAppBar(
                 text = stringResource(R.string.app_biometricsToggleTitle),
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth().semantics {
-                    this.traversalIndex = TOP_BAR_TITLE_INDEX
-                },
                 style = Typography.headlineMedium,
                 fontWeight = FontWeight.W700
             )
@@ -249,10 +233,7 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = GdsLocalColorScheme.current.topBarIcon,
-                    modifier = Modifier.semantics {
-                        this.traversalIndex = TOP_BAR_ICON_INDEX
-                    }
+                    color = GdsLocalColorScheme.current.topBarIcon
                 )
             }
         },
@@ -289,12 +270,3 @@ internal fun BiometricsToggleBodyPreview() {
         }
     }
 }
-
-private const val TOP_BAR_TITLE_INDEX = -20f
-private const val TOP_BAR_ICON_INDEX = -11f
-private const val BIO_TOGGLE_INDEX = -18f
-private const val LIST_INDEX = -16f
-private const val CONTENT_INDEX1 = -15f
-private const val CONTENT_INDEX2 = -14f
-private const val SUBTITLE_INDEX = -13f
-private const val CONTENT_INDEX3 = -12f
