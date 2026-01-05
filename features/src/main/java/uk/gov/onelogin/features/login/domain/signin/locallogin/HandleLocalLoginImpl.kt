@@ -38,6 +38,7 @@ class HandleLocalLoginImpl @Inject constructor(
             if (!isRefreshTokenExpired()) {
                 // Get Refresh and AccessToken (require Access Token to be able to not break existing behaviour since the refresh exchange ahs not been completed yet
                 // Cannot get the ID Token because it seems to time out (3 seconds don't seem enough to get all 3)
+                val expiryTime = getAccessTokenExpiry() ?: 0
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -58,7 +59,7 @@ class HandleLocalLoginImpl @Inject constructor(
                                     accessToken = accessToken,
                                     idToken = idToken,
                                     tokenType = "",
-                                    accessTokenExpirationTime = getAccessTokenExpiry() ?: 0
+                                    accessTokenExpirationTime = expiryTime
                                 )
                             )
                         } else {
@@ -85,6 +86,7 @@ class HandleLocalLoginImpl @Inject constructor(
         callback: (LocalAuthStatus) -> Unit
     ) {
         if (!isAccessTokenExpired() && isLocalAuthEnabled()) {
+            val expiryTime = getAccessTokenExpiry() ?: 0
             getFromEncryptedSecureStore(
                 fragmentActivity,
                 AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
@@ -100,7 +102,7 @@ class HandleLocalLoginImpl @Inject constructor(
                                 accessToken = accessToken,
                                 idToken = idToken,
                                 tokenType = "",
-                                accessTokenExpirationTime = getAccessTokenExpiry() ?: 0
+                                accessTokenExpirationTime = expiryTime
                             )
                         )
                     } else {

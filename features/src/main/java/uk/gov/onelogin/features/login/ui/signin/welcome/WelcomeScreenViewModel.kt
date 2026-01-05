@@ -179,8 +179,8 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
-        tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
+        tokenRepository.setTokenResponse(tokens)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
@@ -222,7 +222,7 @@ class WelcomeScreenViewModel @Inject constructor(
         )
     }
 
-    private fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
         tokens.refreshToken?.let {
             val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
             saveTokenExpiry.saveExp(
@@ -234,7 +234,7 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,

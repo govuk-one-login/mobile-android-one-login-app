@@ -135,7 +135,7 @@ class RefreshExchangeImplTest {
 
         verifyNoInteractions(logger)
         assertEquals(LocalAuthStatus.Success(mapOf()), result)
-        verify(saveTokenExpiry, times(2)).saveExp(any())
+        verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
         verify(tokenRepository).setTokenResponse(
             TokenResponse(
                 tokenType = "Bearer",
@@ -296,7 +296,7 @@ class RefreshExchangeImplTest {
 
         verifyNoInteractions(logger)
         assertEquals(LocalAuthStatus.Success(mapOf()), result)
-        verify(saveTokenExpiry, times(2)).saveExp(any())
+        verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
         verify(tokenRepository).setTokenResponse(
             TokenResponse(
                 tokenType = "Bearer",

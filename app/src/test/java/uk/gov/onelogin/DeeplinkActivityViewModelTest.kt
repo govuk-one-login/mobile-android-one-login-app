@@ -20,7 +20,6 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 class DeeplinkActivityViewModelTest {
     private val walletRepository: WalletRepository = mock()
     private val walletSdk: WalletSdk = mock()
-
     private lateinit var viewModel: DeeplinkActivityViewModel
 
     @Before
@@ -42,7 +41,7 @@ class DeeplinkActivityViewModelTest {
             }
         viewModel.handleIntent(intent)
 
-        verify(walletRepository).toggleWallDeepLinkPathState()
+        verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
         verify(walletSdk).setDeeplink(any())
     }
 

@@ -303,7 +303,7 @@ class RefreshExchangeImpl @Inject constructor(
         )
     }
 
-    private fun saveTokensExpiryToOpenStore(tokens: RefreshExchangeApiResponse) {
+    private suspend fun saveTokensExpiryToOpenStore(tokens: RefreshExchangeApiResponse) {
         // Calculate the correct expiry
         val accessTokenExp = Instant.now().toEpochMilli() +
             Instant.ofEpochSecond(tokens.expiresIn).toEpochMilli()
