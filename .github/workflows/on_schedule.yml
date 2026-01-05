@@ -1,3 +1,4 @@
+# When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Schedule (default branch)
 
 on:
@@ -10,8 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  onScheduleJob:
-    name: Verify code base when pushed
+  on-schedule-job:
+    name: Verify code base every day overnight (at 3am)
     runs-on: ubuntu-24.04
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}

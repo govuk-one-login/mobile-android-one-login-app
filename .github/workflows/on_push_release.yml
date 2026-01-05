@@ -1,3 +1,4 @@
+# When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Branch Push (release)
 
 on:
@@ -11,8 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  prepareForRelease:
-    name: Verify code base when pushed
+  prepare-for-release:
+    name: Verify code base pre-release
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
@@ -67,8 +68,8 @@ jobs:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
-  buildAndPublishRelease:
-    name: Verify code base when pushed
+  build-and-publish-release:
+    name: Verify code base when pushed on release
     needs: prepareForRelease
     runs-on: ubuntu-22.04
     environment: release

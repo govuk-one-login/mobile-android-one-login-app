@@ -1,0 +1,106 @@
+{
+  "$schema": "https://raw.githubusercontent.com/govuk-one-login/quality-gates/refs/tags/v0.1.0/schemas/schema.json",
+  "services": [
+    {
+      "service-tag": "mobile-platform",
+      "quality-gates": [
+        {
+          "check-types": [
+            "code style and linting",
+            "integration",
+            "regression",
+            "secret scanning",
+            "system",
+            "unit test coverage",
+            "unit",
+            "vulnerability detection"
+          ],
+          "config": {
+            "file": ".github/workflows/on_pull_request.yml",
+            "name": "Verify code base when pull request is published/updated",
+            "path": "jobs.on-pull-request-job"
+          },
+          "phase": "pre-merge",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [
+            "code style and linting",
+            "integration",
+            "regression",
+            "secret scanning",
+            "system",
+            "unit test coverage",
+            "unit",
+            "vulnerability detection"
+          ],
+          "config": {
+            "file": ".github/workflows/on_push_develop.yml",
+            "name": "Verify code base when pushed on develop",
+            "path": "jobs.run-checks"
+          },
+          "phase": "pre-upload",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [
+            "code style and linting",
+            "integration",
+            "regression",
+            "secret scanning",
+            "system",
+            "unit test coverage",
+            "unit",
+            "vulnerability detection"
+          ],
+          "config": {
+            "file": ".github/workflows/on_schedule.yml",
+            "name": "Verify code base regularly",
+            "path": "jobs.on-schedule-job"
+          },
+          "phase": "build",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [],
+          "config": {
+            "file": ".github/workflows/on_push-release.yml",
+            "name": "Verify code base pre-release",
+            "path": "jobs.prepare-for-release"
+          },
+          "phase": "pre-upload",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [],
+          "config": {
+            "file": ".github/workflows/on_push-release.yml",
+            "name": "Verify code base when pushed on release",
+            "path": "jobs.build-and-publish-release"
+          },
+          "phase": "pre-upload",
+          "provider": "GitHub"
+        },
+        {
+          "check-types": [
+            "code style and linting",
+            "integration",
+            "regression",
+            "secret scanning",
+            "system",
+            "unit test coverage",
+            "unit",
+            "vulnerability detection"
+          ],
+          "config": {
+            "file": ".github/workflows/on_push_main.yml",
+            "name": "Verify code base on release to Prod",
+            "path": "jobs.on-push-main"
+          },
+          "phase": "pre-upload",
+          "provider": "GitHub"
+        }
+      ]
+    }
+  ]
+}
