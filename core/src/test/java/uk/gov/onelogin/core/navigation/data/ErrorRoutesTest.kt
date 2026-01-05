@@ -10,8 +10,7 @@ class ErrorRoutesTest {
             ErrorRoutes.Root.getRoute() to "/error",
             ErrorRoutes.Generic.getRoute() to "/error/generic",
             ErrorRoutes.Offline.getRoute() to "/error/offline",
-            ErrorRoutes.SignOutError.getRoute() to "/error/sign_out",
-            ErrorRoutes.SignOutWalletError.getRoute() to "/error/sign_out_wallet_error",
+            ErrorRoutes.SignOut.getRoute() to "/error/sign_out",
             ErrorRoutes.UpdateRequired.getRoute() to "/error/update_required",
             ErrorRoutes.Unavailable.getRoute() to "/error/unavailable"
         ).forEach { assertEquals(it.second, it.first) }

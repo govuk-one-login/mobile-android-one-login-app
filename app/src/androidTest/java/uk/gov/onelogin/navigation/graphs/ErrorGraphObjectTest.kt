@@ -51,22 +51,11 @@ class ErrorGraphObjectTest : TestCase() {
     @Test
     fun navigateToSignOutError() {
         composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(ErrorRoutes.SignOutWalletError.getRoute())
+            navController.setCurrentDestination(ErrorRoutes.SignOut.getRoute())
         }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signOutErrorBody1)
-        ).assertExists()
-    }
-
-    @Test
-    fun navigateToSignOutWalletDisabledError() {
-        composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(ErrorRoutes.SignOutError.getRoute())
-        }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorBody)
         ).assertExists()
     }
 
