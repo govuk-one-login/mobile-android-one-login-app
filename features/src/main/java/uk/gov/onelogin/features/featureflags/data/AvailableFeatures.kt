@@ -10,7 +10,6 @@ class AvailableFeatures(
     constructor() : this(
         listOf(
             AppIntegrityFeatureFlag.entries.toTypedArray(),
-            WalletFeatureFlag.entries.toTypedArray(),
             CriOrchestratorFeatureFlag.entries.toTypedArray()
         ).flatMap {
             it.asIterable()

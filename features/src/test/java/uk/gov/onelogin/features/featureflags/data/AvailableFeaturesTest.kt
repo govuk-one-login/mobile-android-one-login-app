@@ -64,7 +64,7 @@ class AvailableFeaturesTest {
     @Test
     fun `to String`() {
         Assertions.assertEquals(
-            "AvailableFeatures[ENABLED, ENABLED, ENABLED]",
+            "AvailableFeatures[ENABLED, ENABLED]",
             availableFeatures.toString()
         )
     }
@@ -98,6 +98,6 @@ class AvailableFeaturesTest {
     }
 
     companion object {
-        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 3
+        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 2
     }
 }

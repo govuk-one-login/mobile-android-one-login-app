@@ -20,7 +20,6 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.ext.setupComposeTestRule
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
@@ -48,7 +47,7 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
         logger = mock()
         featureFlags =
             InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+                setOf(CriOrchestratorFeatureFlag.ENABLED)
             )
         navigator = mock()
         criOrchestratorSdk = CriOrchestratorSdk.create(
