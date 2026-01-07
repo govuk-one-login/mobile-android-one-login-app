@@ -144,7 +144,6 @@ private fun AppInfoView(
 ) {
     var minimumVersion by remember { mutableStateOf(appInfoData.minimumVersion) }
     var appAvailable by remember { mutableStateOf(appInfoData.available) }
-    var walletEnabled by remember { mutableStateOf(appInfoData.releaseFlags.walletVisibleToAll) }
     var appCheckEnabled by remember { mutableStateOf(appInfoData.featureFlags.appCheckEnabled) }
     OutlinedTextField(
         value = minimumVersion,
@@ -156,12 +155,6 @@ private fun AppInfoView(
     Switch(
         checked = appAvailable,
         onCheckedChange = { appAvailable = it },
-        colors = Switch.defaultColors()
-    )
-    Text("Wallet Visibility", color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
-    Switch(
-        checked = walletEnabled,
-        onCheckedChange = { walletEnabled = it },
         colors = Switch.defaultColors()
     )
     Text(
@@ -180,12 +173,6 @@ private fun AppInfoView(
                     AppInfoData.App(
                         AppInfoData.AppInfo(
                             minimumVersion = minimumVersion,
-                            releaseFlags =
-                            AppInfoData.ReleaseFlags(
-                                walletVisibleViaDeepLink = false,
-                                walletVisibleIfExists = false,
-                                walletVisibleToAll = walletEnabled
-                            ),
                             available = appAvailable,
                             featureFlags =
                             AppInfoData.FeatureFlags(
