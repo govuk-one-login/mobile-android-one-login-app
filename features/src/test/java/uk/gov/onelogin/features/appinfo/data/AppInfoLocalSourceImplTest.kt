@@ -34,6 +34,10 @@ class AppInfoLocalSourceImplTest {
         ClassLoader
             .getSystemResource("api/appInfoResponseValue.json").readText()
             .replace(" ", "").replace("\n", "")
+    private val expectedValue =
+        ClassLoader
+            .getSystemResource("api/appInfoResponseValueNoFlags.json").readText()
+            .replace(" ", "").replace("\n", "")
     private val encodedInvalidValue =
         ClassLoader
             .getSystemResource("api/appInfoResponseValueInvalid.json").readText()
@@ -43,12 +47,6 @@ class AppInfoLocalSourceImplTest {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "0.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )
@@ -108,7 +106,7 @@ class AppInfoLocalSourceImplTest {
     @Test
     fun `successful update`() {
         sut.update(data)
-        verify(prefs.edit()).putString(APP_INFO_KEY, encodedValue)
+        verify(prefs.edit()).putString(APP_INFO_KEY, expectedValue)
         verify(editor).commit()
     }
 }

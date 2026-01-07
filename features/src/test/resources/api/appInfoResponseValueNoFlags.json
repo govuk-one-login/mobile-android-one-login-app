@@ -1,0 +1,11 @@
+{
+  "apps": {
+    "android": {
+      "minimumVersion": "0.0.0",
+      "available": true,
+      "featureFlags" : {
+        "appCheckEnabled": true
+      }
+    }
+  }
+}

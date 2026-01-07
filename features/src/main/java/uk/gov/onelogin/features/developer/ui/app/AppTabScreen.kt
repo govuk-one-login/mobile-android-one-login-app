@@ -173,12 +173,6 @@ private fun AppInfoView(
                     AppInfoData.App(
                         AppInfoData.AppInfo(
                             minimumVersion = minimumVersion,
-                            releaseFlags =
-                            AppInfoData.ReleaseFlags(
-                                walletVisibleViaDeepLink = false,
-                                walletVisibleIfExists = false,
-                                walletVisibleToAll = true
-                            ),
                             available = appAvailable,
                             featureFlags =
                             AppInfoData.FeatureFlags(
