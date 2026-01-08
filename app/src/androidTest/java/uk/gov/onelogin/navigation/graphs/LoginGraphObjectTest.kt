@@ -1,41 +1,34 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.filters.FlakyTest
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.testing.TestNavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
-import uk.gov.onelogin.e2e.controller.TestCase
+import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
+import uk.gov.onelogin.navigation.graphs.LoginGraphObject.loginGraph
+import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.utils.TestUtils.appInfoData
-import uk.gov.onelogin.utils.TestUtils.back
-import uk.gov.onelogin.utils.TestUtils.setActivity
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class LoginGraphObjectTest : TestCase() {
-    @get:Rule(order = 3)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
-
-    @Inject
-    lateinit var navigator: Navigator
 
     @BindValue
     val appInfoService: AppInfoService = mock()
@@ -47,45 +40,55 @@ class LoginGraphObjectTest : TestCase() {
     fun setup() {
         hiltRule.inject()
 
+        composeTestRule.setContent {
+            navController = TestNavHostController(context)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavHost(
+                navController = navController,
+                startDestination = LoginRoutes.Root.getRoute()
+            ) {
+                loginGraph(navController)
+            }
+        }
+
         wheneverBlocking { appInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
     }
 
-    @FlakyTest
+    @Test
+    fun loginGraph_Loading() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
+        }
+
+        val progressIndicator = composeTestRule.onNodeWithTag(
+            LOADING_SCREEN_PROGRESS_INDICATOR
+        )
+        composeTestRule.waitUntil(TIMEOUT) {
+            progressIndicator.isDisplayed()
+        }
+        progressIndicator.assertIsDisplayed()
+    }
+
     @Test
     fun loginGraph_SignInError() {
-        composeTestRule.setActivity { navigator.navigate(LoginRoutes.SignInRecoverableError) }
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.SignInRecoverableError.getRoute())
+        }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signInErrorTitle)
         ).assertIsDisplayed()
     }
 
-    @FlakyTest
     @Test
     fun loginGraph_AnalyticsOptInScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.AnalyticsOptIn)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
         }
 
         composeTestRule.onNodeWithText(
             resources.getString(R.string.app_analyticsPermissionBody)
-        ).assertIsDisplayed()
-        composeTestRule.back()
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInButton)
-        ).assertIsDisplayed()
-    }
-
-    @FlakyTest
-    @Test
-    fun loginGraph_Loading() {
-        composeTestRule.setActivity {
-            navigator.navigate(LoginRoutes.Loading)
-        }
-
-        composeTestRule.onNodeWithTag(
-            LOADING_SCREEN_PROGRESS_INDICATOR
         ).assertIsDisplayed()
     }
 }

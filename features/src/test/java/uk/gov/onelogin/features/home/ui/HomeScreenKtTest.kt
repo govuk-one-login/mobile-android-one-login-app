@@ -27,7 +27,7 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.ext.setupComposeTestRule
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("ForbiddenComment")
@@ -44,6 +44,7 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
     private lateinit var viewModel: HomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: HomeScreenAnalyticsViewModel
+    private lateinit var walletRepository: WalletRepository
 
     @Before
     fun setup() {
@@ -52,7 +53,7 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
         analyticsLogger = mock()
         featureFlags =
             InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED, CriOrchestratorFeatureFlag.ENABLED)
+                setOf(CriOrchestratorFeatureFlag.ENABLED)
             )
         navigator = mock()
         logger = mock()
@@ -63,9 +64,11 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             logger = logger,
             applicationContext = context
         )
+        walletRepository = mock()
         viewModel = HomeScreenViewModel(
             featureFlags,
             navigator,
+            walletRepository,
             criOrchestratorSdk
         )
         analytics = mock()

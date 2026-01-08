@@ -83,4 +83,18 @@ class OfflineErrorScreenKtTest : FragmentActivityTestCase() {
         Espresso.pressBack()
         verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.makeBackEvent(context))
     }
+
+    @Test
+    fun testPreview() {
+        composeTestRule.setContent {
+            OfflineErrorPreview()
+        }
+        composeTestRule.onNode(errorTitle).assertIsDisplayed()
+        composeTestRule.onNode(errorBody1).assertIsDisplayed()
+        composeTestRule.onNode(errorBody2).assertIsDisplayed()
+        composeTestRule.onNode(tryAgainButton).apply {
+            assertIsDisplayed()
+            performClick()
+        }
+    }
 }

@@ -6,8 +6,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
@@ -20,11 +18,9 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
@@ -40,13 +36,11 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var navigator: Navigator
-    private lateinit var saveTokens: SaveTokens
     private lateinit var savePersistentId: SavePersistentId
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
     private lateinit var signOutUseCase: SignOutUseCase
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var viewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -65,16 +59,12 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
         navigator = mock()
-        saveTokens = mock()
         savePersistentId = mock()
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
         signOutUseCase = mock()
         counter = mock()
-        featureFlags = InMemoryFeatureFlags(
-            WalletFeatureFlag.ENABLED
-        )
         onlineChecker = mock()
         viewModel =
             WelcomeScreenViewModel(
@@ -84,14 +74,12 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 verifyIdToken,
                 navigator,
-                saveTokens,
                 savePersistentId,
                 saveTokenExpiry,
                 handleRemoteLogin,
                 handleLoginRedirect,
                 signOutUseCase,
                 logger,
-                featureFlags,
                 onlineChecker,
                 counter
             )

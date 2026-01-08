@@ -1,37 +1,26 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
-import android.content.Context
-import android.content.SharedPreferences
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 
 class GetRefreshTokenExpiryTest {
     private lateinit var useCase: GetTokenExpiry
-
-    private val mockContext: Context = mock()
-    private val mockSharedPreferences: SharedPreferences = mock()
+    private val mockOpenSecureStore: GetFromOpenSecureStore = mock()
 
     @BeforeEach
     fun setup() {
-        whenever(
-            mockContext.getSharedPreferences(
-                eq(AuthTokenStoreKeys.TOKEN_SHARED_PREFS),
-                eq(Context.MODE_PRIVATE)
-            )
-        ).thenReturn(mockSharedPreferences)
-
-        useCase = GetRefreshTokenExpiryImpl(mockContext)
+        useCase = GetRefreshTokenExpiryImpl(mockOpenSecureStore)
     }
 
     @Test
-    fun `returns null when value does not exist`() {
-        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY, 0))
-            .thenReturn(0)
+    fun `returns null when value does not exist`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY to "0"))
 
         val result = useCase()
 
@@ -39,10 +28,40 @@ class GetRefreshTokenExpiryTest {
     }
 
     @Test
-    fun `returns expiry value successfully`() {
+    fun `returns null when value is not a number`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY to "a"))
+
+        val result = useCase()
+
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun `returns null when value null`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(null)
+
+        val result = useCase()
+
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun `returns null when expiry value does not exist`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf())
+
+        val result = useCase()
+
+        assertEquals(null, result)
+    }
+
+    @Test
+    fun `returns expiry value successfully`() = runTest {
         val expectedExpiryValue = 123L
-        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY, 0))
-            .thenReturn(expectedExpiryValue)
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY to "123"))
 
         val result = useCase()
 

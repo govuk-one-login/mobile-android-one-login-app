@@ -39,8 +39,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,11 +91,9 @@ fun BiometricsToggleScreen(
     ) { paddingValues ->
         BiometricsToggleBody(
             biometricsEnabled = viewModel.biometricsEnabled,
-            walletAvailable = viewModel.walletEnabled,
             toggleBiometrics = { viewModel.toggleBiometrics() },
             padding = paddingValues,
-            trackWalletCopy = { analyticsViewModel.trackWalletCopyView() },
-            trackNokWalletCopy = { analyticsViewModel.trackNoWalletCopyView() },
+            trackScreen = { analyticsViewModel.trackWalletCopyView() },
             trackToggle = { analyticsViewModel.trackToggleEvent(it) }
         )
     }
@@ -106,40 +102,33 @@ fun BiometricsToggleScreen(
 @Composable
 private fun BiometricsToggleBody(
     biometricsEnabled: StateFlow<Boolean>,
-    walletAvailable: Boolean,
     padding: PaddingValues,
     toggleBiometrics: () -> Unit,
-    trackWalletCopy: () -> Unit,
-    trackNokWalletCopy: () -> Unit,
+    trackScreen: () -> Unit,
     trackToggle: (Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(padding)
     ) {
+        trackScreen()
         BiometricsToggleRow(R.string.app_biometricsToggleLabel, biometricsEnabled) {
             toggleBiometrics()
             trackToggle(it)
         }
-        if (walletAvailable) {
-            trackWalletCopy()
-            WalletCopyContent()
-        } else {
-            trackNokWalletCopy()
-            NoWalletCopyContent()
-        }
+        WalletCopyContent()
     }
 }
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun WalletCopyContent() {
-    val bulletListTitle = stringResource(R.string.app_biometricsToggleBody1Wallet)
+    val bulletListTitle = stringResource(R.string.app_biometricsToggleBody1)
     val bullet1 = stringResource(R.string.app_biometricsToggleBullet1)
     val bullet2 = stringResource(R.string.app_biometricsToggleBullet2)
-    val body2 = stringResource(R.string.app_biometricsToggleBody2Wallet)
-    val body3 = stringResource(R.string.app_biometricsToggleBody3Wallet)
+    val body2 = stringResource(R.string.app_biometricsToggleBody2)
+    val body3 = stringResource(R.string.app_biometricsToggleBody3)
     val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
-    val body4 = stringResource(R.string.app_biometricsToggleBody4Wallet)
+    val body4 = stringResource(R.string.app_biometricsToggleBody4)
     Column(
         modifier = Modifier
             .padding(vertical = smallPadding, horizontal = smallPadding)
@@ -153,48 +142,14 @@ private fun WalletCopyContent() {
             bulletListItems = persistentListOf(
                 ListItem(bullet1),
                 ListItem(bullet2)
-            ),
-            accessibilityIndex = LIST_INDEX
+            )
         )
         Text(
             text = body2,
-            modifier = Modifier.padding(top = smallPadding).semantics {
-                this.traversalIndex = CONTENT_INDEX1
-            }
+            modifier = Modifier.padding(top = smallPadding)
         )
         Text(
             text = body3,
-            modifier = Modifier.padding(top = smallPadding).semantics {
-                this.traversalIndex = CONTENT_INDEX2
-            }
-        )
-        GdsHeading(
-            text = subtitle,
-            style = GdsHeadingStyle.Body,
-            textAlign = GdsHeadingAlignment.LeftAligned,
-            textFontWeight = FontWeight.W700,
-            modifier = Modifier.padding(vertical = smallPadding).semantics {
-                this.traversalIndex = SUBTITLE_INDEX
-            }
-        )
-        Text(
-            text = body4,
-            modifier = Modifier.semantics { this.traversalIndex = CONTENT_INDEX3 }
-        )
-    }
-}
-
-@OptIn(UnstableDesignSystemAPI::class)
-@Composable
-private fun NoWalletCopyContent() {
-    val body1 = stringResource(R.string.app_biometricsToggleBody1)
-    val body2 = stringResource(R.string.app_biometricsToggleBody2)
-    val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
-    val body3 = stringResource(R.string.app_biometricsToggleBody3)
-    Column(modifier = Modifier.padding(vertical = smallPadding, horizontal = smallPadding)) {
-        Text(text = body1)
-        Text(
-            text = body2,
             modifier = Modifier.padding(top = smallPadding)
         )
         GdsHeading(
@@ -204,7 +159,7 @@ private fun NoWalletCopyContent() {
             textFontWeight = FontWeight.W700,
             modifier = Modifier.padding(vertical = smallPadding)
         )
-        Text(body3)
+        Text(text = body4)
     }
 }
 
@@ -234,7 +189,6 @@ private fun BiometricsToggleRow(
                 start = smallPadding,
                 end = smallPadding
             )
-            .semantics { this.traversalIndex = BIO_TOGGLE_INDEX }
             .testTag(stringResource(id = R.string.optInSwitchTestTag))
     ) {
         Text(
@@ -270,9 +224,6 @@ private fun BiometricsTopAppBar(
                 text = stringResource(R.string.app_biometricsToggleTitle),
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth().semantics {
-                    this.traversalIndex = TOP_BAR_TITLE_INDEX
-                },
                 style = Typography.headlineMedium,
                 fontWeight = FontWeight.W700
             )
@@ -282,10 +233,7 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = GdsLocalColorScheme.current.topBarIcon,
-                    modifier = Modifier.semantics {
-                        this.traversalIndex = TOP_BAR_ICON_INDEX
-                    }
+                    color = GdsLocalColorScheme.current.topBarIcon
                 )
             }
         },
@@ -305,7 +253,7 @@ private fun BiometricsTopAppBar(
 @ScreenPreview
 @Preview(locale = "CY")
 @Composable
-internal fun BiometricsToggleEnabledWalletBodyPreview() {
+internal fun BiometricsToggleBodyPreview() {
     GdsTheme {
         Scaffold(
             topBar = {
@@ -314,45 +262,11 @@ internal fun BiometricsToggleEnabledWalletBodyPreview() {
         ) { paddingValues ->
             BiometricsToggleBody(
                 MutableStateFlow(false),
-                true,
                 paddingValues,
                 {},
                 {},
                 {}
-            ) {}
+            )
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@ExcludeFromJacocoGeneratedReport
-@ScreenPreview
-@Preview(locale = "CY")
-@Composable
-internal fun BiometricsToggleDisabledNoWalletBodyPreview() {
-    GdsTheme {
-        Scaffold(
-            topBar = {
-                BiometricsTopAppBar {}
-            }
-        ) { paddingValues ->
-            BiometricsToggleBody(
-                MutableStateFlow(true),
-                false,
-                paddingValues,
-                {},
-                {},
-                {}
-            ) {}
-        }
-    }
-}
-
-private const val TOP_BAR_TITLE_INDEX = -20f
-private const val TOP_BAR_ICON_INDEX = -11f
-private const val BIO_TOGGLE_INDEX = -18f
-private const val LIST_INDEX = -16f
-private const val CONTENT_INDEX1 = -15f
-private const val CONTENT_INDEX2 = -14f
-private const val SUBTITLE_INDEX = -13f
-private const val CONTENT_INDEX3 = -12f

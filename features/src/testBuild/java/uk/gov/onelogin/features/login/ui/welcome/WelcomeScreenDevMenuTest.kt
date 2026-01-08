@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
@@ -23,7 +22,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -43,13 +41,11 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var navigator: Navigator
-    private lateinit var saveTokens: SaveTokens
     private lateinit var savePersistentId: SavePersistentId
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var handleRemoteLogin: HandleRemoteLogin
     private lateinit var handleLoginRedirect: HandleLoginRedirect
     private lateinit var signOutUseCase: SignOutUseCase
-    private lateinit var featureFlags: FeatureFlags
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var viewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
@@ -68,13 +64,11 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         autoInitialiseSecureStore = mock()
         verifyIdToken = mock()
         navigator = mock()
-        saveTokens = mock()
         savePersistentId = mock()
         saveTokenExpiry = mock()
         handleRemoteLogin = mock()
         handleLoginRedirect = mock()
         signOutUseCase = mock()
-        featureFlags = mock()
         onlineChecker = mock()
         analytics = mock()
         errorCounter = mock()
@@ -91,14 +85,12 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 verifyIdToken,
                 navigator,
-                saveTokens,
                 savePersistentId,
                 saveTokenExpiry,
                 handleRemoteLogin,
                 handleLoginRedirect,
                 signOutUseCase,
                 logger,
-                featureFlags,
                 onlineChecker,
                 errorCounter
             )

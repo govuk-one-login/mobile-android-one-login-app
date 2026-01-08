@@ -11,7 +11,6 @@ import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
 import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
-import uk.gov.onelogin.features.error.ui.signout.SignOutErrorWalletDisabledScreen
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableScreen
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 
@@ -27,14 +26,6 @@ object ErrorGraphObject {
                 route = ErrorRoutes.Generic.getRoute()
             ) {
                 GenericErrorScreen { navController.popBackStack() }
-            }
-            composable(
-                route = ErrorRoutes.SignOutError.getRoute()
-            ) {
-                val context = LocalActivity.current as Activity
-                SignOutErrorWalletDisabledScreen {
-                    context.finishAndRemoveTask()
-                }
             }
             composable(
                 route = ErrorRoutes.SignOut.getRoute()

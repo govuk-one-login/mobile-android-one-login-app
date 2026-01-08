@@ -80,6 +80,7 @@ fun SettingsScreen(
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
         viewModel.checkDeviceBiometricsStatus()
+        viewModel.resetWalletDeepLinkPath()
         analyticsViewModel.trackSettingsView()
     }
     val uriHandler = LocalUriHandler.current
@@ -104,8 +105,7 @@ fun SettingsScreen(
                 goToBiometricsOptIn = { viewModel.goToBiometricsOptIn() },
                 toggleOptInPreference = { viewModel.toggleOptInPreference() },
                 goToOssl = { viewModel.goToOssl() },
-                goToSignOut = { viewModel.goToSignOut() },
-                isWalletEnabled = viewModel.isWalletEnabled
+                goToSignOut = { viewModel.goToSignOut() }
             ),
             analyticsViewModelFunctions = AnalyticsViewModelFunctions(
                 trackSignInDetailLink = { analyticsViewModel.trackSignInDetailLink() },
@@ -154,7 +154,6 @@ private fun SettingsScreenBody(
             }
         )
         HelpAndFeedbackSection(
-            isWalletEnabled = viewModelFunctions.isWalletEnabled,
             onHelpClick = {
                 analyticsViewModelFunctions.trackUsingOneLoginLink()
                 uriHandler.openUri(settingsScreenLinks.helpUrl)
@@ -184,7 +183,6 @@ private fun SettingsScreenBody(
             }
         )
         LegalSection(
-            isWalletEnabled = viewModelFunctions.isWalletEnabled,
             onPrivacyNoticeClick = {
                 analyticsViewModelFunctions.trackPrivacyNoticeLink()
                 uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
@@ -226,8 +224,7 @@ private data class ViewModelFunctions(
     val goToBiometricsOptIn: () -> Unit = {},
     val toggleOptInPreference: () -> Unit = {},
     val goToOssl: () -> Unit = {},
-    val goToSignOut: () -> Unit = {},
-    val isWalletEnabled: Boolean
+    val goToSignOut: () -> Unit = {}
 )
 
 private data class AnalyticsViewModelFunctions(
@@ -263,7 +260,6 @@ private fun YourDetailsSection(
 
 @Composable
 private fun LegalSection(
-    isWalletEnabled: Boolean,
     onPrivacyNoticeClick: () -> Unit,
     onAccessibilityStatementClick: () -> Unit,
     onOpenSourceLicensesClick: () -> Unit,
@@ -285,15 +281,13 @@ private fun LegalSection(
     ) {
         onAccessibilityStatementClick()
     }
-    if (isWalletEnabled) {
-        LinkRow(
-            title = R.string.app_termsAndConditionsLink,
-            icon = R.drawable.external_link_icon,
-            contentDescription = R.string.app_openLinkExternally,
-            traversalIndex = TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER
-        ) {
-            onTermsAndConditionsClick()
-        }
+    LinkRow(
+        title = R.string.app_termsAndConditionsLink,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER
+    ) {
+        onTermsAndConditionsClick()
     }
     LinkRow(
         title = R.string.app_openSourceLicences,
@@ -306,7 +300,6 @@ private fun LegalSection(
 
 @Composable
 private fun HelpAndFeedbackSection(
-    isWalletEnabled: Boolean,
     onHelpClick: () -> Unit,
     onContactClick: () -> Unit,
     onAddDocumentsClick: () -> Unit
@@ -320,15 +313,13 @@ private fun HelpAndFeedbackSection(
     ) {
         onHelpClick()
     }
-    if (isWalletEnabled) {
-        LinkRow(
-            title = R.string.app_addDocumentsLink,
-            icon = R.drawable.external_link_icon,
-            contentDescription = R.string.app_openLinkExternally,
-            traversalIndex = ADD_DOCUMENTS_TRAVERSAL_ORDER
-        ) {
-            onAddDocumentsClick()
-        }
+    LinkRow(
+        title = R.string.app_addDocumentsLink,
+        icon = R.drawable.external_link_icon,
+        contentDescription = R.string.app_openLinkExternally,
+        traversalIndex = ADD_DOCUMENTS_TRAVERSAL_ORDER
+    ) {
+        onAddDocumentsClick()
     }
     LinkRow(
         title = R.string.app_contactLink,
@@ -551,8 +542,7 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
                     {},
                     {},
                     {},
-                    {},
-                    isWalletEnabled = true
+                    {}
                 ),
                 analyticsViewModelFunctions =
                 AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
@@ -579,8 +569,7 @@ internal fun SettingsScreenOptInNoShowBiometricsPreview() {
                     {},
                     {},
                     {},
-                    {},
-                    isWalletEnabled = false
+                    {}
                 ),
                 analyticsViewModelFunctions =
                 AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),

@@ -23,4 +23,8 @@ class TokenRepositoryImpl @Inject constructor() : TokenRepository {
     override fun clearTokenResponse() {
         tokenResponse = null
     }
+
+    override fun isTokenResponseClear(): Boolean {
+        return tokenResponse == null
+    }
 }

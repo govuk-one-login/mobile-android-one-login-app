@@ -15,44 +15,40 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsScreenViewModelTest {
     private lateinit var viewModel: SettingsScreenViewModel
 
-    private lateinit var featureFlags: FeatureFlags
     private val mockNavigator: Navigator = mock()
     private val mockGetEmail: GetEmail = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockOptInRepository: OptInRepository = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
+    private val mockWalletRepository: WalletRepository = mock()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
-        featureFlags = InMemoryFeatureFlags(
-            emptySet()
-        )
         viewModel =
             SettingsScreenViewModel(
                 mockOptInRepository,
                 mockNavigator,
                 mockLocalAuthManager,
-                featureFlags,
+                mockWalletRepository,
                 mockTokenRepository,
                 mockGetEmail
             )
@@ -110,7 +106,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
-                    featureFlags,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -126,7 +122,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
-                    featureFlags,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -146,7 +142,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
-                    featureFlags,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -168,7 +164,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
-                    featureFlags,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -190,7 +186,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
-                    featureFlags,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -203,37 +199,11 @@ class SettingsScreenViewModelTest {
         }
 
     @Test
-    fun `wallet enabled`() =
-        runTest {
-            featureFlags = InMemoryFeatureFlags(
-                setOf(WalletFeatureFlag.ENABLED)
-            )
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    featureFlags,
-                    mockTokenRepository,
-                    mockGetEmail
-                )
+    fun `received wallet deeplink`() {
+        // WHEN
+        viewModel.resetWalletDeepLinkPath()
 
-            assertTrue(viewModel.isWalletEnabled)
-        }
-
-    @Test
-    fun `wallet disabled`() =
-        runTest {
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    featureFlags,
-                    mockTokenRepository,
-                    mockGetEmail
-                )
-
-            assertFalse(viewModel.isWalletEnabled)
-        }
+        // THEN
+        verify(mockWalletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
+    }
 }

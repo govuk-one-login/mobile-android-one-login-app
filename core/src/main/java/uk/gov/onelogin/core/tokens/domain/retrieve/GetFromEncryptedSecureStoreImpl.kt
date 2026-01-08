@@ -15,7 +15,6 @@ import uk.gov.onelogin.core.tokens.data.SecureStoreException
 class GetFromEncryptedSecureStoreImpl @Inject constructor(
     @Named("Token")
     private val secureStore: SecureStore,
-
     private val logger: Logger
 ) : GetFromEncryptedSecureStore {
     override suspend fun invoke(

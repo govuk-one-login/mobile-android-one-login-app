@@ -7,18 +7,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @HiltViewModel
 class MainNavViewModel @Inject constructor(
-    private val features: FeatureFlags,
     private val walletRepository: WalletRepository
 ) : ViewModel() {
-    private val _walletEnabled = mutableStateOf(false)
-    val walletEnabled: State<Boolean> = _walletEnabled
-
     private val _displayContentAsFullScreenState = mutableStateOf(false)
     val displayContentAsFullScreenState: State<Boolean> = _displayContentAsFullScreenState
 
@@ -31,12 +25,10 @@ class MainNavViewModel @Inject constructor(
 
     init {
         // Check if wallet is enabled and user comes in via deeplink
-        checkWalletEnabled()
+        checkIsDeeplinkRoute()
     }
 
-    fun checkWalletEnabled() {
-        _walletEnabled.value = features[WalletFeatureFlag.ENABLED]
-        _isDeeplinkRoute.value = walletRepository.isWalletDeepLinkPath() &&
-            walletEnabled.value
+    fun checkIsDeeplinkRoute() {
+        _isDeeplinkRoute.value = walletRepository.isWalletDeepLinkPath()
     }
 }

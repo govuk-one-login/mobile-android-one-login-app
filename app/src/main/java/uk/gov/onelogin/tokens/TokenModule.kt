@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
@@ -30,11 +31,6 @@ interface TokenModule {
     fun bindGetFromTokenSecureStore(
         getFromSecureStore: GetFromEncryptedSecureStoreImpl
     ): GetFromEncryptedSecureStore
-
-    @Binds
-    fun bindGetFromOpenSecureStore(
-        getFromOpenSecureStore: GetFromOpenSecureStoreImpl
-    ): GetFromOpenSecureStore
 
     @Binds
     fun bindSaveToSecureStore(
@@ -70,4 +66,13 @@ interface TokenModule {
     fun bindSaveTokenExpiry(
         saveTokenExpiry: SaveTokenExpiryImpl
     ): SaveTokenExpiry
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface OpenStoreModule {
+    @Binds
+    fun bindGetFromOpenSecureStore(
+        getFromOpenSecureStore: GetFromOpenSecureStoreImpl
+    ): GetFromOpenSecureStore
 }

@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
 import uk.gov.android.localauth.preference.LocalAuthPreference
@@ -33,12 +32,10 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -53,14 +50,12 @@ class WelcomeScreenViewModel @Inject constructor(
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
     private val verifyIdToken: VerifyIdToken,
     private val navigator: Navigator,
-    private val saveTokens: SaveTokens,
     private val savePersistentId: SavePersistentId,
     private val saveTokenExpiry: SaveTokenExpiry,
     private val handleRemoteLogin: HandleRemoteLogin,
     private val handleLoginRedirect: HandleLoginRedirect,
     private val signOutUseCase: SignOutUseCase,
     private val logger: Logger,
-    private val featureFlags: FeatureFlags,
     val onlineChecker: OnlineChecker,
     private val errorCounter: Counter
 ) : ViewModel() {
@@ -184,12 +179,13 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
-        tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
+        tokenRepository.setTokenResponse(tokens)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
-            featureFlags[WalletFeatureFlag.ENABLED],
+            // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
+            true,
             false,
             activity = activity,
             callbackHandler = object : LocalAuthManagerCallbackHandler {
@@ -199,9 +195,8 @@ class WelcomeScreenViewModel @Inject constructor(
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {
                                 viewModelScope.launch {
-                                    saveTokens.save(tokens.refreshToken)
+                                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
                                     saveRefreshTokenExpiryToOpenStore(tokens)
-                                    navigator.goBack()
                                 }
                             } else {
                                 navigator.goBack()
@@ -227,7 +222,7 @@ class WelcomeScreenViewModel @Inject constructor(
         )
     }
 
-    private fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
         tokens.refreshToken?.let {
             val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
             saveTokenExpiry.saveExp(
@@ -239,7 +234,7 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,

@@ -139,7 +139,7 @@ class StsAuthenticationProviderTest {
             )
         }
 
-    private fun setupProvider(
+    private suspend fun setupProvider(
         httpResponse: ApiResponse,
         isAccessTokenExpired: Boolean = false
     ) {

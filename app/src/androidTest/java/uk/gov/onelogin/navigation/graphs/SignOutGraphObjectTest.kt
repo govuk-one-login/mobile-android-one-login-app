@@ -1,40 +1,34 @@
 package uk.gov.onelogin.navigation.graphs
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.onNodeWithText
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.testing.TestNavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import junit.framework.TestCase.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.MainActivity
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
-import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.e2e.controller.TestCase
+import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
+import uk.gov.onelogin.navigation.graphs.SignOutGraphObject.signOutGraph
+import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.utils.TestUtils
 import uk.gov.onelogin.utils.TestUtils.back
-import uk.gov.onelogin.utils.TestUtils.setActivity
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class SignOutGraphObjectTest : TestCase() {
-    @get:Rule(order = 3)
-    val composeTestRule = createAndroidComposeRule<MainActivity>()
-
-    @Inject
-    lateinit var navigator: Navigator
-
     @BindValue
     val mockAppInfoService: AppInfoService = mock()
 
@@ -45,6 +39,17 @@ class SignOutGraphObjectTest : TestCase() {
     fun setup() {
         hiltRule.inject()
 
+        composeTestRule.setContent {
+            navController = TestNavHostController(context)
+            navController.navigatorProvider.addNavigator(ComposeNavigator())
+            NavHost(
+                navController = navController,
+                startDestination = SignOutRoutes.Root.getRoute()
+            ) {
+                signOutGraph(navController)
+            }
+        }
+
         wheneverBlocking { mockAppInfoService.get() }.thenAnswer {
             AppInfoServiceState.Successful(TestUtils.appInfoData)
         }
@@ -52,19 +57,23 @@ class SignOutGraphObjectTest : TestCase() {
 
     @Test
     fun signOutGraph_startingDestination() {
-        composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.Start)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(SignOutRoutes.Start.getRoute())
         }
 
-        composeTestRule.onNodeWithText(
+        val signOutTitle = composeTestRule.onNodeWithText(
             resources.getString(R.string.app_signOutConfirmationTitle)
-        ).assertIsDisplayed()
+        )
+        composeTestRule.waitUntil(TIMEOUT) {
+            signOutTitle.isDisplayed()
+        }
+        signOutTitle.assertIsDisplayed()
     }
 
     @Test
     fun signOutGraph_navigateToSignedOutInfoScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.Info)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(SignOutRoutes.Info.getRoute())
         }
 
         composeTestRule.apply {
@@ -82,8 +91,8 @@ class SignOutGraphObjectTest : TestCase() {
 
     @Test
     fun signOutGraph_navigateToReAuthErrorScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.ReAuthError)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(SignOutRoutes.ReAuthError.getRoute())
         }
 
         composeTestRule.apply {
@@ -103,8 +112,8 @@ class SignOutGraphObjectTest : TestCase() {
 
     @Test
     fun signOutGraph_navigateToSignOutSuccessScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.Success)
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(SignOutRoutes.Success.getRoute())
         }
 
         composeTestRule.apply {
@@ -118,16 +127,5 @@ class SignOutGraphObjectTest : TestCase() {
                 assertTrue(activity.isFinishing)
             }
         }
-    }
-
-    @Test
-    fun signOutGraph_navigateToSignOutErrorScreen() {
-        composeTestRule.setActivity {
-            navigator.navigate(SignOutRoutes.SignOutWalletError)
-        }
-
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutErrorBody1)
-        )
     }
 }

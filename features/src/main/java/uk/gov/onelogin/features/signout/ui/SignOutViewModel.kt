@@ -7,33 +7,21 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.features.featureflags.data.WalletFeatureFlag
 import uk.gov.onelogin.features.signout.domain.SignOutError
-import uk.gov.onelogin.features.signout.domain.SignOutUIState
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
 @HiltViewModel
 class SignOutViewModel @Inject constructor(
     private val navigator: Navigator,
     private val signOutUseCase: SignOutUseCase,
-    private val featureFlags: FeatureFlags,
     private val logger: Logger
 ) : ViewModel() {
     private val _loadingState = MutableStateFlow(false)
     val loadingState = _loadingState.asStateFlow()
-
-    val uiState: SignOutUIState
-        get() = if (featureFlags[WalletFeatureFlag.ENABLED]) {
-            SignOutUIState.Wallet
-        } else {
-            SignOutUIState.NoWallet
-        }
 
     fun signOut() {
         _loadingState.value = true
@@ -43,14 +31,7 @@ class SignOutViewModel @Inject constructor(
                 navigator.navigate(SignOutRoutes.Success)
             } catch (e: SignOutError) {
                 logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
-                val errorRoute = if (uiState == SignOutUIState.Wallet &&
-                    e.error is DeleteWalletDataUseCaseImpl.DeleteWalletDataError
-                ) {
-                    SignOutRoutes.SignOutWalletError
-                } else {
-                    ErrorRoutes.SignOutError
-                }
-                navigator.navigate(errorRoute, false)
+                navigator.navigate(ErrorRoutes.SignOut, false)
             }
         }
     }

@@ -1,0 +1,293 @@
+package uk.gov.onelogin.features.login.ui.splash
+
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
+import uk.gov.android.network.online.OnlineChecker
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
+import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
+import uk.gov.onelogin.core.navigation.data.SignOutRoutes
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
+import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.features.TestUtils
+import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
+import uk.gov.onelogin.features.appinfo.domain.AppInfoService
+import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
+import uk.gov.onelogin.features.extensions.InstantExecutorExtension
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
+import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
+import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+
+@OptIn(ExperimentalCoroutinesApi::class)
+@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
+class SplashScreenOfflineViewModelTest {
+    private lateinit var mockOnlineChecker: OnlineChecker
+    private lateinit var mockRefreshExchange: RefreshExchange
+    private val mockHandleLocalLogin: HandleLocalLogin = mock()
+    private val mockNavigator: Navigator = mock()
+    private val mockLifeCycleOwner: LifecycleOwner = mock()
+    private val mockActivity: FragmentActivity = mock()
+    private val mockAppInfoService: AppInfoService = mock()
+    private val mockSignOutUseCase: SignOutUseCase = mock()
+    private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
+    private val mockGetRefreshTokenExp: GetTokenExpiry = mock()
+
+    private val data = TestUtils.appInfoData
+
+    private lateinit var viewModel: SplashScreenViewModel
+
+    @BeforeEach
+    fun setup() {
+        mockOnlineChecker = mock()
+        mockRefreshExchange = mock()
+        viewModel = SplashScreenViewModel(
+            mockNavigator,
+            mockHandleLocalLogin,
+            mockAppInfoService,
+            mockSignOutUseCase,
+            mockAutoInitialiseSecureStore,
+            mockOnlineChecker,
+            mockRefreshExchange,
+            mockGetRefreshTokenExp
+        )
+        whenever(mockOnlineChecker.isOnline()).thenReturn(false)
+        runBlocking {
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        }
+    }
+
+    @Test
+    fun loginFailsWithSecureStoreError() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.SecureStoreError
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+        }
+
+    @Test
+    fun loginFailsWithBioCheckFailed() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.BioCheckFailed
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verifyNoInteractions(mockNavigator)
+        }
+
+    @Test
+    fun loginSuccess() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.Success(mapOf("key" to "token"))
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(MainNavRoutes.Start, false)
+        }
+
+    @Test
+    fun loginRequiresRefresh() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.ManualSignIn
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
+        }
+
+    @Test
+    fun loginRequiresReAuth() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.ReAuthSignIn
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+        }
+
+    @Test
+    fun loginReturnsUserCancelled() =
+        runTest {
+            whenever(mockHandleLocalLogin.invoke(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.UserCancelled
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verifyNoInteractions(mockNavigator)
+            assertTrue(viewModel.showUnlock.value)
+            assertFalse(viewModel.loading.value)
+        }
+
+    @Test
+    fun allowsSubsequentLoginCallsFromLockScreen() =
+        runTest {
+            // WHEN on resume called more than once
+            viewModel.onResume(mockLifeCycleOwner)
+            viewModel.onResume(mockLifeCycleOwner)
+
+            // AND we call login
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            // THEN do NOT login (as the app will be going to background)
+            verify(mockHandleLocalLogin, times(1)).invoke(any(), any())
+        }
+
+    @Test
+    fun retrieveAppInfoOffline() =
+        runTest {
+            // WHEN AppInfo has not been called yet - initial state
+            // AND loading progress indicator will be set to false
+            assertFalse(viewModel.loading.value)
+            // AND AppInfo call is offline and local source has failed/ null
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Offline)
+
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo {
+                // Callback - Nothing to do
+            }
+
+            // THEN loading progress indicator will be set to true
+            assertTrue(viewModel.loading.value)
+            // AND it navigates to Offline Error screen
+            verify(mockNavigator).navigate(ErrorRoutes.Offline)
+        }
+
+    @Test
+    fun retrieveAppInfoUnavailable() =
+        runTest {
+            // WHEN AppInfo has not been called yet - initial state
+            // THEN loading progress indicator will be set to false
+            assertFalse(viewModel.loading.value)
+            // AND WHEN AppInfo call is offline and local source has failed/ null
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Unavailable)
+
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo {
+                // Callback - Nothing to do
+            }
+
+            // THEN loading progress indicator will be set to true
+            assertTrue(viewModel.loading.value)
+            // AND it navigates to Unavailable Error screen
+            verify(mockNavigator).navigate(ErrorRoutes.Unavailable)
+        }
+
+    @Test
+    fun retrieveAppInfoGoodLocal() =
+        runTest {
+            // WHEN AppInfo call is successful from local
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo({})
+
+            // THEN it does not navigate and calls set feature flags
+            verifyNoInteractions(mockNavigator)
+        }
+
+    @Test
+    fun retrieveAppInfoGoodRemote() =
+        runTest {
+            // WHEN AppInfo call is successful from the remote
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.Successful(data))
+
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo({})
+
+            // THEN it does not navigate and calls set feature flags
+            verifyNoInteractions(mockNavigator)
+        }
+
+    @Test
+    fun retrieveAppInfoSuccessful() =
+        runTest {
+            // WHEN AppInfo has not been called yet - initial state
+            // THEN loading progress indicator will be set to false
+            assertFalse(viewModel.loading.value)
+
+            // AND WHEN AppInfo call is successful remote
+            whenever(mockAppInfoService.get()).thenAnswer {
+                assertTrue(viewModel.loading.value)
+                AppInfoServiceState.Successful(data)
+            }
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo {
+                // Callback - Nothing to do
+            }
+
+            // THEN loading progress indicator will be set to true
+            assertFalse(viewModel.loading.value)
+        }
+
+    @Test
+    fun retrieveAppInfoUpdateRequired() =
+        runTest {
+            // WHEN AppInfo has not been called yet - initial state
+            // THEN loading progress indicator will be set to false
+            assertFalse(viewModel.loading.value)
+
+            // AND WHEN AppInfo call is successful remote
+            whenever(mockAppInfoService.get()).thenReturn(AppInfoServiceState.UpdateRequired)
+            // AND it calls retrieveAppInfo
+            viewModel.retrieveAppInfo {
+                // Callback - Nothing to do
+            }
+
+            // THEN loading progress indicator will be set to true
+            assertTrue(viewModel.loading.value)
+            verify(mockNavigator).navigate(ErrorRoutes.UpdateRequired)
+        }
+}
