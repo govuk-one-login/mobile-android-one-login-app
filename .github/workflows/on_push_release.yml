@@ -70,7 +70,7 @@ jobs:
 
   build-and-publish-release:
     name: Verify code base when pushed on release
-    needs: prepareForRelease
+    needs: prepare-for-release
     runs-on: ubuntu-22.04
     environment: release
     permissions:
