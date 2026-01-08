@@ -67,9 +67,15 @@ jobs:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
+<<<<<<< Updated upstream:.github/workflows/on_push-release.yml
   buildAndPublishRelease:
     name: Verify code base when pushed
     needs: prepareForRelease
+=======
+  build-and-publish-release:
+    name: Verify code base when pushed on release
+    needs: prepare-for-release
+>>>>>>> Stashed changes:.github/workflows/on_push_release.yml
     runs-on: ubuntu-22.04
     environment: release
     permissions:
