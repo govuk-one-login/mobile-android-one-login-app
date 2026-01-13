@@ -110,7 +110,7 @@ jobs:
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepareForRelease.outputs.version }}
+          version-name: ${{ needs.prepare-for-release.outputs.version }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload to play store
@@ -123,7 +123,7 @@ jobs:
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepareForRelease.outputs.version }}
+          version-name: ${{ needs.prepare-for-release.outputs.version }}
 
       - name: Clean workspace
         if: always()
