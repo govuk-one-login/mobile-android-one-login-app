@@ -197,6 +197,7 @@ class WelcomeScreenViewModel @Inject constructor(
                                 viewModelScope.launch {
                                     autoInitialiseSecureStore.initialise(tokens.refreshToken)
                                     saveRefreshTokenExpiryToOpenStore(tokens)
+                                    navigator.goBack()
                                 }
                             } else {
                                 navigator.goBack()
