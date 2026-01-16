@@ -1,7 +1,6 @@
 import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.BaseExtension
 import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import uk.gov.pipelines.extensions.BaseExtensions.baseAndroidConfig
 
 plugins {
@@ -27,6 +26,8 @@ android {
 
     defaultConfig {
         applicationId = "uk.gov.onelogin"
+        versionCode = rootProject.ext["versionCode"] as Int
+        versionName = rootProject.ext["versionName"] as String
         testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
