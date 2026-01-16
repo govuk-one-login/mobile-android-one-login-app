@@ -16,15 +16,13 @@ import uk.gov.onelogin.features.optin.ui.OptInScreen
 
 object LoginGraphObject {
     @Suppress("LongMethod")
-    fun NavGraphBuilder.loginGraph(
-        navController: NavHostController
-    ) {
+    fun NavGraphBuilder.loginGraph(navController: NavHostController) {
         navigation(
             route = LoginRoutes.Root.getRoute(),
-            startDestination = LoginRoutes.Start.getRoute()
+            startDestination = LoginRoutes.Start.getRoute(),
         ) {
             composable(
-                route = LoginRoutes.Start.getRoute()
+                route = LoginRoutes.Start.getRoute(),
             ) {
                 val comingFromLockScreen = navController.hasPreviousBackStack()
                 BackHandler(enabled = comingFromLockScreen) {
@@ -34,31 +32,31 @@ object LoginGraphObject {
             }
 
             composable(
-                route = LoginRoutes.Welcome.getRoute()
+                route = LoginRoutes.Welcome.getRoute(),
             ) {
                 WelcomeScreen()
             }
 
             composable(
-                route = LoginRoutes.Loading.getRoute()
+                route = LoginRoutes.Loading.getRoute(),
             ) {
                 LoadingScreen {}
             }
 
             composable(
-                route = LoginRoutes.SignInRecoverableError.getRoute()
+                route = LoginRoutes.SignInRecoverableError.getRoute(),
             ) {
                 SignInErrorRecoverableScreen()
             }
 
             composable(
-                route = LoginRoutes.SignInUnrecoverableError.getRoute()
+                route = LoginRoutes.SignInUnrecoverableError.getRoute(),
             ) {
                 SignInErrorUnrecoverableScreen()
             }
 
             composable(
-                route = LoginRoutes.AnalyticsOptIn.getRoute()
+                route = LoginRoutes.AnalyticsOptIn.getRoute(),
             ) {
                 OptInScreen()
             }

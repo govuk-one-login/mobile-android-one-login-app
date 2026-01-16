@@ -14,6 +14,6 @@ fun interface GetFromEncryptedSecureStore {
     suspend operator fun invoke(
         context: FragmentActivity,
         vararg key: String,
-        callback: (LocalAuthStatus) -> Unit
+        callback: (LocalAuthStatus) -> Unit,
     )
 }

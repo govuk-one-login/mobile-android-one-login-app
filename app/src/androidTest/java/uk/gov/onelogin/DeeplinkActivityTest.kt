@@ -33,12 +33,13 @@ class DeeplinkActivityTest {
     }
 
     @Test
-    fun verifyNavToMainActivity() = runTest {
-        scenario = ActivityScenario.launch(DeeplinkActivity::class.java)
-        intended(
-            allOf(
-                hasComponent(MainActivity::class.java.name)
+    fun verifyNavToMainActivity() =
+        runTest {
+            scenario = ActivityScenario.launch(DeeplinkActivity::class.java)
+            intended(
+                allOf(
+                    hasComponent(MainActivity::class.java.name),
+                ),
             )
-        )
-    }
+        }
 }

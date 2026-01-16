@@ -20,12 +20,13 @@ internal object CleanerModule {
         optInRepository: OptInRepository,
         localAuthPreferenceRepo: LocalAuthPreferenceRepo,
         secureStoreData: RemoveAllSecureStoreData,
-        removeTokenExpiry: RemoveTokenExpiry
-    ): Cleaner = MultiCleaner(
-        Dispatchers.Default,
-        removeTokenExpiry,
-        optInRepository,
-        localAuthPreferenceRepo,
-        secureStoreData
-    )
+        removeTokenExpiry: RemoveTokenExpiry,
+    ): Cleaner =
+        MultiCleaner(
+            Dispatchers.Default,
+            removeTokenExpiry,
+            optInRepository,
+            localAuthPreferenceRepo,
+            secureStoreData,
+        )
 }

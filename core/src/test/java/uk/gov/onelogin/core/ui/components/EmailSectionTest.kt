@@ -24,7 +24,7 @@ class EmailSectionTest : FragmentActivityTestCase() {
 
             onNodeWithText(
                 context.getString(R.string.app_settingsSignInDetailsTile),
-                substring = true
+                substring = true,
             ).assertIsDisplayed()
 
             onNodeWithText(email, substring = true, useUnmergedTree = true).assertIsDisplayed()

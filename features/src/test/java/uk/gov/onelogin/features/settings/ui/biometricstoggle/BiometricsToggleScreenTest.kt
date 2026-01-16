@@ -45,43 +45,49 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private val navIcon = hasContentDescription(context.getString(R.string.app_back_icon))
     private val toggleLabel = hasText(context.getString(R.string.app_biometricsToggleLabel))
     private val toggle = hasTestTag(context.getString(R.string.optInSwitchTestTag))
-    private val bulletListTitle = hasText(
-        context.getString(R.string.app_biometricsToggleBody1)
-    )
+    private val bulletListTitle =
+        hasText(
+            context.getString(R.string.app_biometricsToggleBody1)
+        )
     private val bullet1 = hasText(context.getString(R.string.app_biometricsToggleBullet1))
     private val bullet2 = hasText(context.getString(R.string.app_biometricsToggleBullet2))
-    private val body2Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody2)
-    )
-    private val body3Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody3)
-    )
+    private val body2Wallet =
+        hasText(
+            context.getString(R.string.app_biometricsToggleBody2)
+        )
+    private val body3Wallet =
+        hasText(
+            context.getString(R.string.app_biometricsToggleBody3)
+        )
     private val subtitle = hasText(context.getString(R.string.app_biometricsToggleSubtitle))
-    private val body4Wallet = hasText(
-        context.getString(R.string.app_biometricsToggleBody4)
-    )
+    private val body4Wallet =
+        hasText(
+            context.getString(R.string.app_biometricsToggleBody4)
+        )
 
     @Before
     fun setup() {
         localAuthManager = mock()
         navigator = mock()
         autoInitialiseSecureStore = mock()
-        viewModel = BiometricsToggleScreenViewModel(
-            localAuthManager = localAuthManager,
-            navigator = navigator,
-            autoInitialiseSecureStore = autoInitialiseSecureStore
-        )
+        viewModel =
+            BiometricsToggleScreenViewModel(
+                localAuthManager = localAuthManager,
+                navigator = navigator,
+                autoInitialiseSecureStore = autoInitialiseSecureStore
+            )
         logger = mock()
         analyticsViewModel = BiometricsToggleAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun bodyDisplayedWallet() {
-        val event = ViewEvent.Screen(
-            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-            id = context.getEnglishString(R.string.biometrics_toggle_wallet_id),
-            params = requiredParams
-        )
+        val event =
+            ViewEvent.Screen(
+                name = context.getEnglishString(R.string.app_biometricsToggleTitle),
+                id = context.getEnglishString(R.string.biometrics_toggle_wallet_id),
+                params = requiredParams
+            )
         setContent()
 
         composeTestRule.apply {
@@ -108,12 +114,13 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
         // The event would still log the enabled after because we are mocking the
         // localAuthPref to always return enabled
-        val eventEnabled = TrackEvent.Form(
-            text = context.getEnglishString(R.string.app_biometricsToggleLabel),
-            response = true.toString(),
-            params = requiredParams,
-            type = Type.Toggle
-        )
+        val eventEnabled =
+            TrackEvent.Form(
+                text = context.getEnglishString(R.string.app_biometricsToggleLabel),
+                response = true.toString(),
+                params = requiredParams,
+                type = Type.Toggle
+            )
         setContent()
 
         composeTestRule.apply {
@@ -131,12 +138,13 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
         // The event would still log the disabled after because we are mocking the
         // localAuthPref to always return disabled
-        val eventDisabled = TrackEvent.Form(
-            text = context.getEnglishString(R.string.app_biometricsToggleLabel),
-            response = true.toString(),
-            params = requiredParams,
-            type = Type.Toggle
-        )
+        val eventDisabled =
+            TrackEvent.Form(
+                text = context.getEnglishString(R.string.app_biometricsToggleLabel),
+                response = true.toString(),
+                params = requiredParams,
+                type = Type.Toggle
+            )
         setContent()
 
         composeTestRule.apply {
@@ -152,10 +160,11 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(true))
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        val event = TrackEvent.Icon(
-            text = context.getEnglishString(R.string.app_back_icon),
-            params = requiredParams
-        )
+        val event =
+            TrackEvent.Icon(
+                text = context.getEnglishString(R.string.app_back_icon),
+                params = requiredParams
+            )
         setContent()
 
         composeTestRule.apply {
@@ -171,10 +180,11 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         whenever(localAuthManager.localAuthPreference)
             .thenReturn(LocalAuthPreference.Enabled(true))
         whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        val event = TrackEvent.Button(
-            text = context.getEnglishString(R.string.system_backButton),
-            params = requiredParams
-        )
+        val event =
+            TrackEvent.Button(
+                text = context.getEnglishString(R.string.system_backButton),
+                params = requiredParams
+            )
         setContent()
 
         Espresso.pressBack()
@@ -211,9 +221,10 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     }
 
     companion object {
-        private val requiredParams = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
-        )
+        private val requiredParams =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
+            )
     }
 }

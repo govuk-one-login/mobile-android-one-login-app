@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.settings.ui.biometricstoggle
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -22,6 +21,7 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
+import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class BiometricsToggleScreenViewModelTest {
@@ -39,18 +39,20 @@ class BiometricsToggleScreenViewModelTest {
         localAuthPrefRepo = LocalAuthPreferenceRepositoryImpl(context)
         deviceBiometricsManager = mock()
         analyticsLogger = mock()
-        localAuthManager = LocalAuthManagerImpl(
-            localAuthPrefRepo = localAuthPrefRepo,
-            deviceBiometricsManager = deviceBiometricsManager,
-            analyticsLogger = analyticsLogger
-        )
+        localAuthManager =
+            LocalAuthManagerImpl(
+                localAuthPrefRepo = localAuthPrefRepo,
+                deviceBiometricsManager = deviceBiometricsManager,
+                analyticsLogger = analyticsLogger
+            )
         navigator = mock()
         autoInitialiseSecureStore = mock()
-        viewModel = BiometricsToggleScreenViewModel(
-            localAuthManager = localAuthManager,
-            navigator = navigator,
-            autoInitialiseSecureStore = autoInitialiseSecureStore
-        )
+        viewModel =
+            BiometricsToggleScreenViewModel(
+                localAuthManager = localAuthManager,
+                navigator = navigator,
+                autoInitialiseSecureStore = autoInitialiseSecureStore
+            )
     }
 
     @Test
@@ -81,48 +83,51 @@ class BiometricsToggleScreenViewModelTest {
     }
 
     @Test
-    fun `test toggle biometrics - from biometrics ENABLED`() = runTest {
-        localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Enabled(true))
-        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+    fun `test toggle biometrics - from biometrics ENABLED`() =
+        runTest {
+            localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Enabled(true))
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
 
-        viewModel.toggleBiometrics()
+            viewModel.toggleBiometrics()
 
-        assertEquals(
-            LocalAuthPreference.Enabled(false),
-            localAuthManager.localAuthPreference
-        )
-        verify(autoInitialiseSecureStore, times(0)).initialise(null)
-    }
-
-    @Test
-    fun `test toggle biometrics - from biometrics DISABLED (passcode)`() = runTest {
-        localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Enabled(false))
-        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-        whenever(deviceBiometricsManager.getCredentialStatus())
-            .thenReturn(DeviceBiometricsStatus.SUCCESS)
-
-        viewModel.toggleBiometrics()
-
-        assertEquals(
-            LocalAuthPreference.Enabled(true),
-            localAuthManager.localAuthPreference
-        )
-        verify(autoInitialiseSecureStore).initialise(null)
-    }
+            assertEquals(
+                LocalAuthPreference.Enabled(false),
+                localAuthManager.localAuthPreference
+            )
+            verify(autoInitialiseSecureStore, times(0)).initialise(null)
+        }
 
     @Test
-    fun `test toggle biometrics - from biometrics DISABLED (none)`() = runTest {
-        localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
-        whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-        whenever(deviceBiometricsManager.getCredentialStatus())
-            .thenReturn(DeviceBiometricsStatus.SUCCESS)
+    fun `test toggle biometrics - from biometrics DISABLED (passcode)`() =
+        runTest {
+            localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Enabled(false))
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.SUCCESS)
 
-        viewModel.toggleBiometrics()
+            viewModel.toggleBiometrics()
 
-        assertEquals(
-            LocalAuthPreference.Enabled(true),
-            localAuthManager.localAuthPreference
-        )
-        verify(autoInitialiseSecureStore).initialise(null)
-    }
+            assertEquals(
+                LocalAuthPreference.Enabled(true),
+                localAuthManager.localAuthPreference
+            )
+            verify(autoInitialiseSecureStore).initialise(null)
+        }
+
+    @Test
+    fun `test toggle biometrics - from biometrics DISABLED (none)`() =
+        runTest {
+            localAuthPrefRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(deviceBiometricsManager.getCredentialStatus())
+                .thenReturn(DeviceBiometricsStatus.SUCCESS)
+
+            viewModel.toggleBiometrics()
+
+            assertEquals(
+                LocalAuthPreference.Enabled(true),
+                localAuthManager.localAuthPreference
+            )
+            verify(autoInitialiseSecureStore).initialise(null)
+        }
 }

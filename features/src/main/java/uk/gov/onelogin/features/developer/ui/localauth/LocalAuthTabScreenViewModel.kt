@@ -4,7 +4,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
 import uk.gov.android.localauth.LocalAuthManagerImpl
@@ -12,45 +11,52 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
+import javax.inject.Inject
 
 @HiltViewModel
-class LocalAuthTabScreenViewModel @Inject constructor(
-    private val localAuthPreferenceRepo: LocalAuthPreferenceRepo,
-    private val analyticsLogger: AnalyticsLogger
-) : ViewModel() {
+class LocalAuthTabScreenViewModel
+    @Inject
+    constructor(
+        private val localAuthPreferenceRepo: LocalAuthPreferenceRepo,
+        private val analyticsLogger: AnalyticsLogger,
+    ) : ViewModel() {
+        fun triggerLocalAuthMock(
+            activity: FragmentActivity,
+            isDeviceSecure: Boolean,
+        ) {
+            val localAuthManager = configureLocalAuthManager(isDeviceSecure)
+            viewModelScope.launch {
+                val realPref = localAuthManager.localAuthPreference
+                localAuthPreferenceRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
+                localAuthManager.enforceAndSet(
+                    walletEnabled = true,
+                    localAuthRequired = true,
+                    activity,
+                    callbackHandler =
+                        object : LocalAuthManagerCallbackHandler {
+                            override fun onFailure(backButtonPressed: Boolean) {
+                                realPref?.let { localAuthPreferenceRepo.setLocalAuthPref(it) }
+                            }
 
-    fun triggerLocalAuthMock(activity: FragmentActivity, isDeviceSecure: Boolean) {
-        val localAuthManager = configureLocalAuthManager(isDeviceSecure)
-        viewModelScope.launch {
-            val realPref = localAuthManager.localAuthPreference
-            localAuthPreferenceRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
-            localAuthManager.enforceAndSet(
-                walletEnabled = true,
-                localAuthRequired = true,
-                activity,
-                callbackHandler = object : LocalAuthManagerCallbackHandler {
-                    override fun onFailure(backButtonPressed: Boolean) {
-                        realPref?.let { localAuthPreferenceRepo.setLocalAuthPref(it) }
-                    }
+                            override fun onSuccess(backButtonPressed: Boolean) {
+                                realPref?.let { localAuthPreferenceRepo.setLocalAuthPref(it) }
+                            }
+                        },
+                )
+            }
+        }
 
-                    override fun onSuccess(backButtonPressed: Boolean) {
-                        realPref?.let { localAuthPreferenceRepo.setLocalAuthPref(it) }
-                    }
-                }
+        private fun configureLocalAuthManager(displayError: Boolean): LocalAuthManagerImpl {
+            val biometricsManager =
+                MockDeviceBiometricManager(
+                    displayError,
+                    DeviceBiometricsStatus.SUCCESS,
+                )
+
+            return LocalAuthManagerImpl(
+                localAuthPreferenceRepo,
+                biometricsManager,
+                analyticsLogger,
             )
         }
     }
-
-    private fun configureLocalAuthManager(displayError: Boolean): LocalAuthManagerImpl {
-        val biometricsManager = MockDeviceBiometricManager(
-            displayError,
-            DeviceBiometricsStatus.SUCCESS
-        )
-
-        return LocalAuthManagerImpl(
-            localAuthPreferenceRepo,
-            biometricsManager,
-            analyticsLogger
-        )
-    }
-}

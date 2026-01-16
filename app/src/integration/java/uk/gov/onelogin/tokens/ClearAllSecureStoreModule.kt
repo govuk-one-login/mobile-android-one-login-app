@@ -11,7 +11,5 @@ import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreDataImpl
 @InstallIn(ViewModelComponent::class)
 interface ClearAllSecureStoreModule {
     @Binds
-    fun bindClearAllSecureStore(
-        clearAllSecureStore: RemoveAllSecureStoreDataImpl
-    ): RemoveAllSecureStoreData
+    fun bindClearAllSecureStore(clearAllSecureStore: RemoveAllSecureStoreDataImpl): RemoveAllSecureStoreData
 }

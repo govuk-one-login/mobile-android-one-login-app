@@ -1,9 +1,5 @@
 package uk.gov.onelogin.core.cleaner.domain
 
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -15,6 +11,10 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
 class MultiCleanerTest {
@@ -57,7 +57,7 @@ class MultiCleanerTest {
                     Cleaner {
                         actual3 = true
                         Result.success(Unit)
-                    }
+                    },
                 )
             // When calling clean
             cleaner.clean()
@@ -79,7 +79,7 @@ class MultiCleanerTest {
                     Cleaner { Result.success(Unit) },
                     Cleaner { throw Exception("Oh no!") },
                     Cleaner { Result.success(Unit) },
-                    Cleaner { Result.success(Unit) }
+                    Cleaner { Result.success(Unit) },
                 )
             // When calling clean
             Assertions.assertThrows(Exception::class.java) {
@@ -95,7 +95,7 @@ class MultiCleanerTest {
             cleaner =
                 MultiCleaner(
                     passedDispatcher,
-                    Cleaner { Result.success(Unit) }
+                    Cleaner { Result.success(Unit) },
                 )
             // When cleaning
             cleaner.clean()

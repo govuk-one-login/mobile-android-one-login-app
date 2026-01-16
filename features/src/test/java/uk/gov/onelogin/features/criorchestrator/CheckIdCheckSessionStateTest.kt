@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.criorchestrator
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertFalse
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -18,6 +17,7 @@ import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.idcheck
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.create
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
@@ -25,13 +25,14 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
     private val mockAnalyticsLogger: AnalyticsLogger = mock()
     private val mockConfig: Config = mock()
     private val mockLogger: Logger = mock()
-    private val mockCriOrchestratorSdk: CriOrchestratorSdk = CriOrchestratorSdk.create(
-        authenticatedHttpClient = mockHttpClient,
-        analyticsLogger = mockAnalyticsLogger,
-        initialConfig = mockConfig,
-        logger = mockLogger,
-        applicationContext = context
-    )
+    private val mockCriOrchestratorSdk: CriOrchestratorSdk =
+        CriOrchestratorSdk.create(
+            authenticatedHttpClient = mockHttpClient,
+            analyticsLogger = mockAnalyticsLogger,
+            initialConfig = mockConfig,
+            logger = mockLogger,
+            applicationContext = context
+        )
     private val c = mock<java.util.Collection<String>>()
 
     private lateinit var mockCheckIdCheckSessionState: CheckIdCheckSessionState
@@ -75,8 +76,6 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
     private class MockIsIdSCheckSessionActiveImpl(
         private val result: Boolean
     ) : IsIdCheckSdkActive {
-        override fun invoke(): Boolean {
-            return result
-        }
+        override fun invoke(): Boolean = result
     }
 }

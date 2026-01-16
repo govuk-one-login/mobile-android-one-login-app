@@ -29,7 +29,6 @@ import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
-import uk.gov.android.ui.patterns.R as UiR
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
@@ -38,18 +37,19 @@ import uk.gov.onelogin.core.navigation.domain.closeApp
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
+import uk.gov.android.ui.patterns.R as UiR
 
 @Composable
 fun ErrorUpdateRequiredScreen(
     viewModel: OutdatedAppErrorViewModel = hiltViewModel(),
-    analyticsViewModel: OutdatedAppErrorAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: OutdatedAppErrorAnalyticsViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
     UpdateRequiredBody(
         onPrimary = {
             viewModel.updateApp()
             analyticsViewModel.trackAppUpdate()
-        }
+        },
     )
     BackHandler {
         analyticsViewModel.trackBackButton()
@@ -66,54 +66,59 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     GdsTheme {
         EdgeToEdgePage { _ ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(mediumPadding),
-                verticalArrangement = Arrangement.Center
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(mediumPadding),
+                verticalArrangement = Arrangement.Center,
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .weight(1f)
-                        .padding(bottom = smallPadding)
+                    modifier =
+                        Modifier
+                            .verticalScroll(rememberScrollState())
+                            .weight(1f)
+                            .padding(bottom = smallPadding),
                 ) {
                     Image(
                         painter = painterResource(UiR.drawable.ic_warning_error),
-                        contentDescription = stringResource(
-                            R.string.app_updateApp_ContentDescription
-                        ),
+                        contentDescription =
+                            stringResource(
+                                R.string.app_updateApp_ContentDescription,
+                            ),
                         modifier = Modifier.padding(mediumPadding),
-                        colorFilter = ColorFilter.tint(
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                        colorFilter =
+                            ColorFilter.tint(
+                                color = MaterialTheme.colorScheme.onBackground,
+                            ),
                     )
                     GdsHeading(
                         text = stringResource(R.string.app_updateApp_Title),
                         modifier = Modifier.padding(bottom = smallPadding),
-                        textAlign = GdsHeadingAlignment.CenterAligned
+                        textAlign = GdsHeadingAlignment.CenterAligned,
                     )
                     Text(
                         text = stringResource(R.string.app_updateAppBody1),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
                         text = stringResource(R.string.app_updateAppBody2),
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
                 GdsButton(
                     text = buttonText,
                     buttonType = ButtonTypeV2.Primary(),
                     onClick = onPrimary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .semantics(mergeDescendants = true) {
-                            contentDescription = buttonText + buttonAccessibilityDesc
-                        }
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .semantics(mergeDescendants = true) {
+                                contentDescription = buttonText + buttonAccessibilityDesc
+                            },
                 )
             }
         }

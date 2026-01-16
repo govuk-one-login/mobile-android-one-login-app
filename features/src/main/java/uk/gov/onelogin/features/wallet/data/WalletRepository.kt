@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.wallet.data
 
 interface WalletRepository {
     fun setWalletDeepLinkPathState(deepLink: Boolean)
+
     fun isWalletDeepLinkPath(): Boolean
 }
 

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.remove
 
-import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,6 +13,7 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
@@ -43,7 +43,7 @@ class RemoveAllSecureStoreDataTest {
     fun `token secure store exception is propagated up`() =
         runTest {
             whenever(
-                tokenSecureStore.deleteAll()
+                tokenSecureStore.deleteAll(),
             ).thenThrow(SecureStorageError(Exception("something went wrong")))
 
             val result = useCase.clean()
@@ -57,7 +57,7 @@ class RemoveAllSecureStoreDataTest {
     fun `open secure store exception is propagated up`() =
         runTest {
             whenever(
-                openSecureStore.deleteAll()
+                openSecureStore.deleteAll(),
             ).thenThrow(SecureStorageError(Exception("something went wrong")))
 
             val result = useCase.clean()

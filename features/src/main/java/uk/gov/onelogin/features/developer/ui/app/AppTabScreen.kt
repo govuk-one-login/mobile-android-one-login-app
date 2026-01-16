@@ -63,35 +63,42 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
         snackbarHost = {
             GdsStatusOverlay(
                 hostState = statusOverlayState,
-                modifier = Modifier.padding(horizontal = spacingDouble)
+                modifier = Modifier.padding(horizontal = spacingDouble),
             )
-        }
+        },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize().navigationBarsPadding()
-                .padding(mediumPadding),
-            verticalArrangement = Arrangement.Center
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+                    .padding(mediumPadding),
+            verticalArrangement = Arrangement.Center,
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
                         modifier = Modifier.padding(8.dp),
-                        text = buildAnnotatedString {
-                            append("App flavor: ")
-                            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                append(BuildConfig.FLAVOR)
-                            }
-                        },
-                        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+                        text =
+                            buildAnnotatedString {
+                                append("App flavor: ")
+                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                                    append(BuildConfig.FLAVOR)
+                                }
+                            },
+                        color =
+                            uk.gov.android.ui.theme.m3.Text.primary
+                                .toMappedColors(),
                     )
                     Text(
                         text = "Version Name: ${viewModel.version}",
-                        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+                        color =
+                            uk.gov.android.ui.theme.m3.Text.primary
+                                .toMappedColors(),
                     )
                 }
             }
@@ -100,36 +107,39 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
                 style = MaterialTheme.typography.titleMedium,
                 text = "App Info",
                 textAlign = TextAlign.Left,
-                color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+                color =
+                    uk.gov.android.ui.theme.m3.Text.primary
+                        .toMappedColors(),
             )
             data.value?.let { androidInfoData ->
                 AppInfoView(
                     androidInfoData.apps.android,
-                    viewModel
+                    viewModel,
                 )
             }
             Row(
-                modifier = Modifier.padding(top = largePadding)
+                modifier = Modifier.padding(top = largePadding),
             ) {
                 OutlinedTextField(
                     value = overlayMessage,
                     onValueChange = { overlayMessage = it },
                     label = { Text(text = "Status Overlay message") },
                     colors = textFieldDefaultColors(),
-                    modifier = Modifier.weight(TEXTFIELD_WEIGHT)
+                    modifier = Modifier.weight(TEXTFIELD_WEIGHT),
                 )
                 GdsButton(
                     text = "Display overlay",
                     buttonType = ButtonTypeV2.Primary(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = smallPadding)
-                        .weight(BUTTON_WEIGHT),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = smallPadding)
+                            .weight(BUTTON_WEIGHT),
                     onClick = {
                         scope.launch {
                             statusOverlayState.showSnackbar(overlayMessage)
                         }
-                    }
+                    },
                 )
             }
         }
@@ -140,7 +150,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
 @Suppress("LongMethod")
 private fun AppInfoView(
     appInfoData: AppInfoData.AppInfo,
-    viewModel: AppTabScreenViewModel
+    viewModel: AppTabScreenViewModel,
 ) {
     var minimumVersion by remember { mutableStateOf(appInfoData.minimumVersion) }
     var appAvailable by remember { mutableStateOf(appInfoData.available) }
@@ -149,22 +159,29 @@ private fun AppInfoView(
         value = minimumVersion,
         onValueChange = { minimumVersion = it },
         label = { Text(text = "Minimum version") },
-        colors = textFieldDefaultColors()
+        colors = textFieldDefaultColors(),
     )
-    Text("App Available", color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
+    Text(
+        "App Available",
+        color =
+            uk.gov.android.ui.theme.m3.Text.primary
+                .toMappedColors(),
+    )
     Switch(
         checked = appAvailable,
         onCheckedChange = { appAvailable = it },
-        colors = Switch.defaultColors()
+        colors = Switch.defaultColors(),
     )
     Text(
         "Feature Flag - App Check Enabled",
-        color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+        color =
+            uk.gov.android.ui.theme.m3.Text.primary
+                .toMappedColors(),
     )
     Switch(
         checked = appCheckEnabled,
         onCheckedChange = { appCheckEnabled = it },
-        colors = Switch.defaultColors()
+        colors = Switch.defaultColors(),
     )
     Button(
         onClick = {
@@ -175,30 +192,33 @@ private fun AppInfoView(
                             minimumVersion = minimumVersion,
                             available = appAvailable,
                             featureFlags =
-                            AppInfoData.FeatureFlags(
-                                appCheckEnabled = appCheckEnabled
-                            )
-                        )
-                    )
+                                AppInfoData.FeatureFlags(
+                                    appCheckEnabled = appCheckEnabled,
+                                ),
+                        ),
+                    ),
                 )
             Log.d("UpdatedAppInfo", "$updatedData")
             viewModel.updateAppInfoData(updatedData)
-        }
+        },
     ) {
         Text(
             "Update App Info Data - Local Source",
-            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
         )
     }
 }
 
 @Composable
-private fun textFieldDefaultColors() = TextFieldDefaults.colors().copy(
-    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-    focusedContainerColor = MaterialTheme.colorScheme.background,
-    unfocusedContainerColor = MaterialTheme.colorScheme.background
-)
+private fun textFieldDefaultColors() =
+    TextFieldDefaults.colors().copy(
+        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+        unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
+        focusedContainerColor = MaterialTheme.colorScheme.background,
+        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+    )
 
 const val TEXTFIELD_WEIGHT = 0.7f
 const val BUTTON_WEIGHT = 0.3f

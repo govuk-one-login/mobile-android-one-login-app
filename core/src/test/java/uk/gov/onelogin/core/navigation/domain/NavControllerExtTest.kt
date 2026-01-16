@@ -24,7 +24,7 @@ class NavControllerExtTest : FragmentActivityTestCase() {
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             NavHost(
                 navController = navController,
-                startDestination = LoginRoutes.Root.getRoute()
+                startDestination = LoginRoutes.Root.getRoute(),
             ) { loginGraphTest() }
         }
     }
@@ -52,7 +52,7 @@ class NavControllerExtTest : FragmentActivityTestCase() {
         fun NavGraphBuilder.loginGraphTest() {
             navigation(
                 route = LoginRoutes.Root.getRoute(),
-                startDestination = LoginRoutes.Start.getRoute()
+                startDestination = LoginRoutes.Start.getRoute(),
             ) {
                 composable(route = LoginRoutes.Start.getRoute()) {}
 

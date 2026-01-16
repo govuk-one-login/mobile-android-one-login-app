@@ -30,10 +30,10 @@ abstract class BaseScreenshotTest(
     val paparazzi =
         Paparazzi(
             deviceConfig =
-            DeviceConfig.PIXEL_6.copy(
-                nightMode = nightMode,
-                locale = locale
-            ),
+                DeviceConfig.PIXEL_6.copy(
+                    nightMode = nightMode,
+                    locale = locale
+                ),
             renderingMode = SHRINK,
             showSystemUi = false,
             maxPercentDifference = 0.1
@@ -61,12 +61,13 @@ abstract class BaseScreenshotTest(
             }
 
         @JvmStatic
-        fun applyNightModeAndLocale(): Iterable<Array<Any>> = arrayListOf(
-            arrayOf(NOTNIGHT, LOCALE_EN),
-            arrayOf(NIGHT, LOCALE_EN),
-            arrayOf(NOTNIGHT, LOCALE_CY),
-            arrayOf(NIGHT, LOCALE_CY)
-        )
+        fun applyNightModeAndLocale(): Iterable<Array<Any>> =
+            arrayListOf(
+                arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_CY)
+            )
     }
 }
 

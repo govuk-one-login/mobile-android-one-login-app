@@ -17,18 +17,16 @@ import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-fun CriOrchestratorDevMenuScreen(
-    viewModel: CriOrchestratorDevMenuScreenViewModel = hiltViewModel()
-) {
+fun CriOrchestratorDevMenuScreen(viewModel: CriOrchestratorDevMenuScreenViewModel = hiltViewModel()) {
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(mediumPadding)
+            Modifier
+                .fillMaxSize()
+                .padding(mediumPadding),
     ) {
         GdsHeading(
             text = stringResource(R.string.app_developer_features_title),
-            style = GdsHeadingStyle.Title3
+            style = GdsHeadingStyle.Title3,
         )
         val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
         DevMenuScreen(criOrchestratorComponent)

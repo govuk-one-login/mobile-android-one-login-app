@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.network.domain
 
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
@@ -18,6 +17,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
+import kotlin.test.assertEquals
 
 class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
@@ -38,7 +38,7 @@ class StsAuthenticationProviderTest {
             assertThat("response is Failure", response is AuthenticationResponse.Failure)
             assertEquals(
                 "No access token",
-                (response as AuthenticationResponse.Failure).error.message
+                (response as AuthenticationResponse.Failure).error.message,
             )
         }
 
@@ -51,8 +51,8 @@ class StsAuthenticationProviderTest {
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
+                    idToken = "idToken",
+                ),
             )
 
             val response = provider.fetchBearerToken("scope")
@@ -60,7 +60,7 @@ class StsAuthenticationProviderTest {
             assertThat("response is Failure", response is AuthenticationResponse.Failure)
             assertEquals(
                 "Failed to fetch service token",
-                (response as AuthenticationResponse.Failure).error.message
+                (response as AuthenticationResponse.Failure).error.message,
             )
         }
 
@@ -73,8 +73,8 @@ class StsAuthenticationProviderTest {
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
+                    idToken = "idToken",
+                ),
             )
 
             val response = provider.fetchBearerToken("scope")
@@ -92,19 +92,19 @@ class StsAuthenticationProviderTest {
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
+                    idToken = "idToken",
+                ),
             )
 
             val response = provider.fetchBearerToken("scope")
 
             assertThat(
                 "response is AccessTokenExpired",
-                response is AuthenticationResponse.Failure
+                response is AuthenticationResponse.Failure,
             )
             assertEquals(
                 "Access token expired",
-                (response as AuthenticationResponse.Failure).error.message
+                (response as AuthenticationResponse.Failure).error.message,
             )
             verify(mockNavigator).navigate(SignOutRoutes.Info)
         }
@@ -118,16 +118,16 @@ class StsAuthenticationProviderTest {
                         "    \"access_token\": \"token\",\n" +
                         "    \"token_type\": \"Bearer\",\n" +
                         "    \"expires_in\": 180\n" +
-                        "}"
-                )
+                        "}",
+                ),
             )
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
                 TokenResponse(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
+                    idToken = "idToken",
+                ),
             )
 
             val response = provider.fetchBearerToken("scope")
@@ -135,13 +135,13 @@ class StsAuthenticationProviderTest {
             assertThat("response is Success", response is AuthenticationResponse.Success)
             assertEquals(
                 "token",
-                (response as AuthenticationResponse.Success).bearerToken
+                (response as AuthenticationResponse.Success).bearerToken,
             )
         }
 
     private suspend fun setupProvider(
         httpResponse: ApiResponse,
-        isAccessTokenExpired: Boolean = false
+        isAccessTokenExpired: Boolean = false,
     ) {
         whenever(mockIsAccessTokenExpired.invoke()).thenReturn(isAccessTokenExpired)
         stubHttpClient = StubHttpClient(httpResponse)
@@ -152,7 +152,7 @@ class StsAuthenticationProviderTest {
                 mockIsAccessTokenExpired,
                 stubHttpClient,
                 mockNavigator,
-                logger
+                logger,
             )
     }
 }

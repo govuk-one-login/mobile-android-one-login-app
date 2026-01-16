@@ -9,13 +9,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 fun WalletScreen(
     deepLinkRoute: Boolean,
     setDisplayContentAsFullScreen: (Boolean) -> Unit,
-    viewModel: WalletScreenViewModel = hiltViewModel()
+    viewModel: WalletScreenViewModel = hiltViewModel(),
 ) {
     key(deepLinkRoute) {
         viewModel.walletSdk.WalletApp()
     }
 
     setDisplayContentAsFullScreen(
-        viewModel.walletSdk.displayAsFullScreen.collectAsStateWithLifecycle().value
+        viewModel.walletSdk.displayAsFullScreen
+            .collectAsStateWithLifecycle()
+            .value,
     )
 }

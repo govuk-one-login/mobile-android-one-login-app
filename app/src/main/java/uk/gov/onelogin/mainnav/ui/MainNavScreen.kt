@@ -42,21 +42,23 @@ import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 fun MainNavScreen(
     navController: NavHostController = rememberNavController(),
     mainNavScreenViewModel: MainNavViewModel = hiltViewModel(),
-    analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: MainNavAnalyticsViewModel = hiltViewModel(),
 ) {
-    val displayContentAsFullScreen = remember {
-        mainNavScreenViewModel.displayContentAsFullScreenState
-    }
+    val displayContentAsFullScreen =
+        remember {
+            mainNavScreenViewModel.displayContentAsFullScreenState
+        }
 
     navController.addOnDestinationChangedListener { _, _, _ ->
         mainNavScreenViewModel.setDisplayContentAsFullScreenState(false)
     }
 
-    val navItems = createBottomNavItems(
-        { analyticsViewModel.trackHomeTabButton() },
-        { analyticsViewModel.trackWalletTabButton() },
-        { analyticsViewModel.trackSettingsTabButton() }
-    )
+    val navItems =
+        createBottomNavItems(
+            { analyticsViewModel.trackHomeTabButton() },
+            { analyticsViewModel.trackWalletTabButton() },
+            { analyticsViewModel.trackSettingsTabButton() },
+        )
     LifecycleEventEffect(event = Lifecycle.Event.ON_CREATE) {
         mainNavScreenViewModel.checkIsDeeplinkRoute()
     }
@@ -67,7 +69,7 @@ fun MainNavScreen(
             if (isDeeplinkRoute) {
                 bottomNav(
                     navController,
-                    navItems.first { it.first == BottomNavDestination.Wallet }
+                    navItems.first { it.first == BottomNavDestination.Wallet },
                 )
             }
         }
@@ -82,7 +84,7 @@ fun MainNavScreen(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.onBackground,
                     tonalElevation = NavigationBarDefaults.Elevation,
-                    windowInsets = NavigationBarDefaults.windowInsets
+                    windowInsets = NavigationBarDefaults.windowInsets,
                 ) {
                     navItems.map { navDest ->
                         NavBarItem(
@@ -91,27 +93,31 @@ fun MainNavScreen(
                             // Required change to allow for the highlight of the Wallet tab now that it has an argument passed in
                             // TODO: Can be changed once the savedState from navigation (see comment below) gets reverted
                             // The fallback to false should never be called as we only have 3 tabs
-                            selected = navBackStackEntry?.destination?.route?.contains(
-                                navDest.first.key
-                            ) ?: false
+                            selected =
+                                navBackStackEntry?.destination?.route?.contains(
+                                    navDest.first.key,
+                                ) ?: false,
                         )
                     }
                 }
             }
-        }
+        },
     ) { paddingValues ->
-        val isDeeplinkRoute = mainNavScreenViewModel.isDeeplinkRoute
-            .collectAsState().value
+        val isDeeplinkRoute =
+            mainNavScreenViewModel.isDeeplinkRoute
+                .collectAsState()
+                .value
         NavHost(
             navController = navController,
-            startDestination = if (isDeeplinkRoute) {
-                // This state will always be true in this situation
-                // Argument required to force recomposition of the Wallet tab
-                BottomNavDestination.Wallet.key + "/$isDeeplinkRoute"
-            } else {
-                BottomNavDestination.Home.key
-            },
-            modifier = Modifier.padding(paddingValues)
+            startDestination =
+                if (isDeeplinkRoute) {
+                    // This state will always be true in this situation
+                    // Argument required to force recomposition of the Wallet tab
+                    BottomNavDestination.Wallet.key + "/$isDeeplinkRoute"
+                } else {
+                    BottomNavDestination.Home.key
+                },
+            modifier = Modifier.padding(paddingValues),
         ) {
             bottomGraph { mainNavScreenViewModel.setDisplayContentAsFullScreenState(newValue = it) }
         }
@@ -122,7 +128,7 @@ fun MainNavScreen(
 private fun RowScope.NavBarItem(
     navigationDestination: Pair<BottomNavDestination, () -> Unit>,
     selected: Boolean,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     NavigationBarItem(
         selected = selected,
@@ -130,24 +136,25 @@ private fun RowScope.NavBarItem(
             // This should never be true as this is navigation to the wallet via user interaction, not deeplink
             bottomNav(
                 navController,
-                navigationDestination
+                navigationDestination,
             )
         },
         icon = {
             Icon(
                 painter = painterResource(navigationDestination.first.icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onBackground
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         },
         label = {
             Label(text = navigationDestination.first.label)
         },
         alwaysShowLabel = true,
-        colors = NavigationBarItemDefaults.colors(
-            indicatorColor =
-            NavigationElements.navigationBarSelectedState.toMappedColors()
-        )
+        colors =
+            NavigationBarItemDefaults.colors(
+                indicatorColor =
+                    NavigationElements.navigationBarSelectedState.toMappedColors(),
+            ),
     )
 }
 
@@ -157,9 +164,10 @@ private fun Label(text: Int) {
         text = stringResource(id = text),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        fontSize = MaterialTheme
-            .typography.bodyMedium.fontSize.nonScaledSp,
-        fontWeight = FontWeight.Bold
+        fontSize =
+            MaterialTheme
+                .typography.bodyMedium.fontSize.nonScaledSp,
+        fontWeight = FontWeight.Bold,
     )
 }
 
@@ -175,7 +183,7 @@ private fun Label(text: Int) {
 private fun createBottomNavItems(
     trackHome: () -> Unit,
     trackWallet: () -> Unit,
-    trackProfile: () -> Unit
+    trackProfile: () -> Unit,
 ): List<Pair<BottomNavDestination, () -> Unit>> {
     val home = BottomNavDestination.Home to trackHome
     val wallet = BottomNavDestination.Wallet to trackWallet
@@ -186,15 +194,16 @@ private fun createBottomNavItems(
 @Suppress("ForbiddenComment")
 private fun bottomNav(
     navController: NavHostController,
-    navDest: Pair<BottomNavDestination, () -> Unit>
+    navDest: Pair<BottomNavDestination, () -> Unit>,
 ) {
     navDest.second()
-    val destination = if (navDest.first is BottomNavDestination.Wallet) {
-        // This will always be true since it's coming via DeepLink, that would be the only situation where Wallet would be the first item in the list
-        "${BottomNavDestination.Wallet}/${true}"
-    } else {
-        navDest.first.key
-    }
+    val destination =
+        if (navDest.first is BottomNavDestination.Wallet) {
+            // This will always be true since it's coming via DeepLink, that would be the only situation where Wallet would be the first item in the list
+            "${BottomNavDestination.Wallet}/${true}"
+        } else {
+            navDest.first.key
+        }
     navController.navigate(destination) {
         // Had to remove the savedState to allow for navigation to force a recomposition of the WalletScreen
         // Not removing it won't allow to add a deep-lnk credential (2nd attempt) if the app was still in background and left on either Settings or Home Screen

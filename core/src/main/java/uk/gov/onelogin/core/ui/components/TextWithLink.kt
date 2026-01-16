@@ -31,32 +31,35 @@ fun TextWithLink(
     maxLines: Int = Int.MAX_VALUE,
     onTextLayout: (TextLayoutResult) -> Unit = {},
     inlineContent: Map<String, InlineTextContent> = mapOf(),
-    onClick: (Int) -> Unit
+    onClick: (Int) -> Unit,
 ) {
-    val annotatedString = buildAnnotatedString {
-        text?.let {
-            append(it)
+    val annotatedString =
+        buildAnnotatedString {
+            text?.let {
+                append(it)
+            }
+            pushStringAnnotation(tag = "URL", annotation = "")
+            append(linkText)
+            pop()
         }
-        pushStringAnnotation(tag = "URL", annotation = "")
-        append(linkText)
-        pop()
-    }
 
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
 
-    val pressIndicator = Modifier.pointerInput(onClick) {
-        detectTapGestures { pos ->
-            layoutResult.value?.let { layoutResult ->
-                val offset = layoutResult.getOffsetForPosition(pos)
-                annotatedString.getStringAnnotations(
-                    tag = "URL",
-                    start = offset - 1,
-                    end = offset - 1
-                )
-                    .firstOrNull()?.let { onClick(offset) }
+    val pressIndicator =
+        Modifier.pointerInput(onClick) {
+            detectTapGestures { pos ->
+                layoutResult.value?.let { layoutResult ->
+                    val offset = layoutResult.getOffsetForPosition(pos)
+                    annotatedString
+                        .getStringAnnotations(
+                            tag = "URL",
+                            start = offset - 1,
+                            end = offset - 1,
+                        ).firstOrNull()
+                        ?.let { onClick(offset) }
+                }
             }
         }
-    }
 
     BasicText(
         text = annotatedString,
@@ -69,6 +72,6 @@ fun TextWithLink(
             layoutResult.value = it
             onTextLayout(it)
         },
-        inlineContent = inlineContent
+        inlineContent = inlineContent,
     )
 }

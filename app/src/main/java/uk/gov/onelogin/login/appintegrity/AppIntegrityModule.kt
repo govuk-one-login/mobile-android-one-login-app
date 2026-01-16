@@ -29,22 +29,19 @@ object AppIntegrityModule {
     fun provideAppIntegrityConfig(
         attestationCaller: AttestationCaller,
         appChecker: AppChecker,
-        keyStoreManager: KeyStoreManager
-    ): AppIntegrityConfiguration {
-        return AppIntegrityConfiguration(
+        keyStoreManager: KeyStoreManager,
+    ): AppIntegrityConfiguration =
+        AppIntegrityConfiguration(
             attestationCaller = attestationCaller,
             appChecker = appChecker,
-            keyStoreManager = keyStoreManager
+            keyStoreManager = keyStoreManager,
         )
-    }
 
     @Provides
     fun provideFirebaseTokenManager(
         logger: Logger,
-        config: AppIntegrityConfiguration
-    ): AppIntegrityManager {
-        return FirebaseAppIntegrityManager(logger, config)
-    }
+        config: AppIntegrityConfiguration,
+    ): AppIntegrityManager = FirebaseAppIntegrityManager(logger, config)
 
     @Suppress("LongParameterList")
     @Provides
@@ -55,22 +52,21 @@ object AppIntegrityModule {
         appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
         getFromOpenSecureStore: GetFromOpenSecureStore,
-        logger: Logger
-    ): AppIntegrity {
-        return AppIntegrityImpl(
+        logger: Logger,
+    ): AppIntegrity =
+        AppIntegrityImpl(
             context,
             featureFlags,
             appCheck,
             saveToOpenSecureStore,
             getFromOpenSecureStore,
-            logger
+            logger,
         )
-    }
 
     @Provides
     fun provideAssertionApiCall(
         @ApplicationContext
         context: Context,
-        genericHttpClient: GenericHttpClient
+        genericHttpClient: GenericHttpClient,
     ): AttestationCaller = AttestationApiCall(context, genericHttpClient)
 }

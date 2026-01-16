@@ -17,6 +17,6 @@ object LoginSessionModule {
     fun providesLoginSession(
         @ApplicationContext
         context: Context,
-        demonstratingProofOfPossessionManager: DemonstratingProofOfPossessionManager
+        demonstratingProofOfPossessionManager: DemonstratingProofOfPossessionManager,
     ): LoginSession = AppAuthSession(context, demonstratingProofOfPossessionManager)
 }

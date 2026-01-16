@@ -9,7 +9,9 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class GenericErrScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class GenericErrScreenshotTest(
+    nightMode: NightMode
+) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         GenericErrorPreview()
     }
@@ -17,11 +19,10 @@ class GenericErrScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightM
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> {
-            return arrayListOf(
+        fun values(): Iterable<Array<Any>> =
+            arrayListOf(
                 arrayOf(NOTNIGHT),
                 arrayOf(NIGHT)
             )
-        }
     }
 }

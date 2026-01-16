@@ -84,11 +84,12 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         signOutUseCase = mock()
         onlineChecker = mock()
         analytics = mock()
-        localAuthManager = LocalAuthManagerImpl(
-            localAuthPreferenceRepo,
-            deviceBiometricsManager,
-            analytics
-        )
+        localAuthManager =
+            LocalAuthManagerImpl(
+                localAuthPreferenceRepo,
+                deviceBiometricsManager,
+                analytics
+            )
         counter = mock()
 
         viewModel =

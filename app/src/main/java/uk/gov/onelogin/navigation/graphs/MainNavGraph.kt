@@ -10,10 +10,10 @@ object MainNavGraph {
     fun NavGraphBuilder.mainNavRoutesFlow() {
         navigation(
             route = MainNavRoutes.Root.getRoute(),
-            startDestination = MainNavRoutes.Start.getRoute()
+            startDestination = MainNavRoutes.Start.getRoute(),
         ) {
             composable(
-                route = MainNavRoutes.Start.getRoute()
+                route = MainNavRoutes.Start.getRoute(),
             ) {
                 MainNavScreen()
             }

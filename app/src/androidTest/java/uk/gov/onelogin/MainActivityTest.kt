@@ -4,7 +4,6 @@ import androidx.test.core.app.launchActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -14,11 +13,11 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.NavigatorModule
+import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(NavigatorModule::class)
 class MainActivityTest : TestCase() {
-
     @BindValue
     val navigator: Navigator = mock()
 

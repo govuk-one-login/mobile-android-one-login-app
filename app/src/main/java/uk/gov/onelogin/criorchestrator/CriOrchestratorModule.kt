@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
@@ -17,6 +16,7 @@ import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.creat
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -24,19 +24,20 @@ object CriOrchestratorModule {
     @Provides
     @Singleton
     fun provideSdkConfig(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ) = Config(
         entries =
-        persistentListOf(
-            Config.Entry(
-                key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
-                Config.Value.StringValue(
-                    value = context.getString(
-                        uk.gov.android.onelogin.core.R.string.backendAsyncUrl
-                    )
-                )
-            )
-        )
+            persistentListOf(
+                Config.Entry(
+                    key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
+                    Config.Value.StringValue(
+                        value =
+                            context.getString(
+                                uk.gov.android.onelogin.core.R.string.backendAsyncUrl,
+                            ),
+                    ),
+                ),
+            ),
     )
 
     @Provides
@@ -46,22 +47,18 @@ object CriOrchestratorModule {
         genericHttpClient: GenericHttpClient,
         analyticsLogger: AnalyticsLogger,
         sdkConfig: Config,
-        logger: Logger
-    ): CriOrchestratorSdk {
-        return CriOrchestratorSdk.create(
+        logger: Logger,
+    ): CriOrchestratorSdk =
+        CriOrchestratorSdk.create(
             genericHttpClient,
             analyticsLogger,
             sdkConfig,
             logger,
-            context
+            context,
         )
-    }
 
     @Provides
     @Singleton
-    fun provideCheckIdCheckIsActive(
-        criOrchestratorSdk: CriOrchestratorSdk
-    ): CheckIdCheckSessionState {
-        return CheckIdCheckSessionStateImpl(criOrchestratorSdk)
-    }
+    fun provideCheckIdCheckIsActive(criOrchestratorSdk: CriOrchestratorSdk): CheckIdCheckSessionState =
+        CheckIdCheckSessionStateImpl(criOrchestratorSdk)
 }

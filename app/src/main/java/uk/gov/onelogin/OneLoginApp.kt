@@ -14,13 +14,11 @@ import uk.gov.onelogin.navigation.graphs.MainNavGraph.mainNavRoutesFlow
 import uk.gov.onelogin.navigation.graphs.SignOutGraphObject.signOutGraph
 
 @Composable
-fun OneLoginApp(
-    navController: NavHostController = rememberNavController()
-) {
+fun OneLoginApp(navController: NavHostController = rememberNavController()) {
     GdsTheme {
         NavHost(
             navController = navController,
-            startDestination = LoginRoutes.Root.getRoute()
+            startDestination = LoginRoutes.Root.getRoute(),
         ) {
             loginGraph(navController)
             mainNavRoutesFlow()

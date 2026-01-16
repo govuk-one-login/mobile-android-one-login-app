@@ -1,6 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-import kotlin.test.assertTrue
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -13,6 +12,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import kotlin.test.assertTrue
 
 class SavePersistentIdTest {
     private lateinit var savePersistentId: SavePersistentId
@@ -29,7 +29,7 @@ class SavePersistentIdTest {
             SavePersistentIdImpl(
                 mockTokenRepository,
                 mockSaveToOpenSecureStore,
-                logger
+                logger,
             )
     }
 
@@ -41,7 +41,7 @@ class SavePersistentIdTest {
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
-                    idToken = idToken
+                    idToken = idToken,
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
@@ -51,7 +51,7 @@ class SavePersistentIdTest {
             runBlocking {
                 verify(mockSaveToOpenSecureStore).save(
                     AuthTokenStoreKeys.PERSISTENT_ID_KEY,
-                    "1234"
+                    "1234",
                 )
             }
         }
@@ -64,7 +64,7 @@ class SavePersistentIdTest {
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
-                    idToken = "id"
+                    idToken = "id",
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)

@@ -12,11 +12,11 @@ import androidx.compose.ui.res.stringResource
 @Composable
 fun SimpleTextPage(
     @StringRes
-    text: Int
+    text: Int,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = stringResource(id = text))
     }

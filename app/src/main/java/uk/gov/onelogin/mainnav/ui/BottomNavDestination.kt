@@ -9,22 +9,24 @@ sealed class BottomNavDestination(
     @StringRes
     val label: Int,
     @DrawableRes
-    val icon: Int
+    val icon: Int,
 ) {
     data object Home : BottomNavDestination(
         key = "home",
         label = R.string.app_home,
-        icon = R.drawable.outline_home_24
+        icon = R.drawable.outline_home_24,
     )
+
     data object Wallet : BottomNavDestination(
         key = "wallet",
         label = R.string.app_TabBarWallet,
-        icon = R.drawable.outline_article_24
+        icon = R.drawable.outline_article_24,
     )
+
     data object Settings : BottomNavDestination(
         key = "settings",
         label = R.string.app_settings,
-        icon = R.drawable.ic_settings
+        icon = R.drawable.ic_settings,
     )
 }
 

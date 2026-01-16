@@ -57,20 +57,22 @@ class HomeScreenKtTest : FragmentActivityTestCase() {
             )
         navigator = mock()
         logger = mock()
-        criOrchestratorSdk = CriOrchestratorSdk.create(
-            authenticatedHttpClient = httpClient,
-            analyticsLogger = analyticsLogger,
-            initialConfig = TestUtils.criSdkConfig,
-            logger = logger,
-            applicationContext = context
-        )
+        criOrchestratorSdk =
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = httpClient,
+                analyticsLogger = analyticsLogger,
+                initialConfig = TestUtils.criSdkConfig,
+                logger = logger,
+                applicationContext = context
+            )
         walletRepository = mock()
-        viewModel = HomeScreenViewModel(
-            featureFlags,
-            navigator,
-            walletRepository,
-            criOrchestratorSdk
-        )
+        viewModel =
+            HomeScreenViewModel(
+                featureFlags,
+                navigator,
+                walletRepository,
+                criOrchestratorSdk
+            )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
     }

@@ -20,7 +20,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 @Composable
 fun SignInErrorUnrecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),
-    viewModel: SignInErrorUnrecoverableViewModel = hiltViewModel()
+    viewModel: SignInErrorUnrecoverableViewModel = hiltViewModel(),
 ) {
     GdsTheme {
         val context = LocalActivity.current as Activity
@@ -40,11 +40,12 @@ private fun SignInErrorBody() {
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_signInErrorTitle),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_genericErrorPageBody)
-            )
-        )
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_genericErrorPageBody),
+                ),
+            ),
     )
 }
 

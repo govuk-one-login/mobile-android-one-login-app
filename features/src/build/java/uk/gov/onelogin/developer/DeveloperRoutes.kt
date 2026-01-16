@@ -15,10 +15,10 @@ object DeveloperRoutes {
         if (DeveloperTools.isDeveloperPanelEnabled()) {
             navigation(
                 route = ROOT,
-                startDestination = START
+                startDestination = START,
             ) {
                 composable(
-                    route = START
+                    route = START,
                 ) {
                     TabView {
                         navController.popBackStack()

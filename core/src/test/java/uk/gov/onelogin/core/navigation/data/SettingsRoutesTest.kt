@@ -7,7 +7,7 @@ class SettingsRoutesTest {
     @Test
     fun verifyRoutes() {
         listOf(
-            SettingsRoutes.Ossl.getRoute() to "/settings/ossl"
+            SettingsRoutes.Ossl.getRoute() to "/settings/ossl",
         ).forEach { assertEquals(it.second, it.first) }
     }
 }

@@ -18,11 +18,12 @@ import androidx.compose.ui.Modifier
  */
 @Composable
 fun EdgeToEdgePage(
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
-        .navigationBarsPadding()
-        .statusBarsPadding()
-        .windowInsetsPadding(WindowInsets.displayCutout),
-    content: @Composable (PaddingValues) -> Unit
+    @SuppressLint("ModifierParameter") modifier: Modifier =
+        Modifier
+            .navigationBarsPadding()
+            .statusBarsPadding()
+            .windowInsetsPadding(WindowInsets.displayCutout),
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     Surface {
         Scaffold(modifier = modifier) { paddingValues ->

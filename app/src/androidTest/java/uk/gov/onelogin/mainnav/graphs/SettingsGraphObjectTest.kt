@@ -13,10 +13,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.R as componentsR
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.utils.TestCase
+import uk.gov.android.ui.componentsv2.R as componentsR
 
 @HiltAndroidTest
 class SettingsGraphObjectTest : TestCase() {
@@ -30,7 +30,7 @@ class SettingsGraphObjectTest : TestCase() {
             navController.setViewModelStore(LocalViewModelStoreOwner.current!!.viewModelStore)
             NavHost(
                 navController = navController,
-                startDestination = SettingsRoutes.Ossl.getRoute()
+                startDestination = SettingsRoutes.Ossl.getRoute(),
             ) {
                 settingsGraph(navController)
             }
@@ -39,9 +39,10 @@ class SettingsGraphObjectTest : TestCase() {
 
     @Test
     fun navigateToOssl() {
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_osslTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_osslTitle),
+            ).assertIsDisplayed()
 
         composeTestRule.runOnUiThread {
             navController.navigate(SettingsRoutes.BiometricsOptIn.getRoute())
@@ -55,15 +56,17 @@ class SettingsGraphObjectTest : TestCase() {
 
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithContentDescription(
-            context.getString(componentsR.string.back_icon_button)
-        ).performClick()
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(componentsR.string.back_icon_button),
+            ).performClick()
 
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_biometricsToggleTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_biometricsToggleTitle),
+            ).assertIsDisplayed()
     }
 
     @Test
@@ -73,9 +76,10 @@ class SettingsGraphObjectTest : TestCase() {
         }
 
         // Screen title is displayed
-        composeTestRule.onNodeWithText(
-            context.getString(R.string.app_biometricsToggleTitle),
-            substring = true
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.app_biometricsToggleTitle),
+                substring = true,
+            ).assertIsDisplayed()
     }
 }

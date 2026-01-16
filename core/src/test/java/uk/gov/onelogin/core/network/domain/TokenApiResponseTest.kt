@@ -1,8 +1,8 @@
 package uk.gov.onelogin.core.network.domain
 
-import kotlin.test.Test
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Assertions.assertEquals
+import kotlin.test.Test
 
 class TokenApiResponseTest {
     @Test
@@ -11,7 +11,7 @@ class TokenApiResponseTest {
             TokenApiResponse(
                 token = "test_token",
                 tokenType = "Bearer",
-                expiresIn = 3600
+                expiresIn = 3600,
             )
 
         val jsonString = Json.encodeToString(TokenApiResponse.serializer(), tokenApiResponse)
@@ -19,7 +19,7 @@ class TokenApiResponseTest {
         val deserializedApiResponse =
             Json.decodeFromString(
                 TokenApiResponse.serializer(),
-                jsonString
+                jsonString,
             )
 
         assertEquals(tokenApiResponse, deserializedApiResponse)

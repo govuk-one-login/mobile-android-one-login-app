@@ -14,11 +14,17 @@ interface AppIntegrity {
         const val CLIENT_ATTESTATION_EXPIRY = "appCheckClientAttestationExpiry"
         const val SECURE_STORE_ERROR = "ERROR: Saving to open secure store error"
 
-        data class FirebaseException(val e: Throwable) : Exception(e)
+        data class FirebaseException(
+            val e: Throwable,
+        ) : Exception(e)
+
         class ClientAttestationException : Exception {
             constructor(e: Throwable) : super(e)
             constructor(msg: String) : super(msg)
         }
-        data class ProofOfPossessionException(val e: Throwable?) : Exception(e)
+
+        data class ProofOfPossessionException(
+            val e: Throwable?,
+        ) : Exception(e)
     }
 }

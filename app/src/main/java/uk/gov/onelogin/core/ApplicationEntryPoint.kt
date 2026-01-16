@@ -14,9 +14,14 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @EntryPoint
 interface ApplicationEntryPoint {
     fun isIdCheckSessionActive(): CheckIdCheckSessionState
+
     fun localAuthManager(): LocalAuthManager
+
     fun tokenRepository(): TokenRepository
+
     fun navigator(): Navigator
+
     fun walletDeeplinkRepo(): WalletRepository
+
     fun analyticsOptInRepo(): AnalyticsOptInRepository
 }
