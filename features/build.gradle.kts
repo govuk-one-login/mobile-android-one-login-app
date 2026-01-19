@@ -174,6 +174,10 @@ dependencies {
     ).forEach(::kapt)
 }
 
+aboutLibraries {
+    collect.configPath = rootProject.file("config")
+}
+
 kapt {
     correctErrorTypes = true
 }
