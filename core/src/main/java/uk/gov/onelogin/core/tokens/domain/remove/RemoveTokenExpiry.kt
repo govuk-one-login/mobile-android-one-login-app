@@ -1,6 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain.remove
 
 import android.content.Context
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
@@ -20,7 +21,7 @@ class RemoveTokenExpiryImpl
             context.getSharedPreferences(TOKEN_SHARED_PREFS, Context.MODE_PRIVATE)
 
         override suspend fun clean(): Result<Unit> {
-            with(sharedPrefs.edit()) {
+            sharedPrefs.edit {
                 remove(ACCESS_TOKEN_EXPIRY_KEY)
                 remove(REFRESH_TOKEN_EXPIRY_KEY)
                 commit()

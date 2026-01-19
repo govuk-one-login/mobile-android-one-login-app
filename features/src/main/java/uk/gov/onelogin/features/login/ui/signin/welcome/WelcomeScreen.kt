@@ -170,7 +170,7 @@ internal fun WelcomeBody(
                 )
             },
             secondaryButton = {
-                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                     GdsButton(
                         text = devButtonText,
                         buttonType = ButtonTypeV2.Secondary(),

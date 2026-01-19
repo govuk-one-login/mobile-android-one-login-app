@@ -10,6 +10,7 @@ val libs = the<LibrariesForLibs>()
 
 listOf(
     "uk.gov.pipelines.android-lib-config",
+    "uk.gov.onelogin.code-quality-config",
 ).forEach {
     project.plugins.apply(it)
 }

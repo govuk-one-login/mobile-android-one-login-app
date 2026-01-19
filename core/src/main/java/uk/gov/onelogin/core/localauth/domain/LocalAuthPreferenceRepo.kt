@@ -2,6 +2,7 @@ package uk.gov.onelogin.core.localauth.domain
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
@@ -25,9 +26,8 @@ class LocalAuthPreferenceRepositoryImpl
             )
 
         override fun setLocalAuthPref(pref: LocalAuthPreference) {
-            with(sharedPrefs.edit()) {
+            sharedPrefs.edit {
                 putString(LOCAL_AUTH_PREF, pref.toString())
-                apply()
             }
         }
 
@@ -40,7 +40,7 @@ class LocalAuthPreferenceRepositoryImpl
             }
 
         override suspend fun clean(): Result<Unit> {
-            with(sharedPrefs.edit()) {
+            sharedPrefs.edit {
                 clear()
                 commit()
             }

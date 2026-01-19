@@ -68,8 +68,8 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenBody(
     uiCardEnabled: Boolean,
-    content: @Composable () -> Unit = {},
     openDevPanel: () -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
     val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
     val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
@@ -99,7 +99,7 @@ private fun HomeScreenBody(
                 cardBody = proveIdentityCardBody,
                 testTag = R.string.proveIdentityCardTestTag,
             )
-            if (DeveloperTools.isDeveloperPanelEnabled()) {
+            if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
                     onClick = { openDevPanel() },
                 ) {

@@ -60,6 +60,7 @@ fun ErrorUpdateRequiredScreen(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
+@Suppress("LongMethod")
 internal fun UpdateRequiredBody(onPrimary: () -> Unit) {
     val buttonText = stringResource(R.string.app_updateAppButton)
     val buttonAccessibilityDesc = stringResource(R.string.app_openGooglePlayStore)

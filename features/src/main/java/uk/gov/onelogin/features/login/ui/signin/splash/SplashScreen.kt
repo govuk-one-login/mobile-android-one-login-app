@@ -201,8 +201,8 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         .testTag(stringResource(id = R.string.splashLogoTestTag))
                         .then(
                             // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
-                            if (DeveloperTools.isDeveloperPanelEnabled()) {
-                                Modifier.clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
+                            if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                Modifier.clickable(enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                                     onOpenDeveloperPortal()
                                 }
                             } else {

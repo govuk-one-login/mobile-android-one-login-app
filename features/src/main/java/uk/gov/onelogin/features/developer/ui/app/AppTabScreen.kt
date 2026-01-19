@@ -2,6 +2,7 @@ package uk.gov.onelogin.features.developer.ui.app
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.util.Log.DEBUG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -198,7 +199,9 @@ private fun AppInfoView(
                         ),
                     ),
                 )
-            Log.d("UpdatedAppInfo", "$updatedData")
+            if (BuildConfig.DEBUG) {
+                Log.d("UpdatedAppInfo", "$updatedData")
+            }
             viewModel.updateAppInfoData(updatedData)
         },
     ) {

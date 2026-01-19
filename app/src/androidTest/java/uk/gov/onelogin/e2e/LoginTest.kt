@@ -194,6 +194,7 @@ class LoginTest : FlakyTestCase() {
 
     @Test
     @FlakyTest
+    @Suppress("LongMethod")
     fun selectingLoginButtonFiresAuthRequestNoPersistentId() {
         runBlocking {
             whenever(mockAppInfoService.get()).thenReturn(

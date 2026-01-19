@@ -17,6 +17,7 @@ listOf(
 
 listOf(
     "uk.gov.pipelines.android-app-config",
+    "uk.gov.onelogin.code-quality-config",
 ).forEach {
     project.plugins.apply(it)
 }
