@@ -25,5 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "build-logic"
 
 includeBuild("../mobile-android-pipelines/buildLogic")
-include(":plugins")
 include(":convention")
