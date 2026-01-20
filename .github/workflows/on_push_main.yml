@@ -27,6 +27,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           lfs: 'true'
+          submodules: 'true'
           fetch-depth: 0
 
       - name: Detect Arch
@@ -34,7 +35,10 @@ jobs:
         uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
@@ -49,7 +53,7 @@ jobs:
 
       - name: Get next version from last commit
         id: next-version
-        uses: ./config/actions/get-next-version-from-commit-message
+        uses: ./mobile-android-pipelines/actions/get-next-version-from-commit-message
 
       - name: Ensure version is correct
         id: version-number
@@ -74,7 +78,7 @@ jobs:
 
       - name: Generate version code
         id: version-code
-        uses: ./config/actions/generate-version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
 
       - name: Bundle release
         id: bundle-release
@@ -123,4 +127,4 @@ jobs:
 
       - name: Clean workspace
         if: always()
-        uses: ./config/actions/clean-workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
