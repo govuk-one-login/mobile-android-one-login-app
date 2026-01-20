@@ -76,7 +76,7 @@ buildscript {
     )
     val githubRepositoryName: String by rootProject.extra("")
     val mavenGroupId: String by rootProject.extra("")
-    val buildLogicDir: String by extra("../mobile-android-pipelines/buildLogic")
+    val buildLogicDir: String by extra("mobile-android-pipelines/buildLogic")
     val sonarProperties: Map<String, String> by extra(
         mapOf(
             "sonar.projectKey" to "di-mobile-android-onelogin-app",
