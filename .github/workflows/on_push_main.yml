@@ -1,3 +1,4 @@
+# When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
 name: On Branch Push (main)
 
 on:
@@ -11,8 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  onPushMain:
-    name: Verify code base when pushed
+  on-push-main:
+    name: Verify code base on release to Prod
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:

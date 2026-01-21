@@ -18,12 +18,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "1.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )
@@ -36,12 +30,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "1.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = false,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )
@@ -54,12 +42,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "1.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )
@@ -72,12 +54,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "1.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        false,
-                        false,
-                        false
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(false)
                 )
@@ -90,12 +66,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "2.0.0",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )
@@ -108,12 +78,6 @@ object TestUtils {
             AppInfoData.App(
                 AppInfoData.AppInfo(
                     minimumVersion = "One.Two.Zero",
-                    releaseFlags =
-                    AppInfoData.ReleaseFlags(
-                        true,
-                        true,
-                        true
-                    ),
                     available = true,
                     featureFlags = AppInfoData.FeatureFlags(true)
                 )

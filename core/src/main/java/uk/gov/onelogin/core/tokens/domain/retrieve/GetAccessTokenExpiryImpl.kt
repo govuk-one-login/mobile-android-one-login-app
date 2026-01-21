@@ -1,26 +1,23 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import kotlin.text.toLong
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
-import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
 
 class GetAccessTokenExpiryImpl @Inject constructor(
-    @ApplicationContext
-    context: Context
+    private val getFromOpenSecureStore: GetFromOpenSecureStore
 ) : GetTokenExpiry {
-    private val sharedPrefs = context.getSharedPreferences(
-        TOKEN_SHARED_PREFS,
-        Context.MODE_PRIVATE
-    )
-
-    override fun invoke(): Long? {
-        val expiryTimestamp = sharedPrefs.getLong(ACCESS_TOKEN_EXPIRY_KEY, 0)
-        return if (expiryTimestamp == 0L) {
-            null
-        } else {
-            expiryTimestamp
+    override suspend fun invoke(): Long? {
+        try {
+            val expiryTimestamp = getFromOpenSecureStore(ACCESS_TOKEN_EXPIRY_KEY)
+                ?.get(ACCESS_TOKEN_EXPIRY_KEY)?.toLong()
+            return if (expiryTimestamp == 0L) {
+                null
+            } else {
+                expiryTimestamp
+            }
+        } catch (_: NumberFormatException) {
+            return null
         }
     }
 }

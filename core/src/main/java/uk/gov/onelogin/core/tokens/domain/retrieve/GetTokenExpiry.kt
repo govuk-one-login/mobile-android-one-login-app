@@ -6,5 +6,5 @@ fun interface GetTokenExpiry {
      *
      * @return expiry Long type timestamp of expiry time
      */
-    operator fun invoke(): Long?
+    suspend operator fun invoke(): Long?
 }

@@ -32,7 +32,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
@@ -51,7 +50,6 @@ class WelcomeScreenViewModel @Inject constructor(
     private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
     private val verifyIdToken: VerifyIdToken,
     private val navigator: Navigator,
-    private val saveTokens: SaveTokens,
     private val savePersistentId: SavePersistentId,
     private val saveTokenExpiry: SaveTokenExpiry,
     private val handleRemoteLogin: HandleRemoteLogin,
@@ -181,8 +179,8 @@ class WelcomeScreenViewModel @Inject constructor(
         isReAuth: Boolean,
         activity: FragmentActivity
     ) {
-        tokenRepository.setTokenResponse(tokens)
         saveAccessTokenExpiryToOpenStore(tokens)
+        tokenRepository.setTokenResponse(tokens)
         savePersistentId()
 
         localAuthManager.enforceAndSet(
@@ -197,7 +195,7 @@ class WelcomeScreenViewModel @Inject constructor(
                         isReAuth -> {
                             if (pref is LocalAuthPreference.Enabled) {
                                 viewModelScope.launch {
-                                    saveTokens.save(tokens.refreshToken)
+                                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
                                     saveRefreshTokenExpiryToOpenStore(tokens)
                                     navigator.goBack()
                                 }
@@ -225,7 +223,7 @@ class WelcomeScreenViewModel @Inject constructor(
         )
     }
 
-    private fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
         tokens.refreshToken?.let {
             val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
             saveTokenExpiry.saveExp(
@@ -237,7 +235,7 @@ class WelcomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
+    private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
         saveTokenExpiry.saveExp(
             ExpiryInfo(
                 key = ACCESS_TOKEN_EXPIRY_KEY,

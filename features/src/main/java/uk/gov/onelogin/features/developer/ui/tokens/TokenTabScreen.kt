@@ -29,6 +29,8 @@ import uk.gov.android.ui.theme.smallPadding
 fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val persistentId by viewModel.persistentId.collectAsState()
+    val accessTokenExpiry by viewModel.accessTokenExpiry.collectAsState()
+    val refreshTokenExpiry by viewModel.refreshTokenExpiry.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,8 +38,8 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        AccessTokenSection(viewModel, context)
-        RefreshTokenSection(viewModel, context)
+        AccessTokenSection(viewModel, accessTokenExpiry, context)
+        RefreshTokenSection(viewModel, refreshTokenExpiry, context)
         PersistentIdSection(persistentId, viewModel)
     }
 }
@@ -75,6 +77,7 @@ private fun PersistentIdSection(
 @Composable
 private fun AccessTokenSection(
     viewModel: TokenTabScreenViewModel,
+    accessTokenExpiry: String,
     context: Context
 ) {
     Row(
@@ -85,7 +88,7 @@ private fun AccessTokenSection(
             modifier = Modifier
                 .weight(1F)
                 .padding(end = smallPadding),
-            text = "Access Token Expiry: ${viewModel.getAccessTokenExp()}",
+            text = "Access Token Expiry: $accessTokenExpiry",
             color = MaterialTheme.colorScheme.onBackground
         )
     }
@@ -118,6 +121,7 @@ private fun AccessTokenSection(
 @Composable
 private fun RefreshTokenSection(
     viewModel: TokenTabScreenViewModel,
+    refreshTokenExpiry: String,
     context: Context
 ) {
     Row(
@@ -128,7 +132,7 @@ private fun RefreshTokenSection(
             modifier = Modifier
                 .weight(1F)
                 .padding(end = smallPadding),
-            text = "Refresh Token Expiry: ${viewModel.getRefreshTokenExp()}",
+            text = "Refresh Token Expiry: $refreshTokenExpiry",
             color = MaterialTheme.colorScheme.onBackground
         )
     }

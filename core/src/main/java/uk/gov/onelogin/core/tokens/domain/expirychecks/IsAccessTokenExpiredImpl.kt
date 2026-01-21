@@ -9,7 +9,7 @@ class IsAccessTokenExpiredImpl @Inject constructor(
     @AccessToken
     private val getTokenExpiry: GetTokenExpiry
 ) : IsTokenExpired {
-    override fun invoke(): Boolean {
+    override suspend fun invoke(): Boolean {
         val tokenExpiry = getTokenExpiry()
         return if (tokenExpiry != null) {
             tokenExpiry < Instant.now().toEpochMilli()

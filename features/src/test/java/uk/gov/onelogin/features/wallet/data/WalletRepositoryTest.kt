@@ -1,7 +1,7 @@
 package uk.gov.onelogin.features.wallet.data
 
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 class WalletRepositoryTest {
@@ -9,8 +9,9 @@ class WalletRepositoryTest {
 
     @Test
     fun `verify setter and getter of deep link path state`() {
-        assertFalse(sut.isWalletDeepLinkPath())
-        sut.toggleWallDeepLinkPathState()
+        sut.setWalletDeepLinkPathState(true)
         assertTrue(sut.isWalletDeepLinkPath())
+        sut.setWalletDeepLinkPathState(false)
+        assertFalse(sut.isWalletDeepLinkPath())
     }
 }

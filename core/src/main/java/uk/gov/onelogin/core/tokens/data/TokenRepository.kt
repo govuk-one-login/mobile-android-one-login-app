@@ -25,4 +25,9 @@ interface TokenRepository {
      *
      */
     fun clearTokenResponse()
+
+    /**
+     * Confirm if [TokenResponse] is null
+     */
+    fun isTokenResponseClear(): Boolean
 }

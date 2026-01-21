@@ -20,7 +20,7 @@ import uk.gov.onelogin.core.utils.AccessToken
 class StsAuthenticationProvider(
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
-    @AccessToken
+    @param:AccessToken
     private val isAccessTokenExpired: IsTokenExpired,
     private val httpClient: GenericHttpClient,
     private val navigator: Navigator,
@@ -29,6 +29,7 @@ class StsAuthenticationProvider(
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
         val jsonDecoder = Json { ignoreUnknownKeys = true }
+
         if (isAccessTokenExpired()) {
             navigator.navigate(SignOutRoutes.Info)
             return AuthenticationResponse.Failure(ApiResponseException("Access token expired"))

@@ -30,12 +30,6 @@ class AppInfoApiImplTest {
                 AppInfoData.App(
                     AppInfoData.AppInfo(
                         minimumVersion = "0.0.0",
-                        releaseFlags =
-                        AppInfoData.ReleaseFlags(
-                            true,
-                            true,
-                            true
-                        ),
                         available = true,
                         featureFlags = AppInfoData.FeatureFlags(true)
                     )

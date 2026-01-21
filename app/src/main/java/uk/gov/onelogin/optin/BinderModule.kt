@@ -3,7 +3,7 @@ package uk.gov.onelogin.optin
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.domain.AnalyticsOptInLocalSource
@@ -12,7 +12,7 @@ import uk.gov.onelogin.features.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 internal interface BinderModule {
     @Binds
     fun bindOptInLocalSource(source: AnalyticsOptInLocalSource): OptInLocalSource

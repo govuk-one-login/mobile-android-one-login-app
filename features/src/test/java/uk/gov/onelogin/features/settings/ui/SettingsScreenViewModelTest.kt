@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.LocalAuthManager
@@ -24,6 +25,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsScreenViewModelTest {
@@ -34,6 +36,7 @@ class SettingsScreenViewModelTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockOptInRepository: OptInRepository = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
+    private val mockWalletRepository: WalletRepository = mock()
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @BeforeEach
@@ -45,6 +48,7 @@ class SettingsScreenViewModelTest {
                 mockOptInRepository,
                 mockNavigator,
                 mockLocalAuthManager,
+                mockWalletRepository,
                 mockTokenRepository,
                 mockGetEmail
             )
@@ -102,6 +106,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -117,6 +122,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -136,6 +142,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -157,6 +164,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -178,6 +186,7 @@ class SettingsScreenViewModelTest {
                     mockOptInRepository,
                     mockNavigator,
                     mockLocalAuthManager,
+                    mockWalletRepository,
                     mockTokenRepository,
                     mockGetEmail
                 )
@@ -188,4 +197,13 @@ class SettingsScreenViewModelTest {
 
             assertTrue(viewModel.biometricsOptionState.value)
         }
+
+    @Test
+    fun `received wallet deeplink`() {
+        // WHEN
+        viewModel.resetWalletDeepLinkPath()
+
+        // THEN
+        verify(mockWalletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
+    }
 }

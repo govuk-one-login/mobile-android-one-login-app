@@ -40,7 +40,6 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
@@ -67,7 +66,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
     private lateinit var mockVerifyIdToken: VerifyIdToken
     private lateinit var mockNavigator: Navigator
     private lateinit var mockOnlineChecker: OnlineChecker
-    private lateinit var mockSaveTokens: SaveTokens
     private lateinit var mockSaveTokenExpiry: SaveTokenExpiry
     private lateinit var mockHandleRemoteLogin: HandleRemoteLogin
     private lateinit var mockHandleLoginRedirect: HandleLoginRedirect
@@ -303,7 +301,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verifyNoInteractions(mockSaveTokens)
             verify(mockSaveTokenExpiry).saveExp(
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
@@ -362,7 +359,93 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockAutoInitialiseSecureStore)
+        }
+
+    @Test
+    fun `handleIntent when data != null, device secure with passcode and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(false)))
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
+            verify(mockNavigator).goBack()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+        }
+
+    @Test
+    fun `handleIntent when data != null, device secure with biometrics and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(true)))
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
+            verify(mockNavigator).goBack()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -398,8 +481,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse)
             verify(mockSavePersistentId).invoke()
-            verify(mockNavigator).goBack()
-            verify(mockSaveTokens).save(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -588,7 +670,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockAutoInitialiseSecureStore)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockNavigator)
@@ -613,7 +695,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockAutoInitialiseSecureStore)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
@@ -636,7 +718,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
 
             viewModel.handleActivityResult(mockIntent, activity = mockFragmentActivity)
 
-            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockAutoInitialiseSecureStore)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
@@ -664,7 +746,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verifyNoInteractions(mockSaveTokens)
+            verifyNoInteractions(mockAutoInitialiseSecureStore)
             verifyNoInteractions(mockSaveTokenExpiry)
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
@@ -746,7 +828,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
         mockAutoInitialiseSecureStore = mock()
         mockVerifyIdToken = mock()
         mockNavigator = mock()
-        mockSaveTokens = mock()
         mockSavePersistentId = mock()
         mockSaveTokenExpiry = mock()
         mockHandleRemoteLogin = mock()
@@ -763,7 +844,6 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 mockAutoInitialiseSecureStore,
                 mockVerifyIdToken,
                 mockNavigator,
-                mockSaveTokens,
                 mockSavePersistentId,
                 mockSaveTokenExpiry,
                 mockHandleRemoteLogin,

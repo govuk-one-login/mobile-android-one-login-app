@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -24,7 +25,7 @@ class IsAccessTokenExpiredImplTest {
     }
 
     @Test
-    fun `token not expired`() {
+    fun `token not expired`() = runTest {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(
             Instant.now()
                 .plus(1, ChronoUnit.HOURS)
@@ -39,7 +40,7 @@ class IsAccessTokenExpiredImplTest {
     }
 
     @Test
-    fun `token expired`() {
+    fun `token expired`() = runTest {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(
             Instant.now()
                 .minus(1, ChronoUnit.MINUTES)
@@ -52,7 +53,7 @@ class IsAccessTokenExpiredImplTest {
     }
 
     @Test
-    fun `token expiry is null`() {
+    fun `token expiry is null`() = runTest {
         whenever(mockGetTokenExpiry.invoke()).thenReturn(null)
 
         val result = isAccessTokenExpired()

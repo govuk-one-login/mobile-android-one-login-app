@@ -2,6 +2,7 @@ package uk.gov.onelogin.core.tokens.data
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import uk.gov.android.authentication.login.TokenResponse
@@ -49,6 +50,6 @@ class TokenRepositoryTest {
         repo.clearTokenResponse()
 
         // repository is cleared
-        assertNull(repo.getTokenResponse())
+        assertTrue(repo.isTokenResponseClear())
     }
 }
