@@ -97,7 +97,7 @@ jobs:
 
       - name: Clean workspace
         if: always()
-        uses: ./config/actions/clean-workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
 
   bundle-and-publish:
     name: Bundle and publish app
