@@ -20,27 +20,27 @@ class GetAccessTokenExpiryImpl @Inject constructor(
     )
 
     override suspend fun invoke(): Long? {
-        // The SharedPrefs will be removed in a period to be determined to allow for migration for all users and avoid
-        // creating a breaking change that forces the user to be treated as a new user.
-        val expiryTimestampSharedPrefs = sharedPrefs.getLong(ACCESS_TOKEN_EXPIRY_KEY, 0)
         try {
             val expiryTimestamp = getFromOpenSecureStore(ACCESS_TOKEN_EXPIRY_KEY)
                 ?.get(ACCESS_TOKEN_EXPIRY_KEY)?.toLong()
             return if (expiryTimestamp == 0L || expiryTimestamp == null) {
-                checkAndReturnSharedPrefsExpiry(expiryTimestampSharedPrefs)
+                checkAndReturnSharedPrefsExpiry()
             } else {
                 expiryTimestamp
             }
         } catch (_: NumberFormatException) {
-            return checkAndReturnSharedPrefsExpiry(expiryTimestampSharedPrefs)
+            return checkAndReturnSharedPrefsExpiry()
         }
     }
 
-    private fun checkAndReturnSharedPrefsExpiry(exp: Long): Long? {
-        return if (exp == 0L) {
+    private fun checkAndReturnSharedPrefsExpiry(): Long? {
+        // The SharedPrefs will be removed in a period to be determined to allow for migration for all users and avoid
+        // creating a breaking change that forces the user to be treated as a new user.
+        val expiryTimestampSharedPrefs = sharedPrefs.getLong(ACCESS_TOKEN_EXPIRY_KEY, 0)
+        return if (expiryTimestampSharedPrefs == 0L) {
             null
         } else {
-            exp
+            expiryTimestampSharedPrefs
         }
     }
 }
