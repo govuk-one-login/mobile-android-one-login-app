@@ -23,9 +23,6 @@ import androidx.test.espresso.intent.Intents
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.io.encoding.ExperimentalEncodingApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -69,6 +66,9 @@ import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 @Suppress("SwallowedException")
 @HiltAndroidTest
@@ -79,7 +79,7 @@ import uk.gov.onelogin.utils.TestUtils
     AppCheckerModule::class,
     AppIntegrityModule::class,
     VerifyIdModule::class,
-    KeyManagerModule::class
+    KeyManagerModule::class,
 )
 class LoginRecoverableErrorTest : TestCase() {
     @BindValue
@@ -126,11 +126,12 @@ class LoginRecoverableErrorTest : TestCase() {
     val mockKeyStoreManager: KeyStoreManager = ECKeyManager()
 
     @BindValue
-    val mockAppIntegrityConfiguration: AppIntegrityConfiguration = AppIntegrityConfiguration(
-        mockAttestationCaller,
-        mockAppChecker,
-        mockKeyStoreManager
-    )
+    val mockAppIntegrityConfiguration: AppIntegrityConfiguration =
+        AppIntegrityConfiguration(
+            mockAttestationCaller,
+            mockAppChecker,
+            mockKeyStoreManager,
+        )
 
     @Inject
     @Named("Open")
@@ -150,14 +151,17 @@ class LoginRecoverableErrorTest : TestCase() {
         mockDeviceBiometricManager = mock()
         mockBiometricManager = mock()
         mockLocalAuthRepo = LocalAuthPreferenceRepositoryImpl(context)
-        ArchTaskExecutor.getInstance()
-            .setDelegate(object : TaskExecutor() {
-                override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+        ArchTaskExecutor
+            .getInstance()
+            .setDelegate(
+                object : TaskExecutor() {
+                    override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
 
-                override fun postToMainThread(runnable: Runnable) = runnable.run()
+                    override fun postToMainThread(runnable: Runnable) = runnable.run()
 
-                override fun isMainThread(): Boolean = true
-            })
+                    override fun isMainThread(): Boolean = true
+                },
+            )
         hiltRule.inject()
         deletePersistentId()
     }
@@ -170,10 +174,11 @@ class LoginRecoverableErrorTest : TestCase() {
 
     @Test
     fun handleActivityResultWithDataButLoginThrowsRecoverableError() {
-        val authenticationError = AuthenticationError(
-            message = "Error",
-            type = AuthenticationError.ErrorType.SERVER_ERROR
-        )
+        val authenticationError =
+            AuthenticationError(
+                message = "Error",
+                type = AuthenticationError.ErrorType.SERVER_ERROR,
+            )
         wheneverBlocking { mockAppInfoService.get() }
             .thenReturn(AppInfoServiceState.Successful(appInfoData))
         wheneverBlocking { mockAppIntegrity.getClientAttestation() }
@@ -187,8 +192,8 @@ class LoginRecoverableErrorTest : TestCase() {
         setupActivityForResult(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.EMPTY
-            )
+                Uri.EMPTY,
+            ),
         )
         clickOptOut()
         composeRule.onNodeWithText(resources.getString(R.string.app_signInButton)).performClick()
@@ -199,7 +204,7 @@ class LoginRecoverableErrorTest : TestCase() {
 
     private fun setupActivityForResult(
         returnedIntent: Intent?,
-        resultCode: Int = Activity.RESULT_OK
+        resultCode: Int = Activity.RESULT_OK,
     ) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
@@ -207,19 +212,21 @@ class LoginRecoverableErrorTest : TestCase() {
         }
 
         composeRule.setContent {
-            val registryOwner = object : ActivityResultRegistryOwner {
-                override val activityResultRegistry: ActivityResultRegistry
-                    get() = object : ActivityResultRegistry() {
-                        override fun <I : Any?, O : Any?> onLaunch(
-                            requestCode: Int,
-                            contract: ActivityResultContract<I, O>,
-                            input: I,
-                            options: ActivityOptionsCompat?
-                        ) {
-                            this.dispatchResult(requestCode, resultCode, returnedIntent)
-                        }
-                    }
-            }
+            val registryOwner =
+                object : ActivityResultRegistryOwner {
+                    override val activityResultRegistry: ActivityResultRegistry
+                        get() =
+                            object : ActivityResultRegistry() {
+                                override fun <I : Any?, O : Any?> onLaunch(
+                                    requestCode: Int,
+                                    contract: ActivityResultContract<I, O>,
+                                    input: I,
+                                    options: ActivityOptionsCompat?,
+                                ) {
+                                    this.dispatchResult(requestCode, resultCode, returnedIntent)
+                                }
+                            }
+                }
             CompositionLocalProvider(LocalActivityResultRegistryOwner provides registryOwner) {
                 val navController = rememberNavController()
 
@@ -238,9 +245,10 @@ class LoginRecoverableErrorTest : TestCase() {
 
     private fun clickOptOut() {
         composeRule.waitForIdle()
-        val doNotShare = composeRule.onNodeWithText(
-            resources.getString(R.string.app_doNotShareAnalytics)
-        )
+        val doNotShare =
+            composeRule.onNodeWithText(
+                resources.getString(R.string.app_doNotShareAnalytics),
+            )
         val isOnOptInScreen = doNotShare.isDisplayed()
         if (isOnOptInScreen) {
             doNotShare.performClick()
@@ -249,7 +257,7 @@ class LoginRecoverableErrorTest : TestCase() {
 
     private fun deletePersistentId() {
         secureStore.delete(
-            key = AuthTokenStoreKeys.PERSISTENT_ID_KEY
+            key = AuthTokenStoreKeys.PERSISTENT_ID_KEY,
         )
     }
 }

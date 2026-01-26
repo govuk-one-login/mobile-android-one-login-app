@@ -1,7 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
 import io.ktor.util.date.getTimeMillis
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,6 +16,7 @@ import uk.gov.android.securestore.SecureStore
 import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
@@ -38,7 +38,7 @@ class SaveToOpenSecureStoreTest {
     fun `does not throw - when SecureStorageError thrown`() =
         runTest {
             whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageError(Exception("Some error"))
+                SecureStorageError(Exception("Some error")),
             )
 
             assertDoesNotThrow {
@@ -55,7 +55,7 @@ class SaveToOpenSecureStoreTest {
 
             verify(mockSecureStore).upsert(
                 expectedStoreKey,
-                expectedStoreValueString
+                expectedStoreValueString,
             )
 
             assertEquals(0, logger.size)
@@ -68,7 +68,7 @@ class SaveToOpenSecureStoreTest {
 
             verify(mockSecureStore).upsert(
                 expectedStoreKey,
-                expectedStoreValueNumber.toString()
+                expectedStoreValueNumber.toString(),
             )
 
             assertEquals(0, logger.size)

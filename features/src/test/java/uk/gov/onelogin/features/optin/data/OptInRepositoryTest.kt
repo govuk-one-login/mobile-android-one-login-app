@@ -1,12 +1,12 @@
 package uk.gov.onelogin.features.optin.data
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class OptInRepositoryTest {

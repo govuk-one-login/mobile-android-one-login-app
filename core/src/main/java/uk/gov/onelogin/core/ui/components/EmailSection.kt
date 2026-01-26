@@ -29,36 +29,41 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 @Composable
 fun EmailSection(email: String) {
     Row(
-        modifier = Modifier
-            .background(color = GdsLocalColorScheme.current.listBackground)
-            .fillMaxWidth()
-            .semantics(true) {
-                traversalIndex = EMAIL_TRAVERSAL_ORDER
-            },
+        modifier =
+            Modifier
+                .background(color = GdsLocalColorScheme.current.listBackground)
+                .fillMaxWidth()
+                .semantics(true) {
+                    traversalIndex = EMAIL_TRAVERSAL_ORDER
+                },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
     ) {
         Image(
-            modifier = Modifier.padding(smallPadding)
-                .testTag(IMAGE_TEST_TAG),
+            modifier =
+                Modifier
+                    .padding(smallPadding)
+                    .testTag(IMAGE_TEST_TAG),
             painter = painterResource(id = R.drawable.ic_profile),
-            contentDescription = null
+            contentDescription = null,
         )
         Text(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
-            text = buildAnnotatedString {
-                append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
-                appendLine()
-                withStyle(
-                    style = SpanStyle(
-                        fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                ) {
-                    append(email)
-                }
-            }
+            text =
+                buildAnnotatedString {
+                    append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
+                    appendLine()
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
+                    ) {
+                        append(email)
+                    }
+                },
         )
     }
 }

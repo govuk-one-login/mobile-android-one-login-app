@@ -37,7 +37,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 @Composable
 fun LoadingScreen(
     analyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
-    backHandler: () -> Unit
+    backHandler: () -> Unit,
 ) {
     BackHandler(true) {
         analyticsViewModel.trackBackButton()
@@ -60,29 +60,32 @@ fun LoadingBody() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = colorScheme.background)
-            .testTag(LOADING_SCREEN_BOX)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = colorScheme.background)
+                .testTag(LOADING_SCREEN_BOX),
     ) {
         CircularProgressIndicator(
-            modifier = Modifier
-                .width(PROGRESS_BAR)
-                .height(PROGRESS_BAR)
-                .semantics { hideFromAccessibility() }
-                .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
+            modifier =
+                Modifier
+                    .width(PROGRESS_BAR)
+                    .height(PROGRESS_BAR)
+                    .semantics { hideFromAccessibility() }
+                    .testTag(LOADING_SCREEN_PROGRESS_INDICATOR),
             color = colorScheme.background,
-            trackColor = colorScheme.secondary
+            trackColor = colorScheme.secondary,
         )
         Text(
-            modifier = Modifier
-                .padding(top = PROGRESS_TEXT_PADDING)
-                .semantics { contentDescription = loadingContentDescription }
-                .focusRequester(focusRequester)
-                .testTag(LOADING_SCREEN_TEXT),
+            modifier =
+                Modifier
+                    .padding(top = PROGRESS_TEXT_PADDING)
+                    .semantics { contentDescription = loadingContentDescription }
+                    .focusRequester(focusRequester)
+                    .testTag(LOADING_SCREEN_TEXT),
             style = MaterialTheme.typography.bodyLarge,
             color = color,
-            text = stringResource(R.string.app_loadingBody)
+            text = stringResource(R.string.app_loadingBody),
         )
     }
 

@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.appinfo.data
 
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -9,19 +8,20 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApi
+import kotlin.test.assertEquals
 
 class AppInfoRemoteSourceImplTest {
     private val appInfoApi: AppInfoApi = mock()
     private val data =
         AppInfoData(
             apps =
-            AppInfoData.App(
-                AppInfoData.AppInfo(
-                    minimumVersion = "0.0.0",
-                    available = true,
-                    featureFlags = AppInfoData.FeatureFlags(true)
+                AppInfoData.App(
+                    AppInfoData.AppInfo(
+                        minimumVersion = "0.0.0",
+                        available = true,
+                        featureFlags = AppInfoData.FeatureFlags(true)
+                    )
                 )
-            )
         )
     private val exp = Exception("Error")
 

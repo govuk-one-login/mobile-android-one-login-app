@@ -6,7 +6,6 @@ import uk.gov.onelogin.e2e.controller.PhoneController
  * Functional interface that acts as an abstraction for performing a section of the User's journey.
  */
 fun interface JourneyController {
-
     /**
      * Completes the User interaction necessary for the given [JourneyController].
      *

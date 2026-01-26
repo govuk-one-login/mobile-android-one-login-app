@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -14,61 +13,70 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
+import javax.inject.Inject
 
 @HiltViewModel
-class SignOutAnalyticsViewModel @Inject constructor(
-    @ApplicationContext context: Context,
-    private val analyticsLogger: AnalyticsLogger
-) : ViewModel() {
-    private val onPrimaryEvent = onPrimaryEvent(context)
-    private val onCloseIcon = onCloseIcon()
-    private val onBackPressed = onBackPressed()
-    private val signOutViewEvent = makeSignOutViewEvent(context)
+class SignOutAnalyticsViewModel
+    @Inject
+    constructor(
+        @ApplicationContext context: Context,
+        private val analyticsLogger: AnalyticsLogger,
+    ) : ViewModel() {
+        private val onPrimaryEvent = onPrimaryEvent(context)
+        private val onCloseIcon = onCloseIcon()
+        private val onBackPressed = onBackPressed()
+        private val signOutViewEvent = makeSignOutViewEvent(context)
 
-    fun trackPrimary() {
-        analyticsLogger.logEventV3Dot1(onPrimaryEvent)
-    }
-
-    fun trackCloseIcon() {
-        analyticsLogger.logEventV3Dot1(onCloseIcon)
-    }
-
-    fun trackBackPressed() {
-        analyticsLogger.logEventV3Dot1(onBackPressed)
-    }
-
-    fun trackSignOutView() {
-        analyticsLogger.logEventV3Dot1(signOutViewEvent)
-    }
-
-    companion object {
-        private val requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-        )
-        fun onPrimaryEvent(context: Context) = with(context) {
-            TrackEvent.Button(
-                text = getEnglishString(R.string.app_signOutAndDeleteAppDataButton),
-                params = requiredParameters
-            )
+        fun trackPrimary() {
+            analyticsLogger.logEventV3Dot1(onPrimaryEvent)
         }
 
-        fun onCloseIcon() = TrackEvent.Icon(
-            text = "back",
-            params = requiredParameters
-        )
+        fun trackCloseIcon() {
+            analyticsLogger.logEventV3Dot1(onCloseIcon)
+        }
 
-        fun onBackPressed() = TrackEvent.Icon(
-            text = "back - system",
-            params = requiredParameters
-        )
+        fun trackBackPressed() {
+            analyticsLogger.logEventV3Dot1(onBackPressed)
+        }
 
-        fun makeSignOutViewEvent(context: Context) = with(context) {
-            ViewEvent.Screen(
-                name = getEnglishString(R.string.app_signOutConfirmationTitle),
-                id = getEnglishString(R.string.sign_out_wallet_page_id),
-                params = requiredParameters
-            )
+        fun trackSignOutView() {
+            analyticsLogger.logEventV3Dot1(signOutViewEvent)
+        }
+
+        companion object {
+            private val requiredParameters =
+                RequiredParameters(
+                    taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                    taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT,
+                )
+
+            fun onPrimaryEvent(context: Context) =
+                with(context) {
+                    TrackEvent.Button(
+                        text = getEnglishString(R.string.app_signOutAndDeleteAppDataButton),
+                        params = requiredParameters,
+                    )
+                }
+
+            fun onCloseIcon() =
+                TrackEvent.Icon(
+                    text = "back",
+                    params = requiredParameters,
+                )
+
+            fun onBackPressed() =
+                TrackEvent.Icon(
+                    text = "back - system",
+                    params = requiredParameters,
+                )
+
+            fun makeSignOutViewEvent(context: Context) =
+                with(context) {
+                    ViewEvent.Screen(
+                        name = getEnglishString(R.string.app_signOutConfirmationTitle),
+                        id = getEnglishString(R.string.sign_out_wallet_page_id),
+                        params = requiredParameters,
+                    )
+                }
         }
     }
-}

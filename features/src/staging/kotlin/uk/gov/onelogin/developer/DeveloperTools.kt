@@ -1,5 +1,5 @@
 package uk.gov.onelogin.developer
 
 object DeveloperTools {
-    fun isDeveloperPanelEnabled() = true
+    const val IS_DEVELOPER_PANEL_ENABLED = true
 }

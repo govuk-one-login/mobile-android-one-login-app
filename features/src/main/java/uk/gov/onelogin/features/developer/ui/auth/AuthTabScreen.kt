@@ -38,8 +38,11 @@ fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier.navigationBarsPadding().fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .navigationBarsPadding()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
     ) {
         AuthTokensSection(viewModel)
         OpenIdAuthSection(viewModel)
@@ -53,7 +56,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     Text(
         text = "Authentication Tokens",
         style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onBackground
+        color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider()
     EmailSection(email)
@@ -70,43 +73,46 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
             viewModel.clearSecureStoreData()
         },
         enabled = true,
-        modifier = Modifier.padding(
-            bottom = smallPadding,
-            start = smallPadding,
-            end = smallPadding
-        )
+        modifier =
+            Modifier.padding(
+                bottom = smallPadding,
+                start = smallPadding,
+                end = smallPadding,
+            ),
     )
 }
 
 @Composable
 private fun RefreshTokenSection(
     tokens: TokenResponse?,
-    viewModel: AuthTabScreenViewModel
+    viewModel: AuthTabScreenViewModel,
 ) {
     Text(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = MaterialTheme.colorScheme.onBackground
+        color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
-        text = if (tokens?.refreshToken != null) {
-            "Something went wrong - the refresh token is saved in memory: ${tokens.refreshToken}"
-        } else {
-            "Refresh token in temporary memory is null - this is expected behaviour."
-        },
-        modifier = Modifier
-            .padding(
-                all = 16.dp
-            ),
-        color = MaterialTheme.colorScheme.onBackground
+        text =
+            if (tokens?.refreshToken != null) {
+                "Something went wrong - the refresh token is saved in memory: ${tokens.refreshToken}"
+            } else {
+                "Refresh token in temporary memory is null - this is expected behaviour."
+            },
+        modifier =
+            Modifier
+                .padding(
+                    all = 16.dp,
+                ),
+        color = MaterialTheme.colorScheme.onBackground,
     )
     val isRefreshTokenSaved by viewModel.isRefreshTokenSaved
     val context = LocalActivity.current as FragmentActivity
     Text(
         "Is refresh token saved: $isRefreshTokenSaved",
-        modifier = Modifier.padding(bottom = smallPadding)
+        modifier = Modifier.padding(bottom = smallPadding),
     )
     GdsButton(
         text = stringResource(R.string.check_refresh_token_saved_button),
@@ -115,11 +121,12 @@ private fun RefreshTokenSection(
             viewModel.checkRefreshTokenSaved(context)
         },
         enabled = true,
-        modifier = Modifier.padding(
-            bottom = smallPadding,
-            start = smallPadding,
-            end = smallPadding
-        )
+        modifier =
+            Modifier.padding(
+                bottom = smallPadding,
+                start = smallPadding,
+                end = smallPadding,
+            ),
     )
     GdsButton(
         text = stringResource(R.string.set_refresh_token_invalid),
@@ -128,11 +135,12 @@ private fun RefreshTokenSection(
             viewModel.makeRefreshTokenInvalid()
         },
         enabled = true,
-        modifier = Modifier.padding(
-            bottom = smallPadding,
-            start = smallPadding,
-            end = smallPadding
-        )
+        modifier =
+            Modifier.padding(
+                bottom = smallPadding,
+                start = smallPadding,
+                end = smallPadding,
+            ),
     )
 }
 
@@ -142,14 +150,15 @@ private fun IdTokenSection(tokens: TokenResponse?) {
         text = "ID Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = MaterialTheme.colorScheme.onBackground
+        color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         text = tokens?.idToken ?: "No id token set!",
-        modifier = Modifier
-            .padding(16.dp),
-        color = MaterialTheme.colorScheme.onBackground
+        modifier =
+            Modifier
+                .padding(16.dp),
+        color = MaterialTheme.colorScheme.onBackground,
     )
 }
 
@@ -159,14 +168,15 @@ private fun AccessTokenSection(tokens: TokenResponse?) {
         text = "Access Token",
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(16.dp),
-        color = MaterialTheme.colorScheme.onBackground
+        color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
     Text(
         tokens?.accessToken ?: "No access token set!",
-        modifier = Modifier
-            .padding(16.dp),
-        color = MaterialTheme.colorScheme.onBackground
+        modifier =
+            Modifier
+                .padding(16.dp),
+        color = MaterialTheme.colorScheme.onBackground,
     )
 }
 
@@ -181,21 +191,21 @@ private fun OpenIdAuthSection(viewModel: AuthTabScreenViewModel) {
     ButtonRow(
         buttonText = R.string.app_helloworld_happy_button,
         buttonLoading = happyCallLoading,
-        apiResponse = happyApiResponse
+        apiResponse = happyApiResponse,
     ) {
         viewModel.makeHappyHelloWorldCall()
     }
     ButtonRow(
         buttonText = R.string.app_helloworld_auth_failing_button,
         buttonLoading = authFailingCallLoading,
-        apiResponse = authFailingApiResponse
+        apiResponse = authFailingApiResponse,
     ) {
         viewModel.makeAuthFailingHelloWorldCall()
     }
     ButtonRow(
         buttonText = R.string.app_helloworld_service_failing_button,
         buttonLoading = serviceFailingCallLoading,
-        apiResponse = serviceFailingApiResponse
+        apiResponse = serviceFailingApiResponse,
     ) {
         viewModel.makeServiceFailingHelloWorldCall()
     }
@@ -208,14 +218,15 @@ private fun ButtonRow(
     buttonLoading: Boolean,
     apiResponse: String,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier =
-        Modifier.fillMaxWidth()
-            .padding(vertical = smallPadding),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = smallPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         GdsButton(
             text = stringResource(buttonText),
@@ -223,22 +234,23 @@ private fun ButtonRow(
             onClick = onClick,
             enabled = enabled,
             modifier = Modifier.padding(bottom = 8.dp),
-            loading = buttonLoading
+            loading = buttonLoading,
         )
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = buildAnnotatedString {
-                append("Api response: ")
-                withStyle(
-                    style =
-                    SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                ) {
-                    append(apiResponse)
-                }
-            },
-            color = MaterialTheme.colorScheme.onBackground
+            text =
+                buildAnnotatedString {
+                    append("Api response: ")
+                    withStyle(
+                        style =
+                            SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    ) {
+                        append(apiResponse)
+                    }
+                },
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }

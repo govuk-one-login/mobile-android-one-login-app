@@ -22,18 +22,19 @@ fun LocalAuthTabScreen(viewModel: LocalAuthTabScreenViewModel = hiltViewModel())
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
     ) {
         Button(
-            onClick = { viewModel.triggerLocalAuthMock(activity, false) }
+            onClick = { viewModel.triggerLocalAuthMock(activity, false) },
         ) {
             Text("Trigger Local Auth Manager error")
         }
 
         Button(
-            onClick = { viewModel.triggerLocalAuthMock(activity, true) }
+            onClick = { viewModel.triggerLocalAuthMock(activity, true) },
         ) {
             Text("Trigger Local Auth Manager biometrics opt in")
         }

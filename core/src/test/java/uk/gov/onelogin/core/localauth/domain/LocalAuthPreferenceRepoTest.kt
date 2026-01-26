@@ -3,7 +3,6 @@ package uk.gov.onelogin.core.localauth.domain
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.fragment.app.FragmentActivity
-import java.util.stream.Stream
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -18,6 +17,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.LOCAL_AUTH_PREF
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl.Companion.SHARED_PREFS_ID
+import java.util.stream.Stream
 
 class LocalAuthPreferenceRepoTest {
     private val mockContext: FragmentActivity = mock()
@@ -47,7 +47,7 @@ class LocalAuthPreferenceRepoTest {
     @MethodSource("getBioPrefArgs")
     fun `check getting bio pref`(sharedPrefReturn: LocalAuthPreference?) {
         whenever(mockSharedPreferences.getString(eq(LOCAL_AUTH_PREF), eq(null))).thenReturn(
-            sharedPrefReturn?.toString()
+            sharedPrefReturn?.toString(),
         )
         val bioPref = bioPrefHandler.getLocalAuthPref()
 
@@ -71,7 +71,7 @@ class LocalAuthPreferenceRepoTest {
                 Arguments.of(LocalAuthPreference.Enabled(true)),
                 Arguments.of(LocalAuthPreference.Enabled(false)),
                 Arguments.of(LocalAuthPreference.Disabled),
-                Arguments.of(null)
+                Arguments.of(null),
             )
     }
 }

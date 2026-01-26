@@ -1,5 +1,3 @@
-
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -11,22 +9,15 @@ plugins {
     alias(libs.plugins.oss.licence.about.libraries)
     alias(libs.plugins.paparazzi)
     kotlin("kapt")
-    id("uk.gov.onelogin.jvm-toolchains")
-    id("uk.gov.jacoco.library-config")
-    id("uk.gov.sonar.module-config")
-    id("uk.gov.onelogin.emulator-config")
+    id("uk.gov.onelogin.android-lib-config")
 }
 
-apply(from = "${rootProject.extra["configDir"]}/detekt/config.gradle")
-apply(from = "${rootProject.extra["configDir"]}/ktlint/config.gradle")
 apply(from = rootProject.file("gradle/snapshot-test-filter.gradle.kts"))
 
 android {
     namespace = "uk.gov.android.onelogin.features"
-    compileSdk = rootProject.ext["compileSdkVersion"] as Int
 
     defaultConfig {
-        minSdk = rootProject.ext["minSdkVersion"] as Int
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -39,16 +30,9 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-    kotlinOptions {
-        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
@@ -61,7 +45,7 @@ android {
             "build",
             "staging",
             "integration",
-            "production"
+            "production",
         ).forEach { environment ->
             create(environment) {
                 var suffix = ""
@@ -85,7 +69,7 @@ android {
                     setOf(
                         org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
                         org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
                     )
             }
         }
@@ -96,11 +80,12 @@ android {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
     packaging {
-        resources.excludes += setOf(
-            "META-INF/LICENSE-notice.md",
-            "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
-            "META-INF/LICENSE.md"
-        )
+        resources.excludes +=
+            setOf(
+                "META-INF/LICENSE-notice.md",
+                "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+                "META-INF/LICENSE.md",
+            )
     }
 }
 
@@ -115,7 +100,7 @@ dependencies {
         libs.uiautomator,
         libs.mockito.kotlin,
         libs.mockito.android,
-        libs.logging.test
+        libs.logging.test,
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -137,20 +122,20 @@ dependencies {
         libs.androidx.espresso.intents,
         libs.logging.test,
         testFixtures(projects.core),
-        libs.logging.test
+        libs.logging.test,
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
-        libs.androidx.test.orchestrator
+        libs.androidx.test.orchestrator,
     ).forEach {
         androidTestUtil(it)
     }
 
     listOf(
         libs.androidx.compose.ui.tooling,
-        libs.androidx.compose.ui.test.manifest
+        libs.androidx.compose.ui.test.manifest,
     ).forEach(::debugImplementation)
 
     listOf(
@@ -175,7 +160,7 @@ dependencies {
         libs.androidx.compose.ui.tooling.preview,
         libs.bundles.about.libraries,
         libs.kotlinx.datetime,
-        libs.androidx.compose.material.icons
+        libs.androidx.compose.material.icons,
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {
@@ -185,7 +170,7 @@ dependencies {
 
     listOf(
         libs.hilt.android.compiler,
-        libs.hilt.compiler
+        libs.hilt.compiler,
     ).forEach(::kapt)
 }
 

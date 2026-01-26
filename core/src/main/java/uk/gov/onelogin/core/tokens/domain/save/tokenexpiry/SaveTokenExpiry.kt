@@ -7,5 +7,6 @@ interface SaveTokenExpiry {
      * @param expiry [ExpiryInfo] that will be saved where [ExpiryInfo.key] is the alias for the saved value and the [ExpiryInfo.value] is the actual expiry time saved in the open secure store.
      */
     suspend fun saveExp(vararg expiry: ExpiryInfo)
+
     fun extractExpFromRefreshToken(tokenJwt: String): Long
 }

@@ -15,6 +15,6 @@ fun interface RefreshExchange {
      */
     suspend fun getTokens(
         context: FragmentActivity,
-        handleResult: (LocalAuthStatus) -> Unit
+        handleResult: (LocalAuthStatus) -> Unit,
     )
 }

@@ -52,16 +52,17 @@ class SplashScreenViewModelTest {
     fun setup() {
         mockOnlineChecker = mock()
         mockRefreshExchange = mock()
-        viewModel = SplashScreenViewModel(
-            mockNavigator,
-            mockHandleLocalLogin,
-            mockAppInfoService,
-            mockSignOutUseCase,
-            mockAutoInitialiseSecureStore,
-            mockOnlineChecker,
-            mockRefreshExchange,
-            mockGetRefreshTokenExp
-        )
+        viewModel =
+            SplashScreenViewModel(
+                mockNavigator,
+                mockHandleLocalLogin,
+                mockAppInfoService,
+                mockSignOutUseCase,
+                mockAutoInitialiseSecureStore,
+                mockOnlineChecker,
+                mockRefreshExchange,
+                mockGetRefreshTokenExp
+            )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
         runBlocking {
             whenever(mockGetRefreshTokenExp()).thenReturn(100)

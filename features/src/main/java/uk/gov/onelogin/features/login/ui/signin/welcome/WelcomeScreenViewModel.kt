@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,209 +38,214 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import javax.inject.Inject
 
 @HiltViewModel
 @Suppress("LongParameterList", "TooManyFunctions")
-class WelcomeScreenViewModel @Inject constructor(
-    @ApplicationContext
-    private val context: Context,
-    private val localAuthManager: LocalAuthManager,
-    private val tokenRepository: TokenRepository,
-    private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
-    private val verifyIdToken: VerifyIdToken,
-    private val navigator: Navigator,
-    private val savePersistentId: SavePersistentId,
-    private val saveTokenExpiry: SaveTokenExpiry,
-    private val handleRemoteLogin: HandleRemoteLogin,
-    private val handleLoginRedirect: HandleLoginRedirect,
-    private val signOutUseCase: SignOutUseCase,
-    private val logger: Logger,
-    val onlineChecker: OnlineChecker,
-    private val errorCounter: Counter
-) : ViewModel() {
-    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val loading = _loading.asStateFlow()
+class WelcomeScreenViewModel
+    @Inject
+    constructor(
+        @ApplicationContext
+        private val context: Context,
+        private val localAuthManager: LocalAuthManager,
+        private val tokenRepository: TokenRepository,
+        private val autoInitialiseSecureStore: AutoInitialiseSecureStore,
+        private val verifyIdToken: VerifyIdToken,
+        private val navigator: Navigator,
+        private val savePersistentId: SavePersistentId,
+        private val saveTokenExpiry: SaveTokenExpiry,
+        private val handleRemoteLogin: HandleRemoteLogin,
+        private val handleLoginRedirect: HandleLoginRedirect,
+        private val signOutUseCase: SignOutUseCase,
+        private val logger: Logger,
+        val onlineChecker: OnlineChecker,
+        private val errorCounter: Counter,
+    ) : ViewModel() {
+        private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+        val loading = _loading.asStateFlow()
 
-    fun onPrimary(launcher: ActivityResultLauncher<Intent>) =
-        viewModelScope.launch {
-            _loading.emit(true)
-            handleRemoteLogin.login(
-                launcher
-            ) {
-                navigator.navigate(LoginRoutes.SignInRecoverableError)
-            }
-        }
-
-    fun handleActivityResult(
-        intent: Intent,
-        isReAuth: Boolean = false,
-        activity: FragmentActivity
-    ) {
-        if (intent.data == null) return
-
-        viewModelScope.launch {
-            _loading.emit(true)
-            handleLoginRedirect.handle(
-                intent,
-                onSuccess = {
-                    viewModelScope.launch {
-                        handleTokens(it, isReAuth, activity)
-                    }
-                },
-                onFailure = {
-                    it?.let {
-                        val loginException = LoginException(it)
-                        logger.error(
-                            loginException.javaClass.simpleName,
-                            it.message.toString(),
-                            loginException
-                        )
-                    }
-                    handleLoginErrors(it)
-                }
-            )
-        }
-    }
-
-    fun abortLogin(launcher: ActivityResultLauncher<Intent>) {
-        _loading.value = false
-        onPrimary(launcher).cancel()
-    }
-
-    private fun CoroutineScope.handleLoginErrors(it: Throwable?) {
-        when (it) {
-            is AuthenticationError -> {
-                when (it.type) {
-                    AuthenticationError.ErrorType.ACCESS_DENIED -> {
-                        this.launch {
-                            signOutUseCase.invoke()
-                        }
-                        navigator.navigate(SignOutRoutes.ReAuthError)
-                    }
-
-                    AuthenticationError.ErrorType.SERVER_ERROR -> {
-                        errorCounter.increment()
-                        if (errorCounter.getValue() >= MAX_ATTEMPTS) {
-                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
-                        } else {
-                            navigator.navigate(LoginRoutes.SignInRecoverableError, true)
-                        }
-                    }
-
-                    AuthenticationError.ErrorType.TOKEN_ERROR ->
-                        navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
-
-                    else -> {
-                        navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
-                    }
+        fun onPrimary(launcher: ActivityResultLauncher<Intent>) =
+            viewModelScope.launch {
+                _loading.emit(true)
+                handleRemoteLogin.login(
+                    launcher,
+                ) {
+                    navigator.navigate(LoginRoutes.SignInRecoverableError)
                 }
             }
 
-            else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+        fun handleActivityResult(
+            intent: Intent,
+            isReAuth: Boolean = false,
+            activity: FragmentActivity,
+        ) {
+            if (intent.data == null) return
+
+            viewModelScope.launch {
+                _loading.emit(true)
+                handleLoginRedirect.handle(
+                    intent,
+                    onSuccess = {
+                        viewModelScope.launch {
+                            handleTokens(it, isReAuth, activity)
+                        }
+                    },
+                    onFailure = {
+                        it?.let {
+                            val loginException = LoginException(it)
+                            logger.error(
+                                loginException.javaClass.simpleName,
+                                it.message.toString(),
+                                loginException,
+                            )
+                        }
+                        handleLoginErrors(it)
+                    },
+                )
+            }
         }
-    }
 
-    fun navigateToDevPanel() {
-        navigator.openDeveloperPanel()
-    }
-
-    fun navigateToOfflineError() {
-        navigator.navigate(ErrorRoutes.Offline)
-    }
-
-    fun navigateToOptInAnalytics() {
-        navigator.navigate(LoginRoutes.AnalyticsOptIn)
-    }
-
-    fun stopLoading() {
-        _loading.value = false
-    }
-
-    private suspend fun handleTokens(
-        tokens: TokenResponse,
-        isReAuth: Boolean,
-        activity: FragmentActivity
-    ) {
-        errorCounter.reset()
-        val jwksUrl = context.getString(
-            R.string.stsUrl,
-            context.getString(R.string.jwksEndpoint)
-        )
-        if (!verifyIdToken(tokens.idToken, jwksUrl)) {
-            navigator.navigate(LoginRoutes.SignInRecoverableError, true)
-        } else {
-            checkLocalAuthRoute(tokens, isReAuth, activity)
+        fun abortLogin(launcher: ActivityResultLauncher<Intent>) {
+            _loading.value = false
+            onPrimary(launcher).cancel()
         }
-    }
 
-    private suspend fun checkLocalAuthRoute(
-        tokens: TokenResponse,
-        isReAuth: Boolean,
-        activity: FragmentActivity
-    ) {
-        saveAccessTokenExpiryToOpenStore(tokens)
-        tokenRepository.setTokenResponse(tokens)
-        savePersistentId()
+        private fun CoroutineScope.handleLoginErrors(it: Throwable?) {
+            when (it) {
+                is AuthenticationError -> {
+                    when (it.type) {
+                        AuthenticationError.ErrorType.ACCESS_DENIED -> {
+                            this.launch {
+                                signOutUseCase.invoke()
+                            }
+                            navigator.navigate(SignOutRoutes.ReAuthError)
+                        }
 
-        localAuthManager.enforceAndSet(
-            // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
-            true,
-            false,
-            activity = activity,
-            callbackHandler = object : LocalAuthManagerCallbackHandler {
-                override fun onSuccess(backButtonPressed: Boolean) {
-                    val pref = localAuthManager.localAuthPreference
-                    when {
-                        isReAuth -> {
-                            if (pref is LocalAuthPreference.Enabled) {
-                                viewModelScope.launch {
-                                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                    saveRefreshTokenExpiryToOpenStore(tokens)
-                                }
+                        AuthenticationError.ErrorType.SERVER_ERROR -> {
+                            errorCounter.increment()
+                            if (errorCounter.getValue() >= MAX_ATTEMPTS) {
+                                navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                             } else {
-                                navigator.goBack()
+                                navigator.navigate(LoginRoutes.SignInRecoverableError, true)
                             }
                         }
+
+                        AuthenticationError.ErrorType.TOKEN_ERROR ->
+                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
 
                         else -> {
-                            viewModelScope.launch {
-                                if (pref is LocalAuthPreference.Enabled) {
-                                    saveRefreshTokenExpiryToOpenStore(tokens)
-                                }
-                                autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                navigator.navigate(MainNavRoutes.Start, true)
-                            }
+                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                         }
                     }
                 }
 
-                override fun onFailure(backButtonPressed: Boolean) {
-                    navigator.navigate(MainNavRoutes.Start, true)
-                }
+                else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
             }
-        )
-    }
+        }
 
-    private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
-        tokens.refreshToken?.let {
-            val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
+        fun navigateToDevPanel() {
+            navigator.openDeveloperPanel()
+        }
+
+        fun navigateToOfflineError() {
+            navigator.navigate(ErrorRoutes.Offline)
+        }
+
+        fun navigateToOptInAnalytics() {
+            navigator.navigate(LoginRoutes.AnalyticsOptIn)
+        }
+
+        fun stopLoading() {
+            _loading.value = false
+        }
+
+        private suspend fun handleTokens(
+            tokens: TokenResponse,
+            isReAuth: Boolean,
+            activity: FragmentActivity,
+        ) {
+            errorCounter.reset()
+            val jwksUrl =
+                context.getString(
+                    R.string.stsUrl,
+                    context.getString(R.string.jwksEndpoint),
+                )
+            if (!verifyIdToken(tokens.idToken, jwksUrl)) {
+                navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+            } else {
+                checkLocalAuthRoute(tokens, isReAuth, activity)
+            }
+        }
+
+        private suspend fun checkLocalAuthRoute(
+            tokens: TokenResponse,
+            isReAuth: Boolean,
+            activity: FragmentActivity,
+        ) {
+            saveAccessTokenExpiryToOpenStore(tokens)
+            tokenRepository.setTokenResponse(tokens)
+            savePersistentId()
+
+            localAuthManager.enforceAndSet(
+                // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
+                true,
+                false,
+                activity = activity,
+                callbackHandler =
+                    object : LocalAuthManagerCallbackHandler {
+                        override fun onSuccess(backButtonPressed: Boolean) {
+                            val pref = localAuthManager.localAuthPreference
+                            when {
+                                isReAuth -> {
+                                    if (pref is LocalAuthPreference.Enabled) {
+                                        viewModelScope.launch {
+                                            autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                                            saveRefreshTokenExpiryToOpenStore(tokens)
+                                        }
+                                    } else {
+                                        navigator.goBack()
+                                    }
+                                }
+
+                                else -> {
+                                    viewModelScope.launch {
+                                        if (pref is LocalAuthPreference.Enabled) {
+                                            saveRefreshTokenExpiryToOpenStore(tokens)
+                                        }
+                                        autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                                        navigator.navigate(MainNavRoutes.Start, true)
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onFailure(backButtonPressed: Boolean) {
+                            navigator.navigate(MainNavRoutes.Start, true)
+                        }
+                    },
+            )
+        }
+
+        private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
+            tokens.refreshToken?.let {
+                val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
+                saveTokenExpiry.saveExp(
+                    ExpiryInfo(
+                        key = REFRESH_TOKEN_EXPIRY_KEY,
+                        value = extractedExp,
+                    ),
+                )
+            }
+        }
+
+        private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
             saveTokenExpiry.saveExp(
                 ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = extractedExp
-                )
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokens.accessTokenExpirationTime,
+                ),
             )
         }
     }
-
-    private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
-        saveTokenExpiry.saveExp(
-            ExpiryInfo(
-                key = ACCESS_TOKEN_EXPIRY_KEY,
-                value = tokens.accessTokenExpirationTime
-            )
-        )
-    }
-}
 
 private const val MAX_ATTEMPTS = 3

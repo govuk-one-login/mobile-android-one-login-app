@@ -11,7 +11,5 @@ import uk.gov.onelogin.features.developer.ui.securestore.RemoveAllSecureStoreDat
 @InstallIn(ViewModelComponent::class)
 interface ClearAllSecureStoreModule {
     @Binds
-    fun bindClearAllSecureStore(
-        clearAllSecureStore: RemoveAllSecureStoreDataDevOption
-    ): RemoveAllSecureStoreData
+    fun bindClearAllSecureStore(clearAllSecureStore: RemoveAllSecureStoreDataDevOption): RemoveAllSecureStoreData
 }

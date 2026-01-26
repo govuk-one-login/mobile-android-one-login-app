@@ -6,6 +6,6 @@ import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 fun interface HandleLocalLogin {
     suspend operator fun invoke(
         fragmentActivity: FragmentActivity,
-        callback: (LocalAuthStatus) -> Unit
+        callback: (LocalAuthStatus) -> Unit,
     )
 }

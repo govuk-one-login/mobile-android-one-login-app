@@ -25,7 +25,7 @@ class SaveTokensTest {
         saveTokens =
             SaveTokensImpl(
                 mockTokenRepository,
-                mockSaveToTokenSecureStore
+                mockSaveToTokenSecureStore,
             )
     }
 
@@ -38,7 +38,7 @@ class SaveTokensTest {
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
                     idToken = idToken,
-                    refreshToken = "refresh"
+                    refreshToken = "refresh",
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
@@ -48,15 +48,15 @@ class SaveTokensTest {
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
+                    "access",
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    idToken
+                    idToken,
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
-                    "refresh"
+                    "refresh",
                 )
             }
         }
@@ -69,7 +69,7 @@ class SaveTokensTest {
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
-                    idToken = idToken
+                    idToken = idToken,
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
@@ -79,11 +79,11 @@ class SaveTokensTest {
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
+                    "access",
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    idToken
+                    idToken,
                 )
             }
         }
@@ -96,7 +96,7 @@ class SaveTokensTest {
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
-                    idToken = "id"
+                    idToken = "id",
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
@@ -105,11 +105,11 @@ class SaveTokensTest {
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
+                    "access",
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    "id"
+                    "id",
                 )
             }
         }
@@ -123,7 +123,7 @@ class SaveTokensTest {
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
                     idToken = "id",
-                    refreshToken = "refresh"
+                    refreshToken = "refresh",
                 )
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
@@ -132,15 +132,15 @@ class SaveTokensTest {
             runBlocking {
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
-                    "access"
+                    "access",
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
-                    "id"
+                    "id",
                 )
                 verify(mockSaveToTokenSecureStore).invoke(
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
-                    "refresh"
+                    "refresh",
                 )
             }
         }

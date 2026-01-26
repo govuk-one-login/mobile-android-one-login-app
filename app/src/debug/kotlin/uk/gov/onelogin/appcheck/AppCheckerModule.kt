@@ -22,21 +22,23 @@ object AppCheckerModule {
     fun provideAppCheck(
         @ApplicationContext
         context: Context,
-        logger: Logger
+        logger: Logger,
     ): AppChecker {
         val factory = DebugAppCheckProviderFactory.getInstance()
         return FirebaseAppCheck(factory, context, logger).also {
             val key = Firebase.app.persistenceKey
-            context.getSharedPreferences(
-                "com.google.firebase.appcheck.debug.store.$key",
-                MODE_PRIVATE
-            ).edit().apply {
-                putString(
-                    "com.google.firebase.appcheck.debug.DEBUG_SECRET",
-                    BuildConfig.AppCheckDebugSecret
-                )
-                commit()
-            }
+            context
+                .getSharedPreferences(
+                    "com.google.firebase.appcheck.debug.store.$key",
+                    MODE_PRIVATE,
+                ).edit()
+                .apply {
+                    putString(
+                        "com.google.firebase.appcheck.debug.DEBUG_SECRET",
+                        BuildConfig.AppCheckDebugSecret,
+                    )
+                    commit()
+                }
         }
     }
 }

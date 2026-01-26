@@ -31,7 +31,7 @@ import uk.gov.onelogin.core.ui.components.FlexibleTopBarColors
 @Composable
 fun TitledPage(
     title: Int,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Surface {
@@ -40,27 +40,31 @@ fun TitledPage(
                 FlexibleTopBar(
                     content = {
                         Column(
-                            modifier = Modifier.fillMaxWidth().padding(top = smallPadding)
-                                .statusBarsPadding()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = smallPadding)
+                                    .statusBarsPadding(),
                         ) {
                             GdsHeading(
                                 text = stringResource(title),
                                 modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding),
-                                style = GdsHeadingStyle.Title2
+                                style = GdsHeadingStyle.Title2,
                             )
                             HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
                         }
                     },
                     colors =
-                    FlexibleTopBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        scrolledContainerColor = GdsLocalColorScheme.current
-                            .topBarScrolledBackground
-                    ),
-                    scrollBehavior = scrollBehavior
+                        FlexibleTopBarColors(
+                            containerColor = MaterialTheme.colorScheme.background,
+                            scrolledContainerColor =
+                                GdsLocalColorScheme.current
+                                    .topBarScrolledBackground,
+                        ),
+                    scrollBehavior = scrollBehavior,
                 )
             },
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         ) { paddingValues ->
             content(paddingValues)
         }

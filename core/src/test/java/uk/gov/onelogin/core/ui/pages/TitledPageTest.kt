@@ -22,7 +22,7 @@ class TitledPageTest : FragmentActivityTestCase() {
         composeTestRule.apply {
             onNodeWithText(
                 context.getString(R.string.app_homeTitle),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).assertIsDisplayed()
 
             onNodeWithText("test").assertIsDisplayed()

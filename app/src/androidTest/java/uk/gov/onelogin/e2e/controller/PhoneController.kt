@@ -19,12 +19,12 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
-import java.io.File
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertTrue
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.MainActivity
+import java.io.File
 
 typealias BySelectorEntry = Pair<BySelector, String>
 
@@ -44,13 +44,13 @@ typealias BySelectorEntry = Pair<BySelector, String>
 @Suppress("TooManyFunctions")
 class PhoneController(
     private val testNameRule: TestCaseNameWatcher,
-    private val device: UiDevice = UiDevice.getInstance(
-        InstrumentationRegistry.getInstrumentation()
-    ),
+    private val device: UiDevice =
+        UiDevice.getInstance(
+            InstrumentationRegistry.getInstrumentation(),
+        ),
     private val phoneActionTimeout: Long = 3000L,
-    private val postActionDelay: Long = 1000L
+    private val postActionDelay: Long = 1000L,
 ) {
-
     /**
      * Tracks the number of screenshots taken with this instance of the [PhoneController].
      *
@@ -85,13 +85,13 @@ class PhoneController(
      */
     fun waitUntilGone(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelector
+        vararg selectors: BySelector,
     ) = selectors.forEach { selector ->
         Assert.assertTrue(
             device.wait(
                 Until.gone(selector),
-                actionTimeoutOverride
-            )
+                actionTimeoutOverride,
+            ),
         )
 
         Thread.sleep(postActionDelay)
@@ -118,18 +118,20 @@ class PhoneController(
      *
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
-    fun allowPermission() = click(
-        selectors = arrayOf(By.text("Allow") to "Clicking 'Allow' for the open permission dialog")
-    )
+    fun allowPermission() =
+        click(
+            selectors = arrayOf(By.text("Allow") to "Clicking 'Allow' for the open permission dialog"),
+        )
 
     /**
      * Taps the 'Deny' button that's shown on the Device.
      *
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
-    fun denyPermission() = click(
-        selectors = arrayOf(By.text("Deny") to "Clicking 'Deny' for the open permission dialog")
-    )
+    fun denyPermission() =
+        click(
+            selectors = arrayOf(By.text("Deny") to "Clicking 'Deny' for the open permission dialog"),
+        )
 
     /**
      * Taps UI elements defined by the [selectors] array.
@@ -148,32 +150,34 @@ class PhoneController(
     @Suppress("TooGenericExceptionCaught")
     fun click(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry
-    ): Unit = selectors.forEach { selectorEntry: BySelectorEntry ->
-        val selector = selectorEntry.first
-        val selectorMessage = selectorEntry.second
+        vararg selectors: BySelectorEntry,
+    ): Unit =
+        selectors.forEach { selectorEntry: BySelectorEntry ->
+            val selector = selectorEntry.first
+            val selectorMessage = selectorEntry.second
 
-        device.waitForIdle(actionTimeoutOverride)
+            device.waitForIdle(actionTimeoutOverride)
 
-        try {
-            screenshot(selectorMessage)
-            device.wait(
-                Until.findObject(selector),
-                actionTimeoutOverride
-            ).click()
+            try {
+                screenshot(selectorMessage)
+                device
+                    .wait(
+                        Until.findObject(selector),
+                        actionTimeoutOverride,
+                    ).click()
 
-            Thread.sleep(postActionDelay)
-        } catch (staleException: StaleObjectException) {
-            println(
-                "View for the selector \"$selectorMessage\" is out of date. Retrying... " +
-                    "($staleException)"
-            )
-            click(actionTimeoutOverride, selectorEntry)
-        } catch (exception: Exception) {
-            val message = "Error found with \"$selectorMessage\": $exception"
-            throw PhoneControllerException(message, exception)
+                Thread.sleep(postActionDelay)
+            } catch (staleException: StaleObjectException) {
+                println(
+                    "View for the selector \"$selectorMessage\" is out of date. Retrying... " +
+                        "($staleException)",
+                )
+                click(actionTimeoutOverride, selectorEntry)
+            } catch (exception: Exception) {
+                val message = "Error found with \"$selectorMessage\": $exception"
+                throw PhoneControllerException(message, exception)
+            }
         }
-    }
 
     /**
      * Scrolls down the screen looking for UI elements defined by the [selectors] array before
@@ -193,45 +197,48 @@ class PhoneController(
     @Suppress("TooGenericExceptionCaught")
     fun scrollAndClick(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry
-    ): Unit = selectors.forEach { selectorEntry: BySelectorEntry ->
-        val selector = selectorEntry.first
-        val selectorMessage = selectorEntry.second
+        vararg selectors: BySelectorEntry,
+    ): Unit =
+        selectors.forEach { selectorEntry: BySelectorEntry ->
+            val selector = selectorEntry.first
+            val selectorMessage = selectorEntry.second
 
-        device.waitForIdle(actionTimeoutOverride)
+            device.waitForIdle(actionTimeoutOverride)
 
-        try {
-            screenshot(selectorMessage)
+            try {
+                screenshot(selectorMessage)
 
-            device.findObject(
-                By.scrollable(true)
-            ).scroll(
-                Direction.DOWN,
-                100F
-            )
+                device
+                    .findObject(
+                        By.scrollable(true),
+                    ).scroll(
+                        Direction.DOWN,
+                        100F,
+                    )
 
-            device.wait(
-                Until.findObject(selector),
-                actionTimeoutOverride
-            ).click()
+                device
+                    .wait(
+                        Until.findObject(selector),
+                        actionTimeoutOverride,
+                    ).click()
 
-            Thread.sleep(postActionDelay)
-        } catch (staleException: StaleObjectException) {
-            println(
-                "View for the selector \"$selectorMessage\" is out of date. Retrying... " +
-                    "($staleException)"
-            )
-            click(actionTimeoutOverride, selectorEntry)
-        } catch (exception: Exception) {
-            val message = "Error found with \"$selectorMessage\": $exception"
-            throw PhoneControllerException(message, exception)
+                Thread.sleep(postActionDelay)
+            } catch (staleException: StaleObjectException) {
+                println(
+                    "View for the selector \"$selectorMessage\" is out of date. Retrying... " +
+                        "($staleException)",
+                )
+                click(actionTimeoutOverride, selectorEntry)
+            } catch (exception: Exception) {
+                val message = "Error found with \"$selectorMessage\": $exception"
+                throw PhoneControllerException(message, exception)
+            }
         }
-    }
 
     fun setText(
         actionTimeoutOverride: Long = phoneActionTimeout,
         textToEnter: String,
-        selectorEntry: BySelectorEntry
+        selectorEntry: BySelectorEntry,
     ) {
         val selector = selectorEntry.first
         val selectorMessage = selectorEntry.second
@@ -240,16 +247,17 @@ class PhoneController(
 
         try {
             screenshot(selectorMessage)
-            device.wait(
-                Until.findObject(selector),
-                actionTimeoutOverride
-            ).text = textToEnter
+            device
+                .wait(
+                    Until.findObject(selector),
+                    actionTimeoutOverride,
+                ).text = textToEnter
 
             Thread.sleep(postActionDelay)
         } catch (staleException: StaleObjectException) {
             println(
                 "View for the selector \"$selectorMessage\" is out of date. Retrying... " +
-                    "($staleException)"
+                    "($staleException)",
             )
             setText(actionTimeoutOverride, textToEnter, selectorEntry)
         } catch (exception: Exception) {
@@ -271,7 +279,7 @@ class PhoneController(
     @Suppress("TooGenericExceptionCaught")
     fun optionalClick(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry
+        vararg selectors: BySelectorEntry,
     ) = selectors.forEach { selectorEntry ->
         val selectorMessage = selectorEntry.second
         try {
@@ -279,14 +287,12 @@ class PhoneController(
         } catch (exception: Exception) {
             println(
                 "Assertion error due to un-required step " +
-                    "( $selectorMessage )!: $exception"
+                    "( $selectorMessage )!: $exception",
             )
         }
     }
 
-    fun isEnabled(
-        selector: UiSelector
-    ): Boolean = device.findObject(selector).isEnabled
+    fun isEnabled(selector: UiSelector): Boolean = device.findObject(selector).isEnabled
 
     /**
      * Uses the [UiDevice] constructor parameter to take a screenshot.
@@ -304,18 +310,19 @@ class PhoneController(
      * @see uk.gov.documentchecking.utils.screenshots.screenshot
      */
     fun screenshot(suffix: String) {
-        val screenshotsFolder = StringBuilder(
-            "/screenshots"
-        )
-            .append("/${BuildConfig.BUILD_TYPE}")
-            .append("/phoneController")
-            .append("/${testNameRule.className}")
-            .append("/${testNameRule.methodName}/")
+        val screenshotsFolder =
+            StringBuilder(
+                "/screenshots",
+            ).append("/${BuildConfig.BUILD_TYPE}")
+                .append("/phoneController")
+                .append("/${testNameRule.className}")
+                .append("/${testNameRule.methodName}/")
 
-        val parentFolder = File(
-            InstrumentationRegistry.getInstrumentation().targetContext.filesDir,
-            screenshotsFolder.toString()
-        )
+        val parentFolder =
+            File(
+                InstrumentationRegistry.getInstrumentation().targetContext.filesDir,
+                screenshotsFolder.toString(),
+            )
 
         val photoCountString = "%03d".format(photoCount)
 
@@ -324,17 +331,19 @@ class PhoneController(
         }
 
         val screenshotFileName = "$photoCountString - $suffix"
-        val screenshotFile = File(
-            parentFolder,
-            "$screenshotFileName.png"
-        )
+        val screenshotFile =
+            File(
+                parentFolder,
+                "$screenshotFileName.png",
+            )
         device.takeScreenshot(screenshotFile)
         try {
-            BitmapFactory.decodeFile(parentFolder.absolutePath + "/$screenshotFileName.png")
+            BitmapFactory
+                .decodeFile(parentFolder.absolutePath + "/$screenshotFileName.png")
                 .writeToTestStorage("${screenshotsFolder}$screenshotFileName")
         } catch (exception: NullPointerException) {
             println(
-                "Exception found when writing $screenshotFileName to test storage!: $exception"
+                "Exception found when writing $screenshotFileName to test storage!: $exception",
             )
         }
 
@@ -343,24 +352,26 @@ class PhoneController(
 
     fun elementExists(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        selector: BySelector
+        selector: BySelector,
     ): Boolean {
-        val element = device.wait(
-            Until.findObject(selector),
-            actionTimeoutOverride
-        )
+        val element =
+            device.wait(
+                Until.findObject(selector),
+                actionTimeoutOverride,
+            )
 
         return element != null && element.isEnabled
     }
 
     fun assertElementExists(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        selector: BySelector
+        selector: BySelector,
     ) {
-        val element = device.wait(
-            Until.findObject(selector),
-            actionTimeoutOverride
-        )
+        val element =
+            device.wait(
+                Until.findObject(selector),
+                actionTimeoutOverride,
+            )
 
         assertTrue(element != null && element.isEnabled)
     }
@@ -379,7 +390,7 @@ class PhoneController(
     private fun onDeviceRotation(
         onPortrait: () -> Unit = device::setOrientationLeft,
         onLandscape: () -> Unit = device::setOrientationNatural,
-        action: () -> Unit
+        action: () -> Unit,
     ) {
         when (device.displayRotation) {
             Surface.ROTATION_0, Surface.ROTATION_180 -> onPortrait
@@ -394,28 +405,29 @@ class PhoneController(
         context: Context,
         packageName: String,
         deeplinkUrl: String,
-        timeout: Long
+        timeout: Long,
     ) {
         device.pressHome()
         Thread.sleep(postActionDelay)
 
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setComponent(ComponentName(context, MainActivity::class.java))
-            data = Uri.parse(deeplinkUrl)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
+        val intent =
+            Intent(Intent.ACTION_VIEW).apply {
+                setComponent(ComponentName(context, MainActivity::class.java))
+                data = Uri.parse(deeplinkUrl)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
         ContextCompat.startActivity(context, intent, null)
 
         // Wait for the app to appear
         device.wait(
             Until.hasObject(By.pkg(packageName).depth(0)),
-            timeout
+            timeout,
         )
     }
 
     fun navigateToApp(
         actionTimeoutOverride: Long = phoneActionTimeout,
-        packageName: String
+        packageName: String,
     ) {
         // Start from the home screen
         device.pressHome()
@@ -427,7 +439,7 @@ class PhoneController(
         ViewMatchers.assertThat(launcherPackage, CoreMatchers.notNullValue())
         device.wait(
             Until.hasObject(By.pkg(launcherPackage).depth(0)),
-            actionTimeoutOverride
+            actionTimeoutOverride,
         )
 
         // Launch the app
@@ -450,7 +462,7 @@ class PhoneController(
         // Wait for the app to appear
         device.wait(
             Until.hasObject(By.pkg(packageName).depth(0)),
-            actionTimeoutOverride
+            actionTimeoutOverride,
         )
     }
 

@@ -75,7 +75,7 @@ import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 @Composable
 fun SettingsScreen(
     viewModel: SettingsScreenViewModel = hiltViewModel(),
-    analyticsViewModel: SettingsAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: SettingsAnalyticsViewModel = hiltViewModel(),
 ) {
     BackHandler { analyticsViewModel.trackBackButton() }
     LaunchedEffect(Unit) {
@@ -86,43 +86,46 @@ fun SettingsScreen(
     val uriHandler = LocalUriHandler.current
     val email = viewModel.email
     val optInState by viewModel.optInState.collectAsStateWithLifecycle(false)
-    val settingsScreenLinks = SettingsScreenLinks(
-        signInUrl = stringResource(R.string.app_manageSignInDetailsUrl),
-        privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
-        accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
-        helpUrl = stringResource(R.string.app_helpUrl),
-        contactUrl = stringResource(R.string.app_contactUrl),
-        addDocumentsUrl = stringResource(R.string.app_add_document_url),
-        termsAndConditionsUrl = stringResource(R.string.app_terms_and_conditions_url)
-    )
+    val settingsScreenLinks =
+        SettingsScreenLinks(
+            signInUrl = stringResource(R.string.app_manageSignInDetailsUrl),
+            privacyNoticeUrl = stringResource(R.string.privacy_notice_url),
+            accessibilityStatementUrl = stringResource(R.string.app_accessibilityStatementUrl),
+            helpUrl = stringResource(R.string.app_helpUrl),
+            contactUrl = stringResource(R.string.app_contactUrl),
+            addDocumentsUrl = stringResource(R.string.app_add_document_url),
+            termsAndConditionsUrl = stringResource(R.string.app_terms_and_conditions_url),
+        )
     TitledPage(title = R.string.app_settings) { paddingValues ->
         SettingsScreenBody(
             paddingValues = paddingValues,
             email = email,
             optInState = optInState,
-            viewModelFunctions = ViewModelFunctions(
-                showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
-                goToBiometricsOptIn = { viewModel.goToBiometricsOptIn() },
-                toggleOptInPreference = { viewModel.toggleOptInPreference() },
-                goToOssl = { viewModel.goToOssl() },
-                goToSignOut = { viewModel.goToSignOut() }
-            ),
-            analyticsViewModelFunctions = AnalyticsViewModelFunctions(
-                trackSignInDetailLink = { analyticsViewModel.trackSignInDetailLink() },
-                trackUsingOneLoginLink = { analyticsViewModel.trackUsingOneLoginLink() },
-                trackContactOneLoginLink = { analyticsViewModel.trackContactOneLoginLink() },
-                trackBiometricsButton = { analyticsViewModel.trackBiometricsButton() },
-                trackPrivacyNoticeLink = { analyticsViewModel.trackPrivacyNoticeLink() },
-                trackAccessibilityStatementLink = {
-                    analyticsViewModel.trackAccessibilityStatementLink()
-                },
-                trackOpenSourceButton = { analyticsViewModel.trackOpenSourceButton() },
-                trackSignOutButton = { analyticsViewModel.trackSignOutButton() },
-                trackAddDocumentsLink = { analyticsViewModel.trackAddDocumentsLink() },
-                trackTermsAndConditionsLink = { analyticsViewModel.trackTermsAndConditionsLink() }
-            ),
+            viewModelFunctions =
+                ViewModelFunctions(
+                    showBiometricsOption = viewModel.biometricsOptionState.collectAsState().value,
+                    goToBiometricsOptIn = { viewModel.goToBiometricsOptIn() },
+                    toggleOptInPreference = { viewModel.toggleOptInPreference() },
+                    goToOssl = { viewModel.goToOssl() },
+                    goToSignOut = { viewModel.goToSignOut() },
+                ),
+            analyticsViewModelFunctions =
+                AnalyticsViewModelFunctions(
+                    trackSignInDetailLink = { analyticsViewModel.trackSignInDetailLink() },
+                    trackUsingOneLoginLink = { analyticsViewModel.trackUsingOneLoginLink() },
+                    trackContactOneLoginLink = { analyticsViewModel.trackContactOneLoginLink() },
+                    trackBiometricsButton = { analyticsViewModel.trackBiometricsButton() },
+                    trackPrivacyNoticeLink = { analyticsViewModel.trackPrivacyNoticeLink() },
+                    trackAccessibilityStatementLink = {
+                        analyticsViewModel.trackAccessibilityStatementLink()
+                    },
+                    trackOpenSourceButton = { analyticsViewModel.trackOpenSourceButton() },
+                    trackSignOutButton = { analyticsViewModel.trackSignOutButton() },
+                    trackAddDocumentsLink = { analyticsViewModel.trackAddDocumentsLink() },
+                    trackTermsAndConditionsLink = { analyticsViewModel.trackTermsAndConditionsLink() },
+                ),
             uriHandler = uriHandler,
-            settingsScreenLinks = settingsScreenLinks
+            settingsScreenLinks = settingsScreenLinks,
         )
     }
 }
@@ -136,22 +139,23 @@ private fun SettingsScreenBody(
     viewModelFunctions: ViewModelFunctions,
     analyticsViewModelFunctions: AnalyticsViewModelFunctions,
     uriHandler: UriHandler,
-    settingsScreenLinks: SettingsScreenLinks
+    settingsScreenLinks: SettingsScreenLinks,
 ) {
     Column(
-        modifier = Modifier
-            .padding(top = paddingValues.calculateTopPadding())
-            .consumeWindowInsets(paddingValues)
-            .verticalScroll(rememberScrollState())
-            .windowInsetsPadding(WindowInsets.displayCutout)
-            .padding(top = smallPadding, bottom = xsmallPadding)
+        modifier =
+            Modifier
+                .padding(top = paddingValues.calculateTopPadding())
+                .consumeWindowInsets(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .windowInsetsPadding(WindowInsets.displayCutout)
+                .padding(top = smallPadding, bottom = xsmallPadding),
     ) {
         EmailSection(email)
         YourDetailsSection(
             onClick = {
                 analyticsViewModelFunctions.trackSignInDetailLink()
                 uriHandler.openUri(settingsScreenLinks.signInUrl)
-            }
+            },
         )
         HelpAndFeedbackSection(
             onHelpClick = {
@@ -165,7 +169,7 @@ private fun SettingsScreenBody(
             onAddDocumentsClick = {
                 analyticsViewModelFunctions.trackAddDocumentsLink()
                 uriHandler.openUri(settingsScreenLinks.addDocumentsUrl)
-            }
+            },
         )
         AboutTheAppSection(
             optInState = optInState,
@@ -180,7 +184,7 @@ private fun SettingsScreenBody(
             onPrivacyNoticeClick = {
                 analyticsViewModelFunctions.trackPrivacyNoticeLink()
                 uriHandler.openUri(settingsScreenLinks.privacyNoticeUrl)
-            }
+            },
         )
         LegalSection(
             onPrivacyNoticeClick = {
@@ -198,13 +202,13 @@ private fun SettingsScreenBody(
             onTermsAndConditionsClick = {
                 analyticsViewModelFunctions.trackTermsAndConditionsLink()
                 uriHandler.openUri(settingsScreenLinks.termsAndConditionsUrl)
-            }
+            },
         )
         SignOutRow(
             openSignOutScreen = {
                 analyticsViewModelFunctions.trackSignOutButton()
                 viewModelFunctions.goToSignOut()
-            }
+            },
         )
     }
 }
@@ -216,7 +220,7 @@ private data class SettingsScreenLinks(
     val helpUrl: String,
     val contactUrl: String,
     val addDocumentsUrl: String,
-    val termsAndConditionsUrl: String
+    val termsAndConditionsUrl: String,
 )
 
 private data class ViewModelFunctions(
@@ -224,7 +228,7 @@ private data class ViewModelFunctions(
     val goToBiometricsOptIn: () -> Unit = {},
     val toggleOptInPreference: () -> Unit = {},
     val goToOssl: () -> Unit = {},
-    val goToSignOut: () -> Unit = {}
+    val goToSignOut: () -> Unit = {},
 )
 
 private data class AnalyticsViewModelFunctions(
@@ -237,22 +241,21 @@ private data class AnalyticsViewModelFunctions(
     val trackOpenSourceButton: () -> Unit = {},
     val trackSignOutButton: () -> Unit = {},
     val trackAddDocumentsLink: () -> Unit = {},
-    val trackTermsAndConditionsLink: () -> Unit = {}
+    val trackTermsAndConditionsLink: () -> Unit = {},
 )
 
 @Composable
-private fun YourDetailsSection(
-    onClick: () -> Unit
-) {
+private fun YourDetailsSection(onClick: () -> Unit) {
     HorizontalDivider()
     LinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        description = stringResource(
-            id = R.string.app_settingSignInDetailsFootnote
-        ),
-        traversalIndex = MANAGE_DETAILS_TRAVERSAL_ORDER
+        description =
+            stringResource(
+                id = R.string.app_settingSignInDetailsFootnote,
+            ),
+        traversalIndex = MANAGE_DETAILS_TRAVERSAL_ORDER,
     ) {
         onClick()
     }
@@ -263,13 +266,13 @@ private fun LegalSection(
     onPrivacyNoticeClick: () -> Unit,
     onAccessibilityStatementClick: () -> Unit,
     onOpenSourceLicensesClick: () -> Unit,
-    onTermsAndConditionsClick: () -> Unit
+    onTermsAndConditionsClick: () -> Unit,
 ) {
     LinkRow(
         title = R.string.app_privacyNoticeLink2,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER
+        traversalIndex = PRIVACY_NOTICE_LINK_TRAVERSAL_ORDER,
     ) {
         onPrivacyNoticeClick()
     }
@@ -277,7 +280,7 @@ private fun LegalSection(
         title = R.string.app_accessibilityStatement,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = ACCESSIBILITY_LINK_TRAVERSAL_ORDER
+        traversalIndex = ACCESSIBILITY_LINK_TRAVERSAL_ORDER,
     ) {
         onAccessibilityStatementClick()
     }
@@ -285,14 +288,14 @@ private fun LegalSection(
         title = R.string.app_termsAndConditionsLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER
+        traversalIndex = TERMS_AND_CONDITIONS_LINK_TRAVERSAL_ORDER,
     ) {
         onTermsAndConditionsClick()
     }
     LinkRow(
         title = R.string.app_openSourceLicences,
         icon = R.drawable.arrow_right_icon,
-        traversalIndex = OSL_LINK_TRAVERSAL_ORDER
+        traversalIndex = OSL_LINK_TRAVERSAL_ORDER,
     ) {
         onOpenSourceLicensesClick()
     }
@@ -302,14 +305,14 @@ private fun LegalSection(
 private fun HelpAndFeedbackSection(
     onHelpClick: () -> Unit,
     onContactClick: () -> Unit,
-    onAddDocumentsClick: () -> Unit
+    onAddDocumentsClick: () -> Unit,
 ) {
     HeadingRow(R.string.app_settingsSubtitle1, traversalIndex = HELP_TRAVERSAL_ORDER)
     LinkRow(
         title = R.string.app_proveYourIdentityLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = USING_LINK_TRAVERSAL_ORDER
+        traversalIndex = USING_LINK_TRAVERSAL_ORDER,
     ) {
         onHelpClick()
     }
@@ -317,7 +320,7 @@ private fun HelpAndFeedbackSection(
         title = R.string.app_addDocumentsLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = ADD_DOCUMENTS_TRAVERSAL_ORDER
+        traversalIndex = ADD_DOCUMENTS_TRAVERSAL_ORDER,
     ) {
         onAddDocumentsClick()
     }
@@ -325,7 +328,7 @@ private fun HelpAndFeedbackSection(
         title = R.string.app_contactLink,
         icon = R.drawable.external_link_icon,
         contentDescription = R.string.app_openLinkExternally,
-        traversalIndex = CONTACT_LINK_TRAVERSAL_ORDER
+        traversalIndex = CONTACT_LINK_TRAVERSAL_ORDER,
     ) {
         onContactClick()
     }
@@ -337,11 +340,11 @@ internal fun AboutTheAppSection(
     showBiometricsOption: Boolean,
     onBiometrics: () -> Unit,
     onToggle: () -> Unit,
-    onPrivacyNoticeClick: () -> Unit
+    onPrivacyNoticeClick: () -> Unit,
 ) {
     HeadingRow(text = R.string.app_settingsSubtitle2, traversalIndex = ABOUT_TRAVERSAL_ORDER)
     Column(
-        modifier = Modifier.semantics(mergeDescendants = true) { }
+        modifier = Modifier.semantics(mergeDescendants = true) { },
     ) {
         // Remove feature flag check once epic completed
         if (showBiometricsOption) {
@@ -349,26 +352,29 @@ internal fun AboutTheAppSection(
                 title = R.string.app_settingsBiometricsField,
                 icon = R.drawable.arrow_right_icon,
                 onClick = onBiometrics,
-                traversalIndex = BIOMETRICS_OPT_IN_TRAVERSAL_ORDER
+                traversalIndex = BIOMETRICS_OPT_IN_TRAVERSAL_ORDER,
             )
         }
         PreferenceToggleRow(
             title = R.string.app_settingsAnalyticsToggle,
             checked = optInState,
-            onToggle = { onToggle() }
+            onToggle = { onToggle() },
         )
         PrivacyNotice(
             Modifier
                 .padding(smallPadding),
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            ),
-            privacyNoticeString = stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnote
-            ),
-            privacyNoticeLink = stringResource(
-                id = R.string.app_settingsAnalyticsToggleFootnoteLink
-            )
+            style =
+                MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            privacyNoticeString =
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnote,
+                ),
+            privacyNoticeLink =
+                stringResource(
+                    id = R.string.app_settingsAnalyticsToggleFootnoteLink,
+                ),
         ) {
             onPrivacyNoticeClick()
         }
@@ -379,7 +385,7 @@ internal fun AboutTheAppSection(
 @Composable
 private fun HeadingRow(
     @StringRes text: Int,
-    traversalIndex: Float
+    traversalIndex: Float,
 ) {
     GdsHeading(
         text = stringResource(text),
@@ -387,10 +393,11 @@ private fun HeadingRow(
         textFontWeight = FontWeight.Bold,
         textAlign = GdsHeadingAlignment.LeftAligned,
         style = GdsHeadingStyle.Title3,
-        modifier = Modifier
-            .padding(all = smallPadding)
-            .background(color = MaterialTheme.colorScheme.background)
-            .semantics { this.traversalIndex = traversalIndex }
+        modifier =
+            Modifier
+                .padding(all = smallPadding)
+                .background(color = MaterialTheme.colorScheme.background)
+                .semantics { this.traversalIndex = traversalIndex },
     )
 }
 
@@ -401,54 +408,59 @@ private fun LinkRow(
     description: String? = null,
     contentDescription: Int? = null,
     traversalIndex: Float,
-    onClick: () -> Unit = { }
+    onClick: () -> Unit = { },
 ) {
     Box(
-        modifier = Modifier
-            .clickable(onClick = onClick)
-            .background(color = GdsLocalColorScheme.current.listBackground)
-            .fillMaxWidth()
-            .semantics(mergeDescendants = true) { this.traversalIndex = traversalIndex }
+        modifier =
+            Modifier
+                .clickable(onClick = onClick)
+                .background(color = GdsLocalColorScheme.current.listBackground)
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) { this.traversalIndex = traversalIndex },
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = smallPadding),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = smallPadding),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = smallPadding)
-                        .padding(top = smallPadding)
-                        .padding(bottom = if (description == null) smallPadding else 4.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(end = smallPadding)
+                            .padding(top = smallPadding)
+                            .padding(bottom = if (description == null) smallPadding else 4.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     text = stringResource(title),
-                    textAlign = TextAlign.Left
+                    textAlign = TextAlign.Left,
                 )
                 description?.let {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                bottom = smallPadding,
-                                end = 64.dp
-                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    bottom = smallPadding,
+                                    end = 64.dp,
+                                ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         text = it,
-                        textAlign = TextAlign.Left
+                        textAlign = TextAlign.Left,
                     )
                 }
             }
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = contentDescription?.let { stringResource(it) } ?: "",
-                modifier = Modifier
-                    .size(24.dp),
-                tint = MaterialTheme.colorScheme.onBackground
+                modifier =
+                    Modifier
+                        .size(24.dp),
+                tint = MaterialTheme.colorScheme.onBackground,
             )
         }
     }
@@ -459,43 +471,41 @@ private fun LinkRow(
 internal fun PreferenceToggleRow(
     @StringRes title: Int,
     checked: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
 ) {
     var toggle by remember { mutableStateOf(false) }
     toggle = checked
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth()
-            .background(color = GdsLocalColorScheme.current.listBackground)
-            .semantics {
-                traversalIndex = ANALYTICS_TOGGLE_TRAVERSAL_ORDER
-            }
-            .toggleable(
-                value = toggle,
-                role = Role.Switch,
-                onValueChange = {
-                    toggle = !toggle
-                    onToggle()
-                }
-            )
-            .padding(
-                start = smallPadding,
-                end = smallPadding
-            )
-            .testTag(stringResource(id = R.string.optInSwitchTestTag))
+        modifier =
+            Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .background(color = GdsLocalColorScheme.current.listBackground)
+                .semantics {
+                    traversalIndex = ANALYTICS_TOGGLE_TRAVERSAL_ORDER
+                }.toggleable(
+                    value = toggle,
+                    role = Role.Switch,
+                    onValueChange = {
+                        toggle = !toggle
+                        onToggle()
+                    },
+                ).padding(
+                    start = smallPadding,
+                    end = smallPadding,
+                ).testTag(stringResource(id = R.string.optInSwitchTestTag)),
     ) {
         Text(
             modifier = Modifier.weight(1F),
             text = stringResource(title),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
         Switch(
             checked = toggle,
             onCheckedChange = null,
-            colors = Switch.defaultColors()
+            colors = Switch.defaultColors(),
         )
     }
     HorizontalDivider()
@@ -506,23 +516,24 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(top = mediumPadding)
-            .defaultMinSize(minHeight = 56.dp)
-            .fillMaxWidth()
-            .background(color = GdsLocalColorScheme.current.listBackground)
-            .clickable {
-                openSignOutScreen()
-            }
-            .semantics { traversalIndex = SIGN_OUT_TRAVERSAL_ORDER }
+        modifier =
+            Modifier
+                .padding(top = mediumPadding)
+                .defaultMinSize(minHeight = 56.dp)
+                .fillMaxWidth()
+                .background(color = GdsLocalColorScheme.current.listBackground)
+                .clickable {
+                    openSignOutScreen()
+                }.semantics { traversalIndex = SIGN_OUT_TRAVERSAL_ORDER },
     ) {
         Text(
-            modifier = Modifier
-                .padding(all = smallPadding)
-                .defaultMinSize(minHeight = 24.dp),
+            modifier =
+                Modifier
+                    .padding(all = smallPadding)
+                    .defaultMinSize(minHeight = 24.dp),
             style = MaterialTheme.typography.bodyMedium,
             text = stringResource(R.string.app_signOutButton),
-            color = GdsLocalColorScheme.current.nativeButtonText
+            color = GdsLocalColorScheme.current.nativeButtonText,
         )
     }
 }
@@ -537,17 +548,18 @@ internal fun SettingsScreenOptOutShowBiometricsPreview() {
                 paddingValues = PaddingValues(all = smallPadding),
                 email = "name@place.gov.uk",
                 optInState = false,
-                viewModelFunctions = ViewModelFunctions(
-                    showBiometricsOption = true,
-                    {},
-                    {},
-                    {},
-                    {}
-                ),
+                viewModelFunctions =
+                    ViewModelFunctions(
+                        showBiometricsOption = true,
+                        {},
+                        {},
+                        {},
+                        {},
+                    ),
                 analyticsViewModelFunctions =
-                AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+                    AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
                 uriHandler = LocalUriHandler.current,
-                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
+                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", ""),
             )
         }
     }
@@ -564,17 +576,18 @@ internal fun SettingsScreenOptInNoShowBiometricsPreview() {
                 paddingValues = PaddingValues(all = smallPadding),
                 email = "name@place.gov.uk",
                 optInState = true,
-                viewModelFunctions = ViewModelFunctions(
-                    showBiometricsOption = false,
-                    {},
-                    {},
-                    {},
-                    {}
-                ),
+                viewModelFunctions =
+                    ViewModelFunctions(
+                        showBiometricsOption = false,
+                        {},
+                        {},
+                        {},
+                        {},
+                    ),
                 analyticsViewModelFunctions =
-                AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
+                    AnalyticsViewModelFunctions({}, {}, {}, {}, {}, {}, {}, {}),
                 uriHandler = LocalUriHandler.current,
-                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", "")
+                settingsScreenLinks = SettingsScreenLinks("", "", "", "", "", "", ""),
             )
         }
     }

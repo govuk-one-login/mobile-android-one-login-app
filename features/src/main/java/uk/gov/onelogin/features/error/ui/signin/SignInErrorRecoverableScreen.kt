@@ -21,7 +21,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 @Preview
 fun SignInErrorRecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),
-    viewModel: SignInErrorRecoverableViewModel = hiltViewModel()
+    viewModel: SignInErrorRecoverableViewModel = hiltViewModel(),
 ) {
     GdsTheme {
         BackHandler(true) {
@@ -39,22 +39,21 @@ fun SignInErrorRecoverableScreen(
 }
 
 @Composable
-private fun SignInErrorBody(
-    onPrimary: () -> Unit
-) {
+private fun SignInErrorBody(onPrimary: () -> Unit) {
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_signInErrorTitle),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_signInErrorRecoverableBody)
-            )
-        ),
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_signInErrorRecoverableBody),
+                ),
+            ),
         primaryButton =
-        CentreAlignedScreenButton(
-            text = stringResource(R.string.app_tryAgainButton),
-            onClick = onPrimary
-        )
+            CentreAlignedScreenButton(
+                text = stringResource(R.string.app_tryAgainButton),
+                onClick = onPrimary,
+            ),
     )
 }
 

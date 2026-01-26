@@ -50,20 +50,22 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
                 setOf(CriOrchestratorFeatureFlag.ENABLED)
             )
         navigator = mock()
-        criOrchestratorSdk = CriOrchestratorSdk.create(
-            authenticatedHttpClient = httpClient,
-            analyticsLogger = analyticsLogger,
-            initialConfig = TestUtils.criSdkConfig,
-            logger = logger,
-            applicationContext = context
-        )
+        criOrchestratorSdk =
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = httpClient,
+                analyticsLogger = analyticsLogger,
+                initialConfig = TestUtils.criSdkConfig,
+                logger = logger,
+                applicationContext = context
+            )
         walletRepository = mock()
-        viewModel = HomeScreenViewModel(
-            featureFlags,
-            navigator,
-            walletRepository,
-            criOrchestratorSdk
-        )
+        viewModel =
+            HomeScreenViewModel(
+                featureFlags,
+                navigator,
+                walletRepository,
+                criOrchestratorSdk
+            )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
         composeTestRule.setupComposeTestRule { _ ->
@@ -78,7 +80,8 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
 
     @Test
     fun homeScreenDisplayed() {
-        composeTestRule.onNodeWithText("Developer Panel", useUnmergedTree = true)
+        composeTestRule
+            .onNodeWithText("Developer Panel", useUnmergedTree = true)
             .assertDoesNotExist()
     }
 }

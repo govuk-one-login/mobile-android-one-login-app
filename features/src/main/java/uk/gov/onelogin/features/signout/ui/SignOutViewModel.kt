@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.signout.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -13,30 +12,33 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import javax.inject.Inject
 
 @HiltViewModel
-class SignOutViewModel @Inject constructor(
-    private val navigator: Navigator,
-    private val signOutUseCase: SignOutUseCase,
-    private val logger: Logger
-) : ViewModel() {
-    private val _loadingState = MutableStateFlow(false)
-    val loadingState = _loadingState.asStateFlow()
+class SignOutViewModel
+    @Inject
+    constructor(
+        private val navigator: Navigator,
+        private val signOutUseCase: SignOutUseCase,
+        private val logger: Logger,
+    ) : ViewModel() {
+        private val _loadingState = MutableStateFlow(false)
+        val loadingState = _loadingState.asStateFlow()
 
-    fun signOut() {
-        _loadingState.value = true
-        viewModelScope.launch {
-            try {
-                signOutUseCase.invoke()
-                navigator.navigate(SignOutRoutes.Success)
-            } catch (e: SignOutError) {
-                logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
-                navigator.navigate(ErrorRoutes.SignOut, false)
+        fun signOut() {
+            _loadingState.value = true
+            viewModelScope.launch {
+                try {
+                    signOutUseCase.invoke()
+                    navigator.navigate(SignOutRoutes.Success)
+                } catch (e: SignOutError) {
+                    logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
+                    navigator.navigate(ErrorRoutes.SignOut, false)
+                }
             }
         }
-    }
 
-    fun goBack() {
-        navigator.goBack()
+        fun goBack() {
+            navigator.goBack()
+        }
     }
-}

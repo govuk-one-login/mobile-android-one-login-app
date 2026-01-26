@@ -24,10 +24,9 @@ class RemoveTokenExpiryTest {
         whenever(
             mockContext.getSharedPreferences(
                 eq(AuthTokenStoreKeys.TOKEN_SHARED_PREFS),
-                eq(Context.MODE_PRIVATE)
-            )
-        )
-            .thenReturn(mockSharedPreferences)
+                eq(Context.MODE_PRIVATE),
+            ),
+        ).thenReturn(mockSharedPreferences)
         whenever(mockSharedPreferences.edit()).thenReturn(mockEditor)
 
         useCase = RemoveTokenExpiryImpl(mockContext)

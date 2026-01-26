@@ -22,7 +22,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.wallet.core.R as walletR
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -33,6 +32,7 @@ import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.wallet.WalletRepositoryModule
+import uk.gov.android.wallet.core.R as walletR
 
 @HiltAndroidTest
 @UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)
@@ -61,9 +61,10 @@ class MainNavScreenTest : TestCase() {
 
     @Before
     fun setup() {
-        navController = TestNavHostController(context).apply {
-            navigatorProvider.addNavigator(ComposeNavigator())
-        }
+        navController =
+            TestNavHostController(context).apply {
+                navigatorProvider.addNavigator(ComposeNavigator())
+            }
     }
 
     @Test
@@ -83,7 +84,7 @@ class MainNavScreenTest : TestCase() {
 
         assertEquals(
             BottomNavDestination.Home.key,
-            navController.currentDestination?.route
+            navController.currentDestination?.route,
         )
         verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeHomeButtonEvent(context))
     }
@@ -98,13 +99,14 @@ class MainNavScreenTest : TestCase() {
         composeTestRule.onNode(walletTab).performClick()
         assertTrue(
             navController.currentDestination?.route?.contains(
-                BottomNavDestination.Wallet.key
-            ) ?: false
+                BottomNavDestination.Wallet.key,
+            ) ?: false,
         )
 
-        composeTestRule.onNodeWithText(
-            resources.getString(walletR.string.intro_card_title)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(walletR.string.intro_card_title),
+            ).assertIsDisplayed()
 
         verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))
     }
@@ -118,7 +120,7 @@ class MainNavScreenTest : TestCase() {
 
         assertEquals(
             BottomNavDestination.Settings.key,
-            navController.currentDestination?.route
+            navController.currentDestination?.route,
         )
 
         composeTestRule.onAllNodes(settingsTab).assertCountEquals(2)
@@ -135,8 +137,8 @@ class MainNavScreenTest : TestCase() {
 
         assertTrue(
             navController.currentDestination?.route?.contains(
-                BottomNavDestination.Wallet.key
-            ) ?: false
+                BottomNavDestination.Wallet.key,
+            ) ?: false,
         )
     }
 

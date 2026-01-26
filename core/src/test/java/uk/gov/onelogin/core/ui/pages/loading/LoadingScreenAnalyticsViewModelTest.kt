@@ -38,7 +38,7 @@ class LoadingScreenAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         name = context.getString(R.string.app_loadingBody)
         id = context.getString(R.string.app_loading_page_id)
@@ -52,7 +52,7 @@ class LoadingScreenAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackLoadingScreenEvent()
@@ -61,7 +61,7 @@ class LoadingScreenAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(event, FALSE)
+            GAUtils.containsIsError(event, FALSE),
         )
     }
 
@@ -70,7 +70,7 @@ class LoadingScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = nativeBackBtn,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackBackButton()

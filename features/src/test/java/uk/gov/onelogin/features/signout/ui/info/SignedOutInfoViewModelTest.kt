@@ -1,8 +1,5 @@
 package uk.gov.onelogin.features.signout.ui.info
 
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,6 +24,9 @@ import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -39,11 +39,12 @@ class SignedOutInfoViewModelTest {
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
     private val analyticsLogger: AnalyticsLogger = mock()
     private val logger = SystemLogger()
-    private val credentialChecker: LocalAuthManager = LocalAuthManagerImpl(
-        localAuthPrefRepo = localAuthPreferenceRepo,
-        deviceBiometricsManager = deviceBiometricsManager,
-        analyticsLogger = analyticsLogger
-    )
+    private val credentialChecker: LocalAuthManager =
+        LocalAuthManagerImpl(
+            localAuthPrefRepo = localAuthPreferenceRepo,
+            deviceBiometricsManager = deviceBiometricsManager,
+            analyticsLogger = analyticsLogger
+        )
     private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase =
         LocalAuthPrefResetUseCaseImpl(
             localAuthPreferenceRepo,

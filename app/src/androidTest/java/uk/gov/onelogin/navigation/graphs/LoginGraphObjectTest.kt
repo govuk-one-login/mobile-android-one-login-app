@@ -29,7 +29,6 @@ import uk.gov.onelogin.utils.TestUtils.appInfoData
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
 class LoginGraphObjectTest : TestCase() {
-
     @BindValue
     val appInfoService: AppInfoService = mock()
 
@@ -45,7 +44,7 @@ class LoginGraphObjectTest : TestCase() {
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             NavHost(
                 navController = navController,
-                startDestination = LoginRoutes.Root.getRoute()
+                startDestination = LoginRoutes.Root.getRoute(),
             ) {
                 loginGraph(navController)
             }
@@ -61,9 +60,10 @@ class LoginGraphObjectTest : TestCase() {
             navController.setCurrentDestination(LoginRoutes.Loading.getRoute())
         }
 
-        val progressIndicator = composeTestRule.onNodeWithTag(
-            LOADING_SCREEN_PROGRESS_INDICATOR
-        )
+        val progressIndicator =
+            composeTestRule.onNodeWithTag(
+                LOADING_SCREEN_PROGRESS_INDICATOR,
+            )
         composeTestRule.waitUntil(TIMEOUT) {
             progressIndicator.isDisplayed()
         }
@@ -76,9 +76,10 @@ class LoginGraphObjectTest : TestCase() {
             navController.setCurrentDestination(LoginRoutes.SignInRecoverableError.getRoute())
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signInErrorTitle)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_signInErrorTitle),
+            ).assertIsDisplayed()
     }
 
     @Test
@@ -87,8 +88,9 @@ class LoginGraphObjectTest : TestCase() {
             navController.setCurrentDestination(LoginRoutes.AnalyticsOptIn.getRoute())
         }
 
-        composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_analyticsPermissionBody)
-        ).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_analyticsPermissionBody),
+            ).assertIsDisplayed()
     }
 }

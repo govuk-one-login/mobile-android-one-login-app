@@ -33,6 +33,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           lfs: 'true'
+          submodules: 'true'
           fetch-depth: 0
 
       - name: Detect Arch
@@ -40,7 +41,10 @@ jobs:
         uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
@@ -55,11 +59,11 @@ jobs:
 
       - name: Generate version code
         id: version-code
-        uses: ./config/actions/generate-version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
 
       - name: Generate version name
         id: version-name
-        uses: ./config/actions/version-name
+        uses: ./mobile-android-pipelines/actions/version-name
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
@@ -93,7 +97,7 @@ jobs:
 
       - name: Clean workspace
         if: always()
-        uses: ./config/actions/clean-workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
 
   bundle-and-publish:
     name: Bundle and publish app
@@ -112,10 +116,14 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           lfs: 'true'
+          submodules: 'true'
           fetch-depth: 0
 
       - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Retrieve secrets
         uses: ./config/actions/retrieve-secrets
@@ -149,4 +157,4 @@ jobs:
 
       - name: Clean workspace
         if: always()
-        uses: ./config/actions/clean-workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace

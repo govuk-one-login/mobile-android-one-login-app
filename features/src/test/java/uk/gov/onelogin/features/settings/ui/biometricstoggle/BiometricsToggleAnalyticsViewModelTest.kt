@@ -28,23 +28,25 @@ class BiometricsToggleAnalyticsViewModelTest {
 
     @Before
     fun setUp() {
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
+            )
         logger = mock()
         viewModel = BiometricsToggleAnalyticsViewModel(context, logger)
     }
 
     @Test
     fun testWalletScreenEvent() {
-        val event = TestUtils.TrackEventTestCase.Screen(
-            trackFunction = {
-                viewModel.trackWalletCopyView()
-            },
-            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-            id = context.getEnglishString(R.string.biometrics_toggle_wallet_id)
-        )
+        val event =
+            TestUtils.TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackWalletCopyView()
+                },
+                name = context.getEnglishString(R.string.app_biometricsToggleTitle),
+                id = context.getEnglishString(R.string.biometrics_toggle_wallet_id)
+            )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
         verify(logger).logEventV3Dot1(result)
@@ -52,13 +54,14 @@ class BiometricsToggleAnalyticsViewModelTest {
 
     @Test
     fun testNoWalletScreenEvent() {
-        val event = TestUtils.TrackEventTestCase.Screen(
-            trackFunction = {
-                viewModel.trackNoWalletCopyView()
-            },
-            name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-            id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id)
-        )
+        val event =
+            TestUtils.TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackNoWalletCopyView()
+                },
+                name = context.getEnglishString(R.string.app_biometricsToggleTitle),
+                id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id)
+            )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
         verify(logger).logEventV3Dot1(result)

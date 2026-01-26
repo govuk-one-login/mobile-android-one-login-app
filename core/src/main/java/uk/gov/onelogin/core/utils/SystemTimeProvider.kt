@@ -36,15 +36,15 @@ interface TimeProvider {
 
 class SystemTimeProvider : TimeProvider {
     override fun thirtyDaysFromNowTimestampInSeconds(): Long {
-        val result = Instant.now()
-            .plus(THIRTY, ChronoUnit.DAYS)
-            .epochSecond
+        val result =
+            Instant
+                .now()
+                .plus(THIRTY, ChronoUnit.DAYS)
+                .epochSecond
         return result
     }
 
-    override fun calculateExpiryTime(expiredInSeconds: Long): Long {
-        return Instant.now().epochSecond + expiredInSeconds
-    }
+    override fun calculateExpiryTime(expiredInSeconds: Long): Long = Instant.now().epochSecond + expiredInSeconds
 
     companion object {
         private const val THIRTY: Long = 30

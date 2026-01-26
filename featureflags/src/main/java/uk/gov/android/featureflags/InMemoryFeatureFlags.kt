@@ -8,9 +8,9 @@ package uk.gov.android.featureflags
  * features won't be within this collection.
  */
 data class InMemoryFeatureFlags(
-    private var enabledFeatureFlags: MutableSet<FeatureFlag>
-) : FeatureFlags, Iterable<FeatureFlag> {
-
+    private var enabledFeatureFlags: MutableSet<FeatureFlag>,
+) : FeatureFlags,
+    Iterable<FeatureFlag> {
     /**
      * Secondary constructor that accepts a variable length of [FeatureFlag] objects.
      *
@@ -28,15 +28,13 @@ data class InMemoryFeatureFlags(
      * @param enabledFeatureFlags The parameter list of enabled features.
      */
     constructor(vararg enabledFeatureFlags: FeatureFlag) : this(
-        enabledFeatureFlags.toMutableSet()
+        enabledFeatureFlags.toMutableSet(),
     )
     constructor(enabledFeatureFlags: Iterable<FeatureFlag>) : this(
-        enabledFeatureFlags.toMutableSet()
+        enabledFeatureFlags.toMutableSet(),
     )
 
-    override operator fun get(
-        vararg flags: FeatureFlag
-    ) = this.enabledFeatureFlags.containsAll(flags.toSet())
+    override operator fun get(vararg flags: FeatureFlag) = this.enabledFeatureFlags.containsAll(flags.toSet())
 
     override operator fun iterator() = this.enabledFeatureFlags.iterator()
 
@@ -52,10 +50,11 @@ data class InMemoryFeatureFlags(
      * the provided array of features.
      */
     operator fun plus(flags: Iterable<FeatureFlag>): InMemoryFeatureFlags {
-        val enabledFeatures = mutableSetOf<FeatureFlag>().apply {
-            addAll(enabledFeatureFlags)
-            addAll(flags)
-        }
+        val enabledFeatures =
+            mutableSetOf<FeatureFlag>().apply {
+                addAll(enabledFeatureFlags)
+                addAll(flags)
+            }
 
         return InMemoryFeatureFlags(enabledFeatures)
     }
@@ -92,10 +91,11 @@ data class InMemoryFeatureFlags(
      * and the provided set of features.
      */
     operator fun minus(flags: Iterable<FeatureFlag>): InMemoryFeatureFlags {
-        val enabledFeatures = mutableSetOf<FeatureFlag>().apply {
-            addAll(enabledFeatureFlags)
-            removeAll(flags.toSet())
-        }
+        val enabledFeatures =
+            mutableSetOf<FeatureFlag>().apply {
+                addAll(enabledFeatureFlags)
+                removeAll(flags.toSet())
+            }
 
         return InMemoryFeatureFlags(enabledFeatures)
     }

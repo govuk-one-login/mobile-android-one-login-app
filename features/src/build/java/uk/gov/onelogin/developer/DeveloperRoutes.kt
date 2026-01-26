@@ -12,13 +12,13 @@ object DeveloperRoutes {
     const val START: String = "$ROOT/start"
 
     fun NavGraphBuilder.developerFlowRoutes(navController: NavHostController) {
-        if (DeveloperTools.isDeveloperPanelEnabled()) {
+        if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
             navigation(
                 route = ROOT,
-                startDestination = START
+                startDestination = START,
             ) {
                 composable(
-                    route = START
+                    route = START,
                 ) {
                     TabView {
                         navController.popBackStack()
@@ -29,6 +29,6 @@ object DeveloperRoutes {
     }
 
     fun NavHostController.navigateToDeveloperPanel() {
-        if (DeveloperTools.isDeveloperPanelEnabled()) this.navigateSingleTopTo(ROOT)
+        if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) this.navigateSingleTopTo(ROOT)
     }
 }

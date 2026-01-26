@@ -48,7 +48,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
@@ -58,12 +57,13 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun SplashScreen(
     viewModel: SplashScreenViewModel = hiltViewModel(),
     analyticsViewModel: SplashScreenAnalyticsViewModel = hiltViewModel(),
-    optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel()
+    optInRequirementViewModel: OptInRequirementViewModel = hiltViewModel(),
 ) {
     val context = LocalActivity.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -81,7 +81,7 @@ fun SplashScreen(
         loading = loading.value,
         trackUnlockButton = { analyticsViewModel.trackUnlockButton() },
         onLogin = { viewModel.login(context) },
-        onOpenDeveloperPortal = { viewModel.navigateToDevPanel() }
+        onOpenDeveloperPortal = { viewModel.navigateToDevPanel() },
     )
 
     DisposableEffect(key1 = lifecycleOwner) {
@@ -106,7 +106,7 @@ fun SplashScreen(
 private fun handleOptInRequired(
     isRequired: Boolean,
     viewModel: SplashScreenViewModel,
-    context: FragmentActivity
+    context: FragmentActivity,
 ) {
     when {
         isRequired -> viewModel.navigateToAnalyticsOptIn()
@@ -123,11 +123,11 @@ internal fun SplashBody(
     loading: Boolean,
     trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
-    onOpenDeveloperPortal: () -> Unit
+    onOpenDeveloperPortal: () -> Unit,
 ) {
     val displayUnlock = isUnlock && !loading
     SubcomposeLayout(
-        modifier = Modifier.background(colorResource(R.color.govuk_blue))
+        modifier = Modifier.background(colorResource(R.color.govuk_blue)),
     ) { constraints ->
         // Get full specs of device
         val fullHeight = constraints.maxHeight
@@ -137,13 +137,15 @@ internal fun SplashBody(
         // Measure crown icon and create slot to be displayed
         val crownPlaceable = createSubcomposeCrown()
         // Measure loading spinner and/ or unlock text and create slot to be displayed
-        val dynamicContentPlaceable = subcompose("content") {
-            if (displayUnlock) UnlockButton(trackUnlockButton, onLogin) else LoadingIndicator()
-        }.first().measure(Constraints(maxWidth = fullWidth))
+        val dynamicContentPlaceable =
+            subcompose("content") {
+                if (displayUnlock) UnlockButton(trackUnlockButton, onLogin) else LoadingIndicator()
+            }.first().measure(Constraints(maxWidth = fullWidth))
         // Measure unlock button height to be used to enable equal space distribution between the logo, crown and loading spinner (when this is displayed)
-        val loadingSpinnerHeight = subcompose("loading spinner") {
-            LoadingIndicator()
-        }.first().measure(Constraints(maxWidth = fullWidth)).height
+        val loadingSpinnerHeight =
+            subcompose("loading spinner") {
+                LoadingIndicator()
+            }.first().measure(Constraints(maxWidth = fullWidth)).height
 
         // Calculate logo height
         val imageHeight = logoPlaceable.maxOf { it.height }
@@ -171,12 +173,12 @@ internal fun SplashBody(
             }
             crownPlaceable.placeRelative(
                 x = (fullWidth - crownPlaceable.width) / 2,
-                y = crownY.roundToInt()
+                y = crownY.roundToInt(),
             )
             if (displayUnlock || loading) {
                 dynamicContentPlaceable.placeRelative(
                     x = (fullWidth - dynamicContentPlaceable.width) / 2,
-                    y = if (loading) loadingY.roundToInt() else unlockY.roundToInt()
+                    y = if (loading) loadingY.roundToInt() else unlockY.roundToInt(),
                 )
             }
         }
@@ -185,29 +187,30 @@ internal fun SplashBody(
 
 private fun SubcomposeMeasureScope.createSubcomposeLogo(
     onOpenDeveloperPortal: () -> Unit,
-    constraints: Constraints
+    constraints: Constraints,
 ): List<Placeable> {
-    val imagePlaceable = subcompose("logo") {
-        Icon(
-            painter = painterResource(R.drawable.ic_splash_logo),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(stringResource(id = R.string.splashLogoTestTag))
-                .then(
-                    // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
-                    if (DeveloperTools.isDeveloperPanelEnabled()) {
-                        Modifier.clickable(enabled = DeveloperTools.isDeveloperPanelEnabled()) {
-                            onOpenDeveloperPortal()
-                        }
-                    } else {
-                        Modifier
-                    }
-                )
-                .semantics { hideFromAccessibility() }
-        )
-    }.map { it.measure(constraints = constraints) }
+    val imagePlaceable =
+        subcompose("logo") {
+            Icon(
+                painter = painterResource(R.drawable.ic_splash_logo),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag(stringResource(id = R.string.splashLogoTestTag))
+                        .then(
+                            // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
+                            if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                Modifier.clickable(enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                    onOpenDeveloperPortal()
+                                }
+                            } else {
+                                Modifier
+                            },
+                        ).semantics { hideFromAccessibility() },
+            )
+        }.map { it.measure(constraints = constraints) }
     return imagePlaceable
 }
 
@@ -217,36 +220,41 @@ private fun SubcomposeMeasureScope.createSubcomposeCrown() =
             painter = painterResource(R.drawable.ic_tudor_crown),
             contentDescription = null,
             tint = Color.White,
-            modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag))
+            modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
         )
     }.first().measure(Constraints())
 
 @Composable
-private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
+private fun UnlockButton(
+    trackUnlockButton: () -> Unit,
+    onLogin: () -> Unit,
+) {
     Button(
-        colors = ButtonColors(
-            containerColor = Color.Transparent,
-            contentColor = Color.White,
-            disabledContainerColor = Color.Transparent,
-            disabledContentColor = Color.Gray
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = smallPadding)
-            .semantics(true) {}
-            .testTag(stringResource(R.string.splashUnlockBtnTestTag)),
+        colors =
+            ButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = Color.White,
+                disabledContainerColor = Color.Transparent,
+                disabledContentColor = Color.Gray,
+            ),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = smallPadding)
+                .semantics(true) {}
+                .testTag(stringResource(R.string.splashUnlockBtnTestTag)),
         contentPadding = PaddingValues(0.dp),
         onClick = {
             trackUnlockButton()
             onLogin()
-        }
+        },
     ) {
         Text(
             text = stringResource(R.string.app_unlockButton),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.W600,
-            color = Color.White
+            color = Color.White,
         )
     }
 }
@@ -256,42 +264,44 @@ internal fun LoadingIndicator() {
     val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
     val loadingContentDescription = stringResource(R.string.app_loading_content_desc)
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = smallPadding,
-                end = smallPadding,
-                bottom = PROGRESS_BAR
-            )
-            .focusGroup()
-            .semantics(true) { contentDescription = loadingContentDescription }
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = smallPadding,
+                    end = smallPadding,
+                    bottom = PROGRESS_BAR,
+                ).focusGroup()
+                .semantics(true) { contentDescription = loadingContentDescription },
     ) {
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = smallPadding)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = smallPadding),
         ) {
             CircularProgressIndicator(
                 color = colorResource(id = R.color.govuk_blue),
                 trackColor = MaterialTheme.colorScheme.onPrimary,
                 strokeCap = StrokeCap.Square,
-                modifier = Modifier
-                    .width(PROGRESS_BAR)
-                    .height(PROGRESS_BAR)
-                    .semantics { hideFromAccessibility() }
-                    .testTag(stringResource(R.string.splashLoadingSpinnerTestTag))
+                modifier =
+                    Modifier
+                        .width(PROGRESS_BAR)
+                        .height(PROGRESS_BAR)
+                        .semantics { hideFromAccessibility() }
+                        .testTag(stringResource(R.string.splashLoadingSpinnerTestTag)),
             )
         }
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text = loadingText,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
-                modifier = Modifier.semantics { hideFromAccessibility() }
+                modifier = Modifier.semantics { hideFromAccessibility() },
             )
         }
     }
@@ -308,7 +318,7 @@ internal fun SplashScreenPreview() {
             loading = false,
             trackUnlockButton = {},
             onLogin = {},
-            onOpenDeveloperPortal = {}
+            onOpenDeveloperPortal = {},
         )
     }
 }
@@ -324,7 +334,7 @@ internal fun UnlockScreenPreview() {
             loading = false,
             trackUnlockButton = {},
             onLogin = {},
-            onOpenDeveloperPortal = {}
+            onOpenDeveloperPortal = {},
         )
     }
 }
@@ -340,7 +350,7 @@ internal fun LoadingSplashScreenPreview() {
             loading = true,
             trackUnlockButton = {},
             onLogin = {},
-            onOpenDeveloperPortal = {}
+            onOpenDeveloperPortal = {},
         )
     }
 }

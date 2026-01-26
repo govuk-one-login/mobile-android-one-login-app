@@ -5,7 +5,6 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,6 +14,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class SignOutSuccessTest : FragmentActivityTestCase() {
@@ -79,9 +79,7 @@ class SignOutSuccessTest : FragmentActivityTestCase() {
         }
     }
 
-    private fun setupContent(
-        viewModel: SignOutSuccessViewModel
-    ) {
+    private fun setupContent(viewModel: SignOutSuccessViewModel) {
         composeTestRule.setContent {
             SignOutSuccess(viewModel)
         }

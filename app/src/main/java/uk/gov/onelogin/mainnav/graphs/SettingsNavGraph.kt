@@ -8,9 +8,7 @@ import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleScr
 import uk.gov.onelogin.features.settings.ui.ossl.OsslScreen
 
 object SettingsNavGraph {
-    fun NavGraphBuilder.settingsGraph(
-        navController: NavController
-    ) {
+    fun NavGraphBuilder.settingsGraph(navController: NavController) {
         composable(SettingsRoutes.Ossl.getRoute()) {
             OsslScreen {
                 navController.popBackStack()

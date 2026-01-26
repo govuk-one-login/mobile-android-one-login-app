@@ -4,7 +4,10 @@ import uk.gov.logging.api.analytics.logging.IS_ERROR
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 
 object GAUtils {
-    fun containsIsError(viewEvent: ViewEvent, expectedValue: String): Boolean {
+    fun containsIsError(
+        viewEvent: ViewEvent,
+        expectedValue: String,
+    ): Boolean {
         val map = viewEvent.asMap()
         return map[IS_ERROR] != null &&
             map[IS_ERROR] is String &&

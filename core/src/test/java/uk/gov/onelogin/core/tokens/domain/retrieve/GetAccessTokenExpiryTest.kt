@@ -18,53 +18,58 @@ class GetAccessTokenExpiryTest {
     }
 
     @Test
-    fun `returns null when value does not exist`() = runTest {
-        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "0"))
+    fun `returns null when value does not exist`() =
+        runTest {
+            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "0"))
 
-        val result = useCase()
+            val result = useCase()
 
-        assertEquals(null, result)
-    }
-
-    @Test
-    fun `returns null when value is not a number`() = runTest {
-        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "a"))
-
-        val result = useCase()
-
-        assertEquals(null, result)
-    }
+            assertEquals(null, result)
+        }
 
     @Test
-    fun `returns null when value null`() = runTest {
-        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-            .thenReturn(null)
+    fun `returns null when value is not a number`() =
+        runTest {
+            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "a"))
 
-        val result = useCase()
+            val result = useCase()
 
-        assertEquals(null, result)
-    }
-
-    @Test
-    fun `returns null when expiry value does not exist`() = runTest {
-        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-            .thenReturn(mapOf())
-
-        val result = useCase()
-
-        assertEquals(null, result)
-    }
+            assertEquals(null, result)
+        }
 
     @Test
-    fun `returns expiry value successfully`() = runTest {
-        val expectedExpiryValue = 123L
-        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
+    fun `returns null when value null`() =
+        runTest {
+            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+                .thenReturn(null)
 
-        val result = useCase()
+            val result = useCase()
 
-        assertEquals(expectedExpiryValue, result)
-    }
+            assertEquals(null, result)
+        }
+
+    @Test
+    fun `returns null when expiry value does not exist`() =
+        runTest {
+            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+                .thenReturn(mapOf())
+
+            val result = useCase()
+
+            assertEquals(null, result)
+        }
+
+    @Test
+    fun `returns expiry value successfully`() =
+        runTest {
+            val expectedExpiryValue = 123L
+            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
+
+            val result = useCase()
+
+            assertEquals(expectedExpiryValue, result)
+        }
 }

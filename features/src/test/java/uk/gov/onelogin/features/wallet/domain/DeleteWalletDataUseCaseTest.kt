@@ -1,12 +1,12 @@
 package uk.gov.onelogin.features.wallet.domain
 
-import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdkImpl
+import kotlin.test.assertEquals
 
 class DeleteWalletDataUseCaseTest {
     private val walletSdk: WalletSdkImpl = mock()

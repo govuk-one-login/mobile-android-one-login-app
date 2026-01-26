@@ -22,7 +22,7 @@ class TokenRepositoryTest {
                 tokenType = "test",
                 accessToken = "test",
                 accessTokenExpirationTime = 1L,
-                idToken = "test"
+                idToken = "test",
             )
         repo.setTokenResponse(testResponse)
 
@@ -42,7 +42,7 @@ class TokenRepositoryTest {
                 tokenType = "test",
                 accessToken = "test",
                 accessTokenExpirationTime = 1L,
-                idToken = "test"
+                idToken = "test",
             )
         repo.setTokenResponse(testResponse)
 

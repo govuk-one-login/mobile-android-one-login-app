@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.navigation.domain
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,6 +15,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import kotlin.test.assertTrue
 
 class NavigatorImplTest {
     private val mockNavController: NavHostController = mock()

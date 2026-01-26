@@ -71,7 +71,7 @@ fun TabView(goBack: () -> Unit) {
             },
             TabItem(
                 R.string.app_developer_tab_feature_flags,
-                Icons.Filled.Settings
+                Icons.Filled.Settings,
             ) {
                 FeaturesScreen()
             },
@@ -80,33 +80,34 @@ fun TabView(goBack: () -> Unit) {
             },
             TabItem(
                 R.string.app_developer_tab_secure_store,
-                Icons.Filled.AccountBox
-            ) { SecureStoreScreen() }
+                Icons.Filled.AccountBox,
+            ) { SecureStoreScreen() },
         )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     Column(Modifier.background(MaterialTheme.colorScheme.background)) {
         CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White,
-                titleContentColor = Color.Gray
-            ),
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Gray,
+                ),
             title = {
                 Text(
                     "Developer Portal",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
                 )
             },
             navigationIcon = {
                 IconButton(onClick = { goBack() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = "Back",
                     )
                 }
-            }
+            },
         )
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -115,12 +116,13 @@ fun TabView(goBack: () -> Unit) {
             contentColor = Color.Gray,
             indicator = { tabPositions ->
                 SecondaryIndicator(
-                    modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[pagerState.currentPage])
-                        .fillMaxWidth(),
-                    color = Color.Black
+                    modifier =
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                            .fillMaxWidth(),
+                    color = Color.Black,
                 )
-            }
+            },
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
@@ -129,30 +131,30 @@ fun TabView(goBack: () -> Unit) {
                     content = {
                         Row(
                             horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(
                                 imageVector = tab.icon,
                                 contentDescription = stringResource(tab.title),
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(20.dp),
                             )
                             Text(
                                 text = stringResource(tab.title),
                                 modifier = Modifier.padding(8.dp),
                                 color =
-                                if (pagerState.currentPage == index) {
-                                    Color.Black
-                                } else {
-                                    Color.Gray
-                                }
+                                    if (pagerState.currentPage == index) {
+                                        Color.Black
+                                    } else {
+                                        Color.Gray
+                                    },
                             )
                         }
-                    }
+                    },
                 )
             }
         }
         HorizontalPager(
-            state = pagerState
+            state = pagerState,
         ) {
             tabs[pagerState.currentPage].screen()
         }
@@ -162,5 +164,5 @@ fun TabView(goBack: () -> Unit) {
 data class TabItem(
     @StringRes val title: Int,
     val icon: ImageVector,
-    val screen: @Composable () -> Unit
+    val screen: @Composable () -> Unit,
 )

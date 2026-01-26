@@ -46,13 +46,13 @@ import uk.gov.onelogin.developer.DeveloperTools
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
     analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
-    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel()
+    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
 ) {
     val loading by viewModel.loading.collectAsState()
     val context = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
             handleResult(result, viewModel, context)
         }
@@ -67,7 +67,7 @@ fun WelcomeScreen(
                 onSignIn = {
                     handleScreenExit(viewModel, analyticsViewModel, launcher)
                 },
-                openDevMenu = { viewModel.navigateToDevPanel() }
+                openDevMenu = { viewModel.navigateToDevPanel() },
             )
         }
     }
@@ -87,7 +87,7 @@ fun WelcomeScreen(
 private fun handleResult(
     result: ActivityResult,
     viewModel: WelcomeScreenViewModel,
-    context: FragmentActivity
+    context: FragmentActivity,
 ) {
     if (result.resultCode == Activity.RESULT_OK) {
         val intent = result.data
@@ -104,7 +104,7 @@ private fun handleResult(
 private fun handleScreenExit(
     viewModel: WelcomeScreenViewModel,
     analyticsViewModel: SignInAnalyticsViewModel,
-    launcher: ActivityResultLauncher<Intent>
+    launcher: ActivityResultLauncher<Intent>,
 ) {
     if (viewModel.onlineChecker.isOnline()) {
         viewModel.onPrimary(launcher)
@@ -119,27 +119,28 @@ private fun handleScreenExit(
 @Suppress("LongMethod")
 internal fun WelcomeBody(
     onSignIn: () -> Unit = { },
-    openDevMenu: () -> Unit = { }
+    openDevMenu: () -> Unit = { },
 ) {
     val title = stringResource(R.string.app_signInTitle)
-    val content = listOf(
-        stringResource(R.string.app_signInBody1),
-        stringResource(R.string.app_signInBody2)
-    )
+    val content =
+        listOf(
+            stringResource(R.string.app_signInBody1),
+            stringResource(R.string.app_signInBody2),
+        )
     val buttonText = stringResource(R.string.app_signInButton)
     val devButtonText = stringResource(R.string.app_developer_button)
     GdsTheme {
         CentreAlignedScreen(
             title = {
                 GdsHeading(
-                    text = title
+                    text = title,
                 )
             },
             image = {
                 Image(
                     imageVector = ImageVector.vectorResource(R.drawable.app_icon),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxWidth().clearAndSetSemantics { }
+                    modifier = Modifier.fillMaxWidth().clearAndSetSemantics { },
                 )
             },
             body = {
@@ -148,7 +149,7 @@ internal fun WelcomeBody(
                         text = content[0],
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding),
                     )
                 }
                 item {
@@ -156,7 +157,7 @@ internal fun WelcomeBody(
                         text = content[1],
                         color = MaterialTheme.colorScheme.onBackground,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding)
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding),
                     )
                 }
             },
@@ -165,19 +166,19 @@ internal fun WelcomeBody(
                     text = buttonText,
                     buttonType = ButtonTypeV2.Primary(),
                     onClick = onSignIn,
-                    modifier = Modifier.fillMaxWidth().testTag(WELCOME_SIGNIN_BUTTON_TAG)
+                    modifier = Modifier.fillMaxWidth().testTag(WELCOME_SIGNIN_BUTTON_TAG),
                 )
             },
             secondaryButton = {
-                if (DeveloperTools.isDeveloperPanelEnabled()) {
+                if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                     GdsButton(
                         text = devButtonText,
                         buttonType = ButtonTypeV2.Secondary(),
                         onClick = openDevMenu,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-            }
+            },
         )
     }
 }

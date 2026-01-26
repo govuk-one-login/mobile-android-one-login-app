@@ -27,43 +27,51 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
 
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(mediumPadding)
+            Modifier
+                .fillMaxSize()
+                .padding(mediumPadding),
     ) {
         if (BuildConfig.FLAVOR == "build" || BuildConfig.FLAVOR == "staging") {
             Row(
                 modifier = Modifier.padding(smallPadding),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     modifier = Modifier.weight(1F),
                     text = "Override Delete Wallet Data",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+                    color =
+                        uk.gov.android.ui.theme.m3.Text.primary
+                            .toMappedColors(),
                 )
                 Switch(
                     checked = overrideWallet,
                     onCheckedChange = { viewModel.setOverride(!overrideWallet) },
-                    colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
+                    colors =
+                        uk.gov.android.ui.theme.m3.Switch
+                            .defaultColors(),
                 )
             }
             Row(
                 modifier = Modifier.padding(smallPadding),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     modifier = Modifier.weight(1F),
                     text = "Enable local data deletion fail",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+                    color =
+                        uk.gov.android.ui.theme.m3.Text.primary
+                            .toMappedColors(),
                 )
                 Switch(
                     checked = enableDeletionFail,
                     onCheckedChange = { viewModel.setDeletionFail(!enableDeletionFail) },
-                    colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
+                    colors =
+                        uk.gov.android.ui.theme.m3.Switch
+                            .defaultColors(),
                 )
             }
         }

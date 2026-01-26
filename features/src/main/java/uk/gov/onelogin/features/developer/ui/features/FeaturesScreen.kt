@@ -28,14 +28,16 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
     val availableFeatures by viewModel.featureList
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(mediumPadding)
+            Modifier
+                .fillMaxSize()
+                .padding(mediumPadding),
     ) {
         Text(
             text = stringResource(R.string.app_developer_features_title),
             style = TextStyle(fontWeight = FontWeight.Bold),
-            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
         )
         Column {
             availableFeatures.forEach { feature ->
@@ -51,23 +53,27 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
 private fun FeatureToggle(
     featureFlag: FeatureFlag,
     checked: Boolean,
-    onToggle: () -> Unit
+    onToggle: () -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(smallPadding),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.weight(1F),
             text = featureFlag.id,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
-            color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors()
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
         )
         Switch(
             checked = checked,
             onCheckedChange = { onToggle() },
-            colors = uk.gov.android.ui.theme.m3.Switch.defaultColors()
+            colors =
+                uk.gov.android.ui.theme.m3.Switch
+                    .defaultColors(),
         )
     }
     HorizontalDivider()

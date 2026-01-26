@@ -38,7 +38,7 @@
     <string name="app_termsAndConditionsLink">Terms and conditions</string>
 
     <!-- Biometrics Toggle Opt In Screen -->
-    <string name="app_biometricsToggleTitle">Biometrics</string>
+    <string name="app_biometricsToggleTitle">@string/app_settingsBiometricsField</string>
     <string name="app_biometricsToggleLabel">Use biometrics</string>
     <string name="app_biometricsToggleSubtitle">If you turn off biometrics</string>
     <string name="app_biometricsToggleBody1">You can use your face, fingerprint or iris to:</string>
@@ -64,7 +64,7 @@
 
     <!-- Sign Out Confirmation -->
     <string name="app_signOutTitle">You have signed out</string>
-    <string name="app_signOutSuccessButton">Continue</string>
+    <string name="app_signOutSuccessButton">@string/app_continue</string>
     <string name="app_signOutBody">To keep your information secure, any documents in this app have been removed and your preferences have been reset.</string>
     <string name="app_signOutBody2">You need to sign in and reset your preferences to continue using the app. You’ll then be able to add your documents again.</string>
 
@@ -76,8 +76,8 @@
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
     <string name="app_signInBody1">Prove your identity to access government services.</string>
-    <string name="app_signInBody2">You\'ll need to sign in with your GOV.UK One Login details.</string>
-    <string name="app_signInButton">Sign in with GOV.UK One Login</string>
+    <string name="app_signInBody2">You\’ll need to sign in with your GOV.UK One Login details.</string>
+    <string name="app_signInButton">@string/app_SignInWithGovUKOneLoginButton</string>
     <string name="app_unlockButton">Unlock</string>
     <string name="app_signInErrorTitle">There was a problem signing you in</string>
     <string name="app_signInErrorRecoverableBody">Try to sign in again.</string>
@@ -96,7 +96,7 @@
     <string name="app_networkErrorTitle">You are not connected to the internet</string>
     <string name="app_networkErrorBody1">You need to have an internet connection to use GOV.UK One Login.</string>
     <string name="app_networkErrorBody2">Reconnect to the internet and try again.</string>
-    <string name="app_tryAgainButton">Go back and try again</string>
+    <string name="app_tryAgainButton">@string/app_genericErrorPageButton</string>
 
     <!-- Errors Sign Out -->
     <string name="app_signOutErrorTitle">There was a problem signing you out</string>
@@ -107,7 +107,7 @@
     <string name="app_SignOutErrorButton">Go back to settings</string>
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
-    <string name="app_homeTitle">Home</string>
+    <string name="app_homeTitle">@string/app_home</string>
 
     <string name="app_walletTitle" translatable="false">GOV.UK Wallet</string>
 
@@ -162,7 +162,7 @@
     <string name="app_dataDeletedButton">Sign in</string>
     <string name="app_dataDeletedBody1">We could not confirm your sign in details.</string>
     <string name="app_dataDeletedBody2">To keep your information secure, any documents in your app have been removed and your app preferences have been reset.</string>
-    <string name="app_dataDeletedBody3">You need to sign in and reset your preferences to continue using the app. You\'ll then be able to add your documents again.</string>
+    <string name="app_dataDeletedBody3">You need to sign in and reset your preferences to continue using the app. You\’ll then be able to add your documents again.</string>
 
     <!-- Analytics Values   -->
     <string name="system_backButton" translatable="false">Back - System</string>
@@ -196,6 +196,6 @@
 
     <!-- How to prove your identity tile -->
     <string name="app_appPurposeTileHeader">How to prove your identity</string>
-    <string name="app_appPurposeTileBody1">If you need to prove your identity with GOV.UK One Login to access a service, you\'ll be asked to open this app. It works by matching your face to your photo ID.</string>
+    <string name="app_appPurposeTileBody1">If you need to prove your identity with GOV.UK One Login to access a service, you\’ll be asked to open this app. It works by matching your face to your photo ID.</string>
     <string name="app_youveBeenSignedOutBody2">This is to keep your information secure.</string>
 </resources>

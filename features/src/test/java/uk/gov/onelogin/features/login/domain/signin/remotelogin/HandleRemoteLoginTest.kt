@@ -167,21 +167,22 @@ class HandleRemoteLoginTest {
         }
 
     @Test
-    fun `login() - loginSession present() throws error`(): Unit = runTest {
-        val error = Error("Error")
-        val expectedWrappedException = LoginException(error)
-        whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
-        whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.NotRequired(null)
-        )
-        whenever(mockLoginSession.present(any(), any())).thenThrow(error)
+    fun `login() - loginSession present() throws error`(): Unit =
+        runTest {
+            val error = Error("Error")
+            val expectedWrappedException = LoginException(error)
+            whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
+            whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
+                AttestationResult.NotRequired(null)
+            )
+            whenever(mockLoginSession.present(any(), any())).thenThrow(error)
 
-        handleRemoteLogin.login(mockLauncher) {}
+            handleRemoteLogin.login(mockLauncher) {}
 
-        verify(mockLogger).error(
-            expectedWrappedException.javaClass.simpleName,
-            error.message ?: "No message",
-            expectedWrappedException
-        )
-    }
+            verify(mockLogger).error(
+                expectedWrappedException.javaClass.simpleName,
+                error.message ?: "No message",
+                expectedWrappedException
+            )
+        }
 }

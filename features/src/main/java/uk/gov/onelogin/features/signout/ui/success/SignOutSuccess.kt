@@ -19,9 +19,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 
 @Composable
-fun SignOutSuccess(
-    viewModel: SignOutSuccessViewModel = hiltViewModel()
-) {
+fun SignOutSuccess(viewModel: SignOutSuccessViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
@@ -37,25 +35,26 @@ fun SignOutSuccess(
 }
 
 @Composable
-fun SignOutConfirmationBody(
-    onPrimary: () -> Unit
-) {
-    val content = listOf(
-        stringResource(R.string.app_signOutBody),
-        stringResource(R.string.app_signOutBody2)
-    )
+fun SignOutConfirmationBody(onPrimary: () -> Unit) {
+    val content =
+        listOf(
+            stringResource(R.string.app_signOutBody),
+            stringResource(R.string.app_signOutBody2),
+        )
     val buttonText = stringResource(R.string.app_signOutSuccessButton)
     CentreAlignedScreen(
         title = stringResource(R.string.app_signOutTitle),
         modifier = Modifier.fillMaxSize(),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(content[0]),
-            CentreAlignedScreenBodyContent.Text(content[1])
-        ),
-        primaryButton = CentreAlignedScreenButton(
-            text = buttonText,
-            onClick = onPrimary
-        )
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(content[0]),
+                CentreAlignedScreenBodyContent.Text(content[1]),
+            ),
+        primaryButton =
+            CentreAlignedScreenButton(
+                text = buttonText,
+                onClick = onPrimary,
+            ),
     )
 }
 

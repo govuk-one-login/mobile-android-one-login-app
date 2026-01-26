@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.appinfo.data
 
 import android.content.SharedPreferences
-import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,6 +22,7 @@ import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.AP
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppInfoLocalSourceImplTest {
@@ -32,25 +32,30 @@ class AppInfoLocalSourceImplTest {
     private val editor: SharedPreferences.Editor = mock()
     private val encodedValue =
         ClassLoader
-            .getSystemResource("api/appInfoResponseValue.json").readText()
-            .replace(" ", "").replace("\n", "")
+            .getSystemResource("api/appInfoResponseValue.json")
+            .readText()
+            .replace(" ", "")
+            .replace("\n", "")
     private val expectedValue =
         ClassLoader
-            .getSystemResource("api/appInfoResponseValueNoFlags.json").readText()
-            .replace(" ", "").replace("\n", "")
+            .getSystemResource("api/appInfoResponseValueNoFlags.json")
+            .readText()
+            .replace(" ", "")
+            .replace("\n", "")
     private val encodedInvalidValue =
         ClassLoader
-            .getSystemResource("api/appInfoResponseValueInvalid.json").readText()
+            .getSystemResource("api/appInfoResponseValueInvalid.json")
+            .readText()
     private val data =
         AppInfoData(
             apps =
-            AppInfoData.App(
-                AppInfoData.AppInfo(
-                    minimumVersion = "0.0.0",
-                    available = true,
-                    featureFlags = AppInfoData.FeatureFlags(true)
+                AppInfoData.App(
+                    AppInfoData.AppInfo(
+                        minimumVersion = "0.0.0",
+                        available = true,
+                        featureFlags = AppInfoData.FeatureFlags(true)
+                    )
                 )
-            )
         )
 
     lateinit var sut: AppInfoLocalSource

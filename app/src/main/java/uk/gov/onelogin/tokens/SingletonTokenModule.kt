@@ -18,15 +18,11 @@ import uk.gov.onelogin.core.utils.RefreshToken
 interface SingletonTokenModule {
     @AccessToken
     @Binds
-    fun bindGetAccessTokenExpiry(
-        getTokenExpiry: GetAccessTokenExpiryImpl
-    ): GetTokenExpiry
+    fun bindGetAccessTokenExpiry(getTokenExpiry: GetAccessTokenExpiryImpl): GetTokenExpiry
 
     @RefreshToken
     @Binds
-    fun bindRefreshGetTokenExpiry(
-        getTokenExpiry: GetRefreshTokenExpiryImpl
-    ): GetTokenExpiry
+    fun bindRefreshGetTokenExpiry(getTokenExpiry: GetRefreshTokenExpiryImpl): GetTokenExpiry
 
     @AccessToken
     @Binds

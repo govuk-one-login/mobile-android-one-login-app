@@ -1,8 +1,6 @@
 package uk.gov.onelogin.core.tokens.data.initialise
 
 import android.content.Context
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,6 +21,8 @@ import uk.gov.android.securestore.SecureStorageConfiguration
 import uk.gov.android.securestore.SecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
 class AutoInitialiseSecureStoreTest {
     private lateinit var useCase: AutoInitialiseSecureStore
@@ -55,7 +55,7 @@ class AutoInitialiseSecureStoreTest {
                     mockSaveTokens,
                     mockSecureStore,
                     mockContext,
-                    dispatcher
+                    dispatcher,
                 )
 
             useCase.initialise(null)
@@ -74,7 +74,7 @@ class AutoInitialiseSecureStoreTest {
                     mockSaveTokens,
                     mockSecureStore,
                     mockContext,
-                    dispatcher
+                    dispatcher,
                 )
 
             useCase.initialise(null)
@@ -93,7 +93,7 @@ class AutoInitialiseSecureStoreTest {
                     mockSaveTokens,
                     mockSecureStore,
                     mockContext,
-                    dispatcher
+                    dispatcher,
                 )
 
             useCase.initialise(null)
@@ -101,7 +101,7 @@ class AutoInitialiseSecureStoreTest {
             val expectedConfiguration =
                 SecureStorageConfiguration(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                    AccessControlLevel.PASSCODE
+                    AccessControlLevel.PASSCODE,
                 )
             verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
         }
@@ -117,7 +117,7 @@ class AutoInitialiseSecureStoreTest {
                     mockSaveTokens,
                     mockSecureStore,
                     mockContext,
-                    dispatcher
+                    dispatcher,
                 )
 
             useCase.initialise(null)
@@ -125,7 +125,7 @@ class AutoInitialiseSecureStoreTest {
             val expectedConfiguration =
                 SecureStorageConfiguration(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                    AccessControlLevel.PASSCODE_AND_BIOMETRICS
+                    AccessControlLevel.PASSCODE_AND_BIOMETRICS,
                 )
             verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
         }

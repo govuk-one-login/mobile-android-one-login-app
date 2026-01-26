@@ -9,6 +9,6 @@ fun interface SaveToTokenSecureStore {
      */
     suspend operator fun invoke(
         key: String,
-        value: String
+        value: String,
     )
 }

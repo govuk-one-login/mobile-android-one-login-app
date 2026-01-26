@@ -1,14 +1,5 @@
 package uk.gov.onelogin.core.cleaner.domain
 
-import java.util.stream.Stream
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
-import kotlin.time.measureTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -19,6 +10,15 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.util.stream.Stream
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import kotlin.time.measureTime
 
 @ExperimentalCoroutinesApi
 class ResultCollectionUtilTest {
@@ -52,7 +52,7 @@ class ResultCollectionUtilTest {
                     {
                         results.add("Function 2 complete")
                         Result.success(Unit)
-                    }
+                    },
                 )
             // When calling runConcurrentlyForResults
             try {
@@ -89,7 +89,7 @@ class ResultCollectionUtilTest {
                     {
                         delay(delayTime)
                         Result.success(Unit)
-                    }
+                    },
                 )
             // When calling runConcurrentlyForResults
             val totalTime =
@@ -108,7 +108,7 @@ class ResultCollectionUtilTest {
     @MethodSource("suspendFunctionProvider")
     fun `runConcurrentlyForResults completes to Result list`(
         cleaners: List<Cleaner>,
-        expected: List<Result<Unit>>
+        expected: List<Result<Unit>>,
     ) = runTest {
         // Given a ResultCollectionUtil
         // When calling runConcurrentlyForResults
@@ -130,7 +130,7 @@ class ResultCollectionUtilTest {
     @MethodSource("combineProvider")
     fun `combineResults only successful on all successful results`(
         results: List<Result<Unit>>,
-        expected: Boolean
+        expected: Boolean,
     ) {
         // Given a ResultCollectionUtil
         // When combing results
@@ -146,7 +146,7 @@ class ResultCollectionUtilTest {
     @MethodSource("throwablesProvider")
     fun `Result list extension property throwables filters failures to get list of Throwable `(
         results: List<Result<Unit>>,
-        expected: List<Throwable>
+        expected: List<Throwable>,
     ) {
         // Given a ResultCollectionUtil
         // When calling the extension property `throwables` on the result list
@@ -160,92 +160,89 @@ class ResultCollectionUtilTest {
 
     companion object {
         @JvmStatic
-        fun suspendFunctionProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun suspendFunctionProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Cleaner>(), emptyList<Result<Unit>>()),
                 Arguments.of(
                     listOf(
-                        Cleaner { Result.success(Unit) }
+                        Cleaner { Result.success(Unit) },
                     ),
-                    listOf(Result.success(Unit))
+                    listOf(Result.success(Unit)),
                 ),
                 Arguments.of(
                     listOf(
                         Cleaner { Result.success(Unit) },
-                        Cleaner { Result.success(Unit) }
+                        Cleaner { Result.success(Unit) },
                     ),
-                    listOf(Result.success(Unit), Result.success(Unit))
+                    listOf(Result.success(Unit), Result.success(Unit)),
                 ),
                 Arguments.of(
                     listOf(
                         Cleaner {
                             Result.success(Unit)
                         },
-                        Cleaner { Result.failure(Exception()) }
+                        Cleaner { Result.failure(Exception()) },
                     ),
-                    listOf(Result.success(Unit), Result.failure(Exception()))
+                    listOf(Result.success(Unit), Result.failure(Exception())),
                 ),
                 Arguments.of(
                     listOf(Cleaner { Result.failure(Exception()) }),
-                    listOf<Result<Unit>>(Result.failure(Exception()))
+                    listOf<Result<Unit>>(Result.failure(Exception())),
                 ),
                 Arguments.of(
                     listOf(
                         Cleaner { Result.failure(Exception()) },
-                        Cleaner { Result.failure(Exception()) }
+                        Cleaner { Result.failure(Exception()) },
                     ),
                     listOf<Result<Unit>>(
                         Result.failure(Exception()),
-                        Result.failure(Exception())
-                    )
-                )
+                        Result.failure(Exception()),
+                    ),
+                ),
             )
-        }
 
         @JvmStatic
-        fun combineProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun combineProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Result<Unit>>(), true),
                 Arguments.of(listOf(Result.success(Unit)), true),
                 Arguments.of(
                     listOf(Result.success(Unit), Result.success(Unit)),
-                    true
+                    true,
                 ),
                 Arguments.of(
                     listOf(Result.success(Unit), Result.failure(Exception())),
-                    false
+                    false,
                 ),
                 Arguments.of(
                     listOf<Result<Unit>>(Result.failure(Exception()), Result.failure(Exception())),
-                    false
-                )
+                    false,
+                ),
             )
-        }
 
         @JvmStatic
-        fun throwablesProvider(): Stream<Arguments> {
-            return Stream.of(
+        fun throwablesProvider(): Stream<Arguments> =
+            Stream.of(
                 Arguments.of(emptyList<Result<Unit>>(), emptyList<Throwable>()),
                 Arguments.of(listOf(Result.success(Unit)), emptyList<Throwable>()),
                 Arguments.of(
                     listOf(Result.success(Unit), Result.success(Unit)),
-                    emptyList<Throwable>()
+                    emptyList<Throwable>(),
                 ),
                 Arguments.of(
                     listOf(Result.success(Unit), Result.failure(Exception())),
-                    listOf(Exception())
+                    listOf(Exception()),
                 ),
                 Arguments.of(
                     listOf<Result<Unit>>(
                         Result.failure(Exception()),
-                        Result.failure(Exception())
+                        Result.failure(Exception()),
                     ),
                     listOf(
                         Exception(),
-                        Exception()
-                    )
-                )
+                        Exception(),
+                    ),
+                ),
             )
-        }
     }
 }
