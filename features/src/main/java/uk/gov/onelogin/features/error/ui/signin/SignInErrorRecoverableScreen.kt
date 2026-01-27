@@ -16,6 +16,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
+import uk.gov.onelogin.features.error.ui.signin.SignInErrorBody
 
 @Composable
 @Preview
