@@ -50,7 +50,6 @@ fun GenericErrorScreen(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
-
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_genericErrorPageBody),
@@ -92,13 +91,13 @@ private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
     )
 }
 
-private fun genericErrorScreenModifier () : Modifier = Modifier.fillMaxWidth()
+private fun genericErrorScreenModifier(): Modifier = Modifier.fillMaxWidth()
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
 internal fun GenericErrorPreview() {
     GdsTheme {
-        GenericErrorBody ()
+        GenericErrorBody()
     }
 }

@@ -89,6 +89,6 @@ private fun itemModifier(): Modifier = Modifier.fillMaxWidth()
 @Composable
 internal fun AuthErrorScreenPreview() {
     GdsTheme {
-        AuthErrorBody ()
+        AuthErrorBody()
     }
 }
