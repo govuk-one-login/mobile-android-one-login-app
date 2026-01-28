@@ -368,6 +368,92 @@ class WelcomeScreenViewModelWithoutRefreshTest {
         }
 
     @Test
+    fun `handleIntent when data != null, device secure with passcode and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(false)))
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
+            verify(mockNavigator).goBack()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+        }
+
+    @Test
+    fun `handleIntent when data != null, device secure with biometrics and reauth is true`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
+
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
+            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
+            whenever(localAuthPreferenceRepo.getLocalAuthPref())
+                .thenReturn((LocalAuthPreference.Enabled(true)))
+
+            viewModel.handleActivityResult(
+                mockIntent,
+                true,
+                activity = mockFragmentActivity
+            )
+
+            verify(mockSaveTokenExpiry).saveExp(
+                ExpiryInfo(
+                    key = ACCESS_TOKEN_EXPIRY_KEY,
+                    value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
+            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockSavePersistentId).invoke()
+            verify(mockNavigator).goBack()
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+        }
+
+    @Test
     fun `handleIntent when data != null, device is secure and reauth is true`() =
         runTest {
             createMocks()
