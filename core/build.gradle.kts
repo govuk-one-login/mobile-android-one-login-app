@@ -77,6 +77,15 @@ android {
     testFixtures {
         enable = true
     }
+
+    packaging {
+        resources.excludes +=
+            setOf(
+                "META-INF/LICENSE-notice.md",
+                "META-INF/versions/9/OSGI-INF/MANIFEST.MF",
+                "META-INF/LICENSE.md",
+            )
+    }
 }
 
 dependencies {

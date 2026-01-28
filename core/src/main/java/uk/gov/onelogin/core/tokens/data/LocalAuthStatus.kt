@@ -14,6 +14,4 @@ sealed class LocalAuthStatus {
     data object ManualSignIn : LocalAuthStatus()
 
     data object ReAuthSignIn : LocalAuthStatus()
-
-    data object ClientAttestationFailure : LocalAuthStatus()
 }
