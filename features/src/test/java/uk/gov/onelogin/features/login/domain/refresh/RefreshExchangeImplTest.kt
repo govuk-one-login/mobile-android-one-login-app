@@ -90,7 +90,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `successful refresh exchange`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -136,7 +136,7 @@ class RefreshExchangeImplTest {
             )
 
             verifyNoInteractions(logger)
-            assertEquals(LocalAuthStatus.Success(mapOf()), result)
+            assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
                 TokenResponse(
@@ -152,7 +152,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `persistent session ID is null`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn(null)
 
             sut.getTokens(
@@ -162,7 +162,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            assertEquals(LocalAuthStatus.ManualSignIn, result)
+            assertEquals(RefreshExchangeResult.SignInRequired, result)
             verifyNoInteractions(isRefreshTokenExpired)
             verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
@@ -177,7 +177,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `persistent session ID is empty`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn(null)
 
             sut.getTokens(
@@ -187,7 +187,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            assertEquals(LocalAuthStatus.ManualSignIn, result)
+            assertEquals(RefreshExchangeResult.SignInRequired, result)
             verifyNoInteractions(isRefreshTokenExpired)
             verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
@@ -202,7 +202,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `refresh token is expired`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(true)
 
@@ -213,7 +213,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
             verify(isRefreshTokenExpired).invoke()
             verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
@@ -228,7 +228,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `client attestation is expired`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -241,7 +241,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            assertEquals(LocalAuthStatus.ClientAttestationFailure, result)
+            assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verifyNoInteractions(httpClient)
@@ -256,7 +256,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `client attestation is not required`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -302,7 +302,7 @@ class RefreshExchangeImplTest {
             )
 
             verifyNoInteractions(logger)
-            assertEquals(LocalAuthStatus.Success(mapOf()), result)
+            assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
                 TokenResponse(
@@ -318,7 +318,7 @@ class RefreshExchangeImplTest {
     @Test
     fun `secure store error`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -347,13 +347,13 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.SecureStoreError, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     @Test
     fun `failure generating Demonstrating PoP`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -396,14 +396,14 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     @Test
     fun `failure generating Demonstrating PoP with error returned`() =
         runTest {
             val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -449,13 +449,13 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     @Test
     fun `failure generating app integrity PoP`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -500,13 +500,13 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     @Test
     fun `network error - api response failure`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -558,14 +558,14 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     // This test is just to increase test coverage, the ApiResponse.Offline and ApiResponse.Loading are not used from the network package at all
     @Test
     fun `network error - api response loading`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -608,13 +608,13 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.OfflineNetwork, result)
         }
 
     @Test
     fun `return empty refresh token`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -650,13 +650,13 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 
     @Test
     fun `return empty id token`() =
         runTest {
-            lateinit var result: LocalAuthStatus
+            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
@@ -692,6 +692,6 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(LocalAuthStatus.ReAuthSignIn, result)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
         }
 }

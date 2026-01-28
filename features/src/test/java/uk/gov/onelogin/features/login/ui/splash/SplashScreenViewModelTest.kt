@@ -28,6 +28,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -64,15 +65,150 @@ class SplashScreenViewModelTest {
                 mockGetRefreshTokenExp
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
-        runBlocking {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-        }
     }
 
     @Test
-    fun loginFailsWithSecureStoreError() =
+    fun `RefreshExchange - login fails with client attestation failure`() =
         runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
             whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.ClientAttestationFailure
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+        }
+
+    @Test
+    fun `RefreshExchange - login fails with bio check failed`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.BioCheckFailed
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verifyNoInteractions(mockNavigator)
+        }
+
+    @Test
+    fun `RefreshExchange - login success`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.Success
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(MainNavRoutes.Start, false)
+        }
+
+    @Test
+    fun `RefreshExchange - login requires sign in`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.SignInRequired
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockSignOutUseCase).invoke()
+            verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
+        }
+
+    @Test
+    fun `RefreshExchange - login requires re auth`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.ReAuthRequired
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+        }
+
+    @Test
+    fun `RefreshExchange - login returns user cancelled`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.UserCancelledBioPrompt
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verifyNoInteractions(mockNavigator)
+            assertTrue(viewModel.showUnlock.value)
+            assertFalse(viewModel.loading.value)
+        }
+
+    @Test
+    fun `RefreshExchange - allows subsequent login calls from lock screen`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            }
+            // WHEN on resume called more than once
+            viewModel.onResume(mockLifeCycleOwner)
+            viewModel.onResume(mockLifeCycleOwner)
+
+            // AND we call login
+            viewModel.login(mockActivity)
+
+            // THEN the autoinitialise is being called
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            // THEN do NOT login (as the app will be going to background)
+            verify(mockRefreshExchange, times(1))
+                .getTokens(any(), any())
+        }
+
+    @Test
+    fun `LocalAuth - login fails with secure store error`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.SecureStoreError
@@ -86,9 +222,12 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun loginFailsWithBioCheckFailed() =
+    fun `LocalAuth - login fails with bio check failed`() =
         runTest {
-            whenever(mockRefreshExchange.getTokens(any(), any()))
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.BioCheckFailed
@@ -101,9 +240,12 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun loginSuccess() =
+    fun `LocalAuth - login success`() =
         runTest {
-            whenever(mockRefreshExchange.getTokens(any(), any()))
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.Success(mapOf("key" to "token"))
@@ -117,9 +259,12 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun loginRequiresRefresh() =
+    fun `LocalAuth - login requires sign in`() =
         runTest {
-            whenever(mockRefreshExchange.getTokens(any(), any()))
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.ManualSignIn
@@ -134,9 +279,12 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun loginRequiresReAuth() =
+    fun `LocalAuth - login requires re auth`() =
         runTest {
-            whenever(mockRefreshExchange.getTokens(any(), any()))
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.ReAuthSignIn
@@ -150,9 +298,12 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun loginReturnsUserCancelled() =
+    fun `LocalAuth - login returns user cancelled`() =
         runTest {
-            whenever(mockRefreshExchange.getTokens(any(), any()))
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
                         LocalAuthStatus.UserCancelled
@@ -164,22 +315,5 @@ class SplashScreenViewModelTest {
             verifyNoInteractions(mockNavigator)
             assertTrue(viewModel.showUnlock.value)
             assertFalse(viewModel.loading.value)
-        }
-
-    @Test
-    fun allowsSubsequentLoginCallsFromLockScreen() =
-        runTest {
-            // WHEN on resume called more than once
-            viewModel.onResume(mockLifeCycleOwner)
-            viewModel.onResume(mockLifeCycleOwner)
-
-            // AND we call login
-            viewModel.login(mockActivity)
-
-            // THEN the autoinitialise is being called
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            // THEN do NOT login (as the app will be going to background)
-            verify(mockRefreshExchange, times(1))
-                .getTokens(any(), any())
         }
 }
