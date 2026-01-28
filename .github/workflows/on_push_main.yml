@@ -14,7 +14,7 @@ concurrency:
 jobs:
   on-push-main:
     name: Verify code base on release to Prod
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
