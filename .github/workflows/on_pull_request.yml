@@ -22,7 +22,7 @@ concurrency:
 jobs:
   on-pull-request-job:
     name: Verify code base when pull request is published/updated
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
