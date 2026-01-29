@@ -134,5 +134,4 @@ jobs:
           version-name: ${{ needs.prepareForRelease.outputs.version }}
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace
