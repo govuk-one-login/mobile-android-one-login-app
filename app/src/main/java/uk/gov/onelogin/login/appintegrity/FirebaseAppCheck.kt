@@ -5,7 +5,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
 import com.google.firebase.appcheck.AppCheckProviderFactory
 import com.google.firebase.appcheck.appCheck
-import com.google.firebase.appcheck.playintegrity.internal.PlayIntegrityAppCheckProvider
 import com.google.firebase.initialize
 import kotlinx.coroutines.tasks.await
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
