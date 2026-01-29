@@ -31,6 +31,8 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.SystemTimeProvider
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.ATTESTATION_POP_GENERATE_ERROR
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
 import kotlin.test.assertEquals
 
 @Suppress("LargeClass")
@@ -178,7 +180,7 @@ class RefreshExchangeImplTest {
     fun `persistent session ID is empty`() =
         runTest {
             lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn(null)
+            whenever(getPersistentId()).thenReturn("")
 
             sut.getTokens(
                 fragmentContext,
@@ -453,7 +455,7 @@ class RefreshExchangeImplTest {
         }
 
     @Test
-    fun `failure generating app integrity PoP`() =
+    fun `failure with error msg generating app integrity PoP`() =
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
@@ -504,7 +506,58 @@ class RefreshExchangeImplTest {
         }
 
     @Test
-    fun `network error - api response failure`() =
+    fun `failure without error msg generating app integrity PoP`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("savedAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("test"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Failure("Failure"))
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            verify(logger).error(
+                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                eq(ATTESTATION_POP_GENERATE_ERROR),
+                any()
+            )
+            verify(isRefreshTokenExpired).invoke()
+            verify(appIntegrity).getClientAttestation()
+            verify(dPoPManager).generateDPoP(any())
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
+        }
+
+    @Test
+    fun `network error - api response failure with message`() =
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
@@ -549,6 +602,64 @@ class RefreshExchangeImplTest {
             verify(logger).error(
                 eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
                 eq("error"),
+                any()
+            )
+            verify(isRefreshTokenExpired).invoke()
+            verify(appIntegrity).getClientAttestation()
+            verify(dPoPManager).generateDPoP(any())
+            verify(httpClient).makeRequest(any())
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+            assertEquals(RefreshExchangeResult.ReAuthRequired, result)
+        }
+
+    @Test
+    fun `network error - api response failure without message`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("signedDPoP"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        status = 0,
+                        error = Exception()
+                    )
+                )
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            verify(logger).error(
+                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                eq(EMPTY_MSG),
                 any()
             )
             verify(isRefreshTokenExpired).invoke()

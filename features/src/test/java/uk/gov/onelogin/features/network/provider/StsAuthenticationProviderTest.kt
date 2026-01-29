@@ -3,7 +3,7 @@ package uk.gov.onelogin.features.network.provider
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -21,7 +21,7 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -40,14 +40,14 @@ class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockIsAccessTokenExpired: IsTokenExpired = mock()
     private val mockNavigator: Navigator = mock()
-    private val logger = SystemLogger()
+    private val logger: Logger = mock()
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var provider: AuthenticationProvider
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun setup() {
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -323,6 +323,12 @@ class StsAuthenticationProviderTest {
 
             val response = provider.fetchBearerToken("scope")
 
+            val error = StsAuthenticationProvider.Companion.FragmentActivityNull()
+            verify(logger).error(
+                StsAuthenticationProvider::class.java.simpleName,
+                error.msg,
+                error
+            )
             MatcherAssert.assertThat(
                 StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 response is AuthenticationResponse.Failure
@@ -377,7 +383,6 @@ class StsAuthenticationProviderTest {
                 "response is Failure",
                 response is AuthenticationResponse.Failure
             )
-            MatcherAssert.assertThat("logger has a log", logger.size == 1)
         }
 
     @Test
