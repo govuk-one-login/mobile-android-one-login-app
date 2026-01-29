@@ -132,7 +132,7 @@ class StsAuthenticationProvider(
             val request = createServiceTokenRequest(it, scope)
             val response = httpClient.makeRequest(request)
             handleServiceTokenResponse(response)
-        } ?: AuthenticationResponse.Failure(Exception("No access token"))
+        } ?: AuthenticationResponse.Failure(Exception(NO_ACCESS_TOKEN_ERROR_MSG))
 
     /**
      * Creates the [ApiRequest.Post] to get a service token - - see [attemptServiceTokenExchange].
@@ -194,7 +194,7 @@ class StsAuthenticationProvider(
                 AuthenticationResponse.Failure(e)
             }
         } else {
-            AuthenticationResponse.Failure(Exception("Failed to fetch service token"))
+            AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
         }
 
     companion object {
@@ -205,6 +205,8 @@ class StsAuthenticationProvider(
 
         const val REFRESH_EXCHANGE_ERROR_MSG = "Failed refresh exchange."
         const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG = "Failed refresh exchange failed - user cannot reauthenticate."
+        const val NO_ACCESS_TOKEN_ERROR_MSG = "No access token"
+        const val SERVICE_TOKEN_FAILURE_ERROR_MSG = "Failed to fetch service token"
         const val FRAGMENT_ACTIVITY_NULL_ERROR_MSG = "FragmentActivity is null"
 
         data class FragmentActivityNull(

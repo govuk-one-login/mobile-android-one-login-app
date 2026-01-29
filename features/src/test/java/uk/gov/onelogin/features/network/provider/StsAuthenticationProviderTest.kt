@@ -148,7 +148,7 @@ class StsAuthenticationProviderTest {
                 response is AuthenticationResponse.Failure
             )
             assertEquals(
-                "Failed to fetch service token",
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
         }
@@ -214,7 +214,7 @@ class StsAuthenticationProviderTest {
                 response is AuthenticationResponse.Failure
             )
             assertEquals(
-                "Failed to fetch service token",
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
         }
@@ -246,7 +246,7 @@ class StsAuthenticationProviderTest {
                 response is AuthenticationResponse.Failure
             )
             assertEquals(
-                "Failed to fetch service token",
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
         }
@@ -353,7 +353,7 @@ class StsAuthenticationProviderTest {
                 response is AuthenticationResponse.Failure
             )
             assertEquals(
-                "Failed to fetch service token",
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
         }
