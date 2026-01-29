@@ -44,15 +44,16 @@ class MainActivityTest : TestCase() {
 
     @Test
     fun testActivityIsSetOnResume() {
-        launchActivity<MainActivity>().moveToState(Lifecycle.State.RESUMED)
+        // Implicitly puts the activity on the onResume state
+        launchActivity<MainActivity>()
         verify(activityProvider).setCurrentActivity(any())
     }
 
     @Test
     fun testActivityIsClearedOnPause() {
-        launchActivity<MainActivity>().use { scenario ->
-            scenario.moveToState(Lifecycle.State.DESTROYED)
-        }
+        // When calling the onCreate activity it will first reach onPause and then move into onCreate
+        // This allows for testing the onPause event not available to directly access
+        launchActivity<MainActivity>().moveToState(Lifecycle.State.CREATED)
         verify(activityProvider).clearActivity()
     }
 }

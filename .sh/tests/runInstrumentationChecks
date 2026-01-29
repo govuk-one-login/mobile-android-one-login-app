@@ -18,7 +18,7 @@ set -o errexit
 # Provide a default value for WORKER_COUNT
 if [[ -z "${WORKER_COUNT}" ]]
 then
-  WORKER_COUNT=3
+  WORKER_COUNT=2
 fi
 
 # INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
