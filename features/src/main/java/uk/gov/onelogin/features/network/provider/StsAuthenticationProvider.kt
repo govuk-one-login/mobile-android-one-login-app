@@ -106,7 +106,7 @@ class StsAuthenticationProvider(
                 refreshExchange.getTokens(context = it) { result ->
                     refreshExchangeResult = result
                 }
-            } ?: {
+            } ?: run {
                 // If activity is null, log error
                 val error = FragmentActivityNull()
                 logger.error(
