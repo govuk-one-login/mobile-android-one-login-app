@@ -156,5 +156,4 @@ jobs:
           version-name: ${{ needs.run-checks.outputs.version-name }}
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace

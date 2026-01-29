@@ -100,5 +100,4 @@ jobs:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace

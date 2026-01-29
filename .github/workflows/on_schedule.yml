@@ -87,5 +87,4 @@ jobs:
         uses: ./config/actions/bundle-reports
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace

@@ -126,5 +126,4 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace
