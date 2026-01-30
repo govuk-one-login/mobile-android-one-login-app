@@ -2,7 +2,7 @@ package uk.gov.onelogin.features.error.ui.auth
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -51,13 +51,13 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
             GdsIcon(
                 image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
                 contentDescription = stringResource(uk.gov.android.ui.componentsv2.R.string.warning),
-                modifier = itemModifier().padding(bottom = largePadding)
+                modifier = authErrorBodyItemModifier().padding(bottom = largePadding)
             )
         },
         title = {
             GdsHeading(
                 text = stringResource(R.string.app_dataDeletedErrorTitle),
-                modifier = itemModifier().padding(horizontal = largePadding),
+                modifier = authErrorBodyItemModifier().padding(horizontal = largePadding),
                 textAlign = GdsHeadingAlignment.CenterAligned,
             )
         },
@@ -66,7 +66,7 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
                 Text(
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
-                    modifier = itemModifier().padding(horizontal = largePadding)
+                    modifier = authErrorBodyItemModifier().padding(horizontal = largePadding)
                 )
             }
         },
@@ -82,7 +82,7 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
     )
 }
 
-private fun itemModifier(): Modifier = Modifier.fillMaxWidth()
+private fun authErrorBodyItemModifier(): Modifier = Modifier.fillMaxWidth()
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
