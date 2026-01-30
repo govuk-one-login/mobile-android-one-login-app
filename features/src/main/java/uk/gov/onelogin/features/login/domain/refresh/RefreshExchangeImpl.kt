@@ -335,7 +335,7 @@ class RefreshExchangeImpl
         }
 
         private fun mapLocalAuthStatusToRefreshExchangeResult(status: LocalAuthStatus): RefreshExchangeResult {
-            // This will have to updated after the secure store errors are now mapped correctly according to teh TD
+            // This will have to updated after the secure store errors are now mapped correctly according to the TD
             return when (status) {
                 LocalAuthStatus.ManualSignIn -> RefreshExchangeResult.SignInRequired
                 is LocalAuthStatus.Success -> RefreshExchangeResult.Success

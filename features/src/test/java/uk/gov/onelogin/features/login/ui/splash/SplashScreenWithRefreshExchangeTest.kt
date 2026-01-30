@@ -135,7 +135,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
             (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.UserCancelledBioPrompt)
         }
 
-        // Given
+        // When
         composeTestRule.setContent {
             SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
