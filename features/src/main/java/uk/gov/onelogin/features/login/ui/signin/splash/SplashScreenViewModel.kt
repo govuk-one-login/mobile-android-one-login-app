@@ -24,12 +24,13 @@ import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import javax.inject.Inject
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 @HiltViewModel
 class SplashScreenViewModel
     @Inject
@@ -72,7 +73,7 @@ class SplashScreenViewModel
                     _loading.emit(true)
                     refreshExchange.getTokens(
                         fragmentActivity,
-                        handleResult = { handleLocalAuthBehaviour(it) },
+                        handleResult = { handleRefreshExchangeResult(it) },
                     )
                 } else {
                     _loading.emit(true)
@@ -80,6 +81,28 @@ class SplashScreenViewModel
                         fragmentActivity,
                         callback = { handleLocalAuthBehaviour(it) },
                     )
+                }
+            }
+        }
+
+        private fun handleRefreshExchangeResult(result: RefreshExchangeResult) {
+            when (result) {
+                RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
+
+                RefreshExchangeResult.SignInRequired -> deleteData.value = true
+
+                RefreshExchangeResult.UserCancelledBioPrompt -> {
+                    _loading.value = false
+                    _showUnlock.value = true
+                }
+
+                RefreshExchangeResult.BioCheckFailed -> {
+                    // Allow user to make multiple fails... do nothing for now
+                }
+
+                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
+                else -> {
+                    nextScreen(SignOutRoutes.Info)
                 }
             }
         }

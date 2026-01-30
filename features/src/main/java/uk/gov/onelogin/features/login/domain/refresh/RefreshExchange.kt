@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.login.domain.refresh
 
 import androidx.fragment.app.FragmentActivity
-import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
 /**
  * Allows for the refresh token exchange to allow refreshing all tokens and extend the login sessions.
@@ -15,6 +14,6 @@ fun interface RefreshExchange {
      */
     suspend fun getTokens(
         context: FragmentActivity,
-        handleResult: (LocalAuthStatus) -> Unit,
+        handleResult: (RefreshExchangeResult) -> Unit,
     )
 }

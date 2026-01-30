@@ -98,3 +98,6 @@ jobs:
         uses: ./config/actions/sonar-quality-gate
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace

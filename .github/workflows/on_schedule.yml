@@ -13,7 +13,7 @@ concurrency:
 jobs:
   on-schedule-job:
     name: Verify code base every day overnight (at 3am)
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -85,3 +85,6 @@ jobs:
 
       - name: Bundle reports folder
         uses: ./config/actions/bundle-reports
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace

@@ -14,7 +14,7 @@ concurrency:
 jobs:
   prepare-for-release:
     name: Verify code base pre-release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
@@ -134,5 +134,4 @@ jobs:
           version-name: ${{ needs.prepare-for-release.outputs.version }}
 
       - name: Clean workspace
-        if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace

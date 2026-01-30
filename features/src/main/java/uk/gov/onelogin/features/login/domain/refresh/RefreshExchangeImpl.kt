@@ -64,7 +64,7 @@ class RefreshExchangeImpl
 
         override suspend fun getTokens(
             context: FragmentActivity,
-            handleResult: (LocalAuthStatus) -> Unit,
+            handleResult: (RefreshExchangeResult) -> Unit,
         ) {
             // Check the persistent session ID is valid
             if (!getPersistentId().isNullOrEmpty()) {
@@ -74,14 +74,14 @@ class RefreshExchangeImpl
                     getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
                 } else {
                     // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
-                    // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
-                    handleResult(LocalAuthStatus.ReAuthSignIn)
+                    // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
+                    handleResult(RefreshExchangeResult.ReAuthRequired)
                     return
                 }
             } else {
                 // When a persistent session ID couldn't be retrieved or is invalid
-                // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
-                handleResult(LocalAuthStatus.ManualSignIn)
+                // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
+                handleResult(RefreshExchangeResult.SignInRequired)
                 return
             }
             // This will handle the refresh token call and return of the updated tokens
@@ -91,7 +91,7 @@ class RefreshExchangeImpl
 
         private suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
             context: FragmentActivity,
-            handleResult: (LocalAuthStatus) -> Unit,
+            handleResult: (RefreshExchangeResult) -> Unit,
         ) {
             when (val attestation = appIntegrity.getClientAttestation()) {
                 // If attestation exists and is valid OR if required, a new one is successfully retrieved
@@ -118,10 +118,10 @@ class RefreshExchangeImpl
                     )
                 }
                 // For any errors returned from the attempt to get a new client attestation/ retrieve existing one
-                // Call lambda to handle the result fromm the consumer/ call point based on the LocalAuthStatus passed in
+                // Call lambda to handle the result fromm the consumer/ call point based on the RefreshExchangeResult passed in
                 else -> {
                     areChecksSuccessful = false
-                    handleResult(LocalAuthStatus.ClientAttestationFailure)
+                    handleResult(RefreshExchangeResult.ClientAttestationFailure)
                 }
             }
         }
@@ -129,7 +129,7 @@ class RefreshExchangeImpl
         private suspend fun handleRefreshTokenRetrieval(
             context: FragmentActivity,
             clientAttestation: String?,
-            onFailure: (LocalAuthStatus) -> Unit,
+            onFailure: (RefreshExchangeResult) -> Unit,
         ) {
             // Attempt to retrieve the Refresh token from the secure store
             getFromEncryptedSecureStore(
@@ -151,19 +151,20 @@ class RefreshExchangeImpl
                             areChecksSuccessful = true
                         } else {
                             // When Refresh token is invalid then prompt user to re-auth as the refresh token won't be able to be exchanged for a new one
-                            onFailure(LocalAuthStatus.ReAuthSignIn)
+                            onFailure(RefreshExchangeResult.ReAuthRequired)
                         }
                     } else {
                         // If the retrieval failed
                         // Call lambda to handle the result from the consumer/ call point based on the LocalAuthStatus passed in
-                        onFailure(it)
+                        val result = mapLocalAuthStatusToRefreshExchangeResult(it)
+                        onFailure(result)
                     }
                 },
             )
         }
 
         @Suppress("TooGenericExceptionCaught")
-        private suspend fun makeRefreshTokenCall(handleResult: (LocalAuthStatus) -> Unit) {
+        private suspend fun makeRefreshTokenCall(handleResult: (RefreshExchangeResult) -> Unit) {
             val refreshExchangeResult =
                 try {
                     // Attempt to exchange existing refresh token for new tokens returned in a TokenResponse format
@@ -176,7 +177,7 @@ class RefreshExchangeImpl
                         e,
                     )
                     // All errors are to be directed to re-auth (as of 10/11/25)
-                    handleResult(LocalAuthStatus.ReAuthSignIn)
+                    handleResult(RefreshExchangeResult.ReAuthRequired)
                     return
                 }
             when (refreshExchangeResult) {
@@ -203,7 +204,7 @@ class RefreshExchangeImpl
                     saveTokens.save(decodedTokens.refreshToken)
                     // Call lambda to exit the function with a LocalAuthStatus.Success
                     // To be determined when implementing if it requires the refresh token to be passed to the consumer
-                    handleResult(LocalAuthStatus.Success(mapOf()))
+                    handleResult(RefreshExchangeResult.Success)
                 }
                 is ApiResponse.Failure -> {
                     logger.error(
@@ -211,10 +212,11 @@ class RefreshExchangeImpl
                         refreshExchangeResult.error.message ?: EMPTY_MSG,
                         refreshExchangeResult.error,
                     )
-                    handleResult(LocalAuthStatus.ReAuthSignIn)
+                    handleResult(RefreshExchangeResult.ReAuthRequired)
                 }
+                // Loading and Offline are not use by the HttpClient so will never end up here
                 else -> {
-                    handleResult(LocalAuthStatus.ReAuthSignIn)
+                    handleResult(RefreshExchangeResult.OfflineNetwork)
                 }
             }
         }
@@ -329,6 +331,17 @@ class RefreshExchangeImpl
                         value = extractedExp,
                     ),
                 )
+            }
+        }
+
+        private fun mapLocalAuthStatusToRefreshExchangeResult(status: LocalAuthStatus): RefreshExchangeResult {
+            // This will have to updated after the secure store errors are now mapped correctly according to the TD
+            return when (status) {
+                LocalAuthStatus.ManualSignIn -> RefreshExchangeResult.SignInRequired
+                is LocalAuthStatus.Success -> RefreshExchangeResult.Success
+                is LocalAuthStatus.UserCancelled -> RefreshExchangeResult.UserCancelledBioPrompt
+                is LocalAuthStatus.BioCheckFailed -> RefreshExchangeResult.Success
+                else -> RefreshExchangeResult.ReAuthRequired
             }
         }
 
