@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
@@ -53,14 +54,14 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
             GdsIcon(
                 image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
                 contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
-                modifier = errorBodyItemModifier(padding),
+                modifier = Modifier.errorBodyItemModifier(padding),
                 MaterialTheme.colorScheme.onBackground
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_dataDeletedErrorTitle),
-                modifier = errorBodyItemModifier(padding),
+                modifier = Modifier.errorBodyItemModifier(padding),
                 textAlign = GdsHeadingAlignment.CenterAligned
             )
         },
@@ -69,7 +70,7 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
                 Text(
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
-                    modifier = errorBodyItemModifier(padding),
+                    modifier = Modifier.errorBodyItemModifier(padding),
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -88,6 +89,7 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
+@Preview
 @Composable
 internal fun AuthErrorScreenPreview() {
     GdsTheme {

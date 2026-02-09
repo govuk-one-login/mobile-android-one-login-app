@@ -64,14 +64,14 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
             GdsIcon(
                 image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
                 contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
-                modifier = errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_signInErrorTitle),
                 textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
         body = { padding ->
@@ -80,7 +80,7 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = errorBodyItemModifier(padding)
+                    modifier = Modifier.errorBodyItemModifier(padding)
                 )
             }
         },

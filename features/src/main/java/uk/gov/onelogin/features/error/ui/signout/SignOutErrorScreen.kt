@@ -46,14 +46,14 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                     GdsIcon(
                         image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
                         contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
-                        modifier = errorBodyItemModifier(padding)
+                        modifier = Modifier.errorBodyItemModifier(padding)
                     )
                 },
                 title = { padding ->
                     GdsHeading(
                         text = stringResource(R.string.app_signOutErrorTitle),
                         textAlign = GdsHeadingAlignment.CenterAligned,
-                        modifier = errorBodyItemModifier(padding),
+                        modifier = Modifier.errorBodyItemModifier(padding),
                     )
                 },
                 body = { padding ->
@@ -61,7 +61,7 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                         Text(
                             text = bodyContent[index],
                             textAlign = TextAlign.Center,
-                            modifier = errorBodyItemModifier(padding),
+                            modifier = Modifier.errorBodyItemModifier(padding),
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }
