@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.error.ui.signin
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,12 +22,13 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
-import uk.gov.android.ui.theme.largePadding
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.ui.theme.meta.ScreenPreview
+import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
+import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 
 @Composable
 @Preview
@@ -58,26 +60,27 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
         )
 
     ErrorScreen(
-        icon = {
+        icon = { padding ->
             GdsIcon(
                 image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
-                contentDescription = stringResource(uk.gov.android.ui.componentsv2.R.string.warning),
-                modifier = signInErrorBodyModifier().padding(bottom = largePadding)
+                contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
+                modifier = errorBodyItemModifier(padding)
             )
         },
-        title = {
+        title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_signInErrorTitle),
-                modifier = signInErrorBodyModifier().padding(horizontal = largePadding),
                 textAlign = GdsHeadingAlignment.CenterAligned,
+                modifier = errorBodyItemModifier(padding)
             )
         },
-        body = {
+        body = { padding ->
             items(bodyContent.size) { index ->
                 Text(
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
-                    modifier = signInErrorBodyModifier().padding(horizontal = largePadding)
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = errorBodyItemModifier(padding)
                 )
             }
         },
@@ -87,13 +90,11 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = onPrimary,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding)
             )
         },
     )
 }
-
-private fun signInErrorBodyModifier(): Modifier = Modifier.fillMaxWidth()
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
