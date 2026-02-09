@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
@@ -89,7 +88,6 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
-@Preview
 @Composable
 internal fun AuthErrorScreenPreview() {
     GdsTheme {
