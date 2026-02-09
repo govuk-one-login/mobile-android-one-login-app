@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -56,13 +57,13 @@ private fun SignInErrorBody() {
             GdsIcon(
                 image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
                 contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
-                modifier = errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_signInErrorTitle),
-                modifier = errorBodyItemModifier(padding),
+                modifier = Modifier.errorBodyItemModifier(padding),
                 textAlign = GdsHeadingAlignment.CenterAligned,
             )
         },
@@ -71,7 +72,7 @@ private fun SignInErrorBody() {
                 Text(
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
-                    modifier = errorBodyItemModifier(padding),
+                    modifier = Modifier.errorBodyItemModifier(padding),
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
