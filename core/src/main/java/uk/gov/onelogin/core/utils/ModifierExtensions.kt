@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Modifier.Companion.then
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 
@@ -15,5 +14,5 @@ object ModifierExtensions {
         }
 
     fun Modifier.errorBodyItemModifier(padding: Dp): Modifier =
-        then(Modifier.fillMaxWidth().padding(horizontal = padding))
+        this.then(Modifier.fillMaxWidth().padding(horizontal = padding))
 }
