@@ -26,6 +26,7 @@ import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 import uk.gov.android.ui.patterns.R as patternsR
+
 @Composable
 fun SignInErrorUnrecoverableScreen(
     analyticsViewModel: SignInErrorAnalyticsViewModel = hiltViewModel(),

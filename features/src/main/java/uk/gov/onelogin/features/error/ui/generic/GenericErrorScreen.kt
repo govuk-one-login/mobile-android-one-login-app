@@ -28,7 +28,6 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 import uk.gov.android.ui.patterns.R as patternsR
 
-
 @Composable
 fun GenericErrorScreen(
     analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel(),
