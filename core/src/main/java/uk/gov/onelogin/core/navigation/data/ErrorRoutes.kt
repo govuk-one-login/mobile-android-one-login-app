@@ -17,5 +17,7 @@ sealed class ErrorRoutes(
 
     data object Unavailable : ErrorRoutes("/error/unavailable")
 
+    data object AppIntegrity : ErrorRoutes("error/app_integrity")
+
     override fun getRoute() = route
 }
