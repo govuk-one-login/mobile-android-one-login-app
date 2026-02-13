@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.error.ui.generic
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +21,6 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
-import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
@@ -88,7 +86,7 @@ private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = primaryOnClick,
-                modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding)
+                modifier = Modifier.fillMaxWidth()
             )
         },
     )
