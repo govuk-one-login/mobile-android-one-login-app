@@ -18,7 +18,7 @@ object AppCheckerModule {
     fun provideAppCheck(
         @ApplicationContext
         context: Context,
-        logger: Logger
+        logger: Logger,
     ): AppChecker {
         val factory = PlayIntegrityAppCheckProviderFactory.getInstance()
         return FirebaseAppCheck(factory, context, logger)

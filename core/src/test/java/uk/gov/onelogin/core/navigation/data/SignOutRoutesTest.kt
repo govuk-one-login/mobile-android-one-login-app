@@ -11,7 +11,7 @@ class SignOutRoutesTest {
             SignOutRoutes.Start.getRoute() to "/sign_out/start",
             SignOutRoutes.Info.getRoute() to "/sign_out/info",
             SignOutRoutes.ReAuthError.getRoute() to "/sign_out/re_auth_error",
-            SignOutRoutes.Success.getRoute() to "sign_out/success"
+            SignOutRoutes.Success.getRoute() to "sign_out/success",
         ).forEach { assertEquals(it.second, it.first) }
     }
 }

@@ -27,7 +27,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 @Composable
 fun OsslScreen(
     analyticsViewModel: OsslAnalyticsViewModel = hiltViewModel(),
-    onBackBehaviour: () -> Unit = {}
+    onBackBehaviour: () -> Unit = {},
 ) {
     BackHandler {
         analyticsViewModel.trackBackButton()
@@ -46,10 +46,10 @@ fun OsslScreen(
                         analyticsViewModel.trackBackIcon()
                         onBackBehaviour()
                     },
-                    scrollBehaviour = scrollBehaviour
+                    scrollBehaviour = scrollBehaviour,
                 )
             },
-            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection)
+            modifier = Modifier.nestedScroll(scrollBehaviour.nestedScrollConnection),
         ) {
             OsslAboutLibrariesScreen(
                 padding = it,
@@ -58,7 +58,7 @@ fun OsslScreen(
                 },
                 onLogError = { tag, message, exception ->
                     analyticsViewModel.logError(tag, message, exception)
-                }
+                },
             )
         }
     }
@@ -68,24 +68,26 @@ fun OsslScreen(
 fun OsslAboutLibrariesScreen(
     padding: PaddingValues,
     onClick: (String, String) -> Unit,
-    onLogError: (String, String, Exception) -> Unit
+    onLogError: (String, String, Exception) -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
     val background = MaterialTheme.colorScheme.background
     val primary = MaterialTheme.colorScheme.primary
     LibrariesContainer(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxSize(),
-        colors = LibraryDefaults.libraryColors(
-            backgroundColor = background,
-            badgeBackgroundColor = primary
-        )
+        modifier =
+            Modifier
+                .padding(padding)
+                .fillMaxSize(),
+        colors =
+            LibraryDefaults.libraryColors(
+                backgroundColor = background,
+                badgeBackgroundColor = primary,
+            ),
     ) { library ->
         val license = library.licenses.firstOrNull()
         onClick(
             library.name,
-            license?.url ?: "no url"
+            license?.url ?: "no url",
         )
         license?.url?.also {
             try {

@@ -34,13 +34,15 @@ class MainNavAnalyticsViewModelTest {
 
     @Test
     fun trackHomeTab() {
-        val event = TrackEvent.Icon(
-            text = homeButton,
-            params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.HOME,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        val event =
+            TrackEvent.Icon(
+                text = homeButton,
+                params =
+                    RequiredParameters(
+                        taxonomyLevel2 = TaxonomyLevel2.HOME,
+                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
+                    ),
             )
-        )
 
         viewModel.trackHomeTabButton()
 
@@ -49,13 +51,15 @@ class MainNavAnalyticsViewModelTest {
 
     @Test
     fun trackWalletTab() {
-        val event = TrackEvent.Icon(
-            text = walletButton,
-            params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.WALLET,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        val event =
+            TrackEvent.Icon(
+                text = walletButton,
+                params =
+                    RequiredParameters(
+                        taxonomyLevel2 = TaxonomyLevel2.WALLET,
+                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
+                    ),
             )
-        )
 
         viewModel.trackWalletTabButton()
 
@@ -64,13 +68,15 @@ class MainNavAnalyticsViewModelTest {
 
     @Test
     fun trackSettingsTab() {
-        val event = TrackEvent.Icon(
-            text = settingsButton,
-            params = RequiredParameters(
-                taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+        val event =
+            TrackEvent.Icon(
+                text = settingsButton,
+                params =
+                    RequiredParameters(
+                        taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                        taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
+                    ),
             )
-        )
 
         viewModel.trackSettingsTabButton()
 

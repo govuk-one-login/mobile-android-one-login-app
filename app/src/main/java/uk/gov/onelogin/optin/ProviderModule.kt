@@ -18,7 +18,7 @@ internal object ProviderModule {
 
     @Provides
     fun provideSharedPreferences(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
     ): SharedPreferences = context.getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE)
 
     @IODispatcherQualifier

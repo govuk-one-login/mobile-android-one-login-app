@@ -32,11 +32,12 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
     val accessTokenExpiry by viewModel.accessTokenExpiry.collectAsState()
     val refreshTokenExpiry by viewModel.refreshTokenExpiry.collectAsState()
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(largePadding),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(largePadding),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         AccessTokenSection(viewModel, accessTokenExpiry, context)
         RefreshTokenSection(viewModel, refreshTokenExpiry, context)
@@ -47,21 +48,23 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
 @Composable
 private fun PersistentIdSection(
     persistentId: String,
-    viewModel: TokenTabScreenViewModel
+    viewModel: TokenTabScreenViewModel,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = mediumPadding),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = mediumPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            modifier = Modifier
-                .weight(1F)
-                .padding(end = smallPadding),
+            modifier =
+                Modifier
+                    .weight(1F)
+                    .padding(end = smallPadding),
             text = "Persistent ID: ${persistentId.ifEmpty { "<Empty>" }}",
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
         GdsButton(
             text = stringResource(R.string.app_developer_reset_persistent_id_button),
@@ -69,7 +72,7 @@ private fun PersistentIdSection(
             onClick = {
                 viewModel.resetPersistentId()
             },
-            modifier = Modifier.weight(1F)
+            modifier = Modifier.weight(1F),
         )
     }
 }
@@ -78,43 +81,47 @@ private fun PersistentIdSection(
 private fun AccessTokenSection(
     viewModel: TokenTabScreenViewModel,
     accessTokenExpiry: String,
-    context: Context
+    context: Context,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            modifier = Modifier
-                .weight(1F)
-                .padding(end = smallPadding),
+            modifier =
+                Modifier
+                    .weight(1F)
+                    .padding(end = smallPadding),
             text = "Access Token Expiry: $accessTokenExpiry",
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
     ButtonRow(
-        text = stringResource(R.string.set_access_token_empty_button)
+        text = stringResource(R.string.set_access_token_empty_button),
     ) {
         viewModel.updateAccessTokenToNull()
-        Toast.makeText(context, "Access token expiry set to null!", Toast.LENGTH_SHORT)
+        Toast
+            .makeText(context, "Access token expiry set to null!", Toast.LENGTH_SHORT)
             .show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_reset_access_token_button)
+        text = stringResource(R.string.app_developer_reset_access_token_button),
     ) {
         viewModel.resetAccessTokenExp()
-        Toast.makeText(context, "Access token expiry set to now!", Toast.LENGTH_SHORT)
+        Toast
+            .makeText(context, "Access token expiry set to now!", Toast.LENGTH_SHORT)
             .show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_access_token_button_expire_30_sec)
+        text = stringResource(R.string.app_developer_access_token_button_expire_30_sec),
     ) {
         viewModel.setAccessTokenExpireTo30Seconds()
-        Toast.makeText(
-            context,
-            "Access token expiry set to 30 seconds from now!",
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast
+            .makeText(
+                context,
+                "Access token expiry set to 30 seconds from now!",
+                Toast.LENGTH_SHORT,
+            ).show()
     }
 }
 
@@ -122,72 +129,78 @@ private fun AccessTokenSection(
 private fun RefreshTokenSection(
     viewModel: TokenTabScreenViewModel,
     refreshTokenExpiry: String,
-    context: Context
+    context: Context,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            modifier = Modifier
-                .weight(1F)
-                .padding(end = smallPadding),
+            modifier =
+                Modifier
+                    .weight(1F)
+                    .padding(end = smallPadding),
             text = "Refresh Token Expiry: $refreshTokenExpiry",
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
     ButtonRow(
-        text = stringResource(R.string.set_refresh_token_empty_button)
+        text = stringResource(R.string.set_refresh_token_empty_button),
     ) {
         viewModel.updateRefreshTokenToNull()
-        Toast.makeText(context, "Refresh token expiry set to null!", Toast.LENGTH_SHORT)
+        Toast
+            .makeText(context, "Refresh token expiry set to null!", Toast.LENGTH_SHORT)
             .show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_reset_refresh_token_button)
+        text = stringResource(R.string.app_developer_reset_refresh_token_button),
     ) {
         viewModel.resetRefreshTokenExp()
-        Toast.makeText(context, "Refresh token expiry set to now!", Toast.LENGTH_SHORT)
+        Toast
+            .makeText(context, "Refresh token expiry set to now!", Toast.LENGTH_SHORT)
             .show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_refresh_token_button_expire_30_sec)
+        text = stringResource(R.string.app_developer_refresh_token_button_expire_30_sec),
     ) {
         viewModel.setRefreshTokenExpireTo30Seconds()
-        Toast.makeText(
-            context,
-            "Refresh token expiry set to 30 seconds from now!",
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast
+            .makeText(
+                context,
+                "Refresh token expiry set to 30 seconds from now!",
+                Toast.LENGTH_SHORT,
+            ).show()
     }
     ButtonRow(
-        text = stringResource(R.string.app_developer_refresh_token_button_expire_5_min)
+        text = stringResource(R.string.app_developer_refresh_token_button_expire_5_min),
     ) {
         viewModel.setRefreshTokenExpireTo5Minutes()
-        Toast.makeText(
-            context,
-            "Refresh token expiry set to 5 minutes from now!",
-            Toast.LENGTH_SHORT
-        ).show()
+        Toast
+            .makeText(
+                context,
+                "Refresh token expiry set to 5 minutes from now!",
+                Toast.LENGTH_SHORT,
+            ).show()
     }
 }
 
 @Composable
 private fun ButtonRow(
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = mediumPadding),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = mediumPadding),
         horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         GdsButton(
             text = text,
             buttonType = ButtonTypeV2.Primary(),
-            onClick = onClick
+            onClick = onClick,
         )
     }
 }

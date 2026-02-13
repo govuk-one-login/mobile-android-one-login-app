@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
 import io.ktor.util.date.getTimeMillis
-import javax.inject.Inject
 import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
@@ -17,91 +16,94 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.ClientAttestationException
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.SECURE_STORE_ERROR
+import javax.inject.Inject
 
-class AppIntegrityImpl @Inject constructor(
-    private val context: Context,
-    private val featureFlags: FeatureFlags,
-    private val appCheck: AppIntegrityManager,
-    private val saveToOpenSecureStore: SaveToOpenSecureStore,
-    private val getFromOpenSecureStore: GetFromOpenSecureStore,
-    private val logger: Logger
-) : AppIntegrity {
-    override suspend fun getClientAttestation(): AttestationResult {
-        return if (isAttestationCallRequired()) {
-            when (val result = appCheck.getAttestation()) {
-                is AttestationResponse.Success -> handleClientAttestation(result)
-                is AttestationResponse.Failure -> {
-                    val error = ClientAttestationException(result.reason)
-                    logger.error(
-                        error.javaClass.simpleName,
-                        error.message ?: NO_MESSAGE,
-                        error
-                    )
-                    AttestationResult.Failure(result.reason)
+class AppIntegrityImpl
+    @Inject
+    constructor(
+        private val context: Context,
+        private val featureFlags: FeatureFlags,
+        private val appCheck: AppIntegrityManager,
+        private val saveToOpenSecureStore: SaveToOpenSecureStore,
+        private val getFromOpenSecureStore: GetFromOpenSecureStore,
+        private val logger: Logger,
+    ) : AppIntegrity {
+        override suspend fun getClientAttestation(): AttestationResult =
+            if (isAttestationCallRequired()) {
+                when (val result = appCheck.getAttestation()) {
+                    is AttestationResponse.Success -> handleClientAttestation(result)
+                    is AttestationResponse.Failure -> {
+                        val error = ClientAttestationException(result.reason)
+                        logger.error(
+                            error.javaClass.simpleName,
+                            error.message ?: NO_MESSAGE,
+                            error,
+                        )
+                        AttestationResult.Failure(result.reason)
+                    }
                 }
+            } else {
+                AttestationResult.NotRequired(retrieveSavedClientAttestation())
             }
-        } else {
-            AttestationResult.NotRequired(retrieveSavedClientAttestation())
-        }
-    }
 
-    override fun getProofOfPossession(): SignedPoP {
-        return appCheck.generatePoP(
-            iss = context.getString(R.string.stsClientId),
-            aud = context.getString(R.string.baseStsUrl)
-        )
-    }
-
-    override suspend fun retrieveSavedClientAttestation(): String? {
-        // Check if attestation is expired:
-        return if (isAttestationCallRequired()) {
-            null
-        } else {
-            getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)?.get(CLIENT_ATTESTATION)
-        }
-    }
-
-    private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
-        try {
-            saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
-            appCheck.getExpiry(result.attestationJwt)?.let {
-                saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, it)
-            }
-            AttestationResult.Success(result.attestationJwt)
-        } catch (e: SecureStorageError) {
-            val error = ClientAttestationException(e)
-            logger.error(
-                error.javaClass.simpleName,
-                error.message ?: SECURE_STORE_ERROR,
-                error
+        override fun getProofOfPossession(): SignedPoP =
+            appCheck.generatePoP(
+                iss = context.getString(R.string.stsClientId),
+                aud = context.getString(R.string.baseStsUrl),
             )
-            AttestationResult.Failure(error.message ?: SECURE_STORE_ERROR)
+
+        override suspend fun retrieveSavedClientAttestation(): String? {
+            // Check if attestation is expired:
+            return if (isAttestationCallRequired()) {
+                null
+            } else {
+                getFromOpenSecureStore.invoke(CLIENT_ATTESTATION)?.get(CLIENT_ATTESTATION)
+            }
         }
 
-    private suspend fun isAttestationCallRequired(): Boolean {
-        val ssResult: Map<String, String>? = getFromOpenSecureStore.invoke(
-            CLIENT_ATTESTATION_EXPIRY,
-            CLIENT_ATTESTATION
-        )
-        val exp = ssResult?.get(CLIENT_ATTESTATION_EXPIRY)
-        val attestation = ssResult?.get(CLIENT_ATTESTATION)
+        private suspend fun handleClientAttestation(result: AttestationResponse.Success) =
+            try {
+                saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
+                appCheck.getExpiry(result.attestationJwt)?.let {
+                    saveToOpenSecureStore.save(CLIENT_ATTESTATION_EXPIRY, it)
+                }
+                AttestationResult.Success(result.attestationJwt)
+            } catch (e: SecureStorageError) {
+                val error = ClientAttestationException(e)
+                logger.error(
+                    error.javaClass.simpleName,
+                    error.message ?: SECURE_STORE_ERROR,
+                    error,
+                )
+                AttestationResult.Failure(error.message ?: SECURE_STORE_ERROR)
+            }
 
-        val result = isAttestationExpired(exp) || attestation.isNullOrEmpty() ||
-            !appCheck.verifyAttestationJwk(attestation)
+        private suspend fun isAttestationCallRequired(): Boolean {
+            val ssResult: Map<String, String>? =
+                getFromOpenSecureStore.invoke(
+                    CLIENT_ATTESTATION_EXPIRY,
+                    CLIENT_ATTESTATION,
+                )
+            val exp = ssResult?.get(CLIENT_ATTESTATION_EXPIRY)
+            val attestation = ssResult?.get(CLIENT_ATTESTATION)
 
-        return featureFlags[AppIntegrityFeatureFlag.ENABLED] && result
-    }
+            val result =
+                isAttestationExpired(exp) ||
+                    attestation.isNullOrEmpty() ||
+                    !appCheck.verifyAttestationJwk(attestation)
 
-    private fun isAttestationExpired(expiryTime: String?): Boolean {
-        return if (!expiryTime.isNullOrEmpty()) {
-            expiryTime.toLong() <= getTimeMillis() / CONVERT_TO_SECONDS
-        } else {
-            true
+            return featureFlags[AppIntegrityFeatureFlag.ENABLED] && result
+        }
+
+        private fun isAttestationExpired(expiryTime: String?): Boolean =
+            if (!expiryTime.isNullOrEmpty()) {
+                expiryTime.toLong() <= getTimeMillis() / CONVERT_TO_SECONDS
+            } else {
+                true
+            }
+
+        companion object {
+            private const val CONVERT_TO_SECONDS = 1000
+            private const val NO_MESSAGE = "No message"
         }
     }
-
-    companion object {
-        private const val CONVERT_TO_SECONDS = 1000
-        private const val NO_MESSAGE = "No message"
-    }
-}

@@ -29,16 +29,17 @@ object WalletModule {
         analyticsLogger: AnalyticsLogger,
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
-        logger: Logger
+        logger: Logger,
     ): WalletSdk {
-        val config = WalletSdk.Configuration(
-            clientId = context.resources.getString(R.string.stsClientId),
-            authNetworkClient = genericHttpClient,
-            analyticsLogger = analyticsLogger,
-            localAuthManger = localAuthManager,
-            deleteAllDataUseCase = deleteAllDataUseCase,
-            logger = logger
-        )
+        val config =
+            WalletSdk.Configuration(
+                clientId = context.resources.getString(R.string.stsClientId),
+                authNetworkClient = genericHttpClient,
+                analyticsLogger = analyticsLogger,
+                localAuthManger = localAuthManager,
+                deleteAllDataUseCase = deleteAllDataUseCase,
+                logger = logger,
+            )
         return WalletSdkImpl(navigator, config, context)
     }
 }

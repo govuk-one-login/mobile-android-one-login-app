@@ -1,3 +1,7 @@
+import uk.gov.pipelines.config.ApkConfig
+import uk.gov.pipelines.emulator.EmulatorConfig
+import uk.gov.pipelines.emulator.SystemImageSource
+
 buildscript {
     dependencies {
         listOf(
@@ -53,6 +57,7 @@ buildscript {
     val versionName: String by rootProject.extra(
         getVersionName()
     )
+
     val debugBuildAppCheckToken: String by rootProject.extra(
         try {
             providers.gradleProperty("debugBuildAppCheckToken").get()
@@ -69,6 +74,15 @@ buildscript {
             ""
         }
     )
+    val githubRepositoryName: String by rootProject.extra("")
+    val mavenGroupId: String by rootProject.extra("")
+    val buildLogicDir: String by extra("mobile-android-pipelines/buildLogic")
+    val sonarProperties: Map<String, String> by extra(
+        mapOf(
+            "sonar.projectKey" to "di-mobile-android-onelogin-app",
+            "sonar.projectId" to "di-mobile-android-onelogin-app",
+        )
+    )
 }
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -83,19 +97,37 @@ plugins {
     alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.oss.licence.about.libraries) apply false
     alias(libs.plugins.paparazzi) apply false
-    id("uk.gov.sonar.root-config")
+    id("uk.gov.pipelines.android-root-config")
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
-setProperty("appId", "uk.gov.onelogin")
-setProperty("compileSdkVersion", 36)
-setProperty("configDir", "${rootProject.rootDir}/config")
-setProperty("minSdkVersion", 29)
 // Consider DCMAW-13740 before targeting Android 16 (API level 36)
-setProperty("targetSdkVersion", 35)
+val apkConfig by rootProject.extra(
+    object : ApkConfig {
+        override val applicationId: String = "uk.gov.onelogin"
+        override val debugVersion: String = "DEBUG_VERSION"
+        override val sdkVersions = object : ApkConfig.SdkVersions {
+            override val minimum = 29
+            override val target = 35
+            override val compile = 36
+        }
+    }
+)
+val emulatorConfig: EmulatorConfig by extra(
+    EmulatorConfig(
+        systemImageSources = setOf(
+            SystemImageSource.AOSP_ATD
+        ),
+        androidApiLevels = setOf(33),
+        deviceFilters = setOf("Pixel XL"),
+    )
+)
 
 val jacocoVersion: String by rootProject.extra(
     libs.versions.jacoco.get(),
 )
+
+setProperty("configDir", "${rootProject.rootDir}/config")
 
 fun setProperty(
     key: String,
@@ -107,6 +139,3 @@ fun setProperty(
 val composeVersion by project.extra("1.5.3")
 val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
-
-apply(plugin = "lifecycle-base")
-apply(plugin = "uk.gov.vale-config")

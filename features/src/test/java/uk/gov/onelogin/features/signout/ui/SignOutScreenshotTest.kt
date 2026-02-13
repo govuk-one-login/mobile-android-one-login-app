@@ -26,13 +26,12 @@ class SignOutScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> {
-            return arrayListOf(
+        fun values(): Iterable<Array<Any>> =
+            arrayListOf(
                 arrayOf(NOTNIGHT, LOCALE_EN),
                 arrayOf(NOTNIGHT, LOCALE_CY),
                 arrayOf(NIGHT, LOCALE_EN),
                 arrayOf(NIGHT, LOCALE_CY)
             )
-        }
     }
 }

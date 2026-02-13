@@ -9,7 +9,9 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class PrivacyNoticeScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class PrivacyNoticeScreenshotTest(
+    nightMode: NightMode
+) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         PrivacyNoticePreview()
     }
@@ -17,11 +19,10 @@ class PrivacyNoticeScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nig
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> {
-            return arrayListOf(
+        fun values(): Iterable<Array<Any>> =
+            arrayListOf(
                 arrayOf(NOTNIGHT),
                 arrayOf(NIGHT)
             )
-        }
     }
 }

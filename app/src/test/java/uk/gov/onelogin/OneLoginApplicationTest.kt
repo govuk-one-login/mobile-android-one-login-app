@@ -46,13 +46,14 @@ class OneLoginApplicationTest {
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
-    private val tokenResponse = TokenResponse(
-        "testType",
-        testAccessToken,
-        1L,
-        testIdToken,
-        "testRefreshToken"
-    )
+    private val tokenResponse =
+        TokenResponse(
+            "testType",
+            testAccessToken,
+            1L,
+            testIdToken,
+            "testRefreshToken",
+        )
 
     @Before
     fun setup() {
@@ -74,8 +75,8 @@ class OneLoginApplicationTest {
         // Given
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
             LocalAuthPreference.Enabled(
-                true
-            )
+                true,
+            ),
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
         whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
@@ -103,8 +104,8 @@ class OneLoginApplicationTest {
     fun `onStop does nothing when token is null`() {
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
             LocalAuthPreference.Enabled(
-                true
-            )
+                true,
+            ),
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
         whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
@@ -119,8 +120,8 @@ class OneLoginApplicationTest {
     fun `onStop does nothing when ID-Check journey is in progress`() {
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
             LocalAuthPreference.Enabled(
-                true
-            )
+                true,
+            ),
         )
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
         whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(true)
@@ -132,16 +133,17 @@ class OneLoginApplicationTest {
     }
 
     @Test
-    fun `AnalyticsRepo Synchronise is called from onStart`() = runTest {
-        app.onStart(ProcessLifecycleOwner.get())
-        shadowOf(Looper.getMainLooper()).idle()
-        verify(mockAnalyticsOptInRepo).synchronise()
-    }
+    fun `AnalyticsRepo Synchronise is called from onStart`() =
+        runTest {
+            app.onStart(ProcessLifecycleOwner.get())
+            shadowOf(Looper.getMainLooper()).idle()
+            verify(mockAnalyticsOptInRepo).synchronise()
+        }
 
     @Test
     fun `navigate to MainNavRoutes Start when onResume called`() {
         whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
-            LocalAuthPreference.Disabled
+            LocalAuthPreference.Disabled,
         )
         whenever(mockTokenRepository.isTokenResponseClear()).thenReturn(false)
         whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)

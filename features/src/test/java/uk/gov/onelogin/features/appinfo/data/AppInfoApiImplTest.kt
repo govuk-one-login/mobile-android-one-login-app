@@ -1,7 +1,6 @@
 package uk.gov.onelogin.features.appinfo.data
 
 import android.content.Context
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,6 +14,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApiImpl
+import kotlin.test.assertEquals
 
 class AppInfoApiImplTest {
     private val context: Context = mock()
@@ -22,18 +22,19 @@ class AppInfoApiImplTest {
     private val onlineChecker: OnlineChecker = mock()
     private val apiResponse =
         ClassLoader
-            .getSystemResource("api/appInfoResponseValue.json").readText()
+            .getSystemResource("api/appInfoResponseValue.json")
+            .readText()
     private val data =
         ApiResponse.Success(
             AppInfoData(
                 apps =
-                AppInfoData.App(
-                    AppInfoData.AppInfo(
-                        minimumVersion = "0.0.0",
-                        available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
+                    AppInfoData.App(
+                        AppInfoData.AppInfo(
+                            minimumVersion = "0.0.0",
+                            available = true,
+                            featureFlags = AppInfoData.FeatureFlags(true)
+                        )
                     )
-                )
             )
         )
     private val exp = Exception("Error")
@@ -52,13 +53,13 @@ class AppInfoApiImplTest {
             ApiRequest.Get(
                 url = "https://mobile.build.account.gov.uk/appInfo",
                 headers =
-                listOf(
-                    "Cache-Control" to "no-store",
-                    "Content-Type" to "application/json",
-                    "Strict-Transport-Security" to "max-age=31536000",
-                    "X-Content-Type-Options" to "nosniff",
-                    "X-Frame-Options" to "DENY"
-                )
+                    listOf(
+                        "Cache-Control" to "no-store",
+                        "Content-Type" to "application/json",
+                        "Strict-Transport-Security" to "max-age=31536000",
+                        "X-Content-Type-Options" to "nosniff",
+                        "X-Frame-Options" to "DENY"
+                    )
             )
 
         whenever(context.getString(any())).thenReturn("/appInfo")

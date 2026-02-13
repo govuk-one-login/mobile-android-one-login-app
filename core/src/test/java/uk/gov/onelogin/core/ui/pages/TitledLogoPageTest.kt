@@ -28,7 +28,7 @@ class TitledLogoPageTest : FragmentActivityTestCase() {
         composeTestRule.apply {
             onNodeWithContentDescription(
                 resources.getString(R.string.one_login_image_content_desc),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).assertIsDisplayed()
 
             onNodeWithText("test").assertIsDisplayed()
@@ -49,7 +49,7 @@ class TitledLogoPageTest : FragmentActivityTestCase() {
         composeTestRule.apply {
             onNodeWithContentDescription(
                 resources.getString(R.string.one_login_image_content_desc),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).assertIsDisplayed()
 
             onNodeWithText("test").assertIsDisplayed()

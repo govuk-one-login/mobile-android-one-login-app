@@ -27,19 +27,20 @@ internal fun SignOutErrorBody(onBackToSettings: () -> Unit) {
             ErrorScreen(
                 icon = ErrorScreenIcon.ErrorIcon,
                 title = stringResource(R.string.app_signOutErrorTitle),
-                body = persistentListOf(
-                    CentreAlignedScreenBodyContent.Text(
-                        bodyText = stringResource(R.string.app_signOutErrorBody1)
+                body =
+                    persistentListOf(
+                        CentreAlignedScreenBodyContent.Text(
+                            bodyText = stringResource(R.string.app_signOutErrorBody1),
+                        ),
+                        CentreAlignedScreenBodyContent.Text(
+                            bodyText = stringResource(R.string.app_signOutErrorBody2),
+                        ),
                     ),
-                    CentreAlignedScreenBodyContent.Text(
-                        bodyText = stringResource(R.string.app_signOutErrorBody2)
-                    )
-                ),
                 primaryButton =
-                CentreAlignedScreenButton(
-                    text = stringResource(R.string.app_SignOutErrorButton),
-                    onClick = onBackToSettings
-                )
+                    CentreAlignedScreenButton(
+                        text = stringResource(R.string.app_SignOutErrorButton),
+                        onClick = onBackToSettings,
+                    ),
             )
             BackHandler {
                 onBackToSettings()

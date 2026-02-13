@@ -37,20 +37,20 @@ fun SignedOutInfoScreen(
     signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
     analyticsViewModel: SignedOutInfoAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
-    shouldTryAgain: () -> Boolean = { false }
+    shouldTryAgain: () -> Boolean = { false },
 ) {
     val loading by loginViewModel.loading.collectAsState()
     val activity = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { intent ->
                     loginViewModel.handleActivityResult(
                         intent = intent,
                         isReAuth = signOutViewModel.shouldReAuth(),
-                        activity = activity
+                        activity = activity,
                     )
                 }
             }
@@ -64,7 +64,7 @@ fun SignedOutInfoScreen(
         handleLogin(
             loginViewModel,
             signOutViewModel,
-            launcher
+            launcher,
         )
     }
 
@@ -77,7 +77,7 @@ fun SignedOutInfoScreen(
                 handleLogin(
                     loginViewModel,
                     signOutViewModel,
-                    launcher
+                    launcher,
                 )
             }
         }
@@ -95,7 +95,7 @@ fun SignedOutInfoScreen(
 private fun handleLogin(
     loginViewModel: WelcomeScreenViewModel,
     signOutViewModel: SignedOutInfoViewModel,
-    launcher: ActivityResultLauncher<Intent>
+    launcher: ActivityResultLauncher<Intent>,
 ) {
     if (loginViewModel.onlineChecker.isOnline()) {
         signOutViewModel.checkPersistentId {
@@ -108,22 +108,25 @@ private fun handleLogin(
 
 @Composable
 internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
-    val content = listOf(
-        stringResource(R.string.app_youveBeenSignedOutBody1),
-        stringResource(R.string.app_youveBeenSignedOutBody2)
-    )
+    val content =
+        listOf(
+            stringResource(R.string.app_youveBeenSignedOutBody1),
+            stringResource(R.string.app_youveBeenSignedOutBody2),
+        )
     val buttonText = stringResource(R.string.app_SignInWithGovUKOneLoginButton)
     CentreAlignedScreen(
         title = stringResource(R.string.app_youveBeenSignedOutTitle),
         modifier = Modifier.fillMaxSize(),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(content[0]),
-            CentreAlignedScreenBodyContent.Text(content[1])
-        ),
-        primaryButton = CentreAlignedScreenButton(
-            text = buttonText,
-            onClick = onPrimary
-        )
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(content[0]),
+                CentreAlignedScreenBodyContent.Text(content[1]),
+            ),
+        primaryButton =
+            CentreAlignedScreenButton(
+                text = buttonText,
+                onClick = onPrimary,
+            ),
     )
 }
 

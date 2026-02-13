@@ -7,7 +7,7 @@ interface Navigator {
 
     fun navigate(
         route: NavRoute,
-        popUpToInclusive: Boolean = false
+        popUpToInclusive: Boolean = false,
     )
 
     fun goBack()

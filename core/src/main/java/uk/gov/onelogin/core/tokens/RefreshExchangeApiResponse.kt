@@ -14,5 +14,5 @@ data class RefreshExchangeApiResponse(
     @JsonNames("expires_in")
     val expiresIn: Long,
     @JsonNames("refresh_token")
-    val refreshToken: String? = null
+    val refreshToken: String? = null,
 )

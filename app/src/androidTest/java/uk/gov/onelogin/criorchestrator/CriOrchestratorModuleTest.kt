@@ -1,7 +1,6 @@
 package uk.gov.onelogin.criorchestrator
 
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -11,6 +10,7 @@ import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.IdCheckWrapperConfigKey
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.nfc.NfcConfigKey
 import uk.gov.onelogin.utils.TestCase
+import javax.inject.Inject
 
 @HiltAndroidTest
 class CriOrchestratorModuleTest : TestCase() {

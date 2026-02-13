@@ -20,27 +20,27 @@ object ErrorGraphObject {
     fun NavGraphBuilder.errorGraph(navController: NavHostController) {
         navigation(
             startDestination = ErrorRoutes.Generic.getRoute(),
-            route = ErrorRoutes.Root.getRoute()
+            route = ErrorRoutes.Root.getRoute(),
         ) {
             composable(
-                route = ErrorRoutes.Generic.getRoute()
+                route = ErrorRoutes.Generic.getRoute(),
             ) {
                 GenericErrorScreen { navController.popBackStack() }
             }
             composable(
-                route = ErrorRoutes.SignOut.getRoute()
+                route = ErrorRoutes.SignOut.getRoute(),
             ) {
                 SignOutErrorScreen()
             }
             composable(
-                route = ErrorRoutes.Offline.getRoute()
+                route = ErrorRoutes.Offline.getRoute(),
             ) {
                 OfflineErrorScreen(
-                    goBack = { navController.popBackStack() }
+                    goBack = { navController.popBackStack() },
                 )
             }
             composable(
-                route = ErrorRoutes.UpdateRequired.getRoute()
+                route = ErrorRoutes.UpdateRequired.getRoute(),
             ) {
                 val context = LocalActivity.current as Activity
                 BackHandler(enabled = true) {
@@ -50,7 +50,7 @@ object ErrorGraphObject {
                 ErrorUpdateRequiredScreen()
             }
             composable(
-                route = ErrorRoutes.Unavailable.getRoute()
+                route = ErrorRoutes.Unavailable.getRoute(),
             ) {
                 AppUnavailableScreen()
             }

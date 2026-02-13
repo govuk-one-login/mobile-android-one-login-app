@@ -48,46 +48,50 @@ fun PrivacyNotice(
     style: TextStyle = TextStyle.Default,
     privacyNoticeString: String? = null,
     privacyNoticeLink: String,
-    onPrivacyNotice: () -> Unit
+    onPrivacyNotice: () -> Unit,
 ) {
     TextWithLink(
-        modifier = modifier.then(
-            Modifier
-                .minimumInteractiveComponentSize()
-                .semantics {
-                    traversalIndex = PRIVACY_NOTICE_TRAVERSAL_ORDER
-                    role = Role.Button
-                    onClick {
-                        onPrivacyNotice()
-                        true
-                    }
-                }
-                .testTag(NOTICE_TAG)
-        ),
+        modifier =
+            modifier.then(
+                Modifier
+                    .minimumInteractiveComponentSize()
+                    .semantics {
+                        traversalIndex = PRIVACY_NOTICE_TRAVERSAL_ORDER
+                        role = Role.Button
+                        onClick {
+                            onPrivacyNotice()
+                            true
+                        }
+                    }.testTag(NOTICE_TAG),
+            ),
         text = privacyNoticeString,
-        linkText = buildAnnotatedString {
-            privacyNoticeString?.let {
+        linkText =
+            buildAnnotatedString {
+                privacyNoticeString?.let {
+                    append(WHITE_SPACE)
+                }
+                withStyle(
+                    SpanStyle(
+                        color =
+                            GdsLocalColorScheme.current
+                                .linkDefault,
+                    ),
+                ) {
+                    append(privacyNoticeLink)
+                }
                 append(WHITE_SPACE)
-            }
-            withStyle(
-                SpanStyle(
-                    color = GdsLocalColorScheme.current
-                        .linkDefault
-                )
-            ) {
-                append(privacyNoticeLink)
-            }
-            append(WHITE_SPACE)
-            appendInlineContent(ICON_KEY)
-        },
+                appendInlineContent(ICON_KEY)
+            },
         style = style,
-        inlineContent = mapOf(
-            ICON_KEY to InlineTextContent(
-                Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top)
-            ) {
-                LinkOut()
-            }
-        )
+        inlineContent =
+            mapOf(
+                ICON_KEY to
+                    InlineTextContent(
+                        Placeholder(textSizeBody, textSizeBody, PlaceholderVerticalAlign.Top),
+                    ) {
+                        LinkOut()
+                    },
+            ),
     ) {
         onPrivacyNotice()
     }
@@ -97,16 +101,19 @@ fun PrivacyNotice(
 private fun LinkOut() {
     val description = stringResource(R.string.app_openLinkExternally)
     Image(
-        colorFilter = ColorFilter.tint(
-            color = GdsLocalColorScheme.current
-                .linkDefault
-        ),
+        colorFilter =
+            ColorFilter.tint(
+                color =
+                    GdsLocalColorScheme.current
+                        .linkDefault,
+            ),
         painter = painterResource(id = R.drawable.link_out),
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { contentDescription = description }
-            .testTag(ICON_TAG),
-        contentDescription = null
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .semantics { contentDescription = description }
+                .testTag(ICON_TAG),
+        contentDescription = null,
     )
 }
 
@@ -120,16 +127,17 @@ internal fun PrivacyNoticePreview() {
             PrivacyNotice(
                 Modifier.padding(smallPadding),
                 privacyNoticeString =
-                stringResource(
-                    R.string.app_settingsAnalyticsToggleFootnote
-                ),
+                    stringResource(
+                        R.string.app_settingsAnalyticsToggleFootnote,
+                    ),
                 privacyNoticeLink =
-                stringResource(
-                    id = R.string.app_settingsAnalyticsToggleFootnoteLink
-                ),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                    stringResource(
+                        id = R.string.app_settingsAnalyticsToggleFootnoteLink,
+                    ),
+                style =
+                    MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onBackground,
+                    ),
             ) {}
         }
     }

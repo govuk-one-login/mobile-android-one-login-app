@@ -47,7 +47,8 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
             AuthErrorScreen(viewModel)
         }
 
-        composeTestRule.onNode(primary)
+        composeTestRule
+            .onNode(primary)
             .performClick()
 
         verify(navigator).navigate(LoginRoutes.Start, true)

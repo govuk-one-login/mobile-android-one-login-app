@@ -12,7 +12,7 @@ class ErrorRoutesTest {
             ErrorRoutes.Offline.getRoute() to "/error/offline",
             ErrorRoutes.SignOut.getRoute() to "/error/sign_out",
             ErrorRoutes.UpdateRequired.getRoute() to "/error/update_required",
-            ErrorRoutes.Unavailable.getRoute() to "/error/unavailable"
+            ErrorRoutes.Unavailable.getRoute() to "/error/unavailable",
         ).forEach { assertEquals(it.second, it.first) }
     }
 }

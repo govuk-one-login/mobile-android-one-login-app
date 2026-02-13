@@ -22,7 +22,7 @@ concurrency:
 jobs:
   on-pull-request-job:
     name: Verify code base when pull request is published/updated
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -34,6 +34,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           lfs: 'true'
+          submodules: 'true'
           fetch-depth: 0
 
       - name: Detect Arch
@@ -41,7 +42,10 @@ jobs:
         uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
-        uses: ./config/actions/setup-runner
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Get latest tag
         id: latest-tag
@@ -51,11 +55,11 @@ jobs:
 
       - name: Generate version code
         id: version-code
-        uses: ./config/actions/generate-version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
 
       - name: Generate version name
         id: version-name
-        uses: ./config/actions/version-name
+        uses: ./mobile-android-pipelines/actions/version-name
         with:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
@@ -88,9 +92,12 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Bundle reports folder
-        uses: ./config/actions/bundle-reports
+        uses: ./mobile-android-pipelines/actions/bundle-reports
 
       - name: Run sonar quality gate
         uses: ./config/actions/sonar-quality-gate
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace

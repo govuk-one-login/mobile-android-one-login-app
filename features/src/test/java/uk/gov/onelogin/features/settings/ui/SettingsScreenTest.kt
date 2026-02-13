@@ -90,31 +90,34 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         tokenRepository = mock()
         localAuthManager = mock()
         mockWalletRepository = mock()
-        viewModel = SettingsScreenViewModel(
-            optInRepository,
-            navigator,
-            localAuthManager,
-            mockWalletRepository,
-            tokenRepository,
-            getEmail
-        )
+        viewModel =
+            SettingsScreenViewModel(
+                optInRepository,
+                navigator,
+                localAuthManager,
+                mockWalletRepository,
+                tokenRepository,
+                getEmail
+            )
         analytics = mock()
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
         yourDetailsHeader = hasText(resources.getString(R.string.app_settingsSubtitle1))
         yourDetailsTitle = hasText(resources.getString(R.string.app_settingsSignInDetailsLink))
-        yourDetailsSubTitle = hasText(
-            resources.getString(R.string.app_settingSignInDetailsFootnote)
-        )
+        yourDetailsSubTitle =
+            hasText(
+                resources.getString(R.string.app_settingSignInDetailsFootnote)
+            )
         legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
         legalLink2 = hasText(resources.getString(R.string.app_openSourceLicences))
         legalLink3 = hasText(resources.getString(R.string.app_accessibilityStatement))
         helpLink = hasText(resources.getString(R.string.app_proveYourIdentityLink))
         contactLink = hasText(resources.getString(R.string.app_contactLink))
         aboutTheAppSwitch = hasTestTag(resources.getString(R.string.optInSwitchTestTag))
-        aboutTheAppSubTitle = hasText(
-            resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
-            substring = true
-        )
+        aboutTheAppSubTitle =
+            hasText(
+                resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
+                substring = true
+            )
         aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
         openSourceLicensesButton = hasText(resources.getString(R.string.app_openSourceLicences))
@@ -134,291 +137,315 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun yourDetailsGroupDisplayed() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        val settingsViewModel = SettingsScreenViewModel(
-            optInRepository,
-            navigator,
-            localAuthManager,
-            mockWalletRepository,
-            tokenRepository,
-            getEmail
-        )
-        composeTestRule.setContent {
-            SettingsScreen(settingsViewModel, analyticsViewModel)
-        }
-        composeTestRule.onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
-        composeTestRule.onNode(proveIdentityLink).assertIsDisplayed()
-        composeTestRule.onNode(addDocumentsLink).assertIsDisplayed()
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
-    }
-
-    @Test
-    fun legalGroupDisplayed() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        val settingsViewModel = SettingsScreenViewModel(
-            optInRepository,
-            navigator,
-            localAuthManager,
-            mockWalletRepository,
-            tokenRepository,
-            getEmail
-        )
-        composeTestRule.setContent {
-            SettingsScreen(settingsViewModel, analyticsViewModel)
-        }
-        composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
-        composeTestRule.onNode(termsAndConditionsLink).performScrollTo().assertIsDisplayed()
-    }
-
-    @Test
-    fun aboutTheAppSectionDisplayed() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.apply {
-            onNode(aboutTheAppSwitch, useUnmergedTree = true)
-                .performScrollTo()
-                .assertIsDisplayed()
-            onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
-                .performScrollTo()
-                .assertIsDisplayed()
-            onNode(aboutTheAppSubTitle, useUnmergedTree = true)
-                .assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun toggleSwitchCallOnToggleClickEvent() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        var optInState = false
-        composeTestRule.setContent {
-            PreferenceToggleRow(
-                title = R.string.app_settingsAnalyticsToggle,
-                checked = optInState,
-                onToggle = { optInState = true }
-            )
-        }
-        composeTestRule.onNode(aboutTheAppSwitch).performClick()
-        assert(optInState)
-    }
-
-    @Test
-    fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        var optInState = false
-        var biometricsOptInState = false
-        var biometricsClick = 0
-        var privacyNoticeClicked = false
-
-        composeTestRule.setContent {
-            AboutTheAppSection(
-                optInState,
-                biometricsOptInState,
-                onBiometrics = { biometricsClick++ },
-                onToggle = { optInState = true },
-                onPrivacyNoticeClick = { privacyNoticeClicked = true }
-            )
-        }
-        composeTestRule.onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
-            .performTouchInput {
-                click(bottomRight.copy(x = bottomRight.x - 10f))
+    fun yourDetailsGroupDisplayed() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+            val settingsViewModel =
+                SettingsScreenViewModel(
+                    optInRepository,
+                    navigator,
+                    localAuthManager,
+                    mockWalletRepository,
+                    tokenRepository,
+                    getEmail
+                )
+            composeTestRule.setContent {
+                SettingsScreen(settingsViewModel, analyticsViewModel)
             }
-        assertTrue(privacyNoticeClicked)
-    }
-
-    @Test
-    fun biometricsDisplayedAndOnClickWorks() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.apply {
-            onNode(biometricsOptIn, useUnmergedTree = true)
-                .performScrollTo()
-                .assertIsDisplayed()
-                .performClick()
+            composeTestRule.onNodeWithTag(DIVIDER_TEST_TAG).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+            composeTestRule.onNode(proveIdentityLink).assertIsDisplayed()
+            composeTestRule.onNode(addDocumentsLink).assertIsDisplayed()
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSettingsViewEvent(context))
         }
 
-        verify(navigator).navigate(SettingsRoutes.BiometricsOptIn)
-    }
-
     @Test
-    fun biometricsNotDisplayed() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(false)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.apply {
-            onNode(biometricsOptIn, useUnmergedTree = true).assertIsNotDisplayed()
-        }
-
-        // This can be removed once functionality has been added to the ticket and navigation can be tested
-        // Purpose - test click on Biometrics
-        verify(navigator, times(0)).navigate(SettingsRoutes.BiometricsOptIn)
-    }
-
-    @Test
-    fun biometricsEnabledBiometricsFeatureFlagDisabled() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.apply {
-            onNode(biometricsOptIn, useUnmergedTree = true).assertIsNotDisplayed()
+    fun legalGroupDisplayed() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+            val settingsViewModel =
+                SettingsScreenViewModel(
+                    optInRepository,
+                    navigator,
+                    localAuthManager,
+                    mockWalletRepository,
+                    tokenRepository,
+                    getEmail
+                )
+            composeTestRule.setContent {
+                SettingsScreen(settingsViewModel, analyticsViewModel)
+            }
+            composeTestRule.onNode(legalLink1).performScrollTo().assertIsDisplayed()
+            composeTestRule.onNode(legalLink2).performScrollTo().assertIsDisplayed()
+            composeTestRule.onNode(legalLink3).performScrollTo().assertIsDisplayed()
+            composeTestRule.onNode(termsAndConditionsLink).performScrollTo().assertIsDisplayed()
         }
 
-        // This can be removed once functionality has been added to the ticket and navigation can be tested
-        // Purpose - test click on Biometrics
-        verify(navigator, times(0)).navigate(SettingsRoutes.BiometricsOptIn)
-    }
-
     @Test
-    fun signOutCta() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+    fun aboutTheAppSectionDisplayed() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
 
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.onNode(signOutButton).performScrollTo().performClick()
-        verify(navigator).navigate(SignOutRoutes.Start)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignOutEvent(context))
-    }
-
-    @Test
-    fun openSourceLicensesCta() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        composeTestRule.setContent {
-            SettingsScreen(viewModel, analyticsViewModel)
-        }
-        composeTestRule.onNode(openSourceLicensesButton).performScrollTo().performClick()
-        verify(navigator).navigate(SettingsRoutes.Ossl)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeOpenSourceEvent(context))
-    }
-
-    @Test
-    fun signInLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        // Given the SettingsScreen Composable
-        val url = resources.getString(R.string.app_manageSignInDetailsUrl)
-        checkTheLinkOpensTheCorrectUrl(yourDetailsTitle, url)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignInDetailsEvent(context))
-    }
-
-    @Test
-    fun helpLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-        // Given the SettingsScreen Composable
-        val url = resources.getString(R.string.app_helpUrl)
-        checkTheLinkOpensTheCorrectUrl(helpLink, url)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeUsingOneLoginEvent(context))
-    }
-
-    @Test
-    fun contactLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        // Given the SettingsScreen Composable
-        val url = resources.getString(R.string.app_contactUrl)
-        checkTheLinkOpensTheCorrectUrl(contactLink, url)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeContactEvent(context))
-    }
-
-    @Test
-    fun privacyNoticeLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        // Given the SettingsScreen Composable
-        val url = resources.getString(R.string.privacy_notice_url)
-        checkTheLinkOpensTheCorrectUrl(legalLink1, url)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makePrivacyNoticeEvent(context))
-    }
-
-    @Test
-    fun accessibilityStatementLaunchesBrowser() = runTest {
-        whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
-
-        // Given the SettingsScreen Composable
-        val url = resources.getString(R.string.app_accessibilityStatementUrl)
-        checkTheLinkOpensTheCorrectUrl(legalLink3, url)
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAccessibilityEvent(context))
-    }
-
-    @Test
-    fun addDocumentsLaunchesBrowser() = runTest {
-        val url = resources.getString(R.string.app_add_document_url)
-        val settingsViewModel = SettingsScreenViewModel(
-            optInRepository,
-            navigator,
-            localAuthManager,
-            mockWalletRepository,
-            tokenRepository,
-            getEmail
-        )
-        checkTheLinkOpensTheCorrectUrl(
-            addDocumentsLink,
-            url,
-            settingsViewModel
-        )
-        verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAddDocumentsEvent(context))
-    }
-
-    @Test
-    fun termsAndConditionsLaunchesBrowser() = runTest {
-        val settingsViewModel = SettingsScreenViewModel(
-            optInRepository,
-            navigator,
-            localAuthManager,
-            mockWalletRepository,
-            tokenRepository,
-            getEmail
-        )
-        val url = resources.getString(R.string.app_terms_and_conditions_url)
-        checkTheLinkOpensTheCorrectUrl(
-            termsAndConditionsLink,
-            url,
-            settingsViewModel
-        )
-        verify(analytics).logEventV3Dot1(
-            SettingsAnalyticsViewModel.makeTermsAndConditionsEvent(context)
-        )
-    }
-
-    @Test
-    fun optOutBiometricsPreview() = runTest {
-        composeTestRule.setContent {
-            SettingsScreenOptOutShowBiometricsPreview()
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.apply {
+                onNode(aboutTheAppSwitch, useUnmergedTree = true)
+                    .performScrollTo()
+                    .assertIsDisplayed()
+                onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
+                    .performScrollTo()
+                    .assertIsDisplayed()
+                onNode(aboutTheAppSubTitle, useUnmergedTree = true)
+                    .assertIsDisplayed()
+            }
         }
 
-        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
-    }
-
     @Test
-    fun optInNoBiometricsPreview() = runTest {
-        composeTestRule.setContent {
-            SettingsScreenOptInNoShowBiometricsPreview()
+    fun toggleSwitchCallOnToggleClickEvent() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            var optInState = false
+            composeTestRule.setContent {
+                PreferenceToggleRow(
+                    title = R.string.app_settingsAnalyticsToggle,
+                    checked = optInState,
+                    onToggle = { optInState = true }
+                )
+            }
+            composeTestRule.onNode(aboutTheAppSwitch).performClick()
+            assert(optInState)
         }
 
-        composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
-        composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
-    }
+    @Test
+    fun privacyNoticeInAboutTheAppSectionLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            var optInState = false
+            var biometricsOptInState = false
+            var biometricsClick = 0
+            var privacyNoticeClicked = false
+
+            composeTestRule.setContent {
+                AboutTheAppSection(
+                    optInState,
+                    biometricsOptInState,
+                    onBiometrics = { biometricsClick++ },
+                    onToggle = { optInState = true },
+                    onPrivacyNoticeClick = { privacyNoticeClicked = true }
+                )
+            }
+            composeTestRule
+                .onNode(aboutTheAppPrivacyLink, useUnmergedTree = true)
+                .performTouchInput {
+                    click(bottomRight.copy(x = bottomRight.x - 10f))
+                }
+            assertTrue(privacyNoticeClicked)
+        }
+
+    @Test
+    fun biometricsDisplayedAndOnClickWorks() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.apply {
+                onNode(biometricsOptIn, useUnmergedTree = true)
+                    .performScrollTo()
+                    .assertIsDisplayed()
+                    .performClick()
+            }
+
+            verify(navigator).navigate(SettingsRoutes.BiometricsOptIn)
+        }
+
+    @Test
+    fun biometricsNotDisplayed() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(false)
+
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.apply {
+                onNode(biometricsOptIn, useUnmergedTree = true).assertIsNotDisplayed()
+            }
+
+            // This can be removed once functionality has been added to the ticket and navigation can be tested
+            // Purpose - test click on Biometrics
+            verify(navigator, times(0)).navigate(SettingsRoutes.BiometricsOptIn)
+        }
+
+    @Test
+    fun biometricsEnabledBiometricsFeatureFlagDisabled() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.apply {
+                onNode(biometricsOptIn, useUnmergedTree = true).assertIsNotDisplayed()
+            }
+
+            // This can be removed once functionality has been added to the ticket and navigation can be tested
+            // Purpose - test click on Biometrics
+            verify(navigator, times(0)).navigate(SettingsRoutes.BiometricsOptIn)
+        }
+
+    @Test
+    fun signOutCta() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.onNode(signOutButton).performScrollTo().performClick()
+            verify(navigator).navigate(SignOutRoutes.Start)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignOutEvent(context))
+        }
+
+    @Test
+    fun openSourceLicensesCta() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            composeTestRule.setContent {
+                SettingsScreen(viewModel, analyticsViewModel)
+            }
+            composeTestRule.onNode(openSourceLicensesButton).performScrollTo().performClick()
+            verify(navigator).navigate(SettingsRoutes.Ossl)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeOpenSourceEvent(context))
+        }
+
+    @Test
+    fun signInLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            // Given the SettingsScreen Composable
+            val url = resources.getString(R.string.app_manageSignInDetailsUrl)
+            checkTheLinkOpensTheCorrectUrl(yourDetailsTitle, url)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeSignInDetailsEvent(context))
+        }
+
+    @Test
+    fun helpLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+            // Given the SettingsScreen Composable
+            val url = resources.getString(R.string.app_helpUrl)
+            checkTheLinkOpensTheCorrectUrl(helpLink, url)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeUsingOneLoginEvent(context))
+        }
+
+    @Test
+    fun contactLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            // Given the SettingsScreen Composable
+            val url = resources.getString(R.string.app_contactUrl)
+            checkTheLinkOpensTheCorrectUrl(contactLink, url)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeContactEvent(context))
+        }
+
+    @Test
+    fun privacyNoticeLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            // Given the SettingsScreen Composable
+            val url = resources.getString(R.string.privacy_notice_url)
+            checkTheLinkOpensTheCorrectUrl(legalLink1, url)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makePrivacyNoticeEvent(context))
+        }
+
+    @Test
+    fun accessibilityStatementLaunchesBrowser() =
+        runTest {
+            whenever(localAuthManager.biometricsAvailable()).thenReturn(true)
+
+            // Given the SettingsScreen Composable
+            val url = resources.getString(R.string.app_accessibilityStatementUrl)
+            checkTheLinkOpensTheCorrectUrl(legalLink3, url)
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAccessibilityEvent(context))
+        }
+
+    @Test
+    fun addDocumentsLaunchesBrowser() =
+        runTest {
+            val url = resources.getString(R.string.app_add_document_url)
+            val settingsViewModel =
+                SettingsScreenViewModel(
+                    optInRepository,
+                    navigator,
+                    localAuthManager,
+                    mockWalletRepository,
+                    tokenRepository,
+                    getEmail
+                )
+            checkTheLinkOpensTheCorrectUrl(
+                addDocumentsLink,
+                url,
+                settingsViewModel
+            )
+            verify(analytics).logEventV3Dot1(SettingsAnalyticsViewModel.makeAddDocumentsEvent(context))
+        }
+
+    @Test
+    fun termsAndConditionsLaunchesBrowser() =
+        runTest {
+            val settingsViewModel =
+                SettingsScreenViewModel(
+                    optInRepository,
+                    navigator,
+                    localAuthManager,
+                    mockWalletRepository,
+                    tokenRepository,
+                    getEmail
+                )
+            val url = resources.getString(R.string.app_terms_and_conditions_url)
+            checkTheLinkOpensTheCorrectUrl(
+                termsAndConditionsLink,
+                url,
+                settingsViewModel
+            )
+            verify(analytics).logEventV3Dot1(
+                SettingsAnalyticsViewModel.makeTermsAndConditionsEvent(context)
+            )
+        }
+
+    @Test
+    fun optOutBiometricsPreview() =
+        runTest {
+            composeTestRule.setContent {
+                SettingsScreenOptOutShowBiometricsPreview()
+            }
+
+            composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+        }
+
+    @Test
+    fun optInNoBiometricsPreview() =
+        runTest {
+            composeTestRule.setContent {
+                SettingsScreenOptInNoShowBiometricsPreview()
+            }
+
+            composeTestRule.onNode(yourDetailsHeader).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsTitle).assertIsDisplayed()
+            composeTestRule.onNode(yourDetailsSubTitle).assertIsDisplayed()
+        }
 
     private fun checkTheLinkOpensTheCorrectUrl(
         linkView: SemanticsMatcher,

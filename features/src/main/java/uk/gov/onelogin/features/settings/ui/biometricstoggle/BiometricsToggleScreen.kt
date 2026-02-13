@@ -70,7 +70,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 @Composable
 fun BiometricsToggleScreen(
     viewModel: BiometricsToggleScreenViewModel = hiltViewModel(),
-    analyticsViewModel: BiometricsToggleAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: BiometricsToggleAnalyticsViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     BackHandler(true) {
@@ -87,14 +87,14 @@ fun BiometricsToggleScreen(
                 viewModel.goBack()
             }
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         BiometricsToggleBody(
             biometricsEnabled = viewModel.biometricsEnabled,
             toggleBiometrics = { viewModel.toggleBiometrics() },
             padding = paddingValues,
             trackScreen = { analyticsViewModel.trackWalletCopyView() },
-            trackToggle = { analyticsViewModel.trackToggleEvent(it) }
+            trackToggle = { analyticsViewModel.trackToggleEvent(it) },
         )
     }
 }
@@ -105,10 +105,10 @@ private fun BiometricsToggleBody(
     padding: PaddingValues,
     toggleBiometrics: () -> Unit,
     trackScreen: () -> Unit,
-    trackToggle: (Boolean) -> Unit
+    trackToggle: (Boolean) -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(padding)
+        modifier = Modifier.padding(padding),
     ) {
         trackScreen()
         BiometricsToggleRow(R.string.app_biometricsToggleLabel, biometricsEnabled) {
@@ -130,34 +130,37 @@ private fun WalletCopyContent() {
     val subtitle = stringResource(R.string.app_biometricsToggleSubtitle)
     val body4 = stringResource(R.string.app_biometricsToggleBody4)
     Column(
-        modifier = Modifier
-            .padding(vertical = smallPadding, horizontal = smallPadding)
-            .verticalScroll(rememberScrollState())
+        modifier =
+            Modifier
+                .padding(vertical = smallPadding, horizontal = smallPadding)
+                .verticalScroll(rememberScrollState()),
     ) {
         GdsBulletedList(
-            title = ListTitle(
-                text = bulletListTitle,
-                titleType = TitleType.Text
-            ),
-            bulletListItems = persistentListOf(
-                ListItem(bullet1),
-                ListItem(bullet2)
-            )
+            title =
+                ListTitle(
+                    text = bulletListTitle,
+                    titleType = TitleType.Text,
+                ),
+            bulletListItems =
+                persistentListOf(
+                    ListItem(bullet1),
+                    ListItem(bullet2),
+                ),
         )
         Text(
             text = body2,
-            modifier = Modifier.padding(top = smallPadding)
+            modifier = Modifier.padding(top = smallPadding),
         )
         Text(
             text = body3,
-            modifier = Modifier.padding(top = smallPadding)
+            modifier = Modifier.padding(top = smallPadding),
         )
         GdsHeading(
             text = subtitle,
             style = GdsHeadingStyle.Body,
             textAlign = GdsHeadingAlignment.LeftAligned,
             textFontWeight = FontWeight.W700,
-            modifier = Modifier.padding(vertical = smallPadding)
+            modifier = Modifier.padding(vertical = smallPadding),
         )
         Text(text = body4)
     }
@@ -167,34 +170,33 @@ private fun WalletCopyContent() {
 private fun BiometricsToggleRow(
     @StringRes title: Int,
     checked: StateFlow<Boolean>,
-    onToggle: (Boolean) -> Unit
+    onToggle: (Boolean) -> Unit,
 ) {
     val state = checked.collectAsState().value
     var toggle by remember { mutableStateOf(state) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .height(56.dp)
-            .fillMaxWidth()
-            .background(color = GdsLocalColorScheme.current.listBackground)
-            .toggleable(
-                role = Role.Switch,
-                value = toggle,
-                onValueChange = {
-                    toggle = !toggle
-                    onToggle(toggle)
-                }
-            )
-            .padding(
-                start = smallPadding,
-                end = smallPadding
-            )
-            .testTag(stringResource(id = R.string.optInSwitchTestTag))
+        modifier =
+            Modifier
+                .height(56.dp)
+                .fillMaxWidth()
+                .background(color = GdsLocalColorScheme.current.listBackground)
+                .toggleable(
+                    role = Role.Switch,
+                    value = toggle,
+                    onValueChange = {
+                        toggle = !toggle
+                        onToggle(toggle)
+                    },
+                ).padding(
+                    start = smallPadding,
+                    end = smallPadding,
+                ).testTag(stringResource(id = R.string.optInSwitchTestTag)),
     ) {
         Text(
             modifier = Modifier.weight(1F),
             text = stringResource(title),
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
         Switch(
             checked = toggle,
@@ -204,7 +206,7 @@ private fun BiometricsToggleRow(
             },
             colors = Switch.defaultColors(),
             // Required for accessibility to not focus on the toggle first landing on the screen (TalkBack enabled)
-            modifier = Modifier.clearAndSetSemantics {}
+            modifier = Modifier.clearAndSetSemantics {},
         )
     }
     HorizontalDivider()
@@ -214,7 +216,7 @@ private fun BiometricsToggleRow(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun BiometricsTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    navIconClick: () -> Unit
+    navIconClick: () -> Unit,
 ) {
     // With the current set-up, we can't use the GdsTopAppBar because it breaks the TalkBack behaviour, the
     // title does not get read first, but rather ignored and only read after all elements on the screen
@@ -225,7 +227,7 @@ private fun BiometricsTopAppBar(
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = Typography.headlineMedium,
-                fontWeight = FontWeight.W700
+                fontWeight = FontWeight.W700,
             )
         },
         navigationIcon = {
@@ -233,18 +235,19 @@ private fun BiometricsTopAppBar(
                 GdsIcon(
                     image = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.app_back_icon),
-                    color = GdsLocalColorScheme.current.topBarIcon
+                    color = GdsLocalColorScheme.current.topBarIcon,
                 )
             }
         },
-        colors = TopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            scrolledContainerColor = GdsLocalColorScheme.current.topBarScrolledBackground,
-            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-            titleContentColor = MaterialTheme.colorScheme.background,
-            actionIconContentColor = MaterialTheme.colorScheme.onBackground
-        ),
-        scrollBehavior = scrollBehavior
+        colors =
+            TopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                scrolledContainerColor = GdsLocalColorScheme.current.topBarScrolledBackground,
+                navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                titleContentColor = MaterialTheme.colorScheme.background,
+                actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+            ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
@@ -258,14 +261,14 @@ internal fun BiometricsToggleBodyPreview() {
         Scaffold(
             topBar = {
                 BiometricsTopAppBar {}
-            }
+            },
         ) { paddingValues ->
             BiometricsToggleBody(
                 MutableStateFlow(false),
                 paddingValues,
                 {},
                 {},
-                {}
+                {},
             )
         }
     }

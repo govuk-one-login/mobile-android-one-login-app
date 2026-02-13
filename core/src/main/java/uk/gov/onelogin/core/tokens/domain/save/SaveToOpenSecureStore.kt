@@ -9,11 +9,11 @@ interface SaveToOpenSecureStore {
      */
     suspend fun save(
         key: String,
-        value: String
+        value: String,
     )
 
     suspend fun save(
         key: String,
-        value: Number
+        value: Number,
     )
 }

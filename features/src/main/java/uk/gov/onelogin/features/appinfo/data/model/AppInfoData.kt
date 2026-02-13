@@ -7,11 +7,11 @@ import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 @OptIn(ExperimentalSerializationApi::class)
 @Serializable
 data class AppInfoData(
-    val apps: App
+    val apps: App,
 ) {
     @Serializable
     data class App(
-        val android: AppInfo
+        val android: AppInfo,
     )
 
     @Serializable
@@ -19,11 +19,11 @@ data class AppInfoData(
     data class AppInfo(
         val minimumVersion: String,
         val available: Boolean,
-        val featureFlags: FeatureFlags
+        val featureFlags: FeatureFlags,
     )
 
     @Serializable
     data class FeatureFlags(
-        val appCheckEnabled: Boolean
+        val appCheckEnabled: Boolean,
     )
 }

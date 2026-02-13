@@ -12,27 +12,26 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetRefreshTokenExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface SingletonTokenModule {
     @AccessToken
     @Binds
-    fun bindGetAccessTokenExpiry(
-        getTokenExpiry: GetAccessTokenExpiryImpl
-    ): GetTokenExpiry
+    fun bindGetAccessTokenExpiry(getTokenExpiry: GetAccessTokenExpiryImpl): GetTokenExpiry
 
     @RefreshToken
     @Binds
-    fun bindRefreshGetTokenExpiry(
-        getTokenExpiry: GetRefreshTokenExpiryImpl
-    ): GetTokenExpiry
+    fun bindRefreshGetTokenExpiry(getTokenExpiry: GetRefreshTokenExpiryImpl): GetTokenExpiry
 
     @AccessToken
     @Binds
+    @Singleton
     fun bindIsAccessTokenExpired(isTokenExpired: IsAccessTokenExpiredImpl): IsTokenExpired
 
     @RefreshToken
     @Binds
+    @Singleton
     fun bindIsRefreshTokenExpired(isTokenExpired: IsRefreshTokenExpiredImpl): IsTokenExpired
 }

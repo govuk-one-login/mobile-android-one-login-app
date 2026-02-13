@@ -7,6 +7,6 @@ fun interface HandleLoginRedirect {
     suspend fun handle(
         intent: Intent,
         onFailure: (Throwable?) -> Unit,
-        onSuccess: (TokenResponse) -> Unit
+        onSuccess: (TokenResponse) -> Unit,
     )
 }

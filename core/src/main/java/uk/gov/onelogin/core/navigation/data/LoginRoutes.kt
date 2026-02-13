@@ -2,7 +2,9 @@ package uk.gov.onelogin.core.navigation.data
 
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 
-sealed class LoginRoutes(private val route: String) : NavRoute {
+sealed class LoginRoutes(
+    private val route: String,
+) : NavRoute {
     data object Root : LoginRoutes("/login")
 
     data object Start : LoginRoutes("/login/start")

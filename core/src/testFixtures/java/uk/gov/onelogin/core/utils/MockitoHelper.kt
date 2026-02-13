@@ -6,6 +6,7 @@ import org.mockito.Mockito
  * Helper class to allow matcher function any() to
  * work with latest version of Kotlin
  */
+@Suppress("CheckResult")
 object MockitoHelper {
     fun <T> anyObject(): T {
         Mockito.any<T>()

@@ -48,7 +48,7 @@ fun OptInScreen(viewModel: OptInViewModel = hiltViewModel()) {
             onDoNotShare = {
                 viewModel.optOut()
                 viewModel.goToSignIn()
-            }
+            },
         )
     }
 }
@@ -58,7 +58,7 @@ internal fun OptInBody(
     uiState: OptInUIState,
     onPrivacyNotice: (String) -> Unit,
     onShare: () -> Unit,
-    onDoNotShare: () -> Unit
+    onDoNotShare: () -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val url = stringResource(id = R.string.privacy_notice_url)
@@ -66,7 +66,7 @@ internal fun OptInBody(
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(scrollState)
+                .verticalScroll(scrollState),
         ) {
             OptInHeader()
             OptInContent(onPrivacyNotice, url)
@@ -79,36 +79,39 @@ internal fun OptInBody(
 @Composable
 private fun OptInHeader() {
     Text(
-        modifier = Modifier
-            .semantics { heading() }
-            .padding(horizontal = smallPadding)
-            .padding(top = mediumPadding),
+        modifier =
+            Modifier
+                .semantics { heading() }
+                .padding(horizontal = smallPadding)
+                .padding(top = mediumPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.headlineLarge,
         text = stringResource(id = R.string.app_analyticsPermissionTitle),
-        textAlign = TextAlign.Start
+        textAlign = TextAlign.Start,
     )
 }
 
 @Composable
 private fun OptInContent(
     onPrivacyNotice: (String) -> Unit,
-    url: String
+    url: String,
 ) {
     Text(
-        modifier = Modifier
-            .padding(all = smallPadding),
+        modifier =
+            Modifier
+                .padding(all = smallPadding),
         color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.bodyLarge,
-        text = stringResource(id = R.string.app_analyticsPermissionBody)
+        text = stringResource(id = R.string.app_analyticsPermissionBody),
     )
     PrivacyNotice(
-        modifier = Modifier
-            .padding(horizontal = smallPadding)
-            .semantics(mergeDescendants = true) {},
+        modifier =
+            Modifier
+                .padding(horizontal = smallPadding)
+                .semantics(mergeDescendants = true) {},
         style = MaterialTheme.typography.bodyLarge,
         privacyNoticeLink = stringResource(id = R.string.app_privacyNoticeLink),
-        onPrivacyNotice = { onPrivacyNotice(url) }
+        onPrivacyNotice = { onPrivacyNotice(url) },
     )
 }
 
@@ -116,26 +119,28 @@ private fun OptInContent(
 private fun OptInButtons(
     onShare: () -> Unit,
     uiState: OptInUIState,
-    onDoNotShare: () -> Unit
+    onDoNotShare: () -> Unit,
 ) {
     GdsButton(
         text = stringResource(R.string.app_shareAnalyticsButton),
         buttonType = ButtonTypeV2.Primary(),
         onClick = onShare,
-        modifier = Modifier
-            .padding(horizontal = smallPadding)
-            .padding(top = xsmallPadding)
-            .fillMaxWidth(),
-        enabled = uiState.hasButtonsOn
+        modifier =
+            Modifier
+                .padding(horizontal = smallPadding)
+                .padding(top = xsmallPadding)
+                .fillMaxWidth(),
+        enabled = uiState.hasButtonsOn,
     )
     GdsButton(
         text = stringResource(R.string.app_doNotShareAnalytics),
         buttonType = ButtonTypeV2.Secondary(),
         onClick = onDoNotShare,
-        modifier = Modifier
-            .padding(horizontal = smallPadding, vertical = xsmallPadding)
-            .fillMaxWidth(),
-        enabled = uiState.hasButtonsOn
+        modifier =
+            Modifier
+                .padding(horizontal = smallPadding, vertical = xsmallPadding)
+                .fillMaxWidth(),
+        enabled = uiState.hasButtonsOn,
     )
 }
 
@@ -148,7 +153,7 @@ internal fun OptInPreview() {
             uiState = OptInUIState.PreChoice,
             onPrivacyNotice = {},
             onShare = {},
-            onDoNotShare = {}
+            onDoNotShare = {},
         )
     }
 }

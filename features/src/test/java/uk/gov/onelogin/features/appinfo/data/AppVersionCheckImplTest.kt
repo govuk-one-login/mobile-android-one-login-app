@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.appinfo.data
 
-import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import uk.gov.logging.testdouble.SystemLogger
@@ -8,6 +7,7 @@ import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.appinfo.AppInfoUtilsImpl
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
+import kotlin.test.assertTrue
 
 class AppVersionCheckImplTest {
     private val appInfoUtils: AppInfoUtils = AppInfoUtilsImpl()

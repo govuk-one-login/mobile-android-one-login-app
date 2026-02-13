@@ -34,10 +34,11 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
         logger = mock()
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-            taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
+                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+            )
         buttonText = context.getEnglishString(R.string.app_signOutAndDeleteAppDataButton)
         name = context.getEnglishString(R.string.app_signOutConfirmationTitle)
         walletId = context.getEnglishString(R.string.sign_out_wallet_page_id)
@@ -48,10 +49,11 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
     @Test
     fun trackSignOutLogsTrackPrimary() {
         // Given a TrackEvent.Link
-        val event = TrackEvent.Button(
-            text = buttonText,
-            params = requiredParameters
-        )
+        val event =
+            TrackEvent.Button(
+                text = buttonText,
+                params = requiredParameters
+            )
         // When tracking re-auth
         viewModel.trackPrimary()
         // Then log a TrackEvent to the AnalyticsLogger
@@ -82,13 +84,14 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
 
     @Test
     fun trackScreens() {
-        val event = TestUtils.TrackEventTestCase.Screen(
-            trackFunction = {
-                viewModel.trackSignOutView()
-            },
-            name = name,
-            id = walletId
-        )
+        val event =
+            TestUtils.TrackEventTestCase.Screen(
+                trackFunction = {
+                    viewModel.trackSignOutView()
+                },
+                name = name,
+                id = walletId
+            )
         val result = executeTrackEventTestCase(event, requiredParameters)
 
         verify(logger).logEventV3Dot1(result)

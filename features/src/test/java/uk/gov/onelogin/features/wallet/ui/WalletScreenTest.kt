@@ -14,9 +14,10 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 class WalletScreenTest : FragmentActivityTestCase() {
     private val walletSdk: WalletSdk = mock()
 
-    private val viewModel = WalletScreenViewModel(
-        walletSdk
-    )
+    private val viewModel =
+        WalletScreenViewModel(
+            walletSdk
+        )
 
     @Test
     fun homeScreenDisplayed() {

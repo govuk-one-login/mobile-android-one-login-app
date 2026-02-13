@@ -32,7 +32,7 @@ import uk.gov.onelogin.core.ui.components.FlexibleTopBarColors
 @Composable
 fun TitledLogoPage(
     @DrawableRes logo: Int,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -42,42 +42,44 @@ fun TitledLogoPage(
                 scrollBehavior = scrollBehavior,
                 content = {
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = spacingDouble)
-                            .statusBarsPadding(),
-                        contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = spacingDouble)
+                                .statusBarsPadding(),
+                        contentAlignment = Alignment.Center,
                     ) {
                         Image(
                             painter = painterResource(logo),
-                            contentDescription = stringResource(
-                                R.string.one_login_image_content_desc
-                            ),
-                            modifier = Modifier
-                                .semantics { heading() }
+                            contentDescription =
+                                stringResource(
+                                    R.string.one_login_image_content_desc,
+                                ),
+                            modifier =
+                                Modifier
+                                    .semantics { heading() },
                         )
                     }
                 },
                 colors =
-                FlexibleTopBarColors(
-                    containerColor = getAppBarColor(),
-                    scrolledContainerColor = getAppBarColor()
-                )
+                    FlexibleTopBarColors(
+                        containerColor = getAppBarColor(),
+                        scrolledContainerColor = getAppBarColor(),
+                    ),
             )
         },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
         content(paddingValues)
     }
 }
 
 @Composable
-private fun getAppBarColor(): Color {
-    return colorResource(
+private fun getAppBarColor(): Color =
+    colorResource(
         if (isSystemInDarkTheme()) {
             R.color.govuk_dark_blue
         } else {
             R.color.govuk_blue
-        }
+        },
     )
-}

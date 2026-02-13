@@ -36,7 +36,7 @@ import uk.gov.onelogin.developer.DeveloperTools
 @Composable
 fun HomeScreen(
     viewModel: HomeScreenViewModel = hiltViewModel(),
-    analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel()
+    analyticsViewModel: HomeScreenAnalyticsViewModel = hiltViewModel(),
 ) {
     val criOrchestratorComponent = rememberCriOrchestrator(viewModel.criOrchestratorSdk)
 
@@ -50,25 +50,26 @@ fun HomeScreen(
         uiCardEnabled = viewModel.uiCardEnabled.collectAsState().value,
         content = {
             Row(
-                modifier = Modifier
-                    .testTag(stringResource(R.string.appCriCardTestTag))
-                    .padding(top = smallPadding)
+                modifier =
+                    Modifier
+                        .testTag(stringResource(R.string.appCriCardTestTag))
+                        .padding(top = smallPadding),
             ) {
                 ProveYourIdentityCard(
                     graph = criOrchestratorComponent,
-                    modifier = Modifier
+                    modifier = Modifier,
                 )
             }
         },
-        openDevPanel = { viewModel.openDevPanel() }
+        openDevPanel = { viewModel.openDevPanel() },
     )
 }
 
 @Composable
 private fun HomeScreenBody(
     uiCardEnabled: Boolean,
+    openDevPanel: () -> Unit = {},
     content: @Composable () -> Unit = {},
-    openDevPanel: () -> Unit = {}
 ) {
     val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
     val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
@@ -76,13 +77,14 @@ private fun HomeScreenBody(
     val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
     TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding())
-                .padding(horizontal = smallPadding)
-                .consumeWindowInsets(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .windowInsetsPadding(WindowInsets.displayCutout)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .padding(horizontal = smallPadding)
+                    .consumeWindowInsets(paddingValues)
+                    .verticalScroll(rememberScrollState())
+                    .windowInsetsPadding(WindowInsets.displayCutout),
         ) {
             if (uiCardEnabled) {
                 content()
@@ -90,16 +92,16 @@ private fun HomeScreenBody(
             AddCard(
                 cardTitle = welcomeCardTitle,
                 cardBody = welcomeCardBody,
-                testTag = R.string.welcomeCardTestTag
+                testTag = R.string.welcomeCardTestTag,
             )
             AddCard(
                 cardTitle = proveIdentityCardTitle,
                 cardBody = proveIdentityCardBody,
-                testTag = R.string.proveIdentityCardTestTag
+                testTag = R.string.proveIdentityCardTestTag,
             )
-            if (DeveloperTools.isDeveloperPanelEnabled()) {
+            if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
-                    onClick = { openDevPanel() }
+                    onClick = { openDevPanel() },
                 ) {
                     Text("Developer Panel")
                 }
@@ -112,7 +114,7 @@ private fun HomeScreenBody(
 private fun AddCard(
     cardTitle: String,
     cardBody: String,
-    @StringRes testTag: Int
+    @StringRes testTag: Int,
 ) {
     GdsCard(
         title = cardTitle,
@@ -120,9 +122,10 @@ private fun AddCard(
         displayPrimary = false,
         shadow = 0.dp,
         onClick = {},
-        modifier = Modifier
-            .padding(top = smallPadding)
-            .testTag(stringResource(testTag))
+        modifier =
+            Modifier
+                .padding(top = smallPadding)
+                .testTag(stringResource(testTag)),
     )
 }
 
@@ -132,7 +135,7 @@ private fun AddCard(
 internal fun HomeScreenPreview() {
     GdsTheme {
         HomeScreenBody(
-            uiCardEnabled = false
+            uiCardEnabled = false,
         )
     }
 }

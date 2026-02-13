@@ -44,7 +44,7 @@ class SignOutGraphObjectTest : TestCase() {
             navController.navigatorProvider.addNavigator(ComposeNavigator())
             NavHost(
                 navController = navController,
-                startDestination = SignOutRoutes.Root.getRoute()
+                startDestination = SignOutRoutes.Root.getRoute(),
             ) {
                 signOutGraph(navController)
             }
@@ -61,9 +61,10 @@ class SignOutGraphObjectTest : TestCase() {
             navController.setCurrentDestination(SignOutRoutes.Start.getRoute())
         }
 
-        val signOutTitle = composeTestRule.onNodeWithText(
-            resources.getString(R.string.app_signOutConfirmationTitle)
-        )
+        val signOutTitle =
+            composeTestRule.onNodeWithText(
+                resources.getString(R.string.app_signOutConfirmationTitle),
+            )
         composeTestRule.waitUntil(TIMEOUT) {
             signOutTitle.isDisplayed()
         }
@@ -78,13 +79,13 @@ class SignOutGraphObjectTest : TestCase() {
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_youveBeenSignedOutTitle)
+                resources.getString(R.string.app_youveBeenSignedOutTitle),
             ).assertIsDisplayed()
 
             back()
 
             onNodeWithText(
-                resources.getString(R.string.app_youveBeenSignedOutTitle)
+                resources.getString(R.string.app_youveBeenSignedOutTitle),
             ).assertIsDisplayed()
         }
     }
@@ -97,7 +98,7 @@ class SignOutGraphObjectTest : TestCase() {
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_dataDeletedErrorTitle)
+                resources.getString(R.string.app_dataDeletedErrorTitle),
             ).assertIsDisplayed()
 
             back()
@@ -105,7 +106,7 @@ class SignOutGraphObjectTest : TestCase() {
             cancelAndRecreateRecomposer()
 
             onNodeWithText(
-                resources.getString(R.string.app_dataDeletedErrorTitle)
+                resources.getString(R.string.app_dataDeletedErrorTitle),
             ).assertIsDisplayed()
         }
     }
@@ -118,7 +119,7 @@ class SignOutGraphObjectTest : TestCase() {
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_signOutTitle)
+                resources.getString(R.string.app_signOutTitle),
             ).assertIsDisplayed()
 
             activityRule.scenario.onActivity { activity ->

@@ -1,28 +1,31 @@
 package uk.gov.onelogin.core.tokens.domain.remove
 
 import android.content.Context
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
+import javax.inject.Inject
 
 interface RemoveTokenExpiry : Cleaner
 
-class RemoveTokenExpiryImpl @Inject constructor(
-    @ApplicationContext
-    context: Context
-) : RemoveTokenExpiry {
-    private val sharedPrefs =
-        context.getSharedPreferences(TOKEN_SHARED_PREFS, Context.MODE_PRIVATE)
+class RemoveTokenExpiryImpl
+    @Inject
+    constructor(
+        @ApplicationContext
+        context: Context,
+    ) : RemoveTokenExpiry {
+        private val sharedPrefs =
+            context.getSharedPreferences(TOKEN_SHARED_PREFS, Context.MODE_PRIVATE)
 
-    override suspend fun clean(): Result<Unit> {
-        with(sharedPrefs.edit()) {
-            remove(ACCESS_TOKEN_EXPIRY_KEY)
-            remove(REFRESH_TOKEN_EXPIRY_KEY)
-            commit()
+        override suspend fun clean(): Result<Unit> {
+            sharedPrefs.edit {
+                remove(ACCESS_TOKEN_EXPIRY_KEY)
+                remove(REFRESH_TOKEN_EXPIRY_KEY)
+                commit()
+            }
+            return Result.success(Unit)
         }
-        return Result.success(Unit)
     }
-}

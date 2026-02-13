@@ -10,7 +10,9 @@ import uk.gov.onelogin.features.BaseScreenshotTest
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
 
 @RunWith(Parameterized::class)
-class WelcomeScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+class WelcomeScreenshotTest(
+    nightMode: NightMode
+) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         WelcomePreview()
     }
@@ -18,11 +20,10 @@ class WelcomeScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> {
-            return arrayListOf(
+        fun values(): Iterable<Array<Any>> =
+            arrayListOf(
                 arrayOf(NOTNIGHT),
                 arrayOf(NIGHT)
             )
-        }
     }
 }

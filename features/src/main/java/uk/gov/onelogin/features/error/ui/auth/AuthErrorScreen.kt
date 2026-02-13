@@ -26,30 +26,29 @@ fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun AuthErrorBody(
-    goToSignIn: () -> Unit = {}
-) {
-    val bodyContent = persistentListOf(
-        CentreAlignedScreenBodyContent.Text(
-            bodyText = stringResource(R.string.app_dataDeletedBody1)
-        ),
-        CentreAlignedScreenBodyContent.Text(
-            bodyText = stringResource(R.string.app_dataDeletedBody2)
-        ),
-        CentreAlignedScreenBodyContent.Text(
-            bodyText = stringResource(R.string.app_dataDeletedBody3)
+private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
+    val bodyContent =
+        persistentListOf(
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_dataDeletedBody1),
+            ),
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_dataDeletedBody2),
+            ),
+            CentreAlignedScreenBodyContent.Text(
+                bodyText = stringResource(R.string.app_dataDeletedBody3),
+            ),
         )
-    )
 
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_dataDeletedErrorTitle),
         body = bodyContent,
         primaryButton =
-        CentreAlignedScreenButton(
-            text = stringResource(R.string.app_dataDeletedButton),
-            onClick = goToSignIn
-        )
+            CentreAlignedScreenButton(
+                text = stringResource(R.string.app_dataDeletedButton),
+                onClick = goToSignIn,
+            ),
     )
 }
 

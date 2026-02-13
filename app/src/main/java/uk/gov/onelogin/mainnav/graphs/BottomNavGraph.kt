@@ -19,17 +19,19 @@ object BottomNavGraph {
         }
         composable(
             BottomNavDestination.Wallet.key + "/{$DEEP_LINK_ARG}",
-            arguments = listOf(
-                navArgument(DEEP_LINK_ARG) {
-                    type = NavType.BoolType
-                    defaultValue = false
-                }
-            ),
-            deepLinks = listOf(
-                navDeepLink {
-                    uriPattern = createUrl("wallet")
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument(DEEP_LINK_ARG) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    },
+                ),
+            deepLinks =
+                listOf(
+                    navDeepLink {
+                        uriPattern = createUrl("wallet")
+                    },
+                ),
         ) { backStackEntry ->
             val isDeepLinkRoute = backStackEntry.arguments?.getBoolean(DEEP_LINK_ARG) ?: false
             WalletScreen(isDeepLinkRoute, setDisplayContentAsFullScreen)
@@ -39,11 +41,10 @@ object BottomNavGraph {
         }
     }
 
-    private fun createUrl(pathPrefix: String): String {
-        return if (BuildConfig.FLAVOR == "production") {
+    private fun createUrl(pathPrefix: String): String =
+        if (BuildConfig.FLAVOR == "production") {
             "https://mobile.account.gov.uk/$pathPrefix"
         } else {
             "https://mobile.${BuildConfig.FLAVOR}.account.gov.uk/$pathPrefix"
         }
-    }
 }

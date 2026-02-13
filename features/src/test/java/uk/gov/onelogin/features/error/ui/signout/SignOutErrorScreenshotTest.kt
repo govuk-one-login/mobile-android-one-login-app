@@ -7,8 +7,10 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class SignOutErrorScreenshotTest(nightMode: NightMode, locale: String) :
-    BaseScreenshotTest(nightMode, locale) {
+class SignOutErrorScreenshotTest(
+    nightMode: NightMode,
+    locale: String
+) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignOutPreview()
     }
@@ -16,8 +18,6 @@ class SignOutErrorScreenshotTest(nightMode: NightMode, locale: String) :
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> {
-            return applyNightModeAndLocale()
-        }
+        fun values(): Iterable<Array<Any>> = applyNightModeAndLocale()
     }
 }

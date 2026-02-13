@@ -12,7 +12,5 @@ import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 @Module
 object DeleteWalletModule {
     @Provides
-    fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase {
-        return DeleteWalletDataUseCaseImpl(walletSdk)
-    }
+    fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase = DeleteWalletDataUseCaseImpl(walletSdk)
 }

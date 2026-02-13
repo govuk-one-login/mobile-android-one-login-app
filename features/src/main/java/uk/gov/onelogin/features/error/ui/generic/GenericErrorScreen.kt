@@ -19,7 +19,7 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 @Composable
 fun GenericErrorScreen(
     analyticsViewModel: GenericErrorAnalyticsViewModel = hiltViewModel(),
-    onClick: () -> Unit = { }
+    onClick: () -> Unit = { },
 ) {
     GdsTheme {
         BackHandler {
@@ -37,22 +37,21 @@ fun GenericErrorScreen(
 }
 
 @Composable
-private fun GenericErrorBody(
-    primaryOnClick: () -> Unit = {}
-) {
+private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
     ErrorScreen(
         icon = ErrorScreenIcon.ErrorIcon,
         title = stringResource(R.string.app_genericErrorPage),
-        body = persistentListOf(
-            CentreAlignedScreenBodyContent.Text(
-                bodyText = stringResource(R.string.app_genericErrorPageBody)
-            )
-        ),
+        body =
+            persistentListOf(
+                CentreAlignedScreenBodyContent.Text(
+                    bodyText = stringResource(R.string.app_genericErrorPageBody),
+                ),
+            ),
         primaryButton =
-        CentreAlignedScreenButton(
-            text = stringResource(R.string.app_genericErrorPageButton),
-            onClick = primaryOnClick
-        )
+            CentreAlignedScreenButton(
+                text = stringResource(R.string.app_genericErrorPageButton),
+                onClick = primaryOnClick,
+            ),
     )
 }
 

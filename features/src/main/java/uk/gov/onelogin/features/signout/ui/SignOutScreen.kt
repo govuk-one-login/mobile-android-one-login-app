@@ -42,7 +42,7 @@ import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 fun SignOutScreen(
     viewModel: SignOutViewModel = hiltViewModel(),
     analyticsViewModel: SignOutAnalyticsViewModel = hiltViewModel(),
-    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel()
+    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
 ) {
     val loading by viewModel.loadingState.collectAsState()
     val context = LocalActivity.current as FragmentActivity
@@ -65,7 +65,7 @@ fun SignOutScreen(
                 onPrimary = {
                     analyticsViewModel.trackPrimary()
                     viewModel.signOut()
-                }
+                },
             )
             analyticsViewModel.trackSignOutView()
         }
@@ -77,51 +77,54 @@ fun SignOutScreen(
 internal fun SignOutBody(
     onPrimary: () -> Unit,
     onClose: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     FullScreenDialogue(
         onDismissRequest = onClose,
-        onBack = onBack
+        onBack = onBack,
     ) { scrollState ->
         Column(modifier = Modifier.fillMaxSize().padding(horizontal = smallPadding)) {
             Column(
-                modifier = Modifier.verticalScroll(scrollState)
-                    .weight(1f)
-                    .semantics(true) { }
-                    .focusGroup()
+                modifier =
+                    Modifier
+                        .verticalScroll(scrollState)
+                        .weight(1f)
+                        .semantics(true) { }
+                        .focusGroup(),
             ) {
                 GdsHeading(
                     text = stringResource(id = R.string.app_signOutConfirmationTitle),
-                    textAlign = GdsHeadingAlignment.LeftAligned
+                    textAlign = GdsHeadingAlignment.LeftAligned,
                 )
                 Text(
                     text = stringResource(id = R.string.app_signOutConfirmationBody1),
-                    modifier = Modifier.padding(vertical = smallPadding)
+                    modifier = Modifier.padding(vertical = smallPadding),
                 )
                 val listTitle = stringResource(R.string.app_signOutConfirmationSubtitle)
                 GdsBulletedList(
-                    bulletListItems = persistentListOf(
-                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet1)),
-                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet2)),
-                        ListItem(text = stringResource(R.string.app_signOutConfirmationBullet3))
-                    ),
+                    bulletListItems =
+                        persistentListOf(
+                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet1)),
+                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet2)),
+                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet3)),
+                        ),
                     title = ListTitle(text = listTitle, titleType = TitleType.Text),
-                    modifier = Modifier.padding()
+                    modifier = Modifier.padding(),
                 )
                 Text(
                     text = stringResource(R.string.app_signOutConfirmationBody3),
-                    modifier = Modifier.padding(top = smallPadding)
+                    modifier = Modifier.padding(top = smallPadding),
                 )
             }
             Column(
                 modifier = Modifier.fillMaxWidth().padding(vertical = smallPadding),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 GdsButton(
                     text = stringResource(R.string.app_signOutAndDeleteAppDataButton),
                     buttonType = ButtonTypeV2.Destructive(),
                     onClick = onPrimary,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -137,7 +140,7 @@ internal fun SignOutPreview() {
         SignOutBody(
             onPrimary = {},
             onClose = {},
-            onBack = {}
+            onBack = {},
         )
     }
 }

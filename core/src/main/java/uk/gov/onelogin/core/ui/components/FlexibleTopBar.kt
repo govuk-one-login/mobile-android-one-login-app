@@ -49,7 +49,7 @@ fun FlexibleTopBar(
     modifier: Modifier = Modifier,
     colors: FlexibleTopBarColors = FlexibleTopBarDefaults.topAppBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     var heightOffsetLimit by remember {
         mutableFloatStateOf(0f)
@@ -68,27 +68,29 @@ fun FlexibleTopBar(
     }
     val appBarContainerColor by animateColorAsState(
         targetValue = colors.containerColor(fraction),
-        animationSpec = spring(stiffness = Spring.StiffnessMediumLow)
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
     )
 
-    val appBarDragModifier = if (scrollBehavior != null && !scrollBehavior.isPinned) {
-        Modifier.draggable(
-            orientation = Orientation.Vertical,
-            state = rememberDraggableState { delta ->
-                scrollBehavior.state.heightOffset += delta
-            },
-            onDragStopped = { velocity ->
-                settleAppBar(
-                    scrollBehavior.state,
-                    velocity,
-                    scrollBehavior.flingAnimationSpec,
-                    scrollBehavior.snapAnimationSpec
-                )
-            }
-        )
-    } else {
-        Modifier
-    }
+    val appBarDragModifier =
+        if (scrollBehavior != null && !scrollBehavior.isPinned) {
+            Modifier.draggable(
+                orientation = Orientation.Vertical,
+                state =
+                    rememberDraggableState { delta ->
+                        scrollBehavior.state.heightOffset += delta
+                    },
+                onDragStopped = { velocity ->
+                    settleAppBar(
+                        scrollBehavior.state,
+                        velocity,
+                        scrollBehavior.flingAnimationSpec,
+                        scrollBehavior.snapAnimationSpec,
+                    )
+                },
+            )
+        } else {
+            Modifier
+        }
 
     Surface(modifier = modifier.then(appBarDragModifier), color = appBarContainerColor) {
         Layout(
@@ -103,7 +105,7 @@ fun FlexibleTopBar(
                 layout(constraints.maxWidth, layoutHeight) {
                     placeable?.place(0, scrollOffset.toInt())
                 }
-            }
+            },
         )
     }
 }
@@ -113,7 +115,7 @@ private suspend fun settleAppBar(
     state: TopAppBarState,
     velocity: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
-    snapAnimationSpec: AnimationSpec<Float>?
+    snapAnimationSpec: AnimationSpec<Float>?,
 ): Velocity {
     if (state.collapsedFraction < FRACTION_THRESHOLD || state.collapsedFraction == 1f) {
         return Velocity.Zero
@@ -123,20 +125,20 @@ private suspend fun settleAppBar(
         var lastValue = 0f
         AnimationState(
             initialValue = 0f,
-            initialVelocity = velocity
-        )
-            .animateDecay(flingAnimationSpec) {
-                val delta = value - lastValue
-                val initialHeightOffset = state.heightOffset
-                state.heightOffset = initialHeightOffset + delta
-                val consumed = abs(initialHeightOffset - state.heightOffset)
-                lastValue = value
-                remainingVelocity = this.velocity
-                // avoid rounding errors and stop if anything is unconsumed
-                if (abs(delta - consumed) > HALF) this.cancelAnimation()
-            }
+            initialVelocity = velocity,
+        ).animateDecay(flingAnimationSpec) {
+            val delta = value - lastValue
+            val initialHeightOffset = state.heightOffset
+            state.heightOffset = initialHeightOffset + delta
+            val consumed = abs(initialHeightOffset - state.heightOffset)
+            lastValue = value
+            remainingVelocity = this.velocity
+            // avoid rounding errors and stop if anything is unconsumed
+            if (abs(delta - consumed) > HALF) this.cancelAnimation()
+        }
     }
-    if (snapAnimationSpec != null && state.heightOffset < 0 &&
+    if (snapAnimationSpec != null &&
+        state.heightOffset < 0 &&
         state.heightOffset > state.heightOffsetLimit
     ) {
         AnimationState(initialValue = state.heightOffset).animateTo(
@@ -145,7 +147,7 @@ private suspend fun settleAppBar(
             } else {
                 state.heightOffsetLimit
             },
-            animationSpec = snapAnimationSpec
+            animationSpec = snapAnimationSpec,
         ) { state.heightOffset = value }
     }
 
@@ -155,7 +157,7 @@ private suspend fun settleAppBar(
 @Stable
 class FlexibleTopBarColors internal constructor(
     val containerColor: Color,
-    val scrolledContainerColor: Color
+    val scrolledContainerColor: Color,
 ) {
     /**
      * Represents the container color used for the top app bar.
@@ -168,13 +170,12 @@ class FlexibleTopBarColors internal constructor(
      * percentage
      */
     @Composable
-    fun containerColor(colorTransitionFraction: Float): Color {
-        return lerp(
+    fun containerColor(colorTransitionFraction: Float): Color =
+        lerp(
             containerColor,
             scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction)
+            FastOutLinearInEasing.transform(colorTransitionFraction),
         )
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -198,24 +199,27 @@ object FlexibleTopBarDefaults {
     @Composable
     fun topAppBarColors(
         containerColor: Color = MaterialTheme.colorScheme.primary,
-        scrolledContainerColor: Color = MaterialTheme.colorScheme.applyTonalElevation(
-            backgroundColor = containerColor,
-            elevation = 4.dp
-        )
+        scrolledContainerColor: Color =
+            MaterialTheme.colorScheme.applyTonalElevation(
+                backgroundColor = containerColor,
+                elevation = 4.dp,
+            ),
     ): FlexibleTopBarColors =
         FlexibleTopBarColors(
             containerColor,
-            scrolledContainerColor
+            scrolledContainerColor,
         )
 }
 
-internal fun ColorScheme.applyTonalElevation(backgroundColor: Color, elevation: Dp): Color {
-    return if (backgroundColor == surface) {
+internal fun ColorScheme.applyTonalElevation(
+    backgroundColor: Color,
+    elevation: Dp,
+): Color =
+    if (backgroundColor == surface) {
         surfaceColorAtElevation(elevation)
     } else {
         backgroundColor
     }
-}
 
 /**
  * Computes the surface tonal color at different elevation levels e.g. surface1 through surface5.
@@ -226,12 +230,11 @@ internal fun ColorScheme.applyTonalElevation(backgroundColor: Color, elevation: 
  * overlaid on top of it.
 
  */
-fun ColorScheme.surfaceColorAtElevation(
-    elevation: Dp
-): Color {
+fun ColorScheme.surfaceColorAtElevation(elevation: Dp): Color {
     if (elevation == 0.dp) return surface
-    val alpha = (
-        (ALPHA_MODIFIER * ln(elevation.value + ELEVATION_OFFSET)) + ALPHA_OFFSET
+    val alpha =
+        (
+            (ALPHA_MODIFIER * ln(elevation.value + ELEVATION_OFFSET)) + ALPHA_OFFSET
         ) / PERCENTAGE_DIVIDER
     return surfaceTint.copy(alpha = alpha).compositeOver(surface)
 }

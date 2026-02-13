@@ -6,8 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class SignInErrorUnrecoverableViewModel @Inject constructor() : ViewModel() {
-    fun exitApp(activity: Activity) {
-        activity.finishAndRemoveTask()
+class SignInErrorUnrecoverableViewModel
+    @Inject
+    constructor() : ViewModel() {
+        fun exitApp(activity: Activity) {
+            activity.finishAndRemoveTask()
+        }
     }
-}

@@ -46,10 +46,11 @@ class SplashScreenAnalyticsViewModelTest {
         idUnlock = context.getEnglishString(R.string.splash_unlock_screen_page_id)
         unlockButton = context.getEnglishString(R.string.app_unlockButton)
         backButton = context.getEnglishString(R.string.system_backButton)
-        requiredParameters = RequiredParameters(
-            taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-            taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
-        )
+        requiredParameters =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+            )
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
 

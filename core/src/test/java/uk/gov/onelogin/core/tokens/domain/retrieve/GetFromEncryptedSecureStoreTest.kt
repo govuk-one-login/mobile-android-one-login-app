@@ -39,7 +39,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
 
             useCase.invoke(
                 composeTestRule.activity as FragmentActivity,
-                expectedStoreKey
+                expectedStoreKey,
             ) {
                 assertEquals(LocalAuthStatus.SecureStoreError, it)
             }
@@ -47,8 +47,8 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             assertTrue(
                 logger.contains(
                     "Secure store retrieval failed: " +
-                        "\ntype - GENERAL\nreason - null"
-                )
+                        "\ntype - GENERAL\nreason - null",
+                ),
             )
         }
 
@@ -59,7 +59,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
 
             useCase.invoke(
                 composeTestRule.activity as FragmentActivity,
-                expectedStoreKey
+                expectedStoreKey,
             ) {
                 assertEquals(LocalAuthStatus.UserCancelled, it)
             }
@@ -67,8 +67,8 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             assertTrue(
                 logger.contains(
                     "Secure store retrieval failed: " +
-                        "\ntype - USER_CANCELED_BIO_PROMPT\nreason - null"
-                )
+                        "\ntype - USER_CANCELED_BIO_PROMPT\nreason - null",
+                ),
             )
         }
 
@@ -78,7 +78,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             mockSecureStore(RetrievalEvent.Failed(SecureStoreErrorType.FAILED_BIO_PROMPT))
             useCase.invoke(
                 composeTestRule.activity as FragmentActivity,
-                expectedStoreKey
+                expectedStoreKey,
             ) {
                 assertEquals(LocalAuthStatus.BioCheckFailed, it)
             }
@@ -86,8 +86,8 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             assertTrue(
                 logger.contains(
                     "Secure store retrieval failed: " +
-                        "\ntype - FAILED_BIO_PROMPT\nreason - null"
-                )
+                        "\ntype - FAILED_BIO_PROMPT\nreason - null",
+                ),
             )
         }
 
@@ -102,7 +102,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             useCase.invoke(
                 composeTestRule.activity as FragmentActivity,
                 expectedStoreKey,
-                "test"
+                "test",
             ) {
                 assertEquals(LocalAuthStatus.Success(expectedResult), it)
             }
@@ -115,8 +115,8 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
             mockSecureStore.retrieveWithAuthentication(
                 anyVararg(),
                 authPromptConfig = any(),
-                context = any()
-            )
+                context = any(),
+            ),
         ).thenReturn(returnResult)
     }
 }

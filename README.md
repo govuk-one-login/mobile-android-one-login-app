@@ -1,5 +1,9 @@
 # One Login - Android
 
+[![On Branch Push (develop)](https://github.com/govuk-one-login/mobile-android-one-login-app/actions/workflows/on_push_develop.yml/badge.svg)](https://github.com/govuk-one-login/mobile-android-one-login-app/actions/workflows/on_push_develop.yml)
+[![On Branch Push (main)](https://github.com/govuk-one-login/mobile-android-one-login-app/actions/workflows/on_push_main.yml/badge.svg?branch=main)](https://github.com/govuk-one-login/mobile-android-one-login-app/actions/workflows/on_push_main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=di-mobile-android-onelogin-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=di-mobile-android-onelogin-app)
+
 This repository hosts the Android Mobile app for GOV.UK's One Login.
 
 ## Branching strategy and releases

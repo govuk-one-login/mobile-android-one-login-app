@@ -8,7 +8,7 @@ class MainNavRoutesTest {
     fun verifyRoutes() {
         listOf(
             MainNavRoutes.Root.getRoute() to "/home",
-            MainNavRoutes.Start.getRoute() to "/home/start"
+            MainNavRoutes.Start.getRoute() to "/home/start",
         ).forEach { assertEquals(it.second, it.first) }
     }
 }

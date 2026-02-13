@@ -29,22 +29,23 @@ import uk.gov.android.ui.theme.smallPadding
 @Composable
 fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel()) {
     Column(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .navigationBarsPadding()
-            .fillMaxSize()
-            .padding(smallPadding),
+        modifier =
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
+                .fillMaxSize()
+                .padding(smallPadding),
         horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         Row(
-            modifier = Modifier.padding(smallPadding)
+            modifier = Modifier.padding(smallPadding),
         ) {
             Text(
                 text =
-                buildAnnotatedString {
-                    AppendBold("App Check")
-                }
+                    buildAnnotatedString {
+                        AppendBold("App Check")
+                    },
             )
         }
 
@@ -53,7 +54,7 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
             action2 = { viewModel.setFakeAttestation() },
             result = viewModel.clientAttestation,
             buttonText1 = "Remove attestation",
-            buttonText2 = "Set fake attestation"
+            buttonText2 = "Set fake attestation",
         )
 
         DataItem(
@@ -61,33 +62,33 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
             action2 = { viewModel.setFutureAttestationExpiry() },
             result = viewModel.clientAttestationExpiry,
             buttonText1 = "Reset attestation expiry time",
-            buttonText2 = "Set expiry in future"
+            buttonText2 = "Set expiry in future",
         )
 
         ActionItemIcon(
             action = { viewModel.getToken() },
             result = viewModel.tokenResponse,
             buttonText = "Get Firebase Token",
-            isIconTrailing = true
+            isIconTrailing = true,
         )
 
         ActionItem(
             action = { viewModel.makeNetworkCall() },
             result = viewModel.networkResponse,
-            buttonText = "Make Mobile Backend Api Call"
+            buttonText = "Make Mobile Backend Api Call",
         )
 
         ActionItemIcon(
             action = { viewModel.getClientAttestation() },
             result = viewModel.clientAttestationResult,
             buttonText = "Get Client Attestation",
-            isIconTrailing = false
+            isIconTrailing = false,
         )
 
         ActionItemFullWidth(
             action = { viewModel.generatePoP() },
             result = viewModel.proofOfPossessionResult,
-            buttonText = "Generate Proof Of Possession"
+            buttonText = "Generate Proof Of Possession",
         )
     }
 }
@@ -98,7 +99,7 @@ private fun ActionItem(
     result: MutableState<String>,
     buttonText: String,
     isEnabled: Boolean = true,
-    buttonTypeV2: ButtonTypeV2 = ButtonTypeV2.Primary()
+    buttonTypeV2: ButtonTypeV2 = ButtonTypeV2.Primary(),
 ) {
     Row {
         GdsButton(
@@ -106,11 +107,16 @@ private fun ActionItem(
             buttonType = buttonTypeV2,
             modifier = Modifier.padding(start = smallPadding),
             onClick = action,
-            enabled = isEnabled
+            enabled = isEnabled,
         )
     }
     Row(modifier = Modifier.padding(all = smallPadding)) {
-        Text(text = result.value, color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
+        Text(
+            text = result.value,
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
+        )
     }
 }
 
@@ -119,21 +125,27 @@ private fun ActionItemIcon(
     action: () -> Unit,
     result: MutableState<String>,
     buttonText: String,
-    isIconTrailing: Boolean
+    isIconTrailing: Boolean,
 ) {
     Row {
         GdsButton(
             text = buttonText,
-            buttonType = ButtonTypeV2.Icon(
-                buttonColors = GdsButtonDefaults.defaultSecondaryColors(),
-                isIconTrailing = isIconTrailing
-            ),
+            buttonType =
+                ButtonTypeV2.Icon(
+                    buttonColors = GdsButtonDefaults.defaultSecondaryColors(),
+                    isIconTrailing = isIconTrailing,
+                ),
             modifier = Modifier.padding(start = smallPadding),
-            onClick = action
+            onClick = action,
         )
     }
     Row(modifier = Modifier.padding(all = smallPadding)) {
-        Text(text = result.value, color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
+        Text(
+            text = result.value,
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
+        )
     }
 }
 
@@ -141,20 +153,26 @@ private fun ActionItemIcon(
 private fun ActionItemFullWidth(
     action: () -> Unit,
     result: MutableState<String>,
-    buttonText: String
+    buttonText: String,
 ) {
     Row {
         GdsButton(
             text = buttonText,
             buttonType = ButtonTypeV2.Secondary(),
-            modifier = Modifier
-                .padding(start = smallPadding)
-                .fillMaxWidth(),
-            onClick = action
+            modifier =
+                Modifier
+                    .padding(start = smallPadding)
+                    .fillMaxWidth(),
+            onClick = action,
         )
     }
     Row(modifier = Modifier.padding(all = smallPadding)) {
-        Text(text = result.value, color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
+        Text(
+            text = result.value,
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
+        )
     }
 }
 
@@ -164,24 +182,29 @@ private fun DataItem(
     action2: () -> Unit,
     result: MutableState<String>,
     buttonText1: String,
-    buttonText2: String
+    buttonText2: String,
 ) {
     Row {
         GdsButton(
             text = buttonText1,
             buttonType = ButtonTypeV2.Destructive(),
             modifier = Modifier.padding(start = smallPadding).weight(1F),
-            onClick = action1
+            onClick = action1,
         )
         GdsButton(
             text = buttonText2,
             buttonType = ButtonTypeV2.Secondary(),
             modifier = Modifier.padding(start = smallPadding).weight(1F),
-            onClick = action2
+            onClick = action2,
         )
     }
     Row(modifier = Modifier.padding(all = smallPadding)) {
-        Text(text = result.value, color = uk.gov.android.ui.theme.m3.Text.primary.toMappedColors())
+        Text(
+            text = result.value,
+            color =
+                uk.gov.android.ui.theme.m3.Text.primary
+                    .toMappedColors(),
+        )
     }
 }
 

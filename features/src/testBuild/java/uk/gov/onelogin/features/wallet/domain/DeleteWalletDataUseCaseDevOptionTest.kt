@@ -16,15 +16,16 @@ class DeleteWalletDataUseCaseDevOptionTest {
     private val sut = DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreDevOptionsRepository)
 
     @Test
-    fun verifyOverrideDisabled() = runBlocking {
-        whenever(secureStoreDevOptionsRepository.isWalletDeleteOverride()).thenReturn(false)
-        val expectedResult = true
-        whenever(walletSdk.deleteWalletData()).thenReturn(expectedResult)
+    fun verifyOverrideDisabled() =
+        runBlocking {
+            whenever(secureStoreDevOptionsRepository.isWalletDeleteOverride()).thenReturn(false)
+            val expectedResult = true
+            whenever(walletSdk.deleteWalletData()).thenReturn(expectedResult)
 
-        val actualResult = sut.invoke()
+            val actualResult = sut.invoke()
 
-        assertEquals(expectedResult, actualResult)
-    }
+            assertEquals(expectedResult, actualResult)
+        }
 
     @Test
     fun verifyOverrideEnabled() {

@@ -16,15 +16,15 @@ object SignOutGraphObject {
     fun NavGraphBuilder.signOutGraph(navController: NavHostController) {
         navigation(
             route = SignOutRoutes.Root.getRoute(),
-            startDestination = SignOutRoutes.Start.getRoute()
+            startDestination = SignOutRoutes.Start.getRoute(),
         ) {
             composable(
-                route = SignOutRoutes.Start.getRoute()
+                route = SignOutRoutes.Start.getRoute(),
             ) {
                 SignOutScreen()
             }
             composable(
-                route = SignOutRoutes.Info.getRoute()
+                route = SignOutRoutes.Info.getRoute(),
             ) {
                 // I have added this temporarily as it seems if you remove your passcode/ biometrics
                 // and press back it would take you back to the HomeScreen
@@ -37,11 +37,11 @@ object SignOutGraphObject {
                         val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false
                         savedStateHandle?.remove<Boolean>(OFFLINE_ERROR_TRY_AGAIN_KEY)
                         tryAgain
-                    }
+                    },
                 )
             }
             composable(
-                route = SignOutRoutes.ReAuthError.getRoute()
+                route = SignOutRoutes.ReAuthError.getRoute(),
             ) {
                 BackHandler(enabled = true) {
                     // always disabled
@@ -49,7 +49,7 @@ object SignOutGraphObject {
                 AuthErrorScreen()
             }
             composable(
-                route = SignOutRoutes.Success.getRoute()
+                route = SignOutRoutes.Success.getRoute(),
             ) {
                 SignOutSuccess()
             }

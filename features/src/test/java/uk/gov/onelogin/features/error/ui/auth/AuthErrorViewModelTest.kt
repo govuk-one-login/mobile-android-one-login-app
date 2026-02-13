@@ -16,9 +16,10 @@ class AuthErrorViewModelTest {
     @Test
     fun `navigate to sign in`() =
         runTest {
-            featureFlags = InMemoryFeatureFlags(
-                setOf()
-            )
+            featureFlags =
+                InMemoryFeatureFlags(
+                    setOf()
+                )
             val sut = AuthErrorViewModel(mockNavigator)
 
             sut.navigateToSignIn()

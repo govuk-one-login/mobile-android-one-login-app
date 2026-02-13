@@ -10,7 +10,6 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -46,6 +45,7 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class SplashScreenTest : FragmentActivityTestCase() {
@@ -107,9 +107,10 @@ class SplashScreenTest : FragmentActivityTestCase() {
                 resources.getString(R.string.splashLoadingSpinnerTestTag)
             )
         loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
-        loadingContentDescription = hasContentDescription(
-            resources.getString(R.string.app_loading_content_desc)
-        )
+        loadingContentDescription =
+            hasContentDescription(
+                resources.getString(R.string.app_loading_content_desc)
+            )
     }
 
     @Test

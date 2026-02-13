@@ -19,8 +19,9 @@ class InMemoryFeatureFlagsTest {
 
     @Test
     fun `flags may have features removed in an immutable way`() {
-        val updateByFlag = FeatureFlagsTestData.originalFeatures -
-            FeatureFlagsTestData.existingFeature
+        val updateByFlag =
+            FeatureFlagsTestData.originalFeatures -
+                FeatureFlagsTestData.existingFeature
         val updateBySet =
             FeatureFlagsTestData.originalFeatures - FeatureFlagsTestData.existingFeature
 
@@ -31,39 +32,39 @@ class InMemoryFeatureFlagsTest {
     fun `enabled features defined by existence within private Set`() {
         assertTrue(
             FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.existingFeature],
-            "The API feature should be within the FeatureFlags object!"
+            "The API feature should be within the FeatureFlags object!",
         )
         assertFalse(
             FeatureFlagsTestData.originalFeatures[FeatureFlagsTestData.unitTestFeature],
-            "The anonymous object should not have it's feature enabled!"
+            "The anonymous object should not have it's feature enabled!",
         )
         assertFalse(
             FeatureFlagsTestData.originalFeatures[
                 FeatureFlagsTestData.existingFeature,
-                FeatureFlagsTestData.unitTestFeature
+                FeatureFlagsTestData.unitTestFeature,
             ],
-            "The and logic should have been false due to the disabled unitTestFeature!"
+            "The and logic should have been false due to the disabled unitTestFeature!",
         )
     }
 
     private fun assertAgainstOriginalFeature(
         updateByFlag: InMemoryFeatureFlags,
-        updateBySet: InMemoryFeatureFlags
+        updateBySet: InMemoryFeatureFlags,
     ) {
         assertNotEquals(
             FeatureFlagsTestData.originalFeatures,
             updateByFlag,
-            "originalFeatures should have created a different object via Flag!"
+            "originalFeatures should have created a different object via Flag!",
         )
         assertNotEquals(
             FeatureFlagsTestData.originalFeatures,
             updateBySet,
-            "originalFeatures should have created a different object via Set!"
+            "originalFeatures should have created a different object via Set!",
         )
         assertEquals(
             updateByFlag,
             updateBySet,
-            "updateByFlag should value-match updateBySet!"
+            "updateByFlag should value-match updateBySet!",
         )
     }
 }

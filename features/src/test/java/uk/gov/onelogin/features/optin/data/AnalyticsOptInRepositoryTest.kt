@@ -1,8 +1,5 @@
 package uk.gov.onelogin.features.optin.data
 
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.mockito.kotlin.any
@@ -14,6 +11,9 @@ import uk.gov.onelogin.features.optin.domain.source.FakeOptInLocalSource
 import uk.gov.onelogin.features.optin.domain.source.FakeOptInRemoteSource
 import uk.gov.onelogin.features.optin.domain.source.OptInLocalSource
 import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class AnalyticsOptInRepositoryTest {

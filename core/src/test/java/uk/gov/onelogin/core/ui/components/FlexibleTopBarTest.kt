@@ -20,11 +20,11 @@ class FlexibleTopBarTest : FragmentActivityTestCase() {
             Scaffold(
                 topBar = {
                     FlexibleTopBar(
-                        scrollBehavior = null
+                        scrollBehavior = null,
                     ) {
                         Text(text = APP_BAR_CONTENT)
                     }
-                }
+                },
             ) {
                 Text(text = SCREEN_CONTENT)
             }
@@ -39,11 +39,11 @@ class FlexibleTopBarTest : FragmentActivityTestCase() {
             Scaffold(
                 topBar = {
                     FlexibleTopBar(
-                        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+                        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
                     ) {
                         Text(text = APP_BAR_CONTENT)
                     }
-                }
+                },
             ) {
                 Text(text = SCREEN_CONTENT)
             }

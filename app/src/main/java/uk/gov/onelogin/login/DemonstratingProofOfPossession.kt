@@ -17,17 +17,15 @@ object DemonstratingProofOfPossession {
     @Provides
     fun provideDemonstratingProofOfPossessionConfig(
         logger: Logger,
-        keyStoreManager: KeyStoreManager
+        keyStoreManager: KeyStoreManager,
     ) = DemonstratingProofOfPossessionConfig(
         logger,
         ProofOfPossessionGenerator,
-        keyStoreManager
+        keyStoreManager,
     )
 
     @Provides
     fun provideDemonstratingProofOfPossessionManager(
         config: DemonstratingProofOfPossessionConfig
-    ): DemonstratingProofOfPossessionManager {
-        return DemonstratingProofOfPossessionManagerImpl(config)
-    }
+    ): DemonstratingProofOfPossessionManager = DemonstratingProofOfPossessionManagerImpl(config)
 }

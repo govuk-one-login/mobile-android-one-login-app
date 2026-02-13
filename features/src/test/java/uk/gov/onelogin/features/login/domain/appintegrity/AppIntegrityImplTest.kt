@@ -2,10 +2,6 @@ package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
 import io.ktor.util.date.getTimeMillis
-import java.security.SignatureException
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
@@ -23,6 +19,10 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import java.security.SignatureException
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class AppIntegrityImplTest {
     private lateinit var context: Context
@@ -357,8 +357,6 @@ class AppIntegrityImplTest {
                 CLIENT_ATTESTATION to ATTESTATION
             )
 
-        private fun getFiveMinInMillis(): Int {
-            return 5 * 60000
-        }
+        private fun getFiveMinInMillis(): Int = 5 * 60000
     }
 }

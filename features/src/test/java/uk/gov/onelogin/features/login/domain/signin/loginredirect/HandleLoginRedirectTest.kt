@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.login.domain.signin.loginredirect
 
 import android.content.Context
 import android.content.Intent
-import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -21,6 +20,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import kotlin.test.assertEquals
 
 @Suppress("MaxLineLength")
 class HandleLoginRedirectTest {
@@ -42,18 +42,21 @@ class HandleLoginRedirectTest {
             testIdToken,
             "testRefreshToken"
         )
-    private val accessDeniedError = AuthenticationError(
-        "access_denied",
-        AuthenticationError.ErrorType.ACCESS_DENIED
-    )
-    private val oauthError = AuthenticationError(
-        "oauth_error",
-        AuthenticationError.ErrorType.OAUTH
-    )
-    private val tokenError = AuthenticationError(
-        "token_error",
-        AuthenticationError.ErrorType.OAUTH
-    )
+    private val accessDeniedError =
+        AuthenticationError(
+            "access_denied",
+            AuthenticationError.ErrorType.ACCESS_DENIED
+        )
+    private val oauthError =
+        AuthenticationError(
+            "oauth_error",
+            AuthenticationError.ErrorType.OAUTH
+        )
+    private val tokenError =
+        AuthenticationError(
+            "token_error",
+            AuthenticationError.ErrorType.OAUTH
+        )
 
     private val exceptionNullMessage = Exception()
 
@@ -64,12 +67,13 @@ class HandleLoginRedirectTest {
         context = mock()
         whenever(context.getString(any(), anyVararg()))
             .thenReturn("https://token.account.gov.uk")
-        handleLoginRedirect = HandleLoginRedirectImpl(
-            context,
-            mockAppIntegrity,
-            mockLoginSession,
-            mockLogger
-        )
+        handleLoginRedirect =
+            HandleLoginRedirectImpl(
+                context,
+                mockAppIntegrity,
+                mockLoginSession,
+                mockLogger
+            )
     }
 
     @Test
@@ -96,8 +100,9 @@ class HandleLoginRedirectTest {
     fun `handle() should call onFailure when getProofOfPossession returns Failure with error`() =
         runTest {
             val expectedResult = SignedPoP.Failure("test", Error("error"))
-            val expectedError = AppIntegrity.Companion
-                .ProofOfPossessionException(expectedResult.error)
+            val expectedError =
+                AppIntegrity.Companion
+                    .ProofOfPossessionException(expectedResult.error)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -122,8 +127,9 @@ class HandleLoginRedirectTest {
     fun `handle() should call onFailure when getProofOfPossession returns Failure without error`() =
         runTest {
             val expectedResult = SignedPoP.Failure("test")
-            val expectedError = AppIntegrity.Companion
-                .ProofOfPossessionException(null)
+            val expectedError =
+                AppIntegrity.Companion
+                    .ProofOfPossessionException(null)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 

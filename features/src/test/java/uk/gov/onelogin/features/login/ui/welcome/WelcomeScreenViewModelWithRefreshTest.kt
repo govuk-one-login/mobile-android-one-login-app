@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import kotlin.test.assertFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -50,6 +49,7 @@ import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRed
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import kotlin.test.assertFalse
 
 @Suppress("UNCHECKED_CAST", "LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -76,8 +76,9 @@ class WelcomeScreenViewModelWithRefreshTest {
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
-    private val validRefreshToken = "ewogICJhbGciOiAiRVMyNTYiLAogICJ0eXAiOiAiSldUIiwKICAia2lkI" +
-        "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
+    private val validRefreshToken =
+        "ewogICJhbGciOiAiRVMyNTYiLAogICJ0eXAiOiAiSldUIiwKICAia2lkI" +
+            "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
     private val tokenResponse =
         TokenResponse(
             "testType",
@@ -86,27 +87,32 @@ class WelcomeScreenViewModelWithRefreshTest {
             testIdToken,
             validRefreshToken
         )
-    private val accessDeniedError = AuthenticationError(
-        "access_denied",
-        AuthenticationError.ErrorType.ACCESS_DENIED
-    )
-    private val oauthError = AuthenticationError(
-        "oauth_error",
-        AuthenticationError.ErrorType.OAUTH
-    )
-    private val oauthError500 = AuthenticationError(
-        "oauth_error",
-        AuthenticationError.ErrorType.OAUTH,
-        status = 500
-    )
-    private val serverError = AuthenticationError(
-        "server_error",
-        AuthenticationError.ErrorType.SERVER_ERROR
-    )
-    private val tokenError400 = AuthenticationError(
-        "token_error",
-        AuthenticationError.ErrorType.TOKEN_ERROR
-    )
+    private val accessDeniedError =
+        AuthenticationError(
+            "access_denied",
+            AuthenticationError.ErrorType.ACCESS_DENIED
+        )
+    private val oauthError =
+        AuthenticationError(
+            "oauth_error",
+            AuthenticationError.ErrorType.OAUTH
+        )
+    private val oauthError500 =
+        AuthenticationError(
+            "oauth_error",
+            AuthenticationError.ErrorType.OAUTH,
+            status = 500
+        )
+    private val serverError =
+        AuthenticationError(
+            "server_error",
+            AuthenticationError.ErrorType.SERVER_ERROR
+        )
+    private val tokenError400 =
+        AuthenticationError(
+            "token_error",
+            AuthenticationError.ErrorType.TOKEN_ERROR
+        )
 
     private lateinit var viewModel: WelcomeScreenViewModel
 
@@ -737,26 +743,27 @@ class WelcomeScreenViewModelWithRefreshTest {
         }
 
     @Test
-    fun `When login successful and wallet enabled - show BioOptIn`() = runTest {
-        createMocks(true)
-        val mockIntent: Intent = mock()
-        val mockUri: Uri = mock()
+    fun `When login successful and wallet enabled - show BioOptIn`() =
+        runTest {
+            createMocks(true)
+            val mockIntent: Intent = mock()
+            val mockUri: Uri = mock()
 
-        whenever(mockIntent.data).thenReturn(mockUri)
-        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-            }
-        whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-            .thenReturn(true)
+            whenever(mockIntent.data).thenReturn(mockUri)
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+                }
+            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
+                .thenReturn(true)
 
-        viewModel.handleActivityResult(
-            mockIntent,
-            activity = mockFragmentActivity
-        )
+            viewModel.handleActivityResult(
+                mockIntent,
+                activity = mockFragmentActivity
+            )
 
-        verify(localAuthManager).enforceAndSet(eq(true), any(), any(), any())
-    }
+            verify(localAuthManager).enforceAndSet(eq(true), any(), any(), any())
+        }
 
     @Test
     fun `check nav to dev panel calls navigator correctly`() {
@@ -777,36 +784,38 @@ class WelcomeScreenViewModelWithRefreshTest {
     }
 
     @Test
-    fun `check abort login works as expected`() = runTest {
-        createMocks()
-        val mockIntent: Intent = mock()
+    fun `check abort login works as expected`() =
+        runTest {
+            createMocks()
+            val mockIntent: Intent = mock()
 
-        whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                runBlocking {
-                    delay(10000)
-                    assert(viewModel.loading.value)
-                    viewModel.abortLogin(any())
+            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+                .thenAnswer {
+                    runBlocking {
+                        delay(10000)
+                        assert(viewModel.loading.value)
+                        viewModel.abortLogin(any())
+                    }
                 }
-            }
 
-        assertFalse(viewModel.loading.value)
-    }
+            assertFalse(viewModel.loading.value)
+        }
 
     private fun createMocks(isLocalAuthMocked: Boolean = false) {
         mockFragmentActivity = mock()
         localAuthPreferenceRepo = mock()
         deviceBiometricsManager = mock()
         analyticsLogger = mock()
-        localAuthManager = if (isLocalAuthMocked) {
-            mock()
-        } else {
-            LocalAuthManagerImpl(
-                localAuthPreferenceRepo,
-                deviceBiometricsManager,
-                analyticsLogger
-            )
-        }
+        localAuthManager =
+            if (isLocalAuthMocked) {
+                mock()
+            } else {
+                LocalAuthManagerImpl(
+                    localAuthPreferenceRepo,
+                    deviceBiometricsManager,
+                    analyticsLogger
+                )
+            }
         mockTokenRepository = mock()
         mockAutoInitialiseSecureStore = mock()
         mockVerifyIdToken = mock()
