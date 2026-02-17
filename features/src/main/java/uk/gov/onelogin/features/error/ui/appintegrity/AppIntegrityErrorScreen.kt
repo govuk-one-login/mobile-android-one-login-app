@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
@@ -22,12 +21,13 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
+import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
-fun AppIntegrityErrorScreen(viewModel: AppIntegrityErrorViewModel = hiltViewModel(),) {
+fun AppIntegrityErrorScreen() {
     GdsTheme {
-        BackHandler(true) {
-            viewModel.goBackToPreviousScreen()
+        BackHandler(false) {
+            // Nothing to do
         }
 
         EdgeToEdgePage { _ ->
@@ -48,8 +48,8 @@ private fun AppIntegrityErrorBody() {
     ErrorScreen(
         icon = { padding ->
             GdsIcon(
-                image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
-                contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
+                image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
+                contentDescription = stringResource(patternsR.string.error_icon_description),
                 modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
