@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -25,17 +24,12 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 
 @Composable
-fun AppIntegrityErrorScreen(
-    analyticsViewModel: AppIntegrityErrorAnalyticsViewModel = hiltViewModel(),
-    viewModel: AppIntegrityErrorViewModel = hiltViewModel(),
-) {
+fun AppIntegrityErrorScreen(viewModel: AppIntegrityErrorViewModel = hiltViewModel(),) {
     GdsTheme {
         BackHandler(true) {
-            analyticsViewModel.trackBackButton()
             viewModel.goBackToPreviousScreen()
         }
 
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         EdgeToEdgePage { _ ->
             AppIntegrityErrorBody()
         }

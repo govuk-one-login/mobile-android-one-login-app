@@ -9,18 +9,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
 class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
-
-    private lateinit var analyticsViewModel: AppIntegrityErrorAnalyticsViewModel
 
     private lateinit var viewModel: AppIntegrityErrorViewModel
 
@@ -35,7 +31,6 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     fun setUp() {
         analytics = mock()
         goBack = false
-        analyticsViewModel = AppIntegrityErrorAnalyticsViewModel(context, analytics)
         viewModel = AppIntegrityErrorViewModel(mockNavigator)
     }
 
@@ -43,7 +38,6 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     fun appIntegrityErrorScreen() {
         composeTestRule.setContent {
             AppIntegrityErrorScreen(
-                analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel
             )
             goBack = true
@@ -53,22 +47,17 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
 
         assert(goBack)
-        verify(analytics).logEventV3Dot1(
-            AppIntegrityErrorAnalyticsViewModel.makeScreenEvent(context)
-        )
     }
 
     @Test
     fun onBackClicked() {
         composeTestRule.setContent {
             AppIntegrityErrorScreen(
-                analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel
             )
         }
 
         Espresso.pressBack()
-        verify(analytics).logEventV3Dot1(AppIntegrityErrorAnalyticsViewModel.makeBackEvent(context))
     }
 
     @Test
