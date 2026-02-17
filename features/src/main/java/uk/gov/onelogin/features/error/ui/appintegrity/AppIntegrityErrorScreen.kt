@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
@@ -25,28 +26,25 @@ import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 
 @Composable
 fun AppIntegrityErrorScreen(
-    goBack: () -> Unit = {},
-){
+    analyticsViewModel: AppIntegrityErrorAnalyticsViewModel = hiltViewModel(),
+    viewModel: AppIntegrityErrorViewModel = hiltViewModel(),
+) {
     GdsTheme {
         BackHandler(true) {
-            goBack()
+            analyticsViewModel.trackBackButton()
+            viewModel.goBackToPreviousScreen()
         }
-        //add a viewModel here
-        LaunchedEffect(Unit) {  }
+
+        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         EdgeToEdgePage { _ ->
-            AppIntegrityErrorBody {
-                //add a analyticsViewModel here
-                goBack()
-            }
+            AppIntegrityErrorBody()
         }
     }
-
 }
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun AppIntegrityErrorBody(onBackToSettings: () -> Unit) {
-
+private fun AppIntegrityErrorBody() {
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_appIntegrityErrorBody1),
@@ -79,7 +77,6 @@ private fun AppIntegrityErrorBody(onBackToSettings: () -> Unit) {
             }
         }
     )
-
 }
 
 @ExcludeFromJacocoGeneratedReport
@@ -87,6 +84,6 @@ private fun AppIntegrityErrorBody(onBackToSettings: () -> Unit) {
 @Composable
 internal fun AppIntegrityErrorScreenPreview() {
     GdsTheme {
-        AppIntegrityErrorBody ()
+        AppIntegrityErrorBody()
     }
 }

@@ -102,7 +102,7 @@
 
     <!-- Errors App Integrity -->
     <string name="app_appIntegrityErrorTitle">@string/app_genericErrorPage</string>
-    <string name="app_appIntegrityErrorBody1">Ni allwch ddefnyddio'r ap GOV.UK One Login ar hyn o bryd.</string>
+    <string name="app_appIntegrityErrorBody1">Ni allwch ddefnyddio\’r ap GOV.UK One Login ar hyn o bryd.</string>
     <string name="app_appIntegrityErrorBody2">@string/app_genericErrorPageBody</string>
 
     <!-- Analytics Opt In   -->
