@@ -12,6 +12,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 import javax.inject.Inject
 
 @Suppress("LongParameterList")
@@ -29,6 +30,7 @@ class HandleLocalLoginImpl
         private val isRefreshTokenExpired: IsTokenExpired,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val localAuthManager: LocalAuthManager,
+        private val walletRepository: WalletRepository,
     ) : HandleLocalLogin {
         override suspend fun invoke(
             fragmentActivity: FragmentActivity,
@@ -116,10 +118,13 @@ class HandleLocalLoginImpl
                     callback(it)
                 }
             } else {
-                if (getAccessTokenExpiry() == null) {
-                    callback(LocalAuthStatus.ManualSignIn)
-                } else {
-                    callback(LocalAuthStatus.ReAuthSignIn)
+                when {
+                    // Do not invoke callback if wallet deep link has been received and local auth is disabled
+                    // This is to avoid an unnecessary re-auth during the the wallet add credential process
+                    walletRepository.isWalletDeepLinkPath() && !isLocalAuthEnabled() ->
+                        callback(LocalAuthStatus.NoAction)
+                    getAccessTokenExpiry() == null -> callback(LocalAuthStatus.ManualSignIn)
+                    else -> callback(LocalAuthStatus.ReAuthSignIn)
                 }
             }
         }

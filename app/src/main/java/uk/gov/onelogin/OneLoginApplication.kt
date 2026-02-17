@@ -9,6 +9,7 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.BuildConfig
@@ -86,7 +87,11 @@ class OneLoginApplication :
             !isLocalAuthEnabled() &&
             !appEntryPoint.tokenRepository().isTokenResponseClear()
         ) {
-            appEntryPoint.navigator().navigate(MainNavRoutes.Start)
+            applicationScope.launch {
+                // Make short delay to avoid IllegalStateException caused by nav graph not being setup
+                delay(NAV_DELAY)
+                appEntryPoint.navigator().navigate(MainNavRoutes.Start)
+            }
         }
     }
 
@@ -103,3 +108,5 @@ class OneLoginApplication :
         return !(prefs == LocalAuthPreference.Disabled || prefs == null)
     }
 }
+
+private const val NAV_DELAY = 200L

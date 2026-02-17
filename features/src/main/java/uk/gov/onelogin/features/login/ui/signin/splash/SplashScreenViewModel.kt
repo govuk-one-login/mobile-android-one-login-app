@@ -129,6 +129,10 @@ class SplashScreenViewModel
                     // Allow user to make multiple fails... do nothing for now
                 }
 
+                LocalAuthStatus.NoAction -> {
+                    // Deeplink received with local auth disabled. No action needed
+                }
+
                 // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
                 else -> {
                     nextScreen(SignOutRoutes.Info)

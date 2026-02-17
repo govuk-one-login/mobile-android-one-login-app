@@ -4,8 +4,12 @@ import android.os.Looper
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -141,14 +145,19 @@ class OneLoginApplicationTest {
         }
 
     @Test
-    fun `navigate to MainNavRoutes Start when onResume called`() {
-        whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
-            LocalAuthPreference.Disabled,
-        )
-        whenever(mockTokenRepository.isTokenResponseClear()).thenReturn(false)
-        whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
+    fun `navigate to MainNavRoutes Start when onResume called`() =
+        runTest {
+            val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+            Dispatchers.setMain(testDispatcher)
+            whenever(mockLocalAuthManager.localAuthPreference).thenReturn(
+                LocalAuthPreference.Disabled,
+            )
+            whenever(mockTokenRepository.isTokenResponseClear()).thenReturn(false)
+            whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
 
-        app.onResume(ProcessLifecycleOwner.get())
-        verify(mockNavigator).navigate(MainNavRoutes.Start)
-    }
+            app.onResume(ProcessLifecycleOwner.get())
+            shadowOf(Looper.getMainLooper()).idle()
+            advanceUntilIdle()
+            verify(mockNavigator).navigate(MainNavRoutes.Start)
+        }
 }

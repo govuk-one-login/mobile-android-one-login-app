@@ -22,6 +22,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
+import uk.gov.onelogin.features.wallet.data.WalletRepository
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -34,6 +35,7 @@ class HandleLocalLoginTest {
     private val mockBioPrefHandler: LocalAuthManager = mock()
     private val mockIsAccessTokenExpired: IsTokenExpired = mock()
     private val mockIsRefreshTokenExpired: IsTokenExpired = mock()
+    private val mockWalletRepository: WalletRepository = mock()
 
     private lateinit var useCase: HandleLocalLogin
 
@@ -47,7 +49,8 @@ class HandleLocalLoginTest {
                 mockIsAccessTokenExpired,
                 mockIsRefreshTokenExpired,
                 mockGetFromEncryptedSecureStore,
-                mockBioPrefHandler
+                mockBioPrefHandler,
+                mockWalletRepository,
             )
     }
 
@@ -320,6 +323,39 @@ class HandleLocalLoginTest {
 
             useCase(mockActivity) {
                 assertEquals(LocalAuthStatus.ManualSignIn, it)
+            }
+        }
+
+    @Test
+    fun refreshToken_refreshTokenNull_walletDeepLink_localAuthDisabled() =
+        runBlocking {
+            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
+            whenever(mockBioPrefHandler.localAuthPreference)
+                .thenReturn(LocalAuthPreference.Disabled)
+            whenever(mockWalletRepository.isWalletDeepLinkPath()).thenReturn(true)
+            wheneverBlocking {
+                mockGetFromEncryptedSecureStore.invoke(
+                    context = any(),
+                    ArgumentMatchers.contains(AuthTokenStoreKeys.REFRESH_TOKEN_KEY),
+                    callback = any()
+                )
+            }.thenAnswer {
+                (it.arguments[3] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        payload =
+                            mapOf(
+                                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                                AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
+                            )
+                    )
+                )
+            }
+
+            useCase(mockActivity) {
+                assertEquals(LocalAuthStatus.NoAction, it)
             }
         }
 

@@ -240,6 +240,24 @@ class SplashScreenViewModelTest {
         }
 
     @Test
+    fun `LocalAuth - deep link received with local auth disabled, no action needed`() =
+        runTest {
+            runBlocking {
+                whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            }
+            whenever(mockHandleLocalLogin(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.NoAction
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verifyNoInteractions(mockNavigator)
+        }
+
+    @Test
     fun `LocalAuth - login success`() =
         runTest {
             runBlocking {
