@@ -14,9 +14,11 @@ class DeeplinkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel.handleIntent(intent)
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
+        val intent =
+            Intent(this, MainActivity::class.java)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
         startActivity(intent)
     }
 
@@ -24,9 +26,11 @@ class DeeplinkActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         viewModel.handleIntent(intent)
-        val mainIntent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
+        val mainIntent =
+            Intent(this, MainActivity::class.java)
+                .apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
         startActivity(mainIntent)
     }
 }
