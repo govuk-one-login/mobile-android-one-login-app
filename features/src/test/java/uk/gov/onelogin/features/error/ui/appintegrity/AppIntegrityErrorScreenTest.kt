@@ -17,7 +17,6 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: AppIntegrityErrorAnalyticsViewModel
-    private var goBack = false
 
     private val errorIconDescription = resources.getString(uk.gov.android.ui.patterns.R.string.error_icon_description)
     private val errorTitle = hasText(resources.getString(R.string.app_appIntegrityErrorTitle))
@@ -28,7 +27,6 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     fun setUp() {
         analytics = mock()
         analyticsViewModel = AppIntegrityErrorAnalyticsViewModel(context, analytics)
-        goBack = false
     }
 
     @Test
@@ -45,8 +43,6 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
-
-        assert(!goBack)
     }
 
     @Test
