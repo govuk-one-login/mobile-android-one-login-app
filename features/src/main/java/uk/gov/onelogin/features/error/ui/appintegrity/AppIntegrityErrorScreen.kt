@@ -4,11 +4,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
@@ -24,12 +26,12 @@ import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
-fun AppIntegrityErrorScreen() {
+fun AppIntegrityErrorScreen(analyticsViewModel: AppIntegrityErrorAnalyticsViewModel = hiltViewModel()) {
     GdsTheme {
         BackHandler(false) {
             // Nothing to do
         }
-
+        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
         EdgeToEdgePage { _ ->
             AppIntegrityErrorBody()
         }

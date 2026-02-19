@@ -11,7 +11,6 @@ import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
-import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
 import javax.inject.Inject
 
@@ -23,46 +22,20 @@ class AppIntegrityErrorAnalyticsViewModel
         private val analyticsLogger: AnalyticsLogger,
     ) : ViewModel() {
         private val screenEvent = makeScreenEvent(context)
-        private val buttonEvent = makeButtonEvent(context)
-        private val backButtonEvent = makeBackEvent(context)
 
         fun trackScreen() {
             analyticsLogger.logEventV3Dot1(screenEvent)
-        }
-
-        fun trackButton() {
-            analyticsLogger.logEventV3Dot1(buttonEvent)
-        }
-
-        fun trackBackButton() {
-            analyticsLogger.logEventV3Dot1(backButtonEvent)
         }
 
         companion object {
             internal fun makeScreenEvent(context: Context) =
                 with(context) {
                     ViewEvent.Error(
-                        name = getEnglishString(R.string.app_networkErrorTitle),
+                        name = getEnglishString(R.string.app_appIntegrityErrorTitle),
                         id = getEnglishString(R.string.app_integrity_error_firebase_screen_id),
                         endpoint = "",
-                        reason = getEnglishString(R.string.network_error_reason),
+                        reason = getEnglishString(R.string.app_integrity_error_reason),
                         status = "",
-                        params = requiredParams,
-                    )
-                }
-
-            internal fun makeButtonEvent(context: Context) =
-                with(context) {
-                    TrackEvent.Button(
-                        text = getEnglishString(R.string.app_closeButton),
-                        params = requiredParams,
-                    )
-                }
-
-            internal fun makeBackEvent(context: Context) =
-                with(context) {
-                    TrackEvent.Icon(
-                        text = getEnglishString(R.string.system_backButton),
                         params = requiredParams,
                     )
                 }

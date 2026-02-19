@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertContentDescriptionContains
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +16,7 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 @RunWith(AndroidJUnit4::class)
 class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
-
+    private lateinit var analyticsViewModel: AppIntegrityErrorAnalyticsViewModel
     private var goBack = false
 
     private val errorIconDescription = resources.getString(uk.gov.android.ui.patterns.R.string.error_icon_description)
@@ -28,14 +27,16 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         analytics = mock()
+        analyticsViewModel = AppIntegrityErrorAnalyticsViewModel(context, analytics)
         goBack = false
     }
 
     @Test
     fun appIntegrityErrorScreen() {
         composeTestRule.setContent {
-            AppIntegrityErrorScreen()
-            goBack = true
+            AppIntegrityErrorScreen(
+                analyticsViewModel = analyticsViewModel
+            )
         }
         composeTestRule
             .onNodeWithContentDescription(
@@ -45,16 +46,7 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
 
-        assert(goBack)
-    }
-
-    @Test
-    fun onBackClicked() {
-        composeTestRule.setContent {
-            AppIntegrityErrorScreen()
-        }
-
-        Espresso.pressBack()
+        assert(!goBack)
     }
 
     @Test
