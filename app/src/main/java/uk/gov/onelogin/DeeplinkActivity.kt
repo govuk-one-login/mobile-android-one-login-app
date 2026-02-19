@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DeeplinkActivity : AppCompatActivity() {
     private val viewModel: DeeplinkActivityViewModel by viewModels()
-    private val mainActivityIntent =
+    private fun mainActivityIntent() =
         Intent(this, MainActivity::class.java)
             .apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -19,13 +19,13 @@ class DeeplinkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel.handleIntent(intent)
-        startActivity(mainActivityIntent)
+        startActivity(mainActivityIntent())
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
         viewModel.handleIntent(intent)
-        startActivity(mainActivityIntent)
+        startActivity(mainActivityIntent())
     }
 }
