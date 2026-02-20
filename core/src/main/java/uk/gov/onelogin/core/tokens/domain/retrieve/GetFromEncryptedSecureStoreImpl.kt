@@ -38,15 +38,15 @@ class GetFromEncryptedSecureStoreImpl
                 callback(LocalAuthStatus.Success(result))
             } catch (e: SecureStorageErrorV2) {
                 logger.error(
-                    "tag",
-                    e.message ?: "message",
+                    this.javaClass.simpleName,
+                    "${e.message} - type: ${e.type}",
                     e
                 )
                 val localAuthStatus =
                     when (e.type) {
                         SecureStoreErrorTypeV2.UNRECOVERABLE -> LocalAuthStatus.ReauthRequired
 
-                        SecureStoreErrorTypeV2.ERROR_NO_DEVICE_CREDENTIAL -> LocalAuthStatus.UnrecoverableError
+                        SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED -> LocalAuthStatus.UnrecoverableError
 
                         SecureStoreErrorTypeV2.RECOVERABLE,
                         SecureStoreErrorTypeV2.USER_CANCELLED -> LocalAuthStatus.UserCancelledBioPrompt
