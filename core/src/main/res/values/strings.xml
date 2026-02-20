@@ -107,6 +107,11 @@
     <string name="app_SignOutErrorButton">Go back to settings</string>
     <string name="app_authenticationDialogueTitle">Unlock GOV.UK One Login</string>
 
+    <!-- Errors App Integrity -->
+    <string name="app_appIntegrityErrorTitle">@string/app_genericErrorPage</string>
+    <string name="app_appIntegrityErrorBody1">You cannot use the GOV.UK One Login app at the moment.</string>
+    <string name="app_appIntegrityErrorBody2">@string/app_genericErrorPageBody</string>
+
     <string name="app_homeTitle">@string/app_home</string>
 
     <string name="app_walletTitle" translatable="false">GOV.UK Wallet</string>

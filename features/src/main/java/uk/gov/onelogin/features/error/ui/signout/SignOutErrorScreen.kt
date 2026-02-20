@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.error.ui.signout
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
+import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 fun SignOutErrorScreen(viewModel: SignOutErrorViewModel = hiltViewModel()) {
@@ -45,8 +45,8 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
             ErrorScreen(
                 icon = { padding ->
                     GdsIcon(
-                        image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
-                        contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
+                        image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
+                        contentDescription = stringResource(patternsR.string.error_icon_description),
                         modifier = Modifier.errorBodyItemModifier(padding)
                     )
                 },

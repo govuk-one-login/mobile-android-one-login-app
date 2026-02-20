@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.error.ui.signin
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,10 +24,10 @@ import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.android.ui.theme.meta.ScreenPreview
-import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
+import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 @Preview
@@ -62,8 +61,8 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
     ErrorScreen(
         icon = { padding ->
             GdsIcon(
-                image = ImageVector.vectorResource(uk.gov.android.ui.patterns.R.drawable.ic_warning_error),
-                contentDescription = stringResource(uk.gov.android.ui.patterns.R.string.error_icon_description),
+                image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
+                contentDescription = stringResource(patternsR.string.error_icon_description),
                 modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
@@ -90,7 +89,7 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = onPrimary,
-                modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding)
+                modifier = Modifier.fillMaxWidth()
             )
         },
     )

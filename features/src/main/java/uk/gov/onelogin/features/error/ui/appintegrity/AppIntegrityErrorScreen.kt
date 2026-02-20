@@ -1,21 +1,16 @@
-package uk.gov.onelogin.features.error.ui.offline
+package uk.gov.onelogin.features.error.ui.appintegrity
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
-import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
@@ -29,32 +24,25 @@ import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
-fun OfflineErrorScreen(
-    analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel(),
-    goBack: () -> Unit = {},
-) {
+fun AppIntegrityErrorScreen() {
     GdsTheme {
-        BackHandler(true) {
-            analyticsViewModel.trackBackButton()
-            goBack()
+        BackHandler(false) {
+            // Nothing to do
         }
-        LaunchedEffect(Unit) { analyticsViewModel.trackScreen() }
+
         EdgeToEdgePage { _ ->
-            OfflineErrorBody {
-                analyticsViewModel.trackButton()
-                goBack()
-            }
+            AppIntegrityErrorBody()
         }
     }
 }
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
+private fun AppIntegrityErrorBody() {
     val bodyContent =
         persistentListOf(
-            stringResource(R.string.app_networkErrorBody1),
-            stringResource(R.string.app_networkErrorBody2)
+            stringResource(R.string.app_appIntegrityErrorBody1),
+            stringResource(R.string.app_appIntegrityErrorBody2)
         )
 
     ErrorScreen(
@@ -67,9 +55,9 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
         },
         title = { padding ->
             GdsHeading(
-                text = stringResource(R.string.app_networkErrorTitle),
+                text = stringResource(R.string.app_appIntegrityErrorTitle),
+                modifier = Modifier.errorBodyItemModifier(padding),
                 textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = Modifier.errorBodyItemModifier(padding)
             )
         },
         body = { padding ->
@@ -81,24 +69,15 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
-        },
-        primaryButton = {
-            val text = stringResource(R.string.app_genericErrorPageButton)
-            GdsButton(
-                text = text,
-                buttonType = ButtonTypeV2.Primary(),
-                onClick = primaryOnClick,
-                modifier = Modifier.fillMaxWidth()
-            )
-        },
+        }
     )
 }
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun OfflineErrorPreview() {
+internal fun AppIntegrityErrorScreenPreview() {
     GdsTheme {
-        OfflineErrorBody()
+        AppIntegrityErrorBody()
     }
 }

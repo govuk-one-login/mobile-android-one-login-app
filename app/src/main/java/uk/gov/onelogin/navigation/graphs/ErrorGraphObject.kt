@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
+import uk.gov.onelogin.features.error.ui.appintegrity.AppIntegrityErrorScreen
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
 import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
@@ -53,6 +54,11 @@ object ErrorGraphObject {
                 route = ErrorRoutes.Unavailable.getRoute(),
             ) {
                 AppUnavailableScreen()
+            }
+            composable(
+                route = ErrorRoutes.AppIntegrity.getRoute()
+            ) {
+                AppIntegrityErrorScreen()
             }
         }
     }
