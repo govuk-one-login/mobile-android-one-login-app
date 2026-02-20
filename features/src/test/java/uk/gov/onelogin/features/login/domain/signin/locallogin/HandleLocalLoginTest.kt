@@ -63,7 +63,7 @@ class HandleLocalLoginTest {
             useCase(
                 mockActivity
             ) {
-                assertEquals(LocalAuthStatus.ReAuthSignIn, it)
+                assertEquals(LocalAuthStatus.ReauthRequired, it)
             }
         }
 
@@ -78,7 +78,7 @@ class HandleLocalLoginTest {
             useCase(
                 mockActivity
             ) {
-                assertEquals(LocalAuthStatus.ReAuthSignIn, it)
+                assertEquals(LocalAuthStatus.ReauthRequired, it)
             }
         }
 
@@ -94,7 +94,7 @@ class HandleLocalLoginTest {
             useCase(
                 mockActivity
             ) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -141,7 +141,7 @@ class HandleLocalLoginTest {
                             AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
                         )
                 )
-            val expectedResult = LocalAuthStatus.ManualSignIn
+            val expectedResult = LocalAuthStatus.FirstTimeUser
             whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
             whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
@@ -223,7 +223,7 @@ class HandleLocalLoginTest {
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -255,7 +255,7 @@ class HandleLocalLoginTest {
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -287,7 +287,7 @@ class HandleLocalLoginTest {
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -319,7 +319,7 @@ class HandleLocalLoginTest {
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -332,7 +332,7 @@ class HandleLocalLoginTest {
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -346,7 +346,7 @@ class HandleLocalLoginTest {
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -359,7 +359,7 @@ class HandleLocalLoginTest {
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -373,7 +373,7 @@ class HandleLocalLoginTest {
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
         }
 
@@ -386,11 +386,11 @@ class HandleLocalLoginTest {
                 .thenReturn(LocalAuthPreference.Enabled(false))
 
             whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
 
             verify(mockTokenRepository, times(0)).setTokenResponse(any())
@@ -406,11 +406,11 @@ class HandleLocalLoginTest {
                 .thenReturn(LocalAuthPreference.Enabled(false))
 
             whenever(mockGetFromEncryptedSecureStore(any(), any(), callback = any())).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
             }
 
             useCase(mockActivity) {
-                assertEquals(LocalAuthStatus.ManualSignIn, it)
+                assertEquals(LocalAuthStatus.FirstTimeUser, it)
             }
 
             verify(mockTokenRepository, times(0)).setTokenResponse(any())

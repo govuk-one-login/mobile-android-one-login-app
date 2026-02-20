@@ -73,7 +73,7 @@ class StsAuthenticationProviderTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.ReAuthRequired)
+                        .invoke(RefreshExchangeResult.ReauthRequired)
                 }
 
             val response = provider.fetchBearerToken("scope")
@@ -86,7 +86,7 @@ class StsAuthenticationProviderTest {
                 StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
-            verify(mockNavigator).navigate(SignOutRoutes.Info)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
         }
 
     @Test
@@ -170,7 +170,7 @@ class StsAuthenticationProviderTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.SignInRequired)
+                        .invoke(RefreshExchangeResult.FirstTimeUser)
                 }
 
             val response = provider.fetchBearerToken("scope")
@@ -185,38 +185,6 @@ class StsAuthenticationProviderTest {
             )
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
-        }
-
-    @Test
-    fun `access token expired, refresh exchanged has failed with bio check failed`() =
-        runTest {
-            setupProvider(ApiResponse.Loading, true)
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
-                    tokenType = "type",
-                    accessToken = "accessToken",
-                    accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
-            )
-            whenever(mockActivityProvider.getCurrentActivity())
-                .thenReturn(mockFragmentActivity)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.BioCheckFailed)
-                }
-
-            val response = provider.fetchBearerToken("scope")
-
-            MatcherAssert.assertThat(
-                "response is Failure",
-                response is AuthenticationResponse.Failure
-            )
-            assertEquals(
-                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                (response as AuthenticationResponse.Failure).error.message
-            )
         }
 
     @Test

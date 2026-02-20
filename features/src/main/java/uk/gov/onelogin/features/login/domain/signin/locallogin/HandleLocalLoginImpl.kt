@@ -50,9 +50,9 @@ class HandleLocalLoginImpl
                         // When Local Auth Successful
                         if (it is LocalAuthStatus.Success) {
                             // These should never be returned null - secure store checks for all values to not be null
-                            val accessToken = it.payload[AuthTokenStoreKeys.ACCESS_TOKEN_KEY]
-                            val refreshToken = it.payload[AuthTokenStoreKeys.REFRESH_TOKEN_KEY]
-                            val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
+                            val accessToken = it.payload?.get(AuthTokenStoreKeys.ACCESS_TOKEN_KEY)
+                            val refreshToken = it.payload?.get(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)
+                            val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                             if (!accessToken.isNullOrEmpty() &&
                                 !refreshToken.isNullOrEmpty() &&
                                 !idToken.isNullOrEmpty()
@@ -67,7 +67,7 @@ class HandleLocalLoginImpl
                                 )
                             } else {
                                 // Finish the function here and break - this handles if one of the tokens is null unexpectedly
-                                callback(LocalAuthStatus.ManualSignIn)
+                                callback(LocalAuthStatus.ReauthRequired)
                                 return@getFromEncryptedSecureStore
                             }
                         }
@@ -76,7 +76,7 @@ class HandleLocalLoginImpl
                     }
                 } else {
                     // If Refresh Token is expired prompt for ReAuth
-                    callback(LocalAuthStatus.ReAuthSignIn)
+                    callback(LocalAuthStatus.ReauthRequired)
                 }
             } else {
                 // If Refresh Token is null, then use the flow for Access Token only
@@ -97,8 +97,8 @@ class HandleLocalLoginImpl
                 ) {
                     if (it is LocalAuthStatus.Success) {
                         // These should never be returned null - secure store checks for all values to not be null
-                        val accessToken = it.payload[AuthTokenStoreKeys.ACCESS_TOKEN_KEY]
-                        val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
+                        val accessToken = it.payload?.get(AuthTokenStoreKeys.ACCESS_TOKEN_KEY)
+                        val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                         if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
                             tokenRepository.setTokenResponse(
                                 TokenResponse(
@@ -109,7 +109,7 @@ class HandleLocalLoginImpl
                                 ),
                             )
                         } else {
-                            callback(LocalAuthStatus.ManualSignIn)
+                            callback(LocalAuthStatus.ReauthRequired)
                             return@getFromEncryptedSecureStore
                         }
                     }
@@ -117,9 +117,9 @@ class HandleLocalLoginImpl
                 }
             } else {
                 if (getAccessTokenExpiry() == null) {
-                    callback(LocalAuthStatus.ManualSignIn)
+                    callback(LocalAuthStatus.FirstTimeUser)
                 } else {
-                    callback(LocalAuthStatus.ReAuthSignIn)
+                    callback(LocalAuthStatus.ReauthRequired)
                 }
             }
         }

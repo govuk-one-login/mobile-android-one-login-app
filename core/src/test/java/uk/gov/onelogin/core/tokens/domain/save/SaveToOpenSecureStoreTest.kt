@@ -12,8 +12,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.securestore.SecureStore
-import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.SecureStoreAsyncV2
+import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 import kotlin.test.assertEquals
@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 @ExtendWith(CoroutinesTestExtension::class)
 class SaveToOpenSecureStoreTest {
     private lateinit var useCase: SaveToOpenSecureStore
-    private val mockSecureStore: SecureStore = mock()
+    private val mockSecureStore: SecureStoreAsyncV2 = mock()
     private val logger = SystemLogger()
 
     private val expectedStoreKey: String = "key"
@@ -35,10 +35,10 @@ class SaveToOpenSecureStoreTest {
     }
 
     @Test
-    fun `does not throw - when SecureStorageError thrown`() =
+    fun `does not throw - when SecureStorageErrorV2 thrown`() =
         runTest {
             whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageError(Exception("Some error")),
+                SecureStorageErrorV2(Exception("Some error")),
             )
 
             assertDoesNotThrow {

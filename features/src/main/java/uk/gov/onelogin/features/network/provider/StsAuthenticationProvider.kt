@@ -63,15 +63,18 @@ class StsAuthenticationProvider(
             // Handle refresh exchange result
             when (refreshStatus) {
                 // Prompt for re-authentication
-                is RefreshExchangeResult.ReAuthRequired,
+                is RefreshExchangeResult.ReauthRequired,
                 RefreshExchangeResult.ClientAttestationFailure -> {
-                    navigator.navigate(SignOutRoutes.Info)
+                    navigator.navigate(SignOutRoutes.ReAuth)
                     AuthenticationResponse.Failure(ApiResponseException(REFRESH_EXCHANGE_ERROR_MSG))
                 }
 
-                // If Manual Sign In required, delete all data, navigate to Re Auth Error screen to then
+                // If UnrecoverableError required, delete all data, navigate to Re Auth Error screen to then
                 // allow for seeing the Welcome Screen (sign in) and return an error to the consumer
-                is RefreshExchangeResult.SignInRequired -> {
+                // Treat FirstTimeUser the same as no user should be ablet to get to the point of service token without
+                // having a persistent session ID saved/ not empty
+                is RefreshExchangeResult.UnrecoverableError,
+                RefreshExchangeResult.FirstTimeUser -> {
                     signOutUseCase.invoke()
                     navigator.navigate(SignOutRoutes.ReAuthError)
                     AuthenticationResponse.Failure(ApiResponseException(MANUAL_SIGN_IN_REQUIRED_ERROR_MSG))
@@ -95,7 +98,7 @@ class StsAuthenticationProvider(
      * This is required/ called only if the access token is expired.
      */
     private suspend fun attemptRefreshExchangeAndGetResult(): RefreshExchangeResult {
-        var refreshExchangeResult: RefreshExchangeResult = RefreshExchangeResult.ReAuthRequired
+        var refreshExchangeResult: RefreshExchangeResult = RefreshExchangeResult.ReauthRequired
         // If an activity is available, it will attempt the refresh exchange
         // Will display the Re-Auth screen if activity is not available
         // Require dispatcher because the BiometricPrompt needs to be called from Main Thread
@@ -115,7 +118,7 @@ class StsAuthenticationProvider(
                     error
                 )
                 // AND require re-authentication as the refresh exchange will fail
-                refreshExchangeResult = RefreshExchangeResult.ReAuthRequired
+                refreshExchangeResult = RefreshExchangeResult.ReauthRequired
             }
         }
         return refreshExchangeResult

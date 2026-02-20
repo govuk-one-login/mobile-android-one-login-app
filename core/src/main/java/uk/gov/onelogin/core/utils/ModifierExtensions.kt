@@ -13,5 +13,5 @@ object ModifierExtensions {
             IntOffset(x = 0, y = previousItemHeightPx)
         }
 
-    fun errorBodyItemModifier(padding: Dp): Modifier = Modifier.fillMaxWidth().padding(horizontal = padding)
+    fun Modifier.errorBodyItemModifier(padding: Dp): Modifier = this.fillMaxWidth().padding(horizontal = padding)
 }

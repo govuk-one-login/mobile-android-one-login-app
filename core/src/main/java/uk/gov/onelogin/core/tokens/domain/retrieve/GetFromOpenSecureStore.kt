@@ -8,5 +8,5 @@ fun interface GetFromOpenSecureStore {
      * @return The saved [String]s correlating to each key requested are returned unless there is
      * an issue or one of the keys requested does not exist, in which case, null is returned
      */
-    suspend operator fun invoke(vararg key: String): Map<String, String>?
+    suspend operator fun invoke(vararg key: String): Map<String, String?>?
 }

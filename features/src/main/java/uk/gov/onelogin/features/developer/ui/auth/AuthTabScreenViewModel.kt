@@ -69,7 +69,7 @@ class AuthTabScreenViewModel
                 ) { localAuthStatus ->
                     _isRefreshTokenSaved.value =
                         if (localAuthStatus is LocalAuthStatus.Success) {
-                            !localAuthStatus.payload[AuthTokenStoreKeys.REFRESH_TOKEN_KEY].isNullOrEmpty()
+                            !localAuthStatus.payload?.get(AuthTokenStoreKeys.REFRESH_TOKEN_KEY).isNullOrEmpty()
                         } else {
                             false
                         }

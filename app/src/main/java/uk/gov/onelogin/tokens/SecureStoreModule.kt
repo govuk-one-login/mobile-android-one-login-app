@@ -8,9 +8,9 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.securestore.AccessControlLevel
-import uk.gov.android.securestore.SecureStorageConfiguration
-import uk.gov.android.securestore.SecureStore
-import uk.gov.android.securestore.SharedPrefsStore
+import uk.gov.android.securestore.SecureStorageConfigurationAsync
+import uk.gov.android.securestore.SecureStoreAsyncV2
+import uk.gov.android.securestore.SharedPrefsStoreAsyncV2
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStoreImpl
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
@@ -25,7 +25,7 @@ object SecureStoreSingletonModule {
     @Provides
     @Singleton
     @Named("Token")
-    fun providesTokenSecureStore(): SecureStore = SharedPrefsStore()
+    fun providesTokenSecureStore(): SecureStoreAsyncV2 = SharedPrefsStoreAsyncV2()
 
     @Provides
     @Singleton
@@ -33,10 +33,10 @@ object SecureStoreSingletonModule {
     fun providesOpenSecureStore(
         @ApplicationContext
         context: Context,
-    ): SecureStore =
-        SharedPrefsStore().also {
+    ): SecureStoreAsyncV2 =
+        SharedPrefsStoreAsyncV2().also {
             val configuration =
-                SecureStorageConfiguration(
+                SecureStorageConfigurationAsync(
                     AuthTokenStoreKeys.OPEN_SECURE_STORE_ID,
                     AccessControlLevel.OPEN,
                 )

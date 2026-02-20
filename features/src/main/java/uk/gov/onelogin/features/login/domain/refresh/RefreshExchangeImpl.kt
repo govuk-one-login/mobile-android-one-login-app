@@ -75,13 +75,13 @@ class RefreshExchangeImpl
                 } else {
                     // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
                     // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
-                    handleResult(RefreshExchangeResult.ReAuthRequired)
+                    handleResult(RefreshExchangeResult.ReauthRequired)
                     return
                 }
             } else {
                 // When a persistent session ID couldn't be retrieved or is invalid
                 // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
-                handleResult(RefreshExchangeResult.SignInRequired)
+                handleResult(RefreshExchangeResult.FirstTimeUser)
                 return
             }
             // This will handle the refresh token call and return of the updated tokens
@@ -140,18 +140,18 @@ class RefreshExchangeImpl
                     // When the local auth has been successfully completed
                     if (it is LocalAuthStatus.Success) {
                         val refreshToken =
-                            it.payload[AuthTokenStoreKeys.REFRESH_TOKEN_KEY]
-                        val idToken = it.payload[AuthTokenStoreKeys.ID_TOKEN_KEY]
+                            it.payload?.get(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)
+                        val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                         // Check is valid (should never be returned null)
                         if (!refreshToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
-                            // Set all required values to enable teh refresh request to be made/ continue
+                            // Set all required values to enable the refresh request to be made/ continue
                             this@RefreshExchangeImpl.refreshToken = refreshToken
                             this@RefreshExchangeImpl.idToken = idToken
                             this@RefreshExchangeImpl.clientAttestation = clientAttestation ?: ""
                             areChecksSuccessful = true
                         } else {
                             // When Refresh token is invalid then prompt user to re-auth as the refresh token won't be able to be exchanged for a new one
-                            onFailure(RefreshExchangeResult.ReAuthRequired)
+                            onFailure(RefreshExchangeResult.ReauthRequired)
                         }
                     } else {
                         // If the retrieval failed
@@ -177,7 +177,7 @@ class RefreshExchangeImpl
                         e,
                     )
                     // All errors are to be directed to re-auth (as of 10/11/25)
-                    handleResult(RefreshExchangeResult.ReAuthRequired)
+                    handleResult(RefreshExchangeResult.ReauthRequired)
                     return
                 }
             when (refreshExchangeResult) {
@@ -212,7 +212,7 @@ class RefreshExchangeImpl
                         refreshExchangeResult.error.message ?: EMPTY_MSG,
                         refreshExchangeResult.error,
                     )
-                    handleResult(RefreshExchangeResult.ReAuthRequired)
+                    handleResult(RefreshExchangeResult.ReauthRequired)
                 }
                 // Loading and Offline are not use by the HttpClient so will never end up here
                 else -> {
@@ -337,11 +337,11 @@ class RefreshExchangeImpl
         private fun mapLocalAuthStatusToRefreshExchangeResult(status: LocalAuthStatus): RefreshExchangeResult {
             // This will have to updated after the secure store errors are now mapped correctly according to the TD
             return when (status) {
-                LocalAuthStatus.ManualSignIn -> RefreshExchangeResult.SignInRequired
+                is LocalAuthStatus.FirstTimeUser -> RefreshExchangeResult.FirstTimeUser
+                is LocalAuthStatus.UnrecoverableError -> RefreshExchangeResult.UnrecoverableError
                 is LocalAuthStatus.Success -> RefreshExchangeResult.Success
-                is LocalAuthStatus.UserCancelled -> RefreshExchangeResult.UserCancelledBioPrompt
-                is LocalAuthStatus.BioCheckFailed -> RefreshExchangeResult.Success
-                else -> RefreshExchangeResult.ReAuthRequired
+                is LocalAuthStatus.UserCancelledBioPrompt -> RefreshExchangeResult.UserCancelledBioPrompt
+                else -> RefreshExchangeResult.ReauthRequired
             }
         }
 
