@@ -65,6 +65,7 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.LocaleUtils
@@ -208,7 +209,7 @@ class LoginTest : FlakyTestCase() {
             .thenReturn(SignedPoP.Success("Success"))
         wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         tokenRepository.setTokenResponse(
-            TokenResponse(
+            LoginTokens(
                 tokenType = "type",
                 accessToken = "access",
                 accessTokenExpirationTime = 1L,
