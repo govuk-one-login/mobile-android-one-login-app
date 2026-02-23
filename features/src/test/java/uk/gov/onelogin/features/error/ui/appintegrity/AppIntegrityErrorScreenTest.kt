@@ -17,6 +17,7 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 @RunWith(AndroidJUnit4::class)
 class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
+    private lateinit var analyticsViewModel: AppIntegrityErrorAnalyticsViewModel
 
     private val errorIconDescription = resources.getString(uk.gov.android.ui.patterns.R.string.error_icon_description)
     private val errorTitle = hasText(resources.getString(R.string.app_appIntegrityErrorTitle))
@@ -26,12 +27,15 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         analytics = mock()
+        analyticsViewModel = AppIntegrityErrorAnalyticsViewModel(context, analytics)
     }
 
     @Test
     fun appIntegrityErrorScreen() {
         composeTestRule.setContent {
-            AppIntegrityErrorScreen()
+            AppIntegrityErrorScreen(
+                analyticsViewModel = analyticsViewModel
+            )
         }
         composeTestRule
             .onNodeWithContentDescription(
