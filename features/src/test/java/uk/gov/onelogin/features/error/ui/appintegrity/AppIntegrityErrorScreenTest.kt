@@ -18,8 +18,6 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     private lateinit var analytics: AnalyticsLogger
 
-    private var goBack = false
-
     private val errorIconDescription = resources.getString(uk.gov.android.ui.patterns.R.string.error_icon_description)
     private val errorTitle = hasText(resources.getString(R.string.app_appIntegrityErrorTitle))
     private val errorBody1 = hasText(resources.getString(R.string.app_appIntegrityErrorBody1))
@@ -28,14 +26,12 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         analytics = mock()
-        goBack = false
     }
 
     @Test
     fun appIntegrityErrorScreen() {
         composeTestRule.setContent {
             AppIntegrityErrorScreen()
-            goBack = true
         }
         composeTestRule
             .onNodeWithContentDescription(
@@ -44,8 +40,6 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
-
-        assert(goBack)
     }
 
     @Test
@@ -55,6 +49,14 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         }
 
         Espresso.pressBack()
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                errorIconDescription
+            ).assertContentDescriptionContains(errorIconDescription)
+        composeTestRule.onNode(errorTitle).assertIsDisplayed()
+        composeTestRule.onNode(errorBody1).assertIsDisplayed()
+        composeTestRule.onNode(errorBody2).assertIsDisplayed()
     }
 
     @Test
