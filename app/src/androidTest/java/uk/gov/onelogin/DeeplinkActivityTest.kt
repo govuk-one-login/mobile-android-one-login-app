@@ -1,9 +1,11 @@
 package uk.gov.onelogin
 
+import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasFlags
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.test.runTest
@@ -39,6 +41,7 @@ class DeeplinkActivityTest {
             intended(
                 allOf(
                     hasComponent(MainActivity::class.java.name),
+                    hasFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 ),
             )
         }
