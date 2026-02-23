@@ -15,7 +15,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
@@ -25,6 +24,7 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
@@ -61,7 +61,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -94,7 +94,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -126,7 +126,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -158,7 +158,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -192,7 +192,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -224,7 +224,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -249,7 +249,7 @@ class StsAuthenticationProviderTest {
                 )
             )
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -274,7 +274,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -312,7 +312,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Failure(500, Exception("error")))
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -337,7 +337,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Success("hello"))
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -366,7 +366,7 @@ class StsAuthenticationProviderTest {
                 )
             )
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,

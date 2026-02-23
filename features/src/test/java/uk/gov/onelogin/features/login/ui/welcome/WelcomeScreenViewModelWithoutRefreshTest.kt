@@ -43,6 +43,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.utils.convertToLoginTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
@@ -136,7 +137,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockSaveTokenExpiry).saveExp(
                 ExpiryInfo(
@@ -184,7 +185,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 activity = mockFragmentActivity
             )
 
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockSaveTokenExpiry).saveExp(
                 ExpiryInfo(
@@ -229,7 +230,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             verify(mockSaveTokenExpiry).saveExp(
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokenResponse.accessTokenExpirationTime
+                    value = tokenResponse.convertToLoginTokens().accessTokenExpirationTime
                 )
             )
             verify(mockSaveTokenExpiry, times(0)).saveExp(
@@ -238,7 +239,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
@@ -280,7 +281,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
         }
@@ -318,7 +319,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(localAuthPreferenceRepo).setLocalAuthPref(LocalAuthPreference.Disabled)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
@@ -361,7 +362,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
             verifyNoInteractions(mockAutoInitialiseSecureStore)
@@ -404,7 +405,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
             verify(mockAutoInitialiseSecureStore).initialise(null)
@@ -447,7 +448,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = any()
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
             verify(mockAutoInitialiseSecureStore).initialise(null)
@@ -484,7 +485,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse)
+            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockAutoInitialiseSecureStore).initialise(null)
         }

@@ -14,7 +14,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
 import uk.gov.android.network.api.ApiResponse
@@ -22,6 +21,7 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
@@ -141,12 +141,11 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "Bearer",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 100,
                     idToken = "testIdToken",
-                    refreshToken = ""
                 )
             )
         }
@@ -307,12 +306,11 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "Bearer",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 100,
-                    idToken = "testIdToken",
-                    refreshToken = ""
+                    idToken = "testIdToken"
                 )
             )
         }

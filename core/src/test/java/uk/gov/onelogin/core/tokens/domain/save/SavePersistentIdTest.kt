@@ -8,9 +8,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import kotlin.test.assertTrue
 
@@ -37,7 +37,7 @@ class SavePersistentIdTest {
     fun savePersistentIdWhenTokensNotNull() =
         runTest {
             val testResponse =
-                TokenResponse(
+                LoginTokens(
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,
@@ -60,7 +60,7 @@ class SavePersistentIdTest {
     fun notSaveIdWhenTokensNotNullMissingPersistentId() =
         runTest {
             val testResponse =
-                TokenResponse(
+                LoginTokens(
                     tokenType = "test",
                     accessToken = "access",
                     accessTokenExpirationTime = 1L,

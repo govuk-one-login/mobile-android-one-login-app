@@ -7,7 +7,6 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
 import uk.gov.android.network.api.ApiRequest
@@ -18,6 +17,7 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
@@ -190,13 +190,12 @@ class RefreshExchangeImpl
                     // Save new access and refresh tokens expiry
                     saveTokensExpiryToOpenStore(decodedTokens)
                     val tokenResponse =
-                        TokenResponse(
+                        LoginTokens(
                             tokenType = decodedTokens.tokenType,
                             accessToken = decodedTokens.accessToken,
                             accessTokenExpirationTime =
                                 timeProvider.calculateExpiryTime(decodedTokens.expiresIn),
                             idToken = this.idToken,
-                            refreshToken = "",
                         )
                     // Update Token Repository (memory)
                     tokenRepository.setTokenResponse(tokenResponse)

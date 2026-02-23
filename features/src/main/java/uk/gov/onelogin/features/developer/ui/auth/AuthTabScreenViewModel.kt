@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.core.network.domain.HelloWorldApiCall
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
@@ -59,7 +59,7 @@ class AuthTabScreenViewModel
 
         val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
-        fun getTokens(): TokenResponse? = tokenRepository.getTokenResponse()
+        fun getTokens(): LoginTokens? = tokenRepository.getTokenResponse()
 
         fun checkRefreshTokenSaved(context: FragmentActivity) {
             viewModelScope.launch {
