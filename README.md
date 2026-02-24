@@ -76,8 +76,24 @@ You can use the following command to check the SHA 256 checksum of a file
 shasum -a 256 gradle-8.10.2-bin.zip
 ```
 
+## Flow Diagrams
 
-## Handle Local Login Flow
+### Login Flow
+```mermaid
+---
+config:
+  title: Login Flow
+---
+flowchart TD
+    A(["Login"]) --> B["WelcomeScreen"] & C["SplashScreen"]
+    B ----> D["WelcomeScreenViewModel"]
+    D ---> E["HandleRemoteLogin"] & F["HandleLoginRedirect"] & G["LocalAuthManager"] & H["AutoinitialiseSecureStore, VerifyIdToken, TokenRepository, SavePersistentSessionId, SaveTokenExpiry, SignOutUseCase"]
+    C ---> L["SplashScreenViewModel"]
+    L ----> I["HandleLocalLogin"] & J["RefreshExchange"] & K["AppInfoService, AutoinitialiseSecureStore, OnlineChecker, SignOutUseCase"]
+
+
+```
+### Handle Local Login Flow
 ```mermaid
 ---
 config:
