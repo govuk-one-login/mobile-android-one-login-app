@@ -99,7 +99,7 @@ flowchart TD
 config:
     title: HandleLocalLoginImpl  
 ---
-%%{init: { 'themeVariables': { 'fontSize': '12px', 'nodePadding': 20 }}}%%
+%%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
 flowchart LR
     subgraph Local Login Start
     A["GetPersistentSessionID"] --> B{"is empty<br>or null?"}
