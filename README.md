@@ -75,3 +75,56 @@ You can use the following command to check the SHA 256 checksum of a file
 ```bash
 shasum -a 256 gradle-8.10.2-bin.zip
 ```
+
+
+## Handle Local Login Flow
+```mermaid
+---
+config:
+    title: HandleLocalLoginImpl  
+---
+flowchart LR
+    subgraph Local Login Start
+    A["GetPersistentSessionID"] --> B{"is empty or null?"}
+    B --true--> C(("FirstTimeUser"));
+    B --false--> D["LocalAuthManager, GetRefreshTokenExpiry"]
+    D --> F{"is local auth enabled??"}
+    D --> G{"is refresh token exp null?"}
+    F --> H["true"]
+    G --> H["true"]
+    F -..-> I["false"]
+    G -..-> I["false"]
+    H --> J["handle refresh token flow"]
+    I --> K["handle access token only flow"]
+    end;
+    subgraph Refresh Token Flow;
+    J --> L["IsRefreshTokenExpired"] --> M{"is refresh token expired?"}
+    M --true---> N["GetAccessTokenExpiry"]
+    M --true--> O["GetFromEncryptedSecureStore"]
+    O --get--> P["refreshToken"]
+    O --get--> Q["idToken"]
+    O --get--> R["accessToken"]
+    P --valid--> S[TokenRepository.setTokenResponse]
+    Q --valid--> S[TokenRepository.setTokenResponse]
+    R --valid--> S[TokenRepository.setTokenResponse]
+    P -.invalid.-> T(("ReauthRequired"))
+    Q -.invalid.-> T(("ReauthRequired"))
+    R -.invalid.-> T(("ReauthRequired"))
+    N --> S
+    M --false--> T
+    S --> U(("Secure Store Retrieval LocalAuthStatus"))
+    end
+    subgraph Access Token Flow
+    K --> V["IsAccessTokenExpired"] --> W{"is access token expired?"}
+    W --true---> X["GetAccessTokenExpiry"]
+    W --true--> Y["GetFromEncryptedSecureStore"]
+    Y --get--> AI["idToken"] & Z["accessToken"]
+    AI --valid--> BI[TokenRepository.setTokenResponse]
+    Z --valid--> BI[TokenRepository.setTokenResponse]
+    Z -.invalid.-> CI(("ReauthRequired"))
+    AI -.invalid.-> CI(("ReauthRequired"))
+    X --> BI
+    W --false--> CI
+    BI --> DI(("Secure Store Retrieval LocalAuthStatus"))
+    end
+```
