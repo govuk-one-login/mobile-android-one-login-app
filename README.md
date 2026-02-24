@@ -101,7 +101,7 @@ config:
 ---
 %%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
 flowchart TD
-    subgraph "Local Login<br>Start"
+    subgraph "Local<br>Login"
         A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
         B --true--> C(("First<br>TimeUser"));
         B --false--> D["LocalAuth<br>Manager,<br>GetRefresh<br>TokenExpiry"]
@@ -114,7 +114,7 @@ flowchart TD
         H --> J["handle refresh<br>token flow"]
         I --> K["handle access<br>token only flow"]
     end;
-    subgraph Refresh Token Flow;
+    subgraph "Refresh<br>Flow";
         J --> L["IsRefresh<br>TokenExpired"] --> M{"is expired?"}
         M --true---> N["GetAccess<br>TokenExpiry"]
         M --true--> O["GetFromEncrypted<br>SecureStore"]
@@ -131,7 +131,7 @@ flowchart TD
         M --false--> T
         S --> U(("LocalAuthStatus<br>from<br>SecureStore"))
     end
-    subgraph Access Token Flow
+    subgraph "Access<br>Flow"
         K --> V["IsAccess<br>TokenExpired"] --> W{"is expired?"}
         W --true---> X["GetAccess<br>TokenExpiry"]
         W --true--> Y["GetFromEncrypted<br>SecureStore"]
