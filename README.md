@@ -102,9 +102,9 @@ config:
 %%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
 flowchart LR
     subgraph Local Login Start
-    A["GetPersistent<br>SessionID"] --> B{"is empty<br>or null?"}
+    A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
     B --true--> C(("First<br>TimeUser"));
-    B --false--> D["LocalAuth<br>Manager, GetRefresh<br>TokenExpiry"]
+    B --false--> D["LocalAuth<br>Manager,<br>GetRefresh<br>TokenExpiry"]
     D --> F{"is local<br>auth enabled??"}
     D --> G{"is refresh<br>token exp null?"}
     F --> H["true"]
@@ -115,7 +115,7 @@ flowchart LR
     I --> K["handle access<br>token only flow"]
     end;
     subgraph Refresh Token Flow;
-    J --> L["IsRefresh<br>TokenExpired"] --> M{"is refresh<br>token expired?"}
+    J --> L["IsRefresh<br>TokenExpired"] --> M{"is expired?"}
     M --true---> N["GetAccess<br>TokenExpiry"]
     M --true--> O["GetFromEncrypted<br>SecureStore"]
     O --get--> P["refreshToken"]
@@ -129,10 +129,10 @@ flowchart LR
     R -.invalid.-> T(("Reauth<br>Required"))
     N --> S
     M --false--> T
-    S --> U(("Secure Store<br>Retrieval<br>LocalAuthStatus"))
+    S --> U(("LocalAuthStatus<br>from<br>SecureStore"))
     end
     subgraph Access Token Flow
-    K --> V["IsAccess<br>TokenExpired"] --> W{"is access<br>token expired?"}
+    K --> V["IsAccess<br>TokenExpired"] --> W{"is expired?"}
     W --true---> X["GetAccess<br>TokenExpiry"]
     W --true--> Y["GetFromEncrypted<br>SecureStore"]
     Y --get--> AI["idToken"] & Z["accessToken"]
@@ -142,6 +142,6 @@ flowchart LR
     AI -.invalid.-> CI(("Reauth<br>Required"))
     X --> BI
     W --false--> CI
-    BI --> DI(("Secure Store<br>Retrieval<br>LocalAuthStatus"))
+    BI --> DI(("LocalAuthStatus<br>from<br>SecureStore"))
     end
 ```
