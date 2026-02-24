@@ -102,9 +102,9 @@ config:
 %%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
 flowchart LR
     subgraph Local Login Start
-    A["GetPersistentSessionID"] --> B{"is empty<br>or null?"}
-    B --true--> C(("FirstTimeUser"));
-    B --false--> D["LocalAuthManager, GetRefreshTokenExpiry"]
+    A["GetPersistent<br>SessionID"] --> B{"is empty<br>or null?"}
+    B --true--> C(("First<br>TimeUser"));
+    B --false--> D["LocalAuth<br>Manager, GetRefresh<br>TokenExpiry"]
     D --> F{"is local<br>auth enabled??"}
     D --> G{"is refresh<br>token exp null?"}
     F --> H["true"]
@@ -115,33 +115,33 @@ flowchart LR
     I --> K["handle access<br>token only flow"]
     end;
     subgraph Refresh Token Flow;
-    J --> L["IsRefreshTokenExpired"] --> M{"is refresh<br>token expired?"}
-    M --true---> N["GetAccessTokenExpiry"]
-    M --true--> O["GetFromEncryptedSecureStore"]
+    J --> L["IsRefresh<br>TokenExpired"] --> M{"is refresh<br>token expired?"}
+    M --true---> N["GetAccess<br>TokenExpiry"]
+    M --true--> O["GetFromEncrypted<br>SecureStore"]
     O --get--> P["refreshToken"]
     O --get--> Q["idToken"]
     O --get--> R["accessToken"]
     P --valid--> S[TokenRepository.<br>setTokenResponse]
     Q --valid--> S[TokenRepository.<br>setTokenResponse]
     R --valid--> S[TokenRepository.<br>setTokenResponse]
-    P -.invalid.-> T(("ReauthRequired"))
-    Q -.invalid.-> T(("ReauthRequired"))
-    R -.invalid.-> T(("ReauthRequired"))
+    P -.invalid.-> T(("Reauth<br>Required"))
+    Q -.invalid.-> T(("Reauth<br>Required"))
+    R -.invalid.-> T(("Reauth<br>Required"))
     N --> S
     M --false--> T
-    S --> U(("Secure Store<br>Retrieval LocalAuthStatus"))
+    S --> U(("Secure Store<br>Retrieval<br>LocalAuthStatus"))
     end
     subgraph Access Token Flow
-    K --> V["IsAccessTokenExpired"] --> W{"is access<br>token expired?"}
-    W --true---> X["GetAccessTokenExpiry"]
-    W --true--> Y["GetFromEncryptedSecureStore"]
+    K --> V["IsAccess<br>TokenExpired"] --> W{"is access<br>token expired?"}
+    W --true---> X["GetAccess<br>TokenExpiry"]
+    W --true--> Y["GetFromEncrypted<br>SecureStore"]
     Y --get--> AI["idToken"] & Z["accessToken"]
     AI --valid--> BI[TokenRepository.<br>setTokenResponse]
     Z --valid--> BI[TokenRepository.<br>setTokenResponse]
-    Z -.invalid.-> CI(("ReauthRequired"))
-    AI -.invalid.-> CI(("ReauthRequired"))
+    Z -.invalid.-> CI(("Reauth<br>Required"))
+    AI -.invalid.-> CI(("Reauth<br>Required"))
     X --> BI
     W --false--> CI
-    BI --> DI(("Secure Store<br>Retrieval LocalAuthStatus"))
+    BI --> DI(("Secure Store<br>Retrieval<br>LocalAuthStatus"))
     end
 ```
