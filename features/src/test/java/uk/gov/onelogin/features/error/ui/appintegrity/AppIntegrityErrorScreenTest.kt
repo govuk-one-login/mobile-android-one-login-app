@@ -49,7 +49,9 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     @Test
     fun onBackClicked() {
         composeTestRule.setContent {
-            AppIntegrityErrorScreen()
+            AppIntegrityErrorScreen(
+                analyticsViewModel = analyticsViewModel
+            )
         }
 
         Espresso.pressBack()
