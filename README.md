@@ -99,7 +99,7 @@ flowchart TD
 config:
     title: HandleLocalLoginImpl  
 ---
-flowchart LR
+flowchart TD
     subgraph Local Login Start
     A["GetPersistentSessionID"] --> B{"is empty or null?"}
     B --true--> C(("FirstTimeUser"));
