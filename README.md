@@ -100,7 +100,7 @@ config:
     title: HandleLocalLoginImpl  
 ---
 %%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
-flowchart TD
+flowchart LR
     subgraph "Local<br>Login"
         A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
         B --true--> C(("First<br>TimeUser"));
