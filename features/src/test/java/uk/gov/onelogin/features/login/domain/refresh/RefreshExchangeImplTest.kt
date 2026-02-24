@@ -5,6 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
 import org.mockito.kotlin.eq
@@ -33,6 +36,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.ATTESTATION_POP_GENERATE_ERROR
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
+import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 @Suppress("LargeClass")
@@ -768,4 +772,95 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
+
+    @Test
+    fun `return null LocalAuthStatus of Success when retrieving tokens from secure store`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(null)
+                )
+            }
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            verify(isRefreshTokenExpired).invoke()
+            verify(appIntegrity).getClientAttestation()
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+        }
+
+    @ParameterizedTest
+    @MethodSource("getFromEncryptedSecureStoreErrors")
+    fun `test get tokens status mapping to refresh exchange result`(
+        returnedLocalAuthStatus: LocalAuthStatus,
+        expected: RefreshExchangeResult
+    ) = runTest {
+        lateinit var result: RefreshExchangeResult
+        whenever(getPersistentId()).thenReturn("testId")
+        whenever(isRefreshTokenExpired()).thenReturn(false)
+        whenever(appIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.NotRequired("savedAttestation"))
+        whenever(
+            getFromEncryptedSecureStore(
+                any(),
+                anyVararg(),
+                callback = any()
+            )
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(returnedLocalAuthStatus)
+        }
+
+        sut.getTokens(
+            fragmentContext,
+            handleResult = {
+                result = it
+            }
+        )
+
+        assertEquals(expected, result)
+    }
+
+    companion object {
+        @JvmStatic
+        fun getFromEncryptedSecureStoreErrors(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(
+                    LocalAuthStatus.FirstTimeUser,
+                    RefreshExchangeResult.FirstTimeUser
+                ),
+                Arguments.of(
+                    LocalAuthStatus.UnrecoverableError,
+                    RefreshExchangeResult.UnrecoverableError
+                ),
+                Arguments.of(
+                    LocalAuthStatus.UserCancelledBioPrompt,
+                    RefreshExchangeResult.UserCancelledBioPrompt
+                ),
+                Arguments.of(
+                    LocalAuthStatus.ReauthRequired,
+                    RefreshExchangeResult.ReauthRequired
+                )
+            )
+    }
 }

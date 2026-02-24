@@ -1,7 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import androidx.fragment.app.FragmentActivity
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -12,6 +11,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import org.robolectric.RobolectricTestRunner
 import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.android.securestore.error.SecureStoreErrorTypeV2
@@ -19,7 +19,7 @@ import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.FragmentActivityTestCase
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
     private lateinit var useCase: GetFromEncryptedSecureStore
     private val mockSecureStore: SecureStoreAsyncV2 = mock()
@@ -33,7 +33,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun secureStoreFailsWithUserCancelled() =
+    fun `secure store fails with user cancelled`() =
         runTest {
             mockSecureStore(null, SecureStoreErrorTypeV2.USER_CANCELLED)
 
@@ -44,6 +44,57 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
                 expectedStoreKey,
             ) {
                 assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
+            }
+
+            assertTrue(logger.size > 0)
+        }
+
+    @Test
+    fun `secure store fails with unrecoverable error`() =
+        runTest {
+            mockSecureStore(null, SecureStoreErrorTypeV2.UNRECOVERABLE)
+
+            assertTrue(logger.size == 0)
+
+            useCase.invoke(
+                composeTestRule.activity as FragmentActivity,
+                expectedStoreKey,
+            ) {
+                assertEquals(LocalAuthStatus.ReauthRequired, it)
+            }
+
+            assertTrue(logger.size > 0)
+        }
+
+    @Test
+    fun `secure store fails with recoverable`() =
+        runTest {
+            mockSecureStore(null, SecureStoreErrorTypeV2.RECOVERABLE)
+
+            assertTrue(logger.size == 0)
+
+            useCase.invoke(
+                composeTestRule.activity as FragmentActivity,
+                expectedStoreKey,
+            ) {
+                assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
+            }
+
+            assertTrue(logger.size > 0)
+        }
+
+    @Test
+    fun `secure store fails with no local auth enabled`() =
+        runTest {
+            mockSecureStore(null, SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED)
+
+            assertTrue(logger.size == 0)
+
+            useCase.invoke(
+                composeTestRule.activity as FragmentActivity,
+                expectedStoreKey,
+            ) {
+                assertEquals(LocalAuthStatus.UnrecoverableError, it)
             }
 
             assertTrue(logger.size > 0)
