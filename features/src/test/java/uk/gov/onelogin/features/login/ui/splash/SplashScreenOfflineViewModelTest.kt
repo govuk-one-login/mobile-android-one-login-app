@@ -75,37 +75,6 @@ class SplashScreenOfflineViewModelTest {
     }
 
     @Test
-    fun loginFailsWithSecureStoreError() =
-        runTest {
-            whenever(mockHandleLocalLogin.invoke(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.SecureStoreError
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
-        }
-
-    @Test
-    fun loginFailsWithBioCheckFailed() =
-        runTest {
-            whenever(mockHandleLocalLogin.invoke(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.BioCheckFailed
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verifyNoInteractions(mockNavigator)
-        }
-
-    @Test
     fun loginSuccess() =
         runTest {
             whenever(mockHandleLocalLogin.invoke(any(), any()))
@@ -127,7 +96,7 @@ class SplashScreenOfflineViewModelTest {
             whenever(mockHandleLocalLogin.invoke(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.ManualSignIn
+                        LocalAuthStatus.FirstTimeUser
                     )
                 }
             viewModel.login(mockActivity)
@@ -144,14 +113,14 @@ class SplashScreenOfflineViewModelTest {
             whenever(mockHandleLocalLogin.invoke(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.ReAuthSignIn
+                        LocalAuthStatus.ReauthRequired
                     )
                 }
             viewModel.login(mockActivity)
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
         }
 
     @Test
@@ -160,7 +129,7 @@ class SplashScreenOfflineViewModelTest {
             whenever(mockHandleLocalLogin.invoke(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.UserCancelled
+                        LocalAuthStatus.UserCancelledBioPrompt
                     )
                 }
             viewModel.login(mockActivity)

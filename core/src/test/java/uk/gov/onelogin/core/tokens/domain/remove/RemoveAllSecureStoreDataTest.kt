@@ -9,8 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.securestore.SecureStore
-import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.SecureStoreAsyncV2
+import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 import kotlin.test.assertTrue
@@ -19,8 +19,8 @@ import kotlin.test.assertTrue
 @ExtendWith(CoroutinesTestExtension::class)
 class RemoveAllSecureStoreDataTest {
     private lateinit var useCase: RemoveAllSecureStoreData
-    private val tokenSecureStore: SecureStore = mock()
-    private val openSecureStore: SecureStore = mock()
+    private val tokenSecureStore: SecureStoreAsyncV2 = mock()
+    private val openSecureStore: SecureStoreAsyncV2 = mock()
     private val logger = SystemLogger()
 
     @BeforeEach
@@ -44,11 +44,11 @@ class RemoveAllSecureStoreDataTest {
         runTest {
             whenever(
                 tokenSecureStore.deleteAll(),
-            ).thenThrow(SecureStorageError(Exception("something went wrong")))
+            ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
 
             val result = useCase.clean()
             assertTrue(result.isFailure)
-            assertTrue(result.exceptionOrNull() is SecureStorageError)
+            assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
             assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
             assertTrue(logger.contains("java.lang.Exception: something went wrong"))
         }
@@ -58,11 +58,11 @@ class RemoveAllSecureStoreDataTest {
         runTest {
             whenever(
                 openSecureStore.deleteAll(),
-            ).thenThrow(SecureStorageError(Exception("something went wrong")))
+            ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
 
             val result = useCase.clean()
             assertTrue(result.isFailure)
-            assertTrue(result.exceptionOrNull() is SecureStorageError)
+            assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
             assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
             assertTrue(logger.contains("java.lang.Exception: something went wrong"))
         }

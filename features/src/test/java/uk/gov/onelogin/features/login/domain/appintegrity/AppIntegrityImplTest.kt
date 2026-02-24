@@ -12,7 +12,6 @@ import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.securestore.error.SecureStorageError
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
@@ -268,27 +267,6 @@ class AppIntegrityImplTest {
                 any()
             )
             assertEquals(AttestationResult.Failure(FAILURE), result)
-        }
-
-    @Test
-    fun `get client attestation - save to secure store failure`() =
-        runBlocking {
-            val sse = SecureStorageError(Exception(FAILURE))
-            val expectedError = AppIntegrity.Companion.ClientAttestationException(sse)
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            whenever(saveToOpenSecureStore.save(any(), any<String>()))
-                .thenThrow(sse)
-            val result = sut.getClientAttestation()
-
-            verify(logger).error(
-                eq(expectedError.javaClass.simpleName),
-                eq(expectedError.message!!),
-                // Requires this because the error is a class so the equals will always fail
-                any()
-            )
-            assertEquals(AttestationResult.Failure(sse.toString()), result)
         }
 
     @Test

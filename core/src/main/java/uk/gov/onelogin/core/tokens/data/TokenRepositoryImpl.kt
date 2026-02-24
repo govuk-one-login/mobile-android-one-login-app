@@ -1,25 +1,24 @@
 package uk.gov.onelogin.core.tokens.data
 
-import uk.gov.android.authentication.login.TokenResponse
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import javax.inject.Inject
 
 class TokenRepositoryImpl
     @Inject
     constructor() : TokenRepository {
-        private var tokenResponse: TokenResponse? = null
+        private var tokenResponse: LoginTokens? = null
 
-        override fun setTokenResponse(tokens: TokenResponse) {
+        override fun setTokenResponse(tokens: LoginTokens) {
             tokenResponse =
-                TokenResponse(
+                LoginTokens(
                     idToken = tokens.idToken,
                     tokenType = tokens.tokenType,
                     accessToken = tokens.accessToken,
                     accessTokenExpirationTime = tokens.accessTokenExpirationTime,
-                    refreshToken = null,
                 )
         }
 
-        override fun getTokenResponse(): TokenResponse? = tokenResponse
+        override fun getTokenResponse(): LoginTokens? = tokenResponse
 
         override fun clearTokenResponse() {
             tokenResponse = null

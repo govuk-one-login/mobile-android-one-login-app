@@ -1,11 +1,11 @@
 package uk.gov.onelogin.core.tokens.data
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import uk.gov.android.authentication.login.TokenResponse
+import org.junit.jupiter.api.assertNull
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
+import kotlin.test.assertEquals
 
 class TokenRepositoryTest {
     private lateinit var repo: TokenRepository
@@ -18,7 +18,7 @@ class TokenRepositoryTest {
     @Test
     fun `check set and retrieve`() {
         val testResponse =
-            TokenResponse(
+            LoginTokens(
                 tokenType = "test",
                 accessToken = "test",
                 accessTokenExpirationTime = 1L,
@@ -38,7 +38,7 @@ class TokenRepositoryTest {
     fun `test clearTokenResponse`() {
         // given a token is saved in the repository
         val testResponse =
-            TokenResponse(
+            LoginTokens(
                 tokenType = "test",
                 accessToken = "test",
                 accessTokenExpirationTime = 1L,

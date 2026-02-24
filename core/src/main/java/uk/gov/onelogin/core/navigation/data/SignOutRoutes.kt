@@ -9,7 +9,7 @@ sealed class SignOutRoutes(
 
     data object Start : SignOutRoutes("/sign_out/start")
 
-    data object Info : SignOutRoutes("/sign_out/info")
+    data object ReAuth : SignOutRoutes("/sign_out/re_auth")
 
     data object ReAuthError : SignOutRoutes("/sign_out/re_auth_error")
 

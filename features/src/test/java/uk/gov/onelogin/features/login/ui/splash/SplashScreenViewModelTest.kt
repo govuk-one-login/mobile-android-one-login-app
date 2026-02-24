@@ -83,25 +83,7 @@ class SplashScreenViewModelTest {
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
-        }
-
-    @Test
-    fun `RefreshExchange - login fails with bio check failed`() =
-        runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.BioCheckFailed
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verifyNoInteractions(mockNavigator)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
         }
 
     @Test
@@ -132,7 +114,7 @@ class SplashScreenViewModelTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.SignInRequired
+                        RefreshExchangeResult.FirstTimeUser
                     )
                 }
             viewModel.login(mockActivity)
@@ -152,14 +134,14 @@ class SplashScreenViewModelTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.ReAuthRequired
+                        RefreshExchangeResult.ReauthRequired
                     )
                 }
             viewModel.login(mockActivity)
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
         }
 
     @Test
@@ -203,43 +185,6 @@ class SplashScreenViewModelTest {
         }
 
     @Test
-    fun `LocalAuth - login fails with secure store error`() =
-        runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.SecureStoreError
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
-        }
-
-    @Test
-    fun `LocalAuth - login fails with bio check failed`() =
-        runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.BioCheckFailed
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verifyNoInteractions(mockNavigator)
-        }
-
-    @Test
     fun `LocalAuth - login success`() =
         runTest {
             runBlocking {
@@ -267,7 +212,7 @@ class SplashScreenViewModelTest {
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.ManualSignIn
+                        LocalAuthStatus.FirstTimeUser
                     )
                 }
             viewModel.login(mockActivity)
@@ -287,14 +232,14 @@ class SplashScreenViewModelTest {
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.ReAuthSignIn
+                        LocalAuthStatus.ReauthRequired
                     )
                 }
             viewModel.login(mockActivity)
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
         }
 
     @Test
@@ -306,7 +251,7 @@ class SplashScreenViewModelTest {
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.UserCancelled
+                        LocalAuthStatus.UserCancelledBioPrompt
                     )
                 }
             viewModel.login(mockActivity)

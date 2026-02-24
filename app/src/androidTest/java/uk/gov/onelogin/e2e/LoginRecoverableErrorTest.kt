@@ -42,7 +42,7 @@ import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.appcheck.AppCheckerModule
@@ -135,7 +135,7 @@ class LoginRecoverableErrorTest : TestCase() {
 
     @Inject
     @Named("Open")
-    lateinit var secureStore: SecureStore
+    lateinit var secureStore: SecureStoreAsyncV2
 
     @BindValue
     val mockVerifyIdToken: VerifyIdToken = mock()
