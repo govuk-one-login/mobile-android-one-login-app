@@ -145,3 +145,51 @@ flowchart LR
         BI --> DI(("LocalAuthStatus<br>from<br>SecureStore"))
     end
 ```
+
+### Refresh Exchange Flow
+```mermaid
+---
+config:
+    title: RefreshExchangeImpl
+---
+%%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
+flowchart TD
+    subgraph "Initial<br>Checks"
+        A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
+        B --true--> C(("First<br>TimeUser"))
+        B --false--> D["IsRefresh<br>TokenExpired"]
+        D --> E{"is expired?"}
+        E --true--> F(("Reauth<br>Required"))
+        E --false--> G["AppIntegrity.<br>getClient<br>Attestation"]
+    end
+    subgraph "Attestation<br>&<br>Token<br>Retrieval"
+        G --> H{"result?"}
+        H --Success--> I["GetFromEncrypted<br>SecureStore"]
+        H --NotRequired--> I
+        H --Failure--> J(("Client<br>Attestation<br>Failure"))
+        I --> K{"LocalAuth<br>Status?"}
+        K --Success--> L{"tokens<br>valid?"}
+        L --true--> M["Set refresh<br>token, idToken,<br>clientAttestation"]
+        L --false--> N(("Reauth<br>Required"))
+        K --FirstTimeUser--> O(("First<br>TimeUser"))
+        K --UnrecoverableError--> P(("Unrecoverable<br>Error"))
+        K --UserCancelled--> Q(("User<br>Cancelled<br>BioPrompt"))
+        K --Other--> N
+    end
+    subgraph "Token<br>Exchange"
+        M --> R["DPoP<br>Manager.<br>generateDPoP"]
+        R --> S{"DPoP<br>result?"}
+        S --Success--> T["AppIntegrity.<br>getProofOf<br>Possession"]
+        S --Failure--> U(("Reauth<br>Required"))
+        T --> V{"PoP<br>result?"}
+        V --Success--> W["HttpClient.<br>makeRequest"]
+        V --Failure--> U
+        W --> X{"API<br>response?"}
+        X --Success--> Y["SaveToken<br>Expiry"]
+        X --Failure--> U
+        X --Offline--> Z(("Offline<br>Network"))
+        Y --> AA["TokenRepository.<br>setTokenResponse"]
+        AA --> AB["SaveTokens.<br>save"]
+        AB --> AC(("Success"))
+    end
+```
