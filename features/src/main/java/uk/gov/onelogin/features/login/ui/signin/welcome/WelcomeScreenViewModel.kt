@@ -157,10 +157,6 @@ class WelcomeScreenViewModel
             navigator.navigate(ErrorRoutes.Offline)
         }
 
-        fun navigateToOptInAnalytics() {
-            navigator.navigate(LoginRoutes.AnalyticsOptIn)
-        }
-
         fun stopLoading() {
             _loading.value = false
         }

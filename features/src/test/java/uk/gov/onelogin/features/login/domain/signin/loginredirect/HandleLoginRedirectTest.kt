@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
@@ -101,8 +102,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test", Error("error"))
             val expectedError =
-                AppIntegrity.Companion
-                    .ProofOfPossessionException(expectedResult.error)
+                AppIntegrity.AppIntegrityException.ProofOfPossessionException(expectedResult.error!!)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -128,8 +128,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test")
             val expectedError =
-                AppIntegrity.Companion
-                    .ProofOfPossessionException(null)
+                AppIntegrity.AppIntegrityException.ProofOfPossessionException(Exception(expectedResult.reason))
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -143,9 +142,9 @@ class HandleLoginRedirectTest {
             )
 
             verify(mockLogger).error(
-                expectedError.javaClass.simpleName,
-                expectedError.message ?: expectedResult.reason,
-                expectedError
+                eq(expectedError.javaClass.simpleName),
+                eq(expectedError.message ?: expectedResult.reason),
+                any()
             )
             verifyNoInteractions(mockLoginSession)
         }
@@ -203,11 +202,13 @@ class HandleLoginRedirectTest {
     @Test
     fun `onFailure, savedAttestation is null and getClientAttestation returns Failure`() =
         runTest {
-            val expectedError = AppIntegrity.Companion.ClientAttestationException("error")
+            val expectedError =
+                AppIntegrity.AppIntegrityException.ClientAttestationException(Exception("error"))
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
             whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Failure("error"))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+                .thenReturn(AttestationResult.Failure(Exception("error")))
+            whenever(mockAppIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success(testJwt))
 
             // When
             handleLoginRedirect.handle(
