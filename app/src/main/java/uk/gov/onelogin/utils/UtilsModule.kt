@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.gov.onelogin.core.utils.AndroidUriParser
+import uk.gov.onelogin.core.utils.RetryCounter
+import uk.gov.onelogin.core.utils.RetryCounterImpl
 import uk.gov.onelogin.core.utils.UriParser
 
 @Module
@@ -12,4 +14,7 @@ import uk.gov.onelogin.core.utils.UriParser
 interface UtilsModule {
     @Binds
     fun bindUriParser(parser: AndroidUriParser): UriParser
+
+    @Binds
+    fun bindRetryCounter(counter: RetryCounterImpl): RetryCounter
 }

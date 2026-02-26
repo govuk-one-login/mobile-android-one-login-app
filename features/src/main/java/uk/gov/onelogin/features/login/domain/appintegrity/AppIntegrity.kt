@@ -14,17 +14,35 @@ interface AppIntegrity {
         const val CLIENT_ATTESTATION_EXPIRY = "appCheckClientAttestationExpiry"
         const val SECURE_STORE_ERROR = "ERROR: Saving to open secure store error"
 
-        data class FirebaseException(
-            val e: Throwable,
-        ) : Exception(e)
 
-        class ClientAttestationException : Exception {
-            constructor(e: Throwable) : super(e)
-            constructor(msg: String) : super(msg)
-        }
+    }
+
+    sealed class AppIntegrityException(
+        open val e: Throwable,
+        open val type: AppIntegrityErrorType
+    ) : Exception(e) {
+        data class FirebaseException(
+            override val e: Throwable,
+            override val type: AppIntegrityErrorType = AppIntegrityErrorType.GENERIC
+        ) : AppIntegrityException(e, type)
+
+        data class ClientAttestationException(
+            override val e: Throwable,
+            override val type: AppIntegrityErrorType = AppIntegrityErrorType.GENERIC
+        ) : AppIntegrityException(e, type)
 
         data class ProofOfPossessionException(
-            val e: Throwable?,
-        ) : Exception(e)
+            override val e: Throwable,
+            override val type: AppIntegrityErrorType = AppIntegrityErrorType.GENERIC
+        ) : AppIntegrityException(e, type)
+
+        class Generic(
+            override val e: Throwable,
+            override val type: AppIntegrityErrorType = AppIntegrityErrorType.INTERMITTENT
+        ) : AppIntegrityException(e, type)
+
+        enum class AppIntegrityErrorType {
+            INTERMITTENT, APP_CHECK_FAILED, GENERIC
+        }
     }
 }

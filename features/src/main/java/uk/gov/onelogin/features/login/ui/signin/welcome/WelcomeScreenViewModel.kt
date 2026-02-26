@@ -35,6 +35,8 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -137,6 +139,10 @@ class WelcomeScreenViewModel
                             navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                         }
                     }
+                }
+
+                is AppIntegrity.AppIntegrityException.ClientAttestationException -> {
+                    navigator.navigate(ErrorRoutes.AppIntegrity)
                 }
 
                 else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)

@@ -17,6 +17,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -83,7 +84,7 @@ class SplashScreenViewModelTest {
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.Info, false)
+            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity, false)
         }
 
     @Test

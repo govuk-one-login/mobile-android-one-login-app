@@ -100,7 +100,9 @@ class SplashScreenViewModel
                     // Allow user to make multiple fails... do nothing for now
                 }
 
-                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
+                RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
+
+                // Handles ReuAuth
                 else -> {
                     nextScreen(SignOutRoutes.Info)
                 }

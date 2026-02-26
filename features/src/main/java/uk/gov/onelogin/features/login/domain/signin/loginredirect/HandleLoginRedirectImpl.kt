@@ -92,7 +92,7 @@ class HandleLoginRedirectImpl
         ) {
             when (val attestation = appIntegrity.getClientAttestation()) {
                 is AttestationResult.Failure ->
-                    onFailure(Error(attestation.error))
+                    onFailure(attestation.error)
 
                 is AttestationResult.NotRequired ->
                     onSuccess(
@@ -143,7 +143,7 @@ class HandleLoginRedirectImpl
             e: Throwable?,
             reason: String,
         ) {
-            val error = AppIntegrity.Companion.ProofOfPossessionException(e)
+            val error = AppIntegrity.AppIntegrityException.ProofOfPossessionException(e ?: Exception(reason))
             logger.error(
                 error.javaClass.simpleName,
                 error.message ?: reason,
