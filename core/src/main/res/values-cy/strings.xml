@@ -101,7 +101,7 @@
     <string name="app_homeTitle">@string/app_home</string>
 
     <!-- Errors App Integrity -->
-    <string name="app_appIntegrityErrorTitle">@string/app_genericErrorPage</string>
+    <string name="app_appIntegrityErrorTitle">Mae\’n ddrwg gennym, mae problem</string>
     <string name="app_appIntegrityErrorBody1">Ni allwch ddefnyddio\’r ap GOV.UK One Login ar hyn o bryd.</string>
     <string name="app_appIntegrityErrorBody2">@string/app_genericErrorPageBody</string>
 
