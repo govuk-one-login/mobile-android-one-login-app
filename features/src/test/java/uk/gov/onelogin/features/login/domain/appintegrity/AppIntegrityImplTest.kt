@@ -13,10 +13,10 @@ import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.onelogin.core.counter.Counter
+import uk.gov.onelogin.core.counter.CounterImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
-import uk.gov.onelogin.core.utils.Counter
-import uk.gov.onelogin.core.utils.RetryCounter
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
@@ -42,7 +42,7 @@ class AppIntegrityImplTest {
         saveToOpenSecureStore = mock()
         getFromOpenSecureStore = mock()
         context = mock()
-        counter = RetryCounter()
+        counter = CounterImpl()
         sut =
             AppIntegrityImpl(
                 context,
@@ -263,7 +263,7 @@ class AppIntegrityImplTest {
             val result = sut.getClientAttestation()
 
             assertEquals(AttestationResult.Failure(expectedError), result)
-            assertEquals(0, counter.getCount())
+            assertEquals(0, counter.getValue())
         }
 
     @Test
@@ -282,7 +282,7 @@ class AppIntegrityImplTest {
             val result = sut.getClientAttestation()
 
             assertEquals(AttestationResult.Failure(expectedError), result)
-            assertEquals(0, counter.getCount())
+            assertEquals(0, counter.getValue())
         }
 
     @Test

@@ -8,9 +8,9 @@ import uk.gov.android.authentication.integrity.appcheck.model.AttestationRespons
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
-import uk.gov.onelogin.core.utils.Counter
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
@@ -97,10 +97,10 @@ class AppIntegrityImpl
                         // When an INTERMITTENT error is returned, attempt to get the attestation again up to 3 times
                         // before returning a result
                         AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
-                            val count = retryCounter.getCount()
+                            val count = retryCounter.getValue()
                             if (count < MAX_RETRY) {
                                 calculateDelay(count)
-                                retryCounter.incrementCount()
+                                retryCounter.increment()
                                 getClientAttestation()
                                 // If retired 2 times already, return the error to the consumer directly
                             } else {

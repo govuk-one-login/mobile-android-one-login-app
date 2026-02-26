@@ -15,9 +15,9 @@ import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
-import uk.gov.onelogin.core.utils.Counter
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityImpl
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
