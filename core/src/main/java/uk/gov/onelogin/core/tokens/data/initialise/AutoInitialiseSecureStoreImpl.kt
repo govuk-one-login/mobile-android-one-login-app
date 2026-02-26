@@ -6,8 +6,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
-import uk.gov.android.securestore.SecureStorageConfiguration
-import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.SecureStorageConfigurationAsync
+import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.tokens.utils.DefaultDispatcher
@@ -20,11 +20,11 @@ class AutoInitialiseSecureStoreImpl
     constructor(
         private val localAuthManager: LocalAuthManager,
         private val saveTokens: SaveTokens,
-        @Named("Token")
-        private val secureStore: SecureStore,
-        @ApplicationContext
+        @param:Named("Token")
+        private val secureStore: SecureStoreAsyncV2,
+        @param:ApplicationContext
         private val context: Context,
-        @DefaultDispatcher
+        @param:DefaultDispatcher
         private val coroutineContext: CoroutineDispatcher,
     ) : AutoInitialiseSecureStore {
         /**
@@ -36,7 +36,7 @@ class AutoInitialiseSecureStoreImpl
             val localAuthPref = localAuthManager.localAuthPreference
             if (localAuthPref == null || localAuthPref == LocalAuthPreference.Disabled) return
             val configuration =
-                SecureStorageConfiguration(
+                SecureStorageConfigurationAsync(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
                     LocalAuthPrefsMapper.mapAccessControlLevel(localAuthPref),
                 )

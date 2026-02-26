@@ -12,8 +12,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.securestore.SecureStore
-import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.SecureStoreAsyncV2
+import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
 import kotlin.test.assertEquals
@@ -22,11 +22,13 @@ import kotlin.test.assertEquals
 @ExtendWith(CoroutinesTestExtension::class)
 class SaveToOpenSecureStoreTest {
     private lateinit var useCase: SaveToOpenSecureStore
-    private val mockSecureStore: SecureStore = mock()
+    private val mockSecureStore: SecureStoreAsyncV2 = mock()
     private val logger = SystemLogger()
 
-    private val expectedStoreKey: String = "key"
+    private val expectedStoreStringKey: String = "key"
     private val expectedStoreValueString: String = "value"
+    private val expectedStoreIntKey: String = "keyInt"
+    private val expectedStoreValueInt: Int = 1
     private val expectedStoreValueNumber: Number = getTimeMillis()
 
     @BeforeEach
@@ -35,14 +37,28 @@ class SaveToOpenSecureStoreTest {
     }
 
     @Test
-    fun `does not throw - when SecureStorageError thrown`() =
+    fun `does not throw - when SecureStorageErrorV2 thrown when saving strings`() =
         runTest {
             whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageError(Exception("Some error")),
+                SecureStorageErrorV2(Exception("Some error")),
             )
 
             assertDoesNotThrow {
-                useCase.save(expectedStoreKey, expectedStoreValueString)
+                useCase.save(expectedStoreStringKey, expectedStoreValueString)
+            }
+
+            assertTrue(logger.contains("java.lang.Exception: Some error"))
+        }
+
+    @Test
+    fun `does not throw - when SecureStorageErrorV2 thrown when saving integers`() =
+        runTest {
+            whenever(mockSecureStore.upsert(any(), any())).thenThrow(
+                SecureStorageErrorV2(Exception("Some error")),
+            )
+
+            assertDoesNotThrow {
+                useCase.save(expectedStoreIntKey, expectedStoreValueInt)
             }
 
             assertTrue(logger.contains("java.lang.Exception: Some error"))
@@ -51,10 +67,10 @@ class SaveToOpenSecureStoreTest {
     @Test
     fun `saves value successfully (String, String)`() =
         runTest {
-            useCase.save(expectedStoreKey, expectedStoreValueString)
+            useCase.save(expectedStoreStringKey, expectedStoreValueString)
 
             verify(mockSecureStore).upsert(
-                expectedStoreKey,
+                expectedStoreStringKey,
                 expectedStoreValueString,
             )
 
@@ -64,10 +80,10 @@ class SaveToOpenSecureStoreTest {
     @Test
     fun `saves value successfully (String, Number)`() =
         runTest {
-            useCase.save(expectedStoreKey, expectedStoreValueNumber)
+            useCase.save(expectedStoreStringKey, expectedStoreValueNumber)
 
             verify(mockSecureStore).upsert(
-                expectedStoreKey,
+                expectedStoreStringKey,
                 expectedStoreValueNumber.toString(),
             )
 

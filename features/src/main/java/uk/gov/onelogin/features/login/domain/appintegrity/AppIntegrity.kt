@@ -13,8 +13,6 @@ interface AppIntegrity {
         const val CLIENT_ATTESTATION = "appCheckClientAttestation"
         const val CLIENT_ATTESTATION_EXPIRY = "appCheckClientAttestationExpiry"
         const val SECURE_STORE_ERROR = "ERROR: Saving to open secure store error"
-
-
     }
 
     sealed class AppIntegrityException(
@@ -42,7 +40,9 @@ interface AppIntegrity {
         ) : AppIntegrityException(e, type)
 
         enum class AppIntegrityErrorType {
-            INTERMITTENT, APP_CHECK_FAILED, GENERIC
+            INTERMITTENT,
+            APP_CHECK_FAILED,
+            GENERIC
         }
     }
 }

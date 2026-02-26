@@ -24,7 +24,7 @@ object SignOutGraphObject {
                 SignOutScreen()
             }
             composable(
-                route = SignOutRoutes.Info.getRoute(),
+                route = SignOutRoutes.ReAuth.getRoute(),
             ) {
                 // I have added this temporarily as it seems if you remove your passcode/ biometrics
                 // and press back it would take you back to the HomeScreen

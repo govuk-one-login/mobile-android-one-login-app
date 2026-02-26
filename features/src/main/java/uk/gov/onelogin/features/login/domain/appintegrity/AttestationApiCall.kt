@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AttestationApiCall
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
         private val httpClient: GenericHttpClient,
     ) : AttestationCaller {
@@ -39,14 +39,15 @@ class AttestationApiCall
                 is ApiResponse.Failure -> {
                     // Error mappings - see Errors returned by Mobile Platform BackEnd:
                     // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
-                    val expType = when (apiResponse.status) {
-                        INVALID_PUBLIC_KEY_JWK
+                    val expType =
+                        when (apiResponse.status) {
+                            INVALID_PUBLIC_KEY_JWK
                             -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
-                        SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
+                            SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
                             -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
-                        // This should never be reached as epr guidance
-                        else -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.GENERIC
-                    }
+                            // This should never be reached as per guidance
+                            else -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.GENERIC
+                        }
                     val exp = AppIntegrity.AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
                     AttestationResponse.Failure(
                         exp.e.message ?: NETWORK_ERROR,
@@ -54,7 +55,14 @@ class AttestationApiCall
                     )
                 }
 
-                else -> AttestationResponse.Failure(NETWORK_ERROR)
+                // This is for ApiResponse.Offline and ApiResponse.Loading which is never used
+                else ->
+                    AttestationResponse.Failure(
+                        NETWORK_ERROR,
+                        AppIntegrity.AppIntegrityException.ClientAttestationException(
+                            Exception(NETWORK_ERROR)
+                        )
+                    )
             }
         }
 

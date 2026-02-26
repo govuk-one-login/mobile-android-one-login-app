@@ -11,6 +11,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.core.utils.convertToLoginTokens
 
 class SaveTokensTest {
     private lateinit var saveTokens: SaveTokens
@@ -41,7 +42,8 @@ class SaveTokensTest {
                     refreshToken = "refresh",
                 )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(mockTokenRepository.getTokenResponse())
+                .thenReturn(testResponse.convertToLoginTokens())
 
             saveTokens.save(testResponse.refreshToken)
 
@@ -72,7 +74,8 @@ class SaveTokensTest {
                     idToken = idToken,
                 )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(mockTokenRepository.getTokenResponse())
+                .thenReturn(testResponse.convertToLoginTokens())
 
             saveTokens.save(testResponse.refreshToken)
 
@@ -99,7 +102,8 @@ class SaveTokensTest {
                     idToken = "id",
                 )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(mockTokenRepository.getTokenResponse())
+                .thenReturn(testResponse.convertToLoginTokens())
 
             saveTokens.save(testResponse.refreshToken)
             runBlocking {
@@ -126,7 +130,8 @@ class SaveTokensTest {
                     refreshToken = "refresh",
                 )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+            whenever(mockTokenRepository.getTokenResponse())
+                .thenReturn(testResponse.convertToLoginTokens())
 
             saveTokens.save(testResponse.refreshToken)
             runBlocking {

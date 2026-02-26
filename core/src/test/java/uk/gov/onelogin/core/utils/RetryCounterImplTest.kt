@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class RetryCounterImplTest {
-    private lateinit var sut: RetryCounter
+    private lateinit var sut: Counter
 
     @BeforeEach
     fun setup() {
-        sut = RetryCounterImpl()
+        sut = RetryCounter()
     }
 
     @Test
@@ -38,11 +38,14 @@ class RetryCounterImplTest {
         assertEquals(0, actual)
 
         sut.incrementCount()
+        sut.incrementCount()
         actual = sut.getCount()
 
-        assertEquals(1, actual)
+        assertEquals(2, actual)
 
         sut.reset()
+
+        actual = sut.getCount()
 
         assertEquals(0, actual)
     }
