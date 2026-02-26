@@ -26,11 +26,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.ui.components.EmailSection
 
 @Composable
@@ -64,7 +64,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider()
     IdTokenSection(tokens)
     HorizontalDivider()
-    RefreshTokenSection(tokens, viewModel)
+    RefreshTokenSection(viewModel)
     HorizontalDivider()
     GdsButton(
         text = stringResource(R.string.clear_secure_store_data_button),
@@ -83,10 +83,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
 }
 
 @Composable
-private fun RefreshTokenSection(
-    tokens: TokenResponse?,
-    viewModel: AuthTabScreenViewModel,
-) {
+private fun RefreshTokenSection(viewModel: AuthTabScreenViewModel,) {
     Text(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
@@ -94,20 +91,6 @@ private fun RefreshTokenSection(
         color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
-    Text(
-        text =
-            if (tokens?.refreshToken != null) {
-                "Something went wrong - the refresh token is saved in memory: ${tokens.refreshToken}"
-            } else {
-                "Refresh token in temporary memory is null - this is expected behaviour."
-            },
-        modifier =
-            Modifier
-                .padding(
-                    all = 16.dp,
-                ),
-        color = MaterialTheme.colorScheme.onBackground,
-    )
     val isRefreshTokenSaved by viewModel.isRefreshTokenSaved
     val context = LocalActivity.current as FragmentActivity
     Text(
@@ -145,7 +128,7 @@ private fun RefreshTokenSection(
 }
 
 @Composable
-private fun IdTokenSection(tokens: TokenResponse?) {
+private fun IdTokenSection(tokens: LoginTokens?) {
     Text(
         text = "ID Token",
         fontWeight = FontWeight.Bold,
@@ -163,7 +146,7 @@ private fun IdTokenSection(tokens: TokenResponse?) {
 }
 
 @Composable
-private fun AccessTokenSection(tokens: TokenResponse?) {
+private fun AccessTokenSection(tokens: LoginTokens?) {
     Text(
         text = "Access Token",
         fontWeight = FontWeight.Bold,

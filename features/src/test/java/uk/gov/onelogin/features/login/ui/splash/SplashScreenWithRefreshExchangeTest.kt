@@ -149,7 +149,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         wheneverBlocking {
             refreshExchange.getTokens(any(), any())
         }.thenAnswer {
-            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.SignInRequired)
+            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.FirstTimeUser)
         }
 
         // When

@@ -35,6 +35,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.utils.convertToLoginTokens
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -183,7 +184,7 @@ class WelcomeScreenViewModel
             activity: FragmentActivity,
         ) {
             saveAccessTokenExpiryToOpenStore(tokens)
-            tokenRepository.setTokenResponse(tokens)
+            tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
 
             localAuthManager.enforceAndSet(

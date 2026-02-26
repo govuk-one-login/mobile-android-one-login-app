@@ -1,6 +1,6 @@
 package uk.gov.onelogin.features.wallet.domain
 
-import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DeleteWalletDataUseCaseDevOption(
 ) : DeleteWalletDataUseCase {
     override suspend fun invoke(): Boolean {
         if (secureStoreDevOptionsRepository.isWalletDeleteOverride()) {
-            throw SecureStorageError(Exception("Simulate wallet deletion failure"))
+            throw SecureStorageErrorV2(Exception("Simulate wallet deletion failure"))
         } else {
             return walletSdk.deleteWalletData()
         }

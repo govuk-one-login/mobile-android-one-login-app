@@ -24,6 +24,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.utils.convertToLoginTokens
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
@@ -78,7 +79,8 @@ class OneLoginApplicationTest {
                 true,
             ),
         )
-        whenever(mockTokenRepository.getTokenResponse()).thenReturn(tokenResponse)
+        whenever(mockTokenRepository.getTokenResponse())
+            .thenReturn(tokenResponse.convertToLoginTokens())
         whenever(mockCheckIdCheckSessionState.isIdCheckActive()).thenReturn(false)
 
         // When

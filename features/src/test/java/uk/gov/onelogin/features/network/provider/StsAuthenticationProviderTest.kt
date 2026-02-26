@@ -15,7 +15,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
@@ -25,6 +24,7 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
@@ -61,7 +61,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -73,7 +73,7 @@ class StsAuthenticationProviderTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.ReAuthRequired)
+                        .invoke(RefreshExchangeResult.ReauthRequired)
                 }
 
             val response = provider.fetchBearerToken("scope")
@@ -86,7 +86,7 @@ class StsAuthenticationProviderTest {
                 StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 (response as AuthenticationResponse.Failure).error.message
             )
-            verify(mockNavigator).navigate(SignOutRoutes.Info)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
         }
 
     @Test
@@ -94,7 +94,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -126,7 +126,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -158,7 +158,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -170,7 +170,7 @@ class StsAuthenticationProviderTest {
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.SignInRequired)
+                        .invoke(RefreshExchangeResult.FirstTimeUser)
                 }
 
             val response = provider.fetchBearerToken("scope")
@@ -188,43 +188,11 @@ class StsAuthenticationProviderTest {
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with bio check failed`() =
-        runTest {
-            setupProvider(ApiResponse.Loading, true)
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
-                    tokenType = "type",
-                    accessToken = "accessToken",
-                    accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
-            )
-            whenever(mockActivityProvider.getCurrentActivity())
-                .thenReturn(mockFragmentActivity)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit)
-                        .invoke(RefreshExchangeResult.BioCheckFailed)
-                }
-
-            val response = provider.fetchBearerToken("scope")
-
-            MatcherAssert.assertThat(
-                "response is Failure",
-                response is AuthenticationResponse.Failure
-            )
-            assertEquals(
-                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                (response as AuthenticationResponse.Failure).error.message
-            )
-        }
-
-    @Test
     fun `access token expired, refresh exchanged has failed with offline network`() =
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -256,7 +224,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -281,7 +249,7 @@ class StsAuthenticationProviderTest {
                 )
             )
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -306,7 +274,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Loading, true)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -344,7 +312,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Failure(500, Exception("error")))
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -369,7 +337,7 @@ class StsAuthenticationProviderTest {
         runTest {
             setupProvider(ApiResponse.Success("hello"))
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
@@ -398,7 +366,7 @@ class StsAuthenticationProviderTest {
                 )
             )
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                TokenResponse(
+                LoginTokens(
                     tokenType = "type",
                     accessToken = "accessToken",
                     accessTokenExpirationTime = 1L,
