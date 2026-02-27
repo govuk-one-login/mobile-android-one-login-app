@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseException
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import javax.inject.Inject
 import kotlin.jvm.Throws
 
@@ -24,15 +24,15 @@ class FirebaseAppCheck
             } catch (integrityExp: IntegrityServiceException) {
                 handleAndConvertPlayIntegrityError(integrityExp)
             } catch (firebaseExp: FirebaseException) {
-                val exp = AppIntegrity.AppIntegrityException.FirebaseException(firebaseExp)
+                val exp = AppIntegrityException.FirebaseException(firebaseExp)
                 logError(exp)
             } catch (e: Throwable) {
-                val exp = AppIntegrity.AppIntegrityException.Generic(e)
+                val exp = AppIntegrityException.Other(e)
                 logError(exp)
             }
         }
 
-        @Throws(AppIntegrity.AppIntegrityException::class)
+        @Throws(AppIntegrityException::class)
         @Suppress("TooGenericExceptionCaught")
         // For error mappings, see: https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
         override suspend fun getAppCheckToken(): Result<AppCheckToken> =
@@ -45,11 +45,11 @@ class FirebaseAppCheck
                 val exp = handleAndConvertPlayIntegrityError(integrityExp)
                 Result.failure(exp)
             } catch (firebaseExp: FirebaseException) {
-                val exp = AppIntegrity.AppIntegrityException.FirebaseException(firebaseExp)
+                val exp = AppIntegrityException.FirebaseException(firebaseExp)
                 logError(exp)
                 Result.failure(exp)
             } catch (e: Throwable) {
-                val exp = AppIntegrity.AppIntegrityException.Generic(e)
+                val exp = AppIntegrityException.Other(e)
                 logError(exp)
                 Result.failure(exp)
             }
@@ -64,7 +64,7 @@ class FirebaseAppCheck
 
         private fun handleAndConvertPlayIntegrityError(
             e: IntegrityServiceException
-        ): AppIntegrity.AppIntegrityException.FirebaseException {
+        ): AppIntegrityException.FirebaseException {
             val errorType =
                 when (e.errorCode) {
                     // Retryable errors - https://developer.android.com/google/play/integrity/error-codes#iErr_3
@@ -76,7 +76,7 @@ class FirebaseAppCheck
                     INTEGRITY_GOOGLE_SERVER_UNAVAILABLE,
                     INTEGRITY_STANDARD_INTEGRITY_INITIALIZATION_FAILED,
                     INTEGRITY_TOO_MANY_REQUESTS
-                    -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                    -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
 
                     // Non-retryable known errors - https://developer.android.com/google/play/integrity/error-codes#iErr_3
                     // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
@@ -97,12 +97,12 @@ class FirebaseAppCheck
                     INTEGRITY_INTEGRITY_TOKEN_PROVIDER_INVALID,
                     INTEGRITY_STANDARD_INTEGRITY_INITIALIZATION_NEEDED,
                     INTEGRITY_STANDARD_INTEGRITY_INVALID_ARGUMENT
-                    -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
+                    -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
 
                     // All other unknown errors
-                    else -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.GENERIC
+                    else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
                 }
-            val exp = AppIntegrity.AppIntegrityException.FirebaseException(e, errorType)
+            val exp = AppIntegrityException.FirebaseException(e, errorType)
             logError(exp)
             return exp
         }

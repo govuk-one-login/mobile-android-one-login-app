@@ -92,11 +92,11 @@ class AppIntegrityImpl
         ): AttestationResult =
             when (val error = result.error) {
                 // When an AppIntegrityException gets thrown from either backend or Firebase.getLimitedToken
-                is AppIntegrity.AppIntegrityException -> {
+                is AppIntegrityException -> {
                     when (error.type) {
                         // When an INTERMITTENT error is returned, attempt to get the attestation again up to 3 times
                         // before returning a result
-                        AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
+                        AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
                             val count = retryCounter.getValue()
                             if (count < MAX_RETRY) {
                                 calculateDelay(count)

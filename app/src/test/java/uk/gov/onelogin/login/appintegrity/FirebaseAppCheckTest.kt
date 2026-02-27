@@ -11,7 +11,7 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.Logger
-import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -47,7 +47,7 @@ class FirebaseAppCheckTest {
             verify(logger).error(any(), any(), any())
             assertTrue(actual.isFailure)
             actual.onFailure {
-                assertTrue(it is AppIntegrity.AppIntegrityException.Generic)
+                assertTrue(it is AppIntegrityException.Other)
                 assertEquals(expected, it.cause)
             }
         }
@@ -63,7 +63,7 @@ class FirebaseAppCheckTest {
             verify(logger).error(any(), any(), any())
             assertTrue(actual.isFailure)
             actual.onFailure {
-                assertTrue(it is AppIntegrity.AppIntegrityException.FirebaseException)
+                assertTrue(it is AppIntegrityException.FirebaseException)
                 assertEquals(expected, it.cause)
             }
         }

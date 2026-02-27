@@ -42,13 +42,13 @@ class AttestationApiCall
                     val expType =
                         when (apiResponse.status) {
                             INVALID_PUBLIC_KEY_JWK
-                            -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
+                            -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
                             SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
-                            -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                            -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
                             // This should never be reached as per guidance
-                            else -> AppIntegrity.AppIntegrityException.AppIntegrityErrorType.GENERIC
+                            else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
                         }
-                    val exp = AppIntegrity.AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
+                    val exp = AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
                     AttestationResponse.Failure(
                         exp.e.message ?: NETWORK_ERROR,
                         exp,
@@ -59,7 +59,7 @@ class AttestationApiCall
                 else ->
                     AttestationResponse.Failure(
                         NETWORK_ERROR,
-                        AppIntegrity.AppIntegrityException.ClientAttestationException(
+                        AppIntegrityException.ClientAttestationException(
                             Exception(NETWORK_ERROR)
                         )
                     )

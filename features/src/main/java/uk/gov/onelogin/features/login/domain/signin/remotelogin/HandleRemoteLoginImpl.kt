@@ -32,7 +32,7 @@ class HandleRemoteLoginImpl
         @Suppress("TooGenericExceptionCaught")
         override suspend fun login(
             launcher: ActivityResultLauncher<Intent>,
-            onFailure: () -> Unit,
+            onFailure: (Throwable) -> Unit,
         ) {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
             handleGetClientAttestation(
@@ -49,7 +49,7 @@ class HandleRemoteLoginImpl
                             e.message ?: NO_MESSAGE,
                             loginException,
                         )
-                        onFailure()
+                        onFailure(e)
                     }
                 },
                 onFailure,
@@ -58,11 +58,11 @@ class HandleRemoteLoginImpl
 
         private suspend fun handleGetClientAttestation(
             onSuccess: () -> Unit,
-            onFailure: () -> Unit,
+            onFailure: (Throwable) -> Unit,
         ) {
-            when (appIntegrity.getClientAttestation()) {
+            when (val result = appIntegrity.getClientAttestation()) {
                 is AttestationResult.Failure -> {
-                    onFailure()
+                    onFailure(result.error)
                 }
 
                 else -> onSuccess()

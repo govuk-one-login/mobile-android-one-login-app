@@ -6,7 +6,6 @@ import kotlinx.coroutines.test.runTest
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -255,7 +254,7 @@ class AppIntegrityImplTest {
     @Test
     fun `get client attestation - attestation call failure - GENERAL`() =
         runTest {
-            val expectedError = AppIntegrity.AppIntegrityException.ClientAttestationException(Exception())
+            val expectedError = AppIntegrityException.ClientAttestationException(Exception())
             whenever(featureFlags[any()]).thenReturn(true)
             whenever(appCheck.getAttestation()).thenReturn(
                 AttestationResponse.Failure(reason = FAILURE, error = expectedError)
@@ -270,9 +269,9 @@ class AppIntegrityImplTest {
     fun `get client attestation - attestation call failure - INTERMITTENT`() =
         runTest {
             val expectedError =
-                AppIntegrity.AppIntegrityException.ClientAttestationException(
+                AppIntegrityException.ClientAttestationException(
                     Exception(),
-                    AppIntegrity.AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
                 )
 
             whenever(featureFlags[any()]).thenReturn(true)

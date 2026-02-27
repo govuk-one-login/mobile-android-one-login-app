@@ -20,6 +20,7 @@ import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import kotlin.test.assertEquals
 
@@ -102,7 +103,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test", Error("error"))
             val expectedError =
-                AppIntegrity.AppIntegrityException.ProofOfPossessionException(expectedResult.error!!)
+                AppIntegrityException.ProofOfPossessionException(expectedResult.error!!)
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -128,7 +129,7 @@ class HandleLoginRedirectTest {
         runTest {
             val expectedResult = SignedPoP.Failure("test")
             val expectedError =
-                AppIntegrity.AppIntegrityException.ProofOfPossessionException(Exception(expectedResult.reason))
+                AppIntegrityException.ProofOfPossessionException(Exception(expectedResult.reason))
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
@@ -203,7 +204,7 @@ class HandleLoginRedirectTest {
     fun `onFailure, savedAttestation is null and getClientAttestation returns Failure`() =
         runTest {
             val expectedError =
-                AppIntegrity.AppIntegrityException.ClientAttestationException(Exception("error"))
+                AppIntegrityException.ClientAttestationException(Exception("error"))
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
             whenever(mockAppIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Failure(Exception("error")))
