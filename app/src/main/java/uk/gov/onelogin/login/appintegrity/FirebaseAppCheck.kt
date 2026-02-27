@@ -1,58 +1,45 @@
 package uk.gov.onelogin.login.appintegrity
 
-import android.content.Context
 import com.google.android.play.core.integrity.IntegrityServiceException
-import com.google.firebase.Firebase
 import com.google.firebase.FirebaseException
-import com.google.firebase.appcheck.AppCheckProviderFactory
-import com.google.firebase.appcheck.appCheck
-import com.google.firebase.initialize
-import kotlinx.coroutines.tasks.await
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import javax.inject.Inject
+import kotlin.jvm.Throws
 
 @Suppress("TooGenericExceptionCaught")
 class FirebaseAppCheck
     @Inject
     constructor(
-        appCheckFactory: AppCheckProviderFactory,
-        context: Context,
+        private val provider: FirebaseAppCheckProvider,
         private val logger: Logger,
     ) : AppChecker {
-        private val appCheck = Firebase.appCheck
-
         // For error mappings, see: https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
         init {
             try {
-                Firebase.appCheck.installAppCheckProviderFactory(
-                    appCheckFactory,
-                )
-                Firebase.initialize(context)
+                provider.init()
                 // Cannot be tested because initialising an IntegrityServiceException is private, values can only be accessed
             } catch (integrityExp: IntegrityServiceException) {
-                val exp = handleAndConvertPlayIntegrityError(integrityExp)
-                throw exp
+                handleAndConvertPlayIntegrityError(integrityExp)
                 // Cannot be tested because initialising a com.google.firebase.FirebaseException is private, values can only be accessed
             } catch (firebaseExp: FirebaseException) {
                 val exp = AppIntegrity.AppIntegrityException.FirebaseException(firebaseExp)
                 logError(exp)
-                throw exp
             } catch (e: Throwable) {
                 val exp = AppIntegrity.AppIntegrityException.Generic(e)
                 logError(exp)
-                throw exp
             }
         }
 
+        @Throws(AppIntegrity.AppIntegrityException::class)
         @Suppress("TooGenericExceptionCaught")
         // For error mappings, see: https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
         override suspend fun getAppCheckToken(): Result<AppCheckToken> =
             try {
                 Result.success(
-                    AppCheckToken(appCheck.limitedUseAppCheckToken.await().token),
+                    AppCheckToken(provider.getToken()),
                 )
                 // Cannot be tested because initialising a com.google.firebase.FirebaseException is private, values can only be accessed
             } catch (integrityExp: IntegrityServiceException) {
@@ -64,7 +51,7 @@ class FirebaseAppCheck
                 logError(exp)
                 Result.failure(exp)
             } catch (e: Throwable) {
-                val exp = AppIntegrity.AppIntegrityException.FirebaseException(e)
+                val exp = AppIntegrity.AppIntegrityException.Generic(e)
                 logError(exp)
                 Result.failure(exp)
             }
@@ -123,6 +110,7 @@ class FirebaseAppCheck
         }
 
         companion object {
+            // Retryable
             private const val INTEGRITY_NETWORK_ERROR = -3
             private const val INTEGRITY_TOO_MANY_REQUESTS = -8
             private const val INTEGRITY_GOOGLE_SERVER_UNAVAILABLE = -12
@@ -131,6 +119,7 @@ class FirebaseAppCheck
             private const val INTEGRITY_STANDARD_INTEGRITY_INTERNAL_ERROR = INTEGRITY_INTERNAL_ERROR
             private const val INTEGRITY_STANDARD_INTEGRITY_INITIALIZATION_FAILED = -102
 
+            // Non-retryable
             private const val INTEGRITY_API_NOT_AVAILABLE = -1
             private const val INTEGRITY_PLAY_STORE_NOT_FOUND = -2
             private const val INTEGRITY_PLAY_STORE_ACCOUNT_NOT_FOUND = -4

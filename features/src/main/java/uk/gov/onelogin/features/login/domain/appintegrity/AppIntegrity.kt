@@ -34,7 +34,7 @@ interface AppIntegrity {
             override val type: AppIntegrityErrorType = AppIntegrityErrorType.GENERIC
         ) : AppIntegrityException(e, type)
 
-        class Generic(
+        data class Generic(
             override val e: Throwable,
             override val type: AppIntegrityErrorType = AppIntegrityErrorType.INTERMITTENT
         ) : AppIntegrityException(e, type)
