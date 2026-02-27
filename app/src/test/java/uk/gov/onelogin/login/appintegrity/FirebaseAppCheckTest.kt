@@ -1,5 +1,6 @@
 package uk.gov.onelogin.login.appintegrity
 
+import com.google.firebase.FirebaseNetworkException
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -47,6 +48,22 @@ class FirebaseAppCheckTest {
             assertTrue(actual.isFailure)
             actual.onFailure {
                 assertTrue(it is AppIntegrity.AppIntegrityException.Generic)
+                assertEquals(expected, it.cause)
+            }
+        }
+
+    @Test
+    fun `test firebase provider get limited token returns Firebase Exception`() =
+        runTest {
+            val expected = FirebaseNetworkException("network exception")
+            whenever(provider.getToken()).thenThrow(expected)
+            val actual = sut.getAppCheckToken()
+
+            verify(provider).init()
+            verify(logger).error(any(), any(), any())
+            assertTrue(actual.isFailure)
+            actual.onFailure {
+                assertTrue(it is AppIntegrity.AppIntegrityException.FirebaseException)
                 assertEquals(expected, it.cause)
             }
         }
