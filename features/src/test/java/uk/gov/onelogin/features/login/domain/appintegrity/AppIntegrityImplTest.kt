@@ -286,6 +286,21 @@ class AppIntegrityImplTest {
         }
 
     @Test
+    fun `get client attestation - attestation call failure - no known app integrity error`() =
+        runTest {
+            val expectedError = Exception()
+
+            whenever(featureFlags[any()]).thenReturn(true)
+            whenever(appCheck.getAttestation()).thenReturn(
+                AttestationResponse.Failure(reason = FAILURE, error = expectedError)
+            )
+            val result = sut.getClientAttestation()
+
+            assertEquals(AttestationResult.Failure(expectedError), result)
+            assertEquals(0, counter.getValue())
+        }
+
+    @Test
     fun `generate Proof of Possession - success`() {
         whenever(appCheck.generatePoP(any(), any()))
             .thenReturn(SignedPoP.Success(popJwt = SUCCESS))
