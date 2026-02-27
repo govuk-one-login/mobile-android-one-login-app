@@ -31,9 +31,11 @@ class FirebaseAppCheck
                     appCheckFactory,
                 )
                 Firebase.initialize(context)
+                // Cannot be tested because initialising an IntegrityServiceException is private, values can only be accessed
             } catch (integrityExp: IntegrityServiceException) {
                 val exp = handleAndConvertPlayIntegrityError(integrityExp)
                 throw exp
+                // Cannot be tested because initialising a com.google.firebase.FirebaseException is private, values can only be accessed
             } catch (firebaseExp: FirebaseException) {
                 val exp = AppIntegrity.AppIntegrityException.FirebaseException(firebaseExp)
                 logError(exp)
@@ -52,9 +54,11 @@ class FirebaseAppCheck
                 Result.success(
                     AppCheckToken(appCheck.limitedUseAppCheckToken.await().token),
                 )
+                // Cannot be tested because initialising a com.google.firebase.FirebaseException is private, values can only be accessed
             } catch (integrityExp: IntegrityServiceException) {
                 val exp = handleAndConvertPlayIntegrityError(integrityExp)
                 Result.failure(exp)
+                // Cannot be tested because initialising a com.google.firebase.FirebaseException is private, values can only be accessed
             } catch (firebaseExp: FirebaseException) {
                 val exp = AppIntegrity.AppIntegrityException.FirebaseException(firebaseExp)
                 logError(exp)
