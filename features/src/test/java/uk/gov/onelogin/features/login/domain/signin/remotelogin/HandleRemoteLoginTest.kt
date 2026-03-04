@@ -23,6 +23,7 @@ import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import kotlin.test.assertEquals
 
 class HandleRemoteLoginTest {
     private val mockContext: Context = mock()
@@ -119,7 +120,7 @@ class HandleRemoteLoginTest {
         runTest {
             whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
             whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-                AttestationResult.Failure("error")
+                AttestationResult.Failure(Exception("error"))
             )
             var checkFailed = false
 

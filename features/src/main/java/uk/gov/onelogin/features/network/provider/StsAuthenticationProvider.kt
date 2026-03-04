@@ -12,6 +12,7 @@ import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.network.domain.TokenApiResponse
@@ -63,9 +64,14 @@ class StsAuthenticationProvider(
             // Handle refresh exchange result
             when (refreshStatus) {
                 // Prompt for re-authentication
-                is RefreshExchangeResult.ReauthRequired,
-                RefreshExchangeResult.ClientAttestationFailure -> {
+                is RefreshExchangeResult.ReauthRequired -> {
                     navigator.navigate(SignOutRoutes.ReAuth)
+                    AuthenticationResponse.Failure(ApiResponseException(REFRESH_EXCHANGE_ERROR_MSG))
+                }
+
+                // Display the App Integrity Error
+                is RefreshExchangeResult.ClientAttestationFailure -> {
+                    navigator.navigate(ErrorRoutes.AppIntegrity)
                     AuthenticationResponse.Failure(ApiResponseException(REFRESH_EXCHANGE_ERROR_MSG))
                 }
 

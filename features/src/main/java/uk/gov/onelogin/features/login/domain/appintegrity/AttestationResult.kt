@@ -6,7 +6,7 @@ sealed class AttestationResult {
     ) : AttestationResult()
 
     data class Failure(
-        val error: String,
+        val error: Throwable,
     ) : AttestationResult()
 
     data class NotRequired(

@@ -229,6 +229,7 @@ dependencies {
         libs.bundles.firebase,
         libs.androidx.biometric,
         libs.bundles.cri.orchestrator.bundle,
+        libs.integrity,
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {

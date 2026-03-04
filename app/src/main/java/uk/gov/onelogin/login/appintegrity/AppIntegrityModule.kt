@@ -15,6 +15,7 @@ import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
+import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
@@ -52,7 +53,7 @@ object AppIntegrityModule {
         appCheck: AppIntegrityManager,
         saveToOpenSecureStore: SaveToOpenSecureStore,
         getFromOpenSecureStore: GetFromOpenSecureStore,
-        logger: Logger,
+        retryCounter: Counter
     ): AppIntegrity =
         AppIntegrityImpl(
             context,
@@ -60,7 +61,7 @@ object AppIntegrityModule {
             appCheck,
             saveToOpenSecureStore,
             getFromOpenSecureStore,
-            logger,
+            retryCounter
         )
 
     @Provides

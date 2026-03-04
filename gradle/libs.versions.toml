@@ -48,7 +48,7 @@ classgraph = "4.8.179"
 govuk-ui = "8.13.0"
 govuk-logging = "0.39.7"
 compose-runtime = "1.9.4"
-auth = "1.1.1"
+auth = "3.0.0"
 wallet = "v2.213.0"
 cri-orchestrator = "0.63.0"
 junitVersion = "4.13.2"
@@ -63,6 +63,7 @@ network = "0.7.2"
 kotlinStdLib = "2.2.10"
 jetbrainsKotlinJvm = "2.2.21"
 ksp = "2.3.3"
+integrity = "1.6.0"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -156,6 +157,7 @@ aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref
 aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
+integrity = { group = "com.google.android.play", name = "integrity", version.ref = "integrity" }
 
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]

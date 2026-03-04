@@ -14,18 +14,19 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.login.appintegrity.FirebaseAppCheck
+import uk.gov.onelogin.login.appintegrity.FirebaseAppCheckProvider
+import uk.gov.onelogin.login.appintegrity.FirebaseAppCheckProviderImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppCheckerModule {
     @Provides
-    fun provideAppCheck(
+    fun provideFirebaseAppCheckProvider(
         @ApplicationContext
         context: Context,
-        logger: Logger,
-    ): AppChecker {
+    ): FirebaseAppCheckProvider {
         val factory = DebugAppCheckProviderFactory.getInstance()
-        return FirebaseAppCheck(factory, context, logger).also {
+        return FirebaseAppCheckProviderImpl(factory, context).also {
             val key = Firebase.app.persistenceKey
             context
                 .getSharedPreferences(
@@ -41,4 +42,10 @@ object AppCheckerModule {
                 }
         }
     }
+
+    @Provides
+    fun provideAppCheck(
+        firebaseAppCheckProvider: FirebaseAppCheckProvider,
+        logger: Logger,
+    ): AppChecker = FirebaseAppCheck(firebaseAppCheckProvider, logger)
 }

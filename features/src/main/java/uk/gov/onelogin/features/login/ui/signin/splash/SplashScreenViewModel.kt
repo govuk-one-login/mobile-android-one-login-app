@@ -103,8 +103,12 @@ class SplashScreenViewModel
                     _showUnlock.value = true
                 }
 
-                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
-                else -> nextScreen(SignOutRoutes.ReAuth)
+                RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
+
+                // Handles ReuAuth
+                else -> {
+                    nextScreen(SignOutRoutes.ReAuth)
+                }
             }
         }
 
@@ -124,7 +128,7 @@ class SplashScreenViewModel
                     _showUnlock.value = true
                 }
 
-                // Handles ReuAuth, Recoverable and ClientAttestationFailure (specific behaviour to be added at a later time)
+                // Handles ReuAuth and Recoverable (specific behaviour to be added at a later time)
                 else -> {
                     nextScreen(SignOutRoutes.ReAuth)
                 }

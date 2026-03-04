@@ -10,6 +10,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import javax.inject.Inject
 
@@ -92,7 +93,7 @@ class HandleLoginRedirectImpl
         ) {
             when (val attestation = appIntegrity.getClientAttestation()) {
                 is AttestationResult.Failure ->
-                    onFailure(Error(attestation.error))
+                    onFailure(attestation.error)
 
                 is AttestationResult.NotRequired ->
                     onSuccess(
@@ -143,7 +144,7 @@ class HandleLoginRedirectImpl
             e: Throwable?,
             reason: String,
         ) {
-            val error = AppIntegrity.Companion.ProofOfPossessionException(e)
+            val error = AppIntegrityException.ProofOfPossessionException(e ?: Exception(reason))
             logger.error(
                 error.javaClass.simpleName,
                 error.message ?: reason,
