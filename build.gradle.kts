@@ -99,6 +99,7 @@ plugins {
     alias(libs.plugins.paparazzi) apply false
     id("uk.gov.pipelines.android-root-config")
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 // Consider DCMAW-13740 before targeting Android 16 (API level 36)

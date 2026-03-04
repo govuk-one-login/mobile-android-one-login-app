@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
     id("uk.gov.onelogin.android-app-config")
 }
 
@@ -239,11 +239,11 @@ dependencies {
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler,
-    ).forEach(::kapt)
+    ).forEach(::ksp)
 
     listOf(
         libs.hilt.android.compiler,
-    ).forEach(::kaptAndroidTest)
+    ).forEach(::kspAndroidTest)
 
     listOf(
         kotlin("test"),
@@ -269,10 +269,6 @@ dependencies {
     ).forEach {
         androidTestUtil(it)
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {
