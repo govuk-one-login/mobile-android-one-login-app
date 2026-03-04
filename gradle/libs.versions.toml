@@ -12,6 +12,7 @@ crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyti
 oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+ksp = { id = "com.google.devtools.ksp", version = "2.3.5"}
 
 [versions]
 jose4j = "0.9.6"
@@ -23,7 +24,7 @@ espresso-core = "3.6.1"
 appcompat = "1.7.1"
 lifecycle-runtime-compose = "2.9.1"
 ktlint = "12.3.0"
-hiltPlugin = "2.58"
+hiltPlugin = "2.57"
 detekt = "1.23.8"
 andoridxBrowser = "1.8.0"
 androidxBiometric = "1.1.0"
