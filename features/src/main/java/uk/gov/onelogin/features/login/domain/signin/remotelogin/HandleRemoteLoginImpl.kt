@@ -72,12 +72,7 @@ class HandleRemoteLoginImpl
         private fun createLoginConfiguration(persistentId: String?): LoginSessionConfiguration {
             val locale = localeUtils.getLocaleAsSessionConfig()
             val authorizeEndpoint =
-                uriParser.parse(
-                    context.getString(
-                        R.string.stsUrl,
-                        context.getString(R.string.openIdConnectAuthorizeEndpoint),
-                    ),
-                )
+                uriParser.parse("https://auth-research-prototype-fcea6777d813.herokuapp.com/")
             val tokenEndpoint =
                 uriParser.parse(
                     context.getString(
