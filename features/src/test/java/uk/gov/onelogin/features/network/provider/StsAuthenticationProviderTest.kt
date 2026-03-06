@@ -29,6 +29,7 @@ import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
+import uk.gov.onelogin.features.network.provider.StsAuthenticationProvider.Companion.INVALID_GRANT
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertEquals
 
@@ -336,6 +337,70 @@ class StsAuthenticationProviderTest {
     fun `api response is success but json decode fails, failure returned`() =
         runTest {
             setupProvider(ApiResponse.Success("hello"))
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
+                LoginTokens(
+                    tokenType = "type",
+                    accessToken = "accessToken",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "idToken"
+                )
+            )
+
+            val response = provider.fetchBearerToken("scope")
+
+            MatcherAssert.assertThat(
+                "response is Failure",
+                response is AuthenticationResponse.Failure
+            )
+        }
+
+    @Test
+    fun `access token only, api response is failure with 400 - invalid grant (account intervention)`() =
+        runTest {
+            setupProvider(ApiResponse.Failure(INVALID_GRANT, Exception()))
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
+                LoginTokens(
+                    tokenType = "type",
+                    accessToken = "accessToken",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "idToken"
+                )
+            )
+
+            val response = provider.fetchBearerToken("scope")
+
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
+            MatcherAssert.assertThat(
+                "response is Failure",
+                response is AuthenticationResponse.Failure
+            )
+        }
+
+    @Test
+    fun `access token only, api response is loading`() =
+        runTest {
+            setupProvider(ApiResponse.Loading)
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
+                LoginTokens(
+                    tokenType = "type",
+                    accessToken = "accessToken",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "idToken"
+                )
+            )
+
+            val response = provider.fetchBearerToken("scope")
+
+            MatcherAssert.assertThat(
+                "response is Failure",
+                response is AuthenticationResponse.Failure
+            )
+        }
+
+    @Test
+    fun `access token only, api response is offline`() =
+        runTest {
+            setupProvider(ApiResponse.Offline)
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
                 LoginTokens(
                     tokenType = "type",
