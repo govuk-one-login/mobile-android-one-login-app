@@ -185,27 +185,28 @@ class StsAuthenticationProvider(
     @Suppress("TooGenericExceptionCaught")
     private fun handleServiceTokenResponse(response: ApiResponse): AuthenticationResponse =
         when (response) {
-            is ApiResponse.Success<*> -> try {
-                val tokenResponseString: String = response.response.toString()
-                val tokenApiResponse: TokenApiResponse =
-                    jsonDecoder
-                        .decodeFromString(tokenResponseString)
-                AuthenticationResponse.Success(tokenApiResponse.token)
-            } catch (e: Exception) {
-                // If decoding is unsuccessful log error and return the failure
-                val loginException = LoginException(e)
-                logger.error(
-                    loginException::class.java.simpleName,
-                    e.message.toString(),
-                    loginException
-                )
-                AuthenticationResponse.Failure(e)
-            }
+            is ApiResponse.Success<*> ->
+                try {
+                    val tokenResponseString: String = response.response.toString()
+                    val tokenApiResponse: TokenApiResponse =
+                        jsonDecoder
+                            .decodeFromString(tokenResponseString)
+                    AuthenticationResponse.Success(tokenApiResponse.token)
+                } catch (e: Exception) {
+                    // If decoding is unsuccessful log error and return the failure
+                    val loginException = LoginException(e)
+                    logger.error(
+                        loginException::class.java.simpleName,
+                        e.message.toString(),
+                        loginException
+                    )
+                    AuthenticationResponse.Failure(e)
+                }
 
             // Check response for account intervention
             is ApiResponse.Failure -> {
                 // Invalid grant which is the 400 error returned - re-auth required
-                if (response.status == 400) {
+                if (response.status == INVALID_GRANT) {
                     navigator.navigate(SignOutRoutes.ReAuth)
                     AuthenticationResponse.Failure(ApiResponseException(SERVICE_TOKEN_INVALID_GRANT))
                 } else {
