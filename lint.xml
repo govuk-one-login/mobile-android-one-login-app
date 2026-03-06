@@ -13,4 +13,5 @@
     <issue id="SyntheticAccessor" severity="warning" />
     <issue id="AppLinksAutoVerify" severity="warning" />
     <issue id="DataBindingWithoutKapt" severity="warning" />
+    <issue id="VectorRaster" severity="ignore" />
 </lint>

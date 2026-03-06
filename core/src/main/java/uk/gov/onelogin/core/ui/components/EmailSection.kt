@@ -11,9 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.SpanStyle
@@ -47,12 +47,13 @@ fun EmailSection(email: String) {
             painter = painterResource(id = R.drawable.ic_profile),
             contentDescription = null,
         )
+        val text = stringResource(R.string.app_settingsSignInDetailsTile)
         Text(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground,
             text =
                 buildAnnotatedString {
-                    append(LocalContext.current.getText(R.string.app_settingsSignInDetailsTile))
+                    append(text)
                     appendLine()
                     withStyle(
                         style =

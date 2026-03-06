@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.login.ui.splash
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,6 +16,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -31,6 +31,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,9 +71,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - login fails with client attestation failure`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
@@ -83,15 +82,13 @@ class SplashScreenViewModelTest {
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
+            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity, false)
         }
 
     @Test
     fun `RefreshExchange - login success`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
@@ -108,9 +105,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - login requires sign in`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
@@ -128,9 +123,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - login requires re auth`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
@@ -147,9 +140,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - login returns user cancelled`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
@@ -167,9 +158,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - allows subsequent login calls from lock screen`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
             // WHEN on resume called more than once
             viewModel.onResume(mockLifeCycleOwner)
             viewModel.onResume(mockLifeCycleOwner)
@@ -185,11 +174,27 @@ class SplashScreenViewModelTest {
         }
 
     @Test
+    fun `RefreshExchange - login returns unrecoverable error`() =
+        runTest {
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.UnrecoverableError
+                    )
+                }
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, false)
+            verify(mockSignOutUseCase).invoke()
+        }
+
+    @Test
     fun `LocalAuth - login success`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
@@ -206,9 +211,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `LocalAuth - login requires sign in`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
@@ -226,9 +229,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `LocalAuth - login requires re auth`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
@@ -245,9 +246,7 @@ class SplashScreenViewModelTest {
     @Test
     fun `LocalAuth - login returns user cancelled`() =
         runTest {
-            runBlocking {
-                whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            }
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
@@ -260,5 +259,30 @@ class SplashScreenViewModelTest {
             verifyNoInteractions(mockNavigator)
             assertTrue(viewModel.showUnlock.value)
             assertFalse(viewModel.loading.value)
+        }
+
+    @Test
+    fun `test navigate to analytics screen`() {
+        viewModel.navigateToAnalyticsOptIn()
+
+        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
+    @Test
+    fun `test error during forced sign out`() =
+        runTest {
+            whenever(mockGetRefreshTokenExp()).thenReturn(null)
+            whenever(mockHandleLocalLogin(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                        LocalAuthStatus.FirstTimeUser
+                    )
+                }
+            whenever(mockSignOutUseCase.invoke()).thenThrow(SignOutError(Exception()))
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
+            verify(mockSignOutUseCase).invoke()
         }
 }

@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
     id("uk.gov.onelogin.android-lib-config")
 }
 
@@ -154,15 +154,11 @@ dependencies {
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler,
-    ).forEach(::kapt)
+    ).forEach(::ksp)
 
     listOf(
         libs.kotlin.stdlib,
         libs.compose.runtime,
         libs.mockito.kotlin,
     ).forEach(::testFixturesImplementation)
-}
-
-kapt {
-    correctErrorTypes = true
 }

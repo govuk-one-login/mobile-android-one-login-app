@@ -15,6 +15,7 @@ import uk.gov.android.authentication.json.jwk.JWK
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import java.io.IOException
+import kotlin.test.assertTrue
 
 class AttestationApiCallTest {
     private lateinit var context: Context
@@ -50,12 +51,21 @@ class AttestationApiCallTest {
         }
 
     @Test
-    fun `call() - Failure with error message`() =
+    fun `call() - Failure with error message and 500 status code - server error`() =
         runBlocking {
-            val error = IOException("Test error message")
-            val expectedResult = AttestationResponse.Failure(error.message!!, error = error)
+            val error: AppIntegrityException =
+                AppIntegrityException.ClientAttestationException(
+                    IOException("Test error message"),
+                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                )
+            val expectedResult = AttestationResponse.Failure(error.e.message!!, error = error)
             whenever(httpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Failure(500, error))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        AttestationApiCall.SERVER_ERROR,
+                        error.e as Exception
+                    )
+                )
 
             val result =
                 assertionApiCall.call(
@@ -67,14 +77,107 @@ class AttestationApiCallTest {
         }
 
     @Test
-    fun `call() - Failure without error message`() =
+    fun `call() - Failure without error message and 500 status code - invalid app check token`() =
         runBlocking {
-            val error = IOException()
+            val error: AppIntegrityException =
+                AppIntegrityException.ClientAttestationException(
+                    IOException(),
+                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                )
             val expectedResult =
                 AttestationResponse
                     .Failure(AttestationApiCall.NETWORK_ERROR, error = error)
             whenever(httpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Failure(500, error))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        AttestationApiCall.INVALID_APP_CHECK_TOKEN,
+                        error.e as Exception
+                    )
+                )
+
+            val result =
+                assertionApiCall.call(
+                    "",
+                    jwk
+                )
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `call() - Failure without error message and 500 status code - intermittent app check token`() =
+        runBlocking {
+            val error: AppIntegrityException =
+                AppIntegrityException.ClientAttestationException(
+                    IOException(),
+                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                )
+            val expectedResult =
+                AttestationResponse
+                    .Failure(AttestationApiCall.NETWORK_ERROR, error = error)
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        AttestationApiCall.INTERMITTENT_SERVER_ERROR,
+                        error.e as Exception
+                    )
+                )
+
+            val result =
+                assertionApiCall.call(
+                    "",
+                    jwk
+                )
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `call() - Failure without error message and 400 status code - invalid public key jwk`() =
+        runBlocking {
+            val error: AppIntegrityException =
+                AppIntegrityException.ClientAttestationException(
+                    IOException(),
+                    AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
+                )
+            val expectedResult =
+                AttestationResponse
+                    .Failure(AttestationApiCall.NETWORK_ERROR, error = error)
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        AttestationApiCall.INVALID_PUBLIC_KEY_JWK,
+                        error.e as Exception
+                    )
+                )
+
+            val result =
+                assertionApiCall.call(
+                    "",
+                    jwk
+                )
+
+            assertEquals(expectedResult, result)
+        }
+
+    @Test
+    fun `call() - Failure without error message and random status code`() =
+        runBlocking {
+            val error: AppIntegrityException =
+                AppIntegrityException.ClientAttestationException(
+                    IOException(),
+                    AppIntegrityException.AppIntegrityErrorType.GENERIC
+                )
+            val expectedResult =
+                AttestationResponse
+                    .Failure(AttestationApiCall.NETWORK_ERROR, error = error)
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Failure(
+                        301,
+                        error.e as Exception
+                    )
+                )
 
             val result =
                 assertionApiCall.call(
@@ -90,7 +193,12 @@ class AttestationApiCallTest {
         runBlocking {
             val expectedResult =
                 AttestationResponse
-                    .Failure(AttestationApiCall.NETWORK_ERROR)
+                    .Failure(
+                        AttestationApiCall.NETWORK_ERROR,
+                        AppIntegrityException.ClientAttestationException(
+                            kotlin.Exception(AttestationApiCall.NETWORK_ERROR)
+                        )
+                    )
             whenever(httpClient.makeRequest(any()))
                 .thenReturn(ApiResponse.Offline)
 
@@ -100,7 +208,26 @@ class AttestationApiCallTest {
                     jwk
                 )
 
-            assertEquals(expectedResult, result)
+            // Test all the values since the reason error has a hash wo it will never be able to test the error as a whole
+            assertTrue(result is AttestationResponse.Failure)
+            assertTrue(result.error is AppIntegrityException.ClientAttestationException)
+            assertEquals(
+                (expectedResult.error as AppIntegrityException.ClientAttestationException).type,
+                (result.error as AppIntegrityException.ClientAttestationException).type
+            )
+            println(result.reason)
+            println(
+                (expectedResult.error as AppIntegrityException.ClientAttestationException)
+                    .type.name
+            )
+            assertTrue(
+                result.error
+                    .toString()
+                    .contains(
+                        (expectedResult.error as AppIntegrityException.ClientAttestationException)
+                            .type.name
+                    )
+            )
         }
 
     @Test
