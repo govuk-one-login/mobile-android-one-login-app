@@ -29,7 +29,7 @@ import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
-import uk.gov.onelogin.features.network.provider.StsAuthenticationProvider.Companion.INVALID_GRANT
+import uk.gov.onelogin.features.network.provider.StsAuthenticationProvider.Companion.AUTHENTICATION_DENIED
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertEquals
 
@@ -355,9 +355,9 @@ class StsAuthenticationProviderTest {
         }
 
     @Test
-    fun `access token only, api response is failure with 400 - invalid grant (account intervention)`() =
+    fun `access token only, api response is failure with 400 - account intervention`() =
         runTest {
-            setupProvider(ApiResponse.Failure(INVALID_GRANT, Exception()))
+            setupProvider(ApiResponse.Failure(AUTHENTICATION_DENIED, Exception()))
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
                 LoginTokens(
                     tokenType = "type",

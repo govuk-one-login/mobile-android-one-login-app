@@ -206,9 +206,9 @@ class StsAuthenticationProvider(
             // Check response for account intervention
             is ApiResponse.Failure -> {
                 // Invalid grant which is the 400 error returned - re-auth required
-                if (response.status == INVALID_GRANT) {
+                if (response.status == AUTHENTICATION_DENIED) {
                     navigator.navigate(SignOutRoutes.ReAuth)
-                    AuthenticationResponse.Failure(ApiResponseException(SERVICE_TOKEN_INVALID_GRANT))
+                    AuthenticationResponse.Failure(ApiResponseException(SERVICE_TOKEN_FAILURE_ERROR_MSG))
                 } else {
                     AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
                 }
@@ -227,11 +227,10 @@ class StsAuthenticationProvider(
         const val REFRESH_EXCHANGE_ERROR_MSG = "Failed refresh exchange."
         const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG = "Failed refresh exchange failed - user cannot reauthenticate."
         const val NO_ACCESS_TOKEN_ERROR_MSG = "No access token"
-        const val SERVICE_TOKEN_INVALID_GRANT = "User account intervention has been detected."
         const val SERVICE_TOKEN_FAILURE_ERROR_MSG = "Failed to fetch service token"
         const val FRAGMENT_ACTIVITY_NULL_ERROR_MSG = "FragmentActivity is null"
 
-        const val INVALID_GRANT = 400
+        const val AUTHENTICATION_DENIED = 400
 
         data class FragmentActivityNull(
             val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG
