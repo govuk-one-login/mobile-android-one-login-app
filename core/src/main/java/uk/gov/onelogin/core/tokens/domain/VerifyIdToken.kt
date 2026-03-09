@@ -9,7 +9,9 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LoginException
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
 import javax.inject.Inject
 import kotlin.io.encoding.Base64
 
@@ -26,20 +28,25 @@ class VerifyIdTokenImpl
     constructor(
         private val httpClient: GenericHttpClient,
         private val verifier: JwtVerifier,
-        private val getEmail: GetEmail,
+        private val extractEmail: ExtractEmail,
+        private val extractAndSaveWalletId: ExtractAndSaveWalletId,
+        private val extractAndVerifyIssuer: ExtractAndVerifyIssuer,
         private val logger: Logger,
     ) : VerifyIdToken {
         override suspend fun invoke(
             idToken: String,
             jwksUrl: String,
         ): Boolean {
-            val verified = isEmailValid(idToken) && isIdTokenValid(jwksUrl, idToken)
+            val isIssValid = extractAndVerifyIssuer.verify(idToken)
+            val isWalletIdValid = extractAndSaveWalletId.extract(idToken) != null
+            val verified =
+                isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid && isIssValid
             return verified
         }
 
-        private fun isEmailValid(idToken: String): Boolean = getEmail(idToken) != null
+        private fun isEmailValid(idToken: String): Boolean = extractEmail(idToken) != null
 
-        private suspend fun isIdTokenValid(
+        private suspend fun isIdTokenJwksValid(
             jwksUrl: String,
             idToken: String,
         ): Boolean {

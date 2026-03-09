@@ -1,6 +1,6 @@
-package uk.gov.onelogin.core.tokens.domain.retrieve
+package uk.gov.onelogin.core.tokens.domain.idtoken.email
 
-fun interface GetEmail {
+fun interface ExtractEmail {
     /**
      * Use case to get the email from the id token
      *

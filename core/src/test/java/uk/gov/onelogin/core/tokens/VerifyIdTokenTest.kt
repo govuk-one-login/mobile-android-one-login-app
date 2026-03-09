@@ -12,7 +12,9 @@ import uk.gov.android.network.client.StubHttpClient
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -21,7 +23,9 @@ class VerifyIdTokenTest {
     private lateinit var stubHttpClient: GenericHttpClient
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
-    private lateinit var getEmail: GetEmail
+    private lateinit var extractEmail: ExtractEmail
+    private lateinit var extractAndSaveWalletId: ExtractAndSaveWalletId
+    private lateinit var extractAndVerifyIssuer: ExtractAndVerifyIssuer
     private val logger = SystemLogger()
 
     // the header of the web token contains a 'kid' for one of the keys below
@@ -63,15 +67,18 @@ class VerifyIdTokenTest {
 
     @BeforeEach
     fun setup() {
-        getEmail = mock()
+        extractEmail = mock()
+        extractAndSaveWalletId = mock()
         stubVerifier = mock()
+        extractAndVerifyIssuer = mock()
     }
 
     @Test
     fun `non 200 response from jwks endpoint`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Failure(400, Exception()))
             buildVerifyToken()
 
@@ -83,8 +90,10 @@ class VerifyIdTokenTest {
     @Test
     fun `unable to verify token`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -96,8 +105,10 @@ class VerifyIdTokenTest {
     @Test
     fun `verifier throws exception`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -109,8 +120,10 @@ class VerifyIdTokenTest {
     @Test
     fun `idToken json parse throws exception`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success("not a json"))
             buildVerifyToken()
 
@@ -126,8 +139,10 @@ class VerifyIdTokenTest {
     @Test
     fun `jwks json parse throws exception`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success("not a json"))
             buildVerifyToken()
 
@@ -145,8 +160,10 @@ class VerifyIdTokenTest {
     @Test
     fun `id_token successfully verified`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn("email")
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -158,8 +175,38 @@ class VerifyIdTokenTest {
     @Test
     fun `verify fails - email missing`() =
         runTest {
-            whenever(getEmail.invoke(any())).thenReturn(null)
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn(null)
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            buildVerifyToken()
+
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+        }
+
+    @Test
+    fun `verify fails - wallet id missing`() =
+        runTest {
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn(null)
+            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            buildVerifyToken()
+
+            val result = verifyIdToken(idToken, "testUrl")
+            assertFalse(result)
+        }
+
+    @Test
+    fun `verify fails - iss missing or id token malformed`() =
+        runTest {
+            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(false)
+            whenever(extractEmail.invoke(any())).thenReturn("email")
+            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+            whenever(extractAndSaveWalletId.extract(any())).thenReturn("id")
             setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
             buildVerifyToken()
 
@@ -176,7 +223,9 @@ class VerifyIdTokenTest {
             VerifyIdTokenImpl(
                 stubHttpClient,
                 stubVerifier,
-                getEmail,
+                extractEmail,
+                extractAndSaveWalletId,
+                extractAndVerifyIssuer,
                 logger,
             )
     }
