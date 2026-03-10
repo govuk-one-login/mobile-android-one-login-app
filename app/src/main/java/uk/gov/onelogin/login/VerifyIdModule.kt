@@ -11,5 +11,5 @@ import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
 @Module
 interface VerifyIdModule {
     @Binds
-    fun bindVerifyIdToken(usecase: VerifyIdTokenImpl): VerifyIdToken
+    fun bindVerifyIdToken(verifyIdTokenImpl: VerifyIdTokenImpl): VerifyIdToken
 }
