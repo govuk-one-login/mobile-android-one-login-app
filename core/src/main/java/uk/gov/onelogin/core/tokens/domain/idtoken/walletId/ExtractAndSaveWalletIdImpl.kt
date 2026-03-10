@@ -14,7 +14,7 @@ class ExtractAndSaveWalletIdImpl
         private val saveToOpenSecureStore: SaveToOpenSecureStore,
         private val logger: Logger,
     ) : ExtractAndSaveWalletId {
-        override suspend fun extract(idToken: String): String? =
+        override suspend fun extractAndSave(idToken: String): String? =
             try {
                 val id = extractFromJson.extractString(idToken, WALLET_ID_BASE + WALLET_ID_IDENTIFIER)
                 id?.let {

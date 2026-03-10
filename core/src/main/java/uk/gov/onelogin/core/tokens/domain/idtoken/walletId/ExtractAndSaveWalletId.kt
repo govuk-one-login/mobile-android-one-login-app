@@ -1,7 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.walletId
 
 /**
- * Verifies the id token body contains a wallet subject id claim.
+ * Verifies the id token body contains a wallet subject id claim and saved it to the open secure store
  */
 fun interface ExtractAndSaveWalletId {
     /**
@@ -10,5 +10,5 @@ fun interface ExtractAndSaveWalletId {
      * @return [String] - nullable, if the return is null, the wallet subject id claim does not exist or an error
      * was thrown during the extraction
      */
-    suspend fun extract(idToken: String): String?
+    suspend fun extractAndSave(idToken: String): String?
 }

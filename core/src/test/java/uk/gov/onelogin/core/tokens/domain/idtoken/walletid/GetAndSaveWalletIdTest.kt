@@ -32,21 +32,21 @@ class GetAndSaveWalletIdTest {
     @Test
     fun `success scenario`() =
         runTest {
-            val emailResponse = sut.extract(idTokenWithWalletId)
+            val emailResponse = sut.extractAndSave(idTokenWithWalletId)
             assertEquals(expectedWalletId, emailResponse)
         }
 
     @Test
     fun `missing wallet id scenario`() =
         runTest {
-            val emailResponse = sut.extract(idTokenWithoutWalletId)
+            val emailResponse = sut.extractAndSave(idTokenWithoutWalletId)
             assertEquals(null, emailResponse)
         }
 
     @Test
     fun `malformed Id token scenario`() =
         runTest {
-            val emailResponse = sut.extract("not an id token")
+            val emailResponse = sut.extractAndSave("not an id token")
             assertEquals(null, emailResponse)
             assertEquals(1, logger.size)
         }

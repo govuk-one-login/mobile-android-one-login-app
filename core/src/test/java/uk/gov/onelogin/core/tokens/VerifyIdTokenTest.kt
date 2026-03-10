@@ -78,7 +78,7 @@ class VerifyIdTokenTest {
         runTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Failure(400, Exception()))
             buildVerifyToken()
 
@@ -93,7 +93,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -108,7 +108,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -123,7 +123,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success("not a json"))
             buildVerifyToken()
 
@@ -142,7 +142,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success("not a json"))
             buildVerifyToken()
 
@@ -163,7 +163,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(jwksResponse))
             buildVerifyToken()
 
@@ -178,7 +178,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn(null)
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("wallet_id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
             setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
             buildVerifyToken()
 
@@ -192,7 +192,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn(null)
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn(null)
             setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
             buildVerifyToken()
 
@@ -206,7 +206,7 @@ class VerifyIdTokenTest {
             whenever(extractAndVerifyIssuer.verify(any())).thenReturn(false)
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extract(any())).thenReturn("id")
+            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("id")
             setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
             buildVerifyToken()
 

@@ -38,7 +38,7 @@ class VerifyIdTokenImpl
             jwksUrl: String,
         ): Boolean {
             val isIssValid = extractAndVerifyIssuer.verify(idToken)
-            val isWalletIdValid = extractAndSaveWalletId.extract(idToken) != null
+            val isWalletIdValid = extractAndSaveWalletId.extractAndSave(idToken) != null
             val verified =
                 isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid && isIssValid
             return verified

@@ -5,7 +5,7 @@ import kotlinx.serialization.json.jsonObject
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.Base64.PaddingOption
 
-interface JwtExtractor {
+fun interface JwtExtractor {
     fun extractString(
         jwt: String,
         valueToExtract: String

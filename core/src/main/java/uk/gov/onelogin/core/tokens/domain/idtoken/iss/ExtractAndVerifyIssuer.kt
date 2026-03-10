@@ -8,7 +8,7 @@ fun interface ExtractAndVerifyIssuer {
      * Verifies the id token iss claim is valid.
      * @param idToken - the id token returned from the token endpoint during login
      * @return [Boolean] - true if is valid, and false is the value is invalid or an error occurred
-     * during the extraction ro verification
+     * during the extraction/ verification.
      */
     fun verify(idToken: String): Boolean
 }
