@@ -110,4 +110,15 @@ class ErrorGraphObjectTest : TestCase() {
                 resources.getString(R.string.app_appUnavailableTitle),
             ).assertExists()
     }
+
+    @Test
+    fun navigateToAppIntegrityError() {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(ErrorRoutes.AppIntegrity.getRoute())
+        }
+        composeTestRule
+            .onNodeWithText(
+                resources.getString(R.string.app_appIntegrityErrorTitle),
+            ).assertExists()
+    }
 }

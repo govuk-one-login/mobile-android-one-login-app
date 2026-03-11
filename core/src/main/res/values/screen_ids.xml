@@ -21,4 +21,5 @@
     <string name="sign_in_recoverable_error_screen_id" translatable="false">6c15e073-d1a5-4781-b416-aaad6e80b078</string>
     <string name="network_error_screen_id" translatable="false">80606f36-f6aa-4f49-aaa8-ff7d3cdeb16f</string>
     <string name="sign_in_unrecoverable_error_screen_id" translatable="false">9c8c63d9-13e5-4b6b-8430-e6a081adae3f</string>
+    <string name="app_integrity_error_firebase_screen_id" translatable="false">90cadd21-4a71-431c-a202-440d7cc3da25</string>
 </resources>

@@ -52,15 +52,16 @@ class SplashScreenViewModel
         private val _loading = MutableStateFlow(false)
         val loading: StateFlow<Boolean> = _loading
 
-        private val deleteData = MutableStateFlow(false)
+        private val deleteData = MutableStateFlow(DeleteData())
 
         init {
             viewModelScope.launch {
                 deleteData.collectLatest {
-                    if (it) {
+                    if (it.shouldDelete) {
                         handleDeletingAllData()
-                        nextScreen(LoginRoutes.AnalyticsOptIn)
-                        deleteData.value = false
+                        it.action()
+                        // Reset state
+                        deleteData.value = DeleteData()
                     }
                 }
             }
@@ -89,49 +90,47 @@ class SplashScreenViewModel
             when (result) {
                 RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
 
-                RefreshExchangeResult.SignInRequired -> deleteData.value = true
+                // Handle when a user ia a first time user
+                RefreshExchangeResult.FirstTimeUser ->
+                    deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
+
+                // Handle when something went wrong during local auth
+                RefreshExchangeResult.UnrecoverableError ->
+                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
 
                 RefreshExchangeResult.UserCancelledBioPrompt -> {
                     _loading.value = false
                     _showUnlock.value = true
                 }
 
-                RefreshExchangeResult.BioCheckFailed -> {
-                    // Allow user to make multiple fails... do nothing for now
-                }
+                RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
 
-                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
+                // Handles ReuAuth
                 else -> {
-                    nextScreen(SignOutRoutes.Info)
+                    nextScreen(SignOutRoutes.ReAuth)
                 }
             }
         }
 
         private fun handleLocalAuthBehaviour(status: LocalAuthStatus) {
             when (status) {
-                LocalAuthStatus.SecureStoreError -> {
-                    nextScreen(SignOutRoutes.Info)
-                }
+                LocalAuthStatus.FirstTimeUser ->
+                    deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
 
-                LocalAuthStatus.ManualSignIn -> {
-                    deleteData.value = true
-                }
+                LocalAuthStatus.UnrecoverableError ->
+                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
 
                 is LocalAuthStatus.Success ->
                     nextScreen(MainNavRoutes.Start)
 
-                LocalAuthStatus.UserCancelled -> {
+                LocalAuthStatus.UserCancelledBioPrompt -> {
                     _loading.value = false
                     _showUnlock.value = true
                 }
 
-                LocalAuthStatus.BioCheckFailed -> {
-                    // Allow user to make multiple fails... do nothing for now
-                }
-
-                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
+                // Handles ReuAuth and Recoverable (specific behaviour to be added at a later time)
                 else -> {
-                    nextScreen(SignOutRoutes.Info)
+                    nextScreen(SignOutRoutes.ReAuth)
                 }
             }
         }
@@ -187,8 +186,13 @@ class SplashScreenViewModel
         private suspend fun handleDeletingAllData() {
             try {
                 signOutUseCase.invoke()
-            } catch (e: SignOutError) {
-                navigator.navigate(SignOutRoutes.Info)
+            } catch (_: SignOutError) {
+                navigator.navigate(SignOutRoutes.ReAuth)
             }
         }
+
+        private data class DeleteData(
+            val shouldDelete: Boolean = false,
+            val action: () -> Unit = {}
+        )
     }

@@ -56,7 +56,7 @@ import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsStatus
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.onelogin.HiltTestActivity
 import uk.gov.onelogin.OneLoginApp
 import uk.gov.onelogin.appcheck.AppCheckerModule
@@ -65,6 +65,7 @@ import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepositoryImpl
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
+import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.LocaleUtils
@@ -151,7 +152,7 @@ class LoginTest : FlakyTestCase() {
 
     @Inject
     @Named("Open")
-    lateinit var secureStore: SecureStore
+    lateinit var secureStore: SecureStoreAsyncV2
 
     @BindValue
     val mockVerifyIdToken: VerifyIdToken = mock()
@@ -208,7 +209,7 @@ class LoginTest : FlakyTestCase() {
             .thenReturn(SignedPoP.Success("Success"))
         wheneverBlocking { mockVerifyIdToken.invoke(any(), any()) }.thenReturn(true)
         tokenRepository.setTokenResponse(
-            TokenResponse(
+            LoginTokens(
                 tokenType = "type",
                 accessToken = "access",
                 accessTokenExpirationTime = 1L,

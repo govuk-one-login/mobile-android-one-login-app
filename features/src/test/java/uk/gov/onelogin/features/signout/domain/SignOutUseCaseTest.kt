@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
 import uk.gov.onelogin.core.cleaner.domain.ResultCollectionUtil
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -26,6 +27,7 @@ import kotlin.test.assertTrue
 class SignOutUseCaseTest {
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
     private val tokenRepository: TokenRepository = mock()
+    private val logger: Logger = mock()
     private lateinit var useCase: SignOutUseCase
 
     @Test
@@ -47,7 +49,8 @@ class SignOutUseCaseTest {
                         bioPrefHandler
                     ),
                     deleteWalletData,
-                    tokenRepository
+                    tokenRepository,
+                    logger
                 )
             useCase.invoke()
             // Then it clears all the required data
@@ -71,7 +74,8 @@ class SignOutUseCaseTest {
                         { Result.success(Unit) }
                     ),
                     deleteWalletData,
-                    tokenRepository
+                    tokenRepository,
+                    logger
                 )
 
             // Then throw SignOutWalletError
@@ -97,7 +101,8 @@ class SignOutUseCaseTest {
                         { throw Exception(errorMessage) }
                     ),
                     deleteWalletData,
-                    tokenRepository
+                    tokenRepository,
+                    logger
                 )
             // When invoking the sign out use case
             // Then throw SignOutWalletError
@@ -123,7 +128,8 @@ class SignOutUseCaseTest {
                         { Result.failure(Exception(errorMessage)) }
                     ),
                     deleteWalletData,
-                    tokenRepository
+                    tokenRepository,
+                    logger
                 )
             // When invoking the sign out use case
             // Then throw SignOutWalletError

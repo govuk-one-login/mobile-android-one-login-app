@@ -2,21 +2,20 @@ package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import androidx.fragment.app.FragmentActivity
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.securestore.RetrievalEvent
-import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.android.securestore.authentication.AuthenticatorPromptConfiguration
-import uk.gov.android.securestore.error.SecureStoreErrorType
+import uk.gov.android.securestore.error.SecureStorageErrorV2
+import uk.gov.android.securestore.error.SecureStoreErrorTypeV2
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
-import uk.gov.onelogin.core.tokens.data.SecureStoreException
 import javax.inject.Inject
 import javax.inject.Named
 
 class GetFromEncryptedSecureStoreImpl
     @Inject
     constructor(
-        @Named("Token")
-        private val secureStore: SecureStore,
+        @param:Named("Token")
+        private val secureStore: SecureStoreAsyncV2,
         private val logger: Logger,
     ) : GetFromEncryptedSecureStore {
         override suspend fun invoke(
@@ -29,35 +28,30 @@ class GetFromEncryptedSecureStoreImpl
                     title = context.getString(R.string.app_authenticationDialogueTitle),
                 )
 
-            val result =
-                secureStore.retrieveWithAuthentication(
-                    key = key,
-                    authPromptConfig = authPromptConfig,
-                    context = context,
-                )
-
-            when (result) {
-                is RetrievalEvent.Success -> callback(LocalAuthStatus.Success(result.value))
-
-                is RetrievalEvent.Failed -> {
-                    val secureStoreException = SecureStoreException(Exception(result.toString()))
-                    logger.error(
-                        secureStoreException.toString(),
-                        result.toString(),
-                        secureStoreException,
+            try {
+                val result =
+                    secureStore.retrieveWithAuthentication(
+                        key = key,
+                        authPromptConfig = authPromptConfig,
+                        context = context,
                     )
-                    val localAuthStatus =
-                        when (result.type) {
-                            SecureStoreErrorType.GENERAL -> LocalAuthStatus.SecureStoreError
+                callback(LocalAuthStatus.Success(result))
+            } catch (e: SecureStorageErrorV2) {
+                logger.error(
+                    this.javaClass.simpleName,
+                    "${e.message} - type: ${e.type}",
+                    e
+                )
+                val localAuthStatus =
+                    when (e.type) {
+                        SecureStoreErrorTypeV2.UNRECOVERABLE -> LocalAuthStatus.ReauthRequired
 
-                            SecureStoreErrorType.USER_CANCELED_BIO_PROMPT ->
-                                LocalAuthStatus.UserCancelled
+                        SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED -> LocalAuthStatus.UnrecoverableError
 
-                            SecureStoreErrorType.FAILED_BIO_PROMPT -> LocalAuthStatus.BioCheckFailed
-                            SecureStoreErrorType.NOT_FOUND -> LocalAuthStatus.SecureStoreError
-                        }
-                    callback(localAuthStatus)
-                }
+                        SecureStoreErrorTypeV2.RECOVERABLE,
+                        SecureStoreErrorTypeV2.USER_CANCELLED -> LocalAuthStatus.UserCancelledBioPrompt
+                    }
+                callback(localAuthStatus)
             }
         }
     }

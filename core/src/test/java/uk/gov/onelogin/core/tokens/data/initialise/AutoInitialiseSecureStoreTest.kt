@@ -17,8 +17,8 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.securestore.AccessControlLevel
-import uk.gov.android.securestore.SecureStorageConfiguration
-import uk.gov.android.securestore.SecureStore
+import uk.gov.android.securestore.SecureStorageConfigurationAsync
+import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import kotlin.test.AfterTest
@@ -28,7 +28,7 @@ class AutoInitialiseSecureStoreTest {
     private lateinit var useCase: AutoInitialiseSecureStore
 
     private val mockContext: Context = mock()
-    private val mockSecureStore: SecureStore = mock()
+    private val mockSecureStore: SecureStoreAsyncV2 = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
     private val mockSaveTokens: SaveTokens = mock()
     private val dispatcher = StandardTestDispatcher()
@@ -99,7 +99,7 @@ class AutoInitialiseSecureStoreTest {
             useCase.initialise(null)
 
             val expectedConfiguration =
-                SecureStorageConfiguration(
+                SecureStorageConfigurationAsync(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
                     AccessControlLevel.PASSCODE,
                 )
@@ -123,7 +123,7 @@ class AutoInitialiseSecureStoreTest {
             useCase.initialise(null)
 
             val expectedConfiguration =
-                SecureStorageConfiguration(
+                SecureStorageConfigurationAsync(
                     AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
                     AccessControlLevel.PASSCODE_AND_BIOMETRICS,
                 )

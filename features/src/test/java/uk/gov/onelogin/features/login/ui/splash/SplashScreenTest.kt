@@ -129,7 +129,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
     @Test
     fun testUnlockButton() {
         wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
-            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelled)
+            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelledBioPrompt)
         }
 
         // Given
@@ -146,7 +146,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
         wheneverBlocking {
             handleLocalLogin.invoke(any(), any())
         }.thenAnswer {
-            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ManualSignIn)
+            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
         }
 
         // When

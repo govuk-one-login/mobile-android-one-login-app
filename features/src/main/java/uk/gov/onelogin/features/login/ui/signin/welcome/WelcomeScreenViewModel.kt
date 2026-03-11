@@ -35,6 +35,8 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.utils.convertToLoginTokens
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -69,8 +71,16 @@ class WelcomeScreenViewModel
                 _loading.emit(true)
                 handleRemoteLogin.login(
                     launcher,
-                ) {
-                    navigator.navigate(LoginRoutes.SignInRecoverableError)
+                ) { throwable ->
+                    when (throwable) {
+                        is AppIntegrityException.ClientAttestationException,
+                        is AppIntegrityException.Other,
+                        is AppIntegrityException.FirebaseException -> {
+                            navigator.navigate(ErrorRoutes.AppIntegrity)
+                        }
+
+                        else -> navigator.navigate(LoginRoutes.SignInRecoverableError)
+                    }
                 }
             }
 
@@ -139,6 +149,12 @@ class WelcomeScreenViewModel
                     }
                 }
 
+                is AppIntegrityException.ClientAttestationException,
+                is AppIntegrityException.Other,
+                is AppIntegrityException.FirebaseException -> {
+                    navigator.navigate(ErrorRoutes.AppIntegrity)
+                }
+
                 else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
             }
         }
@@ -149,10 +165,6 @@ class WelcomeScreenViewModel
 
         fun navigateToOfflineError() {
             navigator.navigate(ErrorRoutes.Offline)
-        }
-
-        fun navigateToOptInAnalytics() {
-            navigator.navigate(LoginRoutes.AnalyticsOptIn)
         }
 
         fun stopLoading() {
@@ -183,7 +195,7 @@ class WelcomeScreenViewModel
             activity: FragmentActivity,
         ) {
             saveAccessTokenExpiryToOpenStore(tokens)
-            tokenRepository.setTokenResponse(tokens)
+            tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
 
             localAuthManager.enforceAndSet(

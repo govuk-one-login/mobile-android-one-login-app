@@ -1,7 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
-import uk.gov.android.securestore.SecureStore
-import uk.gov.android.securestore.error.SecureStorageError
+import uk.gov.android.securestore.SecureStoreAsyncV2
+import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.logging.api.Logger
 import javax.inject.Inject
 import javax.inject.Named
@@ -9,8 +9,8 @@ import javax.inject.Named
 class SaveToOpenSecureStoreImpl
     @Inject
     constructor(
-        @Named("Open")
-        private val secureStore: SecureStore,
+        @param:Named("Open")
+        private val secureStore: SecureStoreAsyncV2,
         private val logger: Logger,
     ) : SaveToOpenSecureStore {
         override suspend fun save(
@@ -22,7 +22,7 @@ class SaveToOpenSecureStoreImpl
                     key = key,
                     value = value,
                 )
-            } catch (e: SecureStorageError) {
+            } catch (e: SecureStorageErrorV2) {
                 logger.error(e::class.simpleName.toString(), e.message.toString(), e)
             }
         }
@@ -36,7 +36,7 @@ class SaveToOpenSecureStoreImpl
                     key = key,
                     value = value.toString(),
                 )
-            } catch (e: SecureStorageError) {
+            } catch (e: SecureStorageErrorV2) {
                 logger.error(e::class.simpleName.toString(), e.message.toString(), e)
             }
         }
