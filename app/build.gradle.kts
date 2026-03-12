@@ -31,6 +31,18 @@ android {
         testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val configDir = rootProject.extra["configDir"] as String
+
+            storeFile = file("$configDir/keystore.jks")
+
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             isDebuggable = false
@@ -40,6 +52,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             enableUnitTestCoverage = true
