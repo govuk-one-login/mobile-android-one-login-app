@@ -1,7 +1,5 @@
 package uk.gov.onelogin.features.network.provider
 
-import io.ktor.client.request.forms.FormDataContent
-import io.ktor.http.Parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -144,36 +142,24 @@ class StsAuthenticationProvider(
         } ?: AuthenticationResponse.Failure(Exception(NO_ACCESS_TOKEN_ERROR_MSG))
 
     /**
-     * Creates the [ApiRequest.Post] to get a service token - - see [attemptServiceTokenExchange].
+     * Creates the [ApiRequest.FormUrlEncoded] to get a service token - - see [attemptServiceTokenExchange].
      * @param accessToken the jwt that will be presented in exchange for a service token which enforces authentication of the client
      * @param scope the scope of teh service token that is required/ requested
-     * @return [ApiRequest.Post]
+     * @return [ApiRequest.FormUrlEncoded]
      */
     private fun createServiceTokenRequest(
         accessToken: String,
         scope: String
-    ): ApiRequest.Post<Any> =
-        ApiRequest.Post(
+    ): ApiRequest.FormUrlEncoded =
+        ApiRequest.FormUrlEncoded(
             url = stsUrl,
-            body =
-                FormDataContent(
-                    Parameters.Companion.build {
-                        append(
-                            GRANT_TYPE,
-                            "urn:ietf:params:oauth:grant-type:token-exchange"
-                        )
-                        append(SUBJECT_TOKEN, accessToken)
-                        append(
-                            SUBJECT_TOKEN_TYPE,
-                            "urn:ietf:params:oauth:token-type:access_token"
-                        )
-                        append(SCOPE, scope)
-                    }
-                ),
-            headers =
+            params =
                 listOf(
-                    Pair("Content-Type", "application/x-www-form-urlencoded")
-                )
+                    GRANT_TYPE to GRANT_TYPE_VALUE,
+                    SUBJECT_TOKEN to accessToken,
+                    SUBJECT_TOKEN_TYPE to SUBJECT_TOKEN_TYPE_VALUE,
+                    SCOPE to scope,
+                ),
         )
 
     /**
@@ -208,8 +194,10 @@ class StsAuthenticationProvider(
 
     companion object {
         private const val GRANT_TYPE = "grant_type"
+        private const val GRANT_TYPE_VALUE = "urn:ietf:params:oauth:grant-type:token-exchange"
         private const val SUBJECT_TOKEN = "subject_token"
         private const val SUBJECT_TOKEN_TYPE = "subject_token_type"
+        private const val SUBJECT_TOKEN_TYPE_VALUE = "urn:ietf:params:oauth:token-type:access_token"
         private const val SCOPE = "scope"
 
         const val REFRESH_EXCHANGE_ERROR_MSG = "Failed refresh exchange."
