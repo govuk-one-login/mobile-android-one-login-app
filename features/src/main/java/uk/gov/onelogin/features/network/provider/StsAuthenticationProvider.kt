@@ -86,8 +86,8 @@ class StsAuthenticationProvider(
 
                 // If success continue and attempt to get a service token
                 // If user cancelled bio prompt/ bio check failed/ offline, allow for the consumer to handle the error
-                // which means treating it as a success and it will fail at getting the access token which will be
-                // treated as a error on the consumer/ SDKs side
+                // which means treating it as a success, and it will fail at getting the access token which will be
+                // treated as an error on the consumer/ SDKs side
                 else -> {
                     attemptServiceTokenExchange(scope)
                 }
@@ -170,26 +170,28 @@ class StsAuthenticationProvider(
      */
     @Suppress("TooGenericExceptionCaught")
     private fun handleServiceTokenResponse(response: ApiResponse): AuthenticationResponse =
-        if (response is ApiResponse.Success<*>) {
-            // Attempt to decode the response from json format
-            try {
-                val tokenResponseString: String = response.response.toString()
-                val tokenApiResponse: TokenApiResponse =
-                    jsonDecoder
-                        .decodeFromString(tokenResponseString)
-                AuthenticationResponse.Success(tokenApiResponse.token)
-            } catch (e: Exception) {
-                // If decoding is unsuccessful log error and return the failure
-                val loginException = LoginException(e)
-                logger.error(
-                    loginException::class.java.simpleName,
-                    e.message.toString(),
-                    loginException
-                )
-                AuthenticationResponse.Failure(e)
+        when (response) {
+            is ApiResponse.Success<*> -> {
+                // Attempt to decode the response from JSON format
+                try {
+                    val tokenResponseString: String = response.response.toString()
+                    val tokenApiResponse: TokenApiResponse =
+                        jsonDecoder
+                            .decodeFromString(tokenResponseString)
+                    AuthenticationResponse.Success(tokenApiResponse.token)
+                } catch (e: Exception) {
+                    // If decoding is unsuccessful log error and return the failure
+                    val loginException = LoginException(e)
+                    logger.error(
+                        loginException::class.java.simpleName,
+                        e.message.toString(),
+                        loginException
+                    )
+                    AuthenticationResponse.Failure(e)
+                }
             }
-        } else {
-            AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
+            is ApiResponse.Failure -> AuthenticationResponse.Failure(response.error)
+            else -> AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
         }
 
     companion object {
