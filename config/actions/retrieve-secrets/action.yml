@@ -6,6 +6,11 @@ inputs:
     description: "AWS role ARN to assume"
     required: true
 
+outputs:
+  keystore-file-path:
+    description: 'Path to the keystore file (relative to the working directory)'
+    value: ${{ steps.decode-keystore.outputs.keystore-file-path }}
+
 runs:
   using: "composite"
   steps:
@@ -39,10 +44,13 @@ runs:
       shell: bash
 
     - name: Decode Keystore
+      id: decode-keystore
       env:
         ENCODED_STRING: ${{ env.KEYSTORE_BASE64 }}
+        KEYSTORE_FILE_PATH: config/keystore.jks
       run: |
-        echo "${ENCODED_STRING}" | base64 --decode > config/keystore.jks
+        echo "${ENCODED_STRING}" | base64 --decode > ${KEYSTORE_FILE_PATH}
+        echo "keystore-file-path=${KEYSTORE_FILE_PATH}" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Decode Service Account
