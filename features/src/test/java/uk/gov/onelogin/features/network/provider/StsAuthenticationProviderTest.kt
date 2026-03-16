@@ -83,7 +83,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with re-auth required`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
 
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
@@ -104,7 +104,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with client attestation failure`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
@@ -123,7 +123,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with user cancelled`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
@@ -142,7 +142,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with sign in required`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
@@ -163,7 +163,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with offline network`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
@@ -182,9 +182,8 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, refresh exchanged has failed with success`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }
-                .thenReturn(ApiResponse.Success(tokenResponseJson))
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success(tokenResponseJson))
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -195,9 +194,8 @@ class StsAuthenticationProviderTest {
     @Test
     fun `access token expired, activity fragment is null`() =
         runTest {
-            wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(true)
-            whenever(mockActivityProvider.getCurrentActivity())
-                .thenReturn(null)
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            whenever(mockActivityProvider.getCurrentActivity()).thenReturn(null)
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -218,8 +216,7 @@ class StsAuthenticationProviderTest {
     fun `original exception when API call fails`() =
         runTest {
             val originalException = Exception("error")
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }
-                .thenReturn(ApiResponse.Failure(500, originalException))
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Failure(500, originalException))
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -230,7 +227,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `SERVICE_TOKEN_FAILURE_ERROR_MSG when API loading state`() =
         runTest {
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }.thenReturn(ApiResponse.Loading)
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Loading)
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -244,7 +241,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `SERVICE_TOKEN_FAILURE_ERROR_MSG when API Offline state`() =
         runTest {
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }.thenReturn(ApiResponse.Offline)
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Offline)
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -258,8 +255,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `api response is success but json decode fails, failure returned`() =
         runTest {
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }
-                .thenReturn(ApiResponse.Success("hello"))
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success("hello"))
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -269,8 +265,7 @@ class StsAuthenticationProviderTest {
     @Test
     fun `api response is success, success returned`() =
         runTest {
-            wheneverBlocking { mockHttpClient.makeRequest(any()) }
-                .thenReturn(ApiResponse.Success(tokenResponseJson))
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success(tokenResponseJson))
 
             val response = provider.fetchBearerToken(SCOPE)
 
