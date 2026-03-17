@@ -42,29 +42,16 @@ class HandleLocalLoginImpl
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
         ) {
-            try {
-                if (getPersistentId().isNullOrEmpty()) {
-                    callback(LocalAuthStatus.FirstTimeUser)
-                    val isWalletEmpty = walletIsEmptyUseCase.invoke()
-                    if (!isWalletEmpty) {
-                        val exp = WalletIsEmptyUseCaseImpl.WalletIsEmptyDataError()
-                        logError(exp, exp.message)
-                    }
+            if (getPersistentId().isNullOrEmpty()) {
+                callback(LocalAuthStatus.FirstTimeUser)
+            } else {
+                // Check Local Auth Enabled AND Refresh Token expiry exists
+                if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
+                    handleRefreshToken(fragmentActivity, callback)
                 } else {
-                    // Check Local Auth Enabled AND Refresh Token expiry exists
-                    if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
-                        handleRefreshToken(fragmentActivity, callback)
-                    } else {
-                        // If Refresh Token is null, then use the flow for Access Token only
-                        handleAccessTokenOnly(fragmentActivity, callback)
-                    }
+                    // If Refresh Token is null, then use the flow for Access Token only
+                    handleAccessTokenOnly(fragmentActivity, callback)
                 }
-            } catch (e: Throwable) {
-                val reason = "secure wallet data deleted"
-                logError(e, reason)
-            } catch (walletError: WalletIsEmptyUseCaseImpl.CouldNotDetermineIfWalletIsEmpty) {
-                val reason = walletError.message ?: "could not determine if wallet is empty"
-                logError(walletError, reason)
             }
         }
 
@@ -160,6 +147,9 @@ class HandleLocalLoginImpl
                     } catch (walletError: WalletIsEmptyUseCaseImpl.CouldNotDetermineIfWalletIsEmpty) {
                         val reason = walletError.message ?: "could not determine if wallet is empty"
                         logError(walletError, reason)
+                    } catch (e: Throwable) {
+                        val reason = "secure wallet data deleted"
+                        logError(e, reason)
                     }
                 } else {
                     callback(LocalAuthStatus.ReauthRequired)

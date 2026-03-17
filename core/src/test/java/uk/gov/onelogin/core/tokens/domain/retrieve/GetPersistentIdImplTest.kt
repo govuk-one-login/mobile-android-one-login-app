@@ -69,7 +69,7 @@ class GetPersistentIdImplTest {
         }
 
     @Test
-    fun `check if logger logs when wallet is empty and persistent id is null`() {
+    fun `check if logger logs when wallet is not empty and persistent id is null`() {
         runTest {
             whenever(
                 walletSdk.isEmpty()
