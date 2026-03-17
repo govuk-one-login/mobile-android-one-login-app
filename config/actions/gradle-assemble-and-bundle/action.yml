@@ -26,6 +26,9 @@ inputs:
     description: 'App check token'
     required: false
     default: ''
+  keystore-file-path:
+    description: 'Signing store file path (either absolute or relative to the working directory)'
+    required: true
 
 outputs:
   aab-paths:
@@ -68,6 +71,7 @@ runs:
         SIGNING_KEY_ALIAS: ${{ env.KEYSTORE_KEY_ALIAS }}
         SIGNING_KEY_PASSWORD: ${{ env.KEYSTORE_KEY_PASSWORD }}
         SIGNING_STORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
+        SIGNING_STORE_FILE_PATH: ${{ inputs.keystore-file-path }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         GITHUB_ACTOR: ${{ inputs.github-actor }}
         TOKEN: ${{ inputs.module-fetch-token }}
