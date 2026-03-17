@@ -30,6 +30,7 @@ import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
@@ -62,6 +63,7 @@ class WelcomeScreenViewModel
         private val logger: Logger,
         val onlineChecker: OnlineChecker,
         private val errorCounter: Counter,
+        private val removeRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry,
     ) : ViewModel() {
         private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val loading = _loading.asStateFlow()
@@ -211,8 +213,12 @@ class WelcomeScreenViewModel
                                 isReAuth -> {
                                     if (pref is LocalAuthPreference.Enabled) {
                                         viewModelScope.launch {
-                                            autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                            saveRefreshTokenExpiryToOpenStore(tokens)
+                                            if (tokens.refreshToken != null) {
+                                                autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                                                saveRefreshTokenExpiryToOpenStore(tokens)
+                                            } else {
+                                                removeRefreshTokenAndExpiry.remove()
+                                            }
                                             navigator.goBack()
                                         }
                                     } else {
@@ -222,10 +228,14 @@ class WelcomeScreenViewModel
 
                                 else -> {
                                     viewModelScope.launch {
-                                        if (pref is LocalAuthPreference.Enabled) {
-                                            saveRefreshTokenExpiryToOpenStore(tokens)
+                                        if (tokens.refreshToken != null) {
+                                            if (pref is LocalAuthPreference.Enabled) {
+                                                saveRefreshTokenExpiryToOpenStore(tokens)
+                                            }
+                                            autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                                        } else {
+                                            removeRefreshTokenAndExpiry.remove()
                                         }
-                                        autoInitialiseSecureStore.initialise(tokens.refreshToken)
                                         navigator.navigate(MainNavRoutes.Start, true)
                                     }
                                 }
