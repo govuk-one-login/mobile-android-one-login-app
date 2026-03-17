@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.logging.api.v2.Logger
+import uk.gov.logging.api.v2.errorKeys.ErrorKeys
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -28,6 +30,8 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCaseImpl
 import javax.inject.Inject
 
 @Suppress("LongParameterList", "TooManyFunctions")
@@ -44,6 +48,8 @@ class SplashScreenViewModel
         private val refreshExchange: RefreshExchange,
         @param:RefreshToken
         private val getTokenExpiry: GetTokenExpiry,
+        private val walletIsEmptyUseCase: WalletIsEmptyUseCase,
+        private val logger: Logger
     ) : ViewModel(),
         DefaultLifecycleObserver {
         private val _showUnlock = MutableStateFlow(false)
@@ -91,8 +97,10 @@ class SplashScreenViewModel
                 RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
 
                 // Handle when a user ia a first time user
-                RefreshExchangeResult.FirstTimeUser ->
+                RefreshExchangeResult.FirstTimeUser -> {
                     deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
+                    checkIfWalletIsEmpty()
+                }
 
                 // Handle when something went wrong during local auth
                 RefreshExchangeResult.UnrecoverableError ->
@@ -114,8 +122,10 @@ class SplashScreenViewModel
 
         private fun handleLocalAuthBehaviour(status: LocalAuthStatus) {
             when (status) {
-                LocalAuthStatus.FirstTimeUser ->
+                LocalAuthStatus.FirstTimeUser -> {
                     deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
+                    checkIfWalletIsEmpty()
+                }
 
                 LocalAuthStatus.UnrecoverableError ->
                     deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
@@ -195,4 +205,30 @@ class SplashScreenViewModel
             val shouldDelete: Boolean = false,
             val action: () -> Unit = {}
         )
+
+        private fun checkIfWalletIsEmpty() {
+            try {
+                val walletIsEmpty = walletIsEmptyUseCase.invoke()
+                if (!walletIsEmpty) {
+                    val walletError = WalletIsEmptyUseCaseImpl.WalletIsEmptyDataError()
+                    val reason = walletError.message
+                    logError(walletError, reason)
+                }
+            } catch (walletError: WalletIsEmptyUseCaseImpl.CouldNotDetermineIfWalletIsEmpty) {
+                val reason = walletError.message ?: "could not determine if wallet is empty"
+                logError(walletError, reason)
+            }
+        }
+
+        private fun logError(
+            e: Throwable,
+            reason: String
+        ) {
+            logger.error(
+                this.javaClass.simpleName,
+                e.message ?: "error",
+                e,
+                ErrorKeys.StringKey("reason", reason)
+            )
+        }
     }

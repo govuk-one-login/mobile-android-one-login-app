@@ -23,6 +23,7 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v2.Logger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -45,6 +46,7 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -70,6 +72,10 @@ class SplashScreenTest : FragmentActivityTestCase() {
     private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingContentDescription: SemanticsMatcher
 
+    private lateinit var walletIsEmptyUseCase: WalletIsEmptyUseCase
+
+    private lateinit var logger: Logger
+
     @Before
     fun setUp() {
         whenever(repository.isOptInPreferenceRequired()).thenReturn(MutableStateFlow(false))
@@ -81,6 +87,8 @@ class SplashScreenTest : FragmentActivityTestCase() {
         onlineChecker = mock()
         refreshExchange = mock()
         getTokenExpiry = mock()
+        walletIsEmptyUseCase = mock()
+        logger = mock()
         viewModel =
             SplashScreenViewModel(
                 navigator,
@@ -90,7 +98,9 @@ class SplashScreenTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 onlineChecker,
                 refreshExchange,
-                getTokenExpiry
+                getTokenExpiry,
+                walletIsEmptyUseCase,
+                logger
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)

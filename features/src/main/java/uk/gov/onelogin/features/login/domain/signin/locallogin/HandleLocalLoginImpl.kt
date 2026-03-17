@@ -3,6 +3,8 @@ package uk.gov.onelogin.features.login.domain.signin.locallogin
 import androidx.fragment.app.FragmentActivity
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
+import uk.gov.logging.api.v2.Logger
+import uk.gov.logging.api.v2.errorKeys.ErrorKeys
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
@@ -13,9 +15,11 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCaseImpl
 import javax.inject.Inject
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooGenericExceptionCaught")
 class HandleLocalLoginImpl
     @Inject
     constructor(
@@ -30,22 +34,37 @@ class HandleLocalLoginImpl
         private val isRefreshTokenExpired: IsTokenExpired,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val localAuthManager: LocalAuthManager,
-        private val getPersistentId: GetPersistentId
+        private val getPersistentId: GetPersistentId,
+        private val walletIsEmptyUseCase: WalletIsEmptyUseCase,
+        private val logger: Logger
     ) : HandleLocalLogin {
         override suspend fun invoke(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
         ) {
-            if (getPersistentId().isNullOrEmpty()) {
-                callback(LocalAuthStatus.FirstTimeUser)
-            } else {
-                // Check Local Auth Enabled AND Refresh Token expiry exists
-                if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
-                    handleRefreshToken(fragmentActivity, callback)
+            try {
+                if (getPersistentId().isNullOrEmpty()) {
+                    callback(LocalAuthStatus.FirstTimeUser)
+                    val isWalletEmpty = walletIsEmptyUseCase.invoke()
+                    if (!isWalletEmpty) {
+                        val exp = WalletIsEmptyUseCaseImpl.WalletIsEmptyDataError()
+                        logError(exp, exp.message)
+                    }
                 } else {
-                    // If Refresh Token is null, then use the flow for Access Token only
-                    handleAccessTokenOnly(fragmentActivity, callback)
+                    // Check Local Auth Enabled AND Refresh Token expiry exists
+                    if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
+                        handleRefreshToken(fragmentActivity, callback)
+                    } else {
+                        // If Refresh Token is null, then use the flow for Access Token only
+                        handleAccessTokenOnly(fragmentActivity, callback)
+                    }
                 }
+            } catch (e: Throwable) {
+                val reason = "secure wallet data deleted"
+                logError(e, reason)
+            } catch (walletError: WalletIsEmptyUseCaseImpl.CouldNotDetermineIfWalletIsEmpty) {
+                val reason = walletError.message ?: "could not determine if wallet is empty"
+                logError(walletError, reason)
             }
         }
 
@@ -97,6 +116,7 @@ class HandleLocalLoginImpl
             }
         }
 
+        @Suppress("NestedBlockDepth")
         private suspend fun handleAccessTokenOnly(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
@@ -131,6 +151,16 @@ class HandleLocalLoginImpl
             } else {
                 if (getAccessTokenExpiry() == null) {
                     callback(LocalAuthStatus.FirstTimeUser)
+                    try {
+                        val isWalletEmpty = walletIsEmptyUseCase.invoke()
+                        if (!isWalletEmpty) {
+                            val exp = WalletIsEmptyUseCaseImpl.WalletIsEmptyDataError()
+                            logError(exp, exp.message)
+                        }
+                    } catch (walletError: WalletIsEmptyUseCaseImpl.CouldNotDetermineIfWalletIsEmpty) {
+                        val reason = walletError.message ?: "could not determine if wallet is empty"
+                        logError(walletError, reason)
+                    }
                 } else {
                     callback(LocalAuthStatus.ReauthRequired)
                 }
@@ -140,5 +170,17 @@ class HandleLocalLoginImpl
         private fun isLocalAuthEnabled(): Boolean {
             val prefs = localAuthManager.localAuthPreference
             return !(prefs == LocalAuthPreference.Disabled || prefs == null)
+        }
+
+        private fun logError(
+            e: Throwable,
+            reason: String
+        ) {
+            logger.error(
+                this.javaClass.simpleName,
+                e.message ?: "error",
+                e,
+                ErrorKeys.StringKey("reason", reason)
+            )
         }
     }

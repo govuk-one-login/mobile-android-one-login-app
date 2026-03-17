@@ -16,6 +16,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
+import uk.gov.logging.api.v2.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
@@ -33,6 +34,7 @@ import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -48,6 +50,9 @@ class SplashScreenViewModelTest {
     private val mockAutoInitialiseSecureStore: AutoInitialiseSecureStore = mock()
     private val mockGetRefreshTokenExp: GetTokenExpiry = mock()
 
+    private var walletIsEmptyUseCase: WalletIsEmptyUseCase = mock()
+
+    private var logger: Logger = mock()
     private lateinit var viewModel: SplashScreenViewModel
 
     @BeforeEach
@@ -63,7 +68,9 @@ class SplashScreenViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp
+                mockGetRefreshTokenExp,
+                walletIsEmptyUseCase,
+                logger
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
     }
