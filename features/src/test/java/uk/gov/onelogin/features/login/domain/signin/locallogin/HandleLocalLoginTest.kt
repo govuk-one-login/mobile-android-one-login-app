@@ -14,7 +14,6 @@ import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
-import uk.gov.logging.api.v2.Logger
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
@@ -24,7 +23,6 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
-import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -42,10 +40,6 @@ class HandleLocalLoginTest {
 
     private lateinit var useCase: HandleLocalLogin
 
-    private lateinit var walletIsEmptyUseCase: WalletIsEmptyUseCase
-
-    private lateinit var logger: Logger
-
     @BeforeEach
     fun setup() {
         mockActivity = mock()
@@ -57,8 +51,6 @@ class HandleLocalLoginTest {
         mockIsAccessTokenExpired = mock()
         mockIsRefreshTokenExpired = mock()
         mockGetPersistentId = mock()
-        walletIsEmptyUseCase = mock()
-        logger = mock()
         useCase =
             HandleLocalLoginImpl(
                 mockGetAccessTokenExpiry,
@@ -69,8 +61,6 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore,
                 mockBioPrefHandler,
                 mockGetPersistentId,
-                walletIsEmptyUseCase,
-                logger
             )
     }
 

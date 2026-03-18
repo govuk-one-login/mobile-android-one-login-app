@@ -16,7 +16,6 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v2.Logger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
@@ -31,7 +30,6 @@ import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import uk.gov.onelogin.features.wallet.domain.WalletIsEmptyUseCase
 
 @RunWith(AndroidJUnit4::class)
 class SplashScreenDevMenuTest : FragmentActivityTestCase() {
@@ -50,10 +48,6 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var optInViewModel: OptInRequirementViewModel
 
     private val splashIcon = hasTestTag(resources.getString(R.string.splashLogoTestTag))
-
-    private lateinit var walletIsEmptyUseCase: WalletIsEmptyUseCase
-
-    private lateinit var logger: Logger
 
     @Before
     fun setup() {
@@ -76,8 +70,6 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
                 onlineChecker,
                 refreshExchange,
                 getTokenExpiry,
-                walletIsEmptyUseCase,
-                logger
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
