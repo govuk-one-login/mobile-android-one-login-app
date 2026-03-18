@@ -15,7 +15,7 @@ import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
 import javax.inject.Inject
 
-@Suppress("LongParameterList", "TooGenericExceptionCaught")
+@Suppress("LongParameterList")
 class HandleLocalLoginImpl
     @Inject
     constructor(
@@ -96,7 +96,6 @@ class HandleLocalLoginImpl
                 callback(LocalAuthStatus.ReauthRequired)
             }
         }
-
 
         private suspend fun handleAccessTokenOnly(
             fragmentActivity: FragmentActivity,
