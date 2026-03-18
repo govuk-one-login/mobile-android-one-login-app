@@ -56,11 +56,13 @@ import uk.gov.android.ui.componentsv2.list.GdsBulletedList
 import uk.gov.android.ui.componentsv2.list.ListItem
 import uk.gov.android.ui.componentsv2.list.ListTitle
 import uk.gov.android.ui.componentsv2.list.TitleType
+import uk.gov.android.ui.theme.m3.Dividers
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.m3.Switch
 import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.m3.defaultColors
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
@@ -180,7 +182,7 @@ private fun BiometricsToggleRow(
             Modifier
                 .height(56.dp)
                 .fillMaxWidth()
-                .background(color = GdsLocalColorScheme.current.listBackground)
+                .background(color = GdsLocalColorScheme.current.rowBackground)
                 .toggleable(
                     role = Role.Switch,
                     value = toggle,
@@ -209,7 +211,7 @@ private fun BiometricsToggleRow(
             modifier = Modifier.clearAndSetSemantics {},
         )
     }
-    HorizontalDivider()
+    HorizontalDivider(color = Dividers.row.toMappedColors())
 }
 
 @Composable
