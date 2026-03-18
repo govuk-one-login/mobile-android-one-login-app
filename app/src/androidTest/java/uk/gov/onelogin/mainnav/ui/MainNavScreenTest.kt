@@ -24,6 +24,7 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v2.Logger as LoggerV2
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.AnalyticsModule
@@ -55,6 +56,11 @@ class MainNavScreenTest : TestCase() {
 
     @BindValue
     val crashLogger: CrashLogger = mock()
+
+    @BindValue
+    val logger2: LoggerV2 = mock()
+
+
 
     @BindValue
     val walletRepository: WalletRepository = mock()
