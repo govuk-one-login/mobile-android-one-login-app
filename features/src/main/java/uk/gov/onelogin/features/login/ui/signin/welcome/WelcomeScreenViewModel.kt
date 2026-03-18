@@ -211,33 +211,11 @@ class WelcomeScreenViewModel
                             val pref = localAuthManager.localAuthPreference
                             when {
                                 isReAuth -> {
-                                    if (pref is LocalAuthPreference.Enabled) {
-                                        viewModelScope.launch {
-                                            if (tokens.refreshToken != null) {
-                                                autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                                saveRefreshTokenExpiryToOpenStore(tokens)
-                                            } else {
-                                                removeRefreshTokenAndExpiry.remove()
-                                            }
-                                            navigator.goBack()
-                                        }
-                                    } else {
-                                        navigator.goBack()
-                                    }
+                                    handleLocalAuthCallbackReAuth(pref, tokens)
                                 }
 
                                 else -> {
-                                    viewModelScope.launch {
-                                        if (tokens.refreshToken != null) {
-                                            if (pref is LocalAuthPreference.Enabled) {
-                                                saveRefreshTokenExpiryToOpenStore(tokens)
-                                            }
-                                            autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                        } else {
-                                            removeRefreshTokenAndExpiry.remove()
-                                        }
-                                        navigator.navigate(MainNavRoutes.Start, true)
-                                    }
+                                    handleLocalAuthCallbackNoReAuth(pref, tokens)
                                 }
                             }
                         }
@@ -247,6 +225,42 @@ class WelcomeScreenViewModel
                         }
                     },
             )
+        }
+
+        private fun handleLocalAuthCallbackReAuth(
+            pref: LocalAuthPreference?,
+            tokens: TokenResponse
+        ) {
+            if (pref is LocalAuthPreference.Enabled) {
+                viewModelScope.launch {
+                    if (tokens.refreshToken != null) {
+                        autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                        saveRefreshTokenExpiryToOpenStore(tokens)
+                    } else {
+                        removeRefreshTokenAndExpiry.remove()
+                    }
+                    navigator.goBack()
+                }
+            } else {
+                navigator.goBack()
+            }
+        }
+
+        private fun handleLocalAuthCallbackNoReAuth(
+            pref: LocalAuthPreference?,
+            tokens: TokenResponse
+        ) {
+            viewModelScope.launch {
+                if (tokens.refreshToken != null) {
+                    if (pref is LocalAuthPreference.Enabled) {
+                        saveRefreshTokenExpiryToOpenStore(tokens)
+                    }
+                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                } else {
+                    removeRefreshTokenAndExpiry.remove()
+                }
+                navigator.navigate(MainNavRoutes.Start, true)
+            }
         }
 
         private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
