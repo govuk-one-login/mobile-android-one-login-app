@@ -52,7 +52,7 @@ fun fetchGithubCredentials(): Pair<String, String> {
             exception
         )
 
-        System.getenv("USERNAME") to System.getenv("TOKEN")
+        System.getenv("GITHUB_ACTOR") to System.getenv("GITHUB_TOKEN")
     }
 }
 
