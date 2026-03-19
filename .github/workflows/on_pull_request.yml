@@ -49,9 +49,9 @@ jobs:
 
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
-        env:
-          USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+        with:
+          additional-arguments: -Pgpr.user=${{ secrets.MODULE_FETCH_TOKEN_USERNAME }} -Pgpr.token=${{ secrets.MODULE_FETCH_TOKEN }}
+
 
       - name: Get latest tag
         id: latest-tag
