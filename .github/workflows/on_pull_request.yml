@@ -47,13 +47,11 @@ jobs:
       - name: Clean runner
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
-      - name: Configure git user
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        env:
+          USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
 
       - name: Get latest tag
         id: latest-tag
