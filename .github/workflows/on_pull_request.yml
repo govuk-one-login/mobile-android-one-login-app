@@ -47,6 +47,9 @@ jobs:
       - name: Clean runner
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
+      - name: Generate and submit dependency graph
+        uses: gradle/actions/dependency-submission@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
