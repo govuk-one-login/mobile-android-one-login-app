@@ -31,7 +31,7 @@ fun EmailSection(email: String) {
     Row(
         modifier =
             Modifier
-                .background(color = GdsLocalColorScheme.current.listBackground)
+                .background(color = GdsLocalColorScheme.current.rowBackground)
                 .fillMaxWidth()
                 .semantics(true) {
                     traversalIndex = EMAIL_TRAVERSAL_ORDER

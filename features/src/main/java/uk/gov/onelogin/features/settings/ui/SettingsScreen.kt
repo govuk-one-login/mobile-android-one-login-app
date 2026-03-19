@@ -57,10 +57,12 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.theme.m3.Dividers
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.m3.Switch
 import uk.gov.android.ui.theme.m3.defaultColors
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -246,7 +248,7 @@ private data class AnalyticsViewModelFunctions(
 
 @Composable
 private fun YourDetailsSection(onClick: () -> Unit) {
-    HorizontalDivider()
+    HorizontalDivider(color = Dividers.row.toMappedColors())
     LinkRow(
         R.string.app_settingsSignInDetailsLink,
         R.drawable.external_link_icon,
@@ -414,7 +416,7 @@ private fun LinkRow(
         modifier =
             Modifier
                 .clickable(onClick = onClick)
-                .background(color = GdsLocalColorScheme.current.listBackground)
+                .background(color = GdsLocalColorScheme.current.rowBackground)
                 .fillMaxWidth()
                 .semantics(mergeDescendants = true) { this.traversalIndex = traversalIndex },
     ) {
@@ -464,7 +466,9 @@ private fun LinkRow(
             )
         }
     }
-    HorizontalDivider()
+    HorizontalDivider(
+        color = Dividers.row.toMappedColors()
+    )
 }
 
 @Composable
@@ -481,7 +485,7 @@ internal fun PreferenceToggleRow(
             Modifier
                 .height(56.dp)
                 .fillMaxWidth()
-                .background(color = GdsLocalColorScheme.current.listBackground)
+                .background(color = GdsLocalColorScheme.current.rowBackground)
                 .semantics {
                     traversalIndex = ANALYTICS_TOGGLE_TRAVERSAL_ORDER
                 }.toggleable(
@@ -508,7 +512,7 @@ internal fun PreferenceToggleRow(
             colors = Switch.defaultColors(),
         )
     }
-    HorizontalDivider()
+    HorizontalDivider(color = Dividers.row.toMappedColors())
 }
 
 @Composable
@@ -521,7 +525,7 @@ private fun SignOutRow(openSignOutScreen: () -> Unit) {
                 .padding(top = mediumPadding)
                 .defaultMinSize(minHeight = 56.dp)
                 .fillMaxWidth()
-                .background(color = GdsLocalColorScheme.current.listBackground)
+                .background(color = GdsLocalColorScheme.current.rowBackground)
                 .clickable {
                     openSignOutScreen()
                 }.semantics { traversalIndex = SIGN_OUT_TRAVERSAL_ORDER },
