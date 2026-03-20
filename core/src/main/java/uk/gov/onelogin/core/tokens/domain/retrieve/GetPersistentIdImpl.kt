@@ -25,12 +25,12 @@ class GetPersistentIdImpl
                     val reason = "secure wallet data deleted"
                     logErrors(exp, reason)
                 }
+            } catch (walletError: WalletSdk.WalletSdkError.WalletEmptyCheckFailed) {
+                val reason = walletError.message ?: "could not determine if wallet is empty"
+                logErrors(walletError, reason)
             } catch (e: Throwable) {
                 val reason = "secure wallet data deleted"
                 logErrors(e, reason)
-            } catch (walletError: WalletSdk.WalletSdkError) {
-                val reason = walletError.message ?: "could not determine if wallet is empty"
-                logErrors(walletError, reason)
             }
             return id
         }

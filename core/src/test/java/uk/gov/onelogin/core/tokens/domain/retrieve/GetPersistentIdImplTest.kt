@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -23,18 +24,14 @@ class GetPersistentIdImplTest {
 
     private val logger: Logger = mock()
 
-    private val throwableMessage = "This is a unit test!"
+    private val logTag = "GetPersistentIdImpl"
+    private val logMessage = "Wallet is not empty"
 
-    private val logMessage = "Unit test log message"
+    val errorKeysTest = ErrorKeys.StringKey("reason", "secure wallet data deleted")
 
-    private val logTag = "Example log tag"
-    val logThrowable = Throwable(message = throwableMessage)
-
-    val errorKeysTest: ErrorKeys =
-        ErrorKeys.IntKey(
-            "key",
-            1,
-        )
+    val tag = "GetPersistentIdImpl"
+    val logMessageWalletError = "java.lang.Exception: could not determine if wallet is empty"
+    val walletErrorErrorKeys = ErrorKeys.StringKey("reason", logMessageWalletError)
 
     private val sut =
         GetPersistentIdImpl(
@@ -51,6 +48,19 @@ class GetPersistentIdImplTest {
             val idResponse = sut.invoke()
 
             assertEquals(expectedPersistentId, idResponse)
+        }
+
+    @Test
+    fun `success scenario is empty true`() =
+        runTest {
+            whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
+                .thenReturn(null)
+            whenever(walletSdk.isEmpty()).thenReturn(
+                true
+            )
+            val idResponse = sut.invoke()
+
+            assertEquals(null, idResponse)
         }
 
     @Test
@@ -81,7 +91,7 @@ class GetPersistentIdImplTest {
                 null,
             )
 
-            logger.error(tag = logTag, message = logMessage, throwable = logThrowable, errorKeysTest)
+            sut.invoke()
             verify(logger).error(
                 eq(logTag),
                 eq(logMessage),
@@ -92,20 +102,21 @@ class GetPersistentIdImplTest {
     }
 
     @Test
-    fun `check if logger logs when get persistent id throws an exception`() {
+    fun `check if logger logs when check if wallet is empty throws an exception`() {
         runTest {
-            whenever(
-                walletSdk.isEmpty()
-            ).thenReturn(false)
-
-            val expected: Throwable = Error("secure wallet data deleted")
-
+            val expected = Throwable("Wallet is not empty")
             whenever(
                 mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
-            ).thenThrow(
-                expected
+            ).thenReturn(
+                null,
             )
-            logger.error(tag = logTag, message = logMessage, throwable = expected, errorKeysTest)
+
+            doAnswer {
+                throw expected
+            }.`when`(walletSdk).isEmpty()
+
+            sut.invoke()
+
             verify(logger).error(
                 eq(logTag),
                 eq(logMessage),
@@ -131,4 +142,28 @@ class GetPersistentIdImplTest {
             eq(errorKeysTest)
         )
     }
+
+    @Test
+    fun `check if logger logs when get wallet throws wallet exception`() =
+        runTest {
+            val expected = WalletSdk.WalletSdkError.WalletEmptyCheckFailed()
+
+            // Given token is null
+            whenever(
+                mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
+            ).thenReturn(
+                null,
+            )
+            doAnswer {
+                throw expected
+            }.`when`(walletSdk).isEmpty()
+
+            sut.invoke()
+            verify(logger).error(
+                eq(tag),
+                eq(logMessageWalletError),
+                eq(expected),
+                eq(walletErrorErrorKeys)
+            )
+        }
 }
