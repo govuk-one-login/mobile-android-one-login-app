@@ -45,6 +45,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
@@ -79,6 +80,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var errorCounter: Counter
     private lateinit var mockFragmentActivity: FragmentActivity
+    private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
     private val logger = SystemLogger()
     private var shouldTryAgainCalled = false
 
@@ -112,6 +114,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             onlineChecker = mock()
             analytics = mock()
             errorCounter = mock()
+            mockRemoveRefreshTokenAndExpiry = mock()
             localAuthManager =
                 LocalAuthManagerImpl(
                     localAuthPreferenceRepo,
@@ -138,7 +141,8 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
                     signOutUseCase,
                     logger,
                     onlineChecker,
-                    errorCounter
+                    errorCounter,
+                    mockRemoveRefreshTokenAndExpiry,
                 )
             getPersistentId = mock()
             signOutUseCase = mock()
