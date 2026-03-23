@@ -53,6 +53,7 @@ fun AuthTabScreen(viewModel: AuthTabScreenViewModel = hiltViewModel()) {
 private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     val tokens = viewModel.getTokens()
     val email = viewModel.email
+    val walletId = viewModel.walletId.value
     Text(
         text = "Authentication Tokens",
         style = MaterialTheme.typography.titleMedium,
@@ -63,6 +64,8 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     AccessTokenSection(tokens)
     HorizontalDivider()
     IdTokenSection(tokens)
+    HorizontalDivider()
+    WalletIdSection(walletId){ viewModel.getWalletId() }
     HorizontalDivider()
     RefreshTokenSection(viewModel)
     HorizontalDivider()
@@ -143,6 +146,35 @@ private fun IdTokenSection(tokens: LoginTokens?) {
                 .padding(16.dp),
         color = MaterialTheme.colorScheme.onBackground,
     )
+}
+
+@Composable
+private fun WalletIdSection(
+    walletId: String?,
+    refreshWalletId: () -> Unit
+) {
+    Text(
+        text = "Wallet ID",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(16.dp),
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+    HorizontalDivider(Modifier.padding(start = 16.dp))
+    Row {
+        GdsButton(
+            text = "Refresh wallet id",
+            buttonType = ButtonTypeV2.Primary(),
+            onClick = refreshWalletId,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Text(
+            text = walletId ?: "No wallet id set!",
+            modifier =
+                Modifier
+                    .padding(16.dp),
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+    }
 }
 
 @Composable
