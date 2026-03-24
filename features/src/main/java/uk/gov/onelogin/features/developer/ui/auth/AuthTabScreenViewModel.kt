@@ -20,6 +20,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class AuthTabScreenViewModel
     @Inject
