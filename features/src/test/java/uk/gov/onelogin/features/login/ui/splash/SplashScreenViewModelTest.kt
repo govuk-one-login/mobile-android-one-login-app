@@ -63,7 +63,7 @@ class SplashScreenViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp
+                mockGetRefreshTokenExp,
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
     }

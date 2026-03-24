@@ -30,7 +30,7 @@ class HandleLocalLoginImpl
         private val isRefreshTokenExpired: IsTokenExpired,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val localAuthManager: LocalAuthManager,
-        private val getPersistentId: GetPersistentId
+        private val getPersistentId: GetPersistentId,
     ) : HandleLocalLogin {
         override suspend fun invoke(
             fragmentActivity: FragmentActivity,
