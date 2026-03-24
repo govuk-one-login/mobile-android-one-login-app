@@ -65,7 +65,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider()
     IdTokenSection(tokens)
     HorizontalDivider()
-    WalletIdSection(walletId){ viewModel.getWalletId() }
+    WalletIdSection(walletId) { viewModel.getWalletId() }
     HorizontalDivider()
     RefreshTokenSection(viewModel)
     HorizontalDivider()

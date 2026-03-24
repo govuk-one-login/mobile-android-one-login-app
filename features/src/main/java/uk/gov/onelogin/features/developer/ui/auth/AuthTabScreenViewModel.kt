@@ -61,7 +61,7 @@ class AuthTabScreenViewModel
             get() = _isRefreshTokenSaved
 
         private val _walletId = mutableStateOf<String?>(null)
-        val walletId : State<String?>
+        val walletId: State<String?>
             get() = _walletId
 
         val email = extractEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
