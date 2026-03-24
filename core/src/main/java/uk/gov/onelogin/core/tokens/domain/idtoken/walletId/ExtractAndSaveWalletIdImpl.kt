@@ -30,6 +30,6 @@ class ExtractAndSaveWalletIdImpl
         companion object {
             private const val WALLET_ID_BASE = "uk.gov.account.token"
             private const val WALLET_ID_IDENTIFIER = "/walletStoreId"
-            private const val WALLET_ID_KEY = "wallet_id"
+            const val WALLET_ID_KEY = "wallet_id"
         }
     }
