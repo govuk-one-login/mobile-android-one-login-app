@@ -29,6 +29,7 @@ import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
+import uk.gov.onelogin.features.network.provider.StsAuthenticationProvider.Companion.AUTHENTICATION_DENIED
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertEquals
 
@@ -216,7 +217,8 @@ class StsAuthenticationProviderTest {
     fun `original exception when API call fails`() =
         runTest {
             val originalException = Exception("error")
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Failure(500, originalException))
+            whenever(mockHttpClient.makeRequest(any()))
+                .thenReturn(ApiResponse.Failure(500, originalException))
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -260,6 +262,83 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
+        }
+
+    @Test
+    fun `access token only, api response is failure with 400 with no error message`() =
+        runTest {
+            whenever(mockHttpClient.makeRequest(any()))
+                .thenReturn(ApiResponse.Failure(AUTHENTICATION_DENIED, Exception()))
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
+                LoginTokens(
+                    tokenType = "type",
+                    accessToken = "accessToken",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "idToken"
+                )
+            )
+
+            val response = provider.fetchBearerToken("scope")
+
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
+                response.error.message
+            )
+        }
+
+    @Test
+    fun `access token only, api response is failure with 400 with error message`() =
+        runTest {
+            val msgExpected = "denied"
+            whenever(mockHttpClient.makeRequest(any()))
+                .thenReturn(ApiResponse.Failure(AUTHENTICATION_DENIED, Exception(msgExpected)))
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
+                LoginTokens(
+                    tokenType = "type",
+                    accessToken = "accessToken",
+                    accessTokenExpirationTime = 1L,
+                    idToken = "idToken"
+                )
+            )
+
+            val response = provider.fetchBearerToken("scope")
+
+            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                msgExpected,
+                response.error.message
+            )
+        }
+
+    @Test
+    fun `access token only, api response is loading`() =
+        runTest {
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Loading)
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
+                response.error.message
+            )
+        }
+
+    @Test
+    fun `access token only, api response is offline`() =
+        runTest {
+            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Offline)
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                StsAuthenticationProvider.SERVICE_TOKEN_FAILURE_ERROR_MSG,
+                response.error.message
+            )
         }
 
     @Test
