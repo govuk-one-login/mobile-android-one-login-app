@@ -160,21 +160,19 @@ private fun WalletIdSection(
         color = MaterialTheme.colorScheme.onBackground,
     )
     HorizontalDivider(Modifier.padding(start = 16.dp))
-    Row {
-        GdsButton(
-            text = "Refresh wallet id",
-            buttonType = ButtonTypeV2.Primary(),
-            onClick = refreshWalletId,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            text = walletId ?: "No wallet id set!",
-            modifier =
-                Modifier
-                    .padding(16.dp),
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
+    Text(
+        text = walletId ?: "No wallet id set!",
+        modifier =
+            Modifier
+                .padding(16.dp),
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+    GdsButton(
+        text = "Refresh wallet id",
+        buttonType = ButtonTypeV2.Primary(),
+        onClick = refreshWalletId,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable
