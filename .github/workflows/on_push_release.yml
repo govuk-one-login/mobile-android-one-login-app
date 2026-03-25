@@ -101,6 +101,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Retrieve secrets
+        id: retrieve-secrets
         uses: ./config/actions/retrieve-secrets
         with:
           actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
