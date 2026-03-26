@@ -233,8 +233,9 @@ class WelcomeScreenViewModel
         ) {
             if (pref is LocalAuthPreference.Enabled) {
                 viewModelScope.launch {
+                    // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
+                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
                     if (tokens.refreshToken != null) {
-                        autoInitialiseSecureStore.initialise(tokens.refreshToken)
                         saveRefreshTokenExpiryToOpenStore(tokens)
                     } else {
                         removeRefreshTokenAndExpiry.remove()
@@ -251,11 +252,12 @@ class WelcomeScreenViewModel
             tokens: TokenResponse
         ) {
             viewModelScope.launch {
+                // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
+                autoInitialiseSecureStore.initialise(tokens.refreshToken)
                 if (tokens.refreshToken != null) {
                     if (pref is LocalAuthPreference.Enabled) {
                         saveRefreshTokenExpiryToOpenStore(tokens)
                     }
-                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
                 } else {
                     removeRefreshTokenAndExpiry.remove()
                 }

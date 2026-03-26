@@ -122,6 +122,7 @@ class HandleLocalLoginImpl
                                 ),
                             )
                         } else {
+                            println("Access token ReAuth - $it and idToken $idToken and $accessToken")
                             callback(LocalAuthStatus.ReauthRequired)
                             return@getFromEncryptedSecureStore
                         }
@@ -132,6 +133,7 @@ class HandleLocalLoginImpl
                 if (getAccessTokenExpiry() == null) {
                     callback(LocalAuthStatus.FirstTimeUser)
                 } else {
+                    println("Access token ReAuth access exp - ${getAccessTokenExpiry()}")
                     callback(LocalAuthStatus.ReauthRequired)
                 }
             }
