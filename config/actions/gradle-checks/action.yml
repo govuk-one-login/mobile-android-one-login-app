@@ -68,7 +68,7 @@ runs:
       if: ${{ inputs.test-type == 'style' }}
       shell: bash
       run: |
-        ./.sh/checks/runStyleChecks
+        ./.sh/styleChecks/runStyleChecks
       env:
         CI: 'true'
         BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
