@@ -64,8 +64,8 @@ jobs:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
 
-      - name: Run gradle style styleChecks
-        id: component-test
+      - name: Run gradle style checks (Detekt, Lint, Vale)
+        id: style-checks
         uses: ./config/actions/gradle-styleChecks
         with:
           test-type: "style"

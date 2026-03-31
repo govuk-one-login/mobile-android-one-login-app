@@ -68,6 +68,17 @@ jobs:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.latest-tag.outputs.current-tag }}
 
+      - name: Run gradle style checks (Detekt, Lint, Vale)
+        id: style-checks
+        uses: ./config/actions/gradle-styleChecks
+        with:
+          test-type: "style"
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
       - name: Run gradle instrumentation tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
@@ -77,9 +88,33 @@ jobs:
           version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Run gradle unit tests
-        uses: ./config/actions/unit-gradle-styleChecks
+      - name: Run gradle component tests
+        id: component-test
+        uses: ./config/actions/gradle-styleChecks
         with:
+          test-type: "component"
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
+      - name: Run gradle unit tests
+        id: unit-test
+        uses: ./config/actions/gradle-styleChecks
+        with:
+          test-type: "unit"
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: "${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
+      - name: Run gradle snapshot tests
+        id: snapshot-test
+        uses: ./config/actions/gradle-styleChecks
+        with:
+          test-type: "snapshot"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
