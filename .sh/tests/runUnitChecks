@@ -20,10 +20,10 @@ then
   ./gradlew \
     :app:test \
     :core:test \
-    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testProductionReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testBuildDebugUnitTest --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testStagingDebugUnitTest --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testStagingReleaseUnitTest --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testProductionReleaseUnitTest --tests "uk.gov.onelogin.features.unit.*" \
     --continue \
     --stacktrace
 else

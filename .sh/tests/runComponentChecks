@@ -18,10 +18,10 @@ if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
   echo "Running component checks without environment variables (local development)..."
   ./gradlew \
-    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.component.*"\
-    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.component.*" \
-    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
-    :features:testProducstionReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testBuildDebugUnitTest --tests "uk.gov.onelogin.features.component.*"\
+    :features:testStagingDebugUnitTest --tests "uk.gov.onelogin.features.component.*" \
+    :features:testStagingReleaseUnitTest --tests "uk.gov.onelogin.features.component.*" \
+    :features:testProductionReleaseUnitTest --tests "uk.gov.onelogin.features.component.*" \
     --continue \
     --stacktrace
 else
