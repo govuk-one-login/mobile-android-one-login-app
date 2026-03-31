@@ -70,7 +70,7 @@ jobs:
 
       - name: Run gradle style checks (Detekt, Lint, Vale)
         id: style-checks
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "style"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
 
       - name: Run gradle component tests
         id: component-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "component"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -101,7 +101,7 @@ jobs:
 
       - name: Run gradle unit tests
         id: unit-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "unit"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -112,7 +112,7 @@ jobs:
 
       - name: Run gradle snapshot tests
         id: snapshot-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "snapshot"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -139,7 +139,7 @@ jobs:
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     needs:
-      - run-gradle-styleChecks
+      - run-checks
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -175,8 +175,8 @@ jobs:
           flavors: 'build,staging'
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.run-gradle-styleChecks.outputs.version-code }}
-          version-name: ${{ needs.run-gradle-styleChecks.outputs.version-name }}
+          version-code: ${{ needs.run-checks.outputs.version-code }}
+          version-name: ${{ needs.run-checks.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
           keystore-file-path: ${{ steps.retrieve-secrets.outputs.keystore-file-path }}
 
@@ -189,8 +189,8 @@ jobs:
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-code: ${{ needs.run-gradle-styleChecks.outputs.version-code }}
-          version-name: ${{ needs.run-gradle-styleChecks.outputs.version-name }}
+          version-code: ${{ needs.run-checks.outputs.version-code }}
+          version-name: ${{ needs.run-checks.outputs.version-name }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace

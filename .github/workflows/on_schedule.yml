@@ -58,7 +58,7 @@ jobs:
 
       - name: Run gradle style checks (Detekt, Lint, Vale)
         id: style-checks
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "style"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -78,7 +78,7 @@ jobs:
 
       - name: Run gradle component tests
         id: component-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "component"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
 
       - name: Run gradle unit tests
         id: unit-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "unit"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
@@ -100,7 +100,7 @@ jobs:
 
       - name: Run gradle snapshot tests
         id: snapshot-test
-        uses: ./config/actions/gradle-styleChecks
+        uses: ./config/actions/gradle-checks
         with:
           test-type: "snapshot"
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
