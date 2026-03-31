@@ -60,7 +60,7 @@ class HandleLocalLoginTest {
                 mockIsRefreshTokenExpired,
                 mockGetFromEncryptedSecureStore,
                 mockBioPrefHandler,
-                mockGetPersistentId
+                mockGetPersistentId,
             )
     }
 

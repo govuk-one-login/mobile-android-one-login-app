@@ -30,6 +30,7 @@ import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
@@ -62,6 +63,7 @@ class WelcomeScreenViewModel
         private val logger: Logger,
         val onlineChecker: OnlineChecker,
         private val errorCounter: Counter,
+        private val removeRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry,
     ) : ViewModel() {
         private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val loading = _loading.asStateFlow()
@@ -209,25 +211,11 @@ class WelcomeScreenViewModel
                             val pref = localAuthManager.localAuthPreference
                             when {
                                 isReAuth -> {
-                                    if (pref is LocalAuthPreference.Enabled) {
-                                        viewModelScope.launch {
-                                            autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                            saveRefreshTokenExpiryToOpenStore(tokens)
-                                            navigator.goBack()
-                                        }
-                                    } else {
-                                        navigator.goBack()
-                                    }
+                                    handleLocalAuthCallbackReAuth(pref, tokens)
                                 }
 
                                 else -> {
-                                    viewModelScope.launch {
-                                        if (pref is LocalAuthPreference.Enabled) {
-                                            saveRefreshTokenExpiryToOpenStore(tokens)
-                                        }
-                                        autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                                        navigator.navigate(MainNavRoutes.Start, true)
-                                    }
+                                    handleLocalAuthCallbackNoReAuth(pref, tokens)
                                 }
                             }
                         }
@@ -237,6 +225,44 @@ class WelcomeScreenViewModel
                         }
                     },
             )
+        }
+
+        private fun handleLocalAuthCallbackReAuth(
+            pref: LocalAuthPreference?,
+            tokens: TokenResponse
+        ) {
+            if (pref is LocalAuthPreference.Enabled) {
+                viewModelScope.launch {
+                    // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
+                    autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                    if (tokens.refreshToken != null) {
+                        saveRefreshTokenExpiryToOpenStore(tokens)
+                    } else {
+                        removeRefreshTokenAndExpiry.remove()
+                    }
+                    navigator.goBack()
+                }
+            } else {
+                navigator.goBack()
+            }
+        }
+
+        private fun handleLocalAuthCallbackNoReAuth(
+            pref: LocalAuthPreference?,
+            tokens: TokenResponse
+        ) {
+            viewModelScope.launch {
+                // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
+                autoInitialiseSecureStore.initialise(tokens.refreshToken)
+                if (tokens.refreshToken != null) {
+                    if (pref is LocalAuthPreference.Enabled) {
+                        saveRefreshTokenExpiryToOpenStore(tokens)
+                    }
+                } else {
+                    removeRefreshTokenAndExpiry.remove()
+                }
+                navigator.navigate(MainNavRoutes.Start, true)
+            }
         }
 
         private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {

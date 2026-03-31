@@ -11,13 +11,16 @@ import uk.gov.onelogin.core.network.domain.HelloWorldApiCall
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl.Companion.WALLET_ID_KEY
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import javax.inject.Inject
 
+@Suppress("LongParameterList")
 @HiltViewModel
 class AuthTabScreenViewModel
     @Inject
@@ -25,9 +28,10 @@ class AuthTabScreenViewModel
         private val helloWorldApiCall: HelloWorldApiCall,
         private val tokenRepository: TokenRepository,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
+        private val getFromOpenSecureStore: GetFromOpenSecureStore,
         private val removeAllSecureStoreData: RemoveAllSecureStoreData,
         private val saveToTokenSecureStore: SaveToTokenSecureStore,
-        getEmail: GetEmail,
+        extractEmail: ExtractEmail,
     ) : ViewModel() {
         private val _happyHelloWorldResponse = mutableStateOf("")
         val happyHelloWorldResponse: State<String>
@@ -57,7 +61,11 @@ class AuthTabScreenViewModel
         val isRefreshTokenSaved: State<Boolean>
             get() = _isRefreshTokenSaved
 
-        val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
+        private val _walletId = mutableStateOf<String?>(null)
+        val walletId: State<String?>
+            get() = _walletId
+
+        val email = extractEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
         fun getTokens(): LoginTokens? = tokenRepository.getTokenResponse()
 
@@ -118,6 +126,12 @@ class AuthTabScreenViewModel
             viewModelScope.launch {
                 _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
                 _serviceFailingCallLoading.value = false
+            }
+        }
+
+        fun getWalletId() {
+            viewModelScope.launch {
+                _walletId.value = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
             }
         }
     }

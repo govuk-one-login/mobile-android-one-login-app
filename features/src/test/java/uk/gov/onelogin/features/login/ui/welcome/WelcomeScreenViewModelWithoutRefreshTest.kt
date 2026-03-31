@@ -38,6 +38,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
@@ -73,6 +74,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
     private lateinit var mockSignOutUseCase: SignOutUseCase
     private lateinit var mockSavePersistentId: SavePersistentId
     private lateinit var mockCounter: Counter
+    private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
     private val logger = SystemLogger()
 
     private val testAccessToken = "testAccessToken"
@@ -153,7 +155,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             )
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
-            verify(mockAutoInitialiseSecureStore, times(1)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
             verify(mockCounter).reset()
         }
@@ -200,7 +202,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 )
             )
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
-            verify(mockAutoInitialiseSecureStore, times(1)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -844,6 +846,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
         mockSignOutUseCase = mock()
         mockOnlineChecker = mock()
         mockCounter = mock()
+        mockRemoveRefreshTokenAndExpiry = mock()
 
         viewModel =
             WelcomeScreenViewModel(
@@ -860,7 +863,8 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 mockSignOutUseCase,
                 logger,
                 mockOnlineChecker,
-                mockCounter
+                mockCounter,
+                mockRemoveRefreshTokenAndExpiry,
             )
 
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")

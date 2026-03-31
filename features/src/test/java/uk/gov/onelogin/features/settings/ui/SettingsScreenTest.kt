@@ -43,7 +43,7 @@ import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.optin.data.OptInRepository
@@ -54,7 +54,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 class SettingsScreenTest : FragmentActivityTestCase() {
     private val optInRepository: OptInRepository = mock()
     private lateinit var navigator: Navigator
-    private lateinit var getEmail: GetEmail
+    private lateinit var extractEmail: ExtractEmail
     private lateinit var localAuthManager: LocalAuthManager
     private lateinit var tokenRepository: TokenRepository
     private lateinit var mockWalletRepository: WalletRepository
@@ -86,7 +86,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             .thenReturn(MutableStateFlow(false))
         whenever(optInRepository.hasAnalyticsOptIn()).thenReturn(MutableStateFlow(false))
         navigator = mock()
-        getEmail = mock()
+        extractEmail = mock()
         tokenRepository = mock()
         localAuthManager = mock()
         mockWalletRepository = mock()
@@ -97,7 +97,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                getEmail
+                extractEmail
             )
         analytics = mock()
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
@@ -147,7 +147,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                     localAuthManager,
                     mockWalletRepository,
                     tokenRepository,
-                    getEmail
+                    extractEmail
                 )
             composeTestRule.setContent {
                 SettingsScreen(settingsViewModel, analyticsViewModel)
@@ -172,7 +172,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                     localAuthManager,
                     mockWalletRepository,
                     tokenRepository,
-                    getEmail
+                    extractEmail
                 )
             composeTestRule.setContent {
                 SettingsScreen(settingsViewModel, analyticsViewModel)
@@ -390,7 +390,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                     localAuthManager,
                     mockWalletRepository,
                     tokenRepository,
-                    getEmail
+                    extractEmail
                 )
             checkTheLinkOpensTheCorrectUrl(
                 addDocumentsLink,
@@ -410,7 +410,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                     localAuthManager,
                     mockWalletRepository,
                     tokenRepository,
-                    getEmail
+                    extractEmail
                 )
             val url = resources.getString(R.string.app_terms_and_conditions_url)
             checkTheLinkOpensTheCorrectUrl(

@@ -69,7 +69,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 onlineChecker,
                 refreshExchange,
-                getTokenExpiry
+                getTokenExpiry,
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)

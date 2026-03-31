@@ -1,5 +1,8 @@
 package uk.gov.onelogin.mainnav.ui
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -15,8 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -124,13 +134,51 @@ fun MainNavScreen(
     }
 }
 
+@SuppressLint("RememberInComposition")
+@Suppress("LongMethod")
 @Composable
 private fun RowScope.NavBarItem(
     navigationDestination: Pair<BottomNavDestination, () -> Unit>,
     selected: Boolean,
     navController: NavHostController,
 ) {
+    var focusStateEnabled by remember { mutableStateOf(false) }
     NavigationBarItem(
+        modifier =
+            Modifier
+                .onFocusChanged { focusStateEnabled = it.isFocused }
+                .clickable(
+                    interactionSource = MutableInteractionSource(),
+                    indication = null,
+                    onClick = {
+                        bottomNav(
+                            navController,
+                            navigationDestination,
+                        )
+                    }
+                ).then(
+                    if (focusStateEnabled) {
+                        val lineColour = MaterialTheme.colorScheme.onBackground
+                        Modifier.drawBehind {
+                            drawRect(
+                                topLeft =
+                                    Offset(
+                                        x = size.width * FOCUS_BORDER_OFFSET_WIDTH_MULTIPLIER,
+                                        y = size.height * FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER
+                                    ),
+                                color = lineColour,
+                                style = Stroke(FOCUS_BORDER_STROKE_WIDTH.dp.toPx()),
+                                size =
+                                    Size(
+                                        width = size.width * FOCUS_BORDER_WIDTH_MULTIPLIER,
+                                        height = size.height * FOCUS_BORDER_HEIGHT_MULTIPLIER
+                                    )
+                            )
+                        }
+                    } else {
+                        Modifier
+                    }
+                ),
         selected = selected,
         onClick = {
             // This should never be true as this is navigation to the wallet via user interaction, not deeplink
@@ -154,6 +202,8 @@ private fun RowScope.NavBarItem(
             NavigationBarItemDefaults.colors(
                 indicatorColor =
                     NavigationElements.navigationBarSelectedState.toMappedColors(),
+                selectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors(),
+                unselectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors()
             ),
     )
 }
@@ -217,3 +267,10 @@ private fun bottomNav(
 val TextUnit.nonScaledSp
     @Composable
     get() = (this.value / LocalDensity.current.fontScale).sp
+
+private const val FOCUS_BORDER_OFFSET_WIDTH_MULTIPLIER = 0.05f
+private const val FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER = 0.025f
+private const val FOCUS_BORDER_STROKE_WIDTH = 1
+
+private const val FOCUS_BORDER_WIDTH_MULTIPLIER = 0.9f
+private const val FOCUS_BORDER_HEIGHT_MULTIPLIER = 0.95f

@@ -82,6 +82,7 @@ class RefreshExchangeImpl
                 // When a persistent session ID couldn't be retrieved or is invalid
                 // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
                 handleResult(RefreshExchangeResult.FirstTimeUser)
+
                 return
             }
             // This will handle the refresh token call and return of the updated tokens
