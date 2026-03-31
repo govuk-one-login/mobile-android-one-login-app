@@ -10,7 +10,7 @@ import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
-import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.analyticsoptin.data.OptInRepository
 
 @Module
 @InstallIn(ViewModelComponent::class)

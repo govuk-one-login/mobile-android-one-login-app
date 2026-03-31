@@ -1,0 +1,57 @@
+package uk.gov.onelogin.features.unit.appinfo.data
+
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Test
+import org.mockito.Mockito.mock
+import org.mockito.kotlin.whenever
+import uk.gov.android.network.api.ApiResponse
+import uk.gov.onelogin.features.appinfo.data.AppInfoRemoteSourceImpl
+import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
+import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
+import uk.gov.onelogin.features.appinfo.domain.AppInfoApi
+import kotlin.test.assertEquals
+
+class AppInfoRemoteSourceImplTest {
+    private val appInfoApi: AppInfoApi = mock()
+    private val data =
+        AppInfoData(
+            apps =
+                AppInfoData.App(
+                    AppInfoData.AppInfo(
+                        minimumVersion = "0.0.0",
+                        available = true,
+                        featureFlags = AppInfoData.FeatureFlags(true)
+                    )
+                )
+        )
+    private val exp = Exception("Error")
+
+    private val sut = AppInfoRemoteSourceImpl(appInfoApi)
+
+    @Test
+    fun `successful api call`() =
+        runTest {
+            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Success(data))
+            val result = sut.get()
+            assertEquals(AppInfoRemoteState.Success(data), result)
+        }
+
+    @Test
+    fun `offline api call`() =
+        runTest {
+            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Offline)
+            val result = sut.get()
+            assertEquals(AppInfoRemoteState.Offline, result)
+        }
+
+    @Test
+    fun `failed api call`() =
+        runTest {
+            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(500, exp))
+            val result = sut.get()
+            assertEquals(
+                AppInfoRemoteState.Failure(AppInfoRemoteSourceImpl.Companion.APP_INFO_REMOTE_SOURCE_ERROR),
+                result
+            )
+        }
+}

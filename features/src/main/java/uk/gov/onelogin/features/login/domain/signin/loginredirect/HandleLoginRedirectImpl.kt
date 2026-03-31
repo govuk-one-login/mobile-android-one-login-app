@@ -17,7 +17,7 @@ import javax.inject.Inject
 class HandleLoginRedirectImpl
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
         private val appIntegrity: AppIntegrity,
         private val loginSession: LoginSession,

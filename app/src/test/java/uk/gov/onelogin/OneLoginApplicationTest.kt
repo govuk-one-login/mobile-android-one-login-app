@@ -27,8 +27,8 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.utils.convertToLoginTokens
 import uk.gov.onelogin.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.extensions.InstantExecutorExtension
+import uk.gov.onelogin.features.analyticsoptin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
-import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)

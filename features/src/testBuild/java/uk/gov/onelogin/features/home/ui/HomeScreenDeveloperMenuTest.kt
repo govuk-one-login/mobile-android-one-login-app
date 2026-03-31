@@ -18,7 +18,7 @@ import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.creat
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
-import uk.gov.onelogin.features.ext.setupComposeTestRule
+import uk.gov.onelogin.features.extensions.setupComposeTestRule
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 
 @RunWith(AndroidJUnit4::class)

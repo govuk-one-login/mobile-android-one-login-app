@@ -4,12 +4,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import uk.gov.onelogin.features.optin.data.AnalyticsOptInRepository
-import uk.gov.onelogin.features.optin.data.OptInRepository
-import uk.gov.onelogin.features.optin.domain.AnalyticsOptInLocalSource
-import uk.gov.onelogin.features.optin.domain.FirebaseAnalyticsOptInSource
-import uk.gov.onelogin.features.optin.domain.source.OptInLocalSource
-import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
+import uk.gov.onelogin.features.analyticsoptin.data.AnalyticsOptInRepository
+import uk.gov.onelogin.features.analyticsoptin.data.OptInRepository
+import uk.gov.onelogin.features.analyticsoptin.domain.AnalyticsOptInLocalSource
+import uk.gov.onelogin.features.analyticsoptin.domain.FirebaseAnalyticsOptInSource
+import uk.gov.onelogin.features.analyticsoptin.domain.source.OptInLocalSource
+import uk.gov.onelogin.features.analyticsoptin.domain.source.OptInRemoteSource
 
 @Module
 @InstallIn(SingletonComponent::class)
