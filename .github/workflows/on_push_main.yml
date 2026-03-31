@@ -110,7 +110,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Run gradle unit tests
-        uses: ./config/actions/unit-gradle-checks
+        uses: ./config/actions/unit-gradle-styleChecks
         with:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}

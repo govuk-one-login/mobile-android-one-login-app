@@ -16,25 +16,21 @@ find ./.githooks -type f -exec shellcheck {} +
 # INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
 if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
-  echo "Running unit checks without environment variables (local development)..."
+  echo "Running component checks without environment variables (local development)..."
   ./gradlew \
-    :app:test \
-    :core:test \
-    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testProductionReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.component.*"\
+    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testProducstionReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
     --continue \
     --stacktrace
 else
-  echo "Running unit checks with environment variables (GitHub workflow)..."
+  echo "Running component checks with environment variables (GitHub workflow)..."
   ./gradlew \
-    :app:test \
-    :core:test \
-    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
-    :features:testProductionReleaseUnit --tests "uk.gov.onelogin.features.unit.*" \
+    :features:testBuildDebugUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testStagingDebugUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testStagingReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
+    :features:testProducstionReleaseUnit --tests "uk.gov.onelogin.features.component.*" \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \
