@@ -155,7 +155,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             )
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
             verify(mockCounter).reset()
         }
@@ -202,7 +202,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
                 )
             )
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -410,7 +410,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -453,7 +453,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -489,7 +489,7 @@ class WelcomeScreenViewModelWithoutRefreshTest {
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(null)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
