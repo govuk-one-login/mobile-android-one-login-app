@@ -72,7 +72,7 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.TitledPage
-import uk.gov.onelogin.features.analyticsoptin.ui.PrivacyNotice
+import uk.gov.onelogin.features.optin.ui.PrivacyNotice
 
 @Composable
 fun SettingsScreen(

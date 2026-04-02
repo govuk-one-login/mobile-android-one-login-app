@@ -41,8 +41,8 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.analyticsoptin.data.OptInRepository
-import uk.gov.onelogin.features.analyticsoptin.ui.NOTICE_TAG
+import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.settings.ui.AboutTheAppSection
 import uk.gov.onelogin.features.settings.ui.PreferenceToggleRow
 import uk.gov.onelogin.features.settings.ui.SettingsAnalyticsViewModel

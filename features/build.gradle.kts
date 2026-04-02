@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.paparazzi)
     alias(libs.plugins.ksp)
     id("uk.gov.onelogin.android-lib-config")
+    id("uk.gov.onelogin.component-test-config")
 }
 
 apply(from = rootProject.file("gradle/snapshot-test-filter.gradle.kts"))

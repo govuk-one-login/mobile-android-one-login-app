@@ -56,7 +56,7 @@ import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
-import uk.gov.onelogin.features.analyticsoptin.ui.OptInRequirementViewModel
+import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import kotlin.math.roundToInt
 
 @Composable

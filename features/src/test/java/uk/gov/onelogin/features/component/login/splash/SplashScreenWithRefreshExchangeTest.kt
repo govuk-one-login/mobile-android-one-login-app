@@ -30,9 +30,6 @@ import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
-import uk.gov.onelogin.features.analyticsoptin.data.OptInRepository
-import uk.gov.onelogin.features.analyticsoptin.ui.NOTICE_TAG
-import uk.gov.onelogin.features.analyticsoptin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
@@ -44,6 +41,9 @@ import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsView
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenPreview
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenViewModel
 import uk.gov.onelogin.features.login.ui.signin.splash.UnlockScreenPreview
+import uk.gov.onelogin.features.optin.data.OptInRepository
+import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
+import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertTrue
 

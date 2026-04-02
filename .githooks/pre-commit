@@ -6,6 +6,6 @@ set -o errexit
 # Run gradle-checks
 # Linting is done on a per-environment basis, due to the differing values that exist.
 ./.sh/styleChecks/runStyleChecks
+./.sh/tests/runComponentChecks
 ./.sh/tests/runUnitChecks
 ./.sh/tests/runSnapshotChecks
-./.sh/tests/runComponentChecks

@@ -22,7 +22,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
-import uk.gov.onelogin.features.analyticsoptin.data.OptInRepository
+import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.settings.ui.SettingsScreenViewModel
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 import kotlin.test.assertFalse
