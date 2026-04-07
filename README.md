@@ -100,7 +100,7 @@ config:
     title: HandleLocalLoginImpl  
 ---
 %%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
-flowchart LR
+flowchart TD
     subgraph "Local<br>Login"
         A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
         B --true--> C(("First<br>TimeUser"));
@@ -143,5 +143,58 @@ flowchart LR
         X --> BI
         W --false--> CI
         BI --> DI(("LocalAuthStatus<br>from<br>SecureStore"))
+    end
+```
+
+### Refresh Exchange Flow
+```mermaid
+---
+config:
+    title: RefreshExchangeImpl
+---
+%%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
+flowchart TD
+    subgraph "Initial Checks"
+        B["GetPersistentSessionId"] --> C{"empty<br>or null?"}
+        C --true--> D(("FirstTimeUser"))
+        C --false--> E{"IsRefreshToken<br>Expired"}
+        E --true--> F(("ReauthRequired"))
+        E --false--> G["GetClientAttestation"]
+    end
+
+    subgraph "Client Attestation Retrieval"
+        G --> H{"AttestationResult?"}
+        H --Success<br>OR<br>NotRequired--> I["GetFromEncrypted<br>SecureStore"]
+        H --Error--> J(("ClientAttestation<br>Failure"))
+    end
+
+    subgraph "Encrypted Secure Store<br>Tokens Retrieval"
+        I --> L{"LocalAuthStatus?"}
+        L --Success--> M{"is refreshToken &<br>idToken valid?"}
+        M --false--> O(("ReauthRequired"))
+        L --UserCancelled--> P(("UserCancelled<br>BioPrompt"))
+        L --FirstTimeUser--> Q(("FirstTimeUser"))
+        L --UnrecoverableError--> R(("Unrecoverable<br>Error"))
+        L --Other--> O
+    end
+
+    subgraph "Refresh Token<br>Exchange/ Call"
+        M --true--> T["GenerateDPoP"]
+        T --> U{"SignedDPoP == Success"}
+        U --false--> V(("ReauthRequired"))
+        U --true--> W["GenerateProof<br>OfPossession"]
+        W --> X{"SignedPoP == Success"}
+        X --false--> V
+        X --true--> Y["Attempt to get Refresh Tokens"]
+    end
+
+    subgraph "Handle Response"
+        Y --Success--> AA["Decode<br>RefreshExchange<br>ApiResponse"]
+        AA --> AB["SaveTokensExpiry<br>ToOpenStore"]
+        AB --> AC["SetTokenRepository"]
+        AC --> AD["SaveTokensTo<>EncryptedStore"]
+        AD --> AE(("Success"))
+        Y --Failure--> AF(("ReauthRequired"))
+        Y --Other<br>never used--> AG(("OfflineNetwork"))
     end
 ```
