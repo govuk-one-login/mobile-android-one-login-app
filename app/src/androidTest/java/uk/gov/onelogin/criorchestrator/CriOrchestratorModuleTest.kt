@@ -5,6 +5,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.SdkConfigKey
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.IdCheckWrapperConfigKey
@@ -26,7 +27,11 @@ class CriOrchestratorModuleTest : TestCase() {
     fun configIsCorrect() {
         assertFalse(criConfig.keys.contains(IdCheckWrapperConfigKey.EnableManualLauncher))
         assertFalse(criConfig.keys.contains(SdkConfigKey.DebugAppReviewPrompts))
-        assertFalse(criConfig.keys.contains(SdkConfigKey.BypassIdCheckAsyncBackend))
+        if (BuildConfig.FLAVOR.lowercase() == "build") {
+            assertTrue(criConfig.keys.contains(SdkConfigKey.BypassIdCheckAsyncBackend))
+        } else {
+            assertFalse(criConfig.keys.contains(SdkConfigKey.BypassIdCheckAsyncBackend))
+        }
         assertFalse(criConfig.keys.contains(NfcConfigKey.NfcAvailability))
         assertTrue(criConfig.keys.contains(SdkConfigKey.IdCheckAsyncBackendBaseUrl))
     }

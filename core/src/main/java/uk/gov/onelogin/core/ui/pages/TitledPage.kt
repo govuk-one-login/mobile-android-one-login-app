@@ -20,7 +20,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.theme.m3.Dividers
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
+import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.components.DIVIDER_TEST_TAG
@@ -51,7 +53,10 @@ fun TitledPage(
                                 modifier = Modifier.fillMaxWidth().padding(bottom = smallPadding),
                                 style = GdsHeadingStyle.Title2,
                             )
-                            HorizontalDivider(Modifier.testTag(DIVIDER_TEST_TAG))
+                            HorizontalDivider(
+                                modifier = Modifier.testTag(DIVIDER_TEST_TAG),
+                                color = Dividers.row.toMappedColors()
+                            )
                         }
                     },
                     colors =

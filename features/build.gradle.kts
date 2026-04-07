@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.oss.licence.about.libraries)
     alias(libs.plugins.paparazzi)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
     id("uk.gov.onelogin.android-lib-config")
 }
 
@@ -171,13 +171,9 @@ dependencies {
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler,
-    ).forEach(::kapt)
+    ).forEach(::ksp)
 }
 
 aboutLibraries {
     collect.configPath = rootProject.file("config")
-}
-
-kapt {
-    correctErrorTypes = true
 }

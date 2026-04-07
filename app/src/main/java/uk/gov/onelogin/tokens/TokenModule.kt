@@ -5,10 +5,16 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmailImpl
+import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
+import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuerImpl
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiryImpl
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmailImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
@@ -26,6 +32,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
 
 @Module
 @InstallIn(ViewModelComponent::class)
+@Suppress("TooManyFunctions")
 interface TokenModule {
     @Binds
     fun bindGetFromTokenSecureStore(getFromSecureStore: GetFromEncryptedSecureStoreImpl): GetFromEncryptedSecureStore
@@ -40,7 +47,13 @@ interface TokenModule {
     fun bindRemoveTokenExpiry(removeTokenExpiry: RemoveTokenExpiryImpl): RemoveTokenExpiry
 
     @Binds
-    fun bindGetEmail(getEmail: GetEmailImpl): GetEmail
+    fun bindGetEmail(extractEmailImpl: ExtractEmailImpl): ExtractEmail
+
+    @Binds
+    fun bindGetAndSaveWalletId(extractAndSaveWalletIdImpl: ExtractAndSaveWalletIdImpl): ExtractAndSaveWalletId
+
+    @Binds
+    fun bindExtractAndVerifyIss(extractAndVerifyIssuerImpl: ExtractAndVerifyIssuerImpl): ExtractAndVerifyIssuer
 
     @Binds
     fun bindSavePersistentId(saveId: SavePersistentIdImpl): SavePersistentId
@@ -50,6 +63,9 @@ interface TokenModule {
 
     @Binds
     fun bindSaveTokenExpiry(saveTokenExpiry: SaveTokenExpiryImpl): SaveTokenExpiry
+
+    @Binds
+    fun bindRemoveRefreshToken(removeRefreshToken: RemoveRefreshTokenAndExpiryImpl): RemoveRefreshTokenAndExpiry
 }
 
 @Module

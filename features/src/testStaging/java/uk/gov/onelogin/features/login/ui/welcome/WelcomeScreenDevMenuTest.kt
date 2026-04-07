@@ -21,6 +21,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
@@ -52,6 +53,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private lateinit var counter: Counter
+    private lateinit var removeRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
     private val logger = SystemLogger()
 
     private val devButton = hasText(resources.getString(R.string.app_developer_button))
@@ -72,6 +74,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         counter = mock()
         onlineChecker = mock()
         analytics = mock()
+        removeRefreshTokenAndExpiry = mock()
         localAuthManager =
             LocalAuthManagerImpl(
                 localAuthPreferenceRepo,
@@ -93,7 +96,8 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
                 signOutUseCase,
                 logger,
                 onlineChecker,
-                counter
+                counter,
+                removeRefreshTokenAndExpiry
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)

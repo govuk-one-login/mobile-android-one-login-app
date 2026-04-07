@@ -15,7 +15,7 @@ import javax.inject.Inject
 class AttestationApiCall
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
         private val httpClient: GenericHttpClient,
     ) : AttestationCaller {
@@ -36,13 +36,33 @@ class AttestationApiCall
                 )
             return when (val apiResponse = httpClient.makeRequest(request)) {
                 is ApiResponse.Success<*> -> handleResponse(apiResponse)
-                is ApiResponse.Failure ->
+                is ApiResponse.Failure -> {
+                    // Error mappings - see Errors returned by Mobile Platform BackEnd:
+                    // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
+                    val expType =
+                        when (apiResponse.status) {
+                            INVALID_PUBLIC_KEY_JWK
+                            -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
+                            SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
+                            -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                            // This should never be reached as per guidance
+                            else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
+                        }
+                    val exp = AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
                     AttestationResponse.Failure(
-                        apiResponse.error.message ?: NETWORK_ERROR,
-                        apiResponse.error,
+                        exp.e.message ?: NETWORK_ERROR,
+                        exp,
                     )
+                }
 
-                else -> AttestationResponse.Failure(NETWORK_ERROR)
+                // This is for ApiResponse.Offline and ApiResponse.Loading which is never used
+                else ->
+                    AttestationResponse.Failure(
+                        NETWORK_ERROR,
+                        AppIntegrityException.ClientAttestationException(
+                            Exception(NETWORK_ERROR)
+                        )
+                    )
             }
         }
 
@@ -60,5 +80,10 @@ class AttestationApiCall
         companion object {
             const val NETWORK_ERROR = "Network error"
             const val JSON_DECODE_ERROR = "ERROR: Decode AttestationResponse.Success error"
+
+            internal const val INVALID_PUBLIC_KEY_JWK = 400
+            internal const val SERVER_ERROR = 401
+            internal const val INVALID_APP_CHECK_TOKEN = SERVER_ERROR
+            internal const val INTERMITTENT_SERVER_ERROR = 500
         }
     }

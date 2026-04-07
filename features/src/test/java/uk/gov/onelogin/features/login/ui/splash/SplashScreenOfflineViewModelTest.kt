@@ -66,7 +66,7 @@ class SplashScreenOfflineViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp
+                mockGetRefreshTokenExp,
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(false)
         runBlocking {

@@ -237,7 +237,7 @@ class RefreshExchangeImplTest {
             whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Failure("Client Attestation failure!"))
+                .thenReturn(AttestationResult.Failure(Exception("Client Attestation failure!")))
 
             sut.getTokens(
                 fragmentContext,

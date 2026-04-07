@@ -91,8 +91,9 @@ class SplashScreenViewModel
                 RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
 
                 // Handle when a user ia a first time user
-                RefreshExchangeResult.FirstTimeUser ->
+                RefreshExchangeResult.FirstTimeUser -> {
                     deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
+                }
 
                 // Handle when something went wrong during local auth
                 RefreshExchangeResult.UnrecoverableError ->
@@ -103,15 +104,20 @@ class SplashScreenViewModel
                     _showUnlock.value = true
                 }
 
-                // Handles ReuAuth and ClientAttestationFailure (specific behaviour to be added at a later time)
-                else -> nextScreen(SignOutRoutes.ReAuth)
+                RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
+
+                // Handles ReuAuth
+                else -> {
+                    nextScreen(SignOutRoutes.ReAuth)
+                }
             }
         }
 
         private fun handleLocalAuthBehaviour(status: LocalAuthStatus) {
             when (status) {
                 LocalAuthStatus.FirstTimeUser ->
-                    deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
+                    deleteData.value =
+                        DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
 
                 LocalAuthStatus.UnrecoverableError ->
                     deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
@@ -124,7 +130,7 @@ class SplashScreenViewModel
                     _showUnlock.value = true
                 }
 
-                // Handles ReuAuth, Recoverable and ClientAttestationFailure (specific behaviour to be added at a later time)
+                // Handles ReuAuth and Recoverable (specific behaviour to be added at a later time)
                 else -> {
                     nextScreen(SignOutRoutes.ReAuth)
                 }

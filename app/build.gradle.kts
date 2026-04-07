@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
     id("uk.gov.onelogin.android-app-config")
 }
 
@@ -31,18 +31,6 @@ android {
         testInstrumentationRunner = "uk.gov.onelogin.InstrumentationTestRunner"
     }
 
-    signingConfigs {
-        create("release") {
-            val configDir = rootProject.extra["configDir"] as String
-
-            storeFile = file("$configDir/keystore.jks")
-
-            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
-        }
-    }
-
     buildTypes {
         release {
             isDebuggable = false
@@ -52,7 +40,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             enableUnitTestCoverage = true
@@ -229,6 +216,7 @@ dependencies {
         libs.bundles.firebase,
         libs.androidx.biometric,
         libs.bundles.cri.orchestrator.bundle,
+        libs.integrity,
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk) {
@@ -239,11 +227,11 @@ dependencies {
     listOf(
         libs.hilt.android.compiler,
         libs.hilt.compiler,
-    ).forEach(::kapt)
+    ).forEach(::ksp)
 
     listOf(
         libs.hilt.android.compiler,
-    ).forEach(::kaptAndroidTest)
+    ).forEach(::kspAndroidTest)
 
     listOf(
         kotlin("test"),
@@ -269,10 +257,6 @@ dependencies {
     ).forEach {
         androidTestUtil(it)
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 fun getVersionCode(): Int {

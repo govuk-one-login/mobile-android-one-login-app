@@ -21,7 +21,7 @@ import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 import kotlin.test.assertFalse
@@ -32,7 +32,7 @@ class SettingsScreenViewModelTest {
     private lateinit var viewModel: SettingsScreenViewModel
 
     private val mockNavigator: Navigator = mock()
-    private val mockGetEmail: GetEmail = mock()
+    private val mockExtractEmail: ExtractEmail = mock()
     private val mockTokenRepository: TokenRepository = mock()
     private val mockOptInRepository: OptInRepository = mock()
     private val mockLocalAuthManager: LocalAuthManager = mock()
@@ -50,7 +50,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockGetEmail
+                mockExtractEmail
             )
     }
 
@@ -61,7 +61,7 @@ class SettingsScreenViewModelTest {
 
     @Test
     fun `email is empty when getEmail returns null`() {
-        whenever(mockGetEmail.invoke(any())).thenReturn(null)
+        whenever(mockExtractEmail.invoke(any())).thenReturn(null)
         setup()
 
         assert(viewModel.email.isEmpty())
@@ -69,7 +69,7 @@ class SettingsScreenViewModelTest {
 
     @Test
     fun `email is given when getEmail returns a value`() {
-        whenever(mockGetEmail.invoke(any())).thenReturn("test")
+        whenever(mockExtractEmail.invoke(any())).thenReturn("test")
         setup()
 
         assertEquals("test", viewModel.email)
@@ -108,7 +108,7 @@ class SettingsScreenViewModelTest {
                     mockLocalAuthManager,
                     mockWalletRepository,
                     mockTokenRepository,
-                    mockGetEmail
+                    mockExtractEmail
                 )
             assertEquals(true, viewModel.optInState.value)
         }
@@ -124,7 +124,7 @@ class SettingsScreenViewModelTest {
                     mockLocalAuthManager,
                     mockWalletRepository,
                     mockTokenRepository,
-                    mockGetEmail
+                    mockExtractEmail
                 )
             assertEquals(true, viewModel.optInState.value)
 
@@ -144,7 +144,7 @@ class SettingsScreenViewModelTest {
                     mockLocalAuthManager,
                     mockWalletRepository,
                     mockTokenRepository,
-                    mockGetEmail
+                    mockExtractEmail
                 )
             assertEquals(false, viewModel.optInState.value)
 
@@ -166,7 +166,7 @@ class SettingsScreenViewModelTest {
                     mockLocalAuthManager,
                     mockWalletRepository,
                     mockTokenRepository,
-                    mockGetEmail
+                    mockExtractEmail
                 )
 
             assertFalse(viewModel.biometricsOptionState.value)
@@ -188,7 +188,7 @@ class SettingsScreenViewModelTest {
                     mockLocalAuthManager,
                     mockWalletRepository,
                     mockTokenRepository,
-                    mockGetEmail
+                    mockExtractEmail
                 )
 
             assertFalse(viewModel.biometricsOptionState.value)

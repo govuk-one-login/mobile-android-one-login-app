@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.Dividers
 import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.m3.toMappedColors
 import uk.gov.android.ui.theme.mediumPadding
@@ -76,5 +77,5 @@ private fun FeatureToggle(
                     .defaultColors(),
         )
     }
-    HorizontalDivider()
+    HorizontalDivider(color = Dividers.row.toMappedColors())
 }

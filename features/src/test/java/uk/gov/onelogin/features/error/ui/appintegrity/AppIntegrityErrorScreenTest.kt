@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertContentDescriptionContains
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Before
 import org.junit.Test
@@ -36,6 +37,25 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel
             )
         }
+        composeTestRule
+            .onNodeWithContentDescription(
+                errorIconDescription
+            ).assertContentDescriptionContains(errorIconDescription)
+        composeTestRule.onNode(errorTitle).assertIsDisplayed()
+        composeTestRule.onNode(errorBody1).assertIsDisplayed()
+        composeTestRule.onNode(errorBody2).assertIsDisplayed()
+    }
+
+    @Test
+    fun onBackClicked() {
+        composeTestRule.setContent {
+            AppIntegrityErrorScreen(
+                analyticsViewModel = analyticsViewModel
+            )
+        }
+
+        Espresso.pressBack()
+
         composeTestRule
             .onNodeWithContentDescription(
                 errorIconDescription

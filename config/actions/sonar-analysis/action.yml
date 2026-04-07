@@ -48,7 +48,7 @@ runs:
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         ./gradlew sonar \
-          -Dsonar.branch.name=${{ github.head_ref || github.ref_name }} \
+          -Dsonar.branch.name=$BRANCH_NAME \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.projectVersion=$PROJECT_VERSION \
@@ -62,3 +62,4 @@ runs:
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
         BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        BRANCH_NAME: ${{ github.head_ref || github.ref_name }}

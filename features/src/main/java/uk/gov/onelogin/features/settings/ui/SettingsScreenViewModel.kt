@@ -13,7 +13,7 @@ import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetEmail
+import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.wallet.data.WalletRepository
 import javax.inject.Inject
@@ -27,7 +27,7 @@ class SettingsScreenViewModel
         private val localAuthManager: LocalAuthManager,
         private val walletRepository: WalletRepository,
         tokenRepository: TokenRepository,
-        getEmail: GetEmail,
+        extractEmail: ExtractEmail,
     ) : ViewModel() {
         private val _optInState = MutableStateFlow(false)
         val optInState: StateFlow<Boolean>
@@ -44,7 +44,7 @@ class SettingsScreenViewModel
             }
         }
 
-        val email = getEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
+        val email = extractEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
         fun checkDeviceBiometricsStatus() {
             viewModelScope.launch {
