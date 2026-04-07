@@ -1,7 +1,6 @@
 package uk.gov.onelogin
 
 import com.android.build.gradle.LibraryExtension
-import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
 import org.gradle.testing.jacoco.tasks.JacocoReport
 
 project.afterEvaluate {
@@ -9,6 +8,7 @@ project.afterEvaluate {
 
     android.libraryVariants.all {
         val variantName = name.replaceFirstChar { it.uppercase() }
+        val variant = name
         val originalTestTaskName = "test${variantName}UnitTest"
         val componentTestTaskName = "componentTest${variantName}Test"
         val isDebug = buildType.name == "debug"
@@ -33,18 +33,6 @@ project.afterEvaluate {
                     layout.buildDirectory.dir("reports/tests/$componentTestTaskName"),
                 )
             }
-
-            if (isDebug) {
-                extensions.configure<JacocoTaskExtension> {
-                    isIncludeNoLocationClasses = true
-                    excludes = listOf("jdk.internal.*")
-                    output = JacocoTaskExtension.Output.FILE
-                    setDestinationFile(
-                        layout.buildDirectory
-                            .file("jacoco/$componentTestTaskName.exec").get().asFile,
-                    )
-                }
-            }
         }
 
         if (isDebug) {
@@ -60,15 +48,28 @@ project.afterEvaluate {
                 additionalSourceDirs.from(sourceDirs)
 
                 classDirectories.from(
-                    fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/$name")) {
+                    fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/$variant")) {
                         exclude(
                             "**/R.class",
                             "**/R\$*.class",
                             "**/BuildConfig.*",
+                            "**/*Test*.*",
                             "**/*_Hilt*.*",
                             "**/Hilt_*.*",
-                            "**/*_Factory.*",
+                            "**/*_Factory*.*",
                             "**/*_MembersInjector.*",
+                            "**/*Module*.*",
+                            "**/*Dagger*.*",
+                            "**/*MapperImpl*.*",
+                            "**/*Companion*.*",
+                        )
+                    },
+                    fileTree(layout.buildDirectory.dir("intermediates/javac/$variant/classes")) {
+                        exclude(
+                            "**/R.class",
+                            "**/R\$*.class",
+                            "**/BuildConfig.*",
+                            "**/*Test*.*",
                         )
                     },
                 )
@@ -77,15 +78,16 @@ project.afterEvaluate {
                     layout.buildDirectory.file("jacoco/$componentTestTaskName.exec"),
                 )
 
-                val outputDir = layout.buildDirectory
-                    .dir("reports/jacoco/component/$componentTestTaskName").get().asFile.absolutePath
+                val reportDir = layout.buildDirectory
+                    .dir("reports/jacoco/component/$componentTestTaskName")
+                    .get().asFile.absolutePath
                 reports {
                     xml.required.set(true)
-                    xml.outputLocation.set(file("$outputDir/report.xml"))
+                    xml.outputLocation.set(file("$reportDir/report.xml"))
                     csv.required.set(true)
-                    csv.outputLocation.set(file("$outputDir/report.csv"))
+                    csv.outputLocation.set(file("$reportDir/report.csv"))
                     html.required.set(true)
-                    html.outputLocation.set(file("$outputDir/html"))
+                    html.outputLocation.set(file("$reportDir/html"))
                 }
             }
 
