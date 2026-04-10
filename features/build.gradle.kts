@@ -16,7 +16,12 @@ plugins {
 apply(from = rootProject.file("gradle/snapshot-test-filter.gradle.kts"))
 
 testTypeConfig {
-    testTypes("component")
+    testTypes(
+        "component",
+        "unit",
+        // These are to ensure the project compiles in all environments
+        "unitEnvironmentSpecific",
+    )
 }
 
 android {
