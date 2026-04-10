@@ -13,7 +13,7 @@ concurrency:
 jobs:
   on-schedule-job:
     name: Verify code base every day overnight (at 3am)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
