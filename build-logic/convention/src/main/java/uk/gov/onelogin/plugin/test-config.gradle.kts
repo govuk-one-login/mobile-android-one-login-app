@@ -60,6 +60,15 @@ project.afterEvaluate {
                 classpath = originalTask.classpath
                 jvmArgs = originalTask.jvmArgs
 
+                // Depend on all tasks the original test task depends on (compilation, ASM
+                // transformation, resource processing etc.) without depending on the original
+                // test task itself, which would cause it to run and mark classes as up-to-date
+                dependsOn(originalTask.taskDependencies)
+
+                // Ensure this task always re-runs and is never considered up-to-date,
+                // as Gradle may cache results from a previous run on CI runners
+                outputs.upToDateWhen { false }
+
                 useJUnitPlatform()
                 // Only include tests under the matching package directory, e.g. "**/component/**"
                 include("**/$testType/**")
@@ -73,6 +82,30 @@ project.afterEvaluate {
                         layout.buildDirectory.dir("reports/tests/$taskName"),
                     )
                 }
+
+                // Log a summary of passed, failed, and skipped tests after completion
+                addTestListener(object : TestListener {
+                    override fun beforeSuite(suite: TestDescriptor) {}
+                    override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                        // Only log for the root suite (the overall run)
+                        if (suite.parent == null) {
+                            logger.lifecycle(
+                                "\n$testType tests for $variantName: " +
+                                    "${result.testCount} total, " +
+                                    "${result.successfulTestCount} passed, " +
+                                    "${result.failedTestCount} failed, " +
+                                    "${result.skippedTestCount} skipped",
+                            )
+                        }
+                    }
+                    override fun beforeTest(testDescriptor: TestDescriptor) {}
+                    override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+                        // Log each individual test with its result
+                        logger.lifecycle(
+                            "  ${testDescriptor.className}.${testDescriptor.name}: ${result.resultType}",
+                        )
+                    }
+                })
             }
 
             // Only generate JaCoCo coverage reports for debug variants
