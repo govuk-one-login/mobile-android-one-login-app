@@ -305,7 +305,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   sonar-analysis:
-    name: Verify code base when pull request is published/updated
+    name: Run sonar analysis and check sonar quality gate
     runs-on: ubuntu-22.04
     needs:
       - set-up
