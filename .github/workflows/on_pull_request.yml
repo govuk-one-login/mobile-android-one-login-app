@@ -376,6 +376,8 @@ jobs:
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
 
       - name: Bundle reports folder
         uses: ./mobile-android-pipelines/actions/bundle-reports
