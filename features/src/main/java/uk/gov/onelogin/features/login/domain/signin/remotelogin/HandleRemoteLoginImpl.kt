@@ -20,7 +20,7 @@ import javax.inject.Inject
 class HandleRemoteLoginImpl
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
         private val localeUtils: LocaleUtils,
         private val loginSession: LoginSession,
