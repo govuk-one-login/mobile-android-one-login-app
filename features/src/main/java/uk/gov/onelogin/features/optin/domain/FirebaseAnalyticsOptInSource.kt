@@ -13,7 +13,7 @@ class FirebaseAnalyticsOptInSource
     @Inject
     constructor(
         private val analytics: AnalyticsLogger,
-        @IODispatcherQualifier
+        @param:IODispatcherQualifier
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) : OptInRemoteSource {
         override suspend fun update(state: AnalyticsOptInState) {

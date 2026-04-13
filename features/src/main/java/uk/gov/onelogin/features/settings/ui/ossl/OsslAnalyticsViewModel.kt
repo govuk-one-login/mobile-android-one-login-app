@@ -21,7 +21,7 @@ import javax.inject.Inject
 class OsslAnalyticsViewModel
     @Inject
     constructor(
-        @ApplicationContext val context: Context,
+        @param:ApplicationContext val context: Context,
         private val analyticsLogger: AnalyticsLogger,
         private val logger: Logger,
     ) : ViewModel() {

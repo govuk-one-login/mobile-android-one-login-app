@@ -13,7 +13,7 @@ import javax.inject.Inject
 class OutdatedAppErrorViewModel
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
     ) : ViewModel() {
         fun updateApp() {

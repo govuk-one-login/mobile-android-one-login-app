@@ -29,7 +29,6 @@ class LocalAuthTabScreenViewModel
                 val realPref = localAuthManager.localAuthPreference
                 localAuthPreferenceRepo.setLocalAuthPref(LocalAuthPreference.Disabled)
                 localAuthManager.enforceAndSet(
-                    walletEnabled = true,
                     localAuthRequired = true,
                     activity,
                     callbackHandler =
