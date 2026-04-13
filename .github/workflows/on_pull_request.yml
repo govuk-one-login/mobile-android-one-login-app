@@ -94,19 +94,19 @@ jobs:
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Upload test coverage report
+      - name: Upload ktlint coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: ktlint-reports
           path: "**/build/reports/ktlint/**/*.xml"
 
-      - name: Upload test coverage report
+      - name: Upload detekt coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: detekt-reports
           path: "**/build/reports/detekt/**/*.xml"
 
-      - name: Upload test coverage report
+      - name: Upload lint coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: lint-reports
@@ -154,7 +154,7 @@ jobs:
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Upload test coverage report
+      - name: Upload instrumentation test coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: instrumentation-reports
@@ -203,7 +203,7 @@ jobs:
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Upload test coverage report
+      - name: Upload component test coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: component-reports
@@ -252,7 +252,7 @@ jobs:
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
-      - name: Upload test coverage report
+      - name: Upload unit test coverage report
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: unit-reports
