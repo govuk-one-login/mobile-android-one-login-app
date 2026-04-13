@@ -91,7 +91,7 @@ jobs:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
@@ -151,7 +151,7 @@ jobs:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
@@ -200,7 +200,7 @@ jobs:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
@@ -249,7 +249,7 @@ jobs:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload test coverage report
@@ -298,7 +298,7 @@ jobs:
           github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
           github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Clean workspace
@@ -374,7 +374,7 @@ jobs:
           project-version: ${{ steps.version-name.outputs.version-name }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up..outputs.version-name }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Bundle reports folder
