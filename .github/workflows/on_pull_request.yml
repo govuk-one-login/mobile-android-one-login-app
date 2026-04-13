@@ -158,7 +158,7 @@ jobs:
         uses: ./config/actions/upload-coverage-reports
         with:
           artifact-name: instrumentation-reports
-          path: "**/build/reports/jacoco/managed/*.xml"
+          path: "**/build/reports/jacoco/managed/**/*.xml"
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
