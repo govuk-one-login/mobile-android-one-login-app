@@ -1,6 +1,9 @@
 name: Firebase Test Lab Instrumentation Spike
 
 on:
+  push:
+    branches:
+      - DCMAW-18163/spike-fb-testlabs
   workflow_dispatch:
     inputs:
       device:
@@ -84,8 +87,8 @@ jobs:
           BUILD_DEBUG_APP_CHECK_TOKEN: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
         run: |
           ./gradlew \
-            assembleBuildDebug \
-            assembleBuildDebugAndroidTest \
+            :app:assembleBuildDebug \
+            :app:assembleBuildDebugAndroidTest \
             -PversionCode=${{ steps.version-code.outputs.version-code }} \
             -PversionName=${{ steps.version-name.outputs.value }} \
             --stacktrace
