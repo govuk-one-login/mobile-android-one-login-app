@@ -1,0 +1,146 @@
+name: Firebase Test Lab Instrumentation Spike
+
+on:
+  workflow_dispatch:
+    inputs:
+      device:
+        description: Optional Firebase Test Lab device spec
+        required: false
+        default: ""
+      timeout:
+        description: Firebase Test Lab timeout
+        required: true
+        default: 30m
+      test_targets:
+        description: Optional test target, for example class uk.gov.onelogin.MainActivityTest
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  FTL_RESULTS_BUCKET: ${{ vars.FTL_RESULTS_BUCKET }}
+
+jobs:
+  testlab-instrumentation:
+    name: Build buildDebug APKs and run Firebase Test Lab instrumentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
+
+      - name: Generate version code
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Set spike version name
+        id: version-name
+        shell: bash
+        run: echo "value=ftl-spike-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate config
+        shell: bash
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          MODULE_FETCH_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+          MODULE_FETCH_TOKEN_USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          BUILD_APPCHECK_DEBUG_TOKEN: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+        run: |
+          test -n "$GCP_PROJECT_ID" || { echo "Missing repo variable GCP_PROJECT_ID"; exit 1; }
+          test -n "$GCP_SERVICE_ACCOUNT_KEY" || { echo "Missing repo secret GCP_SERVICE_ACCOUNT_KEY"; exit 1; }
+          test -n "$MODULE_FETCH_TOKEN" || { echo "Missing repo secret MODULE_FETCH_TOKEN"; exit 1; }
+          test -n "$MODULE_FETCH_TOKEN_USERNAME" || { echo "Missing repo secret MODULE_FETCH_TOKEN_USERNAME"; exit 1; }
+          test -n "$BUILD_APPCHECK_DEBUG_TOKEN" || { echo "Missing repo secret BUILD_APPCHECK_DEBUG_TOKEN"; exit 1; }
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Build app APK and test APK
+        shell: bash
+        env:
+          USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+          BUILD_DEBUG_APP_CHECK_TOKEN: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+        run: |
+          ./gradlew \
+            assembleBuildDebug \
+            assembleBuildDebugAndroidTest \
+            -PversionCode=${{ steps.version-code.outputs.version-code }} \
+            -PversionName=${{ steps.version-name.outputs.value }} \
+            --stacktrace
+
+      - name: Resolve APK paths
+        id: apk-paths
+        shell: bash
+        run: |
+          app_apk="$(find app/build/outputs/apk/build/debug -name '*.apk' ! -name '*androidTest*' | head -n 1)"
+          test_apk="$(find app/build/outputs/apk/androidTest/build/debug -name '*androidTest*.apk' | head -n 1)"
+
+          test -n "$app_apk" || { echo "Could not find buildDebug app APK"; exit 1; }
+          test -n "$test_apk" || { echo "Could not find buildDebug androidTest APK"; exit 1; }
+
+          echo "app-apk=$app_apk" >> "$GITHUB_OUTPUT"
+          echo "test-apk=$test_apk" >> "$GITHUB_OUTPUT"
+          printf 'App APK: %s\n' "$app_apk"
+          printf 'Test APK: %s\n' "$test_apk"
+
+      - name: Upload built APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: testlab-apks
+          path: |
+            ${{ steps.apk-paths.outputs.app-apk }}
+            ${{ steps.apk-paths.outputs.test-apk }}
+
+      - name: Run instrumentation test in Firebase Test Lab
+        shell: bash
+        run: |
+          args=(
+            firebase test android run
+            --type instrumentation
+            --project "$GCP_PROJECT_ID"
+            --app "${{ steps.apk-paths.outputs.app-apk }}"
+            --test "${{ steps.apk-paths.outputs.test-apk }}"
+            --timeout "${{ inputs.timeout }}"
+            --results-history-name "one-login-build-debug-instrumentation"
+          )
+
+          if [[ -n "${{ inputs.device }}" ]]; then
+            args+=(--device "${{ inputs.device }}")
+          fi
+
+          if [[ -n "${{ inputs.test_targets }}" ]]; then
+            args+=(--test-targets "${{ inputs.test_targets }}")
+          fi
+
+          if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+            args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+          fi
+
+          printf 'Running Test Lab with device: %s\n' "${{ inputs.device }}"
+          gcloud "${args[@]}"
+
+      - name: Clean workspace
+        if: always()
+        uses: ./mobile-android-pipelines/actions/clean-workspace
