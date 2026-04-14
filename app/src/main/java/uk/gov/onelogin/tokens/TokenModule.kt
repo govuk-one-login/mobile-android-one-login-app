@@ -11,6 +11,8 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
 import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuerImpl
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
@@ -30,6 +32,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
 
 @Module
 @InstallIn(ViewModelComponent::class)
+@Suppress("TooManyFunctions")
 interface TokenModule {
     @Binds
     fun bindGetFromTokenSecureStore(getFromSecureStore: GetFromEncryptedSecureStoreImpl): GetFromEncryptedSecureStore
@@ -60,6 +63,9 @@ interface TokenModule {
 
     @Binds
     fun bindSaveTokenExpiry(saveTokenExpiry: SaveTokenExpiryImpl): SaveTokenExpiry
+
+    @Binds
+    fun bindRemoveRefreshToken(removeRefreshToken: RemoveRefreshTokenAndExpiryImpl): RemoveRefreshTokenAndExpiry
 }
 
 @Module

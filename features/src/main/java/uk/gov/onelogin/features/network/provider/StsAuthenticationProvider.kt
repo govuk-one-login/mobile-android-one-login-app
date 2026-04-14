@@ -171,8 +171,7 @@ class StsAuthenticationProvider(
     @Suppress("TooGenericExceptionCaught")
     private fun handleServiceTokenResponse(response: ApiResponse): AuthenticationResponse =
         when (response) {
-            is ApiResponse.Success<*> -> {
-                // Attempt to decode the response from JSON format
+            is ApiResponse.Success<*> ->
                 try {
                     val tokenResponseString: String = response.response.toString()
                     val tokenApiResponse: TokenApiResponse =
@@ -189,8 +188,23 @@ class StsAuthenticationProvider(
                     )
                     AuthenticationResponse.Failure(e)
                 }
+
+            // Check response for account intervention
+            is ApiResponse.Failure -> {
+                // Invalid grant which is the 400 error returned - re-auth required
+                if (response.status == AUTHENTICATION_DENIED) {
+                    navigator.navigate(SignOutRoutes.ReAuth)
+                    AuthenticationResponse.Failure(
+                        Exception(response.error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG)
+                    )
+                } else {
+                    AuthenticationResponse.Failure(
+                        Exception(response.error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG)
+                    )
+                }
             }
-            is ApiResponse.Failure -> AuthenticationResponse.Failure(response.error)
+
+            // This should never happen as Offline and Loading are never used
             else -> AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
         }
 
@@ -207,6 +221,8 @@ class StsAuthenticationProvider(
         const val NO_ACCESS_TOKEN_ERROR_MSG = "No access token"
         const val SERVICE_TOKEN_FAILURE_ERROR_MSG = "Failed to fetch service token"
         const val FRAGMENT_ACTIVITY_NULL_ERROR_MSG = "FragmentActivity is null"
+
+        const val AUTHENTICATION_DENIED = 400
 
         data class FragmentActivityNull(
             val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG

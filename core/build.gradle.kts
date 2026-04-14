@@ -147,6 +147,7 @@ dependencies {
         libs.ktor.client.android,
         libs.androidx.compose.ui.tooling,
         libs.androidx.compose.ui.tooling.preview,
+        libs.wallet.sdk,
     ).forEach(::implementation)
 
     api(libs.bundles.gov.uk)
