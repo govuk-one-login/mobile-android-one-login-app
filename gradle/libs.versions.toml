@@ -12,7 +12,7 @@ crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyti
 oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-ksp = { id = "com.google.devtools.ksp", version = "2.3.5"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
 [versions]
 jose4j = "0.9.6"
@@ -62,7 +62,7 @@ navigationCommonAndroid = "2.9.0"
 network = "0.7.2"
 kotlinStdLib = "2.2.10"
 jetbrainsKotlinJvm = "2.2.21"
-ksp = "2.3.3"
+ksp = "2.3.5"
 integrity = "1.6.0"
 
 [libraries]
