@@ -12,7 +12,7 @@ crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyti
 oss-licence-about-libraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutLibraries" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-ksp = { id = "com.google.devtools.ksp", version = "2.3.5"}
+ksp = { id = "com.google.devtools.ksp", version = "2.3.5" }
 
 [versions]
 jose4j = "0.9.6"
@@ -40,7 +40,7 @@ compose-material = "1.8.2"
 compose-material3 = "1.3.1"
 serialization = "2.2.10"
 junit = "5.12.2"
-jacoco = "0.8.13"
+jacoco = "0.8.14"
 googleServices = "4.4.2"
 firebaseBom = "34.11.0"
 crashlytics = "3.0.3"
@@ -161,6 +161,25 @@ integrity = { group = "com.google.android.play", name = "integrity", version.ref
 
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
-firebase = ["firebase-appcheck", "firebase-appcheck-debug", "firebase-analytics", "firebase-crashlytics"]
-gov-uk = ["componentsv2", "patterns", "theme", "authentication", "secure-store", "network", "logging-impl", "cri-orchestrator", "localauth"]
-about-libraries = ["aboutlibraries-core", "aboutlibraries-compose-core", "aboutlibraries-compose-m3"]
+firebase = [
+  "firebase-appcheck",
+  "firebase-appcheck-debug",
+  "firebase-analytics",
+  "firebase-crashlytics",
+]
+gov-uk = [
+  "componentsv2",
+  "patterns",
+  "theme",
+  "authentication",
+  "secure-store",
+  "network",
+  "logging-impl",
+  "cri-orchestrator",
+  "localauth",
+]
+about-libraries = [
+  "aboutlibraries-core",
+  "aboutlibraries-compose-core",
+  "aboutlibraries-compose-m3",
+]

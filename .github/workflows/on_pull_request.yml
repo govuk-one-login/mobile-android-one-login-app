@@ -41,6 +41,9 @@ jobs:
         id: detect-arch
         uses: ./config/actions/detect-arch
 
+      - name: Setup prerequisite dependencies
+        uses: ./mobile-android-pipelines/actions/common-prerequisites
+
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
 

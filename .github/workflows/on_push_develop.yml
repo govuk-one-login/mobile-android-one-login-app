@@ -25,8 +25,6 @@ jobs:
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      id-token: write
-      contents: write
       packages: read
     steps:
       - name: Run checkout github action
@@ -40,16 +38,14 @@ jobs:
         id: detect-arch
         uses: ./config/actions/detect-arch
 
+      - name: Setup prerequisite dependencies
+        uses: ./mobile-android-pipelines/actions/common-prerequisites
+
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
 
       - name: Clean runner
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Retrieve secrets
-        uses: ./config/actions/retrieve-secrets
-        with:
-          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
       - name: Get latest tag
         id: latest-tag
