@@ -119,29 +119,38 @@ jobs:
       - name: Run instrumentation test in Firebase Test Lab
         shell: bash
         run: |
+          timeout_value="${{ inputs.timeout }}"
+          device_value="${{ inputs.device }}"
+          test_targets_value="${{ inputs.test_targets }}"
+
+          if [[ -z "$timeout_value" ]]; then
+            timeout_value="30m"
+          fi
+
           args=(
             firebase test android run
             --type instrumentation
             --project "$GCP_PROJECT_ID"
             --app "${{ steps.apk-paths.outputs.app-apk }}"
             --test "${{ steps.apk-paths.outputs.test-apk }}"
-            --timeout "${{ inputs.timeout }}"
+            --timeout "$timeout_value"
             --results-history-name "one-login-build-debug-instrumentation"
           )
 
-          if [[ -n "${{ inputs.device }}" ]]; then
-            args+=(--device "${{ inputs.device }}")
+          if [[ -n "$device_value" ]]; then
+            args+=(--device "$device_value")
           fi
 
-          if [[ -n "${{ inputs.test_targets }}" ]]; then
-            args+=(--test-targets "${{ inputs.test_targets }}")
+          if [[ -n "$test_targets_value" ]]; then
+            args+=(--test-targets "$test_targets_value")
           fi
 
           if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
             args+=(--results-bucket "$FTL_RESULTS_BUCKET")
           fi
 
-          printf 'Running Test Lab with device: %s\n' "${{ inputs.device }}"
+          printf 'Running Test Lab with device: %s\n' "$device_value"
+          printf 'Running Test Lab with timeout: %s\n' "$timeout_value"
           gcloud "${args[@]}"
 
       - name: Clean workspace
