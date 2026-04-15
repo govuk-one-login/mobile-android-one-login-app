@@ -48,3 +48,8 @@ updates:
         update-types:
           - minor
           - patch
+  
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
