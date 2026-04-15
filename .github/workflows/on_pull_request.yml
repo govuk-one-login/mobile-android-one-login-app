@@ -341,35 +341,8 @@ jobs:
       - name: Clean runner
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
-      - name: Download lint (style) checks coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: lint-reports
-
-      - name: Download ktlint (style) checks coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: ktlint-reports
-
-      - name: Download detekt (style) checks coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: detekt-reports
-
-      - name: Download instrumentation tests coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: instrumentation-reports
-
-      - name: Download component test coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: component-reports
-
-      - name: Download unit test coverage reports
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
-        with:
-          name: unit-reports
+      - name: Restore coverage reports to build directories
+        uses: ./config/actions/restore-coverage-reports
 
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
