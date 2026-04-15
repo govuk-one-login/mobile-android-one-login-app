@@ -1,4 +1,4 @@
-name: Firebase Test Lab Instrumentation Spike
+name: Firebase Test Lab Spike
 
 on:
   push:
@@ -28,9 +28,13 @@ env:
   FTL_RESULTS_BUCKET: ${{ vars.FTL_RESULTS_BUCKET }}
 
 jobs:
-  testlab-instrumentation:
-    name: Build buildDebug APKs and run Firebase Test Lab instrumentation
+  build-apks:
+    name: Build buildDebug APKs
     runs-on: ubuntu-latest
+
+    outputs:
+      app-apk-name: app-build-debug.apk
+      test-apk-name: app-build-debug-androidTest.apk
 
     steps:
       - name: Checkout
@@ -69,16 +73,6 @@ jobs:
           test -n "$MODULE_FETCH_TOKEN_USERNAME" || { echo "Missing repo secret MODULE_FETCH_TOKEN_USERNAME"; exit 1; }
           test -n "$BUILD_APPCHECK_DEBUG_TOKEN" || { echo "Missing repo secret BUILD_APPCHECK_DEBUG_TOKEN"; exit 1; }
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          project_id: ${{ env.GCP_PROJECT_ID }}
-
       - name: Build app APK and test APK
         shell: bash
         env:
@@ -103,18 +97,37 @@ jobs:
           test -n "$app_apk" || { echo "Could not find buildDebug app APK"; exit 1; }
           test -n "$test_apk" || { echo "Could not find buildDebug androidTest APK"; exit 1; }
 
-          echo "app-apk=$app_apk" >> "$GITHUB_OUTPUT"
-          echo "test-apk=$test_apk" >> "$GITHUB_OUTPUT"
-          printf 'App APK: %s\n' "$app_apk"
-          printf 'Test APK: %s\n' "$test_apk"
+          mkdir -p out
+          cp "$app_apk" "out/app-build-debug.apk"
+          cp "$test_apk" "out/app-build-debug-androidTest.apk"
 
-      - name: Upload built APKs
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: testlab-apks
-          path: |
-            ${{ steps.apk-paths.outputs.app-apk }}
-            ${{ steps.apk-paths.outputs.test-apk }}
+          path: out/
+
+  run-instrumentation:
+    name: Run Firebase Test Lab instrumentation
+    runs-on: ubuntu-latest
+    needs: build-apks
+
+    steps:
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: testlab-apks
+          path: out
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
 
       - name: Run instrumentation test in Firebase Test Lab
         shell: bash
@@ -131,8 +144,8 @@ jobs:
             firebase test android run
             --type instrumentation
             --project "$GCP_PROJECT_ID"
-            --app "${{ steps.apk-paths.outputs.app-apk }}"
-            --test "${{ steps.apk-paths.outputs.test-apk }}"
+            --app "out/app-build-debug.apk"
+            --test "out/app-build-debug-androidTest.apk"
             --timeout "$timeout_value"
             --results-history-name "one-login-build-debug-instrumentation"
           )
@@ -149,10 +162,55 @@ jobs:
             args+=(--results-bucket "$FTL_RESULTS_BUCKET")
           fi
 
-          printf 'Running Test Lab with device: %s\n' "$device_value"
-          printf 'Running Test Lab with timeout: %s\n' "$timeout_value"
           gcloud "${args[@]}"
 
-      - name: Clean workspace
-        if: always()
-        uses: ./mobile-android-pipelines/actions/clean-workspace
+  run-robo:
+    name: Run Firebase Test Lab Robo
+    runs-on: ubuntu-latest
+    needs: build-apks
+
+    steps:
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: testlab-apks
+          path: out
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Run Robo test in Firebase Test Lab
+        shell: bash
+        run: |
+          timeout_value="${{ inputs.timeout }}"
+          device_value="${{ inputs.device }}"
+
+          if [[ -z "$timeout_value" ]]; then
+            timeout_value="30m"
+          fi
+
+          args=(
+            firebase test android run
+            --type robo
+            --project "$GCP_PROJECT_ID"
+            --app "out/app-build-debug.apk"
+            --timeout "$timeout_value"
+            --results-history-name "one-login-build-debug-robo"
+          )
+
+          if [[ -n "$device_value" ]]; then
+            args+=(--device "$device_value")
+          fi
+
+          if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+            args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+          fi
+
+          gcloud "${args[@]}"
