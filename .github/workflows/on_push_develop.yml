@@ -123,6 +123,16 @@ jobs:
           version-name: ${{ steps.version-name.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
+      - name: Generate and submit dependency graph
+        uses: ./mobile-android-pipelines/actions/dependency-submission
+        with:
+          additional-arguments:
+            -Pgpr.user=${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+            -Pgpr.token=${{ secrets.MODULE_FETCH_TOKEN }}
+            -PversionName="${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+            -PversionCode=${{ steps.version-code.outputs.version-code }}
+            -PdebugBuildAppCheckToken=${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
       - name: Clean workspace
         if: always()
         uses: ./mobile-android-pipelines/actions/clean-workspace

@@ -56,7 +56,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/generate-version-code
 
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
+        uses: ./mobile-android-pipelines/actions/dependency-submission
         with:
           additional-arguments:
             -Pgpr.user=${{ secrets.MODULE_FETCH_TOKEN_USERNAME }} 
