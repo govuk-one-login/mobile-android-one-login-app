@@ -116,6 +116,9 @@ jobs:
       raw_results_url: ${{ steps.ftl.outputs.raw_results_url }}
       firebase_results_url: ${{ steps.ftl.outputs.firebase_results_url }}
       run_status: ${{ steps.ftl.outputs.run_status }}
+      outcome: ${{ steps.ftl.outputs.outcome }}
+      test_axis_value: ${{ steps.ftl.outputs.test_axis_value }}
+      test_details: ${{ steps.ftl.outputs.test_details }}
 
     steps:
       - name: Download APK artifacts
@@ -176,9 +179,27 @@ jobs:
           raw_results_url="$(grep -oE 'https://console\.developers\.google\.com/storage/browser/[^] ]+' ftl-output.txt | tail -1)"
           firebase_results_url="$(grep -oE 'https://console\.firebase\.google\.com/project/[^] ]+' ftl-output.txt | tail -1)"
 
+          summary_line="$(grep -E '^\| (Passed|Failed|Inconclusive|Skipped) \|' ftl-output.txt | tail -1)"
+          outcome="$(echo "$summary_line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')"
+          test_axis_value="$(echo "$summary_line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')"
+          test_details="$(echo "$summary_line" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print $4}')"
+
+          if [[ -z "$outcome" ]]; then
+            if [[ "$status" -eq 0 ]]; then
+              outcome="Passed"
+            else
+              outcome="Failed"
+            fi
+          fi
+
           echo "raw_results_url=$raw_results_url" >> "$GITHUB_OUTPUT"
           echo "firebase_results_url=$firebase_results_url" >> "$GITHUB_OUTPUT"
           echo "run_status=$status" >> "$GITHUB_OUTPUT"
+
+          echo "outcome=$outcome" >> "$GITHUB_OUTPUT"
+          echo "test_axis_value=$test_axis_value" >> "$GITHUB_OUTPUT"
+          echo "test_details=$test_details" >> "$GITHUB_OUTPUT"
+
 
           {
             echo "## Firebase Test Lab Instrumentation"
@@ -213,6 +234,10 @@ jobs:
               Firebase results page:
               ${{ needs.run-instrumentation.outputs.firebase_results_url }}
 
+              Outcome: `${{ needs.run-instrumentation.outputs.outcome }}`
+              Exit code: `${{ needs.run-instrumentation.outputs.run_status }}`
+              Device / axis: `${{ needs.run-instrumentation.outputs.test_axis_value }}`
+              Details: `${{ needs.run-instrumentation.outputs.test_details }}`
 
   # run-robo:
   #   name: Run Firebase Test Lab Robo
