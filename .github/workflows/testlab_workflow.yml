@@ -139,6 +139,7 @@ jobs:
 
       - name: Run instrumentation test in Firebase Test Lab
         id: ftl
+        continue-on-error: true
         shell: bash
         run: |
           timeout_value="${{ inputs.timeout }}"
@@ -209,6 +210,10 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
           exit $status
+      - name: Fail job if Test Lab failed
+        if: always() && steps.ftl.outputs.run_status != '' && steps.ftl.outputs.run_status != '0'
+        shell: bash
+        run: exit 1
 
   notify-slack:
     name: Notify Slack
@@ -226,18 +231,18 @@ jobs:
             text: |
               Firebase Test Lab instrumentation run for `${{ github.repository }}` on `${{ github.ref_name }}`
 
-              Status: `${{ needs.run-instrumentation.outputs.run_status }}`
+              ${{ needs.run-instrumentation.result == 'success' && ':white_check_mark:' || ':x:' }} Job result: `${{ needs.run-instrumentation.result }}`
+              ${{ needs.run-instrumentation.outputs.outcome == 'Passed' && ':white_check_mark:' || ':x:' }} Outcome: `${{ needs.run-instrumentation.outputs.outcome || 'n/a' }}`
+
+              Test Lab exit code: `${{ needs.run-instrumentation.outputs.run_status || 'n/a' }}`
+              Device / axis: `${{ needs.run-instrumentation.outputs.test_axis_value || 'n/a' }}`
+              Details: `${{ needs.run-instrumentation.outputs.test_details || 'n/a' }}`
 
               Raw results:
-              ${{ needs.run-instrumentation.outputs.raw_results_url }}
+              ${{ needs.run-instrumentation.outputs.raw_results_url || 'n/a' }}
 
               Firebase results page:
-              ${{ needs.run-instrumentation.outputs.firebase_results_url }}
-
-              Outcome: `${{ needs.run-instrumentation.outputs.outcome }}`
-              Exit code: `${{ needs.run-instrumentation.outputs.run_status }}`
-              Device / axis: `${{ needs.run-instrumentation.outputs.test_axis_value }}`
-              Details: `${{ needs.run-instrumentation.outputs.test_details }}`
+              ${{ needs.run-instrumentation.outputs.firebase_results_url || 'n/a' }}
 
   # run-robo:
   #   name: Run Firebase Test Lab Robo
