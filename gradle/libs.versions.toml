@@ -64,6 +64,14 @@ kotlinStdLib = "2.2.10"
 jetbrainsKotlinJvm = "2.2.21"
 ksp = "2.3.5"
 integrity = "1.6.0"
+# Minimum safe versions for vulnerable build classpath transitive dependencies
+netty = "4.1.132.Final"
+logback = "1.5.25"
+jdom2 = "2.0.6.1"
+commons-lang3 = "3.18.0"
+httpclient = "4.5.13"
+googleProtobuf = "3.25.5"
+googleGuava = "32.0.0-android"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }

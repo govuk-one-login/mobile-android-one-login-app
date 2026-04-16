@@ -85,6 +85,32 @@ buildscript {
     )
 }
 
+/**
+ * Force minimum safe versions for vulnerable transitive dependencies in the build classpath.
+ * These are pulled in by AGP/Gradle plugins and don't ship in the app, but are used at build time.
+ * Versions are defined in libs.versions.toml.
+ */
+allprojects {
+    configurations.configureEach {
+        resolutionStrategy.eachDependency {
+            when (requested.group) {
+                "io.netty" -> useVersion(libs.versions.netty.get())
+                "ch.qos.logback" -> useVersion(libs.versions.logback.get())
+                "org.jdom" -> useVersion(libs.versions.jdom2.get())
+                "org.bitbucket.b_c" -> useVersion(libs.versions.jose4j.get())
+                "org.apache.commons" -> if (requested.name == "commons-lang3" || requested.name == "commons-compress") {
+                    useVersion(libs.versions.commons.lang3.get())
+                }
+                "org.apache.httpcomponents" -> if (requested.name == "httpclient") {
+                    useVersion(libs.versions.httpclient.get())
+                }
+                "com.google.protobuf" -> useVersion(libs.versions.googleProtobuf.get())
+                "com.google.guava" -> useVersion(libs.versions.googleGuava.get())
+            }
+        }
+    }
+}
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
