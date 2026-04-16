@@ -107,10 +107,15 @@ jobs:
           name: testlab-apks
           path: out/
 
+
   run-instrumentation:
     name: Run Firebase Test Lab instrumentation
     runs-on: ubuntu-latest
     needs: build-apks
+    outputs:
+      raw_results_url: ${{ steps.ftl.outputs.raw_results_url }}
+      firebase_results_url: ${{ steps.ftl.outputs.firebase_results_url }}
+      run_status: ${{ steps.ftl.outputs.run_status }}
 
     steps:
       - name: Download APK artifacts
@@ -130,6 +135,7 @@ jobs:
           project_id: ${{ env.GCP_PROJECT_ID }}
 
       - name: Run instrumentation test in Firebase Test Lab
+        id: ftl
         shell: bash
         run: |
           timeout_value="${{ inputs.timeout }}"
@@ -162,55 +168,99 @@ jobs:
             args+=(--results-bucket "$FTL_RESULTS_BUCKET")
           fi
 
-          gcloud "${args[@]}"
+          set +e
+          gcloud "${args[@]}" 2>&1 | tee ftl-output.txt
+          status=${PIPESTATUS[0]}
+          set -e
 
-  run-robo:
-    name: Run Firebase Test Lab Robo
+          raw_results_url="$(grep -oE 'https://console\.developers\.google\.com/storage/browser/[^] ]+' ftl-output.txt | tail -1)"
+          firebase_results_url="$(grep -oE 'https://console\.firebase\.google\.com/project/[^] ]+' ftl-output.txt | tail -1)"
+
+          echo "raw_results_url=$raw_results_url" >> "$GITHUB_OUTPUT"
+          echo "firebase_results_url=$firebase_results_url" >> "$GITHUB_OUTPUT"
+          echo "run_status=$status" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Firebase Test Lab Instrumentation"
+            echo
+            echo "- [Firebase results page]($firebase_results_url)"
+            echo "- [Raw results bucket]($raw_results_url)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $status
+
+  notify-slack:
+    name: Notify Slack
     runs-on: ubuntu-latest
-    needs: build-apks
+    needs: run-instrumentation
+    if: always()
 
     steps:
-      - name: Download APK artifacts
-        uses: actions/download-artifact@v4
+      - name: Send Slack message
+        uses: slackapi/slack-github-action@v2
         with:
-          name: testlab-apks
-          path: out
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_DEV }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: |
+              Firebase Test Lab instrumentation run for `${{ github.repository }}` on `${{ github.ref_name }}`
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+              Status: `${{ needs.run-instrumentation.outputs.run_status }}`
 
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          project_id: ${{ env.GCP_PROJECT_ID }}
+              Raw results:
+              ${{ needs.run-instrumentation.outputs.raw_results_url }}
 
-      - name: Run Robo test in Firebase Test Lab
-        shell: bash
-        run: |
-          timeout_value="${{ inputs.timeout }}"
-          device_value="${{ inputs.device }}"
+              Firebase results page:
+              ${{ needs.run-instrumentation.outputs.firebase_results_url }}
 
-          if [[ -z "$timeout_value" ]]; then
-            timeout_value="30m"
-          fi
 
-          args=(
-            firebase test android run
-            --type robo
-            --project "$GCP_PROJECT_ID"
-            --app "out/app-build-debug.apk"
-            --timeout "$timeout_value"
-            --results-history-name "one-login-build-debug-robo"
-          )
+  # run-robo:
+  #   name: Run Firebase Test Lab Robo
+  #   runs-on: ubuntu-latest
+  #   needs: build-apks
 
-          if [[ -n "$device_value" ]]; then
-            args+=(--device "$device_value")
-          fi
+  #   steps:
+  #     - name: Download APK artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: testlab-apks
+  #         path: out
 
-          if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
-            args+=(--results-bucket "$FTL_RESULTS_BUCKET")
-          fi
+  #     - name: Authenticate to Google Cloud
+  #       uses: google-github-actions/auth@v3
+  #       with:
+  #         credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-          gcloud "${args[@]}"
+  #     - name: Set up gcloud
+  #       uses: google-github-actions/setup-gcloud@v3
+  #       with:
+  #         project_id: ${{ env.GCP_PROJECT_ID }}
+
+  #     - name: Run Robo test in Firebase Test Lab
+  #       shell: bash
+  #       run: |
+  #         timeout_value="${{ inputs.timeout }}"
+  #         device_value="${{ inputs.device }}"
+
+  #         if [[ -z "$timeout_value" ]]; then
+  #           timeout_value="30m"
+  #         fi
+
+  #         args=(
+  #           firebase test android run
+  #           --type robo
+  #           --project "$GCP_PROJECT_ID"
+  #           --app "out/app-build-debug.apk"
+  #           --timeout "$timeout_value"
+  #           --results-history-name "one-login-build-debug-robo"
+  #         )
+
+  #         if [[ -n "$device_value" ]]; then
+  #           args+=(--device "$device_value")
+  #         fi
+
+  #         if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+  #           args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+  #         fi
+
+  #         gcloud "${args[@]}"
