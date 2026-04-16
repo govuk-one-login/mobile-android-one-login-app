@@ -86,8 +86,9 @@ buildscript {
 }
 
 /**
- * Force minimum safe versions for vulnerable transitive dependencies in the build classpath.
- * These are pulled in by AGP/Gradle plugins and don't ship in the app, but are used at build time.
+ * Force minimum safe versions for vulnerable transitive dependencies.
+ * Uses both constraints (visible to dependency graph / Dependabot) and
+ * resolutionStrategy (enforced at resolve time) for full coverage.
  * Versions are defined in libs.versions.toml.
  */
 allprojects {
@@ -107,6 +108,26 @@ allprojects {
                 "com.google.protobuf" -> useVersion(libs.versions.googleProtobuf.get())
                 "com.google.guava" -> useVersion(libs.versions.googleGuava.get())
             }
+        }
+    }
+}
+
+subprojects {
+    dependencies {
+        constraints {
+            add("implementation", "io.netty:netty-codec:${libs.versions.netty.get()}")
+            add("implementation", "io.netty:netty-codec-http:${libs.versions.netty.get()}")
+            add("implementation", "io.netty:netty-codec-http2:${libs.versions.netty.get()}")
+            add("implementation", "io.netty:netty-handler:${libs.versions.netty.get()}")
+            add("implementation", "io.netty:netty-common:${libs.versions.netty.get()}")
+            add("implementation", "ch.qos.logback:logback-core:${libs.versions.logback.get()}")
+            add("implementation", "ch.qos.logback:logback-classic:${libs.versions.logback.get()}")
+            add("implementation", "org.jdom:jdom2:${libs.versions.jdom2.get()}")
+            add("implementation", "org.apache.commons:commons-lang3:${libs.versions.commons.lang3.get()}")
+            add("implementation", "org.apache.httpcomponents:httpclient:${libs.versions.httpclient.get()}")
+            add("implementation", "com.google.protobuf:protobuf-java:${libs.versions.googleProtobuf.get()}")
+            add("implementation", "com.google.protobuf:protobuf-javalite:${libs.versions.googleProtobuf.get()}")
+            add("implementation", "com.google.guava:guava:${libs.versions.googleGuava.get()}")
         }
     }
 }
