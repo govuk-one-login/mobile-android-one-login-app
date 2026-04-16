@@ -71,7 +71,7 @@ jdom2 = "2.0.6.1"
 commons-lang3 = "3.18.0"
 httpclient = "4.5.13"
 googleProtobuf = "3.25.5"
-googleGuava = "32.0.1-android"
+googleGuava = "32.1.0-android"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
