@@ -137,6 +137,7 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v3
         with:
+          install_components: beta
           project_id: ${{ env.GCP_PROJECT_ID }}
 
       - name: Run instrumentation test in Firebase Test Lab
@@ -152,6 +153,10 @@ jobs:
 
           if [[ -z "$timeout_value" ]]; then
             timeout_value="30m"
+          fi
+
+          if [[ -z "$num_shards_value" ]]; then
+            num_shards_value="5"
           fi
 
           args=(
@@ -180,8 +185,19 @@ jobs:
             args+=(--results-bucket "$FTL_RESULTS_BUCKET")
           fi
 
+          echo "timeout_value=$timeout_value"
+          echo "device_value=${device_value:-<default>}"
+          echo "test_targets_value=${test_targets_value:-<all tests>}"
+          echo "num_shards_value=$num_shards_value"
+          if [[ -n "$num_shards_value" && "$num_shards_value" != "1" ]]; then
+            gcloud_cmd=(beta "${args[@]}")
+          else
+            gcloud_cmd=("${args[@]}")
+          fi
+          printf 'gcloud args: %q\n' "${gcloud_cmd[@]}"
+
           set +e
-          gcloud "${args[@]}" 2>&1 | tee ftl-output.txt
+          gcloud "${gcloud_cmd[@]}" 2>&1 | tee ftl-output.txt
           status=${PIPESTATUS[0]}
           set -e
 
