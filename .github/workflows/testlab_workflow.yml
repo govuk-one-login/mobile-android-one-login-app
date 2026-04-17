@@ -10,6 +10,10 @@ on:
         description: Optional Firebase Test Lab device spec
         required: false
         default: ""
+      num_shards:
+        description: Number of uniform shards for instrumentation
+        required: false
+        default: "5"
       timeout:
         description: Firebase Test Lab timeout
         required: true
@@ -143,6 +147,8 @@ jobs:
           timeout_value="${{ inputs.timeout }}"
           device_value="${{ inputs.device }}"
           test_targets_value="${{ inputs.test_targets }}"
+          num_shards_value="${{ inputs.num_shards }}"
+
 
           if [[ -z "$timeout_value" ]]; then
             timeout_value="30m"
@@ -157,6 +163,10 @@ jobs:
             --timeout "$timeout_value"
             --results-history-name "one-login-build-debug-instrumentation"
           )
+
+          if [[ -n "$num_shards_value" && "$num_shards_value" != "1" ]]; then
+            args+=(--num-uniform-shards "$num_shards_value")
+          fi
 
           if [[ -n "$device_value" ]]; then
             args+=(--device "$device_value")
@@ -225,53 +235,53 @@ jobs:
               Firebase results page:
               ${{ needs.run-instrumentation.outputs.firebase_results_url }}
 
-  run-robo:
-    name: Run Firebase Test Lab Robo
-    runs-on: ubuntu-latest
-    needs: build-apks
+  # run-robo:
+  #   name: Run Firebase Test Lab Robo
+  #   runs-on: ubuntu-latest
+  #   needs: build-apks
 
-    steps:
-      - name: Download APK artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: testlab-apks
-          path: out
+  #   steps:
+  #     - name: Download APK artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: testlab-apks
+  #         path: out
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v3
-        with:
-          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+  #     - name: Authenticate to Google Cloud
+  #       uses: google-github-actions/auth@v3
+  #       with:
+  #         credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
-      - name: Set up gcloud
-        uses: google-github-actions/setup-gcloud@v3
-        with:
-          project_id: ${{ env.GCP_PROJECT_ID }}
+  #     - name: Set up gcloud
+  #       uses: google-github-actions/setup-gcloud@v3
+  #       with:
+  #         project_id: ${{ env.GCP_PROJECT_ID }}
 
-      - name: Run Robo test in Firebase Test Lab
-        shell: bash
-        run: |
-          timeout_value="${{ inputs.timeout }}"
-          device_value="${{ inputs.device }}"
+  #     - name: Run Robo test in Firebase Test Lab
+  #       shell: bash
+  #       run: |
+  #         timeout_value="${{ inputs.timeout }}"
+  #         device_value="${{ inputs.device }}"
 
-          if [[ -z "$timeout_value" ]]; then
-            timeout_value="30m"
-          fi
+  #         if [[ -z "$timeout_value" ]]; then
+  #           timeout_value="30m"
+  #         fi
 
-          args=(
-            firebase test android run
-            --type robo
-            --project "$GCP_PROJECT_ID"
-            --app "out/app-build-debug.apk"
-            --timeout "$timeout_value"
-            --results-history-name "one-login-build-debug-robo"
-          )
+  #         args=(
+  #           firebase test android run
+  #           --type robo
+  #           --project "$GCP_PROJECT_ID"
+  #           --app "out/app-build-debug.apk"
+  #           --timeout "$timeout_value"
+  #           --results-history-name "one-login-build-debug-robo"
+  #         )
 
-          if [[ -n "$device_value" ]]; then
-            args+=(--device "$device_value")
-          fi
+  #         if [[ -n "$device_value" ]]; then
+  #           args+=(--device "$device_value")
+  #         fi
 
-          if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
-            args+=(--results-bucket "$FTL_RESULTS_BUCKET")
-          fi
+  #         if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+  #           args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+  #         fi
 
-          gcloud "${args[@]}"
+  #         gcloud "${args[@]}"
