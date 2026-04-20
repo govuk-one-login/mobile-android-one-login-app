@@ -389,7 +389,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-runner-fast
 
       - name: Restore coverage reports to build directories
-        uses: ./config/actions/restore-coverage-reports
+        uses: ./mobile-android-pipelines/actions/restore-coverage-reports
 
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
