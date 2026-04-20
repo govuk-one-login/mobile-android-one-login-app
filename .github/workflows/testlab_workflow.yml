@@ -6,14 +6,30 @@ on:
       - DCMAW-18163/spike-fb-testlabs
   workflow_dispatch:
     inputs:
-      device:
-        description: Optional Firebase Test Lab device spec
+      device_1:
+        description: First Firebase Test Lab device spec
         required: false
-        default: ""
+        default: "model=redfin,version=30,locale=en,orientation=portrait"
+      device_2:
+        description: Second Firebase Test Lab device spec
+        required: false
+        default: "model=oriole,version=31,locale=en,orientation=portrait"
+      device_3:
+        description: Third Firebase Test Lab device spec
+        required: false
+        default: "model=bluejay,version=32,locale=en,orientation=portrait"
+      device_4:
+        description: Fourth Firebase Test Lab device spec
+        required: false
+        default: "model=panther,version=33,locale=en,orientation=portrait"
+      device_5:
+        description: Fifth Firebase Test Lab device spec
+        required: false
+        default: "model=cheetah,version=33,locale=en,orientation=portrait"
       num_shards:
         description: Number of uniform shards for instrumentation
         required: false
-        default: "5"
+        default: "1"
       timeout:
         description: Firebase Test Lab timeout
         required: true
@@ -146,17 +162,39 @@ jobs:
         shell: bash
         run: |
           timeout_value="${{ inputs.timeout }}"
-          device_value="${{ inputs.device }}"
+          input_device_values=(
+            "${{ inputs.device_1 }}"
+            "${{ inputs.device_2 }}"
+            "${{ inputs.device_3 }}"
+            "${{ inputs.device_4 }}"
+            "${{ inputs.device_5 }}"
+          )
           test_targets_value="${{ inputs.test_targets }}"
           num_shards_value="${{ inputs.num_shards }}"
 
+          device_values=()
+          for device_value in "${input_device_values[@]}"; do
+            if [[ -n "$device_value" ]]; then
+              device_values+=("$device_value")
+            fi
+          done
+
+          if [[ "${#device_values[@]}" -eq 0 ]]; then
+            device_values=(
+              "model=redfin,version=30,locale=en,orientation=portrait"
+              "model=oriole,version=31,locale=en,orientation=portrait"
+              "model=bluejay,version=32,locale=en,orientation=portrait"
+              "model=panther,version=33,locale=en,orientation=portrait"
+              "model=cheetah,version=33,locale=en,orientation=portrait"
+            )
+          fi
 
           if [[ -z "$timeout_value" ]]; then
             timeout_value="30m"
           fi
 
           if [[ -z "$num_shards_value" ]]; then
-            num_shards_value="5"
+            num_shards_value="1"
           fi
 
           args=(
@@ -173,9 +211,11 @@ jobs:
             args+=(--num-uniform-shards "$num_shards_value")
           fi
 
-          if [[ -n "$device_value" ]]; then
-            args+=(--device "$device_value")
-          fi
+          for device_value in "${device_values[@]}"; do
+            if [[ -n "$device_value" ]]; then
+              args+=(--device "$device_value")
+            fi
+          done
 
           if [[ -n "$test_targets_value" ]]; then
             args+=(--test-targets "$test_targets_value")
@@ -186,9 +226,9 @@ jobs:
           fi
 
           echo "timeout_value=$timeout_value"
-          echo "device_value=${device_value:-<default>}"
           echo "test_targets_value=${test_targets_value:-<all tests>}"
           echo "num_shards_value=$num_shards_value"
+          printf 'device_value: %s\n' "${device_values[@]}"
           if [[ -n "$num_shards_value" && "$num_shards_value" != "1" ]]; then
             gcloud_cmd=(beta "${args[@]}")
           else
