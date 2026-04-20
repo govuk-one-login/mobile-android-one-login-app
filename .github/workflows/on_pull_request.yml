@@ -145,19 +145,19 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload ktlint coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: ktlint-reports
           path: "**/build/reports/ktlint/**/*.xml"
 
       - name: Upload detekt coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: detekt-reports
           path: "**/build/reports/detekt/**/*.xml"
 
       - name: Upload lint coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: lint-reports
           path: "**/build/reports/lint-results*.xml"
@@ -205,7 +205,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload instrumentation test coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: instrumentation-reports
           path: "**/build/reports/jacoco/managed/**/*.xml"
@@ -254,7 +254,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload component test coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: component-reports
           path: "**/build/reports/jacoco/**/*.xml"
@@ -303,7 +303,7 @@ jobs:
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
 
       - name: Upload unit test coverage report
-        uses: ./config/actions/upload-coverage-reports
+        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
         with:
           artifact-name: unit-reports
           path: "**/build/reports/jacoco/**/*.xml"

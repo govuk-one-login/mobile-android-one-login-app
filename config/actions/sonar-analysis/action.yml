@@ -29,6 +29,18 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Verify report files exist
+      shell: bash
+      run: |
+        echo "=== Jacoco XML reports ==="
+        find . -path "*/build/reports/jacoco*" -name "*.xml" | sort
+        echo "=== Detekt reports ==="
+        find . -path "*/build/reports/detekt*" -name "*.xml" | sort
+        echo "=== Lint reports ==="
+        find . -path "*/build/reports/lint-results*" -name "*.xml" | sort
+        echo "=== Ktlint reports ==="
+        find . -path "*/build/reports/ktlint*" -name "*.xml" | sort
+
     - name: Run Sonarqube PR Analysis
       if: ${{ github.event_name == 'pull_request' }}
       run: |

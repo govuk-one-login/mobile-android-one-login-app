@@ -1,5 +1,5 @@
 name: 'Restore coverage reports'
-description: 'Download and unzip coverage report artifacts into the correct build directories for sonar analysis'
+description: 'Download coverage report artifacts and restore them into the correct build directories for sonar analysis'
 
 runs:
   using: "composite"
@@ -7,22 +7,17 @@ runs:
     - name: Download all coverage report artifacts
       uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
       with:
+        pattern: '*-reports'
         path: downloaded-reports
 
     - name: Restore reports to build directories
       shell: bash
       run: |
         for artifact_dir in downloaded-reports/*/; do
-          echo "Restoring reports from ${artifact_dir}..."
-          # Find any zip files and extract them
-          find "${artifact_dir}" -name "*.zip" -exec sh -c '
-            dir=$(dirname "$1")
-            unzip -o "$1" -d "${dir}"
-            rm "$1"
-          ' _ {} \;
-          # Copy all files preserving directory structure
-          cp -r "${artifact_dir}"/* . 2>/dev/null || true
+          echo "Restoring from: ${artifact_dir}"
+          rsync -a "${artifact_dir}" .
         done
         rm -rf downloaded-reports
-        echo "Report files restored:"
-        find . -path "*/build/reports/*" -name "*.xml" | head -50
+
+        echo "=== Restored report files ==="
+        find . -path "*/build/reports/*" -name "*.xml" | sort | head -100
