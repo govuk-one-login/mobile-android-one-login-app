@@ -1,0 +1,343 @@
+name: Firebase Test Lab Spike
+
+on:
+  push:
+    branches:
+      - DCMAW-18163/spike-fb-testlabs
+  workflow_dispatch:
+    inputs:
+      device_1:
+        description: First Firebase Test Lab device spec
+        required: false
+        default: "model=redfin,version=30,locale=en,orientation=portrait"
+      device_2:
+        description: Second Firebase Test Lab device spec
+        required: false
+        default: "model=oriole,version=31,locale=en,orientation=portrait"
+      device_3:
+        description: Third Firebase Test Lab device spec
+        required: false
+        default: "model=bluejay,version=32,locale=en,orientation=portrait"
+      device_4:
+        description: Fourth Firebase Test Lab device spec
+        required: false
+        default: "model=panther,version=33,locale=en,orientation=portrait"
+      device_5:
+        description: Fifth Firebase Test Lab device spec
+        required: false
+        default: "model=cheetah,version=33,locale=en,orientation=portrait"
+      num_shards:
+        description: Number of uniform shards for instrumentation
+        required: false
+        default: "1"
+      timeout:
+        description: Firebase Test Lab timeout
+        required: true
+        default: 30m
+      test_targets:
+        description: Optional test target, for example class uk.gov.onelogin.MainActivityTest
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  packages: read
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  FTL_RESULTS_BUCKET: ${{ vars.FTL_RESULTS_BUCKET }}
+
+jobs:
+  build-apks:
+    name: Build buildDebug APKs
+    runs-on: ubuntu-latest
+
+    outputs:
+      app-apk-name: app-build-debug.apk
+      test-apk-name: app-build-debug-androidTest.apk
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          lfs: true
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
+
+      - name: Generate version code
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Set spike version name
+        id: version-name
+        shell: bash
+        run: echo "value=1.3.0" >> "$GITHUB_OUTPUT"
+
+      - name: Validate config
+        shell: bash
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          MODULE_FETCH_TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+          MODULE_FETCH_TOKEN_USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          BUILD_APPCHECK_DEBUG_TOKEN: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+        run: |
+          test -n "$GCP_PROJECT_ID" || { echo "Missing repo variable GCP_PROJECT_ID"; exit 1; }
+          test -n "$GCP_SERVICE_ACCOUNT_KEY" || { echo "Missing repo secret GCP_SERVICE_ACCOUNT_KEY"; exit 1; }
+          test -n "$MODULE_FETCH_TOKEN" || { echo "Missing repo secret MODULE_FETCH_TOKEN"; exit 1; }
+          test -n "$MODULE_FETCH_TOKEN_USERNAME" || { echo "Missing repo secret MODULE_FETCH_TOKEN_USERNAME"; exit 1; }
+          test -n "$BUILD_APPCHECK_DEBUG_TOKEN" || { echo "Missing repo secret BUILD_APPCHECK_DEBUG_TOKEN"; exit 1; }
+
+      - name: Build app APK and test APK
+        shell: bash
+        env:
+          USERNAME: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          TOKEN: ${{ secrets.MODULE_FETCH_TOKEN }}
+          BUILD_DEBUG_APP_CHECK_TOKEN: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+        run: |
+          ./gradlew \
+            :app:assembleBuildDebug \
+            :app:assembleBuildDebugAndroidTest \
+            -PversionCode=${{ steps.version-code.outputs.version-code }} \
+            -PversionName=${{ steps.version-name.outputs.value }} \
+            --stacktrace
+
+      - name: Resolve APK paths
+        id: apk-paths
+        shell: bash
+        run: |
+          app_apk="$(find app/build/outputs/apk/build/debug -name '*.apk' ! -name '*androidTest*' | head -n 1)"
+          test_apk="$(find app/build/outputs/apk/androidTest/build/debug -name '*androidTest*.apk' | head -n 1)"
+
+          test -n "$app_apk" || { echo "Could not find buildDebug app APK"; exit 1; }
+          test -n "$test_apk" || { echo "Could not find buildDebug androidTest APK"; exit 1; }
+
+          mkdir -p out
+          cp "$app_apk" "out/app-build-debug.apk"
+          cp "$test_apk" "out/app-build-debug-androidTest.apk"
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: testlab-apks
+          path: out/
+
+
+  run-instrumentation:
+    name: Run Firebase Test Lab instrumentation
+    runs-on: ubuntu-latest
+    needs: build-apks
+    outputs:
+      raw_results_url: ${{ steps.ftl.outputs.raw_results_url }}
+      firebase_results_url: ${{ steps.ftl.outputs.firebase_results_url }}
+      run_status: ${{ steps.ftl.outputs.run_status }}
+      status_text: ${{ steps.ftl.outputs.status_text }}
+
+    steps:
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: testlab-apks
+          path: out
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          install_components: beta
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Run instrumentation test in Firebase Test Lab
+        id: ftl
+        continue-on-error: true
+        shell: bash
+        run: |
+          timeout_value="${{ inputs.timeout }}"
+          input_device_values=(
+            "${{ inputs.device_1 }}"
+            "${{ inputs.device_2 }}"
+            "${{ inputs.device_3 }}"
+            "${{ inputs.device_4 }}"
+            "${{ inputs.device_5 }}"
+          )
+          test_targets_value="${{ inputs.test_targets }}"
+          num_shards_value="${{ inputs.num_shards }}"
+
+          device_values=()
+          for device_value in "${input_device_values[@]}"; do
+            if [[ -n "$device_value" ]]; then
+              device_values+=("$device_value")
+            fi
+          done
+
+          if [[ "${#device_values[@]}" -eq 0 ]]; then
+            device_values=(
+              "model=redfin,version=30,locale=en,orientation=portrait"
+              "model=oriole,version=31,locale=en,orientation=portrait"
+              "model=bluejay,version=32,locale=en,orientation=portrait"
+              "model=panther,version=33,locale=en,orientation=portrait"
+              "model=cheetah,version=33,locale=en,orientation=portrait"
+            )
+          fi
+
+          if [[ -z "$timeout_value" ]]; then
+            timeout_value="30m"
+          fi
+
+          if [[ -z "$num_shards_value" ]]; then
+            num_shards_value="1"
+          fi
+
+          args=(
+            firebase test android run
+            --type instrumentation
+            --project "$GCP_PROJECT_ID"
+            --app "out/app-build-debug.apk"
+            --test "out/app-build-debug-androidTest.apk"
+            --timeout "$timeout_value"
+            --results-history-name "one-login-build-debug-instrumentation"
+          )
+
+          if [[ -n "$num_shards_value" && "$num_shards_value" != "1" ]]; then
+            args+=(--num-uniform-shards "$num_shards_value")
+          fi
+
+          for device_value in "${device_values[@]}"; do
+            if [[ -n "$device_value" ]]; then
+              args+=(--device "$device_value")
+            fi
+          done
+
+          if [[ -n "$test_targets_value" ]]; then
+            args+=(--test-targets "$test_targets_value")
+          fi
+
+          if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+            args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+          fi
+
+          echo "timeout_value=$timeout_value"
+          echo "test_targets_value=${test_targets_value:-<all tests>}"
+          echo "num_shards_value=$num_shards_value"
+          printf 'device_value: %s\n' "${device_values[@]}"
+          if [[ -n "$num_shards_value" && "$num_shards_value" != "1" ]]; then
+            gcloud_cmd=(beta "${args[@]}")
+          else
+            gcloud_cmd=("${args[@]}")
+          fi
+          printf 'gcloud args: %q\n' "${gcloud_cmd[@]}"
+
+          set +e
+          gcloud "${gcloud_cmd[@]}" 2>&1 | tee ftl-output.txt
+          status=${PIPESTATUS[0]}
+          set -e
+
+          raw_results_url="$(grep -oE 'https://console\.developers\.google\.com/storage/browser/[^] ]+' ftl-output.txt | tail -1)"
+          firebase_results_url="$(grep -oE 'https://console\.firebase\.google\.com/project/[^] ]+' ftl-output.txt | tail -1)"
+
+          echo "raw_results_url=$raw_results_url" >> "$GITHUB_OUTPUT"
+          echo "firebase_results_url=$firebase_results_url" >> "$GITHUB_OUTPUT"
+          echo "run_status=$status" >> "$GITHUB_OUTPUT"
+          if [[ "$status" -eq 0 ]]; then
+            echo "status_text=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status_text=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+
+          {
+            echo "## Firebase Test Lab Instrumentation"
+            echo
+            echo "- [Firebase results page]($firebase_results_url)"
+            echo "- [Raw results bucket]($raw_results_url)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          exit $status
+      - name: Fail job if Test Lab failed
+        if: always() && steps.ftl.outputs.run_status != '' && steps.ftl.outputs.run_status != '0'
+        shell: bash
+        run: exit 1
+
+  notify-slack:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    needs: run-instrumentation
+    if: always()
+
+    steps:
+      - name: Send Slack message
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL_DEV }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: |
+              Firebase Test Lab instrumentation run for `${{ github.repository }}` on `${{ github.ref_name }}`
+
+              Status: ${{ needs.run-instrumentation.outputs.status_text }}
+
+              Raw results:
+              ${{ needs.run-instrumentation.outputs.raw_results_url }}
+
+              Firebase results page:
+              ${{ needs.run-instrumentation.outputs.firebase_results_url }}
+
+  # run-robo:
+  #   name: Run Firebase Test Lab Robo
+  #   runs-on: ubuntu-latest
+  #   needs: build-apks
+
+  #   steps:
+  #     - name: Download APK artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: testlab-apks
+  #         path: out
+
+  #     - name: Authenticate to Google Cloud
+  #       uses: google-github-actions/auth@v3
+  #       with:
+  #         credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+  #     - name: Set up gcloud
+  #       uses: google-github-actions/setup-gcloud@v3
+  #       with:
+  #         project_id: ${{ env.GCP_PROJECT_ID }}
+
+  #     - name: Run Robo test in Firebase Test Lab
+  #       shell: bash
+  #       run: |
+  #         timeout_value="${{ inputs.timeout }}"
+  #         device_value="${{ inputs.device }}"
+
+  #         if [[ -z "$timeout_value" ]]; then
+  #           timeout_value="30m"
+  #         fi
+
+  #         args=(
+  #           firebase test android run
+  #           --type robo
+  #           --project "$GCP_PROJECT_ID"
+  #           --app "out/app-build-debug.apk"
+  #           --timeout "$timeout_value"
+  #           --results-history-name "one-login-build-debug-robo"
+  #         )
+
+  #         if [[ -n "$device_value" ]]; then
+  #           args+=(--device "$device_value")
+  #         fi
+
+  #         if [[ -n "$FTL_RESULTS_BUCKET" ]]; then
+  #           args+=(--results-bucket "$FTL_RESULTS_BUCKET")
+  #         fi
+
+  #         gcloud "${args[@]}"
