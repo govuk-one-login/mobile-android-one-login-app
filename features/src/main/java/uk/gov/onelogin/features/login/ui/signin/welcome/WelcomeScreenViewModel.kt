@@ -48,7 +48,7 @@ import javax.inject.Inject
 class WelcomeScreenViewModel
     @Inject
     constructor(
-        @ApplicationContext
+        @param:ApplicationContext
         private val context: Context,
         private val localAuthManager: LocalAuthManager,
         private val tokenRepository: TokenRepository,
@@ -202,7 +202,6 @@ class WelcomeScreenViewModel
 
             localAuthManager.enforceAndSet(
                 // Wallet is now permanently turned on - the work on LocalAuthManager to amend this will come at a later time
-                true,
                 false,
                 activity = activity,
                 callbackHandler =

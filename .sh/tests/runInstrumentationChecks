@@ -13,7 +13,7 @@ set -o errexit
 #
 # For example:
 # - Terminal usage: `INPUT_VERSION_CODE="100" INPUT_VERSION_NAME="1.2.3" ./.sh/runUnitChecks`
-# See `config/gradle-check/action.yml` for workflow usage deferring to the `env` configuration.
+# See `config/gradle-checks/action.yml` for workflow usage deferring to the `env` configuration.
 
 # Provide a default value for WORKER_COUNT
 if [[ -z "${WORKER_COUNT}" ]]

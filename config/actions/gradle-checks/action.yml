@@ -1,0 +1,78 @@
+name: 'Run check/ tests'
+description: 'Run the tests command for a Gradle project based on what type of tests is specified'
+
+inputs:
+  test-type:
+    description: 'The tests suite that needs to be run'
+    required: false
+  github-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
+  github-actor:
+    description: 'Service account name that allows publishing packages'
+    required: true
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+  app-check-token:
+    description: 'App check token'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Tests
+      if: ${{ inputs.test-type == 'unit' }}
+      shell: bash
+      run: |
+        ./.sh/tests/runUnitChecks
+      env:
+        CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}
+
+    - name: Run Snapshot Tests
+      if: ${{ inputs.test-type == 'snapshot' }}
+      shell: bash
+      run: |
+        ./.sh/tests/runSnapshotChecks
+      env:
+        CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}
+
+    - name: Run Component Tests
+      if: ${{ inputs.test-type == 'component' }}
+      shell: bash
+      run: |
+        ./.sh/tests/runComponentChecks
+      env:
+        CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}
+
+    - name: Run Styling Checks (Detekt, Lint, Vale)
+      if: ${{ inputs.test-type == 'style' }}
+      shell: bash
+      run: |
+        ./.sh/styleChecks/runStyleChecks
+      env:
+        CI: 'true'
+        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}

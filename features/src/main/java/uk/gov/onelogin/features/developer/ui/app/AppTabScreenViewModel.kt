@@ -14,7 +14,7 @@ class AppTabScreenViewModel
     @Inject
     constructor(
         private val appInfoLocalSource: AppInfoLocalSource,
-        @BuildConfigVersion
+        @param:BuildConfigVersion
         val version: String,
     ) : ViewModel() {
         val appInfo: MutableStateFlow<AppInfoData?> = MutableStateFlow(null)

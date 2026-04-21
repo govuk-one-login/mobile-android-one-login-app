@@ -8,7 +8,7 @@ set -o errexit
 #
 # For example:
 # - Terminal usage: `INPUT_VERSION_CODE="100" INPUT_VERSION_NAME="1.2.3" ./.sh/runUnitChecks`
-# See `config/gradle-check/action.yml` for workflow usage deferring to the `env` configuration.
+# See `config/unit-gradle-checks/action.yml` for workflow usage deferring to the `env` configuration.
 
 find ./.sh -type f -exec shellcheck {} +
 find ./.githooks -type f -exec shellcheck {} +
@@ -18,25 +18,31 @@ if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
   echo "Running unit checks without environment variables (local development)..."
   ./gradlew \
-    check \
-    --continue \
-    --stacktrace
-  echo "Running Paparazzi verify without environment variables (local development)..."
-  ./gradlew \
-    features:verifyPaparazziBuildDebug \
+    :app:testStagingDebugUnitTest \
+    :app:testProductionReleaseUnitTest \
+    :core:testStagingDebugUnitTest \
+    :core:testProductionReleaseUnitTest \
+    :features:unitEnvironmentSpecificTestBuildDebug \
+    :features:unitEnvironmentSpecificTestIntegrationDebug \
+    :features:unitEnvironmentSpecificTestStagingDebug \
+    :features:unitEnvironmentSpecificTestProductionDebug \
+    :features:unitTestStagingDebug \
+    :features:unitTesProductionRelease \
     --continue \
     --stacktrace
 else
-   echo "Running Paparazzi verify with environment variables (GitHub workflow)..."
-    ./gradlew  \
-      features:verifyPaparazziBuildDebug \
-      -PversionCode="${INPUT_VERSION_CODE}" \
-      -PversionName="${INPUT_VERSION_NAME}" \
-      --continue \
-      --stacktrace
   echo "Running unit checks with environment variables (GitHub workflow)..."
   ./gradlew \
-    check \
+    :app:testStagingDebugUnitTest \
+    :app:testProductionReleaseUnitTest \
+    :core:testStagingDebugUnitTest \
+    :core:testProductionReleaseUnitTest \
+    :features:unitEnvironmentSpecificTestBuildDebug \
+    :features:unitEnvironmentSpecificTestIntegrationDebug \
+    :features:unitEnvironmentSpecificTestStagingDebug \
+    :features:unitEnvironmentSpecificTestProductionDebug \
+    :features:unitTestStagingDebug \
+    :features:unitTesProductionRelease \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \

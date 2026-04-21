@@ -34,10 +34,12 @@ updates:
 
   - package-ecosystem: gradle
     directory: /
+    registries:
+      - github-maven
     schedule:
       interval: weekly
       day: sunday
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
     groups:
       kotlin:
         patterns:
@@ -46,3 +48,8 @@ updates:
         update-types:
           - minor
           - patch
+  
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "daily"
