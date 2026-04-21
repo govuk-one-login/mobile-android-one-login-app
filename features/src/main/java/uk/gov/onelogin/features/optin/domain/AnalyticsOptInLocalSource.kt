@@ -14,7 +14,7 @@ class AnalyticsOptInLocalSource
     @Inject
     constructor(
         private val preferences: SharedPreferences,
-        @IODispatcherQualifier
+        @param:IODispatcherQualifier
         private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) : OptInLocalSource {
         override suspend fun getState(): AnalyticsOptInState =
