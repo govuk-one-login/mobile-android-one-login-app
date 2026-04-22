@@ -32,10 +32,6 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
 
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
-
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
 
@@ -92,10 +88,6 @@ jobs:
           lfs: 'true'
           submodules: 'true'
           fetch-depth: 0
-
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
