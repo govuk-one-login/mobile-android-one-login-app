@@ -44,11 +44,6 @@ runs:
     - name: Run Sonarqube PR Analysis
       if: ${{ github.event_name == 'pull_request' }}
       run: |
-        ./gradlew createFullJarBuildDebugTestFixtures \
-          -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME \
-          -Pgpr.user=$GITHUB_ACTOR \
-          -Pgpr.token=$GITHUB_TOKEN
         ./gradlew sonar \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.token=$SONAR_TOKEN \

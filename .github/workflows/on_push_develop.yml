@@ -252,6 +252,14 @@ jobs:
           artifact-name: unit-reports
           path: "**/build/reports/jacoco/**/*.xml"
 
+      # Sonar analyzers must have access to the bytecode to perform an accurate analysis.
+      # https://community.sonarsource.com/t/sonarscanner-for-gradle-you-can-now-decide-when-to-compile/102069
+      - name: Upload jars
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: jars
+          path: "**/build/**/*.jar"
+
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
@@ -440,6 +448,11 @@ jobs:
 
       - name: Restore coverage reports to build directories
         uses: ./mobile-android-pipelines/actions/restore-coverage-reports
+
+      - name: Download jars
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
+        with:
+          name: jars
 
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
