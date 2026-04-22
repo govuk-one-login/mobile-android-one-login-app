@@ -11,7 +11,6 @@ on:
       - opened
       - reopened
       - synchronize
-      - ready_for_review
   merge_group:
   workflow_dispatch:
 
@@ -20,6 +19,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  dependency-submission-job:
+    name: Generate and submit dependency graph
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Detect Arch
+        id: detect-arch
+        uses: ./config/actions/detect-arch
+
+      - name: Setup GitHub Runner workflow
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
+
+      - name: Get latest tag
+        id: latest-tag
+        uses: ./config/actions/get-latest-tag
+        with:
+          pattern: 'v*'
+
+      - name: Generate version code
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Generate and submit dependency graph
+        uses: ./mobile-android-pipelines/actions/dependency-submission
+        with:
+          additional-arguments:
+            -Pgpr.user=${{ secrets.MODULE_FETCH_TOKEN_USERNAME }} 
+            -Pgpr.token=${{ secrets.MODULE_FETCH_TOKEN }}
+            -PversionName="${{ steps.latest-tag.outputs.current-tag }}-${{ steps.version-code.outputs.version-code }}"
+            -PversionCode=${{ steps.version-code.outputs.version-code }}
+            -PdebugBuildAppCheckToken=${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
   on-pull-request-job:
     name: Verify code base when pull request is published/updated
     runs-on: ubuntu-22.04
