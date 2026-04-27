@@ -69,14 +69,13 @@ jobs:
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
-  build-and-publish-release-integration:
+  build-and-publish-release:
     name: Verify code base when pushed on release
     needs: set-up
     runs-on: ubuntu-22.04
     strategy:
       matrix:
         environment: [ "integration", "production" ]
-    environment: release
     permissions:
       contents: write
       packages: read

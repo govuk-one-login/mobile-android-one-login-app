@@ -4,7 +4,7 @@ name: On Branch Push (release)
 on:
   workflow_run:
     workflows: [ Run checks (tests and style checks) ]
-    branches: [ develop, release/** ]
+    branches: [ release/** ]
     types: [ completed ]
   push:
     branches:
@@ -110,6 +110,7 @@ jobs:
     strategy:
       matrix:
         environment: ["build", "staging"]
+    environment: release
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication

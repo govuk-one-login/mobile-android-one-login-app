@@ -4,7 +4,7 @@ name: On Branch Push (develop)
 on:
   workflow_run:
     workflows: [ Run checks (tests and style checks) ]
-    branches: [ develop, release/** ]
+    branches: [ develop ]
     types: [ completed ]
   push:
     branches:
