@@ -2,6 +2,10 @@
 name: On Branch Push (develop)
 
 on:
+  workflow_run:
+    workflows: [ Run checks (tests and style checks) ]
+    branches: [ develop, release/** ]
+    types: [ completed ]
   push:
     branches:
       - "develop"
@@ -15,301 +19,12 @@ permissions:
   id-token: write
 
 jobs:
-  run-checks:
-    name: Verify code base when pushed on develop
-    runs-on: ubuntu-22.04
-    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
-    outputs:
-      version-code: ${{ steps.version-code.outputs.version-code }}
-      version-name: ${{ steps.latest-tag.outputs.current-tag }}
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      packages: read
-  set-up:
-    name: Set-up and generate version name and version code
-    runs-on: ubuntu-22.04
-    outputs:
-      version-code: ${{ steps.version-code.outputs.version-code }}
-      version-name: ${{ steps.version-name.outputs.version-name }}
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Get latest tag
-        id: latest-tag
-        uses: ./config/actions/get-latest-tag
-        with:
-          pattern: 'v*'
-
-      - name: Generate version code
-        id: version-code
-        uses: ./mobile-android-pipelines/actions/generate-version-code
-
-      - name: Generate version name
-        id: version-name
-        uses: ./mobile-android-pipelines/actions/version-name
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.latest-tag.outputs.current-tag }}
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  style-checks:
-    name: Run style (detekt, lint & vale) checks
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup prerequisite dependencies
-        uses: ./mobile-android-pipelines/actions/common-prerequisites
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Run gradle style checks (Detekt, Lint, Vale)
-        id: style-checks
-        uses: ./config/actions/gradle-checks
-        with:
-          test-type: "style"
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Upload ktlint coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: ktlint-reports
-          path: "**/build/reports/ktlint/**/*.xml"
-
-      - name: Upload detekt coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: detekt-reports
-          path: "**/build/reports/detekt/**/*.xml"
-
-      - name: Upload lint coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: lint-reports
-          path: "**/build/reports/lint-results*.xml"
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  instrumentation-checks:
-    name: Run instrumentation tests
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Run gradle instrumentation tests
-        id: instrumentation-tests
-        uses: ./config/actions/gradle-connected-test-managed
-        with:
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Upload instrumentation test coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: instrumentation-reports
-          path: "**/build/reports/jacoco/managed/**/*.xml"
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  component-checks:
-    name: Run component tests
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Run gradle component tests
-        id: component-test
-        uses: ./config/actions/gradle-checks
-        with:
-          test-type: "component"
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Upload component test coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: component-reports
-          path: "**/build/reports/jacoco/**/*.xml"
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  unit-checks:
-    name: Run unit tests
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Run gradle unit tests
-        id: unit-test
-        uses: ./config/actions/gradle-checks
-        with:
-          test-type: "unit"
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Upload unit test coverage report
-        uses: ./mobile-android-pipelines/actions/upload-coverage-reports
-        with:
-          artifact-name: unit-reports
-          path: "**/build/reports/jacoco/**/*.xml"
-
-      # Sonar analyzers must have access to the bytecode to perform an accurate analysis.
-      # https://community.sonarsource.com/t/sonarscanner-for-gradle-you-can-now-decide-when-to-compile/102069
-      - name: Upload jars
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        with:
-          name: jars
-          path: "**/build/**/*.jar"
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  snapshot-checks:
-    name: Run snapshot/ screenshot tests
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Run gradle snapshot tests
-        id: snapshot-test
-        uses: ./config/actions/gradle-checks
-        with:
-          test-type: "snapshot"
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-
   dependency-submission-job:
     name: Generate and submit dependency graph
     runs-on: ubuntu-22.04
     permissions:
       contents: write
       packages: read
-
     steps:
       - name: Run checkout github action
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -347,20 +62,49 @@ jobs:
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
+  set-up:
+    name: Set-up and generate version name and version code
+    runs-on: ubuntu-22.04
+    outputs:
+      version-code: ${{ steps.version-code.outputs.version-code }}
+      version-name: ${{ steps.version-name.outputs.version-name }}
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: latest-tag
+        uses: ./config/actions/get-latest-tag
+        with:
+          pattern: 'v*'
+
+      - name: Generate version code
+        if: ${{ github.event.workflow_run.head_branch  }}
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Generate version name
+        id: version-name
+        uses: ./mobile-android-pipelines/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
   bundle-and-publish:
-    name: Bundle and publish Staging app
+    name: Bundle and publish app
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
     strategy:
       matrix:
         environment: ["build", "staging"]
-    needs:
-      - set-up
-      - style-checks
-      - unit-checks
-      - component-checks
-      - snapshot-checks
-      - instrumentation-checks
     permissions:
       # Set permissions for ${{ secrets.GITHUB_TOKEN }}
       # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
@@ -412,66 +156,6 @@ jobs:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-code: ${{ needs.run-checks.outputs.version-code }}
           version-name: ${{ needs.run-checks.outputs.version-name }}
-
-      - name: Clean workspace
-        uses: ./mobile-android-pipelines/actions/clean-workspace
-
-  sonar-analysis:
-    name: Run sonar analysis and check sonar quality gate
-    runs-on: ubuntu-22.04
-    needs:
-      - set-up
-      - style-checks
-      - unit-checks
-      - component-checks
-      - snapshot-checks
-      - instrumentation-checks
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      contents: read
-      packages: read
-
-    steps:
-      - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          lfs: 'true'
-          submodules: 'true'
-          fetch-depth: 0
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Restore coverage reports to build directories
-        uses: ./mobile-android-pipelines/actions/restore-coverage-reports
-
-      - name: Download jars
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
-        with:
-          name: jars
-
-      - name: Run sonar analysis
-        uses: ./config/actions/sonar-analysis
-        with:
-          project-version: ${{ steps.version-name.outputs.version-name }}
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          version-code: ${{ needs.set-up.outputs.version-code }}
-          version-name: ${{ needs.set-up.outputs.version-name }}
-          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-          github-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-
-      - name: Bundle reports folder
-        uses: ./mobile-android-pipelines/actions/bundle-reports
-
-      - name: Run sonar quality gate
-        uses: ./config/actions/sonar-quality-gate
-        with:
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
