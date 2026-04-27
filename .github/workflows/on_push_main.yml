@@ -70,8 +70,9 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   build-and-publish-release:
-    name: Verify code base when pushed on release
-    needs: set-up
+    name: Bundle and publish app in Production and Integration for release
+    needs:
+      - set-up
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -114,21 +115,21 @@ jobs:
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepare-for-release.outputs.version }}
+          version-name: ${{ needs.set-up.outputs.version }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
           keystore-file-path: ${{ steps.retrieve-secrets.outputs.keystore-file-path }}
 
       - name: Upload to play store
         uses: ./config/actions/upload-to-play-store
         with:
-          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+          aab-paths: ${{ steps.set-up.outputs.aab-paths }}
 
       - name: Git tag bundles
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
           version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepare-for-release.outputs.version }}
+          version-name: ${{ needs.set-up.outputs.version }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
