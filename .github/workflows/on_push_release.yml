@@ -84,6 +84,10 @@ jobs:
         with:
           pattern: 'v*'
 
+      - name: Generate version code
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
       - name: Get next version from branch
         id: next-version
         uses: ./config/actions/get-next-version-from-branch
@@ -102,6 +106,13 @@ jobs:
         env:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
+
+      - name: Generate version name
+        id: version-name
+        uses: ./mobile-android-pipelines/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.next-version.outputs.next-version }}
 
   bundle-and-publish:
     name: Bundle and publish app in Build and Staging for testing a release candidate
