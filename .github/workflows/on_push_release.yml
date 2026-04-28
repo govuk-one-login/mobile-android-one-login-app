@@ -114,6 +114,9 @@ jobs:
           version-code: ${{ steps.version-code.outputs.version-code }}
           version-name: ${{ steps.next-version.outputs.next-version }}
 
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
   bundle-and-publish:
     name: Bundle and publish app in Build and Staging for testing a release candidate
     needs:

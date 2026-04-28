@@ -66,6 +66,13 @@ jobs:
         id: version-code
         uses: ./mobile-android-pipelines/actions/generate-version-code
 
+      - name: Generate version name
+        id: version-name
+        uses: ./mobile-android-pipelines/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.next-version.outputs.next-version }}
+
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
