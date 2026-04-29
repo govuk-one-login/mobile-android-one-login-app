@@ -69,11 +69,6 @@ runs:
     - name: Run Sonarqube Branch Analysis
       if: ${{ github.event_name != 'pull_request' }}
       run: |
-        ./gradlew createFullJarBuildDebugTestFixtures \
-          -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME \
-          -Pgpr.user=$GITHUB_ACTOR \
-          -Pgpr.token=$GITHUB_TOKEN
         ./gradlew sonar \
           -Dsonar.branch.name=$BRANCH_NAME \
           -Dsonar.host.url=https://sonarcloud.io \
