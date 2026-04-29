@@ -12,7 +12,6 @@ on:
       - develop
   schedule:
     - cron: 0 3 * * *
-  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
