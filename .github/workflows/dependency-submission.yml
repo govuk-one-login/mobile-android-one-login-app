@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-22.04
     if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
+      contents: write
       packages: read
     steps:
       - name: Run checkout github action
