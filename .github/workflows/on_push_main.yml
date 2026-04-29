@@ -2,10 +2,6 @@
 name: On Branch Push (main)
 
 on:
-  workflow_run:
-    workflows: [ Run checks (tests and style checks) ]
-    branches: [ main ]
-    types: [ completed ]
   push:
     branches:
       - "main"

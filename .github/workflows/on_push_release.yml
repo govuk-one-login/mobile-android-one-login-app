@@ -2,10 +2,6 @@
 name: On Branch Push (release)
 
 on:
-  workflow_run:
-    workflows: [ Run checks (tests and style checks) ]
-    branches: [ release/** ]
-    types: [ completed ]
   push:
     branches:
       - "release/**"

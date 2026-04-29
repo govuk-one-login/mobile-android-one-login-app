@@ -6,6 +6,7 @@ on:
     workflows: [ Run checks (tests and style checks) ]
     branches: [ develop ]
     types: [ completed ]
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
   push:
     branches:
       - "develop"
