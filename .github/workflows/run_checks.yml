@@ -355,8 +355,5 @@ jobs:
         with:
           sonar-token: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Set status output
-        run: echo "status=success" >> $GITHUB_OUTPUT
-
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
