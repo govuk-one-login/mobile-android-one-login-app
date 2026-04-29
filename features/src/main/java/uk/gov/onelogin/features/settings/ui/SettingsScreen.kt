@@ -57,6 +57,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
+import uk.gov.android.ui.patterns.utils.ModifierExtensions.bringIntoView
 import uk.gov.android.ui.theme.m3.Dividers
 import uk.gov.android.ui.theme.m3.GdsLocalColorScheme
 import uk.gov.android.ui.theme.m3.GdsTheme
@@ -143,12 +144,14 @@ private fun SettingsScreenBody(
     uriHandler: UriHandler,
     settingsScreenLinks: SettingsScreenLinks,
 ) {
+    val scrollState = rememberScrollState()
     Column(
         modifier =
             Modifier
                 .padding(top = paddingValues.calculateTopPadding())
                 .consumeWindowInsets(paddingValues)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
+                .bringIntoView(scrollState)
                 .windowInsetsPadding(WindowInsets.displayCutout)
                 .padding(top = smallPadding, bottom = xsmallPadding),
     ) {
