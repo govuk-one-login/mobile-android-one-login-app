@@ -26,6 +26,8 @@ This project uses a git-flow branching strategy, briefly:
 ## Pull Request workflow
 
 Triggered automatically on all PRs raised. Required for merge into any base branches (`main`/ `develop`).
+This will be run on any `release/**` branch raised as well, concurrently to the release flow that 
+published Staging and Build QA release bundles.
 
 ```mermaid
 flowchart TD
@@ -65,8 +67,8 @@ flowchart TD
     H --> L
 
     L --> I["sonar-analysis\n& quality gate"]
-    L --> J["bundle-and-publish-build"]
-    L --> K["bundle-and-publish-staging"]
+    L --> J["bundle-and-publish (Build)"]
+    L --> K["bundle-and-publish (Staging)"]
 ```
 
 ## On Push (main) workflow
@@ -101,8 +103,8 @@ Tech Leads do not approve this until the [PR workflow has run successfully](#pul
 flowchart TD
     A["Push to release"] --> B["prepare-for-release\n(version validation)"]
 
-    B --> C["build-and-publish\nrelease-build"]
-    B --> D["build-and-publish\nrelease-staging"]
+    B --> C["build-and-publish\nrelease (Build)"]
+    B --> D["build-and-publish\nrelease (Staging)"]
 ```
 
 ## Getting started
