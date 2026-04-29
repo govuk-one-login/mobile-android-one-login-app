@@ -6,7 +6,6 @@ on:
     workflows: [ Run checks (tests and style checks) ]
     branches: [ develop ]
     types: [ completed ]
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
   push:
     branches:
       - develop
@@ -20,6 +19,7 @@ jobs:
   dependency-submission-job:
     name: Generate and submit dependency graph
     runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       packages: read
     steps:
@@ -62,6 +62,7 @@ jobs:
   set-up:
     name: Set-up and generate version name and version code
     runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-name.outputs.version-name }}
@@ -99,6 +100,7 @@ jobs:
     name: Bundle and publish app in Build and Staging (development)
     runs-on: ubuntu-24.04
     #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     needs:
       - set-up
     strategy:
