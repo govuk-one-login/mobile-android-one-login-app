@@ -82,6 +82,8 @@ jobs:
     permissions:
       contents: write
       packages: read
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
       id-token: write
     steps:
       - name: Run checkout github action
