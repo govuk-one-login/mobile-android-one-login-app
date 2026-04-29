@@ -23,6 +23,90 @@ This project uses a git-flow branching strategy, briefly:
 - The new tag will be pushed on the merge to `main` with the default merge title
 - `main` should then be merged back into `develop`
 
+## Pull Request workflow
+
+Triggered automatically on all PRs raised. Required for merge into any base branches (`main`/ `develop`).
+This will be run on any `release/**` branch raised as well, concurrently to the release flow that 
+published Staging and Build QA release bundles.
+
+```mermaid
+flowchart TD
+    A["PR opened"] --> B["dependency-submission-job"]
+    A --> C["set-up\n(version name & code)"]
+
+    C --> D["style-checks\n(detekt, lint, vale)"]
+    C --> E["unit-checks"]
+    C --> F["component-checks"]
+    C --> G["snapshot-checks"]
+    C --> H["instrumentation-checks"]
+
+    D --> I["sonar-analysis\n& quality gate"]
+    E --> I
+    F --> I
+    G --> I
+    H --> I
+```
+
+## On Push (develop) workflow
+
+```mermaid
+flowchart TD
+    A["Push to develop"] --> B["dependency-submission-job"]
+    A --> C["set-up\n(version name & code)"]
+
+    C --> D["style-checks\n(detekt, lint, vale)"]
+    C --> E["unit-checks"]
+    C --> F["component-checks"]
+    C --> G["snapshot-checks"]
+    C --> H["instrumentation-checks"]
+
+    D --> L["checks completed"]
+    E --> L
+    F --> L
+    G --> L
+    H --> L
+
+    L --> I["sonar-analysis\n& quality gate"]
+    L --> J["bundle-and-publish (Build)"]
+    L --> K["bundle-and-publish (Staging)"]
+```
+
+## On Push (main) workflow
+
+In order to avoid delays caused by flakiness, we publish at the same time we run the checks - this is only when it's run on main (release branch). This is based on the cofnidence that all checks have ran successfully on the [PR workflow](#pull-request-workflow) which is run against the same configuration as it will be when merging to main.
+
+```mermaid
+flowchart TD
+    A["Push to main"] --> B["set-up\n(version, tag & push)"]
+
+    B --> C["style-checks\n(detekt, lint, vale)"]
+    B --> D["unit-checks"]
+    B --> E["component-checks"]
+    B --> F["snapshot-checks"]
+    B --> G["instrumentation-checks"]
+
+    C --> H["sonar-analysis\n& quality gate"]
+    D --> H
+    E --> H
+    F --> H
+    G --> H
+
+    B --> I["build-and-publish\nrelease-integration"]
+    B --> J["build-and-publish\nrelease-production"]
+```
+
+## On Push (release) workflow
+
+The build-and-publish job require Tech Lead approval, which is why they do not need any tests to be run prior.
+Tech Leads do not approve this until the [PR workflow has run successfully](#pull-request-workflow) which is triggered automatically for all PRs raised.
+```mermaid
+flowchart TD
+    A["Push to release"] --> B["prepare-for-release\n(version validation)"]
+
+    B --> C["build-and-publish\nrelease (Build)"]
+    B --> D["build-and-publish\nrelease (Staging)"]
+```
+
 ## Getting started
 
 A number of how-to documents are provided to get a new developer up to speed with
