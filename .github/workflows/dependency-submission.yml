@@ -18,7 +18,6 @@ jobs:
   dependency-submission-job:
     name: Generate and submit dependency graph
     runs-on: ubuntu-22.04
-    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: write
       packages: read
