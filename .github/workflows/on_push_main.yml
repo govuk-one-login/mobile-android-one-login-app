@@ -4,7 +4,7 @@ name: On Branch Push (main)
 on:
   push:
     branches:
-      - "main"
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

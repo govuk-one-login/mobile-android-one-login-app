@@ -9,7 +9,7 @@ on:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
   push:
     branches:
-      - "develop"
+      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
