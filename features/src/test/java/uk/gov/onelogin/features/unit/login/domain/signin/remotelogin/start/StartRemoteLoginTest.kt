@@ -1,11 +1,11 @@
-package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin
+package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin.start
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -23,11 +23,11 @@ import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLoginImpl
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLoginImpl
 import kotlin.test.assertEquals
 
-class HandleRemoteLoginTest {
+class StartRemoteLoginTest {
     private val mockContext: Context = mock()
     private val mockGetPersistentId: GetPersistentId = mock()
     private val mockLocaleUtils: LocaleUtils = mock()
@@ -40,12 +40,12 @@ class HandleRemoteLoginTest {
     private val testAttestation = "testAttestation"
     private val testPersistentId = "12345"
 
-    private lateinit var handleRemoteLogin: HandleRemoteLogin
+    private lateinit var startRemoteLogin: StartRemoteLogin
 
     @BeforeEach
     fun setUp() {
-        handleRemoteLogin =
-            HandleRemoteLoginImpl(
+        startRemoteLogin =
+            StartRemoteLoginImpl(
                 mockContext,
                 mockLocaleUtils,
                 mockLoginSession,
@@ -71,13 +71,16 @@ class HandleRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
                 assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
-                assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
+                Assertions.assertEquals(
+                    LoginSessionConfiguration.Locale.EN,
+                    capturedConfiguration.locale
+                )
             }
         }
 
@@ -89,13 +92,16 @@ class HandleRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
                 assertEquals(null, capturedConfiguration.persistentSessionId)
-                assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
+                Assertions.assertEquals(
+                    LoginSessionConfiguration.Locale.EN,
+                    capturedConfiguration.locale
+                )
             }
         }
 
@@ -107,13 +113,16 @@ class HandleRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
                 assertEquals(null, capturedConfiguration.persistentSessionId)
-                assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
+                Assertions.assertEquals(
+                    LoginSessionConfiguration.Locale.EN,
+                    capturedConfiguration.locale
+                )
             }
         }
 
@@ -126,7 +135,7 @@ class HandleRemoteLoginTest {
             )
             var checkFailed = false
 
-            handleRemoteLogin.login(mockLauncher) {
+            startRemoteLogin.login(mockLauncher) {
                 checkFailed = true
             }
 
@@ -141,13 +150,16 @@ class HandleRemoteLoginTest {
                 AttestationResult.NotRequired(testAttestation)
             )
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
                 assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
-                assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
+                Assertions.assertEquals(
+                    LoginSessionConfiguration.Locale.EN,
+                    capturedConfiguration.locale
+                )
             }
         }
 
@@ -159,13 +171,16 @@ class HandleRemoteLoginTest {
                 AttestationResult.NotRequired(null)
             )
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
                 assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
-                assertEquals(LoginSessionConfiguration.Locale.EN, capturedConfiguration.locale)
+                Assertions.assertEquals(
+                    LoginSessionConfiguration.Locale.EN,
+                    capturedConfiguration.locale
+                )
             }
         }
 
@@ -180,7 +195,7 @@ class HandleRemoteLoginTest {
             )
             whenever(mockLoginSession.present(any(), any())).thenThrow(error)
 
-            handleRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher) {}
 
             verify(mockLogger).error(
                 expectedWrappedException.javaClass.simpleName,

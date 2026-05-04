@@ -1,8 +1,6 @@
 package uk.gov.onelogin.features.component.signout.info
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDisplayed
@@ -20,39 +18,24 @@ import org.junit.runner.RunWith
 import org.mockito.AdditionalAnswers
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
-import uk.gov.android.authentication.login.AuthenticationError
-import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.localauth.LocalAuthManagerImpl
-import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.testdouble.SystemLogger
-import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
-import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
-import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
-import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
-import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoAnalyticsViewModel
@@ -61,30 +44,20 @@ import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoViewModel
 
 @RunWith(AndroidJUnit4::class)
 class SignedOutInfoScreenTest : FragmentActivityTestCase() {
-    private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepo
-    private lateinit var deviceBiometricsManager: DeviceBiometricsManager
-    private lateinit var localAuthManager: LocalAuthManager
-    private lateinit var tokenRepository: TokenRepository
-    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
-    private lateinit var verifyIdToken: VerifyIdToken
-    private lateinit var navigator: Navigator
-    private lateinit var saveTokenExpiry: SaveTokenExpiry
-    private lateinit var savePersistentId: SavePersistentId
-    private lateinit var handleRemoteLogin: HandleRemoteLogin
-    private lateinit var handleLoginRedirect: HandleLoginRedirect
-    private lateinit var onlineChecker: OnlineChecker
-    private lateinit var loginViewModel: WelcomeScreenViewModel
+    private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var getPersistentId: GetPersistentId
     private lateinit var signOutUseCase: SignOutUseCase
-    private lateinit var viewModel: SignedOutInfoViewModel
+    private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
+    private lateinit var tokenRepository: TokenRepository
+    private val logger = SystemLogger()
+    private lateinit var navigator: Navigator
+    private lateinit var remoteLogin: RemoteLogin
+    private lateinit var onlineChecker: OnlineChecker
+    private lateinit var loginViewModel: WelcomeScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
-    private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
-    private lateinit var errorCounter: Counter
-    private lateinit var mockFragmentActivity: FragmentActivity
-    private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
-    private val logger = SystemLogger()
+    private lateinit var viewModel: SignedOutInfoViewModel
     private var shouldTryAgainCalled = false
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
@@ -93,62 +66,19 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private val signedOutButton =
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
-    private val serverError =
-        AuthenticationError(
-            "server_error",
-            AuthenticationError.ErrorType.SERVER_ERROR
-        )
-
     @Before
     @Suppress("LongMethod")
     fun setup() =
         runBlocking {
-            localAuthPreferenceRepo = mock()
-            deviceBiometricsManager = mock()
-            tokenRepository = mock()
-            autoInitialiseSecureStore = mock()
-            verifyIdToken = mock()
-            navigator = mock()
-            savePersistentId = mock()
-            saveTokenExpiry = mock()
-            handleRemoteLogin = mock()
-            handleLoginRedirect = mock()
+            mockFragmentActivity = mock()
             signOutUseCase = mock()
+            localAuthPrefResetUseCase = mock()
+            tokenRepository = mock()
+            getPersistentId = mock()
+            navigator = mock()
+            remoteLogin = mock()
             onlineChecker = mock()
             analytics = mock()
-            errorCounter = mock()
-            mockRemoveRefreshTokenAndExpiry = mock()
-            localAuthManager =
-                LocalAuthManagerImpl(
-                    localAuthPreferenceRepo,
-                    deviceBiometricsManager,
-                    analytics
-                )
-            localAuthPrefResetUseCase =
-                LocalAuthPrefResetUseCaseImpl(
-                    localAuthPreferenceRepo,
-                    localAuthManager
-                )
-            loginViewModel =
-                WelcomeScreenViewModel(
-                    context,
-                    localAuthManager,
-                    tokenRepository,
-                    autoInitialiseSecureStore,
-                    verifyIdToken,
-                    navigator,
-                    savePersistentId,
-                    saveTokenExpiry,
-                    handleRemoteLogin,
-                    handleLoginRedirect,
-                    signOutUseCase,
-                    logger,
-                    onlineChecker,
-                    errorCounter,
-                    mockRemoveRefreshTokenAndExpiry,
-                )
-            getPersistentId = mock()
-            signOutUseCase = mock()
             viewModel =
                 SignedOutInfoViewModel(
                     navigator,
@@ -158,10 +88,14 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
                     localAuthPrefResetUseCase,
                     logger
                 )
+            loginViewModel =
+                WelcomeScreenViewModel(
+                    navigator,
+                    onlineChecker,
+                    remoteLogin
+                )
             analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
             loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
-            shouldTryAgainCalled = false
-            mockFragmentActivity = mock()
         }
 
     @Test
@@ -199,7 +133,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
             whenWeClickSignIn()
 
-            verify(handleRemoteLogin).login(any(), any())
+            verify(remoteLogin).start(any())
         }
 
     @Test
@@ -220,82 +154,6 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
             verify(signOutUseCase).invoke()
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-        }
-
-    @Test
-    fun opensSignInScreenServerErrorAttempts1RecoverableError() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(handleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
-                        .invoke(serverError)
-                }
-            whenever(verifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-            whenever(errorCounter.getValue()).thenReturn(1)
-            loginViewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            composeTestRule.setContent {
-                SignedOutInfoScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel
-                )
-            }
-
-            whenWeClickSignIn()
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
-        }
-
-    @Test
-    fun opensSignInScreenServerErrorAttempts3UnRecoverableError() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(handleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (error: AuthenticationError) -> Unit)
-                        .invoke(serverError)
-                }
-            whenever(verifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-            whenever(errorCounter.getValue()).thenReturn(3)
-            loginViewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            composeTestRule.setContent {
-                SignedOutInfoScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel
-                )
-            }
-
-            whenWeClickSignIn()
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
         }
 
     @Test
@@ -333,7 +191,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
                 )
             }
 
-            verify(handleRemoteLogin).login(any(), any())
+            verify(remoteLogin).start(any())
         }
 
     @Test
@@ -412,7 +270,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
 
         whenWeClickSignIn()
 
-        wheneverBlocking { handleRemoteLogin.login(any(), any()) }.thenAnswer(
+        wheneverBlocking { remoteLogin.start(any()) }.thenAnswer(
             AdditionalAnswers.answersWithDelay(
                 1000
             ) { _: InvocationOnMock? -> null }

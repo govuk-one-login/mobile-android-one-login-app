@@ -1,16 +1,12 @@
-package uk.gov.onelogin.features.unit.login.ui.welcome
+package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -30,7 +26,6 @@ import uk.gov.android.network.online.OnlineChecker
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.counter.Counter
-import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -45,19 +40,14 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.convertToLoginTokens
-import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
-import uk.gov.onelogin.features.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
-import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLoginImpl
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import kotlin.test.assertFalse
 
-@Suppress("UNCHECKED_CAST", "LargeClass")
-@OptIn(ExperimentalCoroutinesApi::class)
-@ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
-class WelcomeScreenViewModelWithRefreshTest {
+@Suppress("LargeClass")
+class RemoteLoginWithoutRefreshTest {
     private val mockContext: Context = mock()
     private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepository
@@ -70,8 +60,8 @@ class WelcomeScreenViewModelWithRefreshTest {
     private lateinit var mockNavigator: Navigator
     private lateinit var mockOnlineChecker: OnlineChecker
     private lateinit var mockSaveTokenExpiry: SaveTokenExpiry
-    private lateinit var mockHandleRemoteLogin: HandleRemoteLogin
-    private lateinit var mockHandleLoginRedirect: HandleLoginRedirect
+    private lateinit var mockStartRemoteLogin: StartRemoteLogin
+    private lateinit var mockFinaliseRemoteLogin: FinaliseRemoteLogin
     private lateinit var mockSignOutUseCase: SignOutUseCase
     private lateinit var mockSavePersistentId: SavePersistentId
     private lateinit var mockCounter: Counter
@@ -80,24 +70,13 @@ class WelcomeScreenViewModelWithRefreshTest {
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
-    private val validRefreshToken =
-        "ewogICJhbGciOiAiRVMyNTYiLAogICJ0eXAiOiAiSldUIiwKICAia2lkI" +
-            "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
     private val tokenResponse =
         TokenResponse(
             "testType",
             testAccessToken,
             1L,
             testIdToken,
-            validRefreshToken
-        )
-
-    private val tokenResponseNoRefresh =
-        TokenResponse(
-            "testType",
-            testAccessToken,
-            1L,
-            testIdToken
+            null
         )
     private val accessDeniedError =
         AuthenticationError(
@@ -126,7 +105,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             AuthenticationError.ErrorType.TOKEN_ERROR
         )
 
-    private lateinit var viewModel: WelcomeScreenViewModel
+    private lateinit var remoteLogin: RemoteLogin
 
     @Test
     fun `handleIntent when data != null, device secure, no biometrics, verify id token success`() =
@@ -139,15 +118,14 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(deviceBiometricsManager.getCredentialStatus())
                 .thenReturn(DeviceBiometricsStatus.UNKNOWN)
-            whenever(mockSaveTokenExpiry.extractExpFromRefreshToken(any())).thenReturn(0)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -160,10 +138,15 @@ class WelcomeScreenViewModelWithRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(localAuthPreferenceRepo)
                 .setLocalAuthPref(LocalAuthPreference.Enabled(false))
-            verify(mockAutoInitialiseSecureStore, times(1))
-                .initialise(validRefreshToken)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
             verify(mockCounter).reset()
         }
@@ -182,7 +165,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn(LocalAuthPreference.Enabled(true))
             // Login redirect fires `onSuccess`
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -190,7 +173,7 @@ class WelcomeScreenViewModelWithRefreshTest {
                 .thenReturn(true)
 
             // re-authenticate is false by default
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -201,15 +184,16 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
+                    value = any()
                 )
             )
             verify(localAuthPreferenceRepo, times(0)).setLocalAuthPref(any())
-            verify(mockAutoInitialiseSecureStore, times(1))
-                .initialise(validRefreshToken)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
@@ -224,14 +208,14 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(deviceBiometricsManager.getCredentialStatus())
                 .thenReturn(DeviceBiometricsStatus.SUCCESS)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -239,13 +223,13 @@ class WelcomeScreenViewModelWithRefreshTest {
             verify(mockSaveTokenExpiry).saveExp(
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokenResponse.accessTokenExpirationTime
+                    value = tokenResponse.convertToLoginTokens().accessTokenExpirationTime
                 )
             )
             verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = 1763108617
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
@@ -264,7 +248,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
             whenever(deviceBiometricsManager.getCredentialStatus())
                 .thenReturn(DeviceBiometricsStatus.SUCCESS)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -273,7 +257,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn(LocalAuthPreference.Disabled)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -287,7 +271,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = 1763108617
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
@@ -304,14 +288,14 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -325,7 +309,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             verify(mockSaveTokenExpiry, times(0)).saveExp(
                 ExpiryInfo(
                     key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = 1763108617
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
@@ -343,7 +327,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -353,7 +337,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn((LocalAuthPreference.Disabled))
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -363,6 +347,12 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
+                )
+            )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
@@ -380,7 +370,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -390,7 +380,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn((LocalAuthPreference.Enabled(false)))
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -402,10 +392,16 @@ class WelcomeScreenViewModelWithRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verify(mockAutoInitialiseSecureStore).initialise(any())
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -417,7 +413,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -427,7 +423,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn((LocalAuthPreference.Enabled(true)))
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -439,10 +435,16 @@ class WelcomeScreenViewModelWithRefreshTest {
                     value = tokenResponse.accessTokenExpirationTime
                 )
             )
+            verify(mockSaveTokenExpiry, times(0)).saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = any()
+                )
+            )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
             verify(mockNavigator).goBack()
-            verify(mockAutoInitialiseSecureStore).initialise(any())
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -454,7 +456,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
@@ -464,7 +466,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(localAuthPreferenceRepo.getLocalAuthPref())
                 .thenReturn((LocalAuthPreference.Enabled(false)))
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -474,15 +476,11 @@ class WelcomeScreenViewModelWithRefreshTest {
                 ExpiryInfo(
                     key = ACCESS_TOKEN_EXPIRY_KEY,
                     value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
                 )
             )
             verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
             verify(mockSavePersistentId).invoke()
-            verify(mockAutoInitialiseSecureStore).initialise(validRefreshToken)
+            verify(mockAutoInitialiseSecureStore).initialise(null)
         }
 
     @Test
@@ -494,7 +492,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(accessDeniedError)
@@ -502,7 +500,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -523,7 +521,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(oauthError)
@@ -531,7 +529,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -552,7 +550,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(oauthError500)
@@ -560,7 +558,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -581,7 +579,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(serverError)
@@ -589,7 +587,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
             whenever(mockCounter.getValue()).thenReturn(1)
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -610,7 +608,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(serverError)
@@ -618,7 +616,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
             whenever(mockCounter.getValue()).thenReturn(3)
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -639,7 +637,7 @@ class WelcomeScreenViewModelWithRefreshTest {
 
             whenever(mockIntent.data).thenReturn(mockUri)
             whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: AuthenticationError) -> Unit)
                         .invoke(tokenError400)
@@ -647,7 +645,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 true,
                 activity = mockFragmentActivity
@@ -660,97 +658,13 @@ class WelcomeScreenViewModelWithRefreshTest {
         }
 
     @Test
-    fun `handleIntent when client attestation fails with Client Attestation Exception`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (Throwable?) -> Unit).invoke(
-                        AppIntegrityException.ClientAttestationException(Exception())
-                    )
-                }
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(true)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
-        }
-
-    @Test
-    fun `handleIntent when client attestation fails with Firebase Exception`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (Throwable?) -> Unit).invoke(
-                        AppIntegrityException.FirebaseException(Exception())
-                    )
-                }
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(true)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
-        }
-
-    @Test
-    fun `handleIntent when client attestation fails with Generic Exception`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (Throwable?) -> Unit).invoke(
-                        AppIntegrityException.Other(Exception())
-                    )
-                }
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(true)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
-        }
-
-    @Test
     fun `handleIntent when data == null`() =
         runTest {
             createMocks()
             val mockIntent: Intent = mock()
             whenever(mockIntent.data).thenReturn(null)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -770,12 +684,12 @@ class WelcomeScreenViewModelWithRefreshTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: Throwable?) -> Unit).invoke(Throwable())
                 }
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -796,12 +710,12 @@ class WelcomeScreenViewModelWithRefreshTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (error: Throwable?) -> Unit).invoke(null)
                 }
 
-            viewModel.handleActivityResult(mockIntent, activity = mockFragmentActivity)
+            remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             verifyNoInteractions(mockAutoInitialiseSecureStore)
             verifyNoInteractions(mockSaveTokenExpiry)
@@ -819,14 +733,14 @@ class WelcomeScreenViewModelWithRefreshTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(false)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
@@ -846,182 +760,19 @@ class WelcomeScreenViewModelWithRefreshTest {
             val mockUri: Uri = mock()
 
             whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
+            whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
                 .thenAnswer {
                     (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
                 }
             whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
                 .thenReturn(true)
 
-            viewModel.handleActivityResult(
+            remoteLogin.finalise(
                 mockIntent,
                 activity = mockFragmentActivity
             )
 
             verify(localAuthManager).enforceAndSet(any(), any(), any())
-        }
-
-    @Test
-    fun `check nav to dev panel calls navigator correctly`() {
-        createMocks()
-
-        viewModel.navigateToDevPanel()
-
-        verify(mockNavigator).openDeveloperPanel()
-    }
-
-    @Test
-    fun `check nav to offline error calls navigator correctly`() {
-        createMocks()
-
-        viewModel.navigateToOfflineError()
-
-        verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
-    }
-
-    @Test
-    fun `check abort login works as expected`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    runBlocking {
-                        delay(10000)
-                        assert(viewModel.loading.value)
-                        viewModel.abortLogin(any())
-                    }
-                }
-
-            assertFalse(viewModel.loading.value)
-        }
-
-    @Test
-    fun `handleIntent when refresh token already stored, new tokens stored`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-                }
-            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(false)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockRemoveRefreshTokenAndExpiry, times(0)).remove()
-            verify(mockSaveTokenExpiry).saveExp(
-                ExpiryInfo(
-                    key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
-                )
-            )
-            verify(mockTokenRepository).setTokenResponse(tokenResponse.convertToLoginTokens())
-            verify(mockSavePersistentId).invoke()
-            verify(mockAutoInitialiseSecureStore).initialise(validRefreshToken)
-        }
-
-    @Test
-    fun `handleIntent when refresh token already stored, no new tokens stored`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponseNoRefresh)
-                }
-            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(false)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockRemoveRefreshTokenAndExpiry, times(1)).remove()
-            verify(mockSaveTokenExpiry, times(0)).saveExp(
-                ExpiryInfo(
-                    key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
-                )
-            )
-            verify(mockTokenRepository, times(1)).setTokenResponse(
-                tokenResponse.convertToLoginTokens()
-            )
-            verify(mockSavePersistentId, times(1)).invoke()
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(validRefreshToken)
-        }
-
-    @Test
-    fun `handleIntent when refresh token already stored, no new tokens stored, no reAuth`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            val mockUri: Uri = mock()
-
-            whenever(mockIntent.data).thenReturn(mockUri)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(mockHandleLoginRedirect.handle(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    (it.arguments[2] as (token: TokenResponse) -> Unit).invoke(tokenResponseNoRefresh)
-                }
-            whenever(mockVerifyIdToken.invoke(eq("testIdToken"), eq("testUrl")))
-                .thenReturn(true)
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-            whenever(localAuthPreferenceRepo.getLocalAuthPref())
-                .thenReturn((LocalAuthPreference.Enabled(false)))
-
-            viewModel.handleActivityResult(
-                mockIntent,
-                false,
-                activity = mockFragmentActivity
-            )
-
-            verify(mockRemoveRefreshTokenAndExpiry, times(1)).remove()
-            verify(mockSaveTokenExpiry, times(0)).saveExp(
-                ExpiryInfo(
-                    key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = tokenResponse.accessTokenExpirationTime
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = mockSaveTokenExpiry.extractExpFromRefreshToken(validRefreshToken)
-                )
-            )
-            verify(mockTokenRepository, times(1)).setTokenResponse(
-                tokenResponse.convertToLoginTokens()
-            )
-            verify(mockSavePersistentId, times(1)).invoke()
-            verify(mockAutoInitialiseSecureStore, times(0)).initialise(validRefreshToken)
         }
 
     private fun createMocks(isLocalAuthMocked: Boolean = false) {
@@ -1045,30 +796,29 @@ class WelcomeScreenViewModelWithRefreshTest {
         mockNavigator = mock()
         mockSavePersistentId = mock()
         mockSaveTokenExpiry = mock()
-        mockHandleRemoteLogin = mock()
-        mockHandleLoginRedirect = mock()
+        mockStartRemoteLogin = mock()
+        mockFinaliseRemoteLogin = mock()
         mockSignOutUseCase = mock()
         mockOnlineChecker = mock()
         mockCounter = mock()
         mockRemoveRefreshTokenAndExpiry = mock()
 
-        viewModel =
-            WelcomeScreenViewModel(
+        remoteLogin =
+            RemoteLoginImpl(
                 mockContext,
+                mockFinaliseRemoteLogin,
+                mockStartRemoteLogin,
                 localAuthManager,
                 mockTokenRepository,
-                mockAutoInitialiseSecureStore,
                 mockVerifyIdToken,
-                mockNavigator,
+                mockAutoInitialiseSecureStore,
                 mockSavePersistentId,
                 mockSaveTokenExpiry,
-                mockHandleRemoteLogin,
-                mockHandleLoginRedirect,
                 mockSignOutUseCase,
-                logger,
-                mockOnlineChecker,
-                mockCounter,
                 mockRemoveRefreshTokenAndExpiry,
+                mockCounter,
+                logger,
+                mockNavigator,
             )
 
         whenever(mockContext.getString(any(), any())).thenReturn("testUrl")

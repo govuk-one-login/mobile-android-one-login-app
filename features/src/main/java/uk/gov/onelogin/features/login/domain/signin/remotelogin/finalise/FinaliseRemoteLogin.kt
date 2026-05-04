@@ -1,9 +1,12 @@
-package uk.gov.onelogin.features.login.domain.signin.loginredirect
+package uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise
 
 import android.content.Intent
 import uk.gov.android.authentication.login.TokenResponse
 
-fun interface HandleLoginRedirect {
+/**
+ * Use case allowing to perform login (first time user) and
+ */
+fun interface FinaliseRemoteLogin {
     suspend fun handle(
         intent: Intent,
         onFailure: (Throwable?) -> Unit,

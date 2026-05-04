@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.login.domain.signin.loginredirect
+package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin.finalise
 
 import android.content.Context
 import android.content.Intent
@@ -22,12 +22,12 @@ import uk.gov.logging.api.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
-import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
-import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirectImpl
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLoginImpl
 import kotlin.test.assertEquals
 
 @Suppress("MaxLineLength")
-class HandleLoginRedirectTest {
+class FinaliseRemoteLoginTest {
     private lateinit var context: Context
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockLoginSession: LoginSession = mock()
@@ -64,15 +64,15 @@ class HandleLoginRedirectTest {
 
     private val exceptionNullMessage = Exception()
 
-    private lateinit var handleLoginRedirect: HandleLoginRedirect
+    private lateinit var finaliseRemoteLogin: FinaliseRemoteLogin
 
     @BeforeEach
     fun setup() {
         context = mock()
         whenever(context.getString(any(), anyVararg()))
             .thenReturn("https://token.account.gov.uk")
-        handleLoginRedirect =
-            HandleLoginRedirectImpl(
+        finaliseRemoteLogin =
+            FinaliseRemoteLoginImpl(
                 context,
                 mockAppIntegrity,
                 mockLoginSession,
@@ -91,7 +91,7 @@ class HandleLoginRedirectTest {
             }
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 { },
                 {
@@ -110,7 +110,7 @@ class HandleLoginRedirectTest {
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertEquals("error", it?.message)
@@ -136,7 +136,7 @@ class HandleLoginRedirectTest {
             whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertEquals(null, it?.message)
@@ -168,7 +168,7 @@ class HandleLoginRedirectTest {
             }
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 { },
                 {
@@ -193,7 +193,7 @@ class HandleLoginRedirectTest {
             }
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 { },
                 {
@@ -214,7 +214,7 @@ class HandleLoginRedirectTest {
                 .thenReturn(SignedPoP.Success(testJwt))
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertEquals("error", it?.message)
@@ -240,7 +240,7 @@ class HandleLoginRedirectTest {
             }
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 { },
                 {
@@ -262,7 +262,7 @@ class HandleLoginRedirectTest {
             }
 
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     it?.let {
@@ -290,7 +290,7 @@ class HandleLoginRedirectTest {
                 (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(oauthError)
             }
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertEquals("oauth_error", it?.message)
@@ -311,7 +311,7 @@ class HandleLoginRedirectTest {
                 (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(tokenError)
             }
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertEquals("token_error", it?.message)
@@ -332,7 +332,7 @@ class HandleLoginRedirectTest {
                 (it.arguments[4] as (error: Throwable) -> Unit).invoke(exceptionNullMessage)
             }
             // When
-            handleLoginRedirect.handle(
+            finaliseRemoteLogin.handle(
                 mockIntent,
                 {
                     assertNull(it?.message)
