@@ -79,8 +79,8 @@ fun WelcomeScreen(
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
         if (!loading) {
             analyticsViewModel.trackWelcomeView()
-            viewModel.stopLoading()
         }
+        viewModel.stopLoading()
     }
 }
 

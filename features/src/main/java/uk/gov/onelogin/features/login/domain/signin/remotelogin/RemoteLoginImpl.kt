@@ -83,7 +83,7 @@ class RemoteLoginImpl
             activity: FragmentActivity,
         ) {
             // Enables running all functions in respective order as this cannot be done async
-            // and allows to use teh same Coroutine scope avoiding multithreading
+            // and allows to use the same Coroutine scope avoiding multithreading
             val deferred = CompletableDeferred<Result<TokenResponse>>()
             finaliseRemoteLogin.handle(
                 intent,
@@ -100,7 +100,7 @@ class RemoteLoginImpl
                         )
                 }
             )
-            coroutineScope {
+            withContext(Dispatchers.Main) {
                 deferred.await().fold(
                     onSuccess = { handleTokens(it, isReAuth, activity) },
                     onFailure = {
@@ -131,9 +131,7 @@ class RemoteLoginImpl
                 if (!verifyIdToken(tokens.idToken, jwksUrl)) {
                     navigator.navigate(LoginRoutes.SignInRecoverableError, true)
                 } else {
-                    withContext(Dispatchers.Main) {
-                        checkLocalAuthRouteAndSaveTokensAndExpiry(tokens, isReAuth, activity)
-                    }
+                    checkLocalAuthRouteAndSaveTokensAndExpiry(tokens, isReAuth, activity)
                 }
             }
         }
