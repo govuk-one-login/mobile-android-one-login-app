@@ -10,7 +10,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import uk.gov.android.wallet.sdk.WalletSdk
@@ -44,7 +43,7 @@ class DeeplinkActivityViewModelTest {
             viewModel.handleIntent(intent)
 
             verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
-            verify(walletSdk).setDeeplink(any())
+            verify(walletSdk).setDeeplink(credentialOffer)
         }
 
     @Test
