@@ -2,11 +2,13 @@ package uk.gov.onelogin.features.unit.login.ui.welcome
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
@@ -31,6 +33,7 @@ import kotlin.test.assertTrue
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class WelcomeScreenViewModelTest {
     private lateinit var mockFragmentActivity: FragmentActivity
+    private lateinit var mockActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var mockNavigator: Navigator
     private lateinit var mockOnlineChecker: OnlineChecker
@@ -38,10 +41,27 @@ class WelcomeScreenViewModelTest {
 
     private lateinit var viewModel: WelcomeScreenViewModel
 
+    @BeforeEach
+    fun setup() {
+        mockFragmentActivity = mock()
+        mockActivityResultLauncher = mock()
+        analyticsLogger = mock()
+        mockNavigator = mock()
+        mockRemoteLogin = mock()
+        mockOnlineChecker = mock()
+
+        viewModel =
+            WelcomeScreenViewModel(
+                mockNavigator,
+                mockOnlineChecker,
+                mockRemoteLogin
+            )
+    }
+
     @Test
     fun `verify on primary`() =
         runTest {
-            viewModel.onPrimary(any())
+            viewModel.onPrimary(mockActivityResultLauncher)
 
             assertTrue(viewModel.loading.value)
             verify(mockRemoteLogin).start(any())
@@ -50,7 +70,6 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `handle result when intent data is null`() =
         runTest {
-            createMocks()
             val mockIntent: Intent = mock()
             whenever(mockIntent.data).thenReturn(null)
 
@@ -61,13 +80,12 @@ class WelcomeScreenViewModelTest {
 
             assertFalse(viewModel.loading.value)
             verify(mockRemoteLogin, times(0))
-                .finalise(mockIntent, any(), any())
+                .finalise(eq(mockIntent), any(), any())
         }
 
     @Test
     fun `handle result when intent data is populated`() =
         runTest {
-            createMocks()
             val mockIntent: Intent = mock()
             val mockUri: Uri = mock()
             whenever(mockIntent.data).thenReturn(mockUri)
@@ -79,13 +97,11 @@ class WelcomeScreenViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(mockRemoteLogin)
-                .finalise(mockIntent, any(), any())
+                .finalise(eq(mockIntent), any(), any())
         }
 
     @Test
     fun `check nav to dev panel calls navigator correctly`() {
-        createMocks()
-
         viewModel.navigateToDevPanel()
 
         verify(mockNavigator).openDeveloperPanel()
@@ -93,8 +109,6 @@ class WelcomeScreenViewModelTest {
 
     @Test
     fun `check nav to offline error calls navigator correctly`() {
-        createMocks()
-
         viewModel.navigateToOfflineError()
 
         verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
@@ -103,7 +117,6 @@ class WelcomeScreenViewModelTest {
     @Test
     fun `check abort login works as expected`() =
         runTest {
-            createMocks()
             val mockIntent: Intent = mock()
 
             whenever(mockRemoteLogin.finalise(eq(mockIntent), any(), any()))
@@ -117,18 +130,4 @@ class WelcomeScreenViewModelTest {
 
             assertFalse(viewModel.loading.value)
         }
-
-    private fun createMocks() {
-        analyticsLogger = mock()
-        mockNavigator = mock()
-        mockRemoteLogin = mock()
-        mockOnlineChecker = mock()
-
-        viewModel =
-            WelcomeScreenViewModel(
-                mockNavigator,
-                mockOnlineChecker,
-                mockRemoteLogin
-            )
-    }
 }

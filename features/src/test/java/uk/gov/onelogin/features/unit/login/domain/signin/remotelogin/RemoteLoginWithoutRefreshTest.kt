@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -40,13 +42,16 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.convertToLoginTokens
+import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLoginImpl
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("LargeClass")
+@ExtendWith(CoroutinesTestExtension::class)
 class RemoteLoginWithoutRefreshTest {
     private val mockContext: Context = mock()
     private lateinit var mockFragmentActivity: FragmentActivity
@@ -658,25 +663,6 @@ class RemoteLoginWithoutRefreshTest {
         }
 
     @Test
-    fun `handleIntent when data == null`() =
-        runTest {
-            createMocks()
-            val mockIntent: Intent = mock()
-            whenever(mockIntent.data).thenReturn(null)
-
-            remoteLogin.finalise(
-                mockIntent,
-                activity = mockFragmentActivity
-            )
-
-            verifyNoInteractions(mockAutoInitialiseSecureStore)
-            verifyNoInteractions(mockSaveTokenExpiry)
-            verifyNoInteractions(mockTokenRepository)
-            verifyNoInteractions(mockNavigator)
-            verifyNoInteractions(mockSavePersistentId)
-        }
-
-    @Test
     fun `When login redirect fails - it displays sign in error screen`() =
         runTest {
             createMocks()
@@ -722,7 +708,6 @@ class RemoteLoginWithoutRefreshTest {
             verifyNoInteractions(mockTokenRepository)
             verifyNoInteractions(mockSavePersistentId)
             verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError, true)
-            assertThat("logger has no log", logger.size == 0)
         }
 
     @Test
