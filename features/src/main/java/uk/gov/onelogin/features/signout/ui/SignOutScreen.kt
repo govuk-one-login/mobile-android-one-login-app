@@ -30,6 +30,7 @@ import uk.gov.android.ui.componentsv2.list.ListItem
 import uk.gov.android.ui.componentsv2.list.ListTitle
 import uk.gov.android.ui.componentsv2.list.TitleType
 import uk.gov.android.ui.patterns.dialog.FullScreenDialogue
+import uk.gov.android.ui.patterns.utils.ModifierExtensions.bringIntoView
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -88,6 +89,7 @@ internal fun SignOutBody(
                 modifier =
                     Modifier
                         .verticalScroll(scrollState)
+                        .bringIntoView(scrollState)
                         .weight(1f)
                         .semantics(true) { }
                         .focusGroup(),
