@@ -115,7 +115,7 @@ class RemoteLoginImpl
             }
         }
 
-        private fun CoroutineScope.handleTokens(
+        private suspend fun handleTokens(
             tokens: TokenResponse,
             isReAuth: Boolean,
             activity: FragmentActivity,
@@ -126,12 +126,10 @@ class RemoteLoginImpl
                     R.string.stsUrl,
                     context.getString(R.string.jwksEndpoint),
                 )
-            this.launch {
-                if (!verifyIdToken(tokens.idToken, jwksUrl)) {
-                    navigator.navigate(LoginRoutes.SignInRecoverableError, true)
-                } else {
-                    checkLocalAuthRouteAndSaveTokensAndExpiry(tokens, isReAuth, activity)
-                }
+            if (!verifyIdToken(tokens.idToken, jwksUrl)) {
+                navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+            } else {
+                checkLocalAuthRouteAndSaveTokensAndExpiry(tokens, isReAuth, activity)
             }
         }
 
@@ -223,14 +221,12 @@ class RemoteLoginImpl
             )
         }
 
-        private fun CoroutineScope.handleLoginErrors(it: Throwable?) {
+        private suspend fun handleLoginErrors(it: Throwable?) {
             when (it) {
                 is AuthenticationError -> {
                     when (it.type) {
                         AuthenticationError.ErrorType.ACCESS_DENIED -> {
-                            this.launch {
-                                signOutUseCase.invoke()
-                            }
+                            signOutUseCase.invoke()
                             navigator.navigate(SignOutRoutes.ReAuthError)
                         }
 
