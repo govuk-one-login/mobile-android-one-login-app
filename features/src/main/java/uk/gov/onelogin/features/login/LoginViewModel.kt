@@ -47,6 +47,8 @@ class LoginViewModel
         ) = viewModelScope.launch {
             _loading.emit(true)
             if (onlineChecker.isOnline()) {
+                // This is checking for the re-auth path - if persistent session ID is empty on re-auth, that suggests
+                // something went wrong and we delete all data - otherwise, we allow the user to do a re-auth
                 if (getPersistentId().isNullOrEmpty() && isReAuth) {
                     try {
                         signOutUseCase.invoke()
@@ -55,6 +57,8 @@ class LoginViewModel
                         navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                     }
                 } else {
+                    // This allows for the BiometricOptIn prompt to be displayed anytime a re-auth is done ONLY IF the
+                    // user eith has no preference (something went wrong) or opted out at an earlier time
                     localAuthPrefResetUseCase.reset()
                     remoteLogin.start(
                         launcher,
