@@ -355,3 +355,14 @@ jobs:
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
+        
+  lint-github-actions:
+    name: Lint GitHub Actions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Lint GitHub Actions
+        uses: alphagov/govuk-infrastructure/.github/actions/actionlint@2eae2110aa84499c1ce30ed3d493b0cd41df6b6f # main
