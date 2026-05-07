@@ -297,8 +297,6 @@ jobs:
   sonar-analysis:
     name: Run sonar analysis and check sonar quality gate
     runs-on: ubuntu-22.04
-    outputs:
-      status: ${{ steps.sonar-gate.outputs.status }}
     needs:
       - set-up
       - style-checks
@@ -336,7 +334,7 @@ jobs:
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
         with:
-          project-version: ${{ steps.version-name.outputs.version-name }}
+          project-version: ${{ needs.set-up.outputs.version-name }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
