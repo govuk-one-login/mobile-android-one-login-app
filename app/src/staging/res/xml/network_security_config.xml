@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
     <base-config cleartextTrafficPermitted="false">
         <trust-anchors>
             <certificates src="system" />
@@ -22,7 +22,7 @@
     <domain-config>
         <!-- Note that this domain isn't yet used by the app in the staging environment app -->
         <domain includeSubdomains="false">vvrc-credential-issuance-service-dbs-ag-vvrc-staging.apps.ocp1.azure.dso.digital.mod.uk</domain>
-        <pin-set>
+        <pin-set tools:ignore="MissingBackupPin">
             <pin digest="SHA-256">Douxi77vs4G+Ib/BogbTFymEYq0QSFXwSgVCaZcI09Q=</pin>
         </pin-set>
     </domain-config>
