@@ -99,6 +99,8 @@ class RemoteLoginImpl
                         )
                 }
             )
+            // Required to ensure the navigation and errors are handled accordingly - should look into simplifying this or if possible to
+            // refactor and not use the Main thread
             withContext(Dispatchers.Main) {
                 deferred.await().fold(
                     onSuccess = { handleTokens(it, isReAuth, activity) },
@@ -138,6 +140,8 @@ class RemoteLoginImpl
             isReAuth: Boolean,
             activity: FragmentActivity,
         ) {
+            // Saved all data that is not dependent on local auth being enabled (access token expiry, sets the memory/ singleton token response that gets reset when the app is closed
+            // to the token response just received and saves the persistent session id)
             saveAccessTokenExpiryToOpenStore(tokens)
             tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
