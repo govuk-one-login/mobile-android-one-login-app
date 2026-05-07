@@ -7,6 +7,7 @@ sealed class AppInfoRemoteState {
 
     data class Failure(
         val reason: String,
+        val error: Throwable? = null,
     ) : AppInfoRemoteState()
 
     data object Offline : AppInfoRemoteState()

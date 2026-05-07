@@ -19,6 +19,7 @@ class AppInfoRemoteSourceImpl
                         result.response as AppInfoData,
                     )
                 is ApiResponse.Offline -> AppInfoRemoteState.Offline
+                is ApiResponse.Failure -> AppInfoRemoteState.Failure("Status: ${result.status}", result.error)
                 else -> AppInfoRemoteState.Failure(APP_INFO_REMOTE_SOURCE_ERROR)
             }
 
