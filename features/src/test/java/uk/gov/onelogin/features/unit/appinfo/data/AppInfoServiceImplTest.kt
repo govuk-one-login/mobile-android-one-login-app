@@ -9,8 +9,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.logging.api.Logger
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v2.Logger
+import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.testdouble.v2.SystemLogger
 import uk.gov.onelogin.core.tokens.data.ApiInfoException
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl
@@ -94,12 +95,13 @@ class AppInfoServiceImplTest {
         }
 
     @Test
-    fun `failed remote - successful local retrieval`() =
+    fun `failed remote with error - successful local retrieval`() =
         runTest {
+            val err = ApiInfoException(Exception(remoteSourceErrorMsg))
             logger = mock()
             setup()
             whenever(remoteSource.get()).thenReturn(
-                AppInfoRemoteState.Failure(remoteSourceErrorMsg)
+                AppInfoRemoteState.Failure(err.message!!, err.exception)
             )
             whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
             whenever(appVersionCheck.compareVersions(eq(data)))
@@ -109,7 +111,41 @@ class AppInfoServiceImplTest {
             verify(logger).error(
                 eq(ApiInfoException::class.simpleName.toString()),
                 eq(remoteSourceErrorMsg),
-                any()
+                any(),
+                eq(
+                    ErrorKeys.StringKey(
+                        AppInfoServiceImpl.APP_INFO_ERROR_KEY,
+                        AppInfoServiceImpl.APP_INFO_REMOTE_ERROR_VALUE
+                    )
+                ),
+            )
+            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
+        }
+
+    @Test
+    fun `failed remote without error - successful local retrieval`() =
+        runTest {
+            val err = ApiInfoException(Exception(remoteSourceErrorMsg))
+            logger = mock()
+            setup()
+            whenever(remoteSource.get()).thenReturn(
+                AppInfoRemoteState.Failure(err.message!!)
+            )
+            whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
+            whenever(appVersionCheck.compareVersions(eq(data)))
+                .thenReturn(AppInfoServiceState.Successful(data))
+            val result = sut.get()
+            assertEquals(AppInfoServiceState.Successful(data), result)
+            verify(logger).error(
+                eq(ApiInfoException::class.simpleName.toString()),
+                eq(remoteSourceErrorMsg),
+                any(),
+                eq(
+                    ErrorKeys.StringKey(
+                        AppInfoServiceImpl.APP_INFO_ERROR_KEY,
+                        AppInfoServiceImpl.APP_INFO_REMOTE_ERROR_VALUE
+                    )
+                ),
             )
             verify(featureFlagSetter).setFromAppInfo(data.apps.android)
         }
@@ -117,10 +153,11 @@ class AppInfoServiceImplTest {
     @Test
     fun `failed remote and local retrieval`() =
         runTest {
+            val err = ApiInfoException(Exception(remoteSourceErrorMsg))
             logger = mock()
             setup()
             whenever(remoteSource.get()).thenReturn(
-                AppInfoRemoteState.Failure(remoteSourceErrorMsg)
+                AppInfoRemoteState.Failure(err.message!!, err)
             )
             whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure(localSourceErrorMsg))
             val result = sut.get()
@@ -128,7 +165,13 @@ class AppInfoServiceImplTest {
             verify(logger).error(
                 eq(ApiInfoException::class.simpleName.toString()),
                 eq(remoteSourceErrorMsg),
-                any()
+                any(),
+                eq(
+                    ErrorKeys.StringKey(
+                        AppInfoServiceImpl.APP_INFO_ERROR_KEY,
+                        AppInfoServiceImpl.APP_INFO_REMOTE_ERROR_VALUE
+                    )
+                ),
             )
             verifyNoInteractions(featureFlagSetter)
         }
