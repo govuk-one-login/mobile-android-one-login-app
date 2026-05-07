@@ -25,8 +25,9 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v2.Logger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.testdouble.v2.SystemLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -35,8 +36,8 @@ import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import uk.gov.onelogin.features.login.LoginViewModel
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoAnalyticsViewModel
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoScreen
@@ -49,11 +50,11 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var tokenRepository: TokenRepository
-    private val logger = SystemLogger()
+    private val logger: Logger = SystemLogger()
     private lateinit var navigator: Navigator
     private lateinit var remoteLogin: RemoteLogin
     private lateinit var onlineChecker: OnlineChecker
-    private lateinit var loginViewModel: WelcomeScreenViewModel
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
@@ -83,16 +84,16 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
                 SignedOutInfoViewModel(
                     navigator,
                     tokenRepository,
+                )
+            loginViewModel =
+                LoginViewModel(
+                    navigator,
+                    onlineChecker,
+                    remoteLogin,
                     getPersistentId,
                     signOutUseCase,
                     localAuthPrefResetUseCase,
                     logger
-                )
-            loginViewModel =
-                WelcomeScreenViewModel(
-                    navigator,
-                    onlineChecker,
-                    remoteLogin
                 )
             analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
             loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
