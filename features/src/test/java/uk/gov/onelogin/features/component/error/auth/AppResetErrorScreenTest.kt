@@ -12,13 +12,13 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreen
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreenPreview
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorViewModel
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorScreen
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorScreenPreview
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorViewModel
 
 @RunWith(AndroidJUnit4::class)
-class AuthErrorScreenTest : FragmentActivityTestCase() {
-    private lateinit var viewModel: AuthErrorViewModel
+class AppResetErrorScreenTest : FragmentActivityTestCase() {
+    private lateinit var viewModel: AppResetErrorViewModel
     private val navigator: Navigator = mock()
 
     private val title = hasText(resources.getString(R.string.app_dataDeletedErrorTitle))
@@ -29,9 +29,9 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun reAuthErrorScreen() {
-        viewModel = AuthErrorViewModel(navigator)
+        viewModel = AppResetErrorViewModel(navigator)
         composeTestRule.setContent {
-            AuthErrorScreen(viewModel)
+            AppResetErrorScreen(viewModel)
         }
 
         composeTestRule.apply {
@@ -45,9 +45,9 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
 
     @Test
     fun onPrimary() {
-        viewModel = AuthErrorViewModel(navigator)
+        viewModel = AppResetErrorViewModel(navigator)
         composeTestRule.setContent {
-            AuthErrorScreen(viewModel)
+            AppResetErrorScreen(viewModel)
         }
 
         composeTestRule
@@ -60,7 +60,7 @@ class AuthErrorScreenTest : FragmentActivityTestCase() {
     @Test
     fun preview() {
         composeTestRule.setContent {
-            AuthErrorScreenPreview()
+            AppResetErrorScreenPreview()
         }
     }
 }

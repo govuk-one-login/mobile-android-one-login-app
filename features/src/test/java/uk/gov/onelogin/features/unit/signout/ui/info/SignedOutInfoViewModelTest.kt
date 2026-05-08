@@ -91,7 +91,7 @@ class SignedOutInfoViewModelTest {
             viewModel.checkPersistentId { callback = true }
 
             verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(navigator).navigate(SignOutRoutes.AppResetError, true)
         }
 
     @Test
@@ -103,7 +103,7 @@ class SignedOutInfoViewModelTest {
             viewModel.checkPersistentId { callback = true }
 
             verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(navigator).navigate(SignOutRoutes.AppResetError, true)
         }
 
     @Test
