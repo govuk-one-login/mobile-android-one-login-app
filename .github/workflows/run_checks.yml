@@ -86,8 +86,8 @@ jobs:
         uses: ./config/actions/gradle-checks
         with:
           test-type: "style"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
@@ -142,8 +142,8 @@ jobs:
         id: instrumentation-tests
         uses: ./config/actions/gradle-connected-test-managed
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
@@ -187,8 +187,8 @@ jobs:
         uses: ./config/actions/gradle-checks
         with:
           test-type: "component"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
@@ -232,8 +232,8 @@ jobs:
         uses: ./config/actions/gradle-checks
         with:
           test-type: "unit"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
@@ -285,8 +285,8 @@ jobs:
         uses: ./config/actions/gradle-checks
         with:
           test-type: "snapshot"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
@@ -341,8 +341,8 @@ jobs:
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          github-token: ${{ secrets.MODULE_FETCH_TOKEN_FINE }}
+          github-actor: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME_FINE}}
 
       - name: Bundle reports folder
         uses: ./mobile-android-pipelines/actions/bundle-reports
