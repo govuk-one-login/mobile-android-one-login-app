@@ -23,6 +23,10 @@ dependencyResolutionManagement {
             setupGithubCredentials()
         )
         maven(
+            "https://maven.pkg.github.com/govuk-one-login/mobile-id-check-android-sdk",
+            setupGithubCredentials()
+        )
+        maven(
             // imposter maven repository
             "https://s3-eu-west-1.amazonaws.com/gatehillsoftware-maven/releases/"
         )
