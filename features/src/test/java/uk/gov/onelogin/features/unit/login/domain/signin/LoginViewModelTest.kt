@@ -114,7 +114,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `given re-auth & persistent id is null, startLoginActivity signs out & navigates to re-auth error`() =
+    fun `given re-auth & persistent id is null, startLoginActivity signs out & navigates to app reset error`() =
         runTest {
             givenPersistentId(null)
 
@@ -122,12 +122,12 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(navigator).navigate(SignOutRoutes.AppResetError, true)
             assertFalse(remoteLogin.started)
         }
 
     @Test
-    fun `given re-auth & persistent id is empty, startLoginActivity signs out & navigates to re-auth error`() =
+    fun `given re-auth & persistent id is empty, startLoginActivity signs out & navigates to app reset error`() =
         runTest {
             givenPersistentId("")
 
@@ -135,7 +135,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
+            verify(navigator).navigate(SignOutRoutes.AppResetError, true)
             assertFalse(remoteLogin.started)
         }
 
@@ -316,7 +316,7 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `given finalise returns access denied failure, handleLoginActivityResult navigates to re-auth error`() =
+    fun `given finalise returns access denied failure, handleLoginActivityResult navigates to app reset error`() =
         runTest {
             remoteLogin.finaliseResult =
                 RemoteLogin.Result.Failure(RemoteLogin.FailureType.AccessDenied)
@@ -324,7 +324,7 @@ class LoginViewModelTest {
 
             viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
 
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, false)
+            verify(navigator).navigate(SignOutRoutes.AppResetError, false)
         }
 
     @Test

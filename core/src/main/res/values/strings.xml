@@ -165,7 +165,7 @@
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
 
-    <!-- Re-Auth Error -->
+    <!-- App Reset Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
     <string name="app_dataDeletedButton">Sign in</string>
