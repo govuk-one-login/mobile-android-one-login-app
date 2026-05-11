@@ -4,55 +4,37 @@ name: On Branch Push (release)
 on:
   push:
     branches:
-      - "release/**"
-  workflow_dispatch:
+      - release/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  prepare-for-release:
-    name: Verify code base pre-release
+  set-up:
+    name: Set-up and generate version name and version code
     runs-on: ubuntu-22.04
-    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
-    permissions:
-      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
-      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
-      packages: read
-      id-token: write
-      contents: read
     outputs:
-      version: ${{ steps.version-number.outputs.version }}
+      version-code: ${{ steps.version-code.outputs.version-code }}
+      version-name: ${{ steps.version-name.outputs.version-name }}
+
     steps:
       - name: Run checkout github action
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           lfs: 'true'
           submodules: 'true'
           fetch-depth: 0
-
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
-
-      - name: Setup GitHub Runner workflow
-        uses: ./mobile-android-pipelines/actions/setup-runner
-
-      - name: Clean runner
-        uses: ./mobile-android-pipelines/actions/clean-runner-fast
-
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        uses: ./config/actions/retrieve-secrets
-        with:
-          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
         with:
           pattern: 'v*'
+
+      - name: Generate version code
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
 
       - name: Get next version from branch
         id: next-version
@@ -73,15 +55,32 @@ jobs:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
 
-  build-and-publish-release:
-    name: Verify code base when pushed on release
-    needs: prepare-for-release
-    runs-on: ubuntu-22.04
+      - name: Generate version name
+        id: version-name
+        uses: ./mobile-android-pipelines/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.next-version.outputs.next-version }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
+  bundle-and-publish:
+    name: Bundle and publish app in Build and Staging for testing a release candidate
+    needs:
+      - set-up
+    runs-on: ubuntu-24.04
+    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    strategy:
+      matrix:
+        environment: ["build", "staging"]
     environment: release
     permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      id-token: write
       contents: write
       packages: read
-      id-token: write
     steps:
       - name: Run checkout github action
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -89,10 +88,6 @@ jobs:
           lfs: 'true'
           submodules: 'true'
           fetch-depth: 0
-
-      - name: Detect Arch
-        id: detect-arch
-        uses: ./config/actions/detect-arch
 
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
@@ -106,21 +101,17 @@ jobs:
         with:
           actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
-      - name: Generate version code
-        id: version-code
-        uses: ./mobile-android-pipelines/actions/generate-version-code
-
       - name: Bundle release
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
-          flavors: 'build,staging'
+          flavors: ${{ matrix.environment }}
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepare-for-release.outputs.version }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
           keystore-file-path: ${{ steps.retrieve-secrets.outputs.keystore-file-path }}
 
@@ -133,8 +124,8 @@ jobs:
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ needs.prepare-for-release.outputs.version }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace

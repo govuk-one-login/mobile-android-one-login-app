@@ -150,7 +150,7 @@ class VerifyIdTokenTest {
             assertFalse(result)
             assertTrue(
                 logger.contains(
-                    "kotlinx.serialization.json.internal.JsonDecodingException: " +
+                    "kotlinx.serialization.json.JsonDecodingException: " +
                         "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
                         "instead at path: \$\nJSON input: not a json",
                 ),
