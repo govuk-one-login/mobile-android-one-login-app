@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.developer.ui.app
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.util.Log
 import android.util.Log.DEBUG
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -82,6 +85,50 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
+                    Button(
+                        onClick = {
+                            Firebase.analytics.logEvent(
+                                "single_event",
+                                Bundle()
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = "Fire single event",
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            Firebase.analytics.logEvent(
+                                "multiple_events_1",
+                                Bundle()
+                            )
+                            Firebase.analytics.logEvent(
+                                "multiple_events_2",
+                                Bundle()
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = "Fire multiple events",
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            Firebase.analytics.logEvent(
+                                "duplicate_event",
+                                Bundle()
+                            )
+                            Firebase.analytics.logEvent(
+                                "duplicate_event",
+                                Bundle()
+                            )
+                        }
+                    ) {
+                        Text(
+                            text = "Fire duplicate events",
+                        )
+                    }
                     Text(
                         modifier = Modifier.padding(8.dp),
                         text =
