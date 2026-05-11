@@ -14,6 +14,8 @@ jobs:
   set-up:
     name: Set-up and generate version name and version code
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-number.outputs.version }}
