@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
+import uk.gov.android.ui.patterns.utils.ModifierExtensions.bringIntoView
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
@@ -76,6 +77,7 @@ private fun HomeScreenBody(
     val proveIdentityCardTitle = stringResource(R.string.app_appPurposeTileHeader)
     val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
     TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
+        val scrollState = rememberScrollState()
         Column(
             modifier =
                 Modifier
@@ -83,7 +85,8 @@ private fun HomeScreenBody(
                     .padding(top = paddingValues.calculateTopPadding())
                     .padding(horizontal = smallPadding)
                     .consumeWindowInsets(paddingValues)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
+                    .bringIntoView(scrollState)
                     .windowInsetsPadding(WindowInsets.displayCutout),
         ) {
             if (uiCardEnabled) {
