@@ -297,6 +297,9 @@ jobs:
     needs: build-apks
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
       - name: Download APK artifacts
         uses: actions/download-artifact@v4
         with:
@@ -330,6 +333,7 @@ jobs:
             --app "out/app-build-debug.apk"
             --timeout "$timeout_value"
             --results-history-name "one-login-build-debug-robo"
+            --robo-script ".github/testlab/robo_auth_stub_login.json"
           )
 
           if [[ -n "$device_value" ]]; then
