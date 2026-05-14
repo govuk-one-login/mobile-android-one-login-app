@@ -29,10 +29,7 @@ class AppInfoServiceImpl
                 }
                 AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
                 is AppInfoRemoteState.Failure -> {
-                    val apiException =
-                        remoteResult.error?.let {
-                            ApiInfoException(it)
-                        } ?: ApiInfoException(Exception(remoteResult.reason))
+                    val apiException = ApiInfoException(remoteResult.error)
                     logger.error(
                         remoteResult.reason,
                         apiException,

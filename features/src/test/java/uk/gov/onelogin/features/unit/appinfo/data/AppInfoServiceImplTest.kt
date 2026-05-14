@@ -140,39 +140,6 @@ class AppInfoServiceImplTest {
         }
 
     @Test
-    fun `failed remote without error - successful local retrieval`() =
-        runTest {
-            val err = ApiInfoException(Exception(remoteSourceErrorMsg))
-            logger = MemorisedLogger()
-            setup()
-            whenever(remoteSource.get()).thenReturn(
-                AppInfoRemoteState.Failure(err.message!!)
-            )
-            whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
-            whenever(appVersionCheck.compareVersions(eq(data)))
-                .thenReturn(AppInfoServiceState.Successful(data))
-            val result = sut.get()
-            assertEquals(AppInfoServiceState.Successful(data), result)
-            assertThat(
-                logger,
-                hasItem(
-                    allOf(
-                        isLogLevel(LogLevel.Error),
-                        hasMessage(remoteSourceErrorMsg),
-                        not(hasException(equalTo(err))),
-                        hasCustomKeys(
-                            contains(
-                                equalTo(errorKeyComponent),
-                                equalTo(errorKeyActionGetRemote)
-                            )
-                        )
-                    )
-                )
-            )
-            verify(featureFlagSetter).setFromAppInfo(data.apps.android)
-        }
-
-    @Test
     fun `failed remote and local retrieval`() =
         runTest {
             val err = Exception(remoteSourceErrorMsg)
