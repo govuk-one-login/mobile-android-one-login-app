@@ -44,7 +44,6 @@ private fun AppIntegrityErrorBody() {
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_appIntegrityErrorBody1),
-            stringResource(R.string.app_appIntegrityErrorBody2)
         )
 
     ErrorScreen(
