@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
-import uk.gov.android.ui.patterns.utils.ModifierExtensions.bringIntoView
+import uk.gov.android.ui.patterns.utils.ModifierExtensions.keyboardScroll
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
@@ -86,7 +86,7 @@ private fun HomeScreenBody(
                     .padding(horizontal = smallPadding)
                     .consumeWindowInsets(paddingValues)
                     .verticalScroll(scrollState)
-                    .bringIntoView(scrollState)
+                    .keyboardScroll(scrollState)
                     .windowInsetsPadding(WindowInsets.displayCutout),
         ) {
             if (uiCardEnabled) {
