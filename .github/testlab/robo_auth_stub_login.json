@@ -46,18 +46,11 @@
       },
       {
         "eventType": "VIEW_CLICKED",
-        "optional": true,
         "visionText": "Login"
       },
       {
         "eventType": "WAIT",
-        "delayTime": 2000
-      },
-      {
-        "eventType": "VIEW_CLICKED",
-        "description": "Fallback tap for Auth Stub Login button",
-        "pointTapXPercent": 50,
-        "pointTapYPercent": 31
+        "delayTime": 5000
       }
     ]
   }
