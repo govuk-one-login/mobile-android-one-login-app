@@ -46,7 +46,18 @@
       },
       {
         "eventType": "VIEW_CLICKED",
+        "optional": true,
         "visionText": "Login"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 1000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "description": "Direct tap on Auth Stub Login button",
+        "pointTapXPercent": 50,
+        "pointTapYPercent": 22
       },
       {
         "eventType": "WAIT",

@@ -65,6 +65,11 @@ class AuthStubLoginTest : TestCase() {
             By.text("Login") to "Clicking Auth Stub login button",
         )
 
+        phoneController.click(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            By.text("Continue") to "Clicking browser continue button",
+        )
+
         assertTrue(
             "Expected auth stub login to return to the app",
             device.wait(

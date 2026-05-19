@@ -293,7 +293,6 @@ jobs:
 
   run-robo:
     name: Run Firebase Test Lab Robo
-    if: false
     runs-on: ubuntu-latest
     needs: build-apks
 
