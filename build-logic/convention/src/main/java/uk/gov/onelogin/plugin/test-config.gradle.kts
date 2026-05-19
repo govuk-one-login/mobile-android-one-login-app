@@ -45,8 +45,11 @@ project.afterEvaluate {
 
             // Exclude this test type's package from the original unit test task
             // so tests aren't run twice (once in the original and once in the new task)
-            tasks.named(originalTestTaskName, Test::class.java) {
-                exclude("**/$testType/**")
+            // Screenshot tests (in the unit package) are kept for Paparazzi verify/record
+            if (testType != "unit") {
+                tasks.named(originalTestTaskName, Test::class.java) {
+                    exclude("**/$testType/**")
+                }
             }
 
             // Register a new Test task that filters tests by the test type's package path
