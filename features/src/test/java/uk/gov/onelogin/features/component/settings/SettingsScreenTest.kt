@@ -32,6 +32,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.utils.matchers.ScrollableWithKeyboardMatchers.hasKeyboardScroll
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
@@ -460,6 +461,17 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 SettingsAnalyticsViewModel.Companion.makeTermsAndConditionsEvent(context)
             )
         }
+
+    @Test
+    fun keyboardScrolls() {
+        composeTestRule.setContent {
+            SettingsScreen(viewModel, analyticsViewModel)
+        }
+
+        composeTestRule
+            .onNode(hasKeyboardScroll())
+            .assertIsDisplayed()
+    }
 
     @Test
     fun optOutBiometricsPreview() =
