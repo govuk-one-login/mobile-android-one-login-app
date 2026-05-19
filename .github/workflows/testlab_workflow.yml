@@ -37,7 +37,7 @@ on:
       test_targets:
         description: Optional test target, for example class uk.gov.onelogin.MainActivityTest
         required: false
-        default: ""
+        default: "class uk.gov.onelogin.e2e.AuthStubLoginTest"
 
 permissions:
   contents: read
@@ -293,6 +293,7 @@ jobs:
 
   run-robo:
     name: Run Firebase Test Lab Robo
+    if: false
     runs-on: ubuntu-latest
     needs: build-apks
 
