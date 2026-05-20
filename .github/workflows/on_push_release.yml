@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
-      version-name: ${{ steps.version-name.outputs.version-name }}
+      version-name: ${{ steps.next-version.outputs.next-version }}
 
     steps:
       - name: Run checkout github action
@@ -54,13 +54,6 @@ jobs:
         env:
           CURRENT_VERSION: ${{ steps.latest-tag.outputs.current-tag }}
           NEXT_VERSION: ${{ steps.version-number.outputs.version }}
-
-      - name: Generate version name
-        id: version-name
-        uses: ./mobile-android-pipelines/actions/version-name
-        with:
-          version-code: ${{ steps.version-code.outputs.version-code }}
-          version-name: ${{ steps.next-version.outputs.next-version }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
