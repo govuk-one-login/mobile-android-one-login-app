@@ -65,10 +65,7 @@ class AuthStubLoginTest : TestCase() {
             By.text("Login") to "Clicking Auth Stub login button",
         )
 
-        phoneController.click(
-            actionTimeoutOverride = LONG_TIMEOUT,
-            By.text("Continue") to "Clicking browser continue button",
-        )
+        clickContinueInTheApp()
 
         assertTrue(
             "Expected auth stub login to return to the app",
@@ -79,8 +76,30 @@ class AuthStubLoginTest : TestCase() {
         )
     }
 
+    private fun clickContinueInTheApp() {
+        phoneController.assertElementExists(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            selector = By.textContains("Continue in the app"),
+        )
+
+        val continueButton = device.wait(
+            Until.findObject(By.text("Continue")),
+            SHORT_TIMEOUT,
+        )
+
+        if (continueButton != null) {
+            continueButton.click()
+        } else {
+            device.click(
+                device.displayWidth / 2,
+                (device.displayHeight * CONTINUE_BUTTON_Y_PERCENT) / 100,
+            )
+        }
+    }
+
     companion object {
         private const val SHORT_TIMEOUT = 5_000L
         private const val LONG_TIMEOUT = 30_000L
+        private const val CONTINUE_BUTTON_Y_PERCENT = 39
     }
 }
