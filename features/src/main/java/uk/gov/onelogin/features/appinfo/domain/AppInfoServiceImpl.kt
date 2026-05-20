@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.appinfo.domain
 
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v2.Logger
+import uk.gov.logging.api.v2.errorKeys.ErrorKeys
 import uk.gov.onelogin.core.tokens.data.ApiInfoException
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
@@ -25,11 +26,12 @@ class AppInfoServiceImpl
                 }
                 AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
                 is AppInfoRemoteState.Failure -> {
-                    val apiException = ApiInfoException(Exception(remoteResult.reason))
+                    val apiException = ApiInfoException(remoteResult.error)
                     logger.error(
                         apiException::class.simpleName.toString(),
                         remoteResult.reason,
                         apiException,
+                        ErrorKeys.StringKey(APP_INFO_ERROR_KEY, APP_INFO_REMOTE_ERROR_VALUE)
                     )
                     useLocalSource(AppInfoServiceState.Unavailable)
                 }
@@ -49,5 +51,10 @@ class AppInfoServiceImpl
             } else {
                 fallback
             }
+        }
+
+        companion object {
+            internal const val APP_INFO_ERROR_KEY = "AppInfo"
+            internal const val APP_INFO_REMOTE_ERROR_VALUE = "Remote app info failure"
         }
     }
