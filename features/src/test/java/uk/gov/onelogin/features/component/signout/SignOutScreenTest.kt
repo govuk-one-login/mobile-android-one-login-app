@@ -17,6 +17,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.utils.matchers.ScrollableWithKeyboardMatchers.hasKeyboardScroll
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.testdouble.SystemLogger
@@ -141,5 +142,17 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.Companion.onBackPressed())
         verify(navigator).goBack()
+    }
+
+    @Test
+    fun verifyKeyboardScroll() {
+        viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+        }
+
+        composeTestRule
+            .onNode(hasKeyboardScroll())
+            .assertIsDisplayed()
     }
 }

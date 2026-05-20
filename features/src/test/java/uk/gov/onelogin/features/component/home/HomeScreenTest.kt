@@ -18,6 +18,7 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.utils.matchers.ScrollableWithKeyboardMatchers.hasKeyboardScroll
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -159,6 +160,15 @@ class HomeScreenTest : FragmentActivityTestCase() {
                 resources.getString(R.string.proveIdentityCardTestTag),
                 useUnmergedTree = true
             ).performScrollTo().assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun keyboardScrolls() {
+        setupPreview()
+        composeTestRule.apply {
+            onNode(hasKeyboardScroll())
+                .assertIsDisplayed()
         }
     }
 

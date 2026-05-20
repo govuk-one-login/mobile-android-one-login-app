@@ -297,8 +297,6 @@ jobs:
   sonar-analysis:
     name: Run sonar analysis and check sonar quality gate
     runs-on: ubuntu-22.04
-    outputs:
-      status: ${{ steps.sonar-gate.outputs.status }}
     needs:
       - set-up
       - style-checks
@@ -336,7 +334,7 @@ jobs:
       - name: Run sonar analysis
         uses: ./config/actions/sonar-analysis
         with:
-          project-version: ${{ steps.version-name.outputs.version-name }}
+          project-version: ${{ needs.set-up.outputs.version-name }}
           sonar-token: ${{ secrets.SONAR_TOKEN }}
           version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
@@ -355,3 +353,14 @@ jobs:
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
+        
+  lint-github-actions:
+    name: Lint GitHub Actions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Lint GitHub Actions
+        uses: alphagov/govuk-infrastructure/.github/actions/actionlint@2eae2110aa84499c1ce30ed3d493b0cd41df6b6f # main
