@@ -71,6 +71,8 @@ class AuthStubLoginTest : TestCase() {
             "Expected auth stub login to return to the app",
             continueInTheAppUntilAppReturns(),
         )
+
+        assertHomeScreenIsVisible()
     }
 
     private fun continueInTheAppUntilAppReturns(): Boolean {
@@ -110,6 +112,25 @@ class AuthStubLoginTest : TestCase() {
         device.executeShellCommand(
             "pm set-app-links-user-selection --user cur " +
                 "--package ${BuildConfig.APPLICATION_ID} true all",
+        )
+    }
+
+    private fun assertHomeScreenIsVisible() {
+        phoneController.assertElementExists(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            selector = By.text(resources.getString(R.string.app_oneLoginCardTitle)),
+        )
+        phoneController.assertElementExists(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            selector = By.text(resources.getString(R.string.app_home)),
+        )
+        phoneController.assertElementExists(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            selector = By.text(resources.getString(R.string.app_TabBarWallet)),
+        )
+        phoneController.assertElementExists(
+            actionTimeoutOverride = LONG_TIMEOUT,
+            selector = By.text(resources.getString(R.string.app_settings)),
         )
     }
 
