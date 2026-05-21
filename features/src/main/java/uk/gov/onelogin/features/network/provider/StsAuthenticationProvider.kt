@@ -80,7 +80,7 @@ class StsAuthenticationProvider(
                 is RefreshExchangeResult.UnrecoverableError,
                 RefreshExchangeResult.FirstTimeUser -> {
                     signOutUseCase.invoke()
-                    navigator.navigate(SignOutRoutes.ReAuthError)
+                    navigator.navigate(SignOutRoutes.AppResetError)
                     AuthenticationResponse.Failure(ApiResponseException(MANUAL_SIGN_IN_REQUIRED_ERROR_MSG))
                 }
 
