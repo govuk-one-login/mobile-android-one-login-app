@@ -14,28 +14,20 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.localauth.LocalAuthManagerImpl
-import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v2.Logger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.logging.testdouble.SystemLogger
-import uk.gov.onelogin.core.counter.Counter
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
+import uk.gov.logging.testdouble.v2.SystemLogger
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
-import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
-import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
-import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
-import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.login.domain.signin.loginredirect.HandleLoginRedirect
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
+import uk.gov.onelogin.features.login.LoginViewModel
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
@@ -44,26 +36,18 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
 class WelcomeScreenTest : FragmentActivityTestCase() {
-    private lateinit var deviceBiometricsManager: DeviceBiometricsManager
-    private lateinit var localAuthPreferenceRepo: LocalAuthPreferenceRepo
-    private lateinit var localAuthManager: LocalAuthManager
-    private lateinit var tokenRepository: TokenRepository
-    private lateinit var autoInitialiseSecureStore: AutoInitialiseSecureStore
-    private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var navigator: Navigator
-    private lateinit var savePersistentId: SavePersistentId
-    private lateinit var saveTokenExpiry: SaveTokenExpiry
-    private lateinit var handleRemoteLogin: HandleRemoteLogin
-    private lateinit var handleLoginRedirect: HandleLoginRedirect
-    private lateinit var signOutUseCase: SignOutUseCase
+    private lateinit var remoteLogin: RemoteLogin
     private lateinit var onlineChecker: OnlineChecker
+    private lateinit var getPersistentId: GetPersistentId
+    private val logger: Logger = SystemLogger()
+    private lateinit var signOutUseCase: SignOutUseCase
+    private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var viewModel: WelcomeScreenViewModel
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
-    private lateinit var loadingAnalyticsVM: LoadingScreenAnalyticsViewModel
-    private lateinit var counter: Counter
-    private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
-    private val logger = SystemLogger()
+    private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
 
     private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
     private val signInSubTitle1 = hasText(resources.getString(R.string.app_signInBody1))
@@ -73,48 +57,26 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
 
     @Before
     fun setup() {
-        deviceBiometricsManager = mock()
-        localAuthPreferenceRepo = mock()
-        tokenRepository = mock()
-        autoInitialiseSecureStore = mock()
-        verifyIdToken = mock()
         navigator = mock()
-        savePersistentId = mock()
-        saveTokenExpiry = mock()
-        handleRemoteLogin = mock()
-        handleLoginRedirect = mock()
-        signOutUseCase = mock()
+        remoteLogin = mock()
         onlineChecker = mock()
         analytics = mock()
-        localAuthManager =
-            LocalAuthManagerImpl(
-                localAuthPreferenceRepo,
-                deviceBiometricsManager,
-                analytics
-            )
-        counter = mock()
-        mockRemoveRefreshTokenAndExpiry = mock()
-
-        viewModel =
-            WelcomeScreenViewModel(
-                context,
-                localAuthManager,
-                tokenRepository,
-                autoInitialiseSecureStore,
-                verifyIdToken,
+        signOutUseCase = mock()
+        localAuthPrefResetUseCase = mock()
+        getPersistentId = mock()
+        viewModel = WelcomeScreenViewModel(navigator)
+        loginViewModel =
+            LoginViewModel(
                 navigator,
-                savePersistentId,
-                saveTokenExpiry,
-                handleRemoteLogin,
-                handleLoginRedirect,
-                signOutUseCase,
-                logger,
                 onlineChecker,
-                counter,
-                mockRemoveRefreshTokenAndExpiry,
+                remoteLogin,
+                getPersistentId,
+                signOutUseCase,
+                localAuthPrefResetUseCase,
+                logger
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
-        loadingAnalyticsVM = LoadingScreenAnalyticsViewModel(context, analytics)
+        loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
     }
 
     @Suppress("ForbiddenComment")
@@ -124,7 +86,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
             )
         }
 
@@ -140,17 +103,20 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     fun opensWebLoginViaCustomTab() =
         runBlocking {
             whenever(onlineChecker.isOnline()).thenReturn(true)
+            whenever(getPersistentId.invoke()).thenReturn("test")
+
             composeTestRule.setContent {
                 WelcomeScreen(
                     analyticsViewModel = analyticsViewModel,
                     viewModel = viewModel,
-                    loadingAnalyticsViewModel = loadingAnalyticsVM
+                    loginViewModel = loginViewModel,
+                    loadingAnalyticsViewModel = loadingAnalyticsViewModel
                 )
             }
 
             whenWeClickSignIn()
 
-            verify(handleRemoteLogin).login(any(), any())
+            verify(remoteLogin).start(any())
         }
 
     @Test
@@ -170,7 +136,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
             )
         }
 
@@ -186,7 +153,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
             )
         }
         whenWeClickSignIn()
@@ -200,7 +168,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
             )
         }
 
@@ -222,7 +191,8 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             WelcomeScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsVM
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
             )
         }
     }

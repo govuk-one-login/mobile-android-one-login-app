@@ -130,7 +130,7 @@ class StsAuthenticationProvider(
 
     /**
      * Attempts the service token request and handles the result.
-     * @param scope the scope of teh service token that is required/ requested
+     * @param scope the scope of the service token that is required/ requested
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
@@ -144,7 +144,7 @@ class StsAuthenticationProvider(
     /**
      * Creates the [ApiRequest.FormUrlEncoded] to get a service token - - see [attemptServiceTokenExchange].
      * @param accessToken the jwt that will be presented in exchange for a service token which enforces authentication of the client
-     * @param scope the scope of teh service token that is required/ requested
+     * @param scope the scope of the service token that is required/ requested
      * @return [ApiRequest.FormUrlEncoded]
      */
     private fun createServiceTokenRequest(

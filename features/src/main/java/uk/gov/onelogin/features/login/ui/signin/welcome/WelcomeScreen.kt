@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.login.ui.signin.welcome
 
-import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
@@ -41,31 +40,33 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.features.login.LoginViewModel
 
 @Composable
 fun WelcomeScreen(
     viewModel: WelcomeScreenViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
     analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
 ) {
-    val loading by viewModel.loading.collectAsState()
+    val loading by loginViewModel.loading.collectAsState()
     val context = LocalActivity.current as FragmentActivity
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
-            handleResult(result, viewModel, context)
+            handleResult(result, loginViewModel, context)
         }
 
     if (loading) {
         LoadingScreen(loadingAnalyticsViewModel) {
-            viewModel.abortLogin(launcher)
+            loginViewModel.abortLogin(launcher, false)
         }
     } else {
         EdgeToEdgePage { _ ->
             WelcomeBody(
                 onSignIn = {
-                    handleScreenExit(viewModel, analyticsViewModel, launcher)
+                    handleScreenExit(loginViewModel, analyticsViewModel, launcher)
                 },
                 openDevMenu = { viewModel.navigateToDevPanel() },
             )
@@ -80,37 +81,27 @@ fun WelcomeScreen(
         if (!loading) {
             analyticsViewModel.trackWelcomeView()
         }
-        viewModel.stopLoading()
+        loginViewModel.stopLoading()
     }
 }
 
 private fun handleResult(
     result: ActivityResult,
-    viewModel: WelcomeScreenViewModel,
+    loginViewModel: LoginViewModel,
     context: FragmentActivity,
 ) {
-    if (result.resultCode == Activity.RESULT_OK) {
-        val intent = result.data
-        if (intent != null) {
-            viewModel.handleActivityResult(intent = intent, activity = context)
-        } else {
-            viewModel.stopLoading()
-        }
-    } else {
-        viewModel.stopLoading()
-    }
+    loginViewModel.handleLoginActivityResult(
+        result = result,
+        activity = context
+    )
 }
 
 private fun handleScreenExit(
-    viewModel: WelcomeScreenViewModel,
+    loginViewModel: LoginViewModel,
     analyticsViewModel: SignInAnalyticsViewModel,
     launcher: ActivityResultLauncher<Intent>,
 ) {
-    if (viewModel.onlineChecker.isOnline()) {
-        viewModel.onPrimary(launcher)
-    } else {
-        viewModel.navigateToOfflineError()
-    }
+    loginViewModel.startLoginActivity(launcher, false)
     analyticsViewModel.trackSignIn()
 }
 
