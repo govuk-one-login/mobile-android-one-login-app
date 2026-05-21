@@ -26,6 +26,8 @@ class AuthStubLoginTest : TestCase() {
     @Test
     @FlakyTest
     fun loginViaAuthStubReturnsToApp() {
+        enableAppLinks()
+
         phoneController.navigateToApp(
             actionTimeoutOverride = LONG_TIMEOUT,
             packageName = BuildConfig.APPLICATION_ID,
@@ -102,6 +104,13 @@ class AuthStubLoginTest : TestCase() {
         }
 
         return isAppVisible()
+    }
+
+    private fun enableAppLinks() {
+        device.executeShellCommand(
+            "pm set-app-links-user-selection --user cur " +
+                "--package ${BuildConfig.APPLICATION_ID} true all",
+        )
     }
 
     private fun isAppVisible(): Boolean =
