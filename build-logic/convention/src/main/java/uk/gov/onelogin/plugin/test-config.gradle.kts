@@ -22,19 +22,6 @@ open class TestTypeExtension(objects: ObjectFactory) {
 val extension = TestTypeExtension(project.objects)
 project.extensions.add("testTypeConfig", extension)
 
-/**
- * Excludes the given test type's package from the original unit test task
- * so tests aren't run twice (once in the original and once in the new task).
- * "unit" and "snapshot" types are kept in the original task for Paparazzi verify/record.
- */
-fun Project.excludeFromOriginalTask(testType: String, originalTestTaskName: String) {
-    val nonExcludableTypes = listOf("unit", "snapshot")
-    if (testType !in nonExcludableTypes) {
-        tasks.named(originalTestTaskName, Test::class.java) {
-            exclude("**/$testType/**")
-        }
-    }
-}
 
 // Use afterEvaluate to ensure the extension values and Android variants are fully resolved
 project.afterEvaluate {
@@ -56,8 +43,6 @@ project.afterEvaluate {
             // e.g. "componentTestBuildDebug"
             val taskName = "${testType}Test${variantName}"
             val isDebug = buildType.name == "debug"
-
-            project.excludeFromOriginalTask(testType, originalTestTaskName)
 
             // Register a new Test task that filters tests by the test type's package path
             val testTask = tasks.register<Test>(taskName) {
