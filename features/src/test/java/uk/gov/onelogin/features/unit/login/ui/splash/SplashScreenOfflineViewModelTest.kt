@@ -25,6 +25,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
@@ -53,10 +54,13 @@ class SplashScreenOfflineViewModelTest {
 
     private lateinit var viewModel: SplashScreenViewModel
 
+    private lateinit var getWalletStoreId: GetWalletStoreId
+
     @BeforeEach
     fun setup() {
         mockOnlineChecker = mock()
         mockRefreshExchange = mock()
+        getWalletStoreId = mock()
         viewModel =
             SplashScreenViewModel(
                 mockNavigator,
@@ -67,6 +71,7 @@ class SplashScreenOfflineViewModelTest {
                 mockOnlineChecker,
                 mockRefreshExchange,
                 mockGetRefreshTokenExp,
+                getWalletStoreId
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(false)
         runBlocking {
@@ -77,6 +82,7 @@ class SplashScreenOfflineViewModelTest {
     @Test
     fun loginSuccess() =
         runTest {
+            whenever(getWalletStoreId.invoke()).thenReturn("some-wallet-id")
             whenever(mockHandleLocalLogin.invoke(any(), any()))
                 .thenAnswer {
                     (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
