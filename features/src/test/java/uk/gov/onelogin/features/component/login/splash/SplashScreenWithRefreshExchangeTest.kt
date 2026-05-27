@@ -28,6 +28,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.TestUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
@@ -70,6 +71,8 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingContentDescription: SemanticsMatcher
 
+    private lateinit var getWalletStoreId: GetWalletStoreId
+
     @Before
     fun setUp() {
         whenever(repository.isOptInPreferenceRequired()).thenReturn(MutableStateFlow(false))
@@ -81,6 +84,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         onlineChecker = mock()
         refreshExchange = mock()
         getTokenExpiry = mock()
+        getWalletStoreId = mock()
         viewModel =
             SplashScreenViewModel(
                 navigator,
@@ -91,6 +95,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
                 onlineChecker,
                 refreshExchange,
                 getTokenExpiry,
+                getWalletStoreId
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
