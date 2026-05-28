@@ -1,8 +1,8 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.api.v3.Logger
+import uk.gov.logging.api.v3.customkey.CustomKey
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class GetPersistentIdImpl
                 this.javaClass.simpleName,
                 errorThrown.message ?: "error",
                 errorThrown,
-                ErrorKeys.StringKey("reason", reason)
+                CustomKey.StringKey("reason", reason),
             )
         }
     }

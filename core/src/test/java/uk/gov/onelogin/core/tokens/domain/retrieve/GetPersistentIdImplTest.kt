@@ -10,8 +10,9 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.api.v3.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.customkey.CustomKey
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
 import kotlin.test.assertNull
@@ -22,16 +23,16 @@ class GetPersistentIdImplTest {
 
     private val walletSdk: WalletSdk = mock()
 
-    private val logger: Logger = mock()
+    private val logger: Logger = MemorisedLogger()
 
     private val logTag = "GetPersistentIdImpl"
     private val logMessage = "Wallet is not empty"
 
-    val errorKeysTest = ErrorKeys.StringKey("reason", "secure wallet data deleted")
+    val errorKeysTest = CustomKey.StringKey("reason", "secure wallet data deleted")
 
     val tag = "GetPersistentIdImpl"
     val logMessageWalletError = "java.lang.Exception: could not determine if wallet is empty"
-    val walletErrorErrorKeys = ErrorKeys.StringKey("reason", logMessageWalletError)
+    val walletErrorErrorKeys = CustomKey.StringKey("reason", logMessageWalletError)
 
     private val sut =
         GetPersistentIdImpl(
