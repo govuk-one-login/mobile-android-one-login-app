@@ -249,6 +249,7 @@ dependencies {
         libs.junit,
         libs.androidx.test.orchestrator,
         libs.androidx.test.ext.junit,
+        testFixtures(libs.logging.api),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)

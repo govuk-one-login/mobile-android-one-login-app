@@ -1,7 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.email
 
 import org.junit.jupiter.api.Test
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import uk.gov.onelogin.core.tokens.utils.JwtExtractorImpl
 import kotlin.test.assertEquals
@@ -17,7 +17,7 @@ class ExtractEmailImplTest {
             ".e30." + // no email in the payload
             "ZRrHA1JJJW8opsbCGfG_HACGpVUMN_a9IV7pAx_Zmeo"
     private val extractFromJson: JwtExtractor = JwtExtractorImpl()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     val sut = ExtractEmailImpl(extractFromJson, logger)
 

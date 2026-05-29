@@ -2,7 +2,7 @@ package uk.gov.onelogin.core.tokens.domain.save
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.SecureStoreException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys

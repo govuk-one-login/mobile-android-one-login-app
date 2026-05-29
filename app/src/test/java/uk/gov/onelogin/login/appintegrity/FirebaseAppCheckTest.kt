@@ -2,22 +2,25 @@ package uk.gov.onelogin.login.appintegrity
 
 import com.google.firebase.FirebaseNetworkException
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.appcheck.model.AppCheckToken
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class FirebaseAppCheckTest {
     private val provider: FirebaseAppCheckProvider = mock()
-    private val logger: Logger = mock()
+    private val logger = MemorisedLogger()
     private lateinit var sut: AppChecker
 
     @Before
@@ -44,7 +47,7 @@ class FirebaseAppCheckTest {
             val actual = sut.getAppCheckToken()
 
             verify(provider).init()
-            verify(logger).error(any(), any(), any())
+            assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
             assertTrue(actual.isFailure)
             actual.onFailure {
                 assertTrue(it is AppIntegrityException.Other)
@@ -60,7 +63,7 @@ class FirebaseAppCheckTest {
             val actual = sut.getAppCheckToken()
 
             verify(provider).init()
-            verify(logger).error(any(), any(), any())
+            assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
             assertTrue(actual.isFailure)
             actual.onFailure {
                 assertTrue(it is AppIntegrityException.FirebaseException)

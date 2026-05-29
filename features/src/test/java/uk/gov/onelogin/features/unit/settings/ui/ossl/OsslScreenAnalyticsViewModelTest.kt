@@ -9,11 +9,11 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel3
+import uk.gov.logging.api.v3.Logger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
