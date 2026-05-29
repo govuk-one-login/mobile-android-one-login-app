@@ -4,6 +4,7 @@ import uk.gov.logging.api.v3.Logger
 import uk.gov.logging.api.v3.customkey.CustomKey
 import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 
 object ErrorKeys {
     private const val COMPONENT = "component"
@@ -35,6 +36,7 @@ object ErrorKeys {
     fun actionKey(action: String): CustomKey = CustomKey.StringKey(ErrorKeys.ACTION, action)
 }
 
+@ExcludeFromJacocoGeneratedReport
 @Suppress("UnusedPrivateMember")
 private fun errorKeysSample(logger: Logger) {
     logger.error(
