@@ -39,6 +39,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.ATTESTATION_POP_GENERATE_ERROR
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
@@ -59,6 +60,8 @@ class RefreshExchangeImplTest {
     private lateinit var timeProvider: SystemTimeProvider
     private lateinit var sut: RefreshExchange
 
+    private lateinit var validateWalletStoreId: ValidateWalletStoreId
+
     @BeforeEach
     fun setup() {
         fragmentContext = mock()
@@ -74,6 +77,7 @@ class RefreshExchangeImplTest {
         saveTokens = mock()
         logger = mock()
         timeProvider = mock()
+        validateWalletStoreId = mock()
         sut =
             RefreshExchangeImpl(
                 context = context,
@@ -87,7 +91,8 @@ class RefreshExchangeImplTest {
                 tokenRepository = tokenRepository,
                 saveTokens = saveTokens,
                 logger = logger,
-                timeProvider = timeProvider
+                timeProvider = timeProvider,
+                validateWalletStoreId = validateWalletStoreId
             )
 
         whenever(context.getString(any(), anyVararg()))
@@ -125,6 +130,8 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(httpClient.makeRequest(any()))
                 .thenReturn(
                     ApiResponse.Success(
@@ -136,7 +143,6 @@ class RefreshExchangeImplTest {
                             "}"
                     )
                 )
-
             sut.getTokens(
                 fragmentContext,
                 handleResult = {
@@ -270,6 +276,8 @@ class RefreshExchangeImplTest {
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
             whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 getFromEncryptedSecureStore(
                     any(),

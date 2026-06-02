@@ -12,12 +12,12 @@ import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
-import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl.Companion.WALLET_ID_KEY
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
+import uk.gov.onelogin.core.utils.WALLET_ID_KEY
 import javax.inject.Inject
 
 @Suppress("LongParameterList")

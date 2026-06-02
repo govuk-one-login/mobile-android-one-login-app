@@ -20,7 +20,6 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
@@ -45,7 +44,6 @@ class SplashScreenViewModel
         private val refreshExchange: RefreshExchange,
         @param:RefreshToken
         private val getTokenExpiry: GetTokenExpiry,
-        private val getWalletStoreId: GetWalletStoreId
     ) : ViewModel(),
         DefaultLifecycleObserver {
         private val _showUnlock = MutableStateFlow(false)
@@ -90,7 +88,7 @@ class SplashScreenViewModel
 
         private fun handleRefreshExchangeResult(result: RefreshExchangeResult) {
             when (result) {
-                RefreshExchangeResult.Success -> handleWalletIdBehaviour()
+                RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
 
                 // Handle when a user ia a first time user
                 RefreshExchangeResult.FirstTimeUser -> {
@@ -125,7 +123,7 @@ class SplashScreenViewModel
                     deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
 
                 is LocalAuthStatus.Success ->
-                    handleWalletIdBehaviour()
+                    nextScreen(MainNavRoutes.Start)
 
                 LocalAuthStatus.UserCancelledBioPrompt -> {
                     _loading.value = false
@@ -135,19 +133,6 @@ class SplashScreenViewModel
                 // Handles ReuAuth and Recoverable (specific behaviour to be added at a later time)
                 else -> {
                     nextScreen(SignOutRoutes.ReAuth)
-                }
-            }
-        }
-
-        private fun handleWalletIdBehaviour() {
-            viewModelScope.launch {
-                val walletId = getWalletStoreId()
-                if (walletId != null) {
-                    nextScreen(MainNavRoutes.Start)
-                } else if (onlineChecker.isOnline()) {
-                    nextScreen(SignOutRoutes.ReAuth)
-                } else {
-                    nextScreen(ErrorRoutes.Offline)
                 }
             }
         }

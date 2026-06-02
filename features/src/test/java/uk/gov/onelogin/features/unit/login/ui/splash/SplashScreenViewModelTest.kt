@@ -24,7 +24,6 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
@@ -51,13 +50,10 @@ class SplashScreenViewModelTest {
 
     private lateinit var viewModel: SplashScreenViewModel
 
-    private lateinit var getWalletStoreId: GetWalletStoreId
-
     @BeforeEach
     fun setup() {
         mockOnlineChecker = mock()
         mockRefreshExchange = mock()
-        getWalletStoreId = mock()
         viewModel =
             SplashScreenViewModel(
                 mockNavigator,
@@ -67,8 +63,7 @@ class SplashScreenViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp,
-                getWalletStoreId
+                mockGetRefreshTokenExp
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
     }
@@ -93,7 +88,6 @@ class SplashScreenViewModelTest {
     @Test
     fun `RefreshExchange - login success`() =
         runTest {
-            whenever(getWalletStoreId.invoke()).thenReturn("some-wallet-id")
             whenever(mockGetRefreshTokenExp()).thenReturn(100)
             whenever(mockRefreshExchange.getTokens(any(), any()))
                 .thenAnswer {
@@ -200,7 +194,6 @@ class SplashScreenViewModelTest {
     @Test
     fun `LocalAuth - login success`() =
         runTest {
-            whenever(getWalletStoreId.invoke()).thenReturn("some-wallet-id")
             whenever(mockGetRefreshTokenExp()).thenReturn(null)
             whenever(mockHandleLocalLogin(any(), any()))
                 .thenAnswer {
@@ -291,41 +284,5 @@ class SplashScreenViewModelTest {
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
             verify(mockSignOutUseCase).invoke()
-        }
-
-    @Test
-    fun `handleWalletIdBehaviour - wallet ID null and online, navigates to ReAuth`() =
-        runTest {
-            whenever(getWalletStoreId.invoke()).thenReturn(null)
-            whenever(mockOnlineChecker.isOnline()).thenReturn(true)
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.Success
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
-        }
-
-    @Test
-    fun `handleWalletIdBehaviour - wallet ID null and offline, navigates to Offline`() =
-        runTest {
-            whenever(getWalletStoreId.invoke()).thenReturn(null)
-            whenever(mockOnlineChecker.isOnline()).thenReturn(false)
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.Success(mapOf("key" to "token"))
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(ErrorRoutes.Offline, false)
         }
 }
