@@ -179,6 +179,7 @@ dependencies {
         libs.uiautomator,
         libs.mockito.kotlin,
         libs.mockito.android,
+        testFixtures(libs.logging.api),
     ).forEach(::androidTestImplementation)
 
     listOf(
