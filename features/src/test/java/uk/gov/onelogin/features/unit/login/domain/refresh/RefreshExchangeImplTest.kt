@@ -460,6 +460,8 @@ class RefreshExchangeImplTest {
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired(null))
             whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 getFromEncryptedSecureStore(
                     any(),

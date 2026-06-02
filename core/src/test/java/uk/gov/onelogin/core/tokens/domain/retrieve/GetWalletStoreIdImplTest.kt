@@ -36,4 +36,5 @@ class GetWalletStoreIdImplTest {
             val result = sut.invoke()
             assertNull(result)
         }
+
 }

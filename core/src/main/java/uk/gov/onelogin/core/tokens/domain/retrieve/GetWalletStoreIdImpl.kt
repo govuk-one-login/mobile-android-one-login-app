@@ -5,6 +5,9 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
 import javax.inject.Inject
 
 /**
+ *  The [GetWalletStoreIdImpl]Retrieves the Wallet Store ID from the open secure store.
+ */
+/**
  *  The [GetWalletStoreIdImpl] retrieves the Wallet Store ID from the open secure store.
  */
 class GetWalletStoreIdImpl
@@ -14,4 +17,6 @@ class GetWalletStoreIdImpl
     ) : GetWalletStoreId,
         LogTagProvider {
         override suspend fun invoke(): String? = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
+
+
     }
