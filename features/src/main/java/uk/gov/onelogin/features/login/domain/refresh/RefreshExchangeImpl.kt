@@ -31,6 +31,7 @@ import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.core.utils.TimeProvider
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.text.isNullOrEmpty
@@ -53,6 +54,7 @@ class RefreshExchangeImpl
         private val saveTokens: SaveTokens,
         private val logger: Logger,
         private val timeProvider: TimeProvider,
+        private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
         private val jsonDecoder = Json { ignoreUnknownKeys = true }
 
@@ -202,9 +204,12 @@ class RefreshExchangeImpl
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
                     saveTokens.save(decodedTokens.refreshToken)
-                    // Call lambda to exit the function with a LocalAuthStatus.Success
-                    // To be determined when implementing if it requires the refresh token to be passed to the consumer
-                    handleResult(RefreshExchangeResult.Success)
+                    // Validate wallet store ID before returning success
+                    if (validateWalletStoreId()) {
+                        handleResult(RefreshExchangeResult.Success)
+                    } else {
+                        handleResult(RefreshExchangeResult.ReauthRequired)
+                    }
                 }
                 is ApiResponse.Failure -> {
                     logger.error(

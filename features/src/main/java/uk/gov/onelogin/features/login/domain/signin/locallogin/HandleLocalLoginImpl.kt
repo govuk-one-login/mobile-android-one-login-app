@@ -13,6 +13,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import javax.inject.Inject
 
 @Suppress("LongParameterList")
@@ -31,6 +32,7 @@ class HandleLocalLoginImpl
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val localAuthManager: LocalAuthManager,
         private val getPersistentId: GetPersistentId,
+        private val validateWalletStoreId: ValidateWalletStoreId,
     ) : HandleLocalLogin {
         override suspend fun invoke(
             fragmentActivity: FragmentActivity,
@@ -49,6 +51,7 @@ class HandleLocalLoginImpl
             }
         }
 
+        @Suppress("NestedBlockDepth")
         private suspend fun handleRefreshToken(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
@@ -58,6 +61,8 @@ class HandleLocalLoginImpl
                 // Get Refresh and AccessToken (require Access Token to be able to not break existing behaviour since the refresh exchange ahs not been completed yet
                 // Cannot get the ID Token because it seems to time out (3 seconds don't seem enough to get all 3)
                 val expiryTime = getAccessTokenExpiry() ?: 0
+                // localAuthResult stores the LocalAuthStatus to update outside the callback
+                var localAuthResult: LocalAuthStatus? = null
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -88,8 +93,18 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    // Call the lambda with the result (it doesn't necessarily mean it will be success
-                    callback(it)
+                    localAuthResult = it
+                }
+                localAuthResult?.let {
+                    if (it is LocalAuthStatus.Success) {
+                        if (validateWalletStoreId()) {
+                            callback(it)
+                        } else {
+                            callback(LocalAuthStatus.ReauthRequired)
+                        }
+                    } else {
+                        callback(it)
+                    }
                 }
             } else {
                 // If Refresh Token is expired prompt for ReAuth
@@ -97,12 +112,15 @@ class HandleLocalLoginImpl
             }
         }
 
+        @Suppress("NestedBlockDepth")
         private suspend fun handleAccessTokenOnly(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
         ) {
             if (!isAccessTokenExpired() && isLocalAuthEnabled()) {
                 val expiryTime = getAccessTokenExpiry() ?: 0
+                // localAuthResult stores the LocalAuthStatus to update outside the callback
+                var localAuthResult: LocalAuthStatus? = null
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
@@ -126,7 +144,18 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    callback(it)
+                    localAuthResult = it
+                }
+                localAuthResult?.let {
+                    if (it is LocalAuthStatus.Success) {
+                        if (validateWalletStoreId()) {
+                            callback(it)
+                        } else {
+                            callback(LocalAuthStatus.ReauthRequired)
+                        }
+                    } else {
+                        callback(it)
+                    }
                 }
             } else {
                 if (getAccessTokenExpiry() == null) {

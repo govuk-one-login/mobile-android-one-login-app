@@ -20,7 +20,6 @@ import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
@@ -50,7 +49,6 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var optInViewModel: OptInRequirementViewModel
 
     private val splashIcon = hasTestTag(resources.getString(R.string.splashLogoTestTag))
-    private lateinit var getWalletStoreId: GetWalletStoreId
 
     @Before
     fun setup() {
@@ -63,7 +61,6 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
         onlineChecker = mock()
         refreshExchange = mock()
         getTokenExpiry = mock()
-        getWalletStoreId = mock()
         viewModel =
             SplashScreenViewModel(
                 navigator,
@@ -74,7 +71,6 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
                 onlineChecker,
                 refreshExchange,
                 getTokenExpiry,
-                getWalletStoreId
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
