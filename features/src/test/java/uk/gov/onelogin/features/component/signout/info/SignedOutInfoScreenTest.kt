@@ -32,8 +32,8 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
@@ -84,7 +84,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var errorCounter: Counter
     private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private var shouldTryAgainCalled = false
 
     private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))

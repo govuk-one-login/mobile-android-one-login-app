@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource

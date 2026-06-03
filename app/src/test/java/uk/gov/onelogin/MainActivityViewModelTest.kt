@@ -7,7 +7,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
@@ -24,7 +24,7 @@ class MainActivityViewModelTest {
     private var navigator: Navigator = mock()
     private var refreshExchange: RefreshExchange = mock()
     private var signOutUseCase: SignOutUseCase = mock()
-    private var logger: Logger = mock()
+    private var logger = MemorisedLogger()
     private var vm: MainActivityViewModel =
         MainActivityViewModel(
             activityProvider,

@@ -2,23 +2,24 @@ package uk.gov.onelogin.core.tokens.domain.save
 
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
-import kotlin.test.assertTrue
 
 class SavePersistentIdTest {
     private lateinit var savePersistentId: SavePersistentId
     private val mockTokenRepository: TokenRepository = mock()
     private val mockSaveToOpenSecureStore: SaveToOpenSecureStore = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     // encoded ID token with persistent ID in the body
     private val idToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwZXJzaXN0ZW50X2lkIjoiMTIzNCJ9"
@@ -73,7 +74,7 @@ class SavePersistentIdTest {
             runBlocking {
                 verifyNoInteractions(mockSaveToOpenSecureStore)
             }
-            assertTrue(logger.size == 1)
+            assertThat(logger, hasSize(1))
         }
 
     @Test

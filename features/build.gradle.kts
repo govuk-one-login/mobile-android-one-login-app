@@ -133,6 +133,7 @@ dependencies {
         libs.logging.test,
         testFixtures(projects.core),
         libs.logging.test,
+        testFixtures(libs.logging.api),
         testFixtures(libs.patterns),
     ).forEach(::testImplementation)
 

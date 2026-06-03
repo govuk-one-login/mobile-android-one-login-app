@@ -5,6 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,7 +20,11 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
@@ -34,7 +42,7 @@ class HandleRemoteLoginTest {
     private val mockLoginSession: LoginSession = mock()
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockUriParser: UriParser = mock()
-    private val mockLogger: Logger = mock()
+    private val mockLogger = MemorisedLogger()
     private val mockLauncher: ActivityResultLauncher<Intent> = mock()
     private val mockUri: Uri = mock()
     private val testAttestation = "testAttestation"
@@ -182,10 +190,15 @@ class HandleRemoteLoginTest {
 
             handleRemoteLogin.login(mockLauncher) {}
 
-            verify(mockLogger).error(
-                expectedWrappedException.javaClass.simpleName,
-                error.message ?: "No message",
-                expectedWrappedException
+            assertThat(
+                mockLogger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasMessage(error.message ?: "No message"),
+                        hasException(equalTo(expectedWrappedException))
+                    )
+                )
             )
         }
 }
