@@ -14,7 +14,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl
 import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.APP_INFO_CLASS_CAST_ERROR
 import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.APP_INFO_ILLEGAL_ARG_ERROR
@@ -60,7 +60,7 @@ class AppInfoLocalSourceImplTest {
         )
 
     lateinit var sut: AppInfoLocalSource
-    private val logger: Logger = mock()
+    private val logger = MemorisedLogger()
 
     @BeforeEach
     fun setup() {

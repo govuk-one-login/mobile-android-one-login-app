@@ -1,6 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.walletId
 
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.SettingsException
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor

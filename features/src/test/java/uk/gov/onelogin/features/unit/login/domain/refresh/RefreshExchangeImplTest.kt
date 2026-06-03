@@ -3,6 +3,9 @@ package uk.gov.onelogin.features.unit.login.domain.refresh
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -10,7 +13,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
@@ -21,7 +23,12 @@ import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessio
 import uk.gov.android.authentication.login.refresh.SignedDPoP
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasTag
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
@@ -56,7 +63,7 @@ class RefreshExchangeImplTest {
     private lateinit var saveTokenExpiry: SaveTokenExpiry
     private lateinit var tokenRepository: TokenRepository
     private lateinit var saveTokens: SaveTokens
-    private lateinit var logger: Logger
+    private lateinit var logger: MemorisedLogger
     private lateinit var timeProvider: SystemTimeProvider
     private lateinit var sut: RefreshExchange
 
@@ -75,7 +82,7 @@ class RefreshExchangeImplTest {
         saveTokenExpiry = mock()
         tokenRepository = mock()
         saveTokens = mock()
-        logger = mock()
+        logger = MemorisedLogger()
         timeProvider = mock()
         validateWalletStoreId = mock()
         sut =
@@ -150,7 +157,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
@@ -185,7 +192,7 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
             verifyNoInteractions(getFromEncryptedSecureStore)
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -210,7 +217,7 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
             verifyNoInteractions(getFromEncryptedSecureStore)
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -236,7 +243,7 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
             verifyNoInteractions(getFromEncryptedSecureStore)
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -264,7 +271,7 @@ class RefreshExchangeImplTest {
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
             verifyNoInteractions(getFromEncryptedSecureStore)
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -317,7 +324,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
             verify(tokenRepository).setTokenResponse(
@@ -364,10 +371,15 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq("Failure"),
-                any()
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                        hasMessage("Failure")
+                    )
+                )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getProofOfPossession()
@@ -417,10 +429,15 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq("Failure"),
-                eq(exp)
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                        hasMessage("Failure")
+                    )
+                )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getProofOfPossession()
@@ -468,10 +485,15 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq("Failure"),
-                any()
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                        hasMessage("Failure")
+                    )
+                )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
@@ -519,10 +541,15 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq(ATTESTATION_POP_GENERATE_ERROR),
-                any()
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                        hasMessage(ATTESTATION_POP_GENERATE_ERROR)
+                    )
+                )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
@@ -577,10 +604,15 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq("error"),
-                any()
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
+                        hasMessage("error")
+                    )
+                )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
@@ -635,11 +667,7 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            verify(logger).error(
-                eq(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                eq(EMPTY_MSG),
-                any()
-            )
+            assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(EMPTY_MSG))))
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
@@ -693,7 +721,7 @@ class RefreshExchangeImplTest {
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
             verify(httpClient).makeRequest(any())
-            verifyNoInteractions(logger)
+            assertThat(logger, hasSize(0))
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)

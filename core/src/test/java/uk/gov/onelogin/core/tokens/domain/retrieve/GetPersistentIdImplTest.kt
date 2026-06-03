@@ -1,17 +1,27 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.instanceOf
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
-import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasCustomKeys
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasLogEntry
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
+import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
+import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
 import kotlin.test.assertNull
@@ -19,19 +29,12 @@ import kotlin.test.assertNull
 class GetPersistentIdImplTest {
     private val expectedPersistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
     private val mockGetFromOpenSecureStore: GetFromOpenSecureStore = mock()
-
     private val walletSdk: WalletSdk = mock()
 
-    private val logger: Logger = mock()
+    private val logger = MemorisedLogger()
 
-    private val logTag = "GetPersistentIdImpl"
-    private val logMessage = "Wallet is not empty"
-
-    val errorKeysTest = ErrorKeys.StringKey("reason", "secure wallet data deleted")
-
-    val tag = "GetPersistentIdImpl"
-    val logMessageWalletError = "java.lang.Exception: could not determine if wallet is empty"
-    val walletErrorErrorKeys = ErrorKeys.StringKey("reason", logMessageWalletError)
+    private val componentKey = componentKey("tokens.persistent_id")
+    private val actionKey = actionKey("Get persistent ID")
 
     private val sut =
         GetPersistentIdImpl(
@@ -92,17 +95,31 @@ class GetPersistentIdImplTest {
             )
 
             sut.invoke()
-            verify(logger).error(
-                eq(logTag),
-                eq(logMessage),
-                any(),
-                eq(errorKeysTest)
+
+            assertThat(logger, hasSize(1))
+            assertThat(
+                logger,
+                hasLogEntry(
+                    hasItem(
+                        allOf(
+                            hasMessage("No persistent ID but wallet isn't empty"),
+                            hasException(instanceOf(GetPersistentIdException.WalletNotEmpty::class.java)),
+                            hasCustomKeys(
+                                contains(
+                                    equalTo(componentKey),
+                                    equalTo(actionKey)
+                                )
+                            ),
+                        )
+                    )
+                )
             )
         }
     }
 
+    // We don't expect this scenario to occur in practice
     @Test
-    fun `check if logger logs when check if wallet is empty throws an exception`() {
+    fun `check if logger logs when check if wallet is empty throws an unexpected exception`() {
         runTest {
             val expected = Throwable("Wallet is not empty")
             whenever(
@@ -117,30 +134,29 @@ class GetPersistentIdImplTest {
 
             sut.invoke()
 
-            verify(logger).error(
-                eq(logTag),
-                eq(logMessage),
-                any(),
-                eq(errorKeysTest)
+            assertThat(logger, hasSize(1))
+            assertThat(
+                logger,
+                hasLogEntry(
+                    hasItem(
+                        allOf(
+                            hasMessage("Wallet SDK failed to check if wallet is empty"),
+                            hasException(
+                                instanceOf(
+                                    GetPersistentIdException.WalletEmptyCheckFailed::class.java
+                                )
+                            ),
+                            hasCustomKeys(
+                                contains(
+                                    equalTo(componentKey),
+                                    equalTo(actionKey)
+                                )
+                            ),
+                        )
+                    )
+                )
             )
         }
-    }
-
-    @Test
-    fun `check if logger logs when get wallet throws exception`() {
-        val expected = Error("could not determine if wallet is empty")
-        whenever(
-            walletSdk.isEmpty()
-        ).thenThrow(
-            expected
-        )
-        logger.error(tag = logTag, message = logMessage, throwable = expected, errorKeysTest)
-        verify(logger).error(
-            eq(logTag),
-            eq(logMessage),
-            any(),
-            eq(errorKeysTest)
-        )
     }
 
     @Test
@@ -159,11 +175,28 @@ class GetPersistentIdImplTest {
             }.`when`(walletSdk).isEmpty()
 
             sut.invoke()
-            verify(logger).error(
-                eq(tag),
-                eq(logMessageWalletError),
-                eq(expected),
-                eq(walletErrorErrorKeys)
+
+            assertThat(logger, hasSize(1))
+            assertThat(
+                logger,
+                hasLogEntry(
+                    hasItem(
+                        allOf(
+                            hasMessage("Wallet SDK failed to check if wallet is empty"),
+                            hasException(
+                                instanceOf(
+                                    GetPersistentIdException.WalletEmptyCheckFailed::class.java
+                                )
+                            ),
+                            hasCustomKeys(
+                                contains(
+                                    equalTo(componentKey),
+                                    equalTo(actionKey)
+                                )
+                            ),
+                        )
+                    )
+                )
             )
         }
 }
