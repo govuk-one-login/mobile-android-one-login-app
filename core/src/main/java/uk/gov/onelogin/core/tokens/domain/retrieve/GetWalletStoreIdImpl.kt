@@ -7,9 +7,6 @@ import javax.inject.Inject
 /**
  *  The [GetWalletStoreIdImpl]Retrieves the Wallet Store ID from the open secure store.
  */
-/**
- *  The [GetWalletStoreIdImpl] retrieves the Wallet Store ID from the open secure store.
- */
 class GetWalletStoreIdImpl
     @Inject
     constructor(
