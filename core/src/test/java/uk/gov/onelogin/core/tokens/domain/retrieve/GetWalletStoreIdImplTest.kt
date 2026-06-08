@@ -92,8 +92,6 @@ class GetWalletStoreIdImplTest {
     @Test
     fun `GetWalletStoreIdImpl invoke logs error when store returns null`() =
         runTest {
-            fakeGetFromOpenSecureStore.returnsNull()
-
             val result = sut.invoke()
 
             assertNull(result)
