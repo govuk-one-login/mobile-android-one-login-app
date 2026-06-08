@@ -1,5 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
+import uk.gov.logging.api.LogTagProvider
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
@@ -15,7 +16,8 @@ class GetWalletStoreIdImpl
     constructor(
         private val getFromOpenSecureStore: GetFromOpenSecureStore,
         private val logger: Logger,
-    ) : GetWalletStoreId {
+    ) : GetWalletStoreId,
+        LogTagProvider {
         override suspend fun invoke(): String? =
             try {
                 val result = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
@@ -32,7 +34,6 @@ class GetWalletStoreIdImpl
             when (exception) {
                 is GetWalletStoreIdException.WalletStoreIdMissing ->
                     logger.error(
-                        this::class.java.simpleName,
                         exception.message,
                         exception,
                         componentKey("wallet.store_id"),
@@ -40,7 +41,6 @@ class GetWalletStoreIdImpl
                     )
                 is GetWalletStoreIdException.RetrievalFailed ->
                     logger.error(
-                        this::class.java.simpleName,
                         exception.message,
                         exception.cause!!,
                         componentKey("wallet.store_id"),

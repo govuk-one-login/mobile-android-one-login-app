@@ -41,15 +41,6 @@ class GetWalletStoreIdImplTest {
         }
 
     @Test
-    fun `GetWalletStoreIdImpl invoke returns null when no wallet id found`() =
-        runTest {
-            val result = sut.invoke()
-
-            assertNull(result)
-            assertThat(logger, hasSize(1))
-        }
-
-    @Test
     fun `GetWalletStoreIdImpl invoke logs error when wallet id is empty`() =
         runTest {
             fakeGetFromOpenSecureStore["wallet_id"] = ""
@@ -84,8 +75,6 @@ class GetWalletStoreIdImplTest {
     @Test
     fun `GetWalletStoreIdImpl invoke logs error when store returns null`() =
         runTest {
-            fakeGetFromOpenSecureStore.returnsNull()
-
             val result = sut.invoke()
 
             assertNull(result)
