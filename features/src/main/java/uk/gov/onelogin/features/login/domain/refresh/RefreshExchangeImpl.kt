@@ -204,7 +204,6 @@ class RefreshExchangeImpl
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
                     saveTokens.save(decodedTokens.refreshToken)
-                    // Validate wallet store ID before returning success
                     if (validateWalletStoreId()) {
                         handleResult(RefreshExchangeResult.Success)
                     } else {
