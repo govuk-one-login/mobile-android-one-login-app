@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
 import uk.gov.onelogin.core.cleaner.domain.ResultCollectionUtil
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 class SignOutUseCaseTest {
     private val deleteWalletData: DeleteWalletDataUseCase = mock()
     private val tokenRepository: TokenRepository = mock()
-    private val logger: Logger = mock()
+    private val logger = MemorisedLogger()
     private lateinit var useCase: SignOutUseCase
 
     @Test

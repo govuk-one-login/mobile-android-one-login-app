@@ -3,7 +3,7 @@ package uk.gov.onelogin.features.navigation.domain
 import android.os.Handler
 import android.os.Looper
 import androidx.navigation.NavHostController
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
@@ -21,6 +21,7 @@ class NavigatorImpl
                     logger.error(
                         this::class.java.simpleName,
                         "Navigator not initialised",
+                        IllegalStateException("Navigator not initialised"),
                     )
                 }
                 return field
