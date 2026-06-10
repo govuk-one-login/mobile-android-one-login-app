@@ -70,19 +70,17 @@ class RefreshExchangeImpl
         ) {
             // Check the persistent session ID is valid
             if (!getPersistentId().isNullOrEmpty()) {
-                // Check Refresh token is NOT expired
-                if (!isRefreshTokenExpired()) {
+                // Check Refresh token is NOT expired and wallet store ID is valid
+                if (!isRefreshTokenExpired() && validateWalletStoreId()) {
                     // Attempt to get Client Attestation
                     getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
                 } else {
-                    // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
-                    // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
+                    // When Refresh token is invalid or wallet store ID is missing
                     handleResult(RefreshExchangeResult.ReauthRequired)
                     return
                 }
             } else {
                 // When a persistent session ID couldn't be retrieved or is invalid
-                // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
                 handleResult(RefreshExchangeResult.FirstTimeUser)
 
                 return
@@ -204,11 +202,7 @@ class RefreshExchangeImpl
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
                     saveTokens.save(decodedTokens.refreshToken)
-                    if (validateWalletStoreId()) {
-                        handleResult(RefreshExchangeResult.Success)
-                    } else {
-                        handleResult(RefreshExchangeResult.ReauthRequired)
-                    }
+                    handleResult(RefreshExchangeResult.Success)
                 }
                 is ApiResponse.Failure -> {
                     logger.error(
