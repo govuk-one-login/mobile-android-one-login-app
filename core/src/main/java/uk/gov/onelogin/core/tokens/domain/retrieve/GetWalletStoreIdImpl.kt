@@ -2,6 +2,7 @@ package uk.gov.onelogin.core.tokens.domain.retrieve
 
 import uk.gov.logging.api.LogTagProvider
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
 import javax.inject.Inject
 
 /**
@@ -11,9 +12,6 @@ class GetWalletStoreIdImpl
     @Inject
     constructor(
         private val getFromOpenSecureStore: GetFromOpenSecureStore,
-    ) : GetWalletStoreId,
-        LogTagProvider {
+    ) : GetWalletStoreId {
         override suspend fun invoke(): String? = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
-
-
     }
