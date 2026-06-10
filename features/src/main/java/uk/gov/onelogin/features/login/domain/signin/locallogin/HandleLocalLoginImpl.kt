@@ -51,7 +51,6 @@ class HandleLocalLoginImpl
             }
         }
 
-        @Suppress("NestedBlockDepth")
         private suspend fun handleRefreshToken(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
@@ -61,8 +60,11 @@ class HandleLocalLoginImpl
                 // Get Refresh and AccessToken (require Access Token to be able to not break existing behaviour since the refresh exchange ahs not been completed yet
                 // Cannot get the ID Token because it seems to time out (3 seconds don't seem enough to get all 3)
                 val expiryTime = getAccessTokenExpiry() ?: 0
-                // localAuthResult stores the LocalAuthStatus to update outside the callback
-                var localAuthResult: LocalAuthStatus? = null
+
+                if (!validateWalletStoreId()) {
+                    callback(LocalAuthStatus.ReauthRequired)
+                    return
+                }
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -93,41 +95,29 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    localAuthResult = it
-                }
-                localAuthResult?.let {
-                    if (it is LocalAuthStatus.Success) {
-                        if (validateWalletStoreId()) {
-                            callback(it)
-                        } else {
-                            callback(LocalAuthStatus.ReauthRequired)
-                        }
-                    } else {
-                        callback(it)
-                    }
+                    callback(it)
                 }
             } else {
-                // If Refresh Token is expired prompt for ReAuth
                 callback(LocalAuthStatus.ReauthRequired)
             }
         }
 
-        @Suppress("NestedBlockDepth")
         private suspend fun handleAccessTokenOnly(
             fragmentActivity: FragmentActivity,
             callback: (LocalAuthStatus) -> Unit,
         ) {
             if (!isAccessTokenExpired() && isLocalAuthEnabled()) {
+                if (!validateWalletStoreId()) {
+                    callback(LocalAuthStatus.ReauthRequired)
+                    return
+                }
                 val expiryTime = getAccessTokenExpiry() ?: 0
-                // localAuthResult stores the LocalAuthStatus to update outside the callback
-                var localAuthResult: LocalAuthStatus? = null
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.ACCESS_TOKEN_KEY,
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
                 ) {
                     if (it is LocalAuthStatus.Success) {
-                        // These should never be returned null - secure store checks for all values to not be null
                         val accessToken = it.payload?.get(AuthTokenStoreKeys.ACCESS_TOKEN_KEY)
                         val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                         if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
@@ -144,18 +134,7 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    localAuthResult = it
-                }
-                localAuthResult?.let {
-                    if (it is LocalAuthStatus.Success) {
-                        if (validateWalletStoreId()) {
-                            callback(it)
-                        } else {
-                            callback(LocalAuthStatus.ReauthRequired)
-                        }
-                    } else {
-                        callback(it)
-                    }
+                    callback(it)
                 }
             } else {
                 if (getAccessTokenExpiry() == null) {
