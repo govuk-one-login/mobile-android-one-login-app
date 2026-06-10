@@ -4,7 +4,6 @@ import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.SettingsException
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
-import uk.gov.onelogin.core.utils.WALLET_ID_KEY
 import javax.inject.Inject
 
 @Suppress("TooGenericExceptionCaught")

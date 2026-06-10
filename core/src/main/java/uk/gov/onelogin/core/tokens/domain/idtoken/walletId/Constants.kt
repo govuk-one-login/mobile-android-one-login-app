@@ -1,4 +1,4 @@
-package uk.gov.onelogin.core.utils
+package uk.gov.onelogin.core.tokens.domain.idtoken.walletId
 
 /** Key for retrieving the wallet ID from the OpenSecureStore. */
 
