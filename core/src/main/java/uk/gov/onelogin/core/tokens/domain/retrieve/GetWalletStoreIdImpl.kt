@@ -1,7 +1,5 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
-import uk.gov.logging.api.LogTagProvider
-import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
 import javax.inject.Inject
 
