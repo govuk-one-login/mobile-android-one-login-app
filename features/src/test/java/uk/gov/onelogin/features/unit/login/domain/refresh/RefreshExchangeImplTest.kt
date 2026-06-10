@@ -251,6 +251,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Failure(Exception("Client Attestation failure!")))
@@ -342,6 +343,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("attestation"))
@@ -397,6 +399,7 @@ class RefreshExchangeImplTest {
             val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("attestation"))
@@ -454,6 +457,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -510,6 +514,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -566,6 +571,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -629,6 +635,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -684,6 +691,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -733,6 +741,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -775,6 +784,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -817,6 +827,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -857,6 +868,7 @@ class RefreshExchangeImplTest {
     ) = runTest {
         lateinit var result: RefreshExchangeResult
         whenever(getPersistentId()).thenReturn("testId")
+        whenever(validateWalletStoreId.invoke()).thenReturn(true)
         whenever(isRefreshTokenExpired()).thenReturn(false)
         whenever(appIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.NotRequired("savedAttestation"))

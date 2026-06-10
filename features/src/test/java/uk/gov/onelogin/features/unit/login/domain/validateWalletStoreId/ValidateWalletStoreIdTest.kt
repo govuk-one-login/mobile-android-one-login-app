@@ -24,8 +24,8 @@ import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalle
 
 class ValidateWalletStoreIdTest {
     private val fakeGetFromOpenSecureStore = FakeGetFromOpenSecureStore()
-    private val getWalletStoreId = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore)
     private val logger = MemorisedLogger()
+    private val getWalletStoreId = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore, logger)
 
     private val walletComponentKey = componentKey("wallet.store_id")
     private val walletActionKey = actionKey("Get wallet store ID")
