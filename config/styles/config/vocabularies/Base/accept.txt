@@ -1,3 +1,6 @@
+[Aa]ction
+[Cc]ommit
+[Pp]rogress
 (?i)AND
 (?i)Android
 (?i)GIVEN
