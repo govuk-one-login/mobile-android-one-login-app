@@ -6,9 +6,6 @@ on:
     workflows: [ Run checks (tests and style checks) ]
     branches: [ develop ]
     types: [ completed ]
-  push:
-    branches:
-      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
