@@ -11,6 +11,10 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
 import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuerImpl
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.RemoveWalletID
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.RemoveWalletIDImpl
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveFromOpenSecureStore
+import uk.gov.onelogin.core.tokens.domain.remove.RemoveFromOpenSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiry
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveRefreshTokenAndExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveTokenExpiry
@@ -66,6 +70,14 @@ interface TokenModule {
 
     @Binds
     fun bindRemoveRefreshToken(removeRefreshToken: RemoveRefreshTokenAndExpiryImpl): RemoveRefreshTokenAndExpiry
+
+    @Binds
+    fun bindRemoveFromOpenSecureStore(
+        removeFromOpenSecureStoreImpl: RemoveFromOpenSecureStoreImpl
+    ): RemoveFromOpenSecureStore
+
+    @Binds
+    fun bindRemoveWalletID(removeWalletIDImpl: RemoveWalletIDImpl): RemoveWalletID
 }
 
 @Module
