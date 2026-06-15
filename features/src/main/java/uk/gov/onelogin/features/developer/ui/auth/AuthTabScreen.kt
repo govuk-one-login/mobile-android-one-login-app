@@ -23,6 +23,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -288,5 +289,43 @@ private fun ButtonRow(
                 },
             color = MaterialTheme.colorScheme.onBackground,
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AuthTabScreenPreview() {
+    val mockTokens =
+        LoginTokens(
+            accessToken = "mock-access-token-abc123",
+            idToken = "mock-id-token-xyz789",
+            tokenType = "Bearer",
+            accessTokenExpirationTime = 3600L,
+        )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier =
+            Modifier
+                .navigationBarsPadding()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            text = "Authentication Tokens",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        HorizontalDivider()
+        AccessTokenSection(mockTokens)
+        HorizontalDivider()
+        IdTokenSection(mockTokens)
+        HorizontalDivider()
+        WalletIdSection(
+            walletId = "mock-wallet-id-456",
+            refreshWalletId = {},
+            removeWalletId = {},
+        )
+        HorizontalDivider()
     }
 }
