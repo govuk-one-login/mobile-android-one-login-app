@@ -159,3 +159,126 @@ You can use the following command to check the SHA 256 checksum of a file
 ```bash
 shasum -a 256 gradle-8.10.2-bin.zip
 ```
+
+## Flow Diagrams
+
+### Login Flow
+```mermaid
+---
+config:
+  title: Login Flow
+---
+flowchart TD
+    A(["Login"]) --> B["WelcomeScreen"] & C["SplashScreen"]
+    B ----> D["WelcomeScreenViewModel"]
+    D ---> E["HandleRemoteLogin"] & F["HandleLoginRedirect"] & G["LocalAuthManager"] & H["AutoinitialiseSecureStore, VerifyIdToken, TokenRepository, SavePersistentSessionId, SaveTokenExpiry, SignOutUseCase"]
+    C ---> L["SplashScreenViewModel"]
+    L ----> I["HandleLocalLogin"] & J["RefreshExchange"] & K["AppInfoService, AutoinitialiseSecureStore, OnlineChecker, SignOutUseCase"]
+
+
+```
+### Handle Local Login Flow
+```mermaid
+---
+config:
+    title: HandleLocalLoginImpl  
+---
+%%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
+flowchart TD
+    subgraph "Local<br>Login"
+        A["GetPersistent<br>SessionId"] --> B{"empty<br>or null?"}
+        B --true--> C(("First<br>TimeUser"));
+        B --false--> D["LocalAuth<br>Manager,<br>GetRefresh<br>TokenExpiry"]
+        D --> F{"is local<br>auth enabled??"}
+        D --> G{"is refresh<br>token exp null?"}
+        F --> H["true"]
+        G --> H["true"]
+        F -..-> I["false"]
+        G -..-> I["false"]
+        H --> J["handle refresh<br>token flow"]
+        I --> K["handle access<br>token only flow"]
+    end;
+    subgraph "Refresh<br>Flow";
+        J --> L["IsRefresh<br>TokenExpired"] --> M{"is expired?"}
+        M --true---> N["GetAccess<br>TokenExpiry"]
+        M --true--> O["GetFromEncrypted<br>SecureStore"]
+        O --get--> P["refreshToken"]
+        O --get--> Q["idToken"]
+        O --get--> R["accessToken"]
+        P --valid--> S[TokenRepository.<br>setTokenResponse]
+        Q --valid--> S[TokenRepository.<br>setTokenResponse]
+        R --valid--> S[TokenRepository.<br>setTokenResponse]
+        P -.invalid.-> T(("Reauth<br>Required"))
+        Q -.invalid.-> T(("Reauth<br>Required"))
+        R -.invalid.-> T(("Reauth<br>Required"))
+        N --> S
+        M --false--> T
+        S --> U(("LocalAuthStatus<br>from<br>SecureStore"))
+    end
+    subgraph "Access<br>Flow"
+        K --> V["IsAccess<br>TokenExpired"] --> W{"is expired?"}
+        W --true---> X["GetAccess<br>TokenExpiry"]
+        W --true--> Y["GetFromEncrypted<br>SecureStore"]
+        Y --get--> AI["idToken"] & Z["accessToken"]
+        AI --valid--> BI[TokenRepository.<br>setTokenResponse]
+        Z --valid--> BI[TokenRepository.<br>setTokenResponse]
+        Z -.invalid.-> CI(("Reauth<br>Required"))
+        AI -.invalid.-> CI(("Reauth<br>Required"))
+        X --> BI
+        W --false--> CI
+        BI --> DI(("LocalAuthStatus<br>from<br>SecureStore"))
+    end
+```
+
+### Refresh Exchange Flow
+```mermaid
+---
+config:
+    title: RefreshExchangeImpl
+---
+%%{init: { 'themeVariables': { 'fontSize': '10px', 'nodePadding': 20 }}}%%
+flowchart TD
+    subgraph "Initial Checks"
+        B["GetPersistentSessionId"] --> C{"empty<br>or null?"}
+        C --true--> D(("FirstTimeUser"))
+        C --false--> E{"IsRefreshToken<br>Expired"}
+        E --true--> F(("ReauthRequired"))
+        E --false--> G["GetClientAttestation"]
+    end
+
+    subgraph "Client Attestation Retrieval"
+        G --> H{"AttestationResult?"}
+        H --Success<br>OR<br>NotRequired--> I["GetFromEncrypted<br>SecureStore"]
+        H --Error--> J(("ClientAttestation<br>Failure"))
+    end
+
+    subgraph "Encrypted Secure Store<br>Tokens Retrieval"
+        I --> L{"LocalAuthStatus?"}
+        L --Success--> M{"is refreshToken &<br>idToken valid?"}
+        M --false--> O(("ReauthRequired"))
+        L --UserCancelled--> P(("UserCancelled<br>BioPrompt"))
+        L --FirstTimeUser--> Q(("FirstTimeUser"))
+        L --UnrecoverableError--> R(("Unrecoverable<br>Error"))
+        L --Other--> O
+    end
+
+    subgraph "Refresh Token<br>Exchange/ Call"
+        M --true--> T["GenerateDPoP"]
+        T --> U{"SignedDPoP == Success"}
+        U --false--> V(("ReauthRequired"))
+        U --true--> W["GenerateProof<br>OfPossession"]
+        W --> X{"SignedPoP == Success"}
+        X --false--> V
+        X --true--> Y["Attempt to get Refresh Tokens"]
+    end
+
+    subgraph "Handle Response"
+        Y --Success--> AA["Decode<br>RefreshExchange<br>ApiResponse"]
+        AA --> AB["SaveTokensExpiry<br>ToOpenStore"]
+        AB --> AC["SetTokenRepository"]
+        AC --> AD["SaveTokensTo<>EncryptedStore"]
+        AD --> AE(("Success"))
+        Y --Failure--> AF(("ReauthRequired"))
+        Y --Other<br>never used--> AG(("OfflineNetwork"))
+    end
+```

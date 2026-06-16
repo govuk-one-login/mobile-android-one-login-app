@@ -1,7 +1,6 @@
 package uk.gov.onelogin.plugin
 
 import com.android.build.gradle.LibraryExtension
-import org.gradle.testing.jacoco.tasks.JacocoReport
 
 /**
  * Extension class that allows consuming modules to configure which test types

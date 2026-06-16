@@ -33,7 +33,6 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.text.isNullOrEmpty
 
 @Suppress("LongParameterList")
 class RefreshExchangeImpl
