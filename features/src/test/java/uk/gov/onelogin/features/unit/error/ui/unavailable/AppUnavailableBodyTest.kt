@@ -3,7 +3,7 @@ package uk.gov.onelogin.features.unit.error.ui.unavailable
 import android.content.Context
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableBody
-import uk.gov.onelogin.features.error.ui.unavailable.ICON_TAG
+import uk.gov.android.ui.patterns.R as patternsR
 
 @RunWith(AndroidJUnit4::class)
 class AppUnavailableBodyTest : FragmentActivityTestCase() {
@@ -24,7 +24,7 @@ class AppUnavailableBodyTest : FragmentActivityTestCase() {
     @Before
     fun setUp() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        icon = hasTestTag(ICON_TAG)
+        icon = hasContentDescription(context.getString(patternsR.string.error_icon_description))
         header = hasText(context.getString(R.string.app_appUnavailableTitle))
         content = hasText(context.getString(R.string.app_appUnavailableBody))
     }

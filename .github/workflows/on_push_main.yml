@@ -14,6 +14,8 @@ jobs:
   set-up:
     name: Set-up and generate version name and version code
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-number.outputs.version }}
@@ -60,6 +62,19 @@ jobs:
       - name: Generate version code
         id: version-code
         uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Generate Changelog
+        id: changelog
+        uses: ./mobile-android-pipelines/actions/generate-and-upload-changelog
+        with:
+          current-version: ${{ steps.latest-tag.outputs.current-tag }}
+          new-version: ${{ steps.version-number.outputs.version }}
+
+      - name: Publish GitHub Release
+        uses: ./mobile-android-pipelines/actions/publish-github-release
+        with:
+          version: ${{ steps.version-number.outputs.version }}
+          changelog-path: ${{ steps.changelog.outputs.path }}
 
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace

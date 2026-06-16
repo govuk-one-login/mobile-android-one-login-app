@@ -3,13 +3,16 @@ package uk.gov.onelogin.features.unit.signout.ui
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -27,7 +30,7 @@ class SignOutViewModelTest {
 
     private val mockNavigator: Navigator = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     @BeforeEach
     fun setup() {
@@ -46,7 +49,7 @@ class SignOutViewModelTest {
 
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(SignOutRoutes.Success)
-            assertThat("logger has no logs", logger.size == 0)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -60,7 +63,7 @@ class SignOutViewModelTest {
 
             verify(mockSignOutUseCase).invoke()
             verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
-            assertThat("logger has log", logger.contains("java.lang.Exception: test"))
+            assertThat(logger, hasItem(hasMessage("java.lang.Exception: test")))
         }
 
     @Test

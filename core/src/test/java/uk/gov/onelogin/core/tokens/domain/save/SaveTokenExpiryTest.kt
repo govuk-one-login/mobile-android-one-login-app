@@ -4,10 +4,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
@@ -24,7 +23,7 @@ class SaveTokenExpiryTest {
             "jogImFiY2QtMTIzNCIKfQ.ewogICJhdWQiOiAidGVzdCIsCiAgImV4cCI6IDE3NjMxMDg2MTcKfQ.abdcd"
     private val invalidRefreshToken = "e30.eyJhdWQiOiJ0ZXN0In0"
     private lateinit var useCase: SaveTokenExpiry
-    private val mockLogger: Logger = mock()
+    private val mockLogger = MemorisedLogger()
     private val mockSystemTimeProvider: SystemTimeProvider = mock()
     private val saveToOpenSecureStore: SaveToOpenSecureStore = mock()
 

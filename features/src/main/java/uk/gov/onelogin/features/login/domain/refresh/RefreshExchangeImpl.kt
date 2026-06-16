@@ -13,7 +13,7 @@ import uk.gov.android.network.api.ApiRequest
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -33,7 +33,6 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.text.isNullOrEmpty
 
 @Suppress("LongParameterList")
 class RefreshExchangeImpl

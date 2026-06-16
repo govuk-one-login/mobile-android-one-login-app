@@ -1,6 +1,5 @@
 import com.android.build.api.variant.BuildConfigField
 import com.android.build.gradle.BaseExtension
-import org.gradle.kotlin.dsl.configure
 import uk.gov.pipelines.extensions.BaseExtensions.baseAndroidConfig
 
 plugins {
@@ -179,6 +178,7 @@ dependencies {
         libs.uiautomator,
         libs.mockito.kotlin,
         libs.mockito.android,
+        testFixtures(libs.logging.api),
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -248,6 +248,7 @@ dependencies {
         libs.junit,
         libs.androidx.test.orchestrator,
         libs.androidx.test.ext.junit,
+        testFixtures(libs.logging.api),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)

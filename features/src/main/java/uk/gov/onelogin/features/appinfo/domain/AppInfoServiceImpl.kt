@@ -1,6 +1,9 @@
 package uk.gov.onelogin.features.appinfo.domain
 
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.LogTagProvider
+import uk.gov.logging.api.v3.Logger
+import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
+import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.tokens.data.ApiInfoException
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
@@ -16,7 +19,8 @@ class AppInfoServiceImpl
         private val appVersionCheck: AppVersionCheck,
         private val featureFlagSetter: FeatureFlagSetter,
         private val logger: Logger,
-    ) : AppInfoService {
+    ) : AppInfoService,
+        LogTagProvider {
         override suspend fun get(): AppInfoServiceState =
             when (val remoteResult = remoteSource.get()) {
                 is AppInfoRemoteState.Success -> {
@@ -25,11 +29,12 @@ class AppInfoServiceImpl
                 }
                 AppInfoRemoteState.Offline -> useLocalSource(AppInfoServiceState.Offline)
                 is AppInfoRemoteState.Failure -> {
-                    val apiException = ApiInfoException(Exception(remoteResult.reason))
+                    val apiException = ApiInfoException(remoteResult.error)
                     logger.error(
-                        apiException::class.simpleName.toString(),
                         remoteResult.reason,
                         apiException,
+                        componentKey(COMPONENT),
+                        actionKey(ACTION),
                     )
                     useLocalSource(AppInfoServiceState.Unavailable)
                 }
@@ -49,5 +54,10 @@ class AppInfoServiceImpl
             } else {
                 fallback
             }
+        }
+
+        companion object {
+            internal const val COMPONENT = "app_info"
+            internal const val ACTION = "Get remote app info"
         }
     }

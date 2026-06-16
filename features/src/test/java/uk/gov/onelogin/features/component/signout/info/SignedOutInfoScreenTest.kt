@@ -25,9 +25,8 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v2.Logger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.logging.testdouble.v2.SystemLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -50,7 +49,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var tokenRepository: TokenRepository
-    private val logger: Logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private lateinit var navigator: Navigator
     private lateinit var remoteLogin: RemoteLogin
     private lateinit var onlineChecker: OnlineChecker

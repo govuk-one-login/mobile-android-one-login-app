@@ -1,7 +1,6 @@
 package uk.gov.onelogin.plugin
 
 import com.android.build.gradle.LibraryExtension
-import org.gradle.testing.jacoco.tasks.JacocoReport
 
 /**
  * Extension class that allows consuming modules to configure which test types
@@ -21,6 +20,7 @@ open class TestTypeExtension(objects: ObjectFactory) {
 // Register the extension so consuming build scripts can use the testTypeConfig {} block
 val extension = TestTypeExtension(project.objects)
 project.extensions.add("testTypeConfig", extension)
+
 
 // Use afterEvaluate to ensure the extension values and Android variants are fully resolved
 project.afterEvaluate {
@@ -42,12 +42,6 @@ project.afterEvaluate {
             // e.g. "componentTestBuildDebug"
             val taskName = "${testType}Test${variantName}"
             val isDebug = buildType.name == "debug"
-
-            // Exclude this test type's package from the original unit test task
-            // so tests aren't run twice (once in the original and once in the new task)
-            tasks.named(originalTestTaskName, Test::class.java) {
-                exclude("**/$testType/**")
-            }
 
             // Register a new Test task that filters tests by the test type's package path
             val testTask = tasks.register<Test>(taskName) {

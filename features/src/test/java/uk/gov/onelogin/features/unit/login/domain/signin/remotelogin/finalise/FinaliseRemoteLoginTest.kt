@@ -3,14 +3,15 @@ package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin.finalise
 import android.content.Context
 import android.content.Intent
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyVararg
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
@@ -18,7 +19,10 @@ import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.TokenResponse
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
@@ -31,7 +35,7 @@ class FinaliseRemoteLoginTest {
     private lateinit var context: Context
     private val mockAppIntegrity: AppIntegrity = mock()
     private val mockLoginSession: LoginSession = mock()
-    private val mockLogger: Logger = mock()
+    private val logger = MemorisedLogger()
     private val mockIntent: Intent = mock()
 
     private val testJwt = "testJwt"
@@ -76,7 +80,7 @@ class FinaliseRemoteLoginTest {
                 context,
                 mockAppIntegrity,
                 mockLoginSession,
-                mockLogger
+                logger
             )
     }
 
@@ -118,10 +122,16 @@ class FinaliseRemoteLoginTest {
                 { }
             )
 
-            verify(mockLogger).error(
-                expectedError.javaClass.simpleName,
-                expectedError.message ?: expectedResult.reason,
-                expectedError
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasMessage(
+                            expectedError.message ?: expectedResult.reason
+                        )
+                    )
+                )
             )
             verifyNoInteractions(mockLoginSession)
         }
@@ -144,10 +154,16 @@ class FinaliseRemoteLoginTest {
                 { }
             )
 
-            verify(mockLogger).error(
-                eq(expectedError.javaClass.simpleName),
-                eq(expectedError.message ?: expectedResult.reason),
-                any()
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasMessage(
+                            expectedError.message ?: expectedResult.reason
+                        )
+                    )
+                )
             )
             verifyNoInteractions(mockLoginSession)
         }
@@ -266,10 +282,16 @@ class FinaliseRemoteLoginTest {
                 mockIntent,
                 {
                     it?.let {
-                        verify(mockLogger).error(
-                            it::class.java.simpleName,
-                            it.message ?: "No message",
-                            it
+                        assertThat(
+                            logger,
+                            hasItem(
+                                allOf(
+                                    isLogLevel(LogLevel.Error),
+                                    hasMessage(
+                                        it.message ?: "No message"
+                                    )
+                                )
+                            )
                         )
                     }
                     assertEquals("access_denied", it?.message)
