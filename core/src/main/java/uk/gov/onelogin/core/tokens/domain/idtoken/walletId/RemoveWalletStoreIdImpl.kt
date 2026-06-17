@@ -8,14 +8,15 @@ import uk.gov.onelogin.core.tokens.domain.remove.RemoveFromOpenSecureStore
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-class RemoveWalletIdImpl
+class RemoveWalletStoreIdImpl
     @Inject
     constructor(
         private val removeFromOpenSecureStore: RemoveFromOpenSecureStore,
         private val logger: Logger,
-    ) : RemoveWalletId,
+    ) : RemoveWalletStoreId,
         LogTagProvider {
-        override suspend fun removeWalletId() =
+        override suspend fun invoke() =
+
             try {
                 removeFromOpenSecureStore.remove(WALLET_ID_KEY)
             } catch (e: CancellationException) {
