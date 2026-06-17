@@ -43,5 +43,5 @@ object AnalyticsModule {
 
     @Provides
     fun provideLoggerV3(crashlytics: FirebaseCrashlytics): LoggerV3 =
-        MultiLoggerV3(CrashlyticsLoggerV3(crashlytics), LogcatLogger)
+        MultiLoggerV3(CrashlyticsLoggerV3(crashlytics), LogcatLogger())
 }

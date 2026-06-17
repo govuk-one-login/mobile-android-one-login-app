@@ -4,7 +4,7 @@ Some of the dependencies declared for this project include packages stored on th
 [Github Organisation's Packages Registry]. The [Github workflow files] pass secrets through
 github action input variables which in turn set the relevant `GITHUB_ACTOR` and `GITHUB_TOKEN`
 environment variables referred to within the [Project's Gradle settings]. This approach is less than
-ideal for local development so with this in mind, what can a developer do in order to complete
+ideal for local development so with this in mind, what can a developer do to complete
 their set up?
 
 ## The what: property keys
