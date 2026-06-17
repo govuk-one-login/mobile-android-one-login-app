@@ -12,7 +12,7 @@ import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
-import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.RemoveWalletId
+import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.RemoveWalletStoreId
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.WALLET_ID_KEY
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
@@ -32,7 +32,7 @@ class AuthTabScreenViewModel
         private val getFromOpenSecureStore: GetFromOpenSecureStore,
         private val removeAllSecureStoreData: RemoveAllSecureStoreData,
         private val saveToTokenSecureStore: SaveToTokenSecureStore,
-        private val removeWalletID: RemoveWalletId,
+        private val removeWalletStoreID: RemoveWalletStoreId,
         extractEmail: ExtractEmail,
     ) : ViewModel() {
         private val _happyHelloWorldResponse = mutableStateOf("")
@@ -139,7 +139,7 @@ class AuthTabScreenViewModel
 
         fun removeWalletId() {
             viewModelScope.launch {
-                removeWalletID.removeWalletId()
+                removeWalletStoreID.invoke()
                 _walletId.value = null
             }
         }
