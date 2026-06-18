@@ -25,7 +25,7 @@ import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalle
 class ValidateWalletStoreIdTest {
     private val fakeGetFromOpenSecureStore = FakeGetFromOpenSecureStore()
     private val logger = MemorisedLogger()
-    private val getWalletStoreId = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore, logger)
+    private val getWalletStoreId = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore)
 
     private val walletComponentKey = componentKey("wallet.store_id")
     private val walletActionKey = actionKey("Get wallet store ID")
@@ -62,7 +62,11 @@ class ValidateWalletStoreIdTest {
                     hasItem(
                         allOf(
                             hasMessage("Wallet store ID is missing from device storage"),
-                            hasException(instanceOf(RuntimeException::class.java)),
+                            hasException(
+                                instanceOf(
+                                    ValidateWalletStoreId.WalletStoreIdMissingException::class.java
+                                )
+                            ),
                             hasCustomKeys(
                                 contains(
                                     equalTo(walletComponentKey),
@@ -88,36 +92,11 @@ class ValidateWalletStoreIdTest {
                     hasItem(
                         allOf(
                             hasMessage("Wallet store ID is missing from device storage"),
-                            hasException(instanceOf(RuntimeException::class.java)),
-                            hasCustomKeys(
-                                contains(
-                                    equalTo(walletComponentKey),
-                                    equalTo(walletActionKey)
+                            hasException(
+                                instanceOf(
+                                    ValidateWalletStoreId.WalletStoreIdMissingException::class.java
                                 )
-                            )
-                        )
-                    )
-                )
-            )
-        }
-
-    @Test
-    fun `returns false and logs error when get wallet store id throws exception`() =
-        runTest {
-            val exception = RuntimeException("error")
-            fakeGetFromOpenSecureStore.throwException(exception)
-
-            val result = sut().invoke()
-
-            assertFalse(result)
-            assertThat(logger, hasSize(1))
-            assertThat(
-                logger,
-                hasLogEntry(
-                    hasItem(
-                        allOf(
-                            hasMessage("Failed to retrieve wallet store ID"),
-                            hasException(instanceOf(RuntimeException::class.java)),
+                            ),
                             hasCustomKeys(
                                 contains(
                                     equalTo(walletComponentKey),

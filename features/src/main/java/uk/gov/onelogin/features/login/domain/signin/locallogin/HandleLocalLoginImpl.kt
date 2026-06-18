@@ -41,6 +41,10 @@ class HandleLocalLoginImpl
             if (getPersistentId().isNullOrEmpty()) {
                 callback(LocalAuthStatus.FirstTimeUser)
             } else {
+                if (!validateWalletStoreId()) {
+                    callback(LocalAuthStatus.ReauthRequired)
+                    return
+                }
                 // Check Local Auth Enabled AND Refresh Token expiry exists
                 if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
                     handleRefreshToken(fragmentActivity, callback)
@@ -61,10 +65,6 @@ class HandleLocalLoginImpl
                 // Cannot get the ID Token because it seems to time out (3 seconds don't seem enough to get all 3)
                 val expiryTime = getAccessTokenExpiry() ?: 0
 
-                if (!validateWalletStoreId()) {
-                    callback(LocalAuthStatus.ReauthRequired)
-                    return
-                }
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -107,10 +107,6 @@ class HandleLocalLoginImpl
             callback: (LocalAuthStatus) -> Unit,
         ) {
             if (!isAccessTokenExpired() && isLocalAuthEnabled()) {
-                if (!validateWalletStoreId()) {
-                    callback(LocalAuthStatus.ReauthRequired)
-                    return
-                }
                 val expiryTime = getAccessTokenExpiry() ?: 0
                 getFromEncryptedSecureStore(
                     fragmentActivity,
