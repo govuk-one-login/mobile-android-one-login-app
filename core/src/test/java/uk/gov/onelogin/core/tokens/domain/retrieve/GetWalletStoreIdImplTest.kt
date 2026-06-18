@@ -4,16 +4,13 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import uk.gov.logging.api.v3.MemorisedLogger
 
 class GetWalletStoreIdImplTest {
     private val expectedWalletId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
 
     private val fakeGetFromOpenSecureStore = FakeGetFromOpenSecureStore()
 
-    private val logger = MemorisedLogger()
-
-    private val sut = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore, logger)
+    private val sut = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore)
 
     @Test
     fun successScenario() =
