@@ -16,56 +16,37 @@ class ValidateWalletStoreId
         private val getPersistentId: GetPersistentId,
         private val logger: Logger
     ) : LogTagProvider {
-        @Suppress("ExpensiveAssertion", "TooGenericExceptionCaught")
-        suspend operator fun invoke(): Boolean =
-            try {
-                assert(getPersistentId() != null) {
-                    "PersistentId must be present to validate WalletStoreId"
-                }
-
-                val walletStoreIdValid = getWalletStoreId()
-
-                if (walletStoreIdValid.isNullOrEmpty()) {
-                    logError(ValidateWalletStoreIdException.WalletStoreIdMissing())
-                    false
-                } else {
-                    true
-                }
-            } catch (e: Throwable) {
-                logError(ValidateWalletStoreIdException.RetrievalFailed(e))
-                false
+        @Suppress("ExpensiveAssertion")
+        suspend operator fun invoke(): Boolean {
+            assert(getPersistentId() != null) {
+                "PersistentId must be present to validate WalletStoreId"
             }
 
-        private fun logError(throwable: Throwable) {
-            throwable.message?.let {
-                logger.error(
-                    it,
-                    throwable = throwable,
-                    componentKey(COMPONENT),
-                    actionKey(ACTION)
-                )
+            val walletStoreId = getWalletStoreId()
+
+            if (walletStoreId.isNullOrEmpty()) {
+                logError()
+                return false
             }
+
+            return true
         }
 
-        internal sealed class ValidateWalletStoreIdException(
-            override val message: String,
-            override val cause: Throwable? = null,
-        ) : RuntimeException() {
-            class WalletStoreIdMissing :
-                ValidateWalletStoreIdException(
-                    "Wallet store ID is missing from device storage"
-                )
-
-            class RetrievalFailed(
-                cause: Throwable
-            ) : ValidateWalletStoreIdException(
-                    "Failed to retrieve wallet store ID",
-                    cause = cause
-                )
+        private fun logError() {
+            val throwable = WalletStoreIdMissingException()
+            logger.error(
+                WALLET_STORE_ID_MISSING,
+                throwable = throwable,
+                componentKey(COMPONENT),
+                actionKey(ACTION)
+            )
         }
+
+        internal class WalletStoreIdMissingException : RuntimeException(WALLET_STORE_ID_MISSING)
 
         companion object {
             private const val COMPONENT = "wallet.store_id"
             private const val ACTION = "Get wallet store ID"
+            private const val WALLET_STORE_ID_MISSING = "Wallet store ID is missing from device storage"
         }
     }
