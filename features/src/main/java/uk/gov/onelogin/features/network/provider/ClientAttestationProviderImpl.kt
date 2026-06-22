@@ -15,7 +15,6 @@ class ClientAttestationProviderImpl
     constructor(
         private val appIntegrity: AppIntegrity,
     ) : ClientAttestationProvider {
-        @Suppress("ReturnCount")
         override suspend fun getClientAttestation(): ClientAttestationResponse {
             val clientAttestation =
                 when (val result = appIntegrity.getClientAttestation()) {
