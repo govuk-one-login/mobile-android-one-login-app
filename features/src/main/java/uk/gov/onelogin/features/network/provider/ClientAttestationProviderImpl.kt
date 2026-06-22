@@ -17,17 +17,17 @@ class ClientAttestationProviderImpl
     ) : ClientAttestationProvider {
         override suspend fun getClientAttestation(): ClientAttestationResponse {
             val clientAttestation =
-                when (val result = appIntegrity.getClientAttestation()) {
-                    is AttestationResult.Success -> result.clientAttestation
+                when (val attestationResult = appIntegrity.getClientAttestation()) {
+                    is AttestationResult.Success -> attestationResult.clientAttestation
                     // If client attestation isn't required and not cached then we may safely provide an empty string
-                    is AttestationResult.NotRequired -> result.savedAttestation ?: ""
-                    is AttestationResult.Failure -> return result.toFailure()
+                    is AttestationResult.NotRequired -> attestationResult.savedAttestation ?: ""
+                    is AttestationResult.Failure -> return attestationResult.toFailure()
                 }
 
             val attestationPop =
-                when (val result = appIntegrity.getProofOfPossession()) {
-                    is SignedPoP.Success -> result.popJwt
-                    is SignedPoP.Failure -> return result.toFailure()
+                when (val popResult = appIntegrity.getProofOfPossession()) {
+                    is SignedPoP.Success -> popResult.popJwt
+                    is SignedPoP.Failure -> return popResult.toFailure()
                 }
 
             return ClientAttestationResponse.Success(
