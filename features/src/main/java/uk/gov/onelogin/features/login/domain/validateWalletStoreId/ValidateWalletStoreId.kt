@@ -8,7 +8,17 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import javax.inject.Inject
 
-/** Returns `true` if a wallet store ID is present */
+/**
+ * Returns `true` if a wallet store ID is present.
+ *
+ * Validates that persistentId is present before retrieving wallet store ID from secure storage.
+ *
+ * @property getWalletStoreId retrieves the wallet store ID from secure storage
+ * @property getPersistentId retrieves the persistent ID
+ * @property logger logs errors when wallet store ID is missing
+ * @throws AssertionError if persistentId is null or empty
+ */
+
 class ValidateWalletStoreId
     @Inject
     constructor(
