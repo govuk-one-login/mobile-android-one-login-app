@@ -1,0 +1,10 @@
+branch_whitelist = ["main"]
+disable_bump_commit = true
+ignore_merge_commits = true
+tag_prefix = "v"
+
+[changelog]
+template = "remote"
+remote = "github.com"
+repository = "mobile-android-one-login-app"
+owner = "govuk-one-login"
