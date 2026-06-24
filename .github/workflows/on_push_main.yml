@@ -28,6 +28,9 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
 
+      - name: Setup prerequisite dependencies
+        uses: ./mobile-android-pipelines/actions/common-prerequisites
+
       - name: Get latest tag
         id: latest-tag
         uses: ./config/actions/get-latest-tag
