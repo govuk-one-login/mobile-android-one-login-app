@@ -9,16 +9,20 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import javax.inject.Inject
 
 /**
- * Returns `true` if a wallet store ID is present.
+ * Checks that the wallet store ID is present, given that the user is already signed in.
  *
- * Validates that persistentId is present before retrieving wallet store ID from secure storage.
+ * The wallet store ID must be saved before using the wallet.
+ *
+ * Since One Login app v1.17.0, the user's wallet store ID is saved at the point when a
+ * user is signed in. However, users who signed in using a previous app version will not
+ * have a wallet store ID.
+ * [ValidateWalletStoreId] is just for detecting those users. We can then retrieve a
+ * wallet store ID for them, migrating their session to the proper state.
  *
  * @property getWalletStoreId retrieves the wallet store ID from secure storage
  * @property getPersistentId retrieves the persistent ID
  * @property logger logs errors when wallet store ID is missing
- * @throws AssertionError if persistentId is null or empty
  */
-
 class ValidateWalletStoreId
     @Inject
     constructor(
@@ -26,10 +30,14 @@ class ValidateWalletStoreId
         private val getPersistentId: GetPersistentId,
         private val logger: Logger
     ) : LogTagProvider {
+        /**
+         * @return true if the wallet store ID is present, and false if not
+         * @throws AssertionError if this use case is invoked when the user is not signed (only in debug builds)
+         */
         @Suppress("ExpensiveAssertion")
         suspend operator fun invoke(): Boolean {
             assert(getPersistentId() != null) {
-                "PersistentId must be present to validate WalletStoreId"
+                "User must be signed-in before validating wallet store ID"
             }
 
             val walletStoreId = getWalletStoreId()
