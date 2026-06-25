@@ -165,7 +165,7 @@ class StsAuthenticationProviderTest {
                 response.error.message
             )
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
+            verify(mockNavigator).navigate(SignOutRoutes.AppResetError)
         }
 
     @Test
