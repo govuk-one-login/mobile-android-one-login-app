@@ -80,11 +80,7 @@ interface TokenModule {
 
     @Binds
     fun bindRemoveWalletStoreId(removeWalletIDImpl: RemoveWalletStoreIdImpl): RemoveWalletStoreId
-}
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface GetWalletModule {
     @Binds
     fun bindGetWalletId(getWalletStoreId: GetWalletStoreIdImpl): GetWalletStoreId
 }

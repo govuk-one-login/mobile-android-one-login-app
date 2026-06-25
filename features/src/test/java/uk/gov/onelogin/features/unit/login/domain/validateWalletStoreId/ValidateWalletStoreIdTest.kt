@@ -20,18 +20,18 @@ import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.tokens.domain.retrieve.FakeGetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreIdImpl
-import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreIdImpl
 
 class ValidateWalletStoreIdTest {
     private val fakeGetFromOpenSecureStore = FakeGetFromOpenSecureStore()
     private val logger = MemorisedLogger()
     private val getWalletStoreId = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore)
 
-    private val walletComponentKey = componentKey("wallet.store_id")
+    private val walletComponentKey = componentKey("wallet_store_id")
     private val walletActionKey = actionKey("Get wallet store ID")
 
     private fun sut(persistentId: String? = "persistentId") =
-        ValidateWalletStoreId(
+        ValidateWalletStoreIdImpl(
             getWalletStoreId = getWalletStoreId,
             getPersistentId = { persistentId },
             logger = logger
@@ -64,7 +64,7 @@ class ValidateWalletStoreIdTest {
                             hasMessage("Wallet store ID is missing from device storage"),
                             hasException(
                                 instanceOf(
-                                    ValidateWalletStoreId.WalletStoreIdMissingException::class.java
+                                    ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
                                 )
                             ),
                             hasCustomKeys(
@@ -94,7 +94,7 @@ class ValidateWalletStoreIdTest {
                             hasMessage("Wallet store ID is missing from device storage"),
                             hasException(
                                 instanceOf(
-                                    ValidateWalletStoreId.WalletStoreIdMissingException::class.java
+                                    ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
                                 )
                             ),
                             hasCustomKeys(
