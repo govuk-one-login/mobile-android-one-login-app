@@ -8,7 +8,7 @@ fun interface GetWalletStoreId {
      *
      * It distinguishes the underlying One Login account and doesn't change over time, allowing wallet SDK to segregate and encrypt data on the device for a given user.
      *
-     * @return wallet store id as a string or null if it fails to retrieve it
+     * @return The Wallet Store ID as a String or null if it fails to retrieve it
      */
     suspend operator fun invoke(): String?
 }

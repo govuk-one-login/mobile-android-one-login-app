@@ -21,7 +21,7 @@ class RemoveFromOpenSecureStoreImpl
             try {
                 secureStore.delete(key)
             } catch (e: SecureStorageErrorV2) {
-                logError(RemoveFromSecureStoreException.RemoveFromSecureStoreFailed(e))
+                logError(RemoveFromSecureStoreException(e))
             }
         }
 
@@ -36,20 +36,12 @@ class RemoveFromOpenSecureStoreImpl
             }
         }
 
-        internal sealed class RemoveFromSecureStoreException(
-            override val message: String,
-            override val cause: Throwable? = null,
-        ) : RuntimeException() {
-            class RemoveFromSecureStoreFailed(
-                cause: Throwable
-            ) : RemoveFromSecureStoreException(
-                    "Failed to remove from secure store",
-                    cause = cause
-                )
-        }
+        internal class RemoveFromSecureStoreException(
+            throwable: Throwable
+        ) : RuntimeException(throwable.message)
 
         companion object {
-            private const val COMPONENT = "remove.from.open_secure_store"
-            private const val ACTION = "remove from open secure store "
+            private const val COMPONENT = "secure_store"
+            private const val ACTION = "Remove from open secure store "
         }
     }
