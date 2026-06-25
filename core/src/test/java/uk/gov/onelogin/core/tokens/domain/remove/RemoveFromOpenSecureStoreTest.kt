@@ -41,6 +41,6 @@ class RemoveFromOpenSecureStoreTest {
 
             useCase.remove("key")
 
-            assertThat(logger, hasItem(hasMessage("Failed to remove from secure store")))
+            assertThat(logger, hasItem(hasMessage("java.lang.Exception: something went wrong")))
         }
 }
