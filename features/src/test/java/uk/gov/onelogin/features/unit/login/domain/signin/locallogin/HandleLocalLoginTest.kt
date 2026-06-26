@@ -655,6 +655,23 @@ class HandleLocalLoginTest {
         }
 
     @Test
+    fun `returns ReauthRequired when  wallet store ID validation  returns false`() =
+        runTest {
+            mockGetPersistentSessionIdSuccessful()
+            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(false)
+
+            useCase(
+                mockActivity
+            ) {
+                actual = it
+            }
+
+            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        }
+
+    @Test
     fun `access token retrieval from encrypted secure store returns UserCancelledBioPrompt`() =
         runTest {
             var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired

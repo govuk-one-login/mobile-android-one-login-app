@@ -20,12 +20,13 @@ class RemoveFromOpenSecureStoreImpl
         override suspend fun remove(key: String) {
             try {
                 secureStore.delete(key)
-            } catch (e: SecureStorageErrorV2) {
-                logError(RemoveFromSecureStoreException(e))
+            } catch (_: SecureStorageErrorV2) {
+                logError()
             }
         }
 
-        private fun logError(throwable: Throwable) {
+        private fun logError() {
+            val throwable = RemoveFromSecureStoreException()
             throwable.message?.let {
                 logger.error(
                     message = it,
@@ -36,12 +37,12 @@ class RemoveFromOpenSecureStoreImpl
             }
         }
 
-        internal class RemoveFromSecureStoreException(
-            throwable: Throwable
-        ) : RuntimeException(throwable.message)
+        internal class RemoveFromSecureStoreException : RuntimeException(FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE)
 
         companion object {
             private const val COMPONENT = "secure_store"
             private const val ACTION = "Remove from open secure store "
+
+            private const val FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE = "Failed to remove from secure store"
         }
     }
