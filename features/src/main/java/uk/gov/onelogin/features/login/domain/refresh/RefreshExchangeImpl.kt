@@ -31,6 +31,7 @@ import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.core.utils.TimeProvider
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.time.Instant
 import javax.inject.Inject
 import kotlin.text.isNullOrEmpty
@@ -53,6 +54,7 @@ class RefreshExchangeImpl
         private val saveTokens: SaveTokens,
         private val logger: Logger,
         private val timeProvider: TimeProvider,
+        private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
         private val jsonDecoder = Json { ignoreUnknownKeys = true }
 
@@ -68,19 +70,17 @@ class RefreshExchangeImpl
         ) {
             // Check the persistent session ID is valid
             if (!getPersistentId().isNullOrEmpty()) {
-                // Check Refresh token is NOT expired
-                if (!isRefreshTokenExpired()) {
+                // Check Refresh token is NOT expired and wallet store ID is valid
+                if (!isRefreshTokenExpired() && validateWalletStoreId()) {
                     // Attempt to get Client Attestation
                     getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
                 } else {
-                    // When Refresh token is invalid - prompt for re-auth to be able to get a new Refresh token
-                    // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
+                    // When Refresh token is invalid or wallet store ID is missing
                     handleResult(RefreshExchangeResult.ReauthRequired)
                     return
                 }
             } else {
                 // When a persistent session ID couldn't be retrieved or is invalid
-                // Call lambda to handle the result from the consumer/ call point based on the RefreshExchangeResult passed in
                 handleResult(RefreshExchangeResult.FirstTimeUser)
 
                 return
@@ -202,8 +202,6 @@ class RefreshExchangeImpl
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
                     saveTokens.save(decodedTokens.refreshToken)
-                    // Call lambda to exit the function with a LocalAuthStatus.Success
-                    // To be determined when implementing if it requires the refresh token to be passed to the consumer
                     handleResult(RefreshExchangeResult.Success)
                 }
                 is ApiResponse.Failure -> {
