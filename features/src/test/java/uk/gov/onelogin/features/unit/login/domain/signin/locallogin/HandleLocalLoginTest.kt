@@ -816,7 +816,9 @@ class HandleLocalLoginTest {
 
             var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
             mockGetPersistentSessionIdSuccessful()
+            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
             whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
+            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))

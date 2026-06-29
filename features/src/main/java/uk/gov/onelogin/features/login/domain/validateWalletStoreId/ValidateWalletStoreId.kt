@@ -10,9 +10,6 @@ package uk.gov.onelogin.features.login.domain.validateWalletStoreId
  * have a wallet store ID.
  * [ValidateWalletStoreId] is just for detecting those users. We can then retrieve a
  * wallet store ID for them, migrating their session to the proper state.
- *
- *  @return true if the wallet store ID is present, and false if not
- *  @throws AssertionError if this use case is invoked when the user is not signed (only in debug builds)
  */
 fun interface ValidateWalletStoreId {
     suspend operator fun invoke(): Boolean

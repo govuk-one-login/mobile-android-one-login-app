@@ -16,6 +16,10 @@ class ValidateWalletStoreIdImpl
         private val logger: Logger
     ) : ValidateWalletStoreId,
         LogTagProvider {
+        /**
+         * @return true if the wallet store ID is present, and false if not
+         * @throws AssertionError if this use case is invoked when the user is not signed (only in debug builds)
+         */
         @Suppress("ExpensiveAssertion")
         override suspend operator fun invoke(): Boolean {
             assert(getPersistentId() != null) {

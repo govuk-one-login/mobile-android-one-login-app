@@ -27,14 +27,12 @@ class RemoveFromOpenSecureStoreImpl
 
         private fun logError() {
             val throwable = RemoveFromSecureStoreException()
-            throwable.message?.let {
-                logger.error(
-                    message = it,
-                    throwable = throwable,
-                    actionKey(ACTION),
-                    componentKey(COMPONENT),
-                )
-            }
+            logger.error(
+                message = FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE,
+                throwable = throwable,
+                actionKey(ACTION),
+                componentKey(COMPONENT),
+            )
         }
 
         internal class RemoveFromSecureStoreException : RuntimeException(FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE)
