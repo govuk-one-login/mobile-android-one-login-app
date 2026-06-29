@@ -247,6 +247,47 @@ class RefreshExchangeImplTest {
         }
 
     @Test
+    fun `client attestation success but refresh and id tokens are null`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
+                        )
+                    )
+                )
+            }
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+        }
+
+    @Test
     fun `client attestation is expired`() =
         runTest {
             lateinit var result: RefreshExchangeResult
