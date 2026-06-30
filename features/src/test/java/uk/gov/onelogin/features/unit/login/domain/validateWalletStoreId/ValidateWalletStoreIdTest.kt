@@ -7,9 +7,12 @@ import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.contains
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasCustomKeys
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
@@ -77,6 +80,18 @@ class ValidateWalletStoreIdTest {
                     )
                 )
             )
+        }
+
+    @Test
+    fun `throws AssertionError when persistent id is null`() =
+        runTest {
+            if (BuildConfig.DEBUG) {
+                val exception =
+                    assertThrows<AssertionError> {
+                        sut(null).invoke()
+                    }
+                assertEquals("User must be signed-in before validating wallet store ID", exception.message)
+            }
         }
 
     @Test
