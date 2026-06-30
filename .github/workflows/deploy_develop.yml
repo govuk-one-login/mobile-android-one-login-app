@@ -1,5 +1,5 @@
 # When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
-name: On Branch Push (develop)
+name: Deploy Build/Staging (develop)
 
 on:
   workflow_run:
