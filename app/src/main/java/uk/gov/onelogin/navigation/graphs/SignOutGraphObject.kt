@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreen
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorScreen
 import uk.gov.onelogin.features.signout.ui.SignOutScreen
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoScreen
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccess
@@ -41,12 +41,12 @@ object SignOutGraphObject {
                 )
             }
             composable(
-                route = SignOutRoutes.ReAuthError.getRoute(),
+                route = SignOutRoutes.AppResetError.getRoute(),
             ) {
                 BackHandler(enabled = true) {
                     // always disabled
                 }
-                AuthErrorScreen()
+                AppResetErrorScreen()
             }
             composable(
                 route = SignOutRoutes.Success.getRoute(),
