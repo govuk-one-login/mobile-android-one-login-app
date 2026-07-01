@@ -13,6 +13,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import javax.inject.Inject
 
 @Suppress("LongParameterList")
@@ -31,6 +32,7 @@ class HandleLocalLoginImpl
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val localAuthManager: LocalAuthManager,
         private val getPersistentId: GetPersistentId,
+        private val validateWalletStoreId: ValidateWalletStoreId,
     ) : HandleLocalLogin {
         override suspend fun invoke(
             fragmentActivity: FragmentActivity,
@@ -39,6 +41,10 @@ class HandleLocalLoginImpl
             if (getPersistentId().isNullOrEmpty()) {
                 callback(LocalAuthStatus.FirstTimeUser)
             } else {
+                if (!validateWalletStoreId()) {
+                    callback(LocalAuthStatus.ReauthRequired)
+                    return
+                }
                 // Check Local Auth Enabled AND Refresh Token expiry exists
                 if (isLocalAuthEnabled() && getRefreshTokenExpiry() != null) {
                     handleRefreshToken(fragmentActivity, callback)
@@ -58,6 +64,7 @@ class HandleLocalLoginImpl
                 // Get Refresh and AccessToken (require Access Token to be able to not break existing behaviour since the refresh exchange ahs not been completed yet
                 // Cannot get the ID Token because it seems to time out (3 seconds don't seem enough to get all 3)
                 val expiryTime = getAccessTokenExpiry() ?: 0
+
                 getFromEncryptedSecureStore(
                     fragmentActivity,
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -88,11 +95,9 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    // Call the lambda with the result (it doesn't necessarily mean it will be success
                     callback(it)
                 }
             } else {
-                // If Refresh Token is expired prompt for ReAuth
                 callback(LocalAuthStatus.ReauthRequired)
             }
         }
@@ -109,7 +114,6 @@ class HandleLocalLoginImpl
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
                 ) {
                     if (it is LocalAuthStatus.Success) {
-                        // These should never be returned null - secure store checks for all values to not be null
                         val accessToken = it.payload?.get(AuthTokenStoreKeys.ACCESS_TOKEN_KEY)
                         val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                         if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {

@@ -25,6 +25,7 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLoginImpl
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -42,6 +43,8 @@ class HandleLocalLoginTest {
 
     private lateinit var useCase: HandleLocalLogin
 
+    private lateinit var validateWalletStoreId: ValidateWalletStoreId
+
     @BeforeEach
     fun setup() {
         mockActivity = mock()
@@ -53,6 +56,7 @@ class HandleLocalLoginTest {
         mockIsAccessTokenExpired = mock()
         mockIsRefreshTokenExpired = mock()
         mockGetPersistentId = mock()
+        validateWalletStoreId = mock()
         useCase =
             HandleLocalLoginImpl(
                 mockGetAccessTokenExpiry,
@@ -63,6 +67,7 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore,
                 mockBioPrefHandler,
                 mockGetPersistentId,
+                validateWalletStoreId,
             )
     }
 
@@ -76,6 +81,8 @@ class HandleLocalLoginTest {
             whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(1)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(
                 mockActivity
@@ -95,6 +102,8 @@ class HandleLocalLoginTest {
             whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(
                 mockActivity
@@ -115,6 +124,8 @@ class HandleLocalLoginTest {
             whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(null)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(
                 mockActivity
@@ -143,6 +154,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             wheneverBlocking {
                 mockGetFromEncryptedSecureStore.invoke(
                     context = any(),
@@ -189,7 +202,8 @@ class HandleLocalLoginTest {
             }.thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(encryptedStoreResult)
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(
                 mockActivity
             ) {
@@ -217,6 +231,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             wheneverBlocking {
                 mockGetFromEncryptedSecureStore.invoke(
                     context = any(),
@@ -262,7 +278,8 @@ class HandleLocalLoginTest {
                     )
                 )
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(mockActivity) {
                 actual = it
             }
@@ -298,7 +315,8 @@ class HandleLocalLoginTest {
                     )
                 )
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(mockActivity) {
                 actual = it
             }
@@ -334,7 +352,8 @@ class HandleLocalLoginTest {
                     )
                 )
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(mockActivity) {
                 actual = it
                 println(it)
@@ -371,7 +390,8 @@ class HandleLocalLoginTest {
                     )
                 )
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(mockActivity) {
                 actual = it
             }
@@ -388,6 +408,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockGetAccessTokenExpiry()).thenReturn(null)
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(mockActivity) {
                 actual = it
@@ -405,6 +427,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockGetAccessTokenExpiry()).thenReturn(1)
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(mockActivity) {
                 actual = it
@@ -422,6 +446,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockGetAccessTokenExpiry()).thenReturn(null)
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(mockActivity) {
                 actual = it
@@ -440,6 +466,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
             whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
 
             useCase(mockActivity) {
                 actual = it
@@ -457,7 +485,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -496,7 +525,8 @@ class HandleLocalLoginTest {
             ).thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
             }
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             useCase(mockActivity) {
                 actual = it
             }
@@ -515,7 +545,8 @@ class HandleLocalLoginTest {
             whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -544,7 +575,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -572,7 +604,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -601,7 +634,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -621,6 +655,23 @@ class HandleLocalLoginTest {
         }
 
     @Test
+    fun `returns ReauthRequired when  wallet store ID validation  returns false`() =
+        runTest {
+            mockGetPersistentSessionIdSuccessful()
+            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(false)
+
+            useCase(
+                mockActivity
+            ) {
+                actual = it
+            }
+
+            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        }
+
+    @Test
     fun `access token retrieval from encrypted secure store returns UserCancelledBioPrompt`() =
         runTest {
             var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
@@ -629,7 +680,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -658,7 +710,8 @@ class HandleLocalLoginTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     any(),
@@ -716,6 +769,8 @@ class HandleLocalLoginTest {
             whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
             whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
 
@@ -761,11 +816,14 @@ class HandleLocalLoginTest {
 
             var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
             mockGetPersistentSessionIdSuccessful()
+            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
             whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
+            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockBioPrefHandler.localAuthPreference)
                 .thenReturn(LocalAuthPreference.Enabled(false))
-
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 mockGetFromEncryptedSecureStore(
                     context = any(),

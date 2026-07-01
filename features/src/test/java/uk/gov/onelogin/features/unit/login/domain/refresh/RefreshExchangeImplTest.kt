@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -25,6 +26,7 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasTag
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
@@ -46,6 +48,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.ATTESTATION_POP_GENERATE_ERROR
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
@@ -66,6 +69,8 @@ class RefreshExchangeImplTest {
     private lateinit var timeProvider: SystemTimeProvider
     private lateinit var sut: RefreshExchange
 
+    private lateinit var validateWalletStoreId: ValidateWalletStoreId
+
     @BeforeEach
     fun setup() {
         fragmentContext = mock()
@@ -81,6 +86,7 @@ class RefreshExchangeImplTest {
         saveTokens = mock()
         logger = MemorisedLogger()
         timeProvider = mock()
+        validateWalletStoreId = mock()
         sut =
             RefreshExchangeImpl(
                 context = context,
@@ -94,7 +100,8 @@ class RefreshExchangeImplTest {
                 tokenRepository = tokenRepository,
                 saveTokens = saveTokens,
                 logger = logger,
-                timeProvider = timeProvider
+                timeProvider = timeProvider,
+                validateWalletStoreId = validateWalletStoreId
             )
 
         whenever(context.getString(any(), anyVararg()))
@@ -132,6 +139,8 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(httpClient.makeRequest(any()))
                 .thenReturn(
                     ApiResponse.Success(
@@ -143,7 +152,6 @@ class RefreshExchangeImplTest {
                             "}"
                     )
                 )
-
             sut.getTokens(
                 fragmentContext,
                 handleResult = {
@@ -241,10 +249,268 @@ class RefreshExchangeImplTest {
         }
 
     @Test
+    fun `wallet store id validation fails`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(validateWalletStoreId.invoke()).thenReturn(false)
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            verify(isRefreshTokenExpired).invoke()
+            verify(validateWalletStoreId).invoke()
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(appIntegrity)
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+            verifyNoInteractions(getFromEncryptedSecureStore)
+            assertThat(logger, hasSize(0))
+        }
+
+    @Test
+    fun `client attestation success with valid refresh and id tokens proceeds to refresh call`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("signedDPoP"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Success(
+                        "{\n" +
+                            "    \"access_token\": \"accessToken\",\n" +
+                            "    \"refresh_token\": \"refreshToken\",\n" +
+                            "    \"token_type\": \"Bearer\",\n" +
+                            "    \"expires_in\": 1\n" +
+                            "}"
+                    )
+                )
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.Success, result)
+            verify(dPoPManager).generateDPoP(any())
+        }
+
+    @Test
+    fun `client attestation success but refresh and id tokens are null`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
+                        )
+                    )
+                )
+            }
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+        }
+
+    @Test
+    fun `client attestation success but refresh token is null in payload`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+        }
+
+    @Test
+    fun `client attestation success but id token is null in payload`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken"
+                        )
+                    )
+                )
+            }
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            verifyNoInteractions(dPoPManager)
+            verifyNoInteractions(httpClient)
+            verifyNoInteractions(saveTokenExpiry)
+            verifyNoInteractions(tokenRepository)
+            verifyNoInteractions(saveTokens)
+        }
+
+    @Test
+    fun `saved attestation is null defaults to empty client attestation`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired(null))
+            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("signedDPoP"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Success(
+                        "{\n" +
+                            "    \"access_token\": \"accessToken\",\n" +
+                            "    \"refresh_token\": \"refreshToken\",\n" +
+                            "    \"token_type\": \"Bearer\",\n" +
+                            "    \"expires_in\": 1\n" +
+                            "}"
+                    )
+                )
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertThat(logger, hasSize(0))
+            assertEquals(RefreshExchangeResult.Success, result)
+            verify(httpClient).makeRequest(any())
+            verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
+        }
+
+    @Test
     fun `client attestation is expired`() =
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Failure(Exception("Client Attestation failure!")))
@@ -277,6 +543,8 @@ class RefreshExchangeImplTest {
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
             whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(validateWalletStoreId.invoke())
+                .thenReturn(true)
             whenever(
                 getFromEncryptedSecureStore(
                     any(),
@@ -334,6 +602,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("attestation"))
@@ -389,6 +658,7 @@ class RefreshExchangeImplTest {
             val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("attestation"))
@@ -444,8 +714,10 @@ class RefreshExchangeImplTest {
     @Test
     fun `failure with error msg generating app integrity PoP`() =
         runTest {
+            val popError = Exception("PoP generation error")
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -468,7 +740,7 @@ class RefreshExchangeImplTest {
             whenever(dPoPManager.generateDPoP(any()))
                 .thenReturn(SignedDPoP.Success("test"))
             whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Failure("Failure"))
+                .thenReturn(SignedPoP.Failure("Failure", popError))
 
             sut.getTokens(
                 fragmentContext,
@@ -483,7 +755,8 @@ class RefreshExchangeImplTest {
                     allOf(
                         isLogLevel(LogLevel.Error),
                         hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                        hasMessage("Failure")
+                        hasMessage("Failure"),
+                        hasException(equalTo(popError))
                     )
                 )
             )
@@ -502,6 +775,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -558,6 +832,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -621,6 +896,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -670,12 +946,56 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
+    @Test
+    fun `network error - makeRequest throws exception without message`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("signedDPoP"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(httpClient.makeRequest(any()))
+                .thenThrow(RuntimeException())
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(EMPTY_MSG))))
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+        }
+
     // This test is just to increase test coverage, the ApiResponse.Offline and ApiResponse.Loading are not used from the network package at all
     @Test
     fun `network error - api response loading`() =
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.Success("savedAttestation"))
@@ -725,6 +1045,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -767,6 +1088,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -809,6 +1131,7 @@ class RefreshExchangeImplTest {
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
             whenever(isRefreshTokenExpired()).thenReturn(false)
             whenever(appIntegrity.getClientAttestation())
                 .thenReturn(AttestationResult.NotRequired("savedAttestation"))
@@ -849,6 +1172,7 @@ class RefreshExchangeImplTest {
     ) = runTest {
         lateinit var result: RefreshExchangeResult
         whenever(getPersistentId()).thenReturn("testId")
+        whenever(validateWalletStoreId.invoke()).thenReturn(true)
         whenever(isRefreshTokenExpired()).thenReturn(false)
         whenever(appIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.NotRequired("savedAttestation"))
