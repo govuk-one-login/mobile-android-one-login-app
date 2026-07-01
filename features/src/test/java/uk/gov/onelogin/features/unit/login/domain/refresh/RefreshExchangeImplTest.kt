@@ -989,6 +989,58 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
+    @Test
+    fun `successful refresh exchange with null refresh token in response`() =
+        runTest {
+            lateinit var result: RefreshExchangeResult
+            whenever(getPersistentId()).thenReturn("testId")
+            whenever(isRefreshTokenExpired()).thenReturn(false)
+            whenever(validateWalletStoreId.invoke()).thenReturn(true)
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.Success("clientAttestation"))
+            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+            whenever(
+                getFromEncryptedSecureStore(
+                    any(),
+                    anyVararg(),
+                    callback = any()
+                )
+            ).thenAnswer {
+                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(
+                        mapOf(
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
+                        )
+                    )
+                )
+            }
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Success("signedDPoP"))
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Success("signedPoP"))
+            whenever(httpClient.makeRequest(any()))
+                .thenReturn(
+                    ApiResponse.Success(
+                        "{\n" +
+                            "    \"access_token\": \"accessToken\",\n" +
+                            "    \"token_type\": \"Bearer\",\n" +
+                            "    \"expires_in\": 1\n" +
+                            "}"
+                    )
+                )
+
+            sut.getTokens(
+                fragmentContext,
+                handleResult = {
+                    result = it
+                }
+            )
+
+            assertEquals(RefreshExchangeResult.Success, result)
+            verify(saveTokenExpiry, times(1)).saveExp(anyVararg())
+        }
+
     // This test is just to increase test coverage, the ApiResponse.Offline and ApiResponse.Loading are not used from the network package at all
     @Test
     fun `network error - api response loading`() =
