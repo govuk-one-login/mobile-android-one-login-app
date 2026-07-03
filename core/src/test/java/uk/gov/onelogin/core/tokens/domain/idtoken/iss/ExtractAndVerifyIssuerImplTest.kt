@@ -10,7 +10,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.BuildConfig
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import uk.gov.onelogin.core.tokens.utils.JwtExtractorImpl
 import kotlin.io.encoding.Base64
@@ -19,7 +19,7 @@ import kotlin.test.assertFalse
 
 class ExtractAndVerifyIssuerImplTest {
     private val context: Context = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private val idTokenWithIss =
         "eyJhbGciOiJIUzI1NiJ9" +
             ".${createJwtBody()}" + // payload contains "iss": "https://token.$env.account.gov.uk"

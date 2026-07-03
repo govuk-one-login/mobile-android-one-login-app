@@ -179,6 +179,7 @@ dependencies {
         libs.uiautomator,
         libs.mockito.kotlin,
         libs.mockito.android,
+        testFixtures(libs.logging.api),
     ).forEach(::androidTestImplementation)
 
     listOf(
@@ -248,6 +249,8 @@ dependencies {
         libs.junit,
         libs.androidx.test.orchestrator,
         libs.androidx.test.ext.junit,
+        testFixtures(libs.logging.api),
+        testFixtures(libs.network),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)

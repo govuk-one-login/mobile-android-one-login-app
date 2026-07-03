@@ -2,6 +2,8 @@ package uk.gov.onelogin.features.unit.signout.ui.info
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -11,7 +13,8 @@ import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.LocalAuthManagerImpl
 import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
@@ -39,7 +42,7 @@ class SignedOutInfoViewModelTest {
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
     private val deviceBiometricsManager: DeviceBiometricsManager = mock()
     private val analyticsLogger: AnalyticsLogger = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private val credentialChecker: LocalAuthManager =
         LocalAuthManagerImpl(
             localAuthPrefRepo = localAuthPreferenceRepo,
@@ -147,6 +150,6 @@ class SignedOutInfoViewModelTest {
             verify(signOutUseCase).invoke()
             verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
             assertFalse(callback)
-            assertTrue(logger.contains("java.lang.Error: test"))
+            assertThat(logger, hasItem(hasMessage("java.lang.Error: test")))
         }
 }

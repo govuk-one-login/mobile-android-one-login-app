@@ -17,9 +17,10 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.utils.matchers.ScrollableWithKeyboardMatchers.hasKeyboardScroll
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
-import uk.gov.logging.testdouble.SystemLogger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -44,7 +45,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     private lateinit var title: SemanticsMatcher
     private lateinit var button: SemanticsMatcher
     private lateinit var closeButton: SemanticsMatcher
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     @Before
     fun setup() {
@@ -141,5 +142,17 @@ class SignOutScreenTest : FragmentActivityTestCase() {
 
         verify(analytics).logEventV3Dot1(SignOutAnalyticsViewModel.Companion.onBackPressed())
         verify(navigator).goBack()
+    }
+
+    @Test
+    fun verifyKeyboardScroll() {
+        viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+        }
+
+        composeTestRule
+            .onNode(hasKeyboardScroll())
+            .assertIsDisplayed()
     }
 }

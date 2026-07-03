@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.appinfo.criorchestrator
+package uk.gov.onelogin.features.unit.criorchestrator
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase

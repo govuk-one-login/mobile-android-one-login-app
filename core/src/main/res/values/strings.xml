@@ -129,6 +129,10 @@
     <string name="app_developer_tab_secure_store" translatable="false">Secure Store</string>
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
+    <string name="app_developer_tab_logging" translatable="false">Logging</string>
+    <string name="app_developer_logging_crash" translatable="false">Crash app</string>
+    <string name="app_developer_logging_error" translatable="false">Log error</string>
+    <string name="app_developer_logging_info" translatable="false">Log info</string>
     <string name="app_developer_features_title" translatable="false">Select Features</string>
     <string name="app_developer_status_overlay_message" translatable="false">A message to you</string>
     <string name="app_developer_reset_access_token_button" translatable="false">Set Access Token Expiry to Now</string>
@@ -159,7 +163,6 @@
     <string name="app_updateAppBody1">You’re using an old version of the GOV.UK One Login app.</string>
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
-    <string name="app_updateApp_ContentDescription" translatable="false">Update App Required icon content description</string>
 
     <!-- Re-Auth Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>

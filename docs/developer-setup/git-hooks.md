@@ -12,7 +12,7 @@ order to use this folder, run the following command in a terminal window:
 git config core.hooksPath $(git rev-parse --show-toplevel)/.githooks
 ```
 
-To selectively enable a single hook, run the following command in a terminal window
+To selectively set up a single hook, run the following command in a terminal window
 at the project's root directory:
 
 ```shell

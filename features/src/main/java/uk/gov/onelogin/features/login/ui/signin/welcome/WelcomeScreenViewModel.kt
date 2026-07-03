@@ -19,7 +19,7 @@ import uk.gov.android.localauth.LocalAuthManagerCallbackHandler
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes

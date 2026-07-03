@@ -97,6 +97,9 @@ android {
                 "META-INF/LICENSE.md",
             )
     }
+    testFixtures {
+        enable = true
+    }
 }
 
 dependencies {
@@ -133,6 +136,8 @@ dependencies {
         libs.logging.test,
         testFixtures(projects.core),
         libs.logging.test,
+        testFixtures(libs.logging.api),
+        testFixtures(libs.patterns),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
@@ -182,6 +187,11 @@ dependencies {
         libs.hilt.android.compiler,
         libs.hilt.compiler,
     ).forEach(::ksp)
+
+    listOf(
+        libs.authentication,
+        libs.compose.runtime,
+    ).forEach(::testFixturesImplementation)
 }
 
 aboutLibraries {

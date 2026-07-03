@@ -3,7 +3,7 @@ package uk.gov.onelogin.core.tokens.domain.idtoken.iss
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.android.onelogin.core.R
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.SettingsException
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import javax.inject.Inject

@@ -41,11 +41,11 @@ From the system image modal, click on the download icon next to the `Q` release:
 
 </div>
 
-The SDK Component Installer will start downloading the required assets. Click `Finish` once it has completed.
+The SDK Component Installer will start downloading the required files. Click `Finish` once it has completed.
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 
-![Screenshot of Android Studio's SDK Component Installer modal downloading assets](assets/running-the-code/runningTheCode_avdCreate-sdkComponentInstalling.png)
+![Screenshot of Android Studio's SDK Component Installer modal downloading files](assets/running-the-code/runningTheCode_avdCreate-sdkComponentInstalling.png)
 ![Screenshot of Android Studio's SDK Component Installer modal with a completed download](assets/running-the-code/runningTheCode_avdCreate-sdkComponentInstalled.png)
 
 </div>
@@ -118,7 +118,7 @@ From the top toolbar in Android Studio, click the green play button found just t
 
 </div> 
 
-Gradle will build the app, install it onto our AVD and launch it for us. The progress of these actions can be seen in the status bar in the bottom right of the Android Studio window:
+Gradle will build the app, install it onto our AVD and launch it for us. The progress of these steps can be seen in the status bar in the bottom right of the Android Studio window:
 
 <div style="width: 100%; max-width: 800px; margin-left: auto; margin-right: auto;">
 

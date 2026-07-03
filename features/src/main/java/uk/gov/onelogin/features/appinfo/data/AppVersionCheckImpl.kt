@@ -1,6 +1,6 @@
 package uk.gov.onelogin.features.appinfo.data
 
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState

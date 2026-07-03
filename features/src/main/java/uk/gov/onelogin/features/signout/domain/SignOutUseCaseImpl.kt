@@ -1,6 +1,6 @@
 package uk.gov.onelogin.features.signout.domain
 
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.cleaner.domain.Cleaner
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase

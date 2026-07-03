@@ -1,6 +1,8 @@
 package uk.gov.onelogin.core.tokens
 
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -9,7 +11,9 @@ import uk.gov.android.authentication.json.jwt.JwtVerifier
 import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.StubHttpClient
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.tokens.domain.VerifyIdToken
 import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
@@ -26,7 +30,7 @@ class VerifyIdTokenTest {
     private lateinit var extractEmail: ExtractEmail
     private lateinit var extractAndSaveWalletId: ExtractAndSaveWalletId
     private lateinit var extractAndVerifyIssuer: ExtractAndVerifyIssuer
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     // the header of the web token contains a 'kid' for one of the keys below
     private val idToken =
@@ -84,7 +88,7 @@ class VerifyIdTokenTest {
 
             val result = verifyIdToken(idToken, "testUrl")
             assertFalse(result)
-            assertTrue(logger.size == 0)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -99,7 +103,7 @@ class VerifyIdTokenTest {
 
             val result = verifyIdToken(idToken, "testUrl")
             assertFalse(result)
-            assertTrue(logger.size == 0)
+            assertThat(logger, hasSize(0))
         }
 
     @Test
@@ -114,7 +118,7 @@ class VerifyIdTokenTest {
 
             val result = verifyIdToken(idToken, "testUrl")
             assertFalse(result)
-            assertTrue(logger.contains("java.lang.IllegalArgumentException: fail"))
+            assertThat(logger, hasItem(hasMessage("java.lang.IllegalArgumentException: fail")))
         }
 
     @Test
@@ -169,7 +173,7 @@ class VerifyIdTokenTest {
 
             val result = verifyIdToken(idToken, "testUrl")
             assertTrue(result)
-            assertTrue(logger.size == 0)
+            assertThat(logger, hasSize(0))
         }
 
     @Test

@@ -28,7 +28,7 @@ import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.localauth.preference.LocalAuthPreferenceRepository
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
@@ -76,7 +76,7 @@ class WelcomeScreenViewModelWithRefreshTest {
     private lateinit var mockSavePersistentId: SavePersistentId
     private lateinit var mockCounter: Counter
     private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"

@@ -50,7 +50,7 @@ class AppInfoRemoteSourceImplTest {
             whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(500, exp))
             val result = sut.get()
             assertEquals(
-                AppInfoRemoteState.Failure(AppInfoRemoteSourceImpl.Companion.APP_INFO_REMOTE_SOURCE_ERROR),
+                AppInfoRemoteState.Failure("Status: 500", exp),
                 result
             )
         }

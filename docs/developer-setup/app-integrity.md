@@ -1,7 +1,7 @@
 ### App Integrity
 
 As part of the login process [Firebase App Check](https://firebase.google.com/docs/app-check/android/play-integrity-provider) is used in conjunction with some backend 
-functions to ensure we are dealing with a legitimate version of the app.
+functions to make sure we are dealing with a legitimate version of the app.
 
 So, to run the production or integration variant of the app, you'll need to install a release build
 from Google Play.

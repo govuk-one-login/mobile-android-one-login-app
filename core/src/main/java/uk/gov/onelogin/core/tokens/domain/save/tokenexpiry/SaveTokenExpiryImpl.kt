@@ -1,7 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain.save.tokenexpiry
 
 import kotlinx.serialization.json.Json
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.RefreshTokenPayload
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.utils.TimeProvider

@@ -2,7 +2,8 @@ package uk.gov.onelogin.core.tokens.domain.save
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -13,15 +14,16 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.android.securestore.error.SecureStorageErrorV2
-import uk.gov.logging.testdouble.SystemLogger
-import kotlin.test.assertEquals
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(uk.gov.onelogin.core.extensions.CoroutinesTestExtension::class)
 class SaveToTokenSecureStoreTest {
     private lateinit var useCase: SaveToTokenSecureStore
     private val mockSecureStore: SecureStoreAsyncV2 = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     private val expectedStoreKey: String = "key"
     private val expectedStoreValue: String = "value"
@@ -42,7 +44,7 @@ class SaveToTokenSecureStoreTest {
                 useCase.invoke(expectedStoreKey, expectedStoreValue)
             }
 
-            assertTrue(logger.contains("java.lang.Exception: Some error"))
+            assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
         }
 
     @Test
@@ -55,6 +57,6 @@ class SaveToTokenSecureStoreTest {
                 expectedStoreValue,
             )
 
-            assertEquals(0, logger.size)
+            assertThat(logger, hasSize(0))
         }
 }

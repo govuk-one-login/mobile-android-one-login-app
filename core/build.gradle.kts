@@ -119,6 +119,7 @@ dependencies {
         libs.androidx.navigation.testing,
         libs.androidx.test.orchestrator,
         libs.logging.test,
+        testFixtures(libs.logging.api),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)

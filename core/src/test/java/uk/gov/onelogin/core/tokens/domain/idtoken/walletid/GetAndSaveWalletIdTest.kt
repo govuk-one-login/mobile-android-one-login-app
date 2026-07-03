@@ -3,7 +3,7 @@ package uk.gov.onelogin.core.tokens.domain.idtoken.walletid
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletIdImpl
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
@@ -25,7 +25,7 @@ class GetAndSaveWalletIdTest {
             "ZRrHA1JJJW8opsbCGfG_HACGpVUMN_a9IV7pAx_Zmeo"
     private val extractFromJson: JwtExtractor = JwtExtractorImpl()
     private val saveToOpenSecureStore: SaveToOpenSecureStore = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     val sut = ExtractAndSaveWalletIdImpl(extractFromJson, saveToOpenSecureStore, logger)
 

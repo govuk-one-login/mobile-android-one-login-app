@@ -2,6 +2,9 @@ package uk.gov.onelogin.features.unit.navigation.domain
 
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,15 +15,17 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.navigation.domain.NavigatorImpl
-import kotlin.test.assertTrue
 
 class NavigatorImplTest {
     private val mockNavController: NavHostController = mock()
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private lateinit var navigator: Navigator
 
     @BeforeEach
@@ -44,7 +49,7 @@ class NavigatorImplTest {
         navigator.navigate({ "test" }, true)
 
         verify(mockNavController).navigate(route = eq("test"), builder = any())
-        assertTrue(logger.contains("Navigating to: test"))
+        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))))
     }
 
     @Test
@@ -52,7 +57,7 @@ class NavigatorImplTest {
         navigator.navigate({ "test" })
 
         verifyNoInteractions(mockNavController)
-        assertTrue(logger.contains("Navigator not initialised"))
+        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage("Navigator not initialised"))))
     }
 
     @Test
@@ -66,7 +71,7 @@ class NavigatorImplTest {
 
         verify(mockNavController, times(1))
             .navigate("test")
-        assertTrue(logger.contains("Navigating to: test"))
+        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))))
     }
 
     @Test

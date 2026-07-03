@@ -29,6 +29,7 @@ import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorAnalyticsViewModel
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorViewModel
+import uk.gov.android.ui.patterns.R as patternsR
 
 @RunWith(AndroidJUnit4::class)
 class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
@@ -63,7 +64,7 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         }
         composeTestRule.apply {
             onNodeWithContentDescription(
-                resources.getString(R.string.app_updateApp_ContentDescription)
+                resources.getString(patternsR.string.error_icon_description)
             ).assertIsDisplayed()
 
             onNodeWithText(

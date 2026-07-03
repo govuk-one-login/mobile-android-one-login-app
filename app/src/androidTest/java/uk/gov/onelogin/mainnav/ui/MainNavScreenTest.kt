@@ -25,6 +25,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.AnalyticsModule
 import uk.gov.onelogin.featureflags.FeaturesModule
@@ -33,7 +34,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.wallet.WalletRepositoryModule
 import uk.gov.android.wallet.core.R as walletR
-import uk.gov.logging.api.v2.Logger as LoggerV2
+import uk.gov.logging.api.v3.Logger as LoggerV3
 
 @HiltAndroidTest
 @UninstallModules(FeaturesModule::class, AnalyticsModule::class, WalletRepositoryModule::class)
@@ -58,7 +59,7 @@ class MainNavScreenTest : TestCase() {
     val crashLogger: CrashLogger = mock()
 
     @BindValue
-    val logger2: LoggerV2 = mock()
+    val logger3: LoggerV3 = MemorisedLogger()
 
     @BindValue
     val walletRepository: WalletRepository = mock()

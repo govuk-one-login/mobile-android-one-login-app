@@ -7,6 +7,9 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,7 +23,10 @@ import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
@@ -43,7 +49,7 @@ class StsAuthenticationProviderTest {
     private val mockTokenRepository: TokenRepository = mock()
     private val mockIsAccessTokenExpired: IsTokenExpired = mock()
     private val mockNavigator: Navigator = mock()
-    private val logger: Logger = mock()
+    private val logger = MemorisedLogger()
     private val mockHttpClient: GenericHttpClient = mock()
 
     private lateinit var provider: AuthenticationProvider
@@ -202,11 +208,7 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken(SCOPE)
 
             val error = StsAuthenticationProvider.Companion.FragmentActivityNull()
-            verify(logger).error(
-                StsAuthenticationProvider::class.java.simpleName,
-                error.msg,
-                error
-            )
+            assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(error.msg))))
             assertInstanceOf<AuthenticationResponse.Failure>(response)
             assertEquals(
                 StsAuthenticationProvider.Companion.REFRESH_EXCHANGE_ERROR_MSG,

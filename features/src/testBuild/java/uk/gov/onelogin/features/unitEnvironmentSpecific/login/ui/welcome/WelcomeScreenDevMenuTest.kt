@@ -14,7 +14,7 @@ import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.testdouble.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -54,7 +54,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
     private lateinit var errorCounter: Counter
     private lateinit var mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry
-    private val logger = SystemLogger()
+    private val logger = MemorisedLogger()
 
     private val devButton = hasText(resources.getString(R.string.app_developer_button))
 

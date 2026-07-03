@@ -1,0 +1,115 @@
+# When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
+name: Deploy Build/Staging (develop)
+
+on:
+  workflow_run:
+    workflows: [ Run checks (tests and style checks) ]
+    branches: [ develop ]
+    types: [ completed ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  set-up:
+    name: Set-up and generate version name and version code
+    runs-on: ubuntu-22.04
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      version-code: ${{ steps.version-code.outputs.version-code }}
+      version-name: ${{ steps.version-name.outputs.version-name }}
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: latest-tag
+        uses: ./config/actions/get-latest-tag
+        with:
+          pattern: 'v*'
+
+      - name: Generate version code
+        if: ${{ github.event.workflow_run.head_branch  }}
+        id: version-code
+        uses: ./mobile-android-pipelines/actions/generate-version-code
+
+      - name: Generate version name
+        id: version-name
+        uses: ./mobile-android-pipelines/actions/version-name
+        with:
+          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-name: ${{ steps.latest-tag.outputs.current-tag }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace
+
+  bundle-and-publish:
+    name: Bundle and publish app in Build and Staging (development)
+    runs-on: ubuntu-24.04
+    #    runs-on: ubuntu-20.04-16core # Larger github runner, with KVM acceleration
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
+    needs:
+      - set-up
+    strategy:
+      matrix:
+        environment: ["build", "staging"]
+    permissions:
+      # Set permissions for ${{ secrets.GITHUB_TOKEN }}
+      # https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+      id-token: write
+      contents: write
+      packages: read
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./mobile-android-pipelines/actions/setup-runner
+
+      - name: Clean runner
+        uses: ./mobile-android-pipelines/actions/clean-runner-fast
+
+      - name: Retrieve secrets
+        id: retrieve-secrets
+        uses: ./config/actions/retrieve-secrets
+        with:
+          actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
+
+      - name: Bundle release
+        id: bundle-release
+        uses: ./config/actions/gradle-assemble-and-bundle
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          module-fetch-token: ${{ secrets.MODULE_FETCH_TOKEN }}
+          flavors: ${{ matrix.environment }}
+          github-actor: ${{ secrets.GITHUB_ACTOR }}
+          module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
+          app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
+          keystore-file-path: ${{ steps.retrieve-secrets.outputs.keystore-file-path }}
+
+      - name: Upload to play store
+        uses: ./config/actions/upload-to-play-store
+        with:
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+
+      - name: Git tag bundles
+        uses: ./config/actions/git-tag-bundles
+        with:
+          aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
+          version-name: ${{ needs.set-up.outputs.version-name }}
+
+      - name: Clean workspace
+        uses: ./mobile-android-pipelines/actions/clean-workspace

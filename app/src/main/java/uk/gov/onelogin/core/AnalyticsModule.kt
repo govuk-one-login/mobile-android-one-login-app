@@ -15,10 +15,10 @@ import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.impl.AndroidLogger
 import uk.gov.logging.impl.CrashlyticsLogger
 import uk.gov.logging.impl.analytics.FirebaseAnalyticsLogger
-import uk.gov.logging.api.v2.CrashLogger as CrashLoggerV2
-import uk.gov.logging.api.v2.Logger as LoggerV2
-import uk.gov.logging.impl.v2.AndroidLogger as AndroidLoggerV2
-import uk.gov.logging.impl.v2.CrashlyticsLogger as CrashlyticsLoggerV2
+import uk.gov.logging.impl.v3.LogcatLogger
+import uk.gov.logging.api.v3.Logger as LoggerV3
+import uk.gov.logging.impl.v3.CrashlyticsLogger as CrashlyticsLoggerV3
+import uk.gov.logging.impl.v3.MultiLogger as MultiLoggerV3
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -42,8 +42,6 @@ object AnalyticsModule {
     ): AnalyticsLogger = FirebaseAnalyticsLogger(analytics, logger)
 
     @Provides
-    fun provideCrashlyticsLoggerV2(crashlytics: FirebaseCrashlytics): CrashLoggerV2 = CrashlyticsLoggerV2(crashlytics)
-
-    @Provides
-    fun provideLoggerV2(crashLogger: CrashLoggerV2): LoggerV2 = AndroidLoggerV2(crashLogger)
+    fun provideLoggerV3(crashlytics: FirebaseCrashlytics): LoggerV3 =
+        MultiLoggerV3(CrashlyticsLoggerV3(crashlytics), LogcatLogger())
 }

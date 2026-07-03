@@ -9,6 +9,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Configure Git user
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+      shell: bash
+
     - name: Git tag bundles
       run: |
         git tag -a "v${INPUT_VERSION_NAME}" -m "Creating tag v${INPUT_VERSION_NAME}"
