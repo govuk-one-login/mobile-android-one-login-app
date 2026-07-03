@@ -95,6 +95,7 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
+                    // Call the lambda with the result (it doesn't necessarily mean it will be success
                     callback(it)
                 }
             } else {
@@ -114,6 +115,7 @@ class HandleLocalLoginImpl
                     AuthTokenStoreKeys.ID_TOKEN_KEY,
                 ) {
                     if (it is LocalAuthStatus.Success) {
+                        // These should never be returned null - secure store checks for all values to not be null
                         val accessToken = it.payload?.get(AuthTokenStoreKeys.ACCESS_TOKEN_KEY)
                         val idToken = it.payload?.get(AuthTokenStoreKeys.ID_TOKEN_KEY)
                         if (!accessToken.isNullOrEmpty() && !idToken.isNullOrEmpty()) {
