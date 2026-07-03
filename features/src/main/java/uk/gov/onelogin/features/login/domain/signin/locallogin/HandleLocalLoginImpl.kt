@@ -95,7 +95,8 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
-                    // Call the lambda with the result (it doesn't necessarily mean it will be success
+                    // Call the lambda with the result - it doesn't necessarily mean it will be a success
+                    // state, e.g. user can cancel biometric prompt and retry without hitting a fail state in the UI
                     callback(it)
                 }
             } else {
@@ -132,6 +133,8 @@ class HandleLocalLoginImpl
                             return@getFromEncryptedSecureStore
                         }
                     }
+                    // Call the lambda with the result - it doesn't necessarily mean it will be a success
+                    // state, e.g. user can cancel biometric prompt and retry without hitting a fail state in the UI
                     callback(it)
                 }
             } else {
