@@ -1,13 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
-    id("uk.gov.onelogin.android-lib-config")
 }
 
 android {
@@ -102,7 +100,7 @@ dependencies {
     ).forEach(::androidTestImplementation)
 
     listOf(
-        kotlin("test"),
+        kotlin("test-junit5"),
         libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin,
