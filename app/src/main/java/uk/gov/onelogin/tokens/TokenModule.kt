@@ -25,8 +25,8 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStoreImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentIdImpl
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreIdImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreIdImpl
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentId
 import uk.gov.onelogin.core.tokens.domain.save.SavePersistentIdImpl
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
