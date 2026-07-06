@@ -19,30 +19,28 @@ then
   echo "Running unit checks without environment variables (local development)..."
   ./gradlew \
     :app:testStagingDebugUnitTest \
-    :app:testProductionReleaseUnitTest \
+    :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
-    :core:testProductionReleaseUnitTest \
     :features:unitEnvironmentSpecificTestBuildDebug \
     :features:unitEnvironmentSpecificTestIntegrationDebug \
     :features:unitEnvironmentSpecificTestStagingDebug \
     :features:unitEnvironmentSpecificTestProductionDebug \
     :features:unitTestStagingDebug \
-    :features:unitTesProductionRelease \
     --continue \
     --stacktrace
 else
   echo "Running unit checks with environment variables (GitHub workflow)..."
   ./gradlew \
     :app:testStagingDebugUnitTest \
-    :app:testProductionReleaseUnitTest \
+    :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
-    :core:testProductionReleaseUnitTest \
+    :core:testProductionDebugUnitTest \
     :features:unitEnvironmentSpecificTestBuildDebug \
     :features:unitEnvironmentSpecificTestIntegrationDebug \
     :features:unitEnvironmentSpecificTestStagingDebug \
     :features:unitEnvironmentSpecificTestProductionDebug \
     :features:unitTestStagingDebug \
-    :features:unitTesProductionRelease \
+    :features:unitTestProductionDebug \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \
