@@ -10,15 +10,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.ui.compose.m3.chipColors
 import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
-import uk.gov.android.onelogin.core.R
+import uk.gov.android.onelogin.core.R as CoreR
+import uk.gov.android.onelogin.features.R
 import uk.gov.android.ui.componentsv2.button.GdsIconButtonDefaults
 import uk.gov.android.ui.componentsv2.topappbar.GdsTopAppBar
 import uk.gov.android.ui.theme.m3.GdsTheme
@@ -40,7 +44,7 @@ fun OsslScreen(
         Scaffold(
             topBar = {
                 GdsTopAppBar(
-                    title = stringResource(R.string.app_osslTitle),
+                    title = stringResource(CoreR.string.app_osslTitle),
                     navigationButton = GdsIconButtonDefaults.defaultBackContent(),
                     onClick = {
                         analyticsViewModel.trackBackIcon()
@@ -73,28 +77,37 @@ fun OsslAboutLibrariesScreen(
     val uriHandler = LocalUriHandler.current
     val background = MaterialTheme.colorScheme.background
     val primary = MaterialTheme.colorScheme.primary
+    val libraries by produceLibraries(R.raw.aboutlibraries)
+    val chipColors = LibraryDefaults.chipColors(
+        containerColor = primary,
+    )
+    val colors = LibraryDefaults.libraryColors(
+        libraryBackgroundColor = background,
+        versionChipColors = chipColors,
+        licenseChipColors = chipColors,
+        fundingChipColors = chipColors,
+    )
     LibrariesContainer(
         modifier =
             Modifier
                 .padding(padding)
                 .fillMaxSize(),
-        colors =
-            LibraryDefaults.libraryColors(
-                backgroundColor = background,
-                badgeBackgroundColor = primary,
-            ),
-    ) { library ->
-        val license = library.licenses.firstOrNull()
-        onClick(
-            library.name,
-            license?.url ?: "no url",
-        )
-        license?.url?.also {
-            try {
-                uriHandler.openUri(it)
-            } catch (e: IllegalArgumentException) {
-                onLogError(e.javaClass.simpleName, "Failed to open url: $it", e)
+        colors = colors,
+        libraries = libraries,
+        onLibraryClick = { library ->
+            val license = library.licenses.firstOrNull()
+            onClick(
+                library.name,
+                license?.url ?: "no url",
+            )
+            license?.url?.also {
+                try {
+                    uriHandler.openUri(it)
+                } catch (e: IllegalArgumentException) {
+                    onLogError(e.javaClass.simpleName, "Failed to open url: $it", e)
+                }
             }
+            true
         }
-    }
+    )
 }
