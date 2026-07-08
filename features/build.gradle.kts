@@ -97,6 +97,9 @@ android {
                 "META-INF/LICENSE.md",
             )
     }
+    testFixtures {
+        enable = true
+    }
 }
 
 dependencies {
@@ -184,6 +187,11 @@ dependencies {
         libs.hilt.android.compiler,
         libs.hilt.compiler,
     ).forEach(::ksp)
+
+    listOf(
+        libs.authentication,
+        libs.compose.runtime,
+    ).forEach(::testFixturesImplementation)
 }
 
 aboutLibraries {
