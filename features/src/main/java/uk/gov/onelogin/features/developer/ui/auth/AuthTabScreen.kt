@@ -65,7 +65,9 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
     HorizontalDivider()
     IdTokenSection(tokens)
     HorizontalDivider()
-    WalletIdSection(walletId) { viewModel.getWalletId() }
+    WalletIdSection(walletId, refreshWalletId = {
+        viewModel.getWalletId()
+    }, removeWalletId = { viewModel.removeWalletId() })
     HorizontalDivider()
     RefreshTokenSection(viewModel)
     HorizontalDivider()
@@ -151,7 +153,8 @@ private fun IdTokenSection(tokens: LoginTokens?) {
 @Composable
 private fun WalletIdSection(
     walletId: String?,
-    refreshWalletId: () -> Unit
+    refreshWalletId: () -> Unit,
+    removeWalletId: () -> Unit
 ) {
     Text(
         text = "Wallet ID",
@@ -171,7 +174,27 @@ private fun WalletIdSection(
         text = "Refresh wallet id",
         buttonType = ButtonTypeV2.Primary(),
         onClick = refreshWalletId,
-        modifier = Modifier.fillMaxWidth()
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = smallPadding,
+                    start = smallPadding,
+                    end = smallPadding,
+                ),
+    )
+    GdsButton(
+        text = "Remove wallet id",
+        buttonType = ButtonTypeV2.Primary(),
+        onClick = removeWalletId,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    bottom = smallPadding,
+                    start = smallPadding,
+                    end = smallPadding,
+                ),
     )
 }
 
