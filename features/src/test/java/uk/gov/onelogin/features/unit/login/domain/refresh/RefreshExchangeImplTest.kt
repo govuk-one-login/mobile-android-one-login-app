@@ -108,56 +108,21 @@ class RefreshExchangeImplTest {
             .thenReturn("https://test/test")
         whenever(context.getString(any()))
             .thenReturn("test")
+
+        runTest {
+            mockSetupAndGetTokens()
+            mockClientAttestation()
+            mockEncryptedSecureStore("testRefreshToken", "testIdToken")
+            mockDPoPAndPoP()
+            mockSuccessfulHttpResponse()
+            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
+        }
     }
 
     @Test
     fun `successful refresh exchange`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
@@ -175,155 +140,51 @@ class RefreshExchangeImplTest {
     @Test
     fun `persistent session ID is null`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn(null)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.FirstTimeUser, result)
-            verifyNoInteractions(isRefreshTokenExpired)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(appIntegrity)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
-            verifyNoInteractions(getFromEncryptedSecureStore)
             assertThat(logger, hasSize(0))
         }
 
     @Test
     fun `persistent session ID is empty`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("")
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.FirstTimeUser, result)
-            verifyNoInteractions(isRefreshTokenExpired)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(appIntegrity)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
-            verifyNoInteractions(getFromEncryptedSecureStore)
             assertThat(logger, hasSize(0))
         }
 
     @Test
     fun `refresh token is expired`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
             whenever(isRefreshTokenExpired()).thenReturn(true)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
-            verify(isRefreshTokenExpired).invoke()
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(appIntegrity)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
-            verifyNoInteractions(getFromEncryptedSecureStore)
             assertThat(logger, hasSize(0))
         }
 
     @Test
-    fun `wallet store id validation fails`() =
+    fun `given wallet store ID is missing, then re-auth is required`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(validateWalletStoreId.invoke()).thenReturn(false)
+            whenever(validateWalletStoreId()).thenReturn(false)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
-            verify(isRefreshTokenExpired).invoke()
-            verify(validateWalletStoreId).invoke()
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(appIntegrity)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
-            verifyNoInteractions(getFromEncryptedSecureStore)
             assertThat(logger, hasSize(0))
         }
 
     @Test
     fun `client attestation success with valid refresh and id tokens proceeds to refresh call`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
-
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.Success, result)
             verify(dPoPManager).generateDPoP(any())
@@ -332,259 +193,63 @@ class RefreshExchangeImplTest {
     @Test
     fun `client attestation success but refresh and id tokens are null`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
-                        )
-                    )
-                )
-            }
+            mockEncryptedSecureStore("", "")
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
         }
 
     @Test
     fun `client attestation success but refresh token is null in payload`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
+            mockEncryptedSecureStore(refreshToken = null, idToken = "testIdToken")
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
         }
 
     @Test
     fun `client attestation success but id token is null in payload`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken"
-                        )
-                    )
-                )
-            }
+            mockEncryptedSecureStore("testRefreshToken", null)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
         }
 
     @Test
     fun `saved attestation is null defaults to empty client attestation`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired(null))
-            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            mockClientAttestation(AttestationResult.NotRequired(null))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
-            verify(httpClient).makeRequest(any())
-            verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
         }
 
     @Test
     fun `client attestation is expired`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Failure(Exception("Client Attestation failure!")))
-
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
+            mockClientAttestation(
+                AttestationResult.Failure(Exception("Client Attestation Failure!"))
             )
 
+            val result = getTokens()
+
             assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
-            verifyNoInteractions(getFromEncryptedSecureStore)
             assertThat(logger, hasSize(0))
         }
 
     @Test
     fun `client attestation is not required`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            mockClientAttestation(AttestationResult.NotRequired("savedAttestation"))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
@@ -600,40 +265,25 @@ class RefreshExchangeImplTest {
         }
 
     @Test
+    fun `client attestation not required but secure store retrieval fails`() =
+        runTest {
+            mockClientAttestation(AttestationResult.NotRequired("savedAttestation"))
+            mockEncryptedSecureStore("", "")
+
+            val result = getTokens()
+
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+        }
+
+    @Test
     fun `failure generating Demonstrating PoP`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("attestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
             whenever(dPoPManager.generateDPoP(any()))
                 .thenReturn(SignedDPoP.Failure("Failure"))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
+            verify(dPoPManager).generateDPoP(any())
             assertThat(
                 logger,
                 hasItem(
@@ -644,13 +294,6 @@ class RefreshExchangeImplTest {
                     )
                 )
             )
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getProofOfPossession()
-            verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
@@ -658,41 +301,12 @@ class RefreshExchangeImplTest {
     fun `failure generating Demonstrating PoP with error returned`() =
         runTest {
             val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("attestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
             whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(
-                    SignedDPoP
-                        .Failure("Failure", exp)
-                )
+                .thenReturn(SignedDPoP.Failure("Failure", exp))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
+            verify(dPoPManager).generateDPoP(any())
             assertThat(
                 logger,
                 hasItem(
@@ -703,13 +317,6 @@ class RefreshExchangeImplTest {
                     )
                 )
             )
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getProofOfPossession()
-            verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
@@ -717,39 +324,12 @@ class RefreshExchangeImplTest {
     fun `failure with error msg generating app integrity PoP`() =
         runTest {
             val popError = Exception("PoP generation error")
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
             whenever(dPoPManager.generateDPoP(any()))
                 .thenReturn(SignedDPoP.Success("test"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Failure("Failure", popError))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(
                 logger,
@@ -762,52 +342,15 @@ class RefreshExchangeImplTest {
                     )
                 )
             )
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
     fun `failure without error msg generating app integrity PoP`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("test"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Failure("Failure"))
+            mockPoPFailure()
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(
                 logger,
@@ -819,59 +362,25 @@ class RefreshExchangeImplTest {
                     )
                 )
             )
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
+        }
+
+    @Test
+    fun `given http call fails, then tokens are not saved`() =
+        runTest {
+            mockHttpResponse(ApiResponse.Failure(status = 0, error = Exception("error")))
+
+            getTokens()
+
+            verifyNoInteractions(saveTokens)
         }
 
     @Test
     fun `network error - api response failure with message`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception("error")
-                    )
-                )
+            mockHttpResponse(ApiResponse.Failure(status = 0, error = Exception("error")))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(
                 logger,
@@ -883,109 +392,27 @@ class RefreshExchangeImplTest {
                     )
                 )
             )
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
     fun `network error - api response failure without message`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception()
-                    )
-                )
+            mockHttpResponse(ApiResponse.Failure(status = 0, error = Exception()))
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(EMPTY_MSG))))
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
     fun `network error - makeRequest throws exception without message`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
             whenever(httpClient.makeRequest(any()))
                 .thenThrow(RuntimeException())
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
             assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(EMPTY_MSG))))
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
@@ -994,50 +421,17 @@ class RefreshExchangeImplTest {
     @Test
     fun `successful refresh exchange with null refresh token in response`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("clientAttestation"))
-            whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
+            mockHttpResponse(
+                ApiResponse.Success(
+                    "{\n" +
+                        "    \"access_token\": \"accessToken\",\n" +
+                        "    \"token_type\": \"Bearer\",\n" +
+                        "    \"expires_in\": 1\n" +
+                        "}"
                 )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
-
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
             )
+
+            val result = getTokens()
 
             assertEquals(RefreshExchangeResult.Success, result)
             verify(saveTokenExpiry, times(1)).saveExp(anyVararg())
@@ -1047,174 +441,41 @@ class RefreshExchangeImplTest {
     @Test
     fun `network error - api response loading`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
-            whenever(dPoPManager.generateDPoP(any()))
-                .thenReturn(SignedDPoP.Success("signedDPoP"))
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Offline)
+            mockHttpResponse(ApiResponse.Offline)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
             assertThat(logger, hasSize(0))
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.OfflineNetwork, result)
         }
 
     @Test
     fun `return empty refresh token`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
-                )
-            }
+            mockEncryptedSecureStore("", "testIdToken")
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
     fun `return empty id token`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testIdToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
-                        )
-                    )
-                )
-            }
+            mockEncryptedSecureStore("testRefreshToken", "")
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
     fun `return null LocalAuthStatus of Success when retrieving tokens from secure store`() =
         runTest {
-            lateinit var result: RefreshExchangeResult
-            whenever(getPersistentId()).thenReturn("testId")
-            whenever(validateWalletStoreId.invoke()).thenReturn(true)
-            whenever(isRefreshTokenExpired()).thenReturn(false)
-            whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.NotRequired("savedAttestation"))
-            whenever(
-                getFromEncryptedSecureStore(
-                    any(),
-                    anyVararg(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(null)
-                )
-            }
+            mockEncryptedSecureStore(null)
 
-            sut.getTokens(
-                fragmentContext,
-                handleResult = {
-                    result = it
-                }
-            )
+            val result = getTokens()
 
-            verify(isRefreshTokenExpired).invoke()
-            verify(appIntegrity).getClientAttestation()
-            verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
-            verifyNoInteractions(saveTokenExpiry)
-            verifyNoInteractions(tokenRepository)
-            verifyNoInteractions(saveTokens)
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
@@ -1224,12 +485,6 @@ class RefreshExchangeImplTest {
         returnedLocalAuthStatus: LocalAuthStatus,
         expected: RefreshExchangeResult
     ) = runTest {
-        lateinit var result: RefreshExchangeResult
-        whenever(getPersistentId()).thenReturn("testId")
-        whenever(validateWalletStoreId.invoke()).thenReturn(true)
-        whenever(isRefreshTokenExpired()).thenReturn(false)
-        whenever(appIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.NotRequired("savedAttestation"))
         whenever(
             getFromEncryptedSecureStore(
                 any(),
@@ -1240,14 +495,86 @@ class RefreshExchangeImplTest {
             (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(returnedLocalAuthStatus)
         }
 
-        sut.getTokens(
-            fragmentContext,
-            handleResult = {
-                result = it
-            }
-        )
+        val result = getTokens()
 
         assertEquals(expected, result)
+    }
+
+    private suspend fun getTokens(): RefreshExchangeResult {
+        lateinit var result: RefreshExchangeResult
+        sut.getTokens(fragmentContext) { result = it }
+        return result
+    }
+
+    private suspend fun mockSetupAndGetTokens(
+        persistentId: String = "testId",
+        isRefreshTokenExpired: Boolean = false,
+        isWalletStoreIdValid: Boolean = true,
+    ) {
+        whenever(getPersistentId()).thenReturn(persistentId)
+        whenever(isRefreshTokenExpired()).thenReturn(isRefreshTokenExpired)
+        whenever(validateWalletStoreId()).thenReturn(isWalletStoreIdValid)
+    }
+
+    private suspend fun mockClientAttestation(
+        attestationResult: AttestationResult = AttestationResult.Success("clientAttestation"),
+    ) {
+        whenever(appIntegrity.getClientAttestation()).thenReturn(attestationResult)
+    }
+
+    private suspend fun mockEncryptedSecureStore(
+        refreshToken: String? = "",
+        idToken: String? = ""
+    ) {
+        whenever(
+            getFromEncryptedSecureStore(
+                any(),
+                anyVararg(),
+                callback = any()
+            )
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(
+                    mapOf(
+                        AuthTokenStoreKeys.REFRESH_TOKEN_KEY to refreshToken,
+                        AuthTokenStoreKeys.ID_TOKEN_KEY to idToken
+                    )
+                )
+            )
+        }
+    }
+
+    private fun mockDPoPAndPoP() {
+        whenever(dPoPManager.generateDPoP(any()))
+            .thenReturn(SignedDPoP.Success("signedDPoP"))
+        whenever(appIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("signedPoP"))
+    }
+
+    private fun mockPoPFailure(
+        message: String = "Failure",
+        error: Exception? = null
+    ) {
+        whenever(appIntegrity.getProofOfPossession())
+            .thenReturn(if (error != null) SignedPoP.Failure(message, error) else SignedPoP.Failure(message))
+    }
+
+    private suspend fun mockHttpResponse(response: ApiResponse) {
+        whenever(httpClient.makeRequest(any()))
+            .thenReturn(response)
+    }
+
+    private suspend fun mockSuccessfulHttpResponse() {
+        mockHttpResponse(
+            ApiResponse.Success(
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"refresh_token\": \"refreshToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
+        )
     }
 
     companion object {
