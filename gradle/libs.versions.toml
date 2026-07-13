@@ -16,7 +16,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 [versions]
 jose4j = "0.9.6"
 kotlin = "2.3.21"
-agp = "9.1.1"
+agp = "9.2.1"
 core-ktx = "1.16.0"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.7.0"
