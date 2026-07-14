@@ -64,7 +64,7 @@ kotlinStdLib = "2.2.10"
 jetbrainsKotlinJvm = "2.2.21"
 ksp = "2.3.5"
 integrity = "1.6.0"
-bouncycastle = "1.82"
+bouncycastle = "1.84" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 
 [libraries]
