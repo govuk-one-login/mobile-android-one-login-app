@@ -141,10 +141,12 @@ val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
 
 subprojects {
-    dependencies {
-        constraints {
-            add("testImplementation", libs.bouncycastle.bcprov.get().toString()) {
-                because("previous versions have a CVE vulnerability (introduced transitively via robolectric)")
+    pluginManager.withPlugin("java") {
+        dependencies {
+            constraints {
+                add("testImplementation", libs.bouncycastle.bcprov.get()) {
+                    because("previous versions have a CVE vulnerability (introduced transitively via robolectric)")
+                }
             }
         }
     }
