@@ -64,6 +64,7 @@ kotlinStdLib = "2.2.10"
 jetbrainsKotlinJvm = "2.2.21"
 ksp = "2.3.5"
 integrity = "1.6.0"
+bouncycastle = "1.82"
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 
 [libraries]
@@ -127,6 +128,7 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }
