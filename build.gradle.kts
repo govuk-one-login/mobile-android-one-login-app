@@ -139,3 +139,11 @@ fun setProperty(
 val composeVersion by project.extra("1.5.3")
 val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
+
+subprojects {
+    configurations.all {
+        resolutionStrategy {
+            force(libs.bouncycastle.bcprov.get().toString())
+        }
+    }
+}
