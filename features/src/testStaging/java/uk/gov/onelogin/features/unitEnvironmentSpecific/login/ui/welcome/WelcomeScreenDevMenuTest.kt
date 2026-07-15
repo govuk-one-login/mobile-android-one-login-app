@@ -11,8 +11,7 @@ import org.mockito.kotlin.verify
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.testdouble.v2.SystemLogger
+import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
@@ -31,7 +30,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var remoteLogin: RemoteLogin
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var getPersistentId: GetPersistentId
-    private val logger: Logger = SystemLogger()
+    private val logger = MemorisedLogger()
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
     private lateinit var viewModel: WelcomeScreenViewModel

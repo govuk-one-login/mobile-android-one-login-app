@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Settings
@@ -47,6 +48,7 @@ import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
 import uk.gov.onelogin.features.developer.ui.criorchestratormenu.CriOrchestratorDevMenuScreen
 import uk.gov.onelogin.features.developer.ui.features.FeaturesScreen
 import uk.gov.onelogin.features.developer.ui.localauth.LocalAuthTabScreen
+import uk.gov.onelogin.features.developer.ui.logging.LoggingTabScreen
 import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreScreen
 import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 
@@ -82,6 +84,9 @@ fun TabView(goBack: () -> Unit) {
                 R.string.app_developer_tab_secure_store,
                 Icons.Filled.AccountBox,
             ) { SecureStoreScreen() },
+            TabItem(R.string.app_developer_tab_logging, Icons.Filled.Info) {
+                LoggingTabScreen()
+            },
         )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()

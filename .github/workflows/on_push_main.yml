@@ -22,11 +22,14 @@ jobs:
 
     steps:
       - name: Run checkout github action
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           lfs: 'true'
           submodules: 'true'
           fetch-depth: 0
+
+      - name: Setup prerequisite dependencies
+        uses: ./mobile-android-pipelines/actions/common-prerequisites
 
       - name: Get latest tag
         id: latest-tag
@@ -66,12 +69,14 @@ jobs:
       - name: Generate Changelog
         id: changelog
         uses: ./mobile-android-pipelines/actions/generate-and-upload-changelog
+        continue-on-error: true
         with:
           current-version: ${{ steps.latest-tag.outputs.current-tag }}
           new-version: ${{ steps.version-number.outputs.version }}
 
       - name: Publish GitHub Release
         uses: ./mobile-android-pipelines/actions/publish-github-release
+        continue-on-error: true
         with:
           version: ${{ steps.version-number.outputs.version }}
           changelog-path: ${{ steps.changelog.outputs.path }}
@@ -95,7 +100,7 @@ jobs:
       id-token: write
     steps:
       - name: Run checkout github action
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           lfs: 'true'
           submodules: 'true'
@@ -113,10 +118,6 @@ jobs:
         with:
           actions-role-arn: ${{ secrets.GITHUBRUNNER_EC2_ACTIONS_ROLE_ARN }}
 
-      - name: Generate version code
-        id: version-code
-        uses: ./mobile-android-pipelines/actions/generate-version-code
-
       - name: Bundle release
         id: bundle-release
         uses: ./config/actions/gradle-assemble-and-bundle
@@ -126,7 +127,7 @@ jobs:
           flavors: ${{ matrix.environment }}
           github-actor: ${{ secrets.GITHUB_ACTOR }}
           module-fetch-token-username: ${{ secrets.MODULE_FETCH_TOKEN_USERNAME }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
           app-check-token: ${{ secrets.BUILD_APPCHECK_DEBUG_TOKEN }}
           keystore-file-path: ${{ steps.retrieve-secrets.outputs.keystore-file-path }}
@@ -140,7 +141,7 @@ jobs:
         uses: ./config/actions/git-tag-bundles
         with:
           aab-paths: ${{ steps.bundle-release.outputs.aab-paths }}
-          version-code: ${{ steps.version-code.outputs.version-code }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
           version-name: ${{ needs.set-up.outputs.version-name }}
 
       - name: Clean workspace

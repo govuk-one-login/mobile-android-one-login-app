@@ -1,6 +1,8 @@
 package uk.gov.onelogin.plugin
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+import org.gradle.kotlin.dsl.configure
 
 /**
  * Extension class that allows consuming modules to configure which test types
@@ -21,160 +23,169 @@ open class TestTypeExtension(objects: ObjectFactory) {
 val extension = TestTypeExtension(project.objects)
 project.extensions.add("testTypeConfig", extension)
 
-
-// Use afterEvaluate to ensure the extension values and Android variants are fully resolved
-project.afterEvaluate {
-    // Retrieve the Android library extension to access build variants
-    val android = project.extensions.getByType(LibraryExtension::class.java)
-
-    // Iterate over each configured test type (e.g. "component", "unit")
-    extension.testTypes.get().forEach { testType ->
-        // Capitalise for use in task names, e.g. "component" -> "Component"
-        val testTypeCapitalised = testType.replaceFirstChar { it.uppercase() }
-
-        // Create tasks for each library variant (e.g. buildDebug, stagingRelease)
-        android.libraryVariants.all {
-            // e.g. "buildDebug" -> "BuildDebug"
-            val variantName = name.replaceFirstChar { it.uppercase() }
-            val variant = name
-            // The existing unit test task to inherit classpath and test classes from
-            val originalTestTaskName = "test${variantName}UnitTest"
-            // e.g. "componentTestBuildDebug"
-            val taskName = "${testType}Test${variantName}"
-            val isDebug = buildType.name == "debug"
-
-            // Register a new Test task that filters tests by the test type's package path
-            val testTask = tasks.register<Test>(taskName) {
-                description = "Run $testType tests for $variantName"
-                group = "verification"
-
-                // Reuse the classpath and test class directories from the original unit test task
-                val originalTask = tasks.named(originalTestTaskName, Test::class.java).get()
-                testClassesDirs = originalTask.testClassesDirs
-                classpath = originalTask.classpath
-                jvmArgs = originalTask.jvmArgs
-
-                // Depend on all tasks the original test task depends on (compilation, ASM
-                // transformation, resource processing etc.) without depending on the original
-                // test task itself, which would cause it to run and mark classes as up-to-date
-                dependsOn(originalTask.taskDependencies)
-
-                // Ensure this task always re-runs and is never considered up-to-date,
-                // as Gradle may cache results from a previous run on CI runners
-                outputs.upToDateWhen { false }
-
-                useJUnitPlatform()
-                // Only include tests under the matching package directory, e.g. "**/component/**"
-                include("**/$testType/**")
-
-                // Output test results to a dedicated directory per task
-                reports {
-                    junitXml.outputLocation.set(
-                        layout.buildDirectory.dir("test-results/$taskName"),
-                    )
-                    html.outputLocation.set(
-                        layout.buildDirectory.dir("reports/tests/$taskName"),
-                    )
-                }
-
-                // Log a summary of passed, failed, and skipped tests after completion
-                addTestListener(object : TestListener {
-                    override fun beforeSuite(suite: TestDescriptor) {}
-                    override fun afterSuite(suite: TestDescriptor, result: TestResult) {
-                        // Only log for the root suite (the overall run)
-                        if (suite.parent == null) {
-                            logger.lifecycle(
-                                "\n$testType tests for $variantName: " +
-                                    "${result.testCount} total, " +
-                                    "${result.successfulTestCount} passed, " +
-                                    "${result.failedTestCount} failed, " +
-                                    "${result.skippedTestCount} skipped",
-                            )
-                        }
-                    }
-                    override fun beforeTest(testDescriptor: TestDescriptor) {}
-                    override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
-                        // Log each individual test with its result
-                        logger.lifecycle(
-                            "  ${testDescriptor.className}.${testDescriptor.name}: ${result.resultType}",
-                        )
-                    }
-                })
-            }
-
-            // Only generate JaCoCo coverage reports for debug variants
-            if (isDebug) {
-                // e.g. "jacocoBuildDebugComponentTestReport"
-                // This is required to allow for creating a specific unit test task as the jacoco report acocoBuildDebugUnitTestReport is automatically generated
-                val jacocoReportTaskName = if (testType == "unit") {
-                    "jacoco${variantName}Custom${testTypeCapitalised}TestReport"
-                } else {
-                    "jacoco${variantName}${testTypeCapitalised}TestReport"
-                }
-
-                tasks.register<JacocoReport>(jacocoReportTaskName) {
-                    description = "Generate JaCoCo report for $variantName $testType tests."
-                    group = "Jacoco"
-                    // Ensure the test task runs before generating the report
-                    dependsOn(testTask)
-
-                    // Collect all source directories from the Android source sets
-                    val sourceDirs = android.sourceSets.flatMap { it.java.srcDirs }
-                    sourceDirectories.from(sourceDirs)
-                    additionalSourceDirs.from(sourceDirs)
-
-                    // Include compiled Kotlin and Java classes, excluding generated/framework code
-                    classDirectories.from(
-                        fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/$variant")) {
-                            exclude(
-                                "**/R.class",
-                                "**/R\$*.class",
-                                "**/BuildConfig.*",
-                                "**/*Test*.*",
-                                "**/*_Hilt*.*",
-                                "**/Hilt_*.*",
-                                "**/*_Factory*.*",
-                                "**/*_MembersInjector.*",
-                                "**/*Module*.*",
-                                "**/*Dagger*.*",
-                                "**/*MapperImpl*.*",
-                                "**/*Companion*.*",
-                            )
-                        },
-                        fileTree(layout.buildDirectory.dir("intermediates/javac/$variant/classes")) {
-                            exclude(
-                                "**/R.class",
-                                "**/R\$*.class",
-                                "**/BuildConfig.*",
-                                "**/*Test*.*",
-                            )
-                        },
-                    )
-
-                    // Point to the .exec file generated by the test task for coverage data
-                    executionData.from(
-                        layout.buildDirectory.file("jacoco/$taskName.exec"),
-                    )
-
-                    // Output reports to a dedicated directory per test type and task
-                    val reportDir = layout.buildDirectory
-                        .dir("reports/jacoco/$testType/$taskName")
-                        .get().asFile.absolutePath
-                    reports {
-                        xml.required.set(true)
-                        xml.outputLocation.set(file("$reportDir/report.xml"))
-                        csv.required.set(true)
-                        csv.outputLocation.set(file("$reportDir/report.csv"))
-                        html.required.set(true)
-                        html.outputLocation.set(file("$reportDir/html"))
-                    }
-                }
-
-                // Automatically generate the JaCoCo report after the test task completes
-                testTask.configure {
-                    finalizedBy(jacocoReportTaskName)
-                }
+project.extensions.configure<LibraryAndroidComponentsExtension> {
+    onVariants(selector().withBuildType("debug")) { variant ->
+        afterEvaluate {
+            extension.testTypes.get().forEach { testType ->
+                val testTask = generateTestTask(
+                    testType = testType,
+                    variantName = variant.name,
+                )
+                generateCoverageTask(
+                    testType = testType,
+                    variantName = variant.name,
+                    testTask = testTask,
+                )
             }
         }
+    }
+}
+
+private fun generateTestTask(
+    testType: String,
+    variantName: String,
+): TaskProvider<Test> {
+    val variantName = variantName.replaceFirstChar { it.uppercase() }
+    val originalTask = tasks.named("test${variantName}UnitTest", Test::class.java)
+    // e.g. "componentTestBuildDebug"
+    val taskName = "${testType}Test${variantName}"
+
+    // Register a new Test task that filters tests by the test type's package path
+    return tasks.register<Test>(taskName) {
+        description = "Run $testType tests for $variantName"
+        group = "verification"
+
+        // Reuse the classpath and test class directories from the original unit test task
+        testClassesDirs = objects.fileCollection().from(
+            originalTask.map { it.testClassesDirs },
+        )
+        classpath = objects.fileCollection().from(
+            originalTask.map { it.classpath },
+        )
+
+        // Depend on all tasks the original test task depends on (compilation, ASM
+        // transformation, resource processing etc.) without depending on the original
+        // test task itself, which would cause it to run and mark classes as up-to-date
+        dependsOn(originalTask.map { it.taskDependencies })
+
+        useJUnitPlatform()
+        // Only include tests under the matching package directory, e.g. "**/component/**"
+        include("**/$testType/**")
+
+        // Output test results to a dedicated directory per task
+        reports {
+            junitXml.outputLocation.set(
+                layout.buildDirectory.dir("test-results/$taskName"),
+            )
+            html.outputLocation.set(
+                layout.buildDirectory.dir("reports/tests/$taskName"),
+            )
+        }
+
+        // Log a summary of passed, failed, and skipped tests after completion
+        addTestListener(object : TestListener {
+            override fun beforeSuite(suite: TestDescriptor) {}
+            override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+                // Only log for the root suite (the overall run)
+                if (suite.parent == null) {
+                    logger.lifecycle(
+                        "\n$testType tests for $variantName: " +
+                                "${result.testCount} total, " +
+                                "${result.successfulTestCount} passed, " +
+                                "${result.failedTestCount} failed, " +
+                                "${result.skippedTestCount} skipped",
+                    )
+                }
+            }
+
+            override fun beforeTest(testDescriptor: TestDescriptor) {}
+            override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+                // Log each individual test with its result
+                logger.lifecycle(
+                    "  ${testDescriptor.className}.${testDescriptor.name}: ${result.resultType}",
+                )
+            }
+        })
+    }
+}
+
+private fun generateCoverageTask(
+    testType: String,
+    variantName: String,
+    testTask: TaskProvider<Test>,
+) {
+    val variantNameCaptitalised = variantName.replaceFirstChar { it.uppercase() }
+    val testTypeCapitalised = testType.replaceFirstChar { it.uppercase() }
+    // Generate JaCoCo coverage reports
+    val jacocoReportTaskName = if (testType == "unit") {
+        "jacoco${variantNameCaptitalised}Custom${testTypeCapitalised}TestReport"
+    } else {
+        "jacoco${variantNameCaptitalised}${testTypeCapitalised}TestReport"
+    }
+
+    tasks.register<JacocoReport>(jacocoReportTaskName) {
+        description = "Generate JaCoCo report for $variantNameCaptitalised $testType tests."
+        group = "Jacoco"
+        // Ensure the test task runs before generating the report
+        dependsOn(testTask)
+
+        // Collect all source directories from the Android source sets
+        val sourceDirs = project.extensions
+            .getByType(LibraryExtension::class.java)
+            .sourceSets.map { it.java.directories }
+        sourceDirectories.from(sourceDirs)
+        additionalSourceDirs.from(sourceDirs)
+
+        // Include compiled Kotlin and Java classes, excluding generated/framework code
+        classDirectories.from(
+            fileTree(layout.buildDirectory.dir("tmp/kotlin-classes/$variantName")) {
+                exclude(
+                    "**/R.class",
+                    "**/R\$*.class",
+                    "**/BuildConfig.*",
+                    "**/*Test*.*",
+                    "**/*_Hilt*.*",
+                    "**/Hilt_*.*",
+                    "**/*_Factory*.*",
+                    "**/*_MembersInjector.*",
+                    "**/*Module*.*",
+                    "**/*Dagger*.*",
+                    "**/*MapperImpl*.*",
+                    "**/*Companion*.*",
+                )
+            },
+            fileTree(layout.buildDirectory.dir("intermediates/javac/$variantName/classes")) {
+                exclude(
+                    "**/R.class",
+                    "**/R\$*.class",
+                    "**/BuildConfig.*",
+                    "**/*Test*.*",
+                )
+            },
+        )
+
+        val testTaskName = testTask.name
+        // Point to the .exec file generated by the test task for coverage data
+        executionData.from(
+            layout.buildDirectory.file("jacoco/$testTaskName.exec"),
+        )
+
+        // Output reports to a dedicated directory per test type and task
+        val reportDir = layout.buildDirectory
+            .dir("reports/jacoco/$testType/$testTaskName")
+            .get().asFile.absolutePath
+        reports {
+            xml.required.set(true)
+            xml.outputLocation.set(file("$reportDir/report.xml"))
+            csv.required.set(true)
+            csv.outputLocation.set(file("$reportDir/report.csv"))
+            html.required.set(true)
+            html.outputLocation.set(file("$reportDir/html"))
+        }
+    }
+
+    // Automatically generate the JaCoCo report after the test task completes
+    testTask.configure {
+        finalizedBy(jacocoReportTaskName)
     }
 }

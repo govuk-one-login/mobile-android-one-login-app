@@ -10,6 +10,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.contains
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,9 +25,13 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasCustomKeys
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasLogEntry
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
+import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
+import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -45,7 +54,7 @@ class LoginViewModelTest {
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var remoteLogin: RemoteLogin
     private lateinit var getPersistentId: GetPersistentId
-    private lateinit var logger: Logger
+    private val logger = MemorisedLogger()
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
 
@@ -65,7 +74,6 @@ class LoginViewModelTest {
         localAuthPrefResetUseCase = mock()
         getPersistentId = mock()
         mockIntent = mock()
-        logger = mock()
 
         viewModel =
             LoginViewModel(
@@ -219,14 +227,19 @@ class LoginViewModelTest {
             )
 
             assertFalse(viewModel.loading.value)
-            verify(logger).error(
-                eq(LoginViewModel.LOGIN_START_RESULT_TAG),
-                eq(LoginViewModel.NULL_INTENT_MSG),
-                any(),
-                eq(
-                    ErrorKeys.StringKey(
-                        LoginViewModel.LOGIN_START_RESULT_TAG,
-                        LoginViewModel.NULL_INTENT_MSG
+            assertThat(
+                logger,
+                hasLogEntry(
+                    hasItem(
+                        allOf(
+                            hasMessage(LoginViewModel.NULL_INTENT_MSG),
+                            hasCustomKeys(
+                                contains(
+                                    equalTo(componentKey(LoginViewModel.COMPONENT_LOGIN)),
+                                    equalTo(actionKey(LoginViewModel.ACTION_START_LOGIN_RESULT))
+                                )
+                            ),
+                        )
                     )
                 )
             )

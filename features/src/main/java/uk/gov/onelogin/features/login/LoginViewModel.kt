@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.network.online.OnlineChecker
-import uk.gov.logging.api.v2.Logger
-import uk.gov.logging.api.v2.errorKeys.ErrorKeys
+import uk.gov.logging.api.LogTagProvider
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
+import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
+import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -37,7 +39,7 @@ class LoginViewModel
         private val signOutUseCase: SignOutUseCase,
         private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
         private val logger: Logger
-    ) : ViewModel() {
+    ) : ViewModel(), LogTagProvider {
         private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val loading = _loading.asStateFlow()
 
@@ -86,10 +88,10 @@ class LoginViewModel
                     }
                 } ?: run {
                     logger.error(
-                        LOGIN_START_RESULT_TAG,
                         NULL_INTENT_MSG,
                         Exception(NULL_INTENT_MSG),
-                        ErrorKeys.StringKey(LOGIN_START_RESULT_TAG, NULL_INTENT_MSG)
+                        componentKey(COMPONENT_LOGIN),
+                        actionKey(ACTION_START_LOGIN_RESULT),
                     )
                     return
                 }
@@ -109,7 +111,8 @@ class LoginViewModel
         }
 
         companion object {
-            internal const val LOGIN_START_RESULT_TAG = "Start Login Result"
+            internal const val COMPONENT_LOGIN = "login"
+            internal const val ACTION_START_LOGIN_RESULT = "Start Login Result"
             internal const val NULL_INTENT_MSG = "Intent data is null"
         }
     }

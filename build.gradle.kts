@@ -89,7 +89,6 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.hilt) apply false
@@ -110,7 +109,7 @@ val apkConfig by rootProject.extra(
         override val sdkVersions = object : ApkConfig.SdkVersions {
             override val minimum = 29
             override val target = 35
-            override val compile = 36
+            override val compile = 37
         }
     }
 )
