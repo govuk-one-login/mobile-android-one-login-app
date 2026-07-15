@@ -147,6 +147,9 @@ subprojects {
                 add("testImplementation", libs.bouncycastle.bcprov.get()) {
                     because("previous versions have a CVE vulnerability (introduced transitively via robolectric)")
                 }
+                add("implementation", libs.bouncycastle.bcprov.get()) {
+                    because("previous versions have a CVE vulnerability")
+                }
             }
         }
     }
