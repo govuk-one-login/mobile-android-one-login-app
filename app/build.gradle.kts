@@ -1,11 +1,7 @@
 import com.android.build.api.variant.BuildConfigField
-import com.android.build.gradle.BaseExtension
-import org.gradle.kotlin.dsl.configure
-import uk.gov.pipelines.extensions.BaseExtensions.baseAndroidConfig
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    id("uk.gov.onelogin.android-app-config")
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.hilt)
@@ -14,11 +10,6 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.ksp)
-    id("uk.gov.onelogin.android-app-config")
-}
-
-configure<BaseExtension> {
-    baseAndroidConfig(project)
 }
 
 android {
@@ -188,6 +179,7 @@ dependencies {
     ).forEach(::debugImplementation)
 
     listOf(
+        libs.androidx.activity.compose,
         libs.androidx.appcompat,
         libs.androidx.browser,
         libs.androidx.biometric,
@@ -235,7 +227,7 @@ dependencies {
     ).forEach(::kspAndroidTest)
 
     listOf(
-        kotlin("test"),
+        kotlin("test-junit5"),
         libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin,
@@ -253,7 +245,12 @@ dependencies {
         testFixtures(libs.network),
     ).forEach(::testImplementation)
 
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    listOf(
+        libs.junit.jupiter.engine,
+        libs.junit.jupiter.launcher,
+    ).forEach {
+        testRuntimeOnly(it)
+    }
 
     listOf(
         libs.androidx.test.orchestrator,

@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.hilt)
@@ -9,7 +8,6 @@ plugins {
     alias(libs.plugins.oss.licence.about.libraries)
     alias(libs.plugins.paparazzi)
     alias(libs.plugins.ksp)
-    id("uk.gov.onelogin.android-lib-config")
     id("uk.gov.onelogin.plugin.test-config")
 }
 
@@ -117,7 +115,7 @@ dependencies {
     ).forEach(::androidTestImplementation)
 
     listOf(
-        kotlin("test"),
+        kotlin("test-junit5"),
         libs.hilt.android.testing,
         libs.ktor.client.mock,
         libs.mockito.kotlin,
@@ -154,6 +152,7 @@ dependencies {
     ).forEach(::debugImplementation)
 
     listOf(
+        libs.androidx.activity.compose,
         libs.androidx.core.ktx,
         libs.androidx.appcompat,
         platform(libs.androidx.compose.bom),
@@ -190,6 +189,7 @@ dependencies {
 
     listOf(
         libs.authentication,
+        platform(libs.androidx.compose.bom),
         libs.compose.runtime,
     ).forEach(::testFixturesImplementation)
 }

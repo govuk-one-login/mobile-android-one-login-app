@@ -89,7 +89,6 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.hilt) apply false
@@ -110,7 +109,7 @@ val apkConfig by rootProject.extra(
         override val sdkVersions = object : ApkConfig.SdkVersions {
             override val minimum = 29
             override val target = 35
-            override val compile = 36
+            override val compile = 37
         }
     }
 )
@@ -140,3 +139,15 @@ fun setProperty(
 val composeVersion by project.extra("1.5.3")
 val intentsVersion by project.extra("3.4.0")
 val navigationVersion by project.extra("2.6.0")
+
+subprojects {
+    pluginManager.withPlugin("java") {
+        dependencies {
+            constraints {
+                add("testImplementation", libs.bouncycastle.bcprov.get()) {
+                    because("previous versions have a CVE vulnerability (introduced transitively via robolectric)")
+                }
+            }
+        }
+    }
+}
