@@ -93,9 +93,12 @@ class LoginViewModel
                         componentKey(COMPONENT_LOGIN),
                         actionKey(ACTION_START_LOGIN_RESULT),
                     )
+                    _loading.value = false
                     return
                 }
             }
+
+            _loading.value = false
         }
 
         fun abortLogin(
