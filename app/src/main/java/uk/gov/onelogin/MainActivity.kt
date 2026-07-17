@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
             DisposableEffect(Unit) {
                 navigator.setController(navController)
-                viewModel.setHttpClientAuthProvider()
+                viewModel.initialiseNetworkService()
 
                 onDispose {
                     navigator.reset()
