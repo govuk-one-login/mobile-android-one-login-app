@@ -1,13 +1,11 @@
 package uk.gov.onelogin.features.wallet.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.repeatOnLifecycle
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 
 @Composable
 fun WalletScreen(
@@ -15,15 +13,16 @@ fun WalletScreen(
     setDisplayContentAsFullScreen: (Boolean) -> Unit,
     viewModel: WalletScreenViewModel = hiltViewModel(),
 ) {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            viewModel.setWalletStoreId()
-        }
-    }
+
 
     key(deepLinkRoute) {
-        viewModel.walletSdk.WalletApp()
+        when (val state = viewModel.state.collectAsState().value) {
+            is WalletScreenState.Loading -> {
+                LoadingScreen { }
+            }
+            is WalletScreenState.Display ->
+                state.walletAppDisplayer.WalletApp()
+        }
     }
 
     setDisplayContentAsFullScreen(
