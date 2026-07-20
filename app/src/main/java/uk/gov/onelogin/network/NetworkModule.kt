@@ -9,8 +9,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import uk.gov.android.network.client.GenericHttpClient as GenericHttpClientV1
-import uk.gov.android.network.client.v2.GenericHttpClient as GenericHttpClientV2
+import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.KtorHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.online.OnlineCheckerImpl
@@ -31,15 +30,13 @@ interface NetworkModule {
         defaultNetworkService: DefaultNetworkService
     ): NetworkService
 
+    /**
+     * [GenericHttpClient] will be deprecated. Prefer [NetworkService] for API requests.
+     */
     @Binds
-    fun genericHttpClientV2(
+    fun genericHttpClient(
         ktorHttpClient: KtorHttpClient
-    ): GenericHttpClientV2
-
-    @Binds
-    fun genericHttpClientV1(
-        ktorHttpClient: KtorHttpClient
-    ): GenericHttpClientV1
+    ): GenericHttpClient
 
     companion object {
         /**
@@ -50,9 +47,9 @@ interface NetworkModule {
         @Provides
         @Singleton
         fun provideNetworkService(
-            httpClient: GenericHttpClientV2
+            ktorHttpClient: KtorHttpClient
         ): DefaultNetworkService =
-            DefaultNetworkService(httpClient)
+            DefaultNetworkService(ktorHttpClient)
 
         @Provides
         fun provideOnlineChecker(
