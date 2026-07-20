@@ -4,9 +4,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import uk.gov.android.authentication.json.jwt.JwtVerifier
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v2.ApiResponse
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
@@ -26,7 +26,7 @@ interface VerifyIdToken {
 class VerifyIdTokenImpl
     @Inject
     constructor(
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
         private val verifier: JwtVerifier,
         private val extractEmail: ExtractEmail,
         private val extractAndSaveWalletId: ExtractAndSaveWalletId,
@@ -52,11 +52,11 @@ class VerifyIdTokenImpl
         ): Boolean {
             var verified = false
 
-            val response = httpClient.makeRequest(ApiRequest.Get(jwksUrl))
+            val response = networkService.makeRequest(ApiRequest.Get(jwksUrl))
 
-            if (response is ApiResponse.Success<*>) {
+            if (response is ApiResponse.Success) {
                 try {
-                    verified = useJwksResponseToVerify(response.response.toString(), idToken)
+                    verified = useJwksResponseToVerify(response.response, idToken)
                 } catch (e: Exception) {
                     val loginException = LoginException(e)
                     logger.error(

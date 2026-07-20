@@ -3,15 +3,14 @@ package uk.gov.onelogin.features.login.domain.refresh
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
-import io.ktor.client.request.forms.FormDataContent
-import io.ktor.http.Parameters
 import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v2.ApiResponse
+import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
@@ -45,7 +44,7 @@ class RefreshExchangeImpl
         private val getPersistentId: GetPersistentId,
         @param:RefreshToken
         private val isRefreshTokenExpired: IsTokenExpired,
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
         private val appIntegrity: AppIntegrity,
         private val dPoPManager: DemonstratingProofOfPossessionManager,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
@@ -182,11 +181,11 @@ class RefreshExchangeImpl
                     return
                 }
             when (refreshExchangeResult) {
-                is ApiResponse.Success<*> -> {
+                is ApiResponse.Success -> {
                     // Decode tokens from response
                     val decodedTokens =
                         jsonDecoder.decodeFromString<RefreshExchangeApiResponse>(
-                            refreshExchangeResult.response.toString(),
+                            refreshExchangeResult.response,
                         )
                     // Save new access and refresh tokens expiry
                     saveTokensExpiryToOpenStore(decodedTokens)
@@ -212,17 +211,13 @@ class RefreshExchangeImpl
                     )
                     handleResult(RefreshExchangeResult.ReauthRequired)
                 }
-                // Loading and Offline are not use by the HttpClient so will never end up here
-                else -> {
-                    handleResult(RefreshExchangeResult.OfflineNetwork)
-                }
             }
         }
 
         suspend fun retrieveNewTokens(
             refreshToken: String,
             clientAttestation: String,
-        ): ApiResponse {
+        ): ApiResponse<String, NetworkingException> {
             // CGet the required URL
             val authUrl =
                 context.getString(
@@ -248,9 +243,7 @@ class RefreshExchangeImpl
                                     pop = pop,
                                 )
 
-                            return httpClient.makeRequest(
-                                apiRequest = request,
-                            )
+                            return networkService.makeRequest(request)
                         }
                         is SignedPoP.Failure -> {
                             val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
@@ -284,28 +277,17 @@ class RefreshExchangeImpl
             dPoP: SignedDPoP.Success,
             pop: SignedPoP.Success,
         ): ApiRequest =
-            ApiRequest.Post(
+            ApiRequest.FormUrlEncoded(
                 url = authUrl,
-                body =
-                    FormDataContent(
-                        Parameters.build {
-                            append(
-                                GRANT_TYPE_LABEL,
-                                GRANT_TYPE_VALUE,
-                            )
-                            append(
-                                REFRESH_TOKEN_LABEL,
-                                refreshToken,
-                            )
-                        },
-                    ),
-                headers =
-                    listOf(
-                        CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
-                        DPOP_HEADER_LABEL to dPoP.popJwt,
-                        CLIENT_ATTESTATION_HEADER_LABEL to clientAttestation,
-                        POP_CLIENT_ATTESTATION_HEADER_LABEL to pop.popJwt,
-                    ),
+                headers = listOf(
+                    DPOP_HEADER_LABEL to dPoP.popJwt,
+                    CLIENT_ATTESTATION_HEADER_LABEL to clientAttestation,
+                    POP_CLIENT_ATTESTATION_HEADER_LABEL to pop.popJwt,
+                ),
+                params = listOf(
+                    GRANT_TYPE_LABEL to GRANT_TYPE_VALUE,
+                    REFRESH_TOKEN_LABEL to refreshToken,
+                ),
             )
 
         private suspend fun saveTokensExpiryToOpenStore(tokens: RefreshExchangeApiResponse) {
@@ -348,8 +330,6 @@ class RefreshExchangeImpl
             const val EMPTY_MSG = "Refresh Token Exchange Error - Error message was null."
             const val DPOP_GENERATE_ERROR = "Couldn't generate DPoP."
             const val ATTESTATION_POP_GENERATE_ERROR = "Couldn't generate App Integrity PoP."
-            private const val CONTENT_TYPE_LABEL = "Content-Type"
-            private const val CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded"
             private const val GRANT_TYPE_LABEL = "grant_type"
             private const val GRANT_TYPE_VALUE = "refresh_token"
             private const val REFRESH_TOKEN_LABEL = "refresh_token"

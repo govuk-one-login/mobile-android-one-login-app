@@ -2,66 +2,51 @@ package uk.gov.onelogin.features.unit.appinfo.data
 
 import android.content.Context
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.IOException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.network.client.v2.GenericHttpResponse
+import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.client.v2.StubHttpClient
+import uk.gov.android.network.service.DefaultNetworkService
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApiImpl
+import uk.gov.onelogin.features.appinfo.domain.AppInfoApiResult
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class AppInfoApiImplTest {
     private val context: Context = mock()
-    private val httpClient: GenericHttpClient = mock()
-    private val onlineChecker: OnlineChecker = mock()
+    private val stubHttpClient = StubHttpClient()
+    private val networkService = DefaultNetworkService(stubHttpClient)
     private val apiResponse =
         ClassLoader
             .getSystemResource("api/appInfoResponseValue.json")
             .readText()
-    private val data =
-        ApiResponse.Success(
-            AppInfoData(
-                apps =
-                    AppInfoData.App(
-                        AppInfoData.AppInfo(
-                            minimumVersion = "0.0.0",
-                            available = true,
-                            featureFlags = AppInfoData.FeatureFlags(true)
-                        )
-                    )
-            )
+    private val expectedData =
+        AppInfoData(
+            apps =
+                AppInfoData.App(
+                    AppInfoData.AppInfo(
+                        minimumVersion = "0.0.0",
+                        available = true,
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
-    private val exp = Exception("Error")
-    private lateinit var request: ApiRequest
 
     private val sut =
         AppInfoApiImpl(
             context,
-            httpClient,
-            onlineChecker
+            networkService,
         )
 
     @BeforeEach
     fun setup() {
-        request =
-            ApiRequest.Get(
-                url = "https://mobile.build.account.gov.uk/appInfo",
-                headers =
-                    listOf(
-                        "Cache-Control" to "no-store",
-                        "Content-Type" to "application/json",
-                        "Strict-Transport-Security" to "max-age=31536000",
-                        "X-Content-Type-Options" to "nosniff",
-                        "X-Frame-Options" to "DENY"
-                    )
-            )
-
         whenever(context.getString(any())).thenReturn("/appInfo")
         whenever(context.getString(any(), eq("/appInfo"))).thenAnswer {
             "https://mobile.build.account.gov.uk/appInfo"
@@ -69,28 +54,37 @@ class AppInfoApiImplTest {
     }
 
     @Test
-    fun `device is offline`(): Unit =
+    fun `app info call successful`() =
         runTest {
-            whenever(onlineChecker.isOnline()).thenReturn(false)
-            val result = sut.callApi()
-            assertEquals(ApiResponse.Offline, result)
-        }
+            stubHttpClient.response = GenericHttpResponse(200, apiResponse)
 
-    @Test
-    fun `app info call successful`(): Unit =
-        runTest {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            whenever(httpClient.makeRequest(request)).thenReturn(ApiResponse.Success(apiResponse))
             val result = sut.callApi()
-            assertEquals(data, result)
+
+            assertIs<AppInfoApiResult.Success>(result)
+            assertEquals(expectedData, result.data)
         }
 
     @Test
     fun `app info call fail`() =
         runTest {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            whenever(httpClient.makeRequest(request)).thenReturn(ApiResponse.Failure(500, exp))
+            stubHttpClient.exception = GenericResponseException(
+                GenericHttpResponse(500, "error"),
+                IllegalStateException(),
+            )
+
             val result = sut.callApi()
-            assertEquals(ApiResponse.Failure(500, exp), result)
+
+            assertIs<AppInfoApiResult.Failure>(result)
+            assertEquals(500, result.status)
+        }
+
+    @Test
+    fun `app info call transport failure`() =
+        runTest {
+            stubHttpClient.exception = IOException()
+
+            val result = sut.callApi()
+
+            assertIs<AppInfoApiResult.Failure>(result)
         }
 }

@@ -3,12 +3,13 @@ package uk.gov.onelogin.features.network.provider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v2.ApiResponse
 import uk.gov.android.network.api.ApiResponseException
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -25,13 +26,13 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 /**
  * [uk.gov.onelogin.features.network.provider.StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
- * that is used by a [GenericHttpClient] to enable authenticated requests.
+ * that is used by a [NetworkService] to enable authenticated requests.
  *
  * @param activityProvider provides access to a FragmentActivity required when attempting to retrieve tokens form the secure store for the [android.hardware.biometrics.BiometricPrompt]
  * @param stsUrl provides the STS endpoint used to make a service token exchange
  * @param tokenRepository provides the access token required for the service token exchange
  * @param isAccessTokenExpired provides functionality to conduct a check and determine is a refresh exchange is required when the access token is expired
- * @param httpClient it's a network client required for making the network requests to the service token endpoint
+ * @param networkService it's a network service required for making the network requests to the service token endpoint
  * @param navigator provides a [Navigator] to allow navigating to error screens where required (e.g. Re-Authentication, Sign-In Required)
  * @param signOutUseCase provides functionality to delete all data linked to a session/ user when a Sign-In is required (e.g. missing Persistent Session ID)
  * @param logger provides a [Logger] to enable logging errors to Crashlytics
@@ -44,7 +45,7 @@ class StsAuthenticationProvider(
     private val tokenRepository: TokenRepository,
     @param:AccessToken
     private val isAccessTokenExpired: IsTokenExpired,
-    private val httpClient: GenericHttpClient,
+    private val networkService: NetworkService,
     private val navigator: Navigator,
     private val refreshExchange: RefreshExchange,
     private val signOutUseCase: SignOutUseCase,
@@ -137,7 +138,7 @@ class StsAuthenticationProvider(
     private suspend fun attemptServiceTokenExchange(scope: String): AuthenticationResponse =
         tokenRepository.getTokenResponse()?.accessToken?.let {
             val request = createServiceTokenRequest(it, scope)
-            val response = httpClient.makeRequest(request)
+            val response = networkService.makeRequest(request)
             handleServiceTokenResponse(response)
         } ?: AuthenticationResponse.Failure(Exception(NO_ACCESS_TOKEN_ERROR_MSG))
 
@@ -169,11 +170,13 @@ class StsAuthenticationProvider(
      * a success containing the service token issues
      */
     @Suppress("TooGenericExceptionCaught")
-    private fun handleServiceTokenResponse(response: ApiResponse): AuthenticationResponse =
+    private fun handleServiceTokenResponse(
+        response: ApiResponse<String, NetworkingException>
+    ): AuthenticationResponse =
         when (response) {
-            is ApiResponse.Success<*> ->
+            is ApiResponse.Success ->
                 try {
-                    val tokenResponseString: String = response.response.toString()
+                    val tokenResponseString: String = response.response
                     val tokenApiResponse: TokenApiResponse =
                         jsonDecoder
                             .decodeFromString(tokenResponseString)
@@ -189,7 +192,6 @@ class StsAuthenticationProvider(
                     AuthenticationResponse.Failure(e)
                 }
 
-            // Check response for account intervention
             is ApiResponse.Failure -> {
                 // Invalid grant which is the 400 error returned - re-auth required
                 if (response.status == AUTHENTICATION_DENIED) {
@@ -203,9 +205,6 @@ class StsAuthenticationProvider(
                     )
                 }
             }
-
-            // This should never happen as Offline and Loading are never used
-            else -> AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
         }
 
     companion object {

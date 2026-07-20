@@ -13,7 +13,7 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCalle
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
@@ -68,6 +68,6 @@ object AppIntegrityModule {
     fun provideAssertionApiCall(
         @ApplicationContext
         context: Context,
-        genericHttpClient: GenericHttpClient,
-    ): AttestationCaller = AttestationApiCall(context, genericHttpClient)
+        networkService: NetworkService,
+    ): AttestationCaller = AttestationApiCall(context, networkService)
 }

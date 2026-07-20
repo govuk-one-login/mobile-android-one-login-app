@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.android.network.auth.AuthenticationProvider
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -27,7 +27,7 @@ object AuthenticationProviderModule {
     fun provideAuthenticationProvider(
         activityProvider: ActivityProvider,
         @ApplicationContext context: Context,
-        genericHttpClient: GenericHttpClient,
+        networkService: NetworkService,
         tokenRepository: TokenRepository,
         @AccessToken isAccessTokenExpired: IsTokenExpired,
         navigator: Navigator,
@@ -45,7 +45,7 @@ object AuthenticationProviderModule {
             stsUrl,
             tokenRepository,
             isAccessTokenExpired,
-            genericHttpClient,
+            networkService,
             navigator,
             refreshExchange,
             signOutUseCase,

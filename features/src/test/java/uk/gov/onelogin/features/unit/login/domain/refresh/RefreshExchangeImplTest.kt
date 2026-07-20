@@ -22,8 +22,11 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.client.v2.GenericHttpResponse
+import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.client.v2.StubHttpClient
+import uk.gov.android.network.service.DefaultNetworkService
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
@@ -58,7 +61,8 @@ class RefreshExchangeImplTest {
     private lateinit var context: Context
     private lateinit var getPersistentId: GetPersistentId
     private lateinit var isRefreshTokenExpired: IsTokenExpired
-    private lateinit var httpClient: GenericHttpClient
+    private val stubHttpClient = StubHttpClient()
+    private val networkService: NetworkService = DefaultNetworkService(stubHttpClient)
     private lateinit var appIntegrity: AppIntegrity
     private lateinit var dPoPManager: DemonstratingProofOfPossessionManager
     private lateinit var getFromEncryptedSecureStore: GetFromEncryptedSecureStore
@@ -77,7 +81,6 @@ class RefreshExchangeImplTest {
         context = mock()
         getPersistentId = mock()
         isRefreshTokenExpired = mock()
-        httpClient = mock()
         appIntegrity = mock()
         dPoPManager = mock()
         getFromEncryptedSecureStore = mock()
@@ -92,7 +95,7 @@ class RefreshExchangeImplTest {
                 context = context,
                 getPersistentId = getPersistentId,
                 isRefreshTokenExpired = isRefreshTokenExpired,
-                httpClient = httpClient,
+                networkService = networkService,
                 appIntegrity = appIntegrity,
                 dPoPManager = dPoPManager,
                 getFromEncryptedSecureStore = getFromEncryptedSecureStore,
@@ -141,17 +144,15 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedPoP.Success("signedPoP"))
             whenever(validateWalletStoreId.invoke())
                 .thenReturn(true)
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            stubHttpClient.response = GenericHttpResponse(
+                200,
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"refresh_token\": \"refreshToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
             sut.getTokens(
                 fragmentContext,
                 handleResult = {
@@ -187,7 +188,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.FirstTimeUser, result)
             verifyNoInteractions(isRefreshTokenExpired)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
             verifyNoInteractions(dPoPManager)
             verifyNoInteractions(saveTokenExpiry)
@@ -212,7 +212,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.FirstTimeUser, result)
             verifyNoInteractions(isRefreshTokenExpired)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
             verifyNoInteractions(dPoPManager)
             verifyNoInteractions(saveTokenExpiry)
@@ -238,7 +237,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
             verify(isRefreshTokenExpired).invoke()
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
             verifyNoInteractions(dPoPManager)
             verifyNoInteractions(saveTokenExpiry)
@@ -266,7 +264,6 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
             verify(isRefreshTokenExpired).invoke()
             verify(validateWalletStoreId).invoke()
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(appIntegrity)
             verifyNoInteractions(dPoPManager)
             verifyNoInteractions(saveTokenExpiry)
@@ -306,17 +303,15 @@ class RefreshExchangeImplTest {
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
             whenever(timeProvider.calculateExpiryTime(any())).thenReturn(100)
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            stubHttpClient.response = GenericHttpResponse(
+                200,
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"refresh_token\": \"refreshToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -364,7 +359,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -404,7 +398,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -444,7 +437,6 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -482,17 +474,15 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            stubHttpClient.response = GenericHttpResponse(
+                200,
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"refresh_token\": \"refreshToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -503,7 +493,6 @@ class RefreshExchangeImplTest {
 
             assertThat(logger, hasSize(0))
             assertEquals(RefreshExchangeResult.Success, result)
-            verify(httpClient).makeRequest(any())
             verify(saveTokenExpiry, times(2)).saveExp(anyVararg())
         }
 
@@ -527,7 +516,6 @@ class RefreshExchangeImplTest {
             assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(dPoPManager)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
@@ -567,17 +555,15 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"refresh_token\": \"refreshToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            stubHttpClient.response = GenericHttpResponse(
+                200,
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"refresh_token\": \"refreshToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -647,7 +633,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getProofOfPossession()
             verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -706,7 +691,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getProofOfPossession()
             verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -765,7 +749,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -822,7 +805,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -858,13 +840,10 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception("error")
-                    )
-                )
+            stubHttpClient.exception = GenericResponseException(
+                GenericHttpResponse(0, "error"),
+                IllegalStateException("error")
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -879,14 +858,13 @@ class RefreshExchangeImplTest {
                     allOf(
                         isLogLevel(LogLevel.Error),
                         hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
-                        hasMessage("error")
+                        hasMessage("API responded with 0")
                     )
                 )
             )
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -922,13 +900,10 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception()
-                    )
-                )
+            stubHttpClient.exception = GenericResponseException(
+                GenericHttpResponse(0, ""),
+                IllegalStateException()
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -937,11 +912,10 @@ class RefreshExchangeImplTest {
                 }
             )
 
-            assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(EMPTY_MSG))))
+            assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage("API responded with 0"))))
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -977,8 +951,7 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenThrow(RuntimeException())
+            stubHttpClient.exception = RuntimeException()
 
             sut.getTokens(
                 fragmentContext,
@@ -1021,16 +994,14 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Success(
-                        "{\n" +
-                            "    \"access_token\": \"accessToken\",\n" +
-                            "    \"token_type\": \"Bearer\",\n" +
-                            "    \"expires_in\": 1\n" +
-                            "}"
-                    )
-                )
+            stubHttpClient.response = GenericHttpResponse(
+                200,
+                "{\n" +
+                    "    \"access_token\": \"accessToken\",\n" +
+                    "    \"token_type\": \"Bearer\",\n" +
+                    "    \"expires_in\": 1\n" +
+                    "}"
+            )
 
             sut.getTokens(
                 fragmentContext,
@@ -1043,9 +1014,9 @@ class RefreshExchangeImplTest {
             verify(saveTokenExpiry, times(1)).saveExp(anyVararg())
         }
 
-    // This test is just to increase test coverage, the ApiResponse.Offline and ApiResponse.Loading are not used from the network package at all
+    // In v2, transport failures are represented as ApiResponse.Failure with TransportException
     @Test
-    fun `network error - api response loading`() =
+    fun `network error - transport failure`() =
         runTest {
             lateinit var result: RefreshExchangeResult
             whenever(getPersistentId()).thenReturn("testId")
@@ -1073,8 +1044,7 @@ class RefreshExchangeImplTest {
                 .thenReturn(SignedDPoP.Success("signedDPoP"))
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success("signedPoP"))
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Offline)
+            stubHttpClient.exception = kotlinx.io.IOException()
 
             sut.getTokens(
                 fragmentContext,
@@ -1086,12 +1056,10 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verify(dPoPManager).generateDPoP(any())
-            verify(httpClient).makeRequest(any())
-            assertThat(logger, hasSize(0))
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
-            assertEquals(RefreshExchangeResult.OfflineNetwork, result)
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
@@ -1130,7 +1098,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -1173,7 +1140,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)
@@ -1211,7 +1177,6 @@ class RefreshExchangeImplTest {
             verify(isRefreshTokenExpired).invoke()
             verify(appIntegrity).getClientAttestation()
             verifyNoInteractions(dPoPManager)
-            verifyNoInteractions(httpClient)
             verifyNoInteractions(saveTokenExpiry)
             verifyNoInteractions(tokenRepository)
             verifyNoInteractions(saveTokens)

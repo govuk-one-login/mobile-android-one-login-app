@@ -6,9 +6,10 @@ import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.android.authentication.json.jwk.JWK
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v2.ApiResponse
+import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.onelogin.core.R
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class AttestationApiCall
     constructor(
         @param:ApplicationContext
         private val context: Context,
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
     ) : AttestationCaller {
         override suspend fun call(
             token: String,
@@ -34,41 +35,45 @@ class AttestationApiCall
                             AttestationCaller.CONTENT_TYPE to AttestationCaller.CONTENT_TYPE_VALUE,
                         ),
                 )
-            return when (val apiResponse = httpClient.makeRequest(request)) {
-                is ApiResponse.Success<*> -> handleResponse(apiResponse)
+            return when (val apiResponse = networkService.makeRequest(request)) {
+                is ApiResponse.Success -> handleResponse(apiResponse.response)
                 is ApiResponse.Failure -> {
-                    // Error mappings - see Errors returned by Mobile Platform BackEnd:
-                    // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
-                    val expType =
-                        when (apiResponse.status) {
-                            INVALID_PUBLIC_KEY_JWK
-                            -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
-                            SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
-                            -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
-                            // This should never be reached as per guidance
-                            else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
-                        }
-                    val exp = AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
-                    AttestationResponse.Failure(
-                        exp.e.message ?: NETWORK_ERROR,
-                        exp,
-                    )
-                }
-
-                // This is for ApiResponse.Offline and ApiResponse.Loading which is never used
-                else ->
-                    AttestationResponse.Failure(
-                        NETWORK_ERROR,
-                        AppIntegrityException.ClientAttestationException(
-                            Exception(NETWORK_ERROR)
+                    val status = apiResponse.status
+                    if (status == null) {
+                        // Transport failure (no HTTP status) - equivalent to old Offline case
+                        AttestationResponse.Failure(
+                            NETWORK_ERROR,
+                            AppIntegrityException.ClientAttestationException(
+                                Exception(NETWORK_ERROR),
+                            ),
                         )
-                    )
+                    } else {
+                        // Error mappings - see Errors returned by Mobile Platform BackEnd:
+                        // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
+                        val expType =
+                            when (status) {
+                                INVALID_PUBLIC_KEY_JWK
+                                -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
+                                SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
+                                -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                                // This should never be reached as per guidance
+                                else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
+                            }
+                        val exp = AppIntegrityException.ClientAttestationException(
+                            apiResponse.error,
+                            expType,
+                        )
+                        AttestationResponse.Failure(
+                            exp.e.message ?: NETWORK_ERROR,
+                            exp,
+                        )
+                    }
+                }
             }
         }
 
-        private fun handleResponse(apiResponse: ApiResponse) =
+        private fun handleResponse(response: String) =
             try {
-                val response = (apiResponse as ApiResponse.Success<String>).response
                 Json.decodeFromString<AttestationResponse.Success>(response)
             } catch (e: IllegalArgumentException) {
                 AttestationResponse.Failure(

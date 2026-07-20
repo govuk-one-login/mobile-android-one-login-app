@@ -47,6 +47,7 @@ class AppInfoServiceImplTest {
     private val dataAppUnavailable = TestUtils.appInfoDataAppUnavailable
     private val localSourceErrorMsg = AppInfoLocalSourceImpl.Companion.APP_INFO_LOCAL_SOURCE_ERROR
     private val remoteSourceErrorMsg = AppInfoRemoteSourceImpl.Companion.APP_INFO_REMOTE_SOURCE_ERROR
+
     private val errorKeyComponent = componentKey("app_info")
     private val errorKeyActionGetRemote = actionKey("Get remote app info")
 
