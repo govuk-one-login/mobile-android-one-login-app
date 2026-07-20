@@ -105,7 +105,7 @@ class AuthTabScreenViewModel
         fun makeHappyHelloWorldCall() {
             _happyCallLoading.value = true
             viewModelScope.launch {
-                _happyHelloWorldResponse.value = helloWorldApiCall.happyPath()
+                _happyHelloWorldResponse.value = helloWorldApiCall.authenticatedRequest()
                 _happyCallLoading.value = false
             }
         }
@@ -115,7 +115,7 @@ class AuthTabScreenViewModel
             viewModelScope.launch {
                 val currentToken = tokenRepository.getTokenResponse()
                 tokenRepository.clearTokenResponse()
-                _authFailingHelloWorldResponse.value = helloWorldApiCall.happyPath()
+                _authFailingHelloWorldResponse.value = helloWorldApiCall.authenticatedRequest()
                 _authFailingCallLoading.value = false
                 if (currentToken != null) {
                     tokenRepository.setTokenResponse(currentToken)
@@ -126,7 +126,7 @@ class AuthTabScreenViewModel
         fun makeServiceFailingHelloWorldCall() {
             _serviceFailingCallLoading.value = true
             viewModelScope.launch {
-                _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
+                _serviceFailingHelloWorldResponse.value = helloWorldApiCall.authenticatedErrorRequest()
                 _serviceFailingCallLoading.value = false
             }
         }
