@@ -81,7 +81,6 @@ interface NetworkModule {
             return userAgentGenerator
         }
 
-        @Suppress("LongParameterList")
         @Provides
         @Singleton
         fun provideHttpClient(userAgentGenerator: UserAgentGenerator): KtorHttpClient {
