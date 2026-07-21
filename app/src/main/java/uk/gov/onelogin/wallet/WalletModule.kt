@@ -15,7 +15,6 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.performance.PerformanceMonitor
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -31,7 +30,6 @@ object WalletModule {
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
-        performanceMonitor: PerformanceMonitor,
     ): WalletSdk {
         val config =
             WalletSdk.Configuration(
@@ -41,7 +39,6 @@ object WalletModule {
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
                 networkService = defaultNetworkService,
-                monitor = performanceMonitor,
             )
         return WalletSdkImpl(navigator, config, context)
     }
