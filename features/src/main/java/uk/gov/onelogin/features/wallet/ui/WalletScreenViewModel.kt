@@ -46,11 +46,8 @@ class WalletScreenViewModel
     }
 
     /**
-     * Retrieves the wallet store ID and sets it on the SDK before returning the displayer.
+     * Retrieves the wallet store ID and sets it on the SDK before returning the Wallet Sdk for Initialisation.
      *
-     * Order is significant:
-     * - [WalletSdk.setWalletStoreId] must be called before [WalletAppDisplayer.WalletApp]
-     *   is composed.
      */
     private suspend fun prepareWalletSdkForDisplay(): WalletAppDisplayer {
         val walletStoreId = getWalletStoreId()

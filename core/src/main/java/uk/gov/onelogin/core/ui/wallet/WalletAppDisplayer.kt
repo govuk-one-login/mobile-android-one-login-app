@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 /**
  * An interface for initialising the wallet sdk
  */
-interface WalletAppDisplayer {
+fun interface WalletAppDisplayer {
 
     @Composable
     fun WalletApp()
