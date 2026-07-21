@@ -38,7 +38,7 @@ object WalletModule {
                 localAuthManger = localAuthManager,
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
-                networkService = defaultNetworkService,
+                networkService = defaultNetworkService
             )
         return WalletSdkImpl(navigator, config, context)
     }
