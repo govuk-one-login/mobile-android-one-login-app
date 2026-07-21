@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.DefaultNetworkService
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
@@ -15,6 +15,7 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.performance.PerformanceMonitor
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -25,20 +26,22 @@ object WalletModule {
         @ApplicationContext
         context: Context,
         navigator: Navigator,
-        genericHttpClient: GenericHttpClient,
+        defaultNetworkService: DefaultNetworkService,
         analyticsLogger: AnalyticsLogger,
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
+        performanceMonitor: PerformanceMonitor,
     ): WalletSdk {
         val config =
             WalletSdk.Configuration(
                 clientId = context.resources.getString(R.string.stsClientId),
-                authNetworkClient = genericHttpClient,
                 analyticsLogger = analyticsLogger,
                 localAuthManger = localAuthManager,
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
+                networkService = defaultNetworkService,
+                monitor = performanceMonitor,
             )
         return WalletSdkImpl(navigator, config, context)
     }
