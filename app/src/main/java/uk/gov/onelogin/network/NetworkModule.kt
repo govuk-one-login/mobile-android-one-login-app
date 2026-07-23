@@ -13,8 +13,10 @@ import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.KtorHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.online.OnlineCheckerImpl
-import uk.gov.android.network.service.DefaultNetworkService
-import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.v2.DefaultNetworkService
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.DefaultNetworkService as DefaultNetworkServiceV1
+import uk.gov.android.network.service.NetworkService as NetworkServiceV1
 import uk.gov.android.network.useragent.UserAgent
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
@@ -29,6 +31,11 @@ interface NetworkModule {
     fun networkService(
         defaultNetworkService: DefaultNetworkService
     ): NetworkService
+
+    @Binds
+    fun networkServiceV1(
+        defaultNetworkService: DefaultNetworkServiceV1
+    ): NetworkServiceV1
 
     /**
      * [GenericHttpClient] will be deprecated. Prefer [NetworkService] for API requests.
@@ -50,6 +57,13 @@ interface NetworkModule {
             ktorHttpClient: KtorHttpClient
         ): DefaultNetworkService =
             DefaultNetworkService(ktorHttpClient)
+
+        @Provides
+        @Singleton
+        fun provideNetworkServiceV1(
+            defaultNetworkService: DefaultNetworkService,
+        ): DefaultNetworkServiceV1 =
+            DefaultNetworkServiceV1(defaultNetworkService)
 
         @Provides
         fun provideOnlineChecker(
