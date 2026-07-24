@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.delay
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class AppIntegrityImpl
     @Inject
     constructor(
+        @param:ApplicationContext
         private val context: Context,
         private val featureFlags: FeatureFlags,
         private val appCheck: AppIntegrityManager,
