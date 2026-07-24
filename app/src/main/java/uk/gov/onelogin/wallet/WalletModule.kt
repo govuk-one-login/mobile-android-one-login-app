@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.network.service.DefaultNetworkService
+import uk.gov.android.network.service.DefaultNetworkService as DefaultNetworkServiceV1
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
@@ -25,7 +25,7 @@ object WalletModule {
         @ApplicationContext
         context: Context,
         navigator: Navigator,
-        defaultNetworkService: DefaultNetworkService,
+        defaultNetworkService: DefaultNetworkServiceV1,
         analyticsLogger: AnalyticsLogger,
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
