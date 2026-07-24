@@ -199,6 +199,33 @@ class StsAuthenticationProviderTest {
         }
 
     @Test
+    fun `access token expired, refresh exchange has succeeded, yet access token is missing`() =
+        runTest {
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                StsAuthenticationProvider.NO_ACCESS_TOKEN_ERROR_MSG,
+                response.error.message
+            )
+        }
+
+    @Test
+    fun `access token expired, refresh exchange has succeeded, api response is 500`() =
+        runTest {
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            httpClient.exception = internalServerErrorResponse
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertInstanceOf<ApiResponseException>(response.error.cause)
+        }
+
+    @Test
     fun `access token expired, activity fragment is null`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
