@@ -19,14 +19,14 @@ then
   echo "Running component checks without environment variables (local development)..."
   ./gradlew \
     :features:componentTestStagingDebug \
-    :features:componentTestProductionRelease \
+    :features:componentTestProductionDebug \
     --continue \
     --stacktrace
 else
   echo "Running component checks with environment variables (GitHub workflow)..."
   ./gradlew \
     :features:componentTestStagingDebug \
-    :features:componentTestProductionRelease \
+    :features:componentTestProductionDebug \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \

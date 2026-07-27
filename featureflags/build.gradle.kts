@@ -1,11 +1,9 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
-    id("uk.gov.onelogin.android-lib-config")
 }
 
 android {
