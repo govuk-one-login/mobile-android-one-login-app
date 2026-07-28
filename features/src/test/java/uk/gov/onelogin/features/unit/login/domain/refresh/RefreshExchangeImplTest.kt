@@ -157,6 +157,7 @@ class RefreshExchangeImplTest {
 
             assertEquals(RefreshExchangeResult.FirstTimeUser, result)
             assertThat(logger, hasSize(0))
+            verifyNoDownstreamInteractions()
         }
 
     @Test
@@ -295,6 +296,7 @@ class RefreshExchangeImplTest {
                 )
             )
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
+
         }
 
     @Test
@@ -574,6 +576,21 @@ class RefreshExchangeImplTest {
                     "    \"expires_in\": 1\n" +
                     "}"
             )
+        )
+    }
+
+    private fun verifyNoDownstreamInteractions() {
+        verifyNoInteractions(
+            appIntegrity,
+            dPoPManager,
+            getFromEncryptedSecureStore,
+            httpClient,
+            saveTokens,
+            saveTokenExpiry,
+            tokenRepository,
+            isRefreshTokenExpired,
+            httpClient,
+
         )
     }
 
