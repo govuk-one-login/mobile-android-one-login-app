@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtensionContext
 @ExperimentalCoroutinesApi
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 class CoroutinesTestExtension(
-    private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
+    val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : BeforeEachCallback,
     AfterEachCallback {
     /**

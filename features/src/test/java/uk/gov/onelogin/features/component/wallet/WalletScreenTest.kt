@@ -1,9 +1,11 @@
 package uk.gov.onelogin.features.component.wallet
 
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,19 +24,19 @@ import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
 class WalletScreenTest : FragmentActivityTestCase() {
     private val walletSdk: WalletSdk = mock()
     private val getWalletStoreId: GetWalletStoreId = mock()
-    private val walletAppDisplayer: WalletAppDisplayer = mock()
+    private val walletAppDisplayer: WalletAppDisplayer = {
+        Text("Stub Wallet SDK")
+    }
+    val viewModel = WalletScreenViewModel(
+        walletSdk = walletSdk,
+        getWalletStoreId = getWalletStoreId,
+        walletAppDisplayer = walletAppDisplayer,
+    )
 
     @Test
-    fun homeScreenDisplayed() = runTest{
+    fun homeScreenDisplayed() = runTest {
         whenever(getWalletStoreId.invoke()).thenReturn("test-store-id")
         whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
-
-        val viewModel = WalletScreenViewModel(
-            walletSdk,
-            getWalletStoreId,
-            walletAppDisplayer,
-            UnconfinedTestDispatcher()
-        )
 
         composeTestRule.setContent {
             WalletScreen(
@@ -42,10 +44,10 @@ class WalletScreenTest : FragmentActivityTestCase() {
                 setDisplayContentAsFullScreen = { true },
                 viewModel = viewModel
             )
-            composeTestRule.waitForIdle()
-            verify(walletAppDisplayer).WalletApp()
         }
 
-
+        composeTestRule
+            .onNodeWithText("Stub Wallet SDK")
+            .assertIsDisplayed()
     }
 }
