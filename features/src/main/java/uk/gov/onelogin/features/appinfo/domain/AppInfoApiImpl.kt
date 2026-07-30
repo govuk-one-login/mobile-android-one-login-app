@@ -2,12 +2,11 @@ package uk.gov.onelogin.features.appinfo.domain
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.NetworkingException
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import javax.inject.Inject
@@ -17,15 +16,9 @@ class AppInfoApiImpl
     constructor(
         @ApplicationContext
         private val context: Context,
-        private val httpClient: GenericHttpClient,
-        private val onlineChecker: OnlineChecker,
+        private val networkService: NetworkService,
     ) : AppInfoApi {
-        private val jsonDecoder = Json { ignoreUnknownKeys = true }
-
-        override suspend fun callApi(): ApiResponse {
-            if (!onlineChecker.isOnline()) {
-                return ApiResponse.Offline
-            }
+        override suspend fun callApi(): ApiResponse<AppInfoData, String, NetworkingException> {
             val endpoint = context.getString(R.string.appInfoEndpoint)
             val request =
                 ApiRequest.Get(
@@ -39,18 +32,6 @@ class AppInfoApiImpl
                             "X-Frame-Options" to "DENY",
                         ),
                 )
-            return when (val response = httpClient.makeRequest(request)) {
-                is ApiResponse.Success<*> ->
-                    try {
-                        val decodedResponse =
-                            jsonDecoder
-                                .decodeFromString<AppInfoData>(response.response.toString())
-                        ApiResponse.Success(decodedResponse)
-                    } catch (e: SerializationException) {
-                        ApiResponse.Failure(1, e)
-                    }
-
-                else -> response
-            }
+            return networkService.makeRequest<AppInfoData>(request)
         }
     }

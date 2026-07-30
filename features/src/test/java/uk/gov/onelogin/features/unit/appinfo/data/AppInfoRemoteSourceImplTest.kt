@@ -4,7 +4,10 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.network.api.ApiResponse
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.client.v2.TestResponseException
+import uk.gov.android.network.online.StubOnlineChecker
+import uk.gov.android.network.service.ApiResponseException
 import uk.gov.onelogin.features.appinfo.data.AppInfoRemoteSourceImpl
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
@@ -13,6 +16,7 @@ import kotlin.test.assertEquals
 
 class AppInfoRemoteSourceImplTest {
     private val appInfoApi: AppInfoApi = mock()
+    private val onlineChecker = StubOnlineChecker().apply { setOnline(true) }
     private val data =
         AppInfoData(
             apps =
@@ -24,14 +28,14 @@ class AppInfoRemoteSourceImplTest {
                     )
                 )
         )
-    private val exp = Exception("Error")
+    private val exception = ApiResponseException("500", TestResponseException.internalServerError)
 
-    private val sut = AppInfoRemoteSourceImpl(appInfoApi)
+    private val sut = AppInfoRemoteSourceImpl(appInfoApi, onlineChecker)
 
     @Test
     fun `successful api call`() =
         runTest {
-            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Success(data))
+            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Success(200, data))
             val result = sut.get()
             assertEquals(AppInfoRemoteState.Success(data), result)
         }
@@ -39,7 +43,7 @@ class AppInfoRemoteSourceImplTest {
     @Test
     fun `offline api call`() =
         runTest {
-            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Offline)
+            onlineChecker.setOnline(false)
             val result = sut.get()
             assertEquals(AppInfoRemoteState.Offline, result)
         }
@@ -47,10 +51,10 @@ class AppInfoRemoteSourceImplTest {
     @Test
     fun `failed api call`() =
         runTest {
-            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(500, exp))
+            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(exception, 500))
             val result = sut.get()
             assertEquals(
-                AppInfoRemoteState.Failure("Status: 500", exp),
+                AppInfoRemoteState.Failure("Status: 500", exception),
                 result
             )
         }
