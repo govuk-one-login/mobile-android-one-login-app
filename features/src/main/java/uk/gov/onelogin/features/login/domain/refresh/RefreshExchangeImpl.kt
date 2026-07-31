@@ -11,8 +11,9 @@ import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessio
 import uk.gov.android.authentication.login.refresh.SignedDPoP
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.v2.NetworkService
-import uk.gov.android.network.service.v2.NetworkServiceResponse
+import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
@@ -57,8 +58,6 @@ class RefreshExchangeImpl
         private val timeProvider: TimeProvider,
         private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
-        private val jsonDecoder = Json { ignoreUnknownKeys = true }
-
         // Initialise token and client attestation field
         private var refreshToken = ""
         private var idToken = ""
@@ -184,25 +183,21 @@ class RefreshExchangeImpl
                 }
             when (refreshExchangeResult) {
                 is ApiResponse.Success -> {
-                    // Decode tokens from response
-                    val decodedTokens =
-                        jsonDecoder.decodeFromString<RefreshExchangeApiResponse>(
-                            refreshExchangeResult.body,
-                        )
+                    val tokens = refreshExchangeResult.body
                     // Save new access and refresh tokens expiry
-                    saveTokensExpiryToOpenStore(decodedTokens)
+                    saveTokensExpiryToOpenStore(tokens)
                     val tokenResponse =
                         LoginTokens(
-                            tokenType = decodedTokens.tokenType,
-                            accessToken = decodedTokens.accessToken,
+                            tokenType = tokens.tokenType,
+                            accessToken = tokens.accessToken,
                             accessTokenExpirationTime =
-                                timeProvider.calculateExpiryTime(decodedTokens.expiresIn),
+                                timeProvider.calculateExpiryTime(tokens.expiresIn),
                             idToken = this.idToken,
                         )
                     // Update Token Repository (memory)
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
-                    saveTokens.save(decodedTokens.refreshToken)
+                    saveTokens.save(tokens.refreshToken)
                     handleResult(RefreshExchangeResult.Success)
                 }
                 is ApiResponse.Failure -> {
@@ -219,7 +214,7 @@ class RefreshExchangeImpl
         suspend fun retrieveNewTokens(
             refreshToken: String,
             clientAttestation: String,
-        ): NetworkServiceResponse {
+        ): ApiResponse<RefreshExchangeApiResponse, String, NetworkingException> {
             // CGet the required URL
             val authUrl =
                 context.getString(
@@ -245,7 +240,7 @@ class RefreshExchangeImpl
                                     pop = pop,
                                 )
 
-                            return networkService.makeRequest(
+                            return networkService.makeRequest<RefreshExchangeApiResponse>(
                                 apiRequest = request,
                             )
                         }
