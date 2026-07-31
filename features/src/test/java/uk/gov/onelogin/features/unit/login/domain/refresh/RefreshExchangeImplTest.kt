@@ -30,6 +30,7 @@ import uk.gov.android.network.client.v2.GenericHttpResponse
 import uk.gov.android.network.client.v2.GenericResponseException
 import uk.gov.android.network.client.v2.StubHttpClient
 import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.service.v2.DefaultNetworkService
 import uk.gov.android.network.service.v2.NetworkService
@@ -55,10 +56,10 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl
-import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.ATTESTATION_POP_GENERATE_ERROR
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
+import uk.gov.onelogin.features.network.provider.ClientAttestationProviderImpl
 import uk.gov.onelogin.features.network.provider.DPoPProviderImpl
 import java.util.stream.Stream
 import kotlin.test.assertEquals
@@ -69,12 +70,13 @@ class RefreshExchangeImplTest {
     private val context: Context = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val isRefreshTokenExpired: IsTokenExpired = mock()
+    private val appIntegrity: AppIntegrity = mock()
     private val dPoPManager: DemonstratingProofOfPossessionManager = mock()
     private val httpClient: StubHttpClient = StubHttpClient()
     private val networkService: NetworkService = DefaultNetworkService(httpClient).apply {
+        setClientAttestationProvider(ClientAttestationProviderImpl(appIntegrity))
         setDPoPProvider(DPoPProviderImpl(context, dPoPManager))
     }
-    private val appIntegrity: AppIntegrity = mock()
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore = mock()
     private val saveTokenExpiry: SaveTokenExpiry = mock()
     private val tokenRepository: TokenRepository = mock()
@@ -87,7 +89,6 @@ class RefreshExchangeImplTest {
         getPersistentId = getPersistentId,
         isRefreshTokenExpired = isRefreshTokenExpired,
         networkService = networkService,
-        appIntegrity = appIntegrity,
         getFromEncryptedSecureStore = getFromEncryptedSecureStore,
         saveTokenExpiry = saveTokenExpiry,
         tokenRepository = tokenRepository,
@@ -254,30 +255,19 @@ class RefreshExchangeImplTest {
         }
 
     @Test
-    fun `given failure with generating app integrity PoP with exception, then result is re-auth required`() =
-        runTest {
-            val popError = Exception("PoP generation error")
-            whenever(appIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Failure("Failure", popError))
-
-            val result = getTokens()
-
-            assertErrorLogged("Failure", Exception::class.java)
-            assertNothingSaved()
-            assertEquals(RefreshExchangeResult.ReauthRequired, result)
-        }
-
-    @Test
-    fun `given failure with generating app integrity PoP without exception, then result is re-auth required`() =
+    fun `given failure with generating app integrity PoP, then result is client attestation failure`() =
         runTest {
             whenever(appIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Failure("Failure"))
 
             val result = getTokens()
 
-            assertErrorLogged(ATTESTATION_POP_GENERATE_ERROR)
+            assertErrorLogged(
+                "Attestation provider failed to fetch client attestation",
+                ClientAttestationException::class.java
+            )
             assertNothingSaved()
-            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+            assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
         }
 
     @Test
