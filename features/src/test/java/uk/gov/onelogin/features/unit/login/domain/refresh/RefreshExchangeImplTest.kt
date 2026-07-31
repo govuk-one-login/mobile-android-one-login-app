@@ -7,8 +7,8 @@ import kotlinx.io.IOException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.anything
-import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.instanceOf
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Named.named
 import org.junit.jupiter.api.Test
@@ -30,6 +30,7 @@ import uk.gov.android.network.client.v2.GenericHttpResponse
 import uk.gov.android.network.client.v2.GenericResponseException
 import uk.gov.android.network.client.v2.StubHttpClient
 import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.ServiceException
 import uk.gov.android.network.service.v2.DefaultNetworkService
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.logging.api.v3.LogLevel
@@ -57,6 +58,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Compani
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl.Companion.EMPTY_MSG
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
+import uk.gov.onelogin.features.network.provider.DPoPProviderImpl
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
@@ -66,10 +68,12 @@ class RefreshExchangeImplTest {
     private val context: Context = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val isRefreshTokenExpired: IsTokenExpired = mock()
-    private val httpClient: StubHttpClient = StubHttpClient()
-    private val networkService: NetworkService = DefaultNetworkService(httpClient)
-    private val appIntegrity: AppIntegrity = mock()
     private val dPoPManager: DemonstratingProofOfPossessionManager = mock()
+    private val httpClient: StubHttpClient = StubHttpClient()
+    private val networkService: NetworkService = DefaultNetworkService(httpClient).apply {
+        setDPoPProvider(DPoPProviderImpl(context, dPoPManager))
+    }
+    private val appIntegrity: AppIntegrity = mock()
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore = mock()
     private val saveTokenExpiry: SaveTokenExpiry = mock()
     private val tokenRepository: TokenRepository = mock()
@@ -83,7 +87,6 @@ class RefreshExchangeImplTest {
         isRefreshTokenExpired = isRefreshTokenExpired,
         networkService = networkService,
         appIntegrity = appIntegrity,
-        dPoPManager = dPoPManager,
         getFromEncryptedSecureStore = getFromEncryptedSecureStore,
         saveTokenExpiry = saveTokenExpiry,
         tokenRepository = tokenRepository,
@@ -225,7 +228,7 @@ class RefreshExchangeImplTest {
 
             val result = getTokens()
 
-            assertErrorLogged("Failure")
+            assertErrorLogged("DPoP provider failed to fetch refresh DPoP proof", ServiceException::class.java)
             assertNothingSaved()
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
@@ -239,7 +242,7 @@ class RefreshExchangeImplTest {
 
             val result = getTokens()
 
-            assertErrorLogged("Failure", exp)
+            assertErrorLogged("DPoP provider failed to fetch refresh DPoP proof")
             assertNothingSaved()
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
@@ -253,7 +256,7 @@ class RefreshExchangeImplTest {
 
             val result = getTokens()
 
-            assertErrorLogged("Failure", popError)
+            assertErrorLogged("Failure", Exception::class.java)
             assertNothingSaved()
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
@@ -369,10 +372,10 @@ class RefreshExchangeImplTest {
 
     private fun assertErrorLogged(
         message: String,
-        exception: Exception? = null
+        exceptionClass: Class<*>? = null,
     ) {
-        val exceptionMatcher = if (exception != null) {
-            hasException(equalTo(exception))
+        val exceptionMatcher = if (exceptionClass != null) {
+            hasException(instanceOf(exceptionClass))
         } else {
             anything()
         }

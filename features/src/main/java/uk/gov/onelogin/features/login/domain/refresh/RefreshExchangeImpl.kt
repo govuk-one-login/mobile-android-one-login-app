@@ -5,10 +5,7 @@ import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
-import uk.gov.android.authentication.login.refresh.SignedDPoP
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.service.NetworkingException
@@ -49,7 +46,6 @@ class RefreshExchangeImpl
         private val isRefreshTokenExpired: IsTokenExpired,
         private val networkService: NetworkService,
         private val appIntegrity: AppIntegrity,
-        private val dPoPManager: DemonstratingProofOfPossessionManager,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val saveTokenExpiry: SaveTokenExpiry,
         private val tokenRepository: TokenRepository,
@@ -221,50 +217,35 @@ class RefreshExchangeImpl
                     R.string.stsUrl,
                     context.getString(R.string.tokenExchangeEndpoint),
                 )
-            // Attempt to generate DPoP
-            val dPoP = dPoPManager.generateDPoP(authUrl)
             // Attempt to generate PoP
             val pop = appIntegrity.getProofOfPossession()
             // Throw error if DPoP couldn't be generated
-            when (dPoP) {
-                is SignedDPoP.Success -> {
-                    when (pop) {
-                        is SignedPoP.Success -> {
-                            // If all successful - continue to make the tokens exchange request
-                            val request =
-                                createApiRequestPost(
-                                    authUrl = authUrl,
-                                    refreshToken = refreshToken,
-                                    clientAttestation = clientAttestation,
-                                    dPoP = dPoP,
-                                    pop = pop,
-                                )
+            when (pop) {
+                is SignedPoP.Success -> {
+                    // If all successful - continue to make the tokens exchange request
+                    val request =
+                        createApiRequestPost(
+                            authUrl = authUrl,
+                            refreshToken = refreshToken,
+                            clientAttestation = clientAttestation,
+                            pop = pop,
+                        )
 
-                            return networkService.makeRequest<RefreshExchangeApiResponse>(
-                                apiRequest = request,
-                            )
-                        }
-                        is SignedPoP.Failure -> {
-                            val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
-                            logger.error(
-                                REFRESH_ERROR_TAG,
-                                pop.reason,
-                                pop.error ?: fallbackExp,
-                            )
-                            // Throw error if Client Attestation PoP couldn't be generated
-                            throw fallbackExp
-                        }
+                    return networkService.makeRequest<RefreshExchangeApiResponse>(
+                        apiRequest = request,
+                    ) {
+                        withRefreshDPoP = true
                     }
                 }
-
-                is SignedDPoP.Failure -> {
-                    val fallbackExp = RefreshExchangeException(DPOP_GENERATE_ERROR)
+                is SignedPoP.Failure -> {
+                    val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
                     logger.error(
                         REFRESH_ERROR_TAG,
-                        dPoP.reason,
-                        dPoP.error ?: fallbackExp,
+                        pop.reason,
+                        pop.error ?: fallbackExp,
                     )
-                    throw RefreshExchangeException(DPOP_GENERATE_ERROR)
+                    // Throw error if Client Attestation PoP couldn't be generated
+                    throw fallbackExp
                 }
             }
         }
@@ -273,7 +254,6 @@ class RefreshExchangeImpl
             authUrl: String,
             refreshToken: String,
             clientAttestation: String,
-            dPoP: SignedDPoP.Success,
             pop: SignedPoP.Success,
         ): ApiRequest =
             ApiRequest.Post(
@@ -294,7 +274,6 @@ class RefreshExchangeImpl
                 headers =
                     listOf(
                         CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
-                        DPOP_HEADER_LABEL to dPoP.popJwt,
                         CLIENT_ATTESTATION_HEADER_LABEL to clientAttestation,
                         POP_CLIENT_ATTESTATION_HEADER_LABEL to pop.popJwt,
                     ),
@@ -338,14 +317,12 @@ class RefreshExchangeImpl
         companion object {
             const val REFRESH_ERROR_TAG = "Refresh Exchange Tokens Error"
             const val EMPTY_MSG = "Refresh Token Exchange Error - Error message was null."
-            const val DPOP_GENERATE_ERROR = "Couldn't generate DPoP."
             const val ATTESTATION_POP_GENERATE_ERROR = "Couldn't generate App Integrity PoP."
             private const val CONTENT_TYPE_LABEL = "Content-Type"
             private const val CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded"
             private const val GRANT_TYPE_LABEL = "grant_type"
             private const val GRANT_TYPE_VALUE = "refresh_token"
             private const val REFRESH_TOKEN_LABEL = "refresh_token"
-            private const val DPOP_HEADER_LABEL = "DPop"
             private const val CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation"
             private const val POP_CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation-PoP"
 
