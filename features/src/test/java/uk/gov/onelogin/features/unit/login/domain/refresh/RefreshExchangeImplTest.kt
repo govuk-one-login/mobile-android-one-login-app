@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.unit.login.domain.refresh
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.IOException
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.anything
@@ -25,8 +26,12 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.client.v2.GenericHttpResponse
+import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.client.v2.StubHttpClient
+import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.v2.DefaultNetworkService
+import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
@@ -61,7 +66,8 @@ class RefreshExchangeImplTest {
     private val context: Context = mock()
     private val getPersistentId: GetPersistentId = mock()
     private val isRefreshTokenExpired: IsTokenExpired = mock()
-    private val httpClient: GenericHttpClient = mock()
+    private val httpClient: StubHttpClient = StubHttpClient()
+    private val networkService: NetworkService = DefaultNetworkService(httpClient)
     private val appIntegrity: AppIntegrity = mock()
     private val dPoPManager: DemonstratingProofOfPossessionManager = mock()
     private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore = mock()
@@ -75,7 +81,7 @@ class RefreshExchangeImplTest {
         context = context,
         getPersistentId = getPersistentId,
         isRefreshTokenExpired = isRefreshTokenExpired,
-        httpClient = httpClient,
+        networkService = networkService,
         appIntegrity = appIntegrity,
         dPoPManager = dPoPManager,
         getFromEncryptedSecureStore = getFromEncryptedSecureStore,
@@ -114,8 +120,7 @@ class RefreshExchangeImplTest {
             .thenReturn(SignedPoP.Success("signedPoP"))
         whenever(validateWalletStoreId.invoke())
             .thenReturn(true)
-        whenever(httpClient.makeRequest(any()))
-            .thenReturn(refreshApiSuccessResponse)
+        httpClient.response = refreshApiSuccessResponse
     }
 
     @Test
@@ -267,50 +272,29 @@ class RefreshExchangeImplTest {
         }
 
     @Test
-    fun `given network api response failure with message, then result is re-auth required`() =
+    fun `given network api response failure, then result is re-auth required`() =
         runTest {
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception("error")
-                    )
+            httpClient.exception =
+                GenericResponseException(
+                    TestHttpResponse.internalServerError,
+                    IllegalStateException()
                 )
 
             val result = getTokens()
 
-            assertErrorLogged("error")
+            assertErrorLogged("API responded with 500")
             assertNothingSaved()
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
 
     @Test
-    fun `given network api response failure without message, then result is re-auth required`() =
+    fun `given network error, result is re-auth required`() =
         runTest {
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(
-                    ApiResponse.Failure(
-                        status = 0,
-                        error = Exception()
-                    )
-                )
+            httpClient.exception = IOException()
 
             val result = getTokens()
 
-            assertErrorLogged(EMPTY_MSG)
-            assertNothingSaved()
-            assertEquals(RefreshExchangeResult.ReauthRequired, result)
-        }
-
-    @Test
-    fun `given network error without message, result is re-auth required`() =
-        runTest {
-            whenever(httpClient.makeRequest(any()))
-                .thenThrow(RuntimeException())
-
-            val result = getTokens()
-
-            assertErrorLogged(EMPTY_MSG)
+            assertErrorLogged("Network transport error")
             assertNothingSaved()
             assertEquals(RefreshExchangeResult.ReauthRequired, result)
         }
@@ -318,27 +302,12 @@ class RefreshExchangeImplTest {
     @Test
     fun `given api responds with null refresh token, result is success`() =
         runTest {
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(refreshApiNoRefreshTokenResponse)
+            httpClient.response = refreshApiNoRefreshTokenResponse
 
             val result = getTokens()
 
             assertLoginTokensSaved(expiriesSaved = 1)
             assertEquals(RefreshExchangeResult.Success, result)
-        }
-
-    // This test is just to increase test coverage, the ApiResponse.Offline and ApiResponse.Loading are not used from the network package at all
-    @Test
-    fun `network error - api response loading`() =
-        runTest {
-            whenever(httpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Offline)
-
-            val result = getTokens()
-
-            assertNothingLogged()
-            assertNothingSaved()
-            assertEquals(RefreshExchangeResult.OfflineNetwork, result)
         }
 
     @ParameterizedTest
@@ -429,7 +398,8 @@ class RefreshExchangeImplTest {
             idToken = "testIdToken",
         )
 
-        private val refreshApiSuccessResponse = ApiResponse.Success(
+        private val refreshApiSuccessResponse = GenericHttpResponse(
+            200,
             "{\n" +
                     "    \"access_token\": \"accessToken\",\n" +
                     "    \"refresh_token\": \"refreshToken\",\n" +
@@ -437,7 +407,8 @@ class RefreshExchangeImplTest {
                     "    \"expires_in\": 1\n" +
                     "}"
         )
-        private val refreshApiNoRefreshTokenResponse = ApiResponse.Success(
+        private val refreshApiNoRefreshTokenResponse = GenericHttpResponse(
+            200,
             "{\n" +
                     "    \"access_token\": \"accessToken\",\n" +
                     "    \"token_type\": \"Bearer\",\n" +

@@ -9,9 +9,10 @@ import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.SignedDPoP
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.v2.NetworkServiceResponse
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
@@ -45,7 +46,7 @@ class RefreshExchangeImpl
         private val getPersistentId: GetPersistentId,
         @param:RefreshToken
         private val isRefreshTokenExpired: IsTokenExpired,
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
         private val appIntegrity: AppIntegrity,
         private val dPoPManager: DemonstratingProofOfPossessionManager,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
@@ -182,11 +183,11 @@ class RefreshExchangeImpl
                     return
                 }
             when (refreshExchangeResult) {
-                is ApiResponse.Success<*> -> {
+                is ApiResponse.Success -> {
                     // Decode tokens from response
                     val decodedTokens =
                         jsonDecoder.decodeFromString<RefreshExchangeApiResponse>(
-                            refreshExchangeResult.response.toString(),
+                            refreshExchangeResult.body,
                         )
                     // Save new access and refresh tokens expiry
                     saveTokensExpiryToOpenStore(decodedTokens)
@@ -207,14 +208,10 @@ class RefreshExchangeImpl
                 is ApiResponse.Failure -> {
                     logger.error(
                         REFRESH_ERROR_TAG,
-                        refreshExchangeResult.error.message ?: EMPTY_MSG,
+                        refreshExchangeResult.error.message,
                         refreshExchangeResult.error,
                     )
                     handleResult(RefreshExchangeResult.ReauthRequired)
-                }
-                // Loading and Offline are not use by the HttpClient so will never end up here
-                else -> {
-                    handleResult(RefreshExchangeResult.OfflineNetwork)
                 }
             }
         }
@@ -222,7 +219,7 @@ class RefreshExchangeImpl
         suspend fun retrieveNewTokens(
             refreshToken: String,
             clientAttestation: String,
-        ): ApiResponse {
+        ): NetworkServiceResponse {
             // CGet the required URL
             val authUrl =
                 context.getString(
@@ -248,7 +245,7 @@ class RefreshExchangeImpl
                                     pop = pop,
                                 )
 
-                            return httpClient.makeRequest(
+                            return networkService.makeRequest(
                                 apiRequest = request,
                             )
                         }
