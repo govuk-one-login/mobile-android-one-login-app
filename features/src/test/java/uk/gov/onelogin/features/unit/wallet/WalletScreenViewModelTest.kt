@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.RegisterExtension
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -16,7 +17,6 @@ import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.wallet.ui.WalletScreenState
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
 import kotlin.test.assertIs
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -74,6 +74,31 @@ class WalletScreenViewModelTest {
                 skipItems(1) // Display
             }
         }
+
+    @Test
+    fun `crashes with IllegalArgumentException when wallet store ID is null`() {
+
+        val thrown = assertThrows<Exception> {
+            runTest {
+                WalletScreenViewModel(
+                    walletSdk = walletSdk,
+                    getWalletStoreId = { null },
+                    walletAppDisplayer = walletAppDisplayer,
+                )
+                mainScheduler.advanceUntilIdle()
+            }
+        }
+
+        val cause = thrown.suppressedExceptions
+            .filterIsInstance<IllegalArgumentException>()
+            .firstOrNull()
+            ?: assertIs<IllegalArgumentException>(thrown)
+
+        assertEquals(
+            "Wallet Store ID must not be null. This is guaranteed by ValidateWalletStoreId",
+            cause.message,
+        )
+    }
 
     companion object {
         val loadingTime = 1.seconds

@@ -7,10 +7,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
@@ -27,17 +27,23 @@ class WalletScreenTest : FragmentActivityTestCase() {
     private val walletAppDisplayer: WalletAppDisplayer = {
         Text("Stub Wallet SDK")
     }
-    val viewModel = WalletScreenViewModel(
-        walletSdk = walletSdk,
-        getWalletStoreId = getWalletStoreId,
-        walletAppDisplayer = walletAppDisplayer,
-    )
+
+    private val viewModel by lazy {
+        WalletScreenViewModel(
+            walletSdk = walletSdk,
+            getWalletStoreId = getWalletStoreId,
+            walletAppDisplayer = walletAppDisplayer,
+        )
+    }
+
+    @Before
+    fun setUp() = runTest {
+        whenever(getWalletStoreId.invoke()).thenReturn("test-store-id")
+        whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
+    }
 
     @Test
     fun homeScreenDisplayed() = runTest {
-        whenever(getWalletStoreId.invoke()).thenReturn("test-store-id")
-        whenever(walletSdk.displayAsFullScreen).thenReturn(MutableStateFlow(true))
-
         composeTestRule.setContent {
             WalletScreen(
                 false,
@@ -50,4 +56,6 @@ class WalletScreenTest : FragmentActivityTestCase() {
             .onNodeWithText("Stub Wallet SDK")
             .assertIsDisplayed()
     }
+
+
 }

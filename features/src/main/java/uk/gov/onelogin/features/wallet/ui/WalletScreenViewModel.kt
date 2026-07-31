@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayer
 import javax.inject.Inject
 
@@ -43,14 +44,27 @@ class WalletScreenViewModel
     }
 
     /**
-     * Retrieves the wallet store ID and sets it on the SDK before returning the Wallet Sdk for Initialisation.
+     * Retrieves the wallet store ID and configures the Wallet SDK before display.
      *
+     * Crashes with [IllegalArgumentException] if the wallet store ID is null. This should never
+     * happen in normal operation — a null value indicates that [ValidateWalletStoreId] failed to
+     * gate the user's session correctly. The crash is intentional, giving [ValidateWalletStoreId]
+     * another opportunity to run on the next app start.
+     *
+     * Must be called before [WalletSdk.WalletApp] is invoked.
+     *
+     * @return the [WalletAppDisplayer] ready to render the Wallet SDK.
+     * @throws IllegalArgumentException if the wallet store ID is null.
      */
     private suspend fun prepareWalletSdkForDisplay(): WalletAppDisplayer {
         val walletStoreId = getWalletStoreId()
 
+        requireNotNull(walletStoreId) {
+            "Wallet Store ID must not be null. This is guaranteed by ValidateWalletStoreId"
+        }
+
         // Must be called before WalletSdk.WalletApp()
-        walletStoreId?.let { walletSdk.setWalletStoreId(it) }
+        walletSdk.setWalletStoreId(walletStoreId)
 
         return walletAppDisplayer
     }
