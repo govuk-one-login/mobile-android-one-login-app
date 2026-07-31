@@ -1,6 +1,7 @@
 package uk.gov.onelogin.login.appintegrity
 
 import android.content.Context
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,7 +14,6 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCalle
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.logging.api.Logger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
@@ -25,49 +25,34 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
 @SuppressWarnings("kotlin:S6517")
 @Module
 @InstallIn(ViewModelComponent::class)
-object AppIntegrityModule {
-    @Provides
-    fun provideAppIntegrityConfig(
-        attestationCaller: AttestationCaller,
-        appChecker: AppChecker,
-        keyStoreManager: KeyStoreManager,
-    ): AppIntegrityConfiguration =
-        AppIntegrityConfiguration(
-            attestationCaller = attestationCaller,
-            appChecker = appChecker,
-            keyStoreManager = keyStoreManager,
-        )
+interface AppIntegrityModule {
+    @Binds
+    fun attestationCaller(
+        attestationApiCall: AttestationApiCall,
+    ): AttestationCaller
 
-    @Provides
-    fun provideFirebaseTokenManager(
-        logger: Logger,
-        config: AppIntegrityConfiguration,
-    ): AppIntegrityManager = FirebaseAppIntegrityManager(logger, config)
-
-    @Suppress("LongParameterList")
-    @Provides
+    @Binds
     fun provideAppIntegrityCheck(
-        @ApplicationContext
-        context: Context,
-        featureFlags: FeatureFlags,
-        appCheck: AppIntegrityManager,
-        saveToOpenSecureStore: SaveToOpenSecureStore,
-        getFromOpenSecureStore: GetFromOpenSecureStore,
-        retryCounter: Counter
-    ): AppIntegrity =
-        AppIntegrityImpl(
-            context,
-            featureFlags,
-            appCheck,
-            saveToOpenSecureStore,
-            getFromOpenSecureStore,
-            retryCounter
-        )
+        appIntegrityImpl: AppIntegrityImpl,
+    ): AppIntegrity
 
-    @Provides
-    fun provideAssertionApiCall(
-        @ApplicationContext
-        context: Context,
-        genericHttpClient: GenericHttpClient,
-    ): AttestationCaller = AttestationApiCall(context, genericHttpClient)
+    companion object {
+        @Provides
+        fun provideAppIntegrityConfig(
+            attestationCaller: AttestationCaller,
+            appChecker: AppChecker,
+            keyStoreManager: KeyStoreManager,
+        ): AppIntegrityConfiguration =
+            AppIntegrityConfiguration(
+                attestationCaller = attestationCaller,
+                appChecker = appChecker,
+                keyStoreManager = keyStoreManager,
+            )
+
+        @Provides
+        fun provideFirebaseTokenManager(
+            logger: Logger,
+            config: AppIntegrityConfiguration,
+        ): AppIntegrityManager = FirebaseAppIntegrityManager(logger, config)
+    }
 }
