@@ -21,7 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.robolectric.ParameterizedRobolectricTestRunner
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
@@ -33,10 +32,8 @@ import uk.gov.onelogin.features.settings.ui.ossl.OsslScreen
 import uk.gov.onelogin.features.settings.ui.ossl.previewLibraries
 import kotlin.test.assertTrue
 
-@RunWith(ParameterizedRobolectricTestRunner::class)
-class OsslScreenTest(
-    val param1: Int,
-) : FragmentActivityTestCase() {
+@RunWith(AndroidJUnit4::class)
+class OsslScreenTest : FragmentActivityTestCase() {
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var analyticsViewModel: OsslAnalyticsViewModel
     private lateinit var crashLogger: Logger
@@ -52,11 +49,6 @@ class OsslScreenTest(
     @After
     fun tearDown() {
         Intents.release()
-    }
-    companion object {
-        @JvmStatic
-        @ParameterizedRobolectricTestRunner.Parameters
-        fun data() = (1..100).map { it }
     }
 
     @Test
