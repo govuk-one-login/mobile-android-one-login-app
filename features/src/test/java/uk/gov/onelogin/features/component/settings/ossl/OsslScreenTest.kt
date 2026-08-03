@@ -2,13 +2,13 @@ package uk.gov.onelogin.features.component.settings.ossl
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -21,17 +21,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.robolectric.ParameterizedRobolectricTestRunner
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import uk.gov.onelogin.features.settings.ui.ossl.OsslAboutLibrariesScreen
 import uk.gov.onelogin.features.settings.ui.ossl.OsslAnalyticsViewModel
 import uk.gov.onelogin.features.settings.ui.ossl.OsslScreen
+import uk.gov.onelogin.features.settings.ui.ossl.previewLibraries
 import kotlin.test.assertTrue
 
-@RunWith(AndroidJUnit4::class)
-class OsslScreenTest : FragmentActivityTestCase() {
+@RunWith(ParameterizedRobolectricTestRunner::class)
+class OsslScreenTest(
+    val param1: Int,
+) : FragmentActivityTestCase() {
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var analyticsViewModel: OsslAnalyticsViewModel
     private lateinit var crashLogger: Logger
@@ -47,6 +52,11 @@ class OsslScreenTest : FragmentActivityTestCase() {
     @After
     fun tearDown() {
         Intents.release()
+    }
+    companion object {
+        @JvmStatic
+        @ParameterizedRobolectricTestRunner.Parameters
+        fun data() = (1..100).map { it }
     }
 
     @Test
@@ -68,13 +78,17 @@ class OsslScreenTest : FragmentActivityTestCase() {
     fun checkALinkOpensTheCorrectUrl() {
         val apacheUrl = Uri.parse("https://spdx.org/licenses/Apache-2.0.html")
         composeTestRule.setContent {
-            OsslScreen(analyticsViewModel)
+            OsslAboutLibrariesScreen(
+                padding = PaddingValues(),
+                libraries = previewLibraries(),
+                onClick = { _, _ -> },
+                onLogError = { _, _, _ -> },
+            )
         }
 
         composeTestRule.apply {
-            waitUntil { onAllNodes(hasText("Apache License 2.0", true))[0].isDisplayed() }
-            onAllNodes(hasText("Apache License 2.0", true))[0]
-                .performScrollTo()
+            onAllNodes(hasText("Apache License 2.0", true))
+                .onFirst()
                 .performClick()
         }
 
