@@ -14,16 +14,13 @@ import uk.gov.android.authentication.integrity.appcheck.model.AttestationRespons
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.android.authentication.json.jwk.JWK
 import uk.gov.android.network.client.v2.GenericHttpResponse
-import uk.gov.android.network.client.v2.GenericResponseException
-import uk.gov.android.network.client.v2.StubHttpClient
-import uk.gov.android.network.service.v2.DefaultNetworkService
+import uk.gov.android.network.service.v2.StubNetworkService
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
 
 class AttestationApiCallTest {
     private val context: Context = mock()
-    private val httpClient = StubHttpClient()
-    private val networkService = DefaultNetworkService(httpClient)
+    private val networkService = StubNetworkService()
 
     private lateinit var assertionApiCall: AttestationCaller
 
@@ -101,7 +98,7 @@ class AttestationApiCallTest {
     @Test
     fun `call() - Json failure`() =
         runTest {
-            httpClient.response = GenericHttpResponse(200, INVALID_CLIENT_ATTESTATION)
+            networkService.setSuccessResponse(200, INVALID_CLIENT_ATTESTATION)
 
             val result = assertionApiCall.call("", jwk)
 
@@ -110,16 +107,13 @@ class AttestationApiCallTest {
     private fun givenApiSuccess(
         body: String = VALID_CLIENT_ATTESTATION,
     ) {
-        httpClient.response = GenericHttpResponse(200, body)
+        networkService.setSuccessResponse(200, body)
     }
 
     private fun givenApiFailure(
         status: Int
     ) {
-        httpClient.exception = GenericResponseException(
-            GenericHttpResponse(status, "error"),
-            IllegalStateException()
-        )
+        networkService.setFailureResponse(GenericHttpResponse(status, "error"))
     }
     private fun AttestationResponse.assertFailure(
         expectedType: AppIntegrityException.AppIntegrityErrorType,

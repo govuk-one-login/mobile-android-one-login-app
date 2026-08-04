@@ -10,18 +10,14 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
-import uk.gov.android.network.client.v2.GenericHttpResponse
-import uk.gov.android.network.client.v2.StubHttpClient
-import uk.gov.android.network.client.v2.TestResponseException
-import uk.gov.android.network.service.v2.DefaultNetworkService
-import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.v2.StubNetworkService
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApiImpl
 
 class AppInfoApiImplTest {
     private val context: Context = mock()
-    private val httpClient = StubHttpClient()
-    private val networkService: NetworkService = DefaultNetworkService(httpClient)
+    private val networkService = StubNetworkService()
     private val apiResponse =
         ClassLoader
             .getSystemResource("api/appInfoResponseValue.json")
@@ -40,7 +36,6 @@ class AppInfoApiImplTest {
                     )
             )
         )
-    private val exception = TestResponseException.internalServerError
     private lateinit var request: ApiRequest
 
     private val sut =
@@ -73,7 +68,7 @@ class AppInfoApiImplTest {
     @Test
     fun `app info call successful`(): Unit =
         runTest {
-            httpClient.response = GenericHttpResponse(200, apiResponse)
+            networkService.setSuccessResponse(200, apiResponse)
             val result = sut.callApi()
             assertEquals(data, result)
         }
@@ -81,7 +76,7 @@ class AppInfoApiImplTest {
     @Test
     fun `app info call fail`() =
         runTest {
-            httpClient.exception = exception
+            networkService.setFailureResponse(TestHttpResponse.internalServerError)
             val result = sut.callApi()
             assertInstanceOf<ApiResponse.Failure<*, *>>(result)
             assertEquals(result.status, 500)

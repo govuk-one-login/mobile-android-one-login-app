@@ -8,10 +8,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.json.jwt.JwtVerifier
-import uk.gov.android.network.client.v2.GenericHttpResponse
-import uk.gov.android.network.client.v2.StubHttpClient
-import uk.gov.android.network.client.v2.TestResponseException
-import uk.gov.android.network.service.v2.DefaultNetworkService
+import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.v2.StubNetworkService
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
@@ -25,8 +23,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class VerifyIdTokenTest {
-    private val stubHttpClient = StubHttpClient()
-    private val networkService = DefaultNetworkService(stubHttpClient)
+    private val networkService = StubNetworkService()
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var extractEmail: ExtractEmail
@@ -85,7 +82,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            stubHttpClient.exception = TestResponseException.internalServerError
+            networkService.setFailureResponse(TestHttpResponse.internalServerError)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -100,7 +97,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -115,7 +112,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -130,7 +127,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, "not a json"))
+            networkService.setSuccessResponse(200, "not a json")
             buildVerifyToken()
 
             val result = verifyIdToken("not an id token", "testUrl")
@@ -149,7 +146,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, "not a json"))
+            networkService.setSuccessResponse(200, "not a json")
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -170,7 +167,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -185,7 +182,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn(null)
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(GenericHttpResponse(200, idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -199,7 +196,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn(null)
-            setupHttpStub(GenericHttpResponse(200, idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -213,16 +210,12 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("id")
-            setupHttpStub(GenericHttpResponse(200, idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
             assertFalse(result)
         }
-
-    private fun setupHttpStub(response: GenericHttpResponse) {
-        stubHttpClient.response = response
-    }
 
     private fun buildVerifyToken() {
         verifyIdToken =
