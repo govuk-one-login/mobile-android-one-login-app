@@ -17,7 +17,7 @@ concurrency:
 jobs:
   dependency-submission-job:
     name: Generate and submit dependency graph
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       packages: read

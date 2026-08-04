@@ -13,7 +13,7 @@ concurrency:
 jobs:
   set-up:
     name: Set-up and generate version name and version code
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     outputs:
@@ -88,7 +88,7 @@ jobs:
     name: Bundle and publish app in Production and Integration for release
     needs:
       - set-up
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         environment: [ "integration", "production" ]

@@ -117,6 +117,7 @@ dependencies {
         libs.androidx.navigation.testing,
         libs.androidx.test.orchestrator,
         libs.logging.test,
+        testFixtures(libs.network),
         testFixtures(libs.logging.api),
     ).forEach(::testImplementation)
 

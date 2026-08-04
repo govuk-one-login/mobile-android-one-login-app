@@ -5,13 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import kotlinx.serialization.json.Json
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
-import uk.gov.android.authentication.login.refresh.SignedDPoP
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.NetworkingException
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.RefreshExchangeApiResponse
@@ -45,9 +44,8 @@ class RefreshExchangeImpl
         private val getPersistentId: GetPersistentId,
         @param:RefreshToken
         private val isRefreshTokenExpired: IsTokenExpired,
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
         private val appIntegrity: AppIntegrity,
-        private val dPoPManager: DemonstratingProofOfPossessionManager,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val saveTokenExpiry: SaveTokenExpiry,
         private val tokenRepository: TokenRepository,
@@ -56,8 +54,6 @@ class RefreshExchangeImpl
         private val timeProvider: TimeProvider,
         private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
-        private val jsonDecoder = Json { ignoreUnknownKeys = true }
-
         // Initialise token and client attestation field
         private var refreshToken = ""
         private var idToken = ""
@@ -182,39 +178,31 @@ class RefreshExchangeImpl
                     return
                 }
             when (refreshExchangeResult) {
-                is ApiResponse.Success<*> -> {
-                    // Decode tokens from response
-                    val decodedTokens =
-                        jsonDecoder.decodeFromString<RefreshExchangeApiResponse>(
-                            refreshExchangeResult.response.toString(),
-                        )
+                is ApiResponse.Success -> {
+                    val tokens = refreshExchangeResult.body
                     // Save new access and refresh tokens expiry
-                    saveTokensExpiryToOpenStore(decodedTokens)
+                    saveTokensExpiryToOpenStore(tokens)
                     val tokenResponse =
                         LoginTokens(
-                            tokenType = decodedTokens.tokenType,
-                            accessToken = decodedTokens.accessToken,
+                            tokenType = tokens.tokenType,
+                            accessToken = tokens.accessToken,
                             accessTokenExpirationTime =
-                                timeProvider.calculateExpiryTime(decodedTokens.expiresIn),
+                                timeProvider.calculateExpiryTime(tokens.expiresIn),
                             idToken = this.idToken,
                         )
                     // Update Token Repository (memory)
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
-                    saveTokens.save(decodedTokens.refreshToken)
+                    saveTokens.save(tokens.refreshToken)
                     handleResult(RefreshExchangeResult.Success)
                 }
                 is ApiResponse.Failure -> {
                     logger.error(
                         REFRESH_ERROR_TAG,
-                        refreshExchangeResult.error.message ?: EMPTY_MSG,
+                        refreshExchangeResult.error.message,
                         refreshExchangeResult.error,
                     )
                     handleResult(RefreshExchangeResult.ReauthRequired)
-                }
-                // Loading and Offline are not use by the HttpClient so will never end up here
-                else -> {
-                    handleResult(RefreshExchangeResult.OfflineNetwork)
                 }
             }
         }
@@ -222,57 +210,42 @@ class RefreshExchangeImpl
         suspend fun retrieveNewTokens(
             refreshToken: String,
             clientAttestation: String,
-        ): ApiResponse {
+        ): ApiResponse<RefreshExchangeApiResponse, String, NetworkingException> {
             // CGet the required URL
             val authUrl =
                 context.getString(
                     R.string.stsUrl,
                     context.getString(R.string.tokenExchangeEndpoint),
                 )
-            // Attempt to generate DPoP
-            val dPoP = dPoPManager.generateDPoP(authUrl)
             // Attempt to generate PoP
             val pop = appIntegrity.getProofOfPossession()
             // Throw error if DPoP couldn't be generated
-            when (dPoP) {
-                is SignedDPoP.Success -> {
-                    when (pop) {
-                        is SignedPoP.Success -> {
-                            // If all successful - continue to make the tokens exchange request
-                            val request =
-                                createApiRequestPost(
-                                    authUrl = authUrl,
-                                    refreshToken = refreshToken,
-                                    clientAttestation = clientAttestation,
-                                    dPoP = dPoP,
-                                    pop = pop,
-                                )
+            when (pop) {
+                is SignedPoP.Success -> {
+                    // If all successful - continue to make the tokens exchange request
+                    val request =
+                        createApiRequestPost(
+                            authUrl = authUrl,
+                            refreshToken = refreshToken,
+                            clientAttestation = clientAttestation,
+                            pop = pop,
+                        )
 
-                            return httpClient.makeRequest(
-                                apiRequest = request,
-                            )
-                        }
-                        is SignedPoP.Failure -> {
-                            val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
-                            logger.error(
-                                REFRESH_ERROR_TAG,
-                                pop.reason,
-                                pop.error ?: fallbackExp,
-                            )
-                            // Throw error if Client Attestation PoP couldn't be generated
-                            throw fallbackExp
-                        }
+                    return networkService.makeRequest<RefreshExchangeApiResponse>(
+                        apiRequest = request,
+                    ) {
+                        withRefreshDPoP = true
                     }
                 }
-
-                is SignedDPoP.Failure -> {
-                    val fallbackExp = RefreshExchangeException(DPOP_GENERATE_ERROR)
+                is SignedPoP.Failure -> {
+                    val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
                     logger.error(
                         REFRESH_ERROR_TAG,
-                        dPoP.reason,
-                        dPoP.error ?: fallbackExp,
+                        pop.reason,
+                        pop.error ?: fallbackExp,
                     )
-                    throw RefreshExchangeException(DPOP_GENERATE_ERROR)
+                    // Throw error if Client Attestation PoP couldn't be generated
+                    throw fallbackExp
                 }
             }
         }
@@ -281,7 +254,6 @@ class RefreshExchangeImpl
             authUrl: String,
             refreshToken: String,
             clientAttestation: String,
-            dPoP: SignedDPoP.Success,
             pop: SignedPoP.Success,
         ): ApiRequest =
             ApiRequest.Post(
@@ -302,7 +274,6 @@ class RefreshExchangeImpl
                 headers =
                     listOf(
                         CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
-                        DPOP_HEADER_LABEL to dPoP.popJwt,
                         CLIENT_ATTESTATION_HEADER_LABEL to clientAttestation,
                         POP_CLIENT_ATTESTATION_HEADER_LABEL to pop.popJwt,
                     ),
@@ -346,14 +317,12 @@ class RefreshExchangeImpl
         companion object {
             const val REFRESH_ERROR_TAG = "Refresh Exchange Tokens Error"
             const val EMPTY_MSG = "Refresh Token Exchange Error - Error message was null."
-            const val DPOP_GENERATE_ERROR = "Couldn't generate DPoP."
             const val ATTESTATION_POP_GENERATE_ERROR = "Couldn't generate App Integrity PoP."
             private const val CONTENT_TYPE_LABEL = "Content-Type"
             private const val CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded"
             private const val GRANT_TYPE_LABEL = "grant_type"
             private const val GRANT_TYPE_VALUE = "refresh_token"
             private const val REFRESH_TOKEN_LABEL = "refresh_token"
-            private const val DPOP_HEADER_LABEL = "DPop"
             private const val CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation"
             private const val POP_CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation-PoP"
 

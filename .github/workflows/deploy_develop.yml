@@ -14,7 +14,7 @@ concurrency:
 jobs:
   set-up:
     name: Set-up and generate version name and version code
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
