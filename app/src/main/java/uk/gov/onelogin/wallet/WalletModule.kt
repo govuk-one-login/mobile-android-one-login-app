@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.DefaultNetworkService as DefaultNetworkServiceV1
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
@@ -23,29 +23,29 @@ import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayerImpl
 @InstallIn(SingletonComponent::class)
 @Module
 object WalletModule {
-        @Suppress("LongParameterList")
-        @Provides
-        fun provideWalletSdk(
-            @ApplicationContext
-            context: Context,
-            navigator: Navigator,
-            genericHttpClient: GenericHttpClient,
-            analyticsLogger: AnalyticsLogger,
-            deleteAllDataUseCase: DeleteAllDataUseCase,
-            localAuthManager: LocalAuthManager,
-            logger: Logger,
-        ): WalletSdk {
-            val config =
-                WalletSdk.Configuration(
-                    clientId = context.resources.getString(R.string.stsClientId),
-                    authNetworkClient = genericHttpClient,
-                    analyticsLogger = analyticsLogger,
-                    localAuthManger = localAuthManager,
-                    deleteAllDataUseCase = deleteAllDataUseCase,
-                    logger = logger,
-                )
-            return WalletSdkImpl(navigator, config, context)
-        }
+    @Suppress("LongParameterList")
+    @Provides
+    fun provideWalletSdk(
+        @ApplicationContext
+        context: Context,
+        navigator: Navigator,
+        defaultNetworkService: DefaultNetworkServiceV1,
+        analyticsLogger: AnalyticsLogger,
+        deleteAllDataUseCase: DeleteAllDataUseCase,
+        localAuthManager: LocalAuthManager,
+        logger: Logger,
+    ): WalletSdk {
+        val config =
+            WalletSdk.Configuration(
+                clientId = context.resources.getString(R.string.stsClientId),
+                analyticsLogger = analyticsLogger,
+                localAuthManger = localAuthManager,
+                deleteAllDataUseCase = deleteAllDataUseCase,
+                logger = logger,
+                networkService = defaultNetworkService
+            )
+        return WalletSdkImpl(navigator, config, context)
+    }
 }
 
 @InstallIn(ViewModelComponent::class)
