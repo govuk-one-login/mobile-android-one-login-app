@@ -66,6 +66,7 @@ ksp = "2.3.10"
 integrity = "1.6.0"
 bouncycastle = "1.84" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
+turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -129,6 +130,7 @@ roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = 
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }

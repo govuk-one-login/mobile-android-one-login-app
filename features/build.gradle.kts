@@ -126,6 +126,7 @@ dependencies {
         libs.kotlinx.coroutines.test,
         libs.classgraph,
         libs.junit,
+        libs.turbine,
         libs.roboelectric,
         libs.androidx.compose.ui.junit4,
         libs.androidx.espresso.core,
