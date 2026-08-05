@@ -48,12 +48,11 @@ fun fetchGithubCredentials(): Pair<String, String> {
 
     return try {
         gprUser.get() to gprToken.get()
-    } catch (exception: MissingValueException) {
+    } catch (_: MissingValueException) {
         logger.warn(
             "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
                 "location for instructions:\n\n" +
                 "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
-            exception
         )
 
         System.getenv("USERNAME") to System.getenv("TOKEN")
