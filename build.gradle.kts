@@ -101,14 +101,13 @@ plugins {
     alias(libs.plugins.ksp) apply false
 }
 
-// Consider DCMAW-13740 before targeting Android 16 (API level 36)
 val apkConfig by rootProject.extra(
     object : ApkConfig {
         override val applicationId: String = "uk.gov.onelogin"
         override val debugVersion: String = "DEBUG_VERSION"
         override val sdkVersions = object : ApkConfig.SdkVersions {
             override val minimum = 29
-            override val target = 35
+            override val target = 36
             override val compile = 37
         }
     }
