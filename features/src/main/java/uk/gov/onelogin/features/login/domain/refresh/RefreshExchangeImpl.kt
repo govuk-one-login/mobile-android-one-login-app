@@ -51,7 +51,6 @@ class RefreshExchangeImpl
         private val timeProvider: TimeProvider,
         private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
-        // Initialise token and client attestation field
         private var refreshToken = ""
         private var idToken = ""
         private var areChecksSuccessful = false
@@ -64,7 +63,6 @@ class RefreshExchangeImpl
             if (!getPersistentId().isNullOrEmpty()) {
                 // Check Refresh token is NOT expired and wallet store ID is valid
                 if (!isRefreshTokenExpired() && validateWalletStoreId()) {
-                    // Attempt to get Client Attestation
                     getTokensFromSecureStore(context, handleResult)
                 } else {
                     // When Refresh token is invalid or wallet store ID is missing
@@ -240,8 +238,6 @@ class RefreshExchangeImpl
 
         companion object {
             const val REFRESH_ERROR_TAG = "Refresh Exchange Tokens Error"
-            const val EMPTY_MSG = "Refresh Token Exchange Error - Error message was null."
-            const val ATTESTATION_POP_GENERATE_ERROR = "Couldn't generate App Integrity PoP."
             private const val CONTENT_TYPE_LABEL = "Content-Type"
             private const val CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded"
             private const val GRANT_TYPE_LABEL = "grant_type"
