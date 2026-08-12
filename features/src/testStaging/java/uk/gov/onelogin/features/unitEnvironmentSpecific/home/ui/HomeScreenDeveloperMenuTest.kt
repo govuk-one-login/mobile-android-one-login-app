@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -27,7 +27,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @RunWith(AndroidJUnit4::class)
 @Suppress("ForbiddenComment")
 class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
-    private lateinit var httpClient: GenericHttpClient
+    private lateinit var networkService: NetworkService
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var logger: Logger
     private lateinit var criOrchestratorSdk: CriOrchestratorSdk
@@ -44,12 +44,12 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
     @Before
     fun setup() {
         Intents.init()
-        httpClient = mock()
+        networkService = mock()
         analyticsLogger = mock()
         logger = mock()
         criOrchestratorSdk =
-            CriOrchestratorSdk.Companion.create(
-                authenticatedHttpClient = httpClient,
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = networkService,
                 analyticsLogger = analyticsLogger,
                 initialConfig = TestUtils.criSdkConfig,
                 logger = logger,

@@ -8,7 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
@@ -24,13 +24,13 @@ import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
-    private val mockHttpClient: GenericHttpClient = mock()
+    private val mockNetworkService: NetworkService = mock()
     private val mockAnalyticsLogger: AnalyticsLogger = mock()
     private val mockConfig: Config = mock()
     private val mockLogger: Logger = mock()
     private val mockCriOrchestratorSdk: CriOrchestratorSdk =
-        CriOrchestratorSdk.Companion.create(
-            authenticatedHttpClient = mockHttpClient,
+        CriOrchestratorSdk.create(
+            authenticatedHttpClient = mockNetworkService,
             analyticsLogger = mockAnalyticsLogger,
             initialConfig = mockConfig,
             logger = mockLogger,
