@@ -116,6 +116,6 @@ class ClientAttestationProviderImplTest {
 
             assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
             assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
-            assertEquals(ClientAttestationErrorReason.GENERIC, result.reason)
+            assertEquals(ClientAttestationErrorReason.APP_CHECK_FAILED, result.reason)
         }
 }
