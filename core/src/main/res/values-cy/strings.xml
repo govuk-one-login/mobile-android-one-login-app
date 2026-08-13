@@ -3,6 +3,7 @@
     <!-- Navigation -->
     <string name="app_continue">Parhau</string>
     <string name="app_closeButton">Cau</string>
+    <string name="app_doneLink">Wedi\’i wneud</string>
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
     <string name="app_settings">Gosodiadau</string>
