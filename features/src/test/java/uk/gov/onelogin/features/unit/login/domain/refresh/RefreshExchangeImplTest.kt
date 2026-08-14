@@ -51,6 +51,7 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.SystemTimeProvider
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeImpl
@@ -200,7 +201,12 @@ class RefreshExchangeImplTest {
     fun `given client attestation is expired, then result is client attestation failure`() =
         runTest {
             whenever(appIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Failure(Exception("Client Attestation failure!")))
+                .thenReturn(
+                    AttestationResult.Failure(
+                        type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                        error = Exception("Client Attestation failure!")
+                    )
+                )
 
             val result = getTokens()
 
