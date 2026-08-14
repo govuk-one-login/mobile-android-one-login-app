@@ -80,11 +80,15 @@ class RefreshExchangeImpl
             if (areChecksSuccessful) handleResult(makeRefreshTokenCall())
         }
 
+        /**
+         * Get the saved refresh token and ID token and set [refreshToken] and [idToken].
+         *
+         * If successful, it sets [areChecksSuccessful] to `true`, otherwise it calls [onFailure].
+         */
         private suspend fun getTokensFromSecureStore(
             context: FragmentActivity,
             onFailure: (RefreshExchangeResult) -> Unit,
         ) {
-            // Attempt to retrieve the Refresh token from the secure store
             getFromEncryptedSecureStore(
                 context = context,
                 AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
