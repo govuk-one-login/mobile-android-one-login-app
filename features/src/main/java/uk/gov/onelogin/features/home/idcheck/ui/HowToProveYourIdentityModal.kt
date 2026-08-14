@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.home.idcheck.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -86,8 +87,9 @@ private fun HowToProveYourIdentityGuidanceContent(
                         contentDescription = stringResource(CoreR.string.app_openLinkExternally),
                         isIconTrailing = true,
                     ),
-                modifier = Modifier
-                    .padding(horizontal = horizontalPadding)
+                modifier = Modifier.fillMaxWidth(),
+                contentModifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = horizontalPadding),
             )
         }
 
