@@ -42,23 +42,30 @@ fun setupGithubCredentials(): MavenArtifactRepository.() -> Unit =
         }
     }
 
-fun fetchGithubCredentials(): Pair<String, String> {
-    val gprUser = providers.gradleProperty("gpr.user")
-    val gprToken = providers.gradleProperty("gpr.token")
+fun fetchGithubCredentials(): Pair<String, String> =
+    fetchGithubCredentialsFromProperties() ?:
+    fetchGithubCredentialsFromEnvironment()
 
-    return try {
-        gprUser.get() to gprToken.get()
-    } catch (exception: MissingValueException) {
-        logger.warn(
-            "Could not find 'Github Package Registry' properties. Refer to the proceeding " +
+fun fetchGithubCredentialsFromProperties(): Pair<String, String>? {
+    val gprUser = getGithubCredentialsProperty("gpr.user") ?: return null
+    val gprToken = getGithubCredentialsProperty("gpr.token") ?: return null
+
+    return gprUser to gprToken
+}
+
+fun getGithubCredentialsProperty(propertyName: String): String? = try {
+    providers.gradleProperty(propertyName).get()
+} catch (_: MissingValueException) {
+    logger.warn(
+        "Could not find 'Github Package Registry' property: $propertyName. Refer to the proceeding " +
                 "location for instructions:\n\n" +
                 "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
-            exception
-        )
-
-        System.getenv("USERNAME") to System.getenv("TOKEN")
-    }
+    )
+    null
 }
+
+fun fetchGithubCredentialsFromEnvironment(): Pair<String, String> =
+    System.getenv("USERNAME") to System.getenv("TOKEN")
 
 // https://docs.gradle.org/8.0/userguide/kotlin_dsl.html#type-safe-accessors
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
