@@ -47,21 +47,21 @@ fun fetchGithubCredentials(): Pair<String, String> =
     fetchGithubCredentialsFromEnvironment()
 
 fun fetchGithubCredentialsFromProperties(): Pair<String, String>? {
-    fun tryGetProperty(propertyName: String): String? = try {
-        providers.gradleProperty(propertyName).get()
-    } catch (_: MissingValueException) {
-        logger.warn(
-            "Could not find 'Github Package Registry' property: $propertyName. Refer to the proceeding " +
-                    "location for instructions:\n\n" +
-                    "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
-        )
-        null
-    }
-
-    val gprUser = tryGetProperty("gpr.user") ?: return null
-    val gprToken = tryGetProperty("gpr.token") ?: return null
+    val gprUser = getGithubCredentialsProperty("gpr.user") ?: return null
+    val gprToken = getGithubCredentialsProperty("gpr.token") ?: return null
 
     return gprUser to gprToken
+}
+
+fun getGithubCredentialsProperty(propertyName: String): String? = try {
+    providers.gradleProperty(propertyName).get()
+} catch (_: MissingValueException) {
+    logger.warn(
+        "Could not find 'Github Package Registry' property: $propertyName. Refer to the proceeding " +
+                "location for instructions:\n\n" +
+                "${rootDir.path}/docs/developerSetup/github-authentication.md\n",
+    )
+    null
 }
 
 fun fetchGithubCredentialsFromEnvironment(): Pair<String, String> =
