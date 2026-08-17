@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R as CoreR
 import uk.gov.android.onelogin.features.R
 import uk.gov.android.ui.componentsv2.R as UiComponentsR
@@ -27,6 +28,14 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun HowToProveYourIdentityModal(
+    viewModel: HowToProveYourIdentityModalViewModel = hiltViewModel()
+) = HowToProveYourIdentityModalContent(
+    onDismissRequest = viewModel::onDismissRequest,
+    onGoToGovUkWebsiteClick = viewModel::onGoToGovUkWebsiteClick
+)
+
+@Composable
+private fun HowToProveYourIdentityModalContent(
     onDismissRequest: () -> Unit,
     onGoToGovUkWebsiteClick: () -> Unit,
 ) = Surface {
@@ -121,8 +130,8 @@ private fun HowToProveYourIdentityGuidanceContent(
 @ScreenPreview
 @Composable
 fun HowToProveYourIdentityModalPreview() = GdsTheme {
-    HowToProveYourIdentityModal(
-        onDismissRequest = {},
-        onGoToGovUkWebsiteClick = {}
+    HowToProveYourIdentityModalContent(
+        onGoToGovUkWebsiteClick = {},
+        onDismissRequest = {}
     )
 }

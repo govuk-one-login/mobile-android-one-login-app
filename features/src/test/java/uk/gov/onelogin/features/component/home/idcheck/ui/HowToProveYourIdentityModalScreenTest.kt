@@ -11,14 +11,24 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.features.R
 import uk.gov.android.ui.componentsv2.R as UiComponentsR
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.navigation.domain.WebNavigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.extensions.setupComposeTestRule
 import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityModal
+import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityModalViewModel
 
 @RunWith(AndroidJUnit4::class)
 class HowToProveYourIdentityModalScreenTest : FragmentActivityTestCase() {
-    private val onGoToGovUkClick = mock<() -> Unit>()
-    private val onDismissRequest = mock<() -> Unit>()
+
+    private val navigator: Navigator = mock()
+    private val webNavigator: WebNavigator = mock()
+
+    private val viewModel = HowToProveYourIdentityModalViewModel(
+        navigator = navigator,
+        webNavigator = webNavigator,
+        govUkSignInUrl = GOV_UK_SIGN_IN_URL,
+    )
 
     @Test
     fun whenGoToGovUkClickedItInvokesCallback() {
@@ -29,7 +39,7 @@ class HowToProveYourIdentityModalScreenTest : FragmentActivityTestCase() {
                 substring = true,
             ).performClick()
 
-        verify(onGoToGovUkClick).invoke()
+        verify(webNavigator).openWebBrowser(GOV_UK_SIGN_IN_URL)
     }
 
     @Test
@@ -54,15 +64,16 @@ class HowToProveYourIdentityModalScreenTest : FragmentActivityTestCase() {
                 substring = true,
             ).performClick()
 
-        verify(onDismissRequest).invoke()
+        verify(navigator).goBack()
     }
 
     private fun setupScreen() {
         composeTestRule.setupComposeTestRule { _ ->
-            HowToProveYourIdentityModal(
-                onDismissRequest = onDismissRequest,
-                onGoToGovUkWebsiteClick = onGoToGovUkClick,
-            )
+            HowToProveYourIdentityModal(viewModel)
         }
+    }
+
+    companion object {
+        private const val GOV_UK_SIGN_IN_URL = "https://www.gov.uk/sign-in"
     }
 }

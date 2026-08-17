@@ -9,8 +9,7 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
 import uk.gov.onelogin.features.LOCALE_CY
 import uk.gov.onelogin.features.LOCALE_EN
-import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityCard
-import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityModal
+import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityModalPreview
 
 @RunWith(Parameterized::class)
 class HowToProveYourIdentityModalScreenshotTest(
@@ -18,10 +17,7 @@ class HowToProveYourIdentityModalScreenshotTest(
     locale: String,
 ) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        HowToProveYourIdentityModal(
-            onDismissRequest = {},
-            onGoToGovUkWebsiteClick = {},
-        )
+        HowToProveYourIdentityModalPreview()
     }
 
     companion object {

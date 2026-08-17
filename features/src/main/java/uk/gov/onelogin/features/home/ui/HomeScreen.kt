@@ -64,6 +64,7 @@ fun HomeScreen(
             }
         },
         openDevPanel = { viewModel.openDevPanel() },
+        onHowToProveYourIdentityClick = { viewModel.openHowToProveYourIdentityModal() },
     )
 }
 
@@ -74,6 +75,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenBody(
     openDevPanel: () -> Unit = {},
+    onHowToProveYourIdentityClick: () -> Unit = {},
     proveYourIdentityCardEnabled: Boolean,
     proveYourIdentityCard: @Composable () -> Unit = {},
 ) {
@@ -95,7 +97,9 @@ private fun HomeScreenBody(
                 proveYourIdentityCard()
             }
             WelcomeCard()
-            HowToProveYourIdentityCard()
+            HowToProveYourIdentityCard(
+                onClick = onHowToProveYourIdentityClick
+            )
             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
                     onClick = { openDevPanel() },
