@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -28,11 +29,17 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
 fun HowToProveYourIdentityModal(
-    viewModel: HowToProveYourIdentityModalViewModel = hiltViewModel()
-) = HowToProveYourIdentityModalContent(
-    onDismissRequest = viewModel::onDismissRequest,
-    onGoToGovUkWebsiteClick = viewModel::onGoToGovUkWebsiteClick
-)
+    viewModel: HowToProveYourIdentityModalViewModel = hiltViewModel(),
+    analyticsViewModel: HowToProveYourIdentityModalAnalyticsViewModel = hiltViewModel(),
+) {
+    LaunchedEffect(Unit) {
+        analyticsViewModel.trackScreen()
+    }
+    HowToProveYourIdentityModalContent(
+        onDismissRequest = viewModel::onDismissRequest,
+        onGoToGovUkWebsiteClick = viewModel::onGoToGovUkWebsiteClick,
+    )
+}
 
 @Composable
 private fun HowToProveYourIdentityModalContent(
