@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- How to prove your identity modal -->
+    <string name="app_proveYourIdentityGuidanceTitle">Sut i brofi eich hunaniaeth</string>
+    <string name="app_proveYourIdentityGuidanceBody1">Ni allwch ddechrau profi eich hunaniaeth ar yr ap hwn.</string>
+    <string name="app_proveYourIdentityGuidanceBody2">I ddechrau, ewch i wefan GOV.UK a dewch o hyd i wasanaeth y llywodraeth rydych angen ei ddefnyddio.</string>
+    <string name="app_proveYourIdentityGuidanceBody3">Gofynnir i chi agor yr ap hwn os ydych angen ei ddefnyddio i brofi eich hunaniaeth.</string>
+    <string name="app_proveYourIdentityGuidanceLink">Ewch i wefan GOV.UK</string>
+    <string name="app_proveYourIdentityGuidanceBody4">Os ydych eisoes wedi dechrau profi eich hunaniaeth ar wefan GOV.UK</string>
+    <string name="app_proveYourIdentityGuidanceBody5">Os yw gwasanaeth wedi eich tywys i agor yr ap hwn, dylech weld botwm i barhau i brofi eich hunaniaeth yn yr adran ‘Hafan’.</string>
+    <string name="app_proveYourIdentityGuidanceBody6">Os na allwch weld y botwm, caewch yr ap a\’i agor eto.</string>
+</resources>

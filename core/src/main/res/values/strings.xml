@@ -8,6 +8,7 @@
     <!-- Navigation -->
     <string name="app_continue">Continue</string>
     <string name="app_closeButton">Close</string>
+    <string name="app_doneLink">Done</string>
     <string name="app_home">Home</string>
     <string name="app_wallet">Wallet</string>
     <string name="app_settings">Settings</string>

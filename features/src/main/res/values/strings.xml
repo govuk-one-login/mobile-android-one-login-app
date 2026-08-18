@@ -1,0 +1,11 @@
+<resources>
+    <!-- How to prove your identity modal -->
+    <string name="app_proveYourIdentityGuidanceTitle">How to prove your identity</string>
+    <string name="app_proveYourIdentityGuidanceBody1">You cannot start proving your identity in this app.</string>
+    <string name="app_proveYourIdentityGuidanceBody2">To start, go to the GOV.UK website and find the government service you need to use.</string>
+    <string name="app_proveYourIdentityGuidanceBody3">You’ll be asked to open this app if you need to use it to prove your identity.</string>
+    <string name="app_proveYourIdentityGuidanceLink">Go to the GOV.UK website</string>
+    <string name="app_proveYourIdentityGuidanceBody4">If you’ve already started proving your identity on the GOV.UK website</string>
+    <string name="app_proveYourIdentityGuidanceBody5">If a service on the GOV.UK website has guided you to open this app, you should see a button to continue proving your identity in the ‘Home’ section.</string>
+    <string name="app_proveYourIdentityGuidanceBody6">If you cannot see the button, close the app and open it again.</string>
+</resources>
