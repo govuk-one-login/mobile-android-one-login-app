@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
@@ -58,6 +59,10 @@ class WalletScreenViewModel
      */
     private suspend fun prepareWalletSdkForDisplay(): WalletAppDisplayer {
         val walletStoreId = getWalletStoreId()
+
+        // Workaround for DCMAW-22138
+        // Check for coroutine cancellation here because the secure store doesn't propagate it (DCMAW-22143)
+        yield()
 
         requireNotNull(walletStoreId) {
             "Wallet Store ID must not be null. This is guaranteed by ValidateWalletStoreId"
