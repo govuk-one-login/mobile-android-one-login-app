@@ -1,4 +1,9 @@
 <resources>
+    <!-- How to prove your identity tile -->
+    <string name="app_howToTileTitle">How to prove your identity</string>
+    <string name="app_howToTileBody">To start, go to the GOV.UK website and find the government service you need to use. You’ll be asked to open this app if you need it.</string>
+    <string name="app_howToTileLink">Find out more</string>
+
     <!-- How to prove your identity modal -->
     <string name="app_proveYourIdentityGuidanceTitle">How to prove your identity</string>
     <string name="app_proveYourIdentityGuidanceBody1">You cannot start proving your identity in this app.</string>

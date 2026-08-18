@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- How to prove your identity tile -->
+    <string name="app_howToTileTitle">Sut i brofi eich hunaniaeth</string>
+    <string name="app_howToTileBody">I ddechrau, ewch i wefan GOV.UK a dewch o hyd i wasanaeth y llywodraeth rydych angen ei ddefnyddio. Gofynnir i chi agor yr ap hwn os ydych ei angen.</string>
+    <string name="app_howToTileLink">Darganfyddwch fwy</string>
+
     <!-- How to prove your identity modal -->
     <string name="app_proveYourIdentityGuidanceTitle">Sut i brofi eich hunaniaeth</string>
     <string name="app_proveYourIdentityGuidanceBody1">Ni allwch ddechrau profi eich hunaniaeth ar yr ap hwn.</string>
