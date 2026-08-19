@@ -16,8 +16,8 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayer
-import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayerImpl
+import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
+import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 import uk.gov.android.network.service.v2.NetworkService
 
 @InstallIn(SingletonComponent::class)
@@ -54,8 +54,8 @@ interface WalletUiModule {
 
     @Binds
     fun bindWalletAppDisplayer(
-        walletAppDisplayerImpl: WalletAppDisplayerImpl,
-    ): WalletAppDisplayer
+        walletAppDisplayerImpl: WalletDisplayerImpl,
+    ): WalletDisplayer
 
 }
 

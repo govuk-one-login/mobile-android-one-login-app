@@ -5,10 +5,12 @@ import androidx.compose.runtime.Composable
 /**
  * An interface for initialising the wallet sdk
  */
-fun interface WalletAppDisplayer {
+fun interface WalletDisplayer {
 
     @Composable
-    fun WalletApp()
+    fun Wallet(
+        onFullScreenRequest: (Boolean) -> Unit
+    )
 }
 
 
