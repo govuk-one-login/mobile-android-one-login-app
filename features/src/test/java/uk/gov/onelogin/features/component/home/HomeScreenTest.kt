@@ -2,8 +2,10 @@ package uk.gov.onelogin.features.component.home
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.Espresso
@@ -14,13 +16,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.onelogin.features.R as FeaturesR
 import uk.gov.android.ui.patterns.utils.matchers.ScrollableWithKeyboardMatchers.hasKeyboardScroll
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.onelogin.core.navigation.data.HomeRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.create
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
@@ -37,7 +42,7 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @RunWith(AndroidJUnit4::class)
 @Suppress("ForbiddenComment")
 class HomeScreenTest : FragmentActivityTestCase() {
-    private lateinit var httpClient: GenericHttpClient
+    private lateinit var networkService: NetworkService
     private lateinit var analyticsLogger: AnalyticsLogger
     private lateinit var criOrchestratorSdk: CriOrchestratorSdk
 
@@ -54,7 +59,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
     @Before
     fun setup() {
         Intents.init()
-        httpClient = mock()
+        networkService = mock()
         analyticsLogger = mock()
         featureFlags =
             InMemoryFeatureFlags(
@@ -63,8 +68,8 @@ class HomeScreenTest : FragmentActivityTestCase() {
         navigator = mock()
         logger = mock()
         criOrchestratorSdk =
-            CriOrchestratorSdk.Companion.create(
-                authenticatedHttpClient = httpClient,
+            CriOrchestratorSdk.create(
+                authenticatedHttpClient = networkService,
                 analyticsLogger = analyticsLogger,
                 initialConfig = TestUtils.criSdkConfig,
                 logger = logger,
@@ -91,19 +96,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
     fun homeScreenDisplayed() {
         setupScreen()
         composeTestRule.apply {
-            waitUntil(TIMEOUT) {
-                onNodeWithContentDescription(
-                    "Close",
-                    substring = true,
-                    useUnmergedTree = true
-                ).isDisplayed()
-            }
-
-            onNodeWithContentDescription(
-                "Close",
-                substring = true,
-                useUnmergedTree = true
-            ).performClick()
+            closeContinueToProveYourIdentityModal()
 
             onNodeWithContentDescription(
                 resources.getString(R.string.one_login_image_content_desc)
@@ -115,7 +108,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
             ).assertIsDisplayed()
 
             onNodeWithTag(
-                resources.getString(R.string.proveIdentityCardTestTag),
+                resources.getString(FeaturesR.string.proveIdentityCardTestTag),
                 useUnmergedTree = true
             ).performScrollTo().assertIsDisplayed()
         }
@@ -125,19 +118,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
     fun analyticsTriggered() {
         setupScreen()
         composeTestRule.apply {
-            waitUntil(TIMEOUT) {
-                onNodeWithContentDescription(
-                    "Close",
-                    substring = true,
-                    useUnmergedTree = true
-                ).isDisplayed()
-            }
-
-            onNodeWithContentDescription(
-                "Close",
-                substring = true,
-                useUnmergedTree = true
-            ).performClick()
+            closeContinueToProveYourIdentityModal()
 
             Espresso.pressBack()
         }
@@ -157,7 +138,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
             ).assertIsDisplayed()
 
             onNodeWithTag(
-                resources.getString(R.string.proveIdentityCardTestTag),
+                resources.getString(FeaturesR.string.proveIdentityCardTestTag),
                 useUnmergedTree = true
             ).performScrollTo().assertIsDisplayed()
         }
@@ -172,6 +153,20 @@ class HomeScreenTest : FragmentActivityTestCase() {
         }
     }
 
+    @Test
+    fun howToProveYourIdentityCardClickNavigatesToModal() {
+        setupScreen()
+        composeTestRule.apply {
+            closeContinueToProveYourIdentityModal()
+
+            onNodeWithText(
+                context.getString(FeaturesR.string.app_howToTileLink),
+            ).performScrollTo().performClick()
+
+            verify(navigator).navigate(HomeRoutes.HowToProveYourIdentity)
+        }
+    }
+
     private fun setupScreen() {
         composeTestRule.setupComposeTestRule { _ ->
             HomeScreen(viewModel, analyticsViewModel)
@@ -182,6 +177,22 @@ class HomeScreenTest : FragmentActivityTestCase() {
         composeTestRule.setupComposeTestRule { _ ->
             HomeScreenPreview()
         }
+    }
+
+    private fun ComposeTestRule.closeContinueToProveYourIdentityModal() {
+        waitUntil(TIMEOUT) {
+            onNodeWithContentDescription(
+                "Close",
+                substring = true,
+                useUnmergedTree = true
+            ).isDisplayed()
+        }
+
+        onNodeWithContentDescription(
+            "Close",
+            substring = true,
+            useUnmergedTree = true
+        ).performClick()
     }
 
     companion object {

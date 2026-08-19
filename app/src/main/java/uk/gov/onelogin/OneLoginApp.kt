@@ -9,6 +9,7 @@ import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.developer.DeveloperRoutes.developerFlowRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.errorGraph
+import uk.gov.onelogin.navigation.graphs.HomeGraphObject.homeGraph
 import uk.gov.onelogin.navigation.graphs.LoginGraphObject.loginGraph
 import uk.gov.onelogin.navigation.graphs.MainNavGraph.mainNavRoutesFlow
 import uk.gov.onelogin.navigation.graphs.SignOutGraphObject.signOutGraph
@@ -22,6 +23,7 @@ fun OneLoginApp(navController: NavHostController = rememberNavController()) {
         ) {
             loginGraph(navController)
             mainNavRoutesFlow()
+            homeGraph()
             errorGraph(navController)
             signOutGraph(navController)
             developerFlowRoutes(navController)

@@ -20,7 +20,7 @@ concurrency:
 jobs:
   set-up:
     name: Set-up and generate version name and version code
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-name.outputs.version-name }}
@@ -55,7 +55,7 @@ jobs:
 
   style-checks:
     name: Run style (detekt, lint & vale) checks
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
     permissions:
@@ -115,7 +115,7 @@ jobs:
 
   instrumentation-checks:
     name: Run instrumentation tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
     permissions:
@@ -159,7 +159,7 @@ jobs:
 
   component-checks:
     name: Run component tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
     permissions:
@@ -204,7 +204,7 @@ jobs:
 
   unit-checks:
     name: Run unit tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
     permissions:
@@ -257,7 +257,7 @@ jobs:
 
   snapshot-checks:
     name: Run snapshot/ screenshot tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
     permissions:
@@ -296,7 +296,7 @@ jobs:
 
   sonar-analysis:
     name: Run sonar analysis and check sonar quality gate
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs:
       - set-up
       - style-checks

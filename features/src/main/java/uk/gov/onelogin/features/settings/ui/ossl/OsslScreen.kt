@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -19,11 +18,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.entity.Library
 import com.mikepenz.aboutlibraries.entity.License
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import com.mikepenz.aboutlibraries.ui.compose.android.produceLibraries
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.m3.chipColors
-import com.mikepenz.aboutlibraries.ui.compose.m3.libraryColors
 import uk.gov.android.onelogin.core.R as CoreR
 import uk.gov.android.onelogin.features.R
 import uk.gov.android.ui.componentsv2.button.GdsIconButtonDefaults
@@ -122,7 +118,7 @@ internal fun OsslAboutLibrariesScreenPreview() {
 }
 
 @ExcludeFromJacocoGeneratedReport
-private fun previewLibraries(): Libs {
+internal fun previewLibraries(): Libs {
     val apache = License(
         name = "Apache License 2.0",
         url = "https://spdx.org/licenses/Apache-2.0.html",

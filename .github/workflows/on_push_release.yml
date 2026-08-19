@@ -13,7 +13,7 @@ concurrency:
 jobs:
   set-up:
     name: Set-up and generate version name and version code
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     # This job doesn't need the environment.
     # It is behind an approval step so that the version code isn't generated immediately and
     # is less likely to go stale.

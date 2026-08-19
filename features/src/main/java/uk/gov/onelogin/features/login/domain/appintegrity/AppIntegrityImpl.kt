@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.delay
 import uk.gov.android.authentication.integrity.AppIntegrityManager
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class AppIntegrityImpl
     @Inject
     constructor(
+        @param:ApplicationContext
         private val context: Context,
         private val featureFlags: FeatureFlags,
         private val appCheck: AppIntegrityManager,
@@ -105,20 +107,25 @@ class AppIntegrityImpl
                                 // If retired 2 times already, return the error to the consumer directly
                             } else {
                                 retryCounter.reset()
-                                AttestationResult.Failure(error)
+                                AttestationResult.Failure(type = error.type, error = error)
                             }
                         }
                         // Any other type of AppIntegrityError, return the error to the consumer directly
-                        else -> {
+                        AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED,
+                        AppIntegrityException.AppIntegrityErrorType.GENERIC -> {
                             retryCounter.reset()
-                            AttestationResult.Failure(error)
+                            AttestationResult.Failure(type = error.type, error = error)
                         }
                     }
                 }
                 // Any other errors, return the error to the consumer directly
+                // and treat it like a 'generic' app integrity error
                 else -> {
                     retryCounter.reset()
-                    AttestationResult.Failure(result.error)
+                    AttestationResult.Failure(
+                        type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                        error = result.error
+                    )
                 }
             }
 
