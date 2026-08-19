@@ -16,9 +16,8 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
-import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayerImpl
+import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.wallet.ui.WalletScreenState
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
@@ -38,7 +37,7 @@ class WalletScreenViewModelTest {
         delay(loadingTime)
         WALLET_STORE_ID
     }
-    private val walletAppDisplayer = WalletAppDisplayerImpl(walletSdk)
+    private val walletAppDisplayer = WalletDisplayerImpl(walletSdk)
 
     private val viewModel by lazy {
         WalletScreenViewModel(
@@ -89,7 +88,7 @@ class WalletScreenViewModelTest {
                 WalletScreenViewModel(
                     walletSdk = walletSdk,
                     getWalletStoreId = { null },
-                    walletAppDisplayer = walletAppDisplayer,
+                    walletDisplayer = walletAppDisplayer,
                 )
                 mainScheduler.advanceUntilIdle()
             }
@@ -118,7 +117,7 @@ class WalletScreenViewModelTest {
                 WalletScreenViewModel(
                     walletSdk = walletSdk,
                     getWalletStoreId = getWalletStoreIdCancelling,
-                    walletAppDisplayer = walletAppDisplayer,
+                    walletDisplayer = walletAppDisplayer,
                 )
             }
         }
@@ -142,7 +141,7 @@ class WalletScreenViewModelTest {
                 WalletScreenViewModel(
                     walletSdk = walletSdk,
                     getWalletStoreId = getWalletStoreIdCancelling,
-                    walletAppDisplayer = walletAppDisplayer,
+                    walletDisplayer = walletAppDisplayer,
                 )
             }
         }
