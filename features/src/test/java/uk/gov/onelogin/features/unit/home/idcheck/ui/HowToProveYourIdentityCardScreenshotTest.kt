@@ -15,7 +15,8 @@ import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityCard
 class HowToProveYourIdentityCardScreenshotTest(
     nightMode: NightMode,
     locale: String,
-) : BaseScreenshotTest(nightMode, locale) {
+    fontScale: Float,
+) : BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         HowToProveYourIdentityCard(
             onClick = {}
@@ -25,11 +26,6 @@ class HowToProveYourIdentityCardScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN),
-                arrayOf(NIGHT, LOCALE_EN),
-                arrayOf(NOTNIGHT, LOCALE_CY),
-            )
+        fun values(): Iterable<Array<Any>> = applyLightDarkWelshAndFontScale()
     }
 }

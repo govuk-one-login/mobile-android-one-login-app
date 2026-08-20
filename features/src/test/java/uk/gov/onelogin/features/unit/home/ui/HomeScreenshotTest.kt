@@ -11,8 +11,10 @@ import uk.gov.onelogin.features.home.ui.HomeScreenPreview
 
 @RunWith(Parameterized::class)
 class HomeScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+    nightMode: NightMode,
+    locale: String,
+    fontScale: Float,
+) : BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         HomeScreenPreview()
     }
@@ -20,10 +22,6 @@ class HomeScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = applyLightDarkWelshAndFontScale()
     }
 }
