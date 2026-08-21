@@ -30,6 +30,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.LocaleUtils
 import uk.gov.onelogin.core.utils.UriParser
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.HandleRemoteLoginImpl
@@ -130,7 +131,10 @@ class HandleRemoteLoginTest {
         runTest {
             whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
             whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-                AttestationResult.Failure(Exception("error"))
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                    error = Exception("error")
+                )
             )
             var checkFailed = false
 

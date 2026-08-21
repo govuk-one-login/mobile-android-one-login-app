@@ -6,7 +6,7 @@ import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.dpop.DPoPProvider
-import uk.gov.android.network.service.DefaultNetworkService
+import uk.gov.android.network.service.v2.DefaultNetworkService
 import javax.inject.Inject
 
 @HiltViewModel

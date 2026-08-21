@@ -2,9 +2,10 @@ package uk.gov.onelogin.core.network.domain
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.v2.NetworkServiceResponse
 import uk.gov.android.onelogin.core.R
 import javax.inject.Inject
 
@@ -13,7 +14,7 @@ class HelloWorldApiCallImpl
     constructor(
         @ApplicationContext
         private val context: Context,
-        private val httpClient: GenericHttpClient,
+        private val networkService: NetworkService,
     ) : HelloWorldApiCall {
         override suspend fun happyPath(): String {
             val endpoint = context.getString(R.string.helloWorldEndpoint)
@@ -21,8 +22,10 @@ class HelloWorldApiCallImpl
                 ApiRequest.Get(
                     url = context.getString(R.string.helloWorldUrl, endpoint),
                 )
-            val response = httpClient.makeAuthorisedRequest(request, "sts-test.hello-world.read")
-            return handleResponse(response)
+            val response = networkService.makeRequest(request) {
+                withAuthentication(scope = "sts-test.hello-world.read")
+            }
+            return response.toDisplay()
         }
 
         override suspend fun errorPath(): String {
@@ -31,15 +34,16 @@ class HelloWorldApiCallImpl
                 ApiRequest.Get(
                     url = context.getString(R.string.helloWorldUrl, endpoint),
                 )
-            val response = httpClient.makeAuthorisedRequest(request, "sts-test.hello-world.read")
+            val response = networkService.makeRequest(request) {
+                withAuthentication(scope = "sts-test.hello-world.read")
+            }
 
-            return handleResponse(response)
+            return response.toDisplay()
         }
 
-        private fun handleResponse(response: ApiResponse) =
-            when (response) {
-                is ApiResponse.Failure -> response.error.message ?: "Error"
-                ApiResponse.Loading, ApiResponse.Offline -> "Error"
-                is ApiResponse.Success<*> -> response.response.toString()
+        private fun NetworkServiceResponse.toDisplay() =
+            when (this) {
+                is ApiResponse.Failure -> error.message
+                is ApiResponse.Success -> body
             }
     }

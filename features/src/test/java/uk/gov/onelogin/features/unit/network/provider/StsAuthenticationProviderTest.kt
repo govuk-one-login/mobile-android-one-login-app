@@ -19,10 +19,13 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
-import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.client.v2.GenericHttpResponse
+import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.client.v2.StubHttpClient
+import uk.gov.android.network.service.ApiResponseException
+import uk.gov.android.network.service.v2.DefaultNetworkService
 import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
@@ -50,7 +53,8 @@ class StsAuthenticationProviderTest {
     private val mockIsAccessTokenExpired: IsTokenExpired = mock()
     private val mockNavigator: Navigator = mock()
     private val logger = MemorisedLogger()
-    private val mockHttpClient: GenericHttpClient = mock()
+    private val httpClient: StubHttpClient = StubHttpClient()
+    private val networkService = DefaultNetworkService(httpClient)
 
     private lateinit var provider: AuthenticationProvider
 
@@ -60,7 +64,7 @@ class StsAuthenticationProviderTest {
         whenever(mockTokenRepository.getTokenResponse()).thenReturn(loginTokens)
         whenever(mockActivityProvider.getCurrentActivity()).thenReturn(mockFragmentActivity)
         wheneverBlocking { mockIsAccessTokenExpired.invoke() }.thenReturn(false)
-        wheneverBlocking { mockHttpClient.makeRequest(any()) }.thenReturn(ApiResponse.Loading)
+        httpClient.response = successResponse
         wheneverBlocking { mockRefreshExchange.getTokens(any(), any()) }
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit)
@@ -73,7 +77,7 @@ class StsAuthenticationProviderTest {
                 "url",
                 mockTokenRepository,
                 mockIsAccessTokenExpired,
-                mockHttpClient,
+                networkService,
                 mockNavigator,
                 mockRefreshExchange,
                 mockSignOutUseCase,
@@ -89,7 +93,7 @@ class StsAuthenticationProviderTest {
     }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with re-auth required`() =
+    fun `access token expired, refresh exchange has failed with re-auth required`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
 
@@ -103,14 +107,14 @@ class StsAuthenticationProviderTest {
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
             assertEquals(
-                StsAuthenticationProvider.Companion.REFRESH_EXCHANGE_ERROR_MSG,
+                StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 response.error.message
             )
             verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with client attestation failure`() =
+    fun `access token expired, refresh exchange has failed with client attestation failure`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
@@ -123,13 +127,13 @@ class StsAuthenticationProviderTest {
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
             assertEquals(
-                StsAuthenticationProvider.Companion.REFRESH_EXCHANGE_ERROR_MSG,
+                StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 response.error.message
             )
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with user cancelled`() =
+    fun `access token expired, refresh exchange has failed with user cancelled bio prompt`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
@@ -137,18 +141,16 @@ class StsAuthenticationProviderTest {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
                         .invoke(RefreshExchangeResult.UserCancelledBioPrompt)
                 }
+            httpClient.exception = badRequestResponse
 
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
+            assertInstanceOf<ApiResponseException>(response.error.cause)
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with sign in required`() =
+    fun `access token expired, refresh exchange has failed with sign in required`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
@@ -161,7 +163,7 @@ class StsAuthenticationProviderTest {
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
             assertEquals(
-                StsAuthenticationProvider.Companion.MANUAL_SIGN_IN_REQUIRED_ERROR_MSG,
+                StsAuthenticationProvider.MANUAL_SIGN_IN_REQUIRED_ERROR_MSG,
                 response.error.message
             )
             verify(mockSignOutUseCase).invoke()
@@ -169,7 +171,7 @@ class StsAuthenticationProviderTest {
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with offline network`() =
+    fun `access token expired, refresh exchange has failed with offline network`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
             whenever(mockRefreshExchange.getTokens(any(), any()))
@@ -177,26 +179,50 @@ class StsAuthenticationProviderTest {
                     (it.arguments[1] as (RefreshExchangeResult) -> Unit)
                         .invoke(RefreshExchangeResult.OfflineNetwork)
                 }
+            httpClient.exception = badRequestResponse
 
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
+            assertInstanceOf<ApiResponseException>(response.error.cause)
         }
 
     @Test
-    fun `access token expired, refresh exchanged has failed with success`() =
+    fun `access token expired, refresh exchange has succeeded`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success(tokenResponseJson))
 
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Success>(response)
             assertEquals(BEARER_TOKEN, response.bearerToken)
+        }
+
+    @Test
+    fun `access token expired, refresh exchange has succeeded, yet access token is missing`() =
+        runTest {
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(null)
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertEquals(
+                StsAuthenticationProvider.NO_ACCESS_TOKEN_ERROR_MSG,
+                response.error.message
+            )
+        }
+
+    @Test
+    fun `access token expired, refresh exchange has succeeded, api response is 500`() =
+        runTest {
+            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+            httpClient.exception = internalServerErrorResponse
+
+            val response = provider.fetchBearerToken(SCOPE)
+
+            assertInstanceOf<AuthenticationResponse.Failure>(response)
+            assertInstanceOf<ApiResponseException>(response.error.cause)
         }
 
     @Test
@@ -211,7 +237,7 @@ class StsAuthenticationProviderTest {
             assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage(error.msg))))
             assertInstanceOf<AuthenticationResponse.Failure>(response)
             assertEquals(
-                StsAuthenticationProvider.Companion.REFRESH_EXCHANGE_ERROR_MSG,
+                StsAuthenticationProvider.REFRESH_EXCHANGE_ERROR_MSG,
                 response.error.message
             )
         }
@@ -219,84 +245,30 @@ class StsAuthenticationProviderTest {
     @Test
     fun `original exception when API call fails`() =
         runTest {
-            val originalException = Exception("error")
-            whenever(mockHttpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Failure(500, originalException))
+            httpClient.exception = internalServerErrorResponse
 
             val response = provider.fetchBearerToken(SCOPE)
 
+            whenever(mockTokenRepository.getTokenResponse()).thenReturn(loginTokens)
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(originalException.message, response.error.message)
-        }
-
-    @Test
-    fun `SERVICE_TOKEN_FAILURE_ERROR_MSG when API loading state`() =
-        runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Loading)
-
-            val response = provider.fetchBearerToken(SCOPE)
-
-            assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
-        }
-
-    @Test
-    fun `SERVICE_TOKEN_FAILURE_ERROR_MSG when API Offline state`() =
-        runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Offline)
-
-            val response = provider.fetchBearerToken(SCOPE)
-
-            assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
+            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertEquals(response.error.cause?.message, response.error.message)
         }
 
     @Test
     fun `api response is success but json decode fails, failure returned`() =
         runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success("hello"))
+            httpClient.response = GenericHttpResponse(200, "hello")
 
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-        }
-
-    @Test
-    fun `access token only, api response is failure with 400 with no error message`() =
-        runTest {
-            whenever(mockHttpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Failure(AUTHENTICATION_DENIED, Exception()))
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(
-                LoginTokens(
-                    tokenType = "type",
-                    accessToken = "accessToken",
-                    accessTokenExpirationTime = 1L,
-                    idToken = "idToken"
-                )
-            )
-
-            val response = provider.fetchBearerToken("scope")
-
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
-            assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
         }
 
     @Test
     fun `access token only, api response is failure with 400 with error message`() =
         runTest {
-            val msgExpected = "denied"
-            whenever(mockHttpClient.makeRequest(any()))
-                .thenReturn(ApiResponse.Failure(AUTHENTICATION_DENIED, Exception(msgExpected)))
+            httpClient.exception = badRequestResponse
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(
                 LoginTokens(
                     tokenType = "type",
@@ -310,44 +282,14 @@ class StsAuthenticationProviderTest {
 
             verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                msgExpected,
-                response.error.message
-            )
-        }
-
-    @Test
-    fun `access token only, api response is loading`() =
-        runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Loading)
-
-            val response = provider.fetchBearerToken(SCOPE)
-
-            assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
-        }
-
-    @Test
-    fun `access token only, api response is offline`() =
-        runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Offline)
-
-            val response = provider.fetchBearerToken(SCOPE)
-
-            assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertEquals(
-                StsAuthenticationProvider.Companion.SERVICE_TOKEN_FAILURE_ERROR_MSG,
-                response.error.message
-            )
+            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertEquals(response.error.cause?.message, response.error.message)
         }
 
     @Test
     fun `api response is success, success returned`() =
         runTest {
-            whenever(mockHttpClient.makeRequest(any())).thenReturn(ApiResponse.Success(tokenResponseJson))
+            httpClient.response = GenericHttpResponse(200, tokenResponseJson)
 
             val response = provider.fetchBearerToken(SCOPE)
 
@@ -374,5 +316,15 @@ class StsAuthenticationProviderTest {
             "token_type": "$TOKEN_TYPE"
             }
             """.trimIndent()
+
+        val successResponse = GenericHttpResponse(200, tokenResponseJson)
+        val badRequestResponse = GenericResponseException(
+            GenericHttpResponse(AUTHENTICATION_DENIED, "status $AUTHENTICATION_DENIED"),
+            IllegalStateException()
+        )
+        val internalServerErrorResponse = GenericResponseException(
+            GenericHttpResponse(500, "status 500"),
+            IllegalStateException()
+        )
     }
 }

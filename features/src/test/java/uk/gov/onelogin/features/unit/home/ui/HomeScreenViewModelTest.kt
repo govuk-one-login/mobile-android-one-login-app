@@ -10,7 +10,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -28,14 +28,14 @@ import kotlin.test.assertTrue
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class HomeScreenViewModelTest {
     private val mockNavigator: Navigator = mock()
-    private val httpClient: GenericHttpClient = mock()
+    private val networkService: NetworkService = mock()
     private val analyticsLogger: AnalyticsLogger = mock()
     private val featureFlag: FeatureFlags = mock()
     private val context: Context = mock()
     private val logger: Logger = mock()
     private val criOrchestratorSdk: CriOrchestratorSdk =
         CriOrchestratorSdk.create(
-            authenticatedHttpClient = httpClient,
+            authenticatedHttpClient = networkService,
             analyticsLogger = analyticsLogger,
             initialConfig = TestUtils.criSdkConfig,
             logger = logger,
