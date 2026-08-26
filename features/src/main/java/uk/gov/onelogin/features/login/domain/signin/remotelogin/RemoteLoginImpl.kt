@@ -81,8 +81,7 @@ class RemoteLoginImpl
             isReAuth: Boolean,
             activity: FragmentActivity,
         ) {
-            // Enables running all functions in respective order as this cannot be done async
-            // and allows to use the same Coroutine scope avoiding multithreading
+            // Adapts the callback based API to a result
             val deferred = CompletableDeferred<Result<TokenResponse>>()
             finaliseRemoteLogin.handle(
                 intent,
