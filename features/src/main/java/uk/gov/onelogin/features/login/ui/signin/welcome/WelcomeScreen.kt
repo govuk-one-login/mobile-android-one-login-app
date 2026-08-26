@@ -59,9 +59,12 @@ fun WelcomeScreen(
         }
 
     if (loading) {
-        LoadingScreen(loadingAnalyticsViewModel) {
-            loginViewModel.abortLogin(launcher, false)
-        }
+        LoadingScreen(
+            loadingAnalyticsViewModel,
+            backHandler = {
+                loginViewModel.abortLogin()
+            },
+        )
     } else {
         EdgeToEdgePage { _ ->
             WelcomeBody(

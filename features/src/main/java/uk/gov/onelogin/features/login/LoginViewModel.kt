@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -43,6 +44,8 @@ class LoginViewModel
         private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
         val loading = _loading.asStateFlow()
 
+        private var startJob: Job? = null
+
         fun startLoginActivity(
             launcher: ActivityResultLauncher<Intent>,
             isReAuth: Boolean
@@ -69,6 +72,8 @@ class LoginViewModel
             } else {
                 navigator.navigate(ErrorRoutes.Offline)
             }
+        }.also { job ->
+            startJob = job
         }
 
         fun handleLoginActivityResult(
@@ -102,12 +107,10 @@ class LoginViewModel
             }
         }
 
-        fun abortLogin(
-            launcher: ActivityResultLauncher<Intent>,
-            isReAuth: Boolean
-        ) {
+        fun abortLogin() {
             _loading.value = false
-            startLoginActivity(launcher, isReAuth).cancel()
+            startJob?.cancel()
+            startJob = null
         }
 
         fun stopLoading() {

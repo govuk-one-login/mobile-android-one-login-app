@@ -7,8 +7,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -17,11 +15,9 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
@@ -39,10 +35,11 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.login.LoginViewModel
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertFalse
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -52,7 +49,7 @@ class LoginViewModelTest {
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var navigator: Navigator
     private lateinit var onlineChecker: OnlineChecker
-    private lateinit var remoteLogin: RemoteLogin
+    private lateinit var remoteLogin: TestRemoteLogin
     private lateinit var getPersistentId: GetPersistentId
     private val logger = MemorisedLogger()
     private lateinit var signOutUseCase: SignOutUseCase
@@ -68,7 +65,7 @@ class LoginViewModelTest {
         activityResultLauncher = mock()
         fragmentActivity = mock()
         navigator = mock()
-        remoteLogin = mock()
+        remoteLogin = TestRemoteLogin()
         onlineChecker = mock()
         signOutUseCase = mock()
         localAuthPrefResetUseCase = mock()
@@ -97,7 +94,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(localAuthPrefResetUseCase).reset()
-            verify(remoteLogin).start(any())
+            assertTrue(remoteLogin.started)
         }
 
     @Test
@@ -111,7 +108,7 @@ class LoginViewModelTest {
             assertTrue(viewModel.loading.value)
             verify(signOutUseCase).invoke()
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-            verify(remoteLogin, times(0)).start(any())
+            assertFalse(remoteLogin.started)
         }
 
     @Test
@@ -125,7 +122,7 @@ class LoginViewModelTest {
             assertTrue(viewModel.loading.value)
             verify(signOutUseCase).invoke()
             verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-            verify(remoteLogin, times(0)).start(any())
+            assertFalse(remoteLogin.started)
         }
 
     @Test
@@ -139,7 +136,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
-            verify(remoteLogin, times(0)).start(any())
+            assertFalse(remoteLogin.started)
         }
 
     @Test
@@ -149,6 +146,7 @@ class LoginViewModelTest {
         viewModel.startLoginActivity(activityResultLauncher, true)
 
         verify(navigator).navigate(ErrorRoutes.Offline, false)
+        assertFalse(remoteLogin.started)
     }
 
     @Test
@@ -161,7 +159,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(localAuthPrefResetUseCase).reset()
-            verify(remoteLogin).start(any())
+            assertTrue(remoteLogin.started)
         }
 
     @Test
@@ -174,7 +172,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(localAuthPrefResetUseCase).reset()
-            verify(remoteLogin).start(any())
+            assertTrue(remoteLogin.started)
         }
 
     @Test
@@ -187,7 +185,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             verify(localAuthPrefResetUseCase).reset()
-            verify(remoteLogin).start(any())
+            assertTrue(remoteLogin.started)
         }
 
     @Test
@@ -197,23 +195,23 @@ class LoginViewModelTest {
         viewModel.startLoginActivity(activityResultLauncher, false)
 
         verify(navigator).navigate(ErrorRoutes.Offline, false)
+        assertFalse(remoteLogin.started)
     }
 
     @Test
-    fun `check abort login works as expected`() =
+    fun `abort login cancels start job and resets loading`() =
         runTest {
-            val mockIntent: Intent = mock()
+            remoteLogin.startWillComplete = false
+            whenever(onlineChecker.isOnline()).thenReturn(true)
 
-            whenever(remoteLogin.finalise(eq(mockIntent), any(), any()))
-                .thenAnswer {
-                    runBlocking {
-                        delay(10000)
-                        assert(viewModel.loading.value)
-                        viewModel.abortLogin(any(), any())
-                    }
-                }
+            viewModel.startLoginActivity(activityResultLauncher, false)
+            assertTrue(remoteLogin.started)
+            assertTrue(viewModel.loading.value)
+
+            viewModel.abortLogin()
 
             assertFalse(viewModel.loading.value)
+            assertTrue(remoteLogin.startCancelled)
         }
 
     @Test
@@ -243,8 +241,7 @@ class LoginViewModelTest {
                     )
                 )
             )
-            verify(remoteLogin, times(0))
-                .finalise(eq(mockIntent), any(), any())
+            assertNull(remoteLogin.finalisedWith)
         }
 
     @Test
@@ -260,8 +257,8 @@ class LoginViewModelTest {
             )
 
             assertTrue(viewModel.loading.value)
-            verify(remoteLogin)
-                .finalise(eq(mockIntent), any(), any())
+            assertTrue(remoteLogin.finalisedWith != null)
+            assertSame(remoteLogin.finalisedWith?.intent, mockIntent)
         }
 
     @Test
@@ -277,7 +274,6 @@ class LoginViewModelTest {
             )
 
             assertFalse(viewModel.loading.value)
-            verify(remoteLogin, times(0))
-                .finalise(eq(mockIntent), any(), any())
+            assertNull(remoteLogin.finalisedWith)
         }
 }
