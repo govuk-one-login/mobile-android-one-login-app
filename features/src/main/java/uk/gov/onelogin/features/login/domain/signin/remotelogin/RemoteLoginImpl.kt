@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +38,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import javax.inject.Inject
 
 @Suppress("LongParameterList")
 class RemoteLoginImpl
