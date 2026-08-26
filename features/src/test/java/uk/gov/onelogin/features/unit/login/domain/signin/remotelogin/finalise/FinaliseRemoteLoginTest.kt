@@ -225,7 +225,12 @@ class FinaliseRemoteLoginTest {
                 AppIntegrityException.ClientAttestationException(Exception("error"))
             whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
             whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Failure(Exception("error")))
+                .thenReturn(
+                    AttestationResult.Failure(
+                        type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                        error = Exception("error")
+                    )
+                )
             whenever(mockAppIntegrity.getProofOfPossession())
                 .thenReturn(SignedPoP.Success(testJwt))
 

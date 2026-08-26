@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.collections.immutable.persistentListOf
-import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.criorchestrator.features.config.publicapi.Config
@@ -44,13 +44,13 @@ object CriOrchestratorModule {
     @Singleton
     fun provideCriOrchestratorSdk(
         @ApplicationContext context: Context,
-        genericHttpClient: GenericHttpClient,
+        networkService: NetworkService,
         analyticsLogger: AnalyticsLogger,
         sdkConfig: Config,
         logger: Logger,
     ): CriOrchestratorSdk =
         CriOrchestratorSdk.create(
-            genericHttpClient,
+            networkService,
             analyticsLogger,
             sdkConfig,
             logger,

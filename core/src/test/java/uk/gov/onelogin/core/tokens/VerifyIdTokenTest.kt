@@ -8,9 +8,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.authentication.json.jwt.JwtVerifier
-import uk.gov.android.network.api.ApiResponse
-import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.android.network.client.StubHttpClient
+import uk.gov.android.network.client.v2.TestHttpResponse
+import uk.gov.android.network.service.v2.StubNetworkService
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
@@ -24,7 +23,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class VerifyIdTokenTest {
-    private lateinit var stubHttpClient: GenericHttpClient
+    private val networkService = StubNetworkService()
     private lateinit var stubVerifier: JwtVerifier
     private lateinit var verifyIdToken: VerifyIdToken
     private lateinit var extractEmail: ExtractEmail
@@ -83,7 +82,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Failure(400, Exception()))
+            networkService.setFailureResponse(TestHttpResponse.internalServerError)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -98,7 +97,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(false)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success(jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -113,7 +112,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success(jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -128,7 +127,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success("not a json"))
+            networkService.setSuccessResponse(200, "not a json")
             buildVerifyToken()
 
             val result = verifyIdToken("not an id token", "testUrl")
@@ -147,7 +146,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success("not a json"))
+            networkService.setSuccessResponse(200, "not a json")
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -168,7 +167,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success(jwksResponse))
+            networkService.setSuccessResponse(200, jwksResponse)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -183,7 +182,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn(null)
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -197,7 +196,7 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn(null)
-            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
@@ -211,21 +210,17 @@ class VerifyIdTokenTest {
             whenever(extractEmail.invoke(any())).thenReturn("email")
             whenever(stubVerifier.verify(any(), any())).thenReturn(true)
             whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("id")
-            setupHttpStub(ApiResponse.Success(idTokenMissingEmail))
+            networkService.setSuccessResponse(200, idTokenMissingEmail)
             buildVerifyToken()
 
             val result = verifyIdToken(idToken, "testUrl")
             assertFalse(result)
         }
 
-    private fun setupHttpStub(response: ApiResponse) {
-        stubHttpClient = StubHttpClient(response)
-    }
-
     private fun buildVerifyToken() {
         verifyIdToken =
             VerifyIdTokenImpl(
-                stubHttpClient,
+                networkService,
                 stubVerifier,
                 extractEmail,
                 extractAndSaveWalletId,

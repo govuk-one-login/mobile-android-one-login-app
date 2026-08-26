@@ -126,6 +126,7 @@ dependencies {
         libs.kotlinx.coroutines.test,
         libs.classgraph,
         libs.junit,
+        libs.turbine,
         libs.roboelectric,
         libs.androidx.compose.ui.junit4,
         libs.androidx.espresso.core,
@@ -135,6 +136,7 @@ dependencies {
         testFixtures(projects.core),
         libs.logging.test,
         testFixtures(libs.logging.api),
+        testFixtures(libs.network),
         testFixtures(libs.patterns),
     ).forEach(::testImplementation)
 

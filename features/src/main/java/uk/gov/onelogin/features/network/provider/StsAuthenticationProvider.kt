@@ -2,19 +2,21 @@ package uk.gov.onelogin.features.network.provider
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import uk.gov.android.network.api.ApiRequest
-import uk.gov.android.network.api.ApiResponse
 import uk.gov.android.network.api.ApiResponseException
+import uk.gov.android.network.api.v2.ApiRequest
+import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.GenericHttpClient
+import uk.gov.android.network.service.NetworkingException
+import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.network.di.StsUrl
 import uk.gov.onelogin.core.network.domain.TokenApiResponse
-import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
 import uk.gov.onelogin.core.utils.AccessToken
@@ -22,6 +24,7 @@ import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import javax.inject.Inject
 
 /**
  * [uk.gov.onelogin.features.network.provider.StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
@@ -31,27 +34,26 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
  * @param stsUrl provides the STS endpoint used to make a service token exchange
  * @param tokenRepository provides the access token required for the service token exchange
  * @param isAccessTokenExpired provides functionality to conduct a check and determine is a refresh exchange is required when the access token is expired
- * @param httpClient it's a network client required for making the network requests to the service token endpoint
+ * @param networkService it's a network client required for making the network requests to the service token endpoint
  * @param navigator provides a [Navigator] to allow navigating to error screens where required (e.g. Re-Authentication, Sign-In Required)
  * @param signOutUseCase provides functionality to delete all data linked to a session/ user when a Sign-In is required (e.g. missing Persistent Session ID)
  * @param logger provides a [Logger] to enable logging errors to Crashlytics
  *
  */
 @Suppress("LongParameterList")
-class StsAuthenticationProvider(
+class StsAuthenticationProvider @Inject constructor(
     private val activityProvider: ActivityProvider,
+    @param:StsUrl
     private val stsUrl: String,
     private val tokenRepository: TokenRepository,
     @param:AccessToken
     private val isAccessTokenExpired: IsTokenExpired,
-    private val httpClient: GenericHttpClient,
+    private val networkService: NetworkService,
     private val navigator: Navigator,
     private val refreshExchange: RefreshExchange,
     private val signOutUseCase: SignOutUseCase,
     private val logger: Logger
 ) : AuthenticationProvider {
-    private val jsonDecoder = Json { ignoreUnknownKeys = true }
-
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
         // Check if access token is expired
@@ -85,12 +87,15 @@ class StsAuthenticationProvider(
                 }
 
                 // If success continue and attempt to get a service token
+                RefreshExchangeResult.Success ->
+                    attemptServiceTokenExchange(scope)
+
                 // If user cancelled bio prompt/ bio check failed/ offline, allow for the consumer to handle the error
                 // which means treating it as a success, and it will fail at getting the access token which will be
                 // treated as an error on the consumer/ SDKs side
-                else -> {
+                RefreshExchangeResult.UserCancelledBioPrompt,
+                RefreshExchangeResult.OfflineNetwork ->
                     attemptServiceTokenExchange(scope)
-                }
             }
             // If access token valid, attempt to get a service token
         } else {
@@ -134,12 +139,21 @@ class StsAuthenticationProvider(
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    private suspend fun attemptServiceTokenExchange(scope: String): AuthenticationResponse =
-        tokenRepository.getTokenResponse()?.accessToken?.let {
-            val request = createServiceTokenRequest(it, scope)
-            val response = httpClient.makeRequest(request)
-            handleServiceTokenResponse(response)
-        } ?: AuthenticationResponse.Failure(Exception(NO_ACCESS_TOKEN_ERROR_MSG))
+    private suspend fun attemptServiceTokenExchange(scope: String): AuthenticationResponse {
+        val accessToken = tokenRepository.getTokenResponse()?.accessToken ?:
+            return AuthenticationResponse.Failure(IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG))
+
+        val request = createServiceTokenRequest(accessToken, scope)
+        val response = networkService.makeRequest<TokenApiResponse>(request)
+
+        // Check response for account intervention
+        // Invalid grant which is the 400 error returned - re-auth required
+        if (response is ApiResponse.Failure && response.status == AUTHENTICATION_DENIED) {
+            navigator.navigate(SignOutRoutes.ReAuth)
+        }
+
+        return response.toAuthenticationResponse()
+    }
 
     /**
      * Creates the [ApiRequest.FormUrlEncoded] to get a service token - - see [attemptServiceTokenExchange].
@@ -163,50 +177,19 @@ class StsAuthenticationProvider(
         )
 
     /**
-     * Handles the response from the service token request - see [attemptServiceTokenExchange].
-     * @param response an [ApiResponse] that contains the result of the service token exchange
+     * Convert the response from the service token request - see [attemptServiceTokenExchange].
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    @Suppress("TooGenericExceptionCaught")
-    private fun handleServiceTokenResponse(response: ApiResponse): AuthenticationResponse =
-        when (response) {
-            is ApiResponse.Success<*> ->
-                try {
-                    val tokenResponseString: String = response.response.toString()
-                    val tokenApiResponse: TokenApiResponse =
-                        jsonDecoder
-                            .decodeFromString(tokenResponseString)
-                    AuthenticationResponse.Success(tokenApiResponse.token)
-                } catch (e: Exception) {
-                    // If decoding is unsuccessful log error and return the failure
-                    val loginException = LoginException(e)
-                    logger.error(
-                        loginException::class.java.simpleName,
-                        e.message.toString(),
-                        loginException
-                    )
-                    AuthenticationResponse.Failure(e)
-                }
+    private fun ApiResponse<TokenApiResponse, String, NetworkingException>
+            .toAuthenticationResponse() : AuthenticationResponse =
+        when (this) {
+            is ApiResponse.Success ->
+                    AuthenticationResponse.Success(body.token)
 
-            // Check response for account intervention
-            is ApiResponse.Failure -> {
-                // Invalid grant which is the 400 error returned - re-auth required
-                if (response.status == AUTHENTICATION_DENIED) {
-                    navigator.navigate(SignOutRoutes.ReAuth)
-                    AuthenticationResponse.Failure(
-                        Exception(response.error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG)
-                    )
-                } else {
-                    AuthenticationResponse.Failure(
-                        Exception(response.error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG)
-                    )
-                }
+            is ApiResponse.Failure ->
+                AuthenticationResponse.Failure(Exception(error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, error))
             }
-
-            // This should never happen as Offline and Loading are never used
-            else -> AuthenticationResponse.Failure(Exception(SERVICE_TOKEN_FAILURE_ERROR_MSG))
-        }
 
     companion object {
         private const val GRANT_TYPE = "grant_type"
