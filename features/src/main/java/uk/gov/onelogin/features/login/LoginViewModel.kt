@@ -76,29 +76,30 @@ class LoginViewModel
             isReAuth: Boolean = false,
             activity: FragmentActivity,
         ) {
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.let { intent ->
-                    viewModelScope.launch {
-                        _loading.emit(true)
-                        remoteLogin.finalise(
-                            intent,
-                            isReAuth,
-                            activity
-                        )
-                    }
-                } ?: run {
-                    logger.error(
-                        NULL_INTENT_MSG,
-                        Exception(NULL_INTENT_MSG),
-                        componentKey(COMPONENT_LOGIN),
-                        actionKey(ACTION_START_LOGIN_RESULT),
-                    )
-                    _loading.value = false
-                    return
-                }
+            if (result.resultCode != Activity.RESULT_OK) {
+                _loading.value = false
+                return
             }
 
-            _loading.value = false
+            val intent = result.data ?: run {
+                logger.error(
+                    NULL_INTENT_MSG,
+                    Exception(NULL_INTENT_MSG),
+                    componentKey(COMPONENT_LOGIN),
+                    actionKey(ACTION_START_LOGIN_RESULT),
+                )
+                _loading.value = false
+                return
+            }
+
+            viewModelScope.launch {
+                _loading.emit(true)
+                remoteLogin.finalise(
+                    intent,
+                    isReAuth,
+                    activity
+                )
+            }
         }
 
         fun abortLogin(
