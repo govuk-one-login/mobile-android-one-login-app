@@ -82,38 +82,32 @@ class RemoteLoginImpl
             activity: FragmentActivity,
         ) {
             // Adapts the callback based API to a result
-            val deferred = CompletableDeferred<Result<TokenResponse>>()
-            finaliseRemoteLogin.handle(
-                intent,
-                onSuccess = {
-                    deferred.complete(Result.success(it))
-                },
-                onFailure = {
-                    deferred
-                        .complete(
-                            Result.failure(
-                                it
-                                    ?: Exception("Login finalise failed")
-                            )
-                        )
+            CompletableDeferred<Result<TokenResponse>>()
+                .also { deferred ->
+                    finaliseRemoteLogin.handle(
+                        intent,
+                        onSuccess = {
+                            deferred.complete(Result.success(it))
+                        },
+                        onFailure = {
+                            val exception = it ?: Exception("Login finalise failed")
+                            deferred.complete(Result.failure(exception))
+                        }
+                    )
                 }
-            )
-            // Required to ensure the navigation and errors are handled accordingly - should look into simplifying this or if possible to
-            // refactor and not use the Main thread
-            withContext(Dispatchers.Main) {
-                deferred.await().fold(
-                    onSuccess = { handleTokens(it, isReAuth, activity) },
-                    onFailure = {
-                        val loginException = LoginException(it)
-                        logger.error(
-                            loginException.javaClass.simpleName,
-                            it.message.toString(),
-                            loginException,
-                        )
-                        handleLoginErrors(it)
-                    }
-                )
-            }
+                .await()
+                .onSuccess {
+                    handleTokens(it, isReAuth, activity)
+                }
+                .onFailure {
+                    val loginException = LoginException(it)
+                    logger.error(
+                        loginException.javaClass.simpleName,
+                        it.message.toString(),
+                        loginException,
+                    )
+                    handleLoginErrors(it)
+                }
         }
 
         private suspend fun handleTokens(
