@@ -2,15 +2,15 @@ package uk.gov.onelogin.features.network.provider
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.io.IOException
+import kotlinx.serialization.SerializationException
 import uk.gov.android.network.api.ApiResponseException
 import uk.gov.android.network.api.v2.ApiRequest
-import uk.gov.android.network.api.v3.ApiResponse
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.auth.AuthenticationResponse
-import uk.gov.android.network.client.GenericHttpClient
-import uk.gov.android.network.service.NetworkingException
-import uk.gov.android.network.service.v2.NetworkService
-import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
+import uk.gov.android.network.client.v2.GenericHttpClient
+import uk.gov.android.network.client.v2.GenericResponseException
+import uk.gov.android.network.service.json.JsonDefaults
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
@@ -27,14 +27,14 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import javax.inject.Inject
 
 /**
- * [uk.gov.onelogin.features.network.provider.StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
+ * [StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
  * that is used by a [GenericHttpClient] to enable authenticated requests.
  *
  * @param activityProvider provides access to a FragmentActivity required when attempting to retrieve tokens form the secure store for the [android.hardware.biometrics.BiometricPrompt]
  * @param stsUrl provides the STS endpoint used to make a service token exchange
  * @param tokenRepository provides the access token required for the service token exchange
  * @param isAccessTokenExpired provides functionality to conduct a check and determine is a refresh exchange is required when the access token is expired
- * @param networkService it's a network client required for making the network requests to the service token endpoint
+ * @param genericHttpClient it's a network client required for making the network requests to the service token endpoint
  * @param navigator provides a [Navigator] to allow navigating to error screens where required (e.g. Re-Authentication, Sign-In Required)
  * @param signOutUseCase provides functionality to delete all data linked to a session/ user when a Sign-In is required (e.g. missing Persistent Session ID)
  * @param logger provides a [Logger] to enable logging errors to Crashlytics
@@ -48,7 +48,7 @@ class StsAuthenticationProvider @Inject constructor(
     private val tokenRepository: TokenRepository,
     @param:AccessToken
     private val isAccessTokenExpired: IsTokenExpired,
-    private val networkService: NetworkService,
+    private val genericHttpClient: GenericHttpClient,
     private val navigator: Navigator,
     private val refreshExchange: RefreshExchange,
     private val signOutUseCase: SignOutUseCase,
@@ -144,15 +144,29 @@ class StsAuthenticationProvider @Inject constructor(
             return AuthenticationResponse.Failure(IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG))
 
         val request = createServiceTokenRequest(accessToken, scope)
-        val response = networkService.makeRequest<TokenApiResponse>(request)
-
-        // Check response for account intervention
-        // Invalid grant which is the 400 error returned - re-auth required
-        if (response is ApiResponse.Failure && response.status == AUTHENTICATION_DENIED) {
-            navigator.navigate(SignOutRoutes.ReAuth)
+        val response = try {
+            genericHttpClient.request(request)
+        } catch (exception: SerializationException) {
+            return exception.toAuthenticationResponse()
+        } catch (exception: GenericResponseException) {
+            // Check response for account intervention
+            // Invalid grant which is the 400 error returned - re-auth required
+            if (exception.response.status == AUTHENTICATION_DENIED) {
+                navigator.navigate(SignOutRoutes.ReAuth)
+            }
+            return exception.toAuthenticationResponse()
+        } catch (exception: IOException) {
+            return exception.toAuthenticationResponse()
         }
 
-        return response.toAuthenticationResponse()
+        val parsed = try {
+            JsonDefaults.jsonDecoder
+                .decodeFromString<TokenApiResponse>(response.body)
+        } catch (exception: SerializationException) {
+            return exception.toAuthenticationResponse()
+        }
+
+        return AuthenticationResponse.Success(parsed.token)
     }
 
     /**
@@ -181,15 +195,8 @@ class StsAuthenticationProvider @Inject constructor(
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    private fun ApiResponse<TokenApiResponse, String, NetworkingException>
-            .toAuthenticationResponse() : AuthenticationResponse =
-        when (this) {
-            is ApiResponse.Success ->
-                    AuthenticationResponse.Success(body.token)
-
-            is ApiResponse.Failure ->
-                AuthenticationResponse.Failure(Exception(error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, error))
-            }
+    private fun Exception.toAuthenticationResponse() : AuthenticationResponse.Failure =
+        AuthenticationResponse.Failure(Exception(message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, this))
 
     companion object {
         private const val GRANT_TYPE = "grant_type"

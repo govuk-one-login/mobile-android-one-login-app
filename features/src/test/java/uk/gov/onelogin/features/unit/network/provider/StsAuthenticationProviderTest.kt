@@ -24,8 +24,6 @@ import uk.gov.android.network.auth.AuthenticationResponse
 import uk.gov.android.network.client.v2.GenericHttpResponse
 import uk.gov.android.network.client.v2.GenericResponseException
 import uk.gov.android.network.client.v2.StubHttpClient
-import uk.gov.android.network.service.ApiResponseException
-import uk.gov.android.network.service.v2.DefaultNetworkService
 import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
@@ -54,7 +52,6 @@ class StsAuthenticationProviderTest {
     private val mockNavigator: Navigator = mock()
     private val logger = MemorisedLogger()
     private val httpClient: StubHttpClient = StubHttpClient()
-    private val networkService = DefaultNetworkService(httpClient)
 
     private lateinit var provider: AuthenticationProvider
 
@@ -77,7 +74,7 @@ class StsAuthenticationProviderTest {
                 "url",
                 mockTokenRepository,
                 mockIsAccessTokenExpired,
-                networkService,
+                httpClient,
                 mockNavigator,
                 mockRefreshExchange,
                 mockSignOutUseCase,
@@ -146,7 +143,7 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertInstanceOf<GenericResponseException>(response.error.cause)
         }
 
     @Test
@@ -184,7 +181,7 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertInstanceOf<GenericResponseException>(response.error.cause)
         }
 
     @Test
@@ -222,7 +219,7 @@ class StsAuthenticationProviderTest {
             val response = provider.fetchBearerToken(SCOPE)
 
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertInstanceOf<GenericResponseException>(response.error.cause)
         }
 
     @Test
@@ -251,7 +248,7 @@ class StsAuthenticationProviderTest {
 
             whenever(mockTokenRepository.getTokenResponse()).thenReturn(loginTokens)
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertInstanceOf<GenericResponseException>(response.error.cause)
             assertEquals(response.error.cause?.message, response.error.message)
         }
 
@@ -282,7 +279,7 @@ class StsAuthenticationProviderTest {
 
             verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
             assertInstanceOf<AuthenticationResponse.Failure>(response)
-            assertInstanceOf<ApiResponseException>(response.error.cause)
+            assertInstanceOf<GenericResponseException>(response.error.cause)
             assertEquals(response.error.cause?.message, response.error.message)
         }
 
@@ -320,11 +317,11 @@ class StsAuthenticationProviderTest {
         val successResponse = GenericHttpResponse(200, tokenResponseJson)
         val badRequestResponse = GenericResponseException(
             GenericHttpResponse(AUTHENTICATION_DENIED, "status $AUTHENTICATION_DENIED"),
-            IllegalStateException()
+            IllegalStateException("Failure")
         )
         val internalServerErrorResponse = GenericResponseException(
             GenericHttpResponse(500, "status 500"),
-            IllegalStateException()
+            IllegalStateException("Failure")
         )
     }
 }

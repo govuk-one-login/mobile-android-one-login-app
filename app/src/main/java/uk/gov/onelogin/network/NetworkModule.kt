@@ -9,8 +9,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uk.gov.android.network.attestation.ClientAttestationProvider
+import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.KtorHttpClient
+import uk.gov.android.network.dpop.DPoPProvider
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.online.OnlineCheckerImpl
 import uk.gov.android.network.service.v2.DefaultNetworkService
@@ -54,9 +57,16 @@ interface NetworkModule {
         @Provides
         @Singleton
         fun provideNetworkService(
-            ktorHttpClient: KtorHttpClient
+            ktorHttpClient: KtorHttpClient,
+            authenticationProvider: AuthenticationProvider,
+            dPoPProvider: DPoPProvider,
+            clientAttestationProvider: ClientAttestationProvider,
         ): DefaultNetworkService =
-            DefaultNetworkService(ktorHttpClient)
+            DefaultNetworkService(ktorHttpClient).apply {
+                setAuthenticationProvider(authenticationProvider)
+                setClientAttestationProvider(clientAttestationProvider)
+                setDPoPProvider(dPoPProvider)
+            }
 
         @Provides
         @Singleton

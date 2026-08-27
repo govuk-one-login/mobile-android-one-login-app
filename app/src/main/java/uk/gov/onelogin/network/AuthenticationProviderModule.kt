@@ -7,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import uk.gov.android.network.auth.AuthenticationProvider
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.onelogin.core.R
@@ -22,7 +23,7 @@ import uk.gov.onelogin.features.network.provider.StsAuthenticationProvider
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 interface AuthenticationProviderModule {
     @Binds
     fun authenticationProvider(

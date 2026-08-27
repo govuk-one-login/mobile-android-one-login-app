@@ -14,17 +14,9 @@ class MainActivityViewModel
     @Inject
     constructor(
         private val genericHttpClient: GenericHttpClient,
-        private val defaultNetworkService: DefaultNetworkService,
         private val authenticationProvider: AuthenticationProvider,
-        private val dPoPProvider: DPoPProvider,
-        private val clientAttestationProvider: ClientAttestationProvider,
     ) : ViewModel() {
         fun initialiseNetworkService() {
             genericHttpClient.setAuthenticationProvider(authenticationProvider)
-            defaultNetworkService.apply {
-                setAuthenticationProvider(authenticationProvider)
-                setDPoPProvider(dPoPProvider)
-                setClientAttestationProvider(clientAttestationProvider)
-            }
         }
     }
