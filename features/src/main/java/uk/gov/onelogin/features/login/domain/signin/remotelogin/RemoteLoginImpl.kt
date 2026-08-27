@@ -6,10 +6,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.TokenResponse
 import uk.gov.android.localauth.LocalAuthManager
@@ -139,28 +135,34 @@ class RemoteLoginImpl
             tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
 
-            localAuthManager.enforceAndSet(
-                false,
-                activity = activity,
-                callbackHandler =
-                    object : LocalAuthManagerCallbackHandler {
-                        override fun onSuccess(backButtonPressed: Boolean) {
-                            // Required to enable running suspend functions form within the callback handler
-                            // Requires Main thread as it displays UI that needs to be persisted until user allows for continuation of the flow to the other screens
-                            CoroutineScope(Dispatchers.Main).launch {
-                                if (isReAuth) {
-                                    handleLocalAuthCallbackReAuth(localAuthManager.localAuthPreference, tokens)
-                                } else {
-                                    handleLocalAuthCallbackNoReAuth(localAuthManager.localAuthPreference, tokens)
-                                }
+            // Adapts the callback based API to a result
+            CompletableDeferred<Result<LocalAuthPreference?>>()
+                .also { deferred ->
+                    localAuthManager.enforceAndSet(
+                        false,
+                        activity = activity,
+                        callbackHandler = object : LocalAuthManagerCallbackHandler {
+                            override fun onSuccess(backButtonPressed: Boolean) {
+                                deferred.complete(Result.success(localAuthManager.localAuthPreference))
                             }
-                        }
 
-                        override fun onFailure(backButtonPressed: Boolean) {
-                            navigator.navigate(MainNavRoutes.Start, true)
-                        }
-                    },
-            )
+                            override fun onFailure(backButtonPressed: Boolean) {
+                                deferred.complete(Result.failure(Exception("Failed to check local auth status")))
+                            }
+                        },
+                    )
+                }
+                .await()
+                .onSuccess { localAuthPreference ->
+                    if (isReAuth) {
+                        handleLocalAuthCallbackReAuth(localAuthPreference, tokens)
+                    } else {
+                        handleLocalAuthCallbackNoReAuth(localAuthPreference, tokens)
+                    }
+                }
+                .onFailure {
+                    navigator.navigate(MainNavRoutes.Start, true)
+                }
         }
 
         private suspend fun handleLocalAuthCallbackReAuth(
