@@ -38,13 +38,14 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.ExpiryInfo
 import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiry
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
+import uk.gov.onelogin.core.utils.TestActivityResultLauncher
 import uk.gov.onelogin.core.utils.convertToLoginTokens
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLoginImpl
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.TestStartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertEquals
 
@@ -63,7 +64,7 @@ class RemoteLoginImplTest {
     private val mockVerifyIdToken: VerifyIdToken = mock()
     private val mockNavigator: Navigator = mock()
     private val mockSaveTokenExpiry: SaveTokenExpiry = mock()
-    private val mockStartRemoteLogin: StartRemoteLogin = mock()
+    private val startRemoteLogin = TestStartRemoteLogin()
     private val mockFinaliseRemoteLogin: FinaliseRemoteLogin = mock()
     private val mockSignOutUseCase: SignOutUseCase = mock()
     private val mockSavePersistentId: SavePersistentId = mock()
@@ -71,6 +72,7 @@ class RemoteLoginImplTest {
     private val mockRemoveRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry = mock()
     private val logger = MemorisedLogger()
     private val mockIntent: Intent = mock()
+    private val activityResultLauncher = TestActivityResultLauncher<Intent>()
 
     private val testAccessToken = "testAccessToken"
     private var testIdToken: String = "testIdToken"
@@ -120,7 +122,7 @@ class RemoteLoginImplTest {
         RemoteLoginImpl(
             mockContext,
             mockFinaliseRemoteLogin,
-            mockStartRemoteLogin,
+            startRemoteLogin,
             localAuthManager,
             mockTokenRepository,
             mockVerifyIdToken,
@@ -139,6 +141,55 @@ class RemoteLoginImplTest {
         // Default happy path
         givenFinaliseRemoteLoginSuccess()
         givenVerifyIdTokenSuccess()
+    }
+
+    @Test
+    fun `given no errors, start does not navigate`() = runTest {
+        remoteLogin.start(activityResultLauncher)
+
+        verifyNoInteractions(mockNavigator)
+    }
+
+    @Test
+    fun `given ClientAttestationException, start navigates to app integrity error`() = runTest {
+        givenStartRemoteLoginFailure(
+            AppIntegrityException.ClientAttestationException(Exception())
+        )
+
+        remoteLogin.start(activityResultLauncher)
+
+        verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
+    }
+
+    @Test
+    fun `given FirebaseException, start navigates to app integrity error`() = runTest {
+        givenStartRemoteLoginFailure(
+            AppIntegrityException.FirebaseException(Exception())
+        )
+
+        remoteLogin.start(activityResultLauncher)
+
+        verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
+    }
+
+    @Test
+    fun `given AppIntegrityException Other, start navigates to app integrity error`() = runTest {
+        givenStartRemoteLoginFailure(
+            AppIntegrityException.Other(Exception())
+        )
+
+        remoteLogin.start(activityResultLauncher)
+
+        verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity)
+    }
+
+    @Test
+    fun `given generic throwable, start navigates to recoverable error`() = runTest {
+        givenStartRemoteLoginFailure(RuntimeException("something went wrong"))
+
+        remoteLogin.start(activityResultLauncher)
+
+        verify(mockNavigator).navigate(LoginRoutes.SignInRecoverableError)
     }
 
     @Test
@@ -524,6 +575,10 @@ class RemoteLoginImplTest {
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
 
+
+    private fun givenStartRemoteLoginFailure(throwable: Throwable) {
+        startRemoteLogin.result = Result.failure(throwable)
+    }
 
     private suspend fun givenLocalAuthCheckSuccess(pref: LocalAuthPreference) {
         whenever(localAuthManager.localAuthPreference).thenReturn(pref)

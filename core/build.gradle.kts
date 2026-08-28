@@ -161,5 +161,6 @@ dependencies {
         libs.kotlin.stdlib,
         libs.compose.runtime,
         libs.mockito.kotlin,
+        libs.androidx.activity.compose,
     ).forEach(::testFixturesImplementation)
 }
