@@ -155,9 +155,9 @@ class RemoteLoginImpl
                 .await()
                 .onSuccess { localAuthPreference ->
                     if (isReAuth) {
-                        handleLocalAuthCallbackReAuth(localAuthPreference, tokens)
+                        handleLocalAuthCallbackReAuth(localAuthPreference, tokens.refreshToken)
                     } else {
-                        handleLocalAuthCallbackNoReAuth(localAuthPreference, tokens)
+                        handleLocalAuthCallbackNoReAuth(localAuthPreference, tokens.refreshToken)
                     }
                 }
                 .onFailure {
@@ -167,13 +167,13 @@ class RemoteLoginImpl
 
         private suspend fun handleLocalAuthCallbackReAuth(
             pref: LocalAuthPreference?,
-            tokens: TokenResponse
+            refreshToken: String?
         ) {
             if (pref is LocalAuthPreference.Enabled) {
                 // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
-                autoInitialiseSecureStore.initialise(tokens.refreshToken)
-                if (tokens.refreshToken != null) {
-                    saveRefreshTokenExpiryToOpenStore(tokens)
+                autoInitialiseSecureStore.initialise(refreshToken)
+                if (refreshToken != null) {
+                    saveRefreshTokenExpiryToOpenStore(refreshToken)
                 } else {
                     removeRefreshTokenAndExpiry.remove()
                 }
@@ -185,13 +185,13 @@ class RemoteLoginImpl
 
         private suspend fun handleLocalAuthCallbackNoReAuth(
             pref: LocalAuthPreference?,
-            tokens: TokenResponse
+            refreshToken: String?,
         ) {
             // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
-            autoInitialiseSecureStore.initialise(tokens.refreshToken)
-            if (tokens.refreshToken != null) {
+            autoInitialiseSecureStore.initialise(refreshToken)
+            if (refreshToken != null) {
                 if (pref is LocalAuthPreference.Enabled) {
-                    saveRefreshTokenExpiryToOpenStore(tokens)
+                    saveRefreshTokenExpiryToOpenStore(refreshToken)
                 }
             } else {
                 removeRefreshTokenAndExpiry.remove()
@@ -199,16 +199,14 @@ class RemoteLoginImpl
             navigator.navigate(MainNavRoutes.Start, true)
         }
 
-        private suspend fun saveRefreshTokenExpiryToOpenStore(tokens: TokenResponse) {
-            tokens.refreshToken?.let {
-                val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(it)
-                saveTokenExpiry.saveExp(
-                    ExpiryInfo(
-                        key = REFRESH_TOKEN_EXPIRY_KEY,
-                        value = extractedExp,
-                    ),
-                )
-            }
+        private suspend fun saveRefreshTokenExpiryToOpenStore(refreshToken: String) {
+            val extractedExp = saveTokenExpiry.extractExpFromRefreshToken(refreshToken)
+            saveTokenExpiry.saveExp(
+                ExpiryInfo(
+                    key = REFRESH_TOKEN_EXPIRY_KEY,
+                    value = extractedExp,
+                ),
+            )
         }
 
         private suspend fun saveAccessTokenExpiryToOpenStore(tokens: TokenResponse) {
