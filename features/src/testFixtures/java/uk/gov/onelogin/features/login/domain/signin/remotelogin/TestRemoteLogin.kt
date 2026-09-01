@@ -14,12 +14,15 @@ class TestRemoteLogin : RemoteLogin {
     var finalisedWith: FinalArgs? = null
         private set
 
+    var startResult: RemoteLogin.Result = RemoteLogin.Result.Success
+    var finaliseResult: RemoteLogin.Result = RemoteLogin.Result.Success
+
     /**
      * Setting this to true
      */
     var startWillComplete: Boolean = true
 
-    override suspend fun start(launcher: ActivityResultLauncher<Intent>) {
+    override suspend fun start(launcher: ActivityResultLauncher<Intent>): RemoteLogin.Result {
         started = true
         try {
             if (!startWillComplete) {
@@ -29,14 +32,16 @@ class TestRemoteLogin : RemoteLogin {
             startCancelled = true
             throw e
         }
+        return startResult
     }
 
     override suspend fun finalise(
         intent: Intent,
         isReAuth: Boolean,
         activity: FragmentActivity,
-    ) {
+    ): RemoteLogin.Result {
         finalisedWith = FinalArgs(intent, isReAuth)
+        return finaliseResult
     }
 
     data class FinalArgs(

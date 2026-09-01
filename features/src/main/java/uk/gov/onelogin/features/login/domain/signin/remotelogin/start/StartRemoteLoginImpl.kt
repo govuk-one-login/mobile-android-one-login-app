@@ -32,6 +32,7 @@ class StartRemoteLoginImpl
         @Suppress("TooGenericExceptionCaught")
         override suspend fun login(
             launcher: ActivityResultLauncher<Intent>,
+            onSuccess: () -> Unit,
             onFailure: (Throwable) -> Unit,
         ) {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
@@ -42,6 +43,7 @@ class StartRemoteLoginImpl
                             launcher,
                             configuration = createLoginConfiguration(persistentId),
                         )
+                        onSuccess()
                     } catch (e: Throwable) {
                         val loginException = LoginException(e)
                         logger.error(

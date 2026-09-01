@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResultLauncher
 fun interface StartRemoteLogin {
     suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
+        onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
     )
 }

@@ -20,6 +20,7 @@ import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
@@ -70,7 +71,11 @@ class LoginViewModel
             // This allows for the BiometricOptIn prompt to be displayed anytime a re-auth is done ONLY IF the
             // user eith has no preference (something went wrong) or opted out at an earlier time
             localAuthPrefResetUseCase.reset()
-            remoteLogin.start(launcher)
+            val result = remoteLogin.start(launcher)
+
+            if (result is RemoteLogin.Result.Failure) {
+                navigator.navigate(result, isReAuth)
+            }
         }.also { job ->
             startJob = job
         }
@@ -98,11 +103,13 @@ class LoginViewModel
 
             viewModelScope.launch {
                 _loading.emit(true)
-                remoteLogin.finalise(
+                val result = remoteLogin.finalise(
                     intent,
                     isReAuth,
                     activity
                 )
+
+                navigator.navigate(result, isReAuth)
             }
         }
 
@@ -114,6 +121,37 @@ class LoginViewModel
 
         fun stopLoading() {
             _loading.value = false
+        }
+
+        private fun Navigator.navigate(
+            loginResult: RemoteLogin.Result,
+            isReAuth: Boolean,
+        ) {
+            when (loginResult) {
+                is RemoteLogin.Result.Success -> {
+                    if (isReAuth) {
+                        goBack()
+                    } else {
+                        navigate(MainNavRoutes.Start, true)
+                    }
+                }
+
+                is RemoteLogin.Result.Failure -> {
+                    when (loginResult.type) {
+                        RemoteLogin.FailureType.AccessDenied ->
+                            navigate(SignOutRoutes.ReAuthError)
+
+                        RemoteLogin.FailureType.AppIntegrity ->
+                            navigate(ErrorRoutes.AppIntegrity)
+
+                        RemoteLogin.FailureType.SignInRecoverable ->
+                            navigate(LoginRoutes.SignInRecoverableError, true)
+
+                        RemoteLogin.FailureType.SignInUnrecoverable ->
+                            navigate(LoginRoutes.SignInUnrecoverableError, true)
+                    }
+                }
+            }
         }
 
         companion object {

@@ -49,6 +49,9 @@ class StartRemoteLoginTest {
     private val testAttestation = "testAttestation"
     private val testPersistentId = "12345"
 
+    private val onSuccess: () -> Unit = mock()
+    private val onFailure: (Throwable) -> Unit = mock()
+
     private lateinit var startRemoteLogin: StartRemoteLogin
 
     @BeforeEach
@@ -80,8 +83,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
+            verify(onSuccess).invoke()
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -101,8 +105,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
+            verify(onSuccess).invoke()
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -122,8 +127,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
+            verify(onSuccess).invoke()
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -145,13 +151,10 @@ class StartRemoteLoginTest {
                     error = Exception("error")
                 )
             )
-            var checkFailed = false
 
-            startRemoteLogin.login(mockLauncher) {
-                checkFailed = true
-            }
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
-            assert(checkFailed)
+            verify(onFailure).invoke(any())
         }
 
     @Test
@@ -162,8 +165,9 @@ class StartRemoteLoginTest {
                 AttestationResult.NotRequired(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
+            verify(onSuccess).invoke()
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -183,8 +187,9 @@ class StartRemoteLoginTest {
                 AttestationResult.NotRequired(null)
             )
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
+            verify(onSuccess).invoke()
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -207,7 +212,7 @@ class StartRemoteLoginTest {
             )
             whenever(mockLoginSession.present(any(), any())).thenThrow(error)
 
-            startRemoteLogin.login(mockLauncher) {}
+            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
 
             assertThat(
                 mockLogger,

@@ -14,11 +14,6 @@ import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.counter.Counter
-import uk.gov.onelogin.core.navigation.data.ErrorRoutes
-import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.navigation.data.MainNavRoutes
-import uk.gov.onelogin.core.navigation.data.SignOutRoutes
-import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.data.initialise.AutoInitialiseSecureStore
@@ -52,58 +47,68 @@ class RemoteLoginImpl
         private val saveTokenExpiry: SaveTokenExpiry,
         private val signOutUseCase: SignOutUseCase,
         private val removeRefreshTokenAndExpiry: RemoveRefreshTokenAndExpiry,
-        private val errorCounter: Counter,
+        private val recoverableErrors: Counter,
         private val logger: Logger,
-        private val navigator: Navigator
     ) : RemoteLogin {
         private val jwksUrl
             get() = context.getString(R.string.stsUrl, context.getString(R.string.jwksEndpoint))
 
-        override suspend fun start(launcher: ActivityResultLauncher<Intent>) {
-            startRemoteLogin.login(
+        override suspend fun start(launcher: ActivityResultLauncher<Intent>): RemoteLogin.Result =
+            startRemoteLogin.loginInternal(
                 launcher,
-            ) { throwable ->
+            ).map {
+                RemoteLogin.Result.Success
+            }.getOrElse { throwable ->
                 when (throwable) {
                     is AppIntegrityException.ClientAttestationException,
                     is AppIntegrityException.Other,
                     is AppIntegrityException.FirebaseException -> {
-                        navigator.navigate(ErrorRoutes.AppIntegrity)
+                        RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
                     }
 
-                    else -> navigator.navigate(LoginRoutes.SignInRecoverableError)
+                    else -> RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
                 }
             }
-        }
 
         override suspend fun finalise(
             intent: Intent,
             isReAuth: Boolean,
             activity: FragmentActivity,
-        ) {
+        ): RemoteLogin.Result =
             finaliseRemoteLogin.handleInternal(intent)
                 .onSuccess {
-                    errorCounter.reset()
-                    handleTokens(it, isReAuth, activity)
+                    recoverableErrors.reset()
                 }
-                .onFailure {
+                .map {
+                    saveTokens(it, activity)
+                }
+                .getOrElse {
                     val loginException = LoginException(it)
                     logger.error(
                         loginException.javaClass.simpleName,
                         it.message.toString(),
                         loginException,
                     )
-                    handleLoginErrors(it)
-                }
-        }
 
-        private suspend fun handleTokens(
+                    if (it is AuthenticationError && it.type == AuthenticationError.ErrorType.SERVER_ERROR) {
+                        recoverableErrors.increment()
+                    }
+
+                    val result = it.toLoginResult()
+
+                    if (result is RemoteLogin.Result.Failure && result.type == RemoteLogin.FailureType.AccessDenied) {
+                        signOutUseCase.invoke()
+                    }
+
+                    result
+                }
+
+        private suspend fun saveTokens(
             tokens: TokenResponse,
-            isReAuth: Boolean,
             activity: FragmentActivity,
-        ) {
+        ): RemoteLogin.Result {
             if (!verifyIdToken(tokens.idToken, jwksUrl)) {
-                navigator.navigate(LoginRoutes.SignInRecoverableError, true)
-                return
+                return RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
             }
 
             // Saved all data that is not dependent on local auth being enabled (access token expiry, sets the memory/ singleton token response that gets reset when the app is closed
@@ -112,31 +117,25 @@ class RemoteLoginImpl
             tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
 
-            localAuthManager.enforceAndSetInternal(activity)
-                .onFailure {
-                    navigator.navigate(MainNavRoutes.Start, true)
+            val localAuthPreference = localAuthManager.enforceAndSetInternal(activity).getOrElse {
+                RemoteLogin.Result.Success
+            }
+
+            val refreshToken = tokens.refreshToken
+            if (localAuthPreference is LocalAuthPreference.Enabled) {
+                // The refresh token may be null, but always initialise the secure store if possible
+                autoInitialiseSecureStore.initialise(refreshToken)
+
+                if (refreshToken != null) {
+                    saveRefreshTokenExpiryToOpenStore(refreshToken)
                 }
-                .onSuccess { localAuthPreference ->
-                    val refreshToken = tokens.refreshToken
-                    if (localAuthPreference is LocalAuthPreference.Enabled) {
-                        // The refresh token may be null, but always initialise the secure store if possible
-                        autoInitialiseSecureStore.initialise(refreshToken)
+            }
 
-                        if (refreshToken != null) {
-                            saveRefreshTokenExpiryToOpenStore(refreshToken)
-                        }
-                    }
+            if (refreshToken == null) {
+                removeRefreshTokenAndExpiry.remove()
+            }
 
-                    if (refreshToken == null) {
-                        removeRefreshTokenAndExpiry.remove()
-                    }
-
-                    if (isReAuth) {
-                        navigator.goBack()
-                    } else {
-                        navigator.navigate(MainNavRoutes.Start, true)
-                    }
-                }
+            return RemoteLogin.Result.Success
         }
 
         private suspend fun saveRefreshTokenExpiryToOpenStore(refreshToken: String) {
@@ -158,29 +157,27 @@ class RemoteLoginImpl
             )
         }
 
-        private suspend fun handleLoginErrors(it: Throwable?) {
-            when (it) {
+        private fun Throwable.toLoginResult(): RemoteLogin.Result =
+            when (this) {
                 is AuthenticationError -> {
-                    when (it.type) {
+                    when (this.type) {
                         AuthenticationError.ErrorType.ACCESS_DENIED -> {
-                            signOutUseCase.invoke()
-                            navigator.navigate(SignOutRoutes.ReAuthError)
+                            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AccessDenied)
                         }
 
                         AuthenticationError.ErrorType.SERVER_ERROR -> {
-                            errorCounter.increment()
-                            if (errorCounter.getValue() >= MAX_ATTEMPTS) {
-                                navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+                            if (recoverableErrors.getValue() >= MAX_SERVER_ERRORS) {
+                                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable)
                             } else {
-                                navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+                                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
                             }
                         }
 
                         AuthenticationError.ErrorType.TOKEN_ERROR ->
-                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+                            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable)
 
                         else -> {
-                            navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+                            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable)
                         }
                     }
                 }
@@ -188,12 +185,28 @@ class RemoteLoginImpl
                 is AppIntegrityException.ClientAttestationException,
                 is AppIntegrityException.Other,
                 is AppIntegrityException.FirebaseException -> {
-                    navigator.navigate(ErrorRoutes.AppIntegrity)
+                    RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
                 }
 
-                else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
+                else ->
+                    RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
             }
-        }
+
+        private suspend fun StartRemoteLogin.loginInternal(
+            launcher: ActivityResultLauncher<Intent>,
+        ): Result<Unit> =
+            CompletableDeferred<Result<Unit>>()
+                .also { deferred ->
+                    login(
+                        launcher,
+                        onSuccess = {
+                            deferred.complete(Result.success(Unit))
+                        },
+                        onFailure = {
+                            deferred.complete(Result.failure(it))
+                        },
+                    )
+                }.await()
 
         private suspend fun FinaliseRemoteLogin.handleInternal(intent: Intent): Result<TokenResponse> =
             // Adapts the callback based API to a result
@@ -214,7 +227,7 @@ class RemoteLoginImpl
 
         private suspend fun LocalAuthManager.enforceAndSetInternal(
             activity: FragmentActivity
-        ) :Result<LocalAuthPreference?> =
+        ): Result<LocalAuthPreference?> =
             // Adapts the callback based API to a result
             CompletableDeferred<Result<LocalAuthPreference?>>()
                 .also { deferred ->
@@ -239,4 +252,4 @@ class RemoteLoginImpl
                 .await()
     }
 
-private const val MAX_ATTEMPTS = 3
+private const val MAX_SERVER_ERRORS = 3

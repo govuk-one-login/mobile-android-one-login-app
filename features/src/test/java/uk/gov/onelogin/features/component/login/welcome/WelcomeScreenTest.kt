@@ -26,7 +26,7 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.LoginViewModel
-import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
 import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
 import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
@@ -36,7 +36,7 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @RunWith(AndroidJUnit4::class)
 class WelcomeScreenTest : FragmentActivityTestCase() {
     private lateinit var navigator: Navigator
-    private lateinit var remoteLogin: RemoteLogin
+    private val remoteLogin = TestRemoteLogin()
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var getPersistentId: GetPersistentId
     private val logger = MemorisedLogger()
@@ -57,7 +57,6 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     @Before
     fun setup() {
         navigator = mock()
-        remoteLogin = mock()
         onlineChecker = mock()
         analytics = mock()
         signOutUseCase = mock()
@@ -115,7 +114,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
 
             whenWeClickSignIn()
 
-            verify(remoteLogin).start(any())
+            assert(remoteLogin.started)
         }
 
     @Test

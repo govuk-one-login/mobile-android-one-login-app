@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.unit.login.domain.signin
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.result.ActivityResult
 import androidx.fragment.app.FragmentActivity
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,6 +18,7 @@ import org.junit.jupiter.api.assertNull
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.logging.api.v3.MemorisedLogger
@@ -30,12 +30,14 @@ import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.core.utils.TestActivityResultLauncher
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.login.LoginViewModel
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
@@ -151,6 +153,48 @@ class LoginViewModelTest {
         }
 
     @Test
+    fun `given start succeeds, startLoginActivity does not navigate`() =
+        runTest {
+            remoteLogin.startResult = RemoteLogin.Result.Success
+
+            viewModel.startLoginActivity(activityResultLauncher, false)
+
+            verifyNoInteractions(navigator)
+        }
+
+    @Test
+    fun `given start succeeds & re-auth, startLoginActivity does not navigate`() =
+        runTest {
+            remoteLogin.startResult = RemoteLogin.Result.Success
+
+            viewModel.startLoginActivity(activityResultLauncher, true)
+
+            verifyNoInteractions(navigator)
+        }
+
+    @Test
+    fun `given start returns recoverable failure, startLoginActivity navigates to recoverable error`() =
+        runTest {
+            remoteLogin.startResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
+
+            viewModel.startLoginActivity(activityResultLauncher, false)
+
+            verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
+        }
+
+    @Test
+    fun `given start returns app integrity failure, startLoginActivity navigates to app integrity error`() =
+        runTest {
+            remoteLogin.startResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
+
+            viewModel.startLoginActivity(activityResultLauncher, false)
+
+            verify(navigator).navigate(ErrorRoutes.AppIntegrity, false)
+        }
+
+    @Test
     fun `given login started, abortLogin cancels start job and resets loading`() =
         runTest {
             remoteLogin.startWillComplete = false
@@ -243,6 +287,80 @@ class LoginViewModelTest {
                     )
                 )
             )
+        }
+
+    @Test
+    fun `given finalise succeeds, handleLoginActivityResult navigates to start`() =
+        runTest {
+            remoteLogin.finaliseResult = RemoteLogin.Result.Success
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+            verify(navigator).navigate(MainNavRoutes.Start, true)
+        }
+
+    @Test
+    fun `given finalise succeeds & re-auth, handleLoginActivityResult goes back`() =
+        runTest {
+            remoteLogin.finaliseResult = RemoteLogin.Result.Success
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(
+                activityResult,
+                isReAuth = true,
+                activity = fragmentActivity,
+            )
+
+            verify(navigator).goBack()
+        }
+
+    @Test
+    fun `given finalise returns access denied failure, handleLoginActivityResult navigates to re-auth error`() =
+        runTest {
+            remoteLogin.finaliseResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AccessDenied)
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+            verify(navigator).navigate(SignOutRoutes.ReAuthError, false)
+        }
+
+    @Test
+    fun `given finalise returns app integrity failure, handleLoginActivityResult navigates to app integrity error`() =
+        runTest {
+            remoteLogin.finaliseResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+            verify(navigator).navigate(ErrorRoutes.AppIntegrity, false)
+        }
+
+    @Test
+    fun `given finalise returns recoverable failure, handleLoginActivityResult navigates to recoverable error`() =
+        runTest {
+            remoteLogin.finaliseResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+            verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
+        }
+
+    @Test
+    fun `given finalise returns unrecoverable failure, handleLoginActivityResult navigates to unrecoverable error`() =
+        runTest {
+            remoteLogin.finaliseResult =
+                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable)
+            val activityResult = givenActivityResult()
+
+            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+            verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
         }
 
     @Test

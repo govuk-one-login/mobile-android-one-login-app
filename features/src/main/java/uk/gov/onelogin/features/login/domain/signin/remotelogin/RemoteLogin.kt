@@ -9,11 +9,23 @@ import androidx.fragment.app.FragmentActivity
  * This is only called when a refresh exchange is not possible OR for a first time user.
  */
 interface RemoteLogin {
-    suspend fun start(launcher: ActivityResultLauncher<Intent>)
+    suspend fun start(launcher: ActivityResultLauncher<Intent>): Result
 
     suspend fun finalise(
         intent: Intent,
         isReAuth: Boolean = false,
         activity: FragmentActivity,
-    )
+    ): Result
+
+    sealed interface Result {
+        data object Success: Result
+
+        data class Failure(
+            val type: FailureType
+        ): Result
+    }
+
+    enum class FailureType {
+        AccessDenied, AppIntegrity, SignInRecoverable, SignInUnrecoverable,
+    }
 }
