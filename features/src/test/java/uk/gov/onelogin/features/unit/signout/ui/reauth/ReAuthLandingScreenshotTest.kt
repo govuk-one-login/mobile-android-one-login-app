@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.signout.ui.info
+package uk.gov.onelogin.features.unit.signout.ui.reauth
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -7,14 +7,14 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoPreview
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthLandingPreview
 
 @RunWith(Parameterized::class)
-class SignedOutInfoScreenshotTest(
+class ReAuthLandingScreenshotTest(
     nightMode: NightMode
 ) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        SignedOutInfoPreview()
+        ReAuthLandingPreview()
     }
 
     companion object {
