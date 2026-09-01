@@ -233,7 +233,7 @@ class RemoteLoginImplTest {
             )
 
             assertTokensSaved()
-            assertSecureStoreIsInitialised()
+            assertSecureStoreNotInitialised()
             assertErrorCountReset()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }
@@ -508,7 +508,7 @@ class RemoteLoginImplTest {
         }
 
     @Test
-    fun `given refresh token & local auth disabled, finalise does not save refresh expiry`() =
+    fun `given refresh token & local auth disabled, finalise does not save refresh token or expiry`() =
         runTest {
             givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
             givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
@@ -516,7 +516,7 @@ class RemoteLoginImplTest {
             remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertTokensSaved()
-            assertSecureStoreIsInitialised(validRefreshToken)
+            assertSecureStoreNotInitialised()
             assertErrorCountReset()
             verify(mockNavigator).navigate(MainNavRoutes.Start, true)
         }

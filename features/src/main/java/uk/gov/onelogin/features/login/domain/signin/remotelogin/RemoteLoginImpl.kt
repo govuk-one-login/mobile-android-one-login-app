@@ -93,6 +93,7 @@ class RemoteLoginImpl
                 }
                 .await()
                 .onSuccess {
+                    errorCounter.reset()
                     handleTokens(it, isReAuth, activity)
                 }
                 .onFailure {
@@ -111,24 +112,12 @@ class RemoteLoginImpl
             isReAuth: Boolean,
             activity: FragmentActivity,
         ) {
-            errorCounter.reset()
-            val jwksUrl =
-                context.getString(
-                    R.string.stsUrl,
-                    context.getString(R.string.jwksEndpoint),
-                )
+            val jwksUrl = context.getString(R.string.stsUrl, context.getString(R.string.jwksEndpoint))
             if (!verifyIdToken(tokens.idToken, jwksUrl)) {
                 navigator.navigate(LoginRoutes.SignInRecoverableError, true)
-            } else {
-                checkLocalAuthRouteAndSaveTokensAndExpiry(tokens, isReAuth, activity)
+                return
             }
-        }
 
-        private suspend fun checkLocalAuthRouteAndSaveTokensAndExpiry(
-            tokens: TokenResponse,
-            isReAuth: Boolean,
-            activity: FragmentActivity,
-        ) {
             // Saved all data that is not dependent on local auth being enabled (access token expiry, sets the memory/ singleton token response that gets reset when the app is closed
             // to the token response just received and saves the persistent session id)
             saveAccessTokenExpiryToOpenStore(tokens)
@@ -154,49 +143,30 @@ class RemoteLoginImpl
                 }
                 .await()
                 .onSuccess { localAuthPreference ->
-                    if (isReAuth) {
-                        handleLocalAuthCallbackReAuth(localAuthPreference, tokens.refreshToken)
-                    } else {
-                        handleLocalAuthCallbackNoReAuth(localAuthPreference, tokens.refreshToken)
+                    val refreshToken = tokens.refreshToken
+                    if (localAuthPreference is LocalAuthPreference.Enabled) {
+                        // The refresh token may be null, but always initialise the secure store if possible
+                        autoInitialiseSecureStore.initialise(refreshToken)
+
+                        if (refreshToken != null) {
+                            saveRefreshTokenExpiryToOpenStore(refreshToken)
+                        }
                     }
+
+                    if (refreshToken == null) {
+                        removeRefreshTokenAndExpiry.remove()
+                    }
+
+                    if (isReAuth) {
+                        navigator.goBack()
+                    } else {
+                        navigator.navigate(MainNavRoutes.Start, true)
+                    }
+
                 }
                 .onFailure {
                     navigator.navigate(MainNavRoutes.Start, true)
                 }
-        }
-
-        private suspend fun handleLocalAuthCallbackReAuth(
-            pref: LocalAuthPreference?,
-            refreshToken: String?
-        ) {
-            if (pref is LocalAuthPreference.Enabled) {
-                // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
-                autoInitialiseSecureStore.initialise(refreshToken)
-                if (refreshToken != null) {
-                    saveRefreshTokenExpiryToOpenStore(refreshToken)
-                } else {
-                    removeRefreshTokenAndExpiry.remove()
-                }
-                navigator.goBack()
-            } else {
-                navigator.goBack()
-            }
-        }
-
-        private suspend fun handleLocalAuthCallbackNoReAuth(
-            pref: LocalAuthPreference?,
-            refreshToken: String?,
-        ) {
-            // We always save the tokens and pass in the refresh one because if no refresh token was returned it will be null, but if populated we should save it
-            autoInitialiseSecureStore.initialise(refreshToken)
-            if (refreshToken != null) {
-                if (pref is LocalAuthPreference.Enabled) {
-                    saveRefreshTokenExpiryToOpenStore(refreshToken)
-                }
-            } else {
-                removeRefreshTokenAndExpiry.remove()
-            }
-            navigator.navigate(MainNavRoutes.Start, true)
         }
 
         private suspend fun saveRefreshTokenExpiryToOpenStore(refreshToken: String) {
