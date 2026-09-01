@@ -55,7 +55,10 @@ fun WelcomeScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
-            handleResult(result, loginViewModel, context)
+            loginViewModel.handleLoginActivityResult(
+                result = result,
+                activity = context
+            )
         }
 
     if (loading) {
@@ -86,17 +89,6 @@ fun WelcomeScreen(
         }
         loginViewModel.stopLoading()
     }
-}
-
-private fun handleResult(
-    result: ActivityResult,
-    loginViewModel: LoginViewModel,
-    context: FragmentActivity,
-) {
-    loginViewModel.handleLoginActivityResult(
-        result = result,
-        activity = context
-    )
 }
 
 private fun handleScreenExit(
