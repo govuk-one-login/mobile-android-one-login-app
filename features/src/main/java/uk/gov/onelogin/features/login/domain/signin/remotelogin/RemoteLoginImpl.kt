@@ -56,6 +56,9 @@ class RemoteLoginImpl
         private val logger: Logger,
         private val navigator: Navigator
     ) : RemoteLogin {
+        private val jwksUrl
+            get() = context.getString(R.string.stsUrl, context.getString(R.string.jwksEndpoint))
+
         override suspend fun start(launcher: ActivityResultLauncher<Intent>) {
             startRemoteLogin.login(
                 launcher,
@@ -77,21 +80,7 @@ class RemoteLoginImpl
             isReAuth: Boolean,
             activity: FragmentActivity,
         ) {
-            // Adapts the callback based API to a result
-            CompletableDeferred<Result<TokenResponse>>()
-                .also { deferred ->
-                    finaliseRemoteLogin.handle(
-                        intent,
-                        onSuccess = {
-                            deferred.complete(Result.success(it))
-                        },
-                        onFailure = {
-                            val exception = it ?: Exception("Login finalise failed")
-                            deferred.complete(Result.failure(exception))
-                        }
-                    )
-                }
-                .await()
+            finaliseRemoteLogin.handleInternal(intent)
                 .onSuccess {
                     errorCounter.reset()
                     handleTokens(it, isReAuth, activity)
@@ -112,7 +101,6 @@ class RemoteLoginImpl
             isReAuth: Boolean,
             activity: FragmentActivity,
         ) {
-            val jwksUrl = context.getString(R.string.stsUrl, context.getString(R.string.jwksEndpoint))
             if (!verifyIdToken(tokens.idToken, jwksUrl)) {
                 navigator.navigate(LoginRoutes.SignInRecoverableError, true)
                 return
@@ -124,24 +112,10 @@ class RemoteLoginImpl
             tokenRepository.setTokenResponse(tokens.convertToLoginTokens())
             savePersistentId()
 
-            // Adapts the callback based API to a result
-            CompletableDeferred<Result<LocalAuthPreference?>>()
-                .also { deferred ->
-                    localAuthManager.enforceAndSet(
-                        false,
-                        activity = activity,
-                        callbackHandler = object : LocalAuthManagerCallbackHandler {
-                            override fun onSuccess(backButtonPressed: Boolean) {
-                                deferred.complete(Result.success(localAuthManager.localAuthPreference))
-                            }
-
-                            override fun onFailure(backButtonPressed: Boolean) {
-                                deferred.complete(Result.failure(Exception("Failed to check local auth status")))
-                            }
-                        },
-                    )
+            localAuthManager.enforceAndSetInternal(activity)
+                .onFailure {
+                    navigator.navigate(MainNavRoutes.Start, true)
                 }
-                .await()
                 .onSuccess { localAuthPreference ->
                     val refreshToken = tokens.refreshToken
                     if (localAuthPreference is LocalAuthPreference.Enabled) {
@@ -162,10 +136,6 @@ class RemoteLoginImpl
                     } else {
                         navigator.navigate(MainNavRoutes.Start, true)
                     }
-
-                }
-                .onFailure {
-                    navigator.navigate(MainNavRoutes.Start, true)
                 }
         }
 
@@ -224,6 +194,49 @@ class RemoteLoginImpl
                 else -> navigator.navigate(LoginRoutes.SignInRecoverableError, true)
             }
         }
+
+        private suspend fun FinaliseRemoteLogin.handleInternal(intent: Intent): Result<TokenResponse> =
+            // Adapts the callback based API to a result
+            CompletableDeferred<Result<TokenResponse>>()
+                .also { deferred ->
+                    handle(
+                        intent,
+                        onSuccess = {
+                            deferred.complete(Result.success(it))
+                        },
+                        onFailure = {
+                            val exception = it ?: IllegalStateException("Login finalise failed")
+                            deferred.complete(Result.failure(exception))
+                        }
+                    )
+                }
+                .await()
+
+        private suspend fun LocalAuthManager.enforceAndSetInternal(
+            activity: FragmentActivity
+        ) :Result<LocalAuthPreference?> =
+            // Adapts the callback based API to a result
+            CompletableDeferred<Result<LocalAuthPreference?>>()
+                .also { deferred ->
+                    enforceAndSet(
+                        false,
+                        activity = activity,
+                        callbackHandler = object : LocalAuthManagerCallbackHandler {
+                            override fun onSuccess(backButtonPressed: Boolean) {
+                                deferred.complete(Result.success(localAuthPreference))
+                            }
+
+                            override fun onFailure(backButtonPressed: Boolean) {
+                                deferred.complete(
+                                    Result.failure(
+                                    IllegalStateException("Failed to check local auth status")
+                                    )
+                                )
+                            }
+                        },
+                    )
+                }
+                .await()
     }
 
 private const val MAX_ATTEMPTS = 3
