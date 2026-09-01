@@ -221,7 +221,7 @@ class LoginViewModelTest {
 
             assertTrue(viewModel.loading.value)
             assertNotNull(remoteLogin.finalisedWith)
-            assertSame(activityResult.data!!, remoteLogin.finalisedWith?.intent)
+            assertSame(activityResult.data!!, remoteLogin.finalisedWith)
         }
 
     @Test

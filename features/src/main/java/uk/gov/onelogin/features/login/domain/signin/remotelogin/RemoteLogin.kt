@@ -13,7 +13,6 @@ interface RemoteLogin {
 
     suspend fun finalise(
         intent: Intent,
-        isReAuth: Boolean = false,
         activity: FragmentActivity,
     ): Result
 

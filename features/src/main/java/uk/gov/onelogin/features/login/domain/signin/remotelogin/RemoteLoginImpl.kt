@@ -72,7 +72,6 @@ class RemoteLoginImpl
 
         override suspend fun finalise(
             intent: Intent,
-            isReAuth: Boolean,
             activity: FragmentActivity,
         ): RemoteLogin.Result =
             finaliseRemoteLogin.handleInternal(intent)
@@ -209,7 +208,6 @@ class RemoteLoginImpl
                 }.await()
 
         private suspend fun FinaliseRemoteLogin.handleInternal(intent: Intent): Result<TokenResponse> =
-            // Adapts the callback based API to a result
             CompletableDeferred<Result<TokenResponse>>()
                 .also { deferred ->
                     handle(

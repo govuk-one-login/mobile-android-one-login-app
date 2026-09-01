@@ -105,7 +105,6 @@ class LoginViewModel
                 _loading.emit(true)
                 val result = remoteLogin.finalise(
                     intent,
-                    isReAuth,
                     activity
                 )
 

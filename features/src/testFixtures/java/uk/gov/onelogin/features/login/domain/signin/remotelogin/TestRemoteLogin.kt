@@ -11,7 +11,7 @@ class TestRemoteLogin : RemoteLogin {
         private set
     var startCancelled = false
         private set
-    var finalisedWith: FinalArgs? = null
+    var finalisedWith: Intent? = null
         private set
 
     var startResult: RemoteLogin.Result = RemoteLogin.Result.Success
@@ -37,15 +37,9 @@ class TestRemoteLogin : RemoteLogin {
 
     override suspend fun finalise(
         intent: Intent,
-        isReAuth: Boolean,
         activity: FragmentActivity,
     ): RemoteLogin.Result {
-        finalisedWith = FinalArgs(intent, isReAuth)
+        finalisedWith = intent
         return finaliseResult
     }
-
-    data class FinalArgs(
-        val intent: Intent,
-        val isReAuth: Boolean,
-    )
 }

@@ -237,64 +237,12 @@ class RemoteLoginImplTest {
         }
 
     @Test
-    fun `given re-auth & local auth disabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
-
-            val result = remoteLogin.finalise(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity,
-            )
-
-            assertTokensSaved()
-            assertSecureStoreNotInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given re-auth & passcode enabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
-
-            val result = remoteLogin.finalise(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity,
-            )
-
-            assertTokensSaved()
-            assertSecureStoreIsInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given re-auth & biometrics enabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(true))
-
-            val result = remoteLogin.finalise(
-                mockIntent,
-                true,
-                activity = mockFragmentActivity,
-            )
-
-            assertTokensSaved()
-            assertSecureStoreIsInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
     fun `given access denied error, finalise signs out & returns access denied failure`() =
         runTest {
             givenFinaliseRemoteLoginError(accessDeniedError)
 
             val result = remoteLogin.finalise(
                 mockIntent,
-                true,
                 activity = mockFragmentActivity,
             )
 
@@ -314,7 +262,6 @@ class RemoteLoginImplTest {
 
             val result = remoteLogin.finalise(
                 mockIntent,
-                true,
                 activity = mockFragmentActivity,
             )
 
@@ -334,7 +281,6 @@ class RemoteLoginImplTest {
 
             val result = remoteLogin.finalise(
                 mockIntent,
-                true,
                 activity = mockFragmentActivity,
             )
 
@@ -355,7 +301,6 @@ class RemoteLoginImplTest {
 
             val result = remoteLogin.finalise(
                 mockIntent,
-                true,
                 activity = mockFragmentActivity,
             )
 
@@ -374,7 +319,7 @@ class RemoteLoginImplTest {
             givenFinaliseRemoteLoginError(serverError)
             givenErrorCount(2) // attempt 3
 
-            val result = remoteLogin.finalise(mockIntent, isReAuth = true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertTokensNotSaved()
             verifyNoInteractions(mockSignOutUseCase)
@@ -390,7 +335,7 @@ class RemoteLoginImplTest {
         runTest {
             givenFinaliseRemoteLoginError(tokenError400)
 
-            val result = remoteLogin.finalise(mockIntent, isReAuth = true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertTokensNotSaved()
             verifyNoInteractions(mockSignOutUseCase)
@@ -439,7 +384,7 @@ class RemoteLoginImplTest {
                 AppIntegrityException.ClientAttestationException(Exception())
             )
 
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertSecureStoreNotInitialised()
             assertTokensNotSaved()
@@ -456,7 +401,7 @@ class RemoteLoginImplTest {
                 AppIntegrityException.FirebaseException(Exception())
             )
 
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertSecureStoreNotInitialised()
             assertTokensNotSaved()
@@ -473,7 +418,7 @@ class RemoteLoginImplTest {
                 AppIntegrityException.Other(Exception())
             )
 
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             assertSecureStoreNotInitialised()
             assertTokensNotSaved()
@@ -553,43 +498,16 @@ class RemoteLoginImplTest {
         }
 
     @Test
-    fun `given refresh token & re-auth & passcode enabled, finalise saves refresh expiry & initialises secure store`() =
+    fun `given refresh token & local auth enabled, finalise saves new refresh token`() =
         runTest {
             givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
             givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
 
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
-
-            assertTokensSaved(withRefresh = true)
-            assertSecureStoreIsInitialised(validRefreshToken)
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given refresh token & re-auth & local auth enabled, finalise saves new refresh token`() =
-        runTest {
-            givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
-
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
+            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
             verify(mockRemoveRefreshTokenAndExpiry, times(0)).remove()
             assertTokensSaved(withRefresh = true)
             assertSecureStoreIsInitialised(validRefreshToken)
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given no refresh token & re-auth & local auth enabled, finalise removes stored refresh token`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
-
-            val result = remoteLogin.finalise(mockIntent, true, activity = mockFragmentActivity)
-
-            assertTokensSaved()
-            verify(mockRemoveRefreshTokenAndExpiry, times(1)).remove()
-            assertSecureStoreIsInitialised()
             assertEquals(RemoteLogin.Result.Success, result)
         }
 
