@@ -72,7 +72,7 @@ class SignOutGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun signOutGraph_navigateToSignedOutInfoScreen() {
+    fun signOutGraph_navigateToReAuthScreen() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(SignOutRoutes.ReAuth.getRoute())
         }

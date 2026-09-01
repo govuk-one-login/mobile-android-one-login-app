@@ -8,7 +8,7 @@ import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreen
 import uk.gov.onelogin.features.signout.ui.SignOutScreen
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoScreen
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthScreen
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccess
 import uk.gov.onelogin.navigation.graphs.ErrorGraphObject.OFFLINE_ERROR_TRY_AGAIN_KEY
 
@@ -31,7 +31,7 @@ object SignOutGraphObject {
                 BackHandler {
                     // Nothing to do
                 }
-                SignedOutInfoScreen(
+                ReAuthScreen(
                     shouldTryAgain = {
                         val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
                         val tryAgain = savedStateHandle?.get(OFFLINE_ERROR_TRY_AGAIN_KEY) ?: false

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.signout.ui.info
+package uk.gov.onelogin.features.unit.signout.ui.reauth
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.extension.ExtendWith
@@ -9,19 +9,19 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoViewModel
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthViewModel
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
-class SignedOutInfoViewModelTest {
+class ReAuthViewModelTest {
     private val tokenRepository: TokenRepository = mock()
     private val navigator: Navigator = mock()
 
     private val viewModel by lazy {
-        SignedOutInfoViewModel(
+        ReAuthViewModel(
             navigator,
             tokenRepository,
         )

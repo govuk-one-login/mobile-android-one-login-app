@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui.info
+package uk.gov.onelogin.features.signout.ui.reauth
 
 import android.content.Intent
 import androidx.activity.compose.LocalActivity
@@ -30,11 +30,14 @@ import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.login.LoginViewModel
 
+/**
+ * Also known as the _Re-auth landing screen_
+ */
 @Composable
-fun SignedOutInfoScreen(
+fun ReAuthScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    viewModel: SignedOutInfoViewModel = hiltViewModel(),
-    analyticsViewModel: SignedOutInfoAnalyticsViewModel = hiltViewModel(),
+    viewModel: ReAuthViewModel = hiltViewModel(),
+    analyticsViewModel: ReAuthAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false },
 ) {
@@ -66,7 +69,7 @@ fun SignedOutInfoScreen(
         if (loading) {
             LoadingScreen(loadingAnalyticsViewModel) {}
         } else {
-            SignedOutInfoBody {
+            ReAuthBody {
                 analyticsViewModel.trackReAuth()
                 startLogin(
                     loginViewModel,
@@ -77,7 +80,7 @@ fun SignedOutInfoScreen(
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        analyticsViewModel.trackSignOutInfoView()
+        analyticsViewModel.trackReAuthScreenView()
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
@@ -93,7 +96,7 @@ private fun startLogin(
 }
 
 @Composable
-internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
+internal fun ReAuthBody(onPrimary: () -> Unit) {
     val content =
         listOf(
             stringResource(R.string.app_youveBeenSignedOutBody1),
@@ -119,8 +122,8 @@ internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun SignedOutInfoPreview() {
+internal fun ReAuthPreview() {
     GdsTheme {
-        SignedOutInfoBody {}
+        ReAuthBody {}
     }
 }

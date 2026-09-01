@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui.info
+package uk.gov.onelogin.features.signout.ui.reauth
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @HiltViewModel
-class SignedOutInfoViewModel
+class ReAuthViewModel
     @Inject
     constructor(
         private val navigator: Navigator,

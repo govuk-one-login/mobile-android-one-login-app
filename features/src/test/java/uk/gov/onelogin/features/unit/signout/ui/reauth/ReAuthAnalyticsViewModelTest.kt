@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.signout.ui.info
+package uk.gov.onelogin.features.unit.signout.ui.reauth
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -23,17 +23,17 @@ import uk.gov.onelogin.core.utils.GAUtils
 import uk.gov.onelogin.core.utils.GAUtils.FALSE
 import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_FALSE
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoAnalyticsViewModel
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthAnalyticsViewModel
 
 @RunWith(AndroidJUnit4::class)
-class SignedOutInfoAnalyticsViewModelTest : FragmentActivityTestCase() {
+class ReAuthAnalyticsViewModelTest : FragmentActivityTestCase() {
     private lateinit var domain: String
     private lateinit var buttonText: String
     private lateinit var name: String
     private lateinit var id: String
     private lateinit var logger: AnalyticsLogger
     private lateinit var requiredParameters: RequiredParameters
-    private lateinit var viewModel: SignedOutInfoAnalyticsViewModel
+    private lateinit var viewModel: ReAuthAnalyticsViewModel
 
     @Before
     fun setUp() {
@@ -48,7 +48,7 @@ class SignedOutInfoAnalyticsViewModelTest : FragmentActivityTestCase() {
         buttonText = context.getEnglishString(R.string.app_SignInWithGovUKOneLoginButton)
         name = context.getEnglishString(R.string.app_youveBeenSignedOutTitle)
         id = context.getEnglishString(R.string.signed_out_info_page_id)
-        viewModel = SignedOutInfoAnalyticsViewModel(context, logger)
+        viewModel = ReAuthAnalyticsViewModel(context, logger)
     }
 
     @Test
@@ -77,7 +77,7 @@ class SignedOutInfoAnalyticsViewModelTest : FragmentActivityTestCase() {
                 params = requiredParameters
             )
         // When tracking the signed out info screen view
-        viewModel.trackSignOutInfoView()
+        viewModel.trackReAuthScreenView()
         // Then log a ScreenView to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
 
