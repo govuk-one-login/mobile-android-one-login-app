@@ -117,7 +117,7 @@ val emulatorConfig: EmulatorConfig by extra(
         systemImageSources = setOf(
             SystemImageSource.AOSP_ATD
         ),
-        androidApiLevels = setOf(35),
+        androidApiLevels = setOf(36),
         deviceFilters = setOf("Pixel XL"),
     )
 )
