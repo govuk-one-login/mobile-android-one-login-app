@@ -191,6 +191,8 @@ dependencies {
 
     listOf(
         libs.authentication,
+        libs.androidx.activity.compose,
+        libs.androidx.appcompat,
         platform(libs.androidx.compose.bom),
         libs.compose.runtime,
     ).forEach(::testFixturesImplementation)

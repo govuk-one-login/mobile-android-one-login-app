@@ -5,7 +5,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.TOKEN_SHARED_PREFS
 import javax.inject.Inject
-import kotlin.text.toLong
 
 class GetAccessTokenExpiryImpl
     @Inject

@@ -1,32 +1,14 @@
 package uk.gov.onelogin.features.unit.signout.ui.info
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import uk.gov.android.localauth.LocalAuthManager
-import uk.gov.android.localauth.LocalAuthManagerImpl
-import uk.gov.android.localauth.devicesecurity.DeviceBiometricsManager
-import uk.gov.logging.api.analytics.logging.AnalyticsLogger
-import uk.gov.logging.api.v3.MemorisedLogger
-import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCaseImpl
-import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
-import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.tokens.data.TokenRepository
-import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
-import uk.gov.onelogin.features.signout.domain.SignOutError
-import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoViewModel
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -37,32 +19,11 @@ import kotlin.test.assertTrue
 class SignedOutInfoViewModelTest {
     private val tokenRepository: TokenRepository = mock()
     private val navigator: Navigator = mock()
-    private val getPersistentId: GetPersistentId = mock()
-    private val signOutUseCase: SignOutUseCase = mock()
-    private val localAuthPreferenceRepo: LocalAuthPreferenceRepo = mock()
-    private val deviceBiometricsManager: DeviceBiometricsManager = mock()
-    private val analyticsLogger: AnalyticsLogger = mock()
-    private val logger = MemorisedLogger()
-    private val credentialChecker: LocalAuthManager =
-        LocalAuthManagerImpl(
-            localAuthPrefRepo = localAuthPreferenceRepo,
-            deviceBiometricsManager = deviceBiometricsManager,
-            analyticsLogger = analyticsLogger
-        )
-    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase =
-        LocalAuthPrefResetUseCaseImpl(
-            localAuthPreferenceRepo,
-            credentialChecker
-        )
 
     private val viewModel by lazy {
         SignedOutInfoViewModel(
             navigator,
             tokenRepository,
-            getPersistentId,
-            signOutUseCase,
-            localAuthPrefResetUseCase,
-            logger
         )
     }
 
@@ -84,72 +45,4 @@ class SignedOutInfoViewModelTest {
         whenever(navigator.hasBackStack()).thenReturn(false)
         assertFalse(viewModel.shouldReAuth())
     }
-
-    @Test
-    fun `sign out usecase is called when persistent id is null`() =
-        runTest {
-            var callback = false
-            whenever(getPersistentId.invoke()).thenReturn(null)
-
-            viewModel.checkPersistentId { callback = true }
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-        }
-
-    @Test
-    fun `sign out usecase is called when persistent id is empty`() =
-        runTest {
-            var callback = false
-            whenever(getPersistentId.invoke()).thenReturn("")
-
-            viewModel.checkPersistentId { callback = true }
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.ReAuthError, true)
-        }
-
-    @Test
-    fun `sign out usecase is not called when persistent id good and device secure`() =
-        runTest {
-            var callback = false
-            whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(true)
-
-            viewModel.checkPersistentId { callback = true }
-
-            verifyNoInteractions(signOutUseCase)
-            verifyNoInteractions(navigator)
-            assertTrue(callback)
-        }
-
-    @Test
-    fun `sign out usecase is not called when persistent id good and device unsecure`() =
-        runTest {
-            var callback = false
-            whenever(getPersistentId.invoke()).thenReturn("id")
-            whenever(deviceBiometricsManager.isDeviceSecure()).thenReturn(false)
-
-            viewModel.checkPersistentId { callback = true }
-
-            verifyNoInteractions(signOutUseCase)
-            verifyNoInteractions(navigator)
-            verify(localAuthPreferenceRepo).clean()
-            assertTrue(callback)
-        }
-
-    @Test
-    fun `sign out usecase throws`() =
-        runTest {
-            var callback = false
-            whenever(getPersistentId.invoke()).thenReturn("")
-            whenever(signOutUseCase.invoke()).thenThrow(SignOutError(Error("test")))
-
-            viewModel.checkPersistentId { callback = true }
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(LoginRoutes.SignInUnrecoverableError, true)
-            assertFalse(callback)
-            assertThat(logger, hasItem(hasMessage("java.lang.Error: test")))
-        }
 }

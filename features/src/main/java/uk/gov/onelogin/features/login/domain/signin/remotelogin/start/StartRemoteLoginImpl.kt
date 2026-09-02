@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.domain.signin.remotelogin
+package uk.gov.onelogin.features.login.domain.signin.remotelogin.start
 
 import android.content.Context
 import android.content.Intent
@@ -17,7 +17,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import javax.inject.Inject
 
 @Suppress("LongParameterList")
-class HandleRemoteLoginImpl
+class StartRemoteLoginImpl
     @Inject
     constructor(
         @param:ApplicationContext
@@ -28,10 +28,11 @@ class HandleRemoteLoginImpl
         private val appIntegrity: AppIntegrity,
         private val uriParser: UriParser,
         private val logger: Logger,
-    ) : HandleRemoteLogin {
+    ) : StartRemoteLogin {
         @Suppress("TooGenericExceptionCaught")
         override suspend fun login(
             launcher: ActivityResultLauncher<Intent>,
+            onSuccess: () -> Unit,
             onFailure: (Throwable) -> Unit,
         ) {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
@@ -42,6 +43,7 @@ class HandleRemoteLoginImpl
                             launcher,
                             configuration = createLoginConfiguration(persistentId),
                         )
+                        onSuccess()
                     } catch (e: Throwable) {
                         val loginException = LoginException(e)
                         logger.error(
