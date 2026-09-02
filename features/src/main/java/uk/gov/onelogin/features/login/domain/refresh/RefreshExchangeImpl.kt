@@ -5,9 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.http.Parameters
-import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.network.service.v2.NetworkServiceTypedSuccessExt.makeRequest
@@ -28,8 +28,6 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.RefreshToken
 import uk.gov.onelogin.core.utils.TimeProvider
-import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
-import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.time.Instant
 import javax.inject.Inject
@@ -45,7 +43,6 @@ class RefreshExchangeImpl
         @param:RefreshToken
         private val isRefreshTokenExpired: IsTokenExpired,
         private val networkService: NetworkService,
-        private val appIntegrity: AppIntegrity,
         private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
         private val saveTokenExpiry: SaveTokenExpiry,
         private val tokenRepository: TokenRepository,
@@ -54,10 +51,8 @@ class RefreshExchangeImpl
         private val timeProvider: TimeProvider,
         private val validateWalletStoreId: ValidateWalletStoreId,
     ) : RefreshExchange {
-        // Initialise token and client attestation field
         private var refreshToken = ""
         private var idToken = ""
-        private var clientAttestation: String = ""
         private var areChecksSuccessful = false
 
         override suspend fun getTokens(
@@ -68,8 +63,7 @@ class RefreshExchangeImpl
             if (!getPersistentId().isNullOrEmpty()) {
                 // Check Refresh token is NOT expired and wallet store ID is valid
                 if (!isRefreshTokenExpired() && validateWalletStoreId()) {
-                    // Attempt to get Client Attestation
-                    getClientAttestationAndRetrieveTokensFromSecureStore(context, handleResult)
+                    getTokensFromSecureStore(context, handleResult)
                 } else {
                     // When Refresh token is invalid or wallet store ID is missing
                     handleResult(RefreshExchangeResult.ReauthRequired)
@@ -83,52 +77,18 @@ class RefreshExchangeImpl
             }
             // This will handle the refresh token call and return of the updated tokens
             // Will only be called if the checks were successful, otherwise, we use return to break the loops (see above)
-            if (areChecksSuccessful) makeRefreshTokenCall(handleResult)
+            if (areChecksSuccessful) handleResult(makeRefreshTokenCall())
         }
 
-        private suspend fun getClientAttestationAndRetrieveTokensFromSecureStore(
+        /**
+         * Get the saved refresh token and ID token and set [refreshToken] and [idToken].
+         *
+         * If successful, it sets [areChecksSuccessful] to `true`, otherwise it calls [onFailure].
+         */
+        private suspend fun getTokensFromSecureStore(
             context: FragmentActivity,
-            handleResult: (RefreshExchangeResult) -> Unit,
-        ) {
-            when (val attestation = appIntegrity.getClientAttestation()) {
-                // If attestation exists and is valid OR if required, a new one is successfully retrieved
-                is AttestationResult.Success -> {
-                    // Attempt to retrieve the Refresh token from the secure store
-                    handleRefreshTokenRetrieval(
-                        context = context,
-                        clientAttestation = attestation.clientAttestation,
-                        onFailure = {
-                            handleResult(it)
-                            areChecksSuccessful = false
-                        },
-                    )
-                }
-                is AttestationResult.NotRequired -> {
-                    // Attempt to retrieve the Refresh token from the secure store
-                    handleRefreshTokenRetrieval(
-                        context = context,
-                        clientAttestation = attestation.savedAttestation,
-                        onFailure = {
-                            handleResult(it)
-                            areChecksSuccessful = false
-                        },
-                    )
-                }
-                // For any errors returned from the attempt to get a new client attestation/ retrieve existing one
-                // Call lambda to handle the result fromm the consumer/ call point based on the RefreshExchangeResult passed in
-                else -> {
-                    areChecksSuccessful = false
-                    handleResult(RefreshExchangeResult.ClientAttestationFailure)
-                }
-            }
-        }
-
-        private suspend fun handleRefreshTokenRetrieval(
-            context: FragmentActivity,
-            clientAttestation: String?,
             onFailure: (RefreshExchangeResult) -> Unit,
         ) {
-            // Attempt to retrieve the Refresh token from the secure store
             getFromEncryptedSecureStore(
                 context = context,
                 AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
@@ -144,7 +104,6 @@ class RefreshExchangeImpl
                             // Set all required values to enable the refresh request to be made/ continue
                             this@RefreshExchangeImpl.refreshToken = refreshToken
                             this@RefreshExchangeImpl.idToken = idToken
-                            this@RefreshExchangeImpl.clientAttestation = clientAttestation ?: ""
                             areChecksSuccessful = true
                         } else {
                             // When Refresh token is invalid then prompt user to re-auth as the refresh token won't be able to be exchanged for a new one
@@ -161,23 +120,11 @@ class RefreshExchangeImpl
         }
 
         @Suppress("TooGenericExceptionCaught")
-        private suspend fun makeRefreshTokenCall(handleResult: (RefreshExchangeResult) -> Unit) {
+        private suspend fun makeRefreshTokenCall(): RefreshExchangeResult {
             val refreshExchangeResult =
-                try {
-                    // Attempt to exchange existing refresh token for new tokens returned in a TokenResponse format
-                    retrieveNewTokens(refreshToken = refreshToken, clientAttestation = clientAttestation)
-                } catch (e: Exception) {
-                    // Log error
-                    logger.error(
-                        REFRESH_ERROR_TAG,
-                        e.message ?: EMPTY_MSG,
-                        e,
-                    )
-                    // All errors are to be directed to re-auth (as of 10/11/25)
-                    handleResult(RefreshExchangeResult.ReauthRequired)
-                    return
-                }
-            when (refreshExchangeResult) {
+                // Attempt to exchange existing refresh token for new tokens returned in a TokenResponse format
+                retrieveNewTokens(refreshToken = refreshToken)
+            return when (refreshExchangeResult) {
                 is ApiResponse.Success -> {
                     val tokens = refreshExchangeResult.body
                     // Save new access and refresh tokens expiry
@@ -194,7 +141,7 @@ class RefreshExchangeImpl
                     tokenRepository.setTokenResponse(tokenResponse)
                     // Update access and refresh token in secure store
                     saveTokens.save(tokens.refreshToken)
-                    handleResult(RefreshExchangeResult.Success)
+                    RefreshExchangeResult.Success
                 }
                 is ApiResponse.Failure -> {
                     logger.error(
@@ -202,14 +149,16 @@ class RefreshExchangeImpl
                         refreshExchangeResult.error.message,
                         refreshExchangeResult.error,
                     )
-                    handleResult(RefreshExchangeResult.ReauthRequired)
+                    when (refreshExchangeResult.error) {
+                        is ClientAttestationException -> RefreshExchangeResult.ClientAttestationFailure
+                        else -> RefreshExchangeResult.ReauthRequired
+                    }
                 }
             }
         }
 
         suspend fun retrieveNewTokens(
             refreshToken: String,
-            clientAttestation: String,
         ): ApiResponse<RefreshExchangeApiResponse, String, NetworkingException> {
             // CGet the required URL
             val authUrl =
@@ -217,44 +166,23 @@ class RefreshExchangeImpl
                     R.string.stsUrl,
                     context.getString(R.string.tokenExchangeEndpoint),
                 )
-            // Attempt to generate PoP
-            val pop = appIntegrity.getProofOfPossession()
-            // Throw error if DPoP couldn't be generated
-            when (pop) {
-                is SignedPoP.Success -> {
-                    // If all successful - continue to make the tokens exchange request
-                    val request =
-                        createApiRequestPost(
-                            authUrl = authUrl,
-                            refreshToken = refreshToken,
-                            clientAttestation = clientAttestation,
-                            pop = pop,
-                        )
+            val request =
+                createApiRequestPost(
+                    authUrl = authUrl,
+                    refreshToken = refreshToken,
+                )
 
-                    return networkService.makeRequest<RefreshExchangeApiResponse>(
-                        apiRequest = request,
-                    ) {
-                        withRefreshDPoP = true
-                    }
-                }
-                is SignedPoP.Failure -> {
-                    val fallbackExp = RefreshExchangeException(ATTESTATION_POP_GENERATE_ERROR)
-                    logger.error(
-                        REFRESH_ERROR_TAG,
-                        pop.reason,
-                        pop.error ?: fallbackExp,
-                    )
-                    // Throw error if Client Attestation PoP couldn't be generated
-                    throw fallbackExp
-                }
+            return networkService.makeRequest<RefreshExchangeApiResponse>(
+                apiRequest = request,
+            ) {
+                withAttestation = true
+                withRefreshDPoP = true
             }
         }
 
         private fun createApiRequestPost(
             authUrl: String,
             refreshToken: String,
-            clientAttestation: String,
-            pop: SignedPoP.Success,
         ): ApiRequest =
             ApiRequest.Post(
                 url = authUrl,
@@ -274,8 +202,6 @@ class RefreshExchangeImpl
                 headers =
                     listOf(
                         CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
-                        CLIENT_ATTESTATION_HEADER_LABEL to clientAttestation,
-                        POP_CLIENT_ATTESTATION_HEADER_LABEL to pop.popJwt,
                     ),
             )
 
@@ -316,15 +242,11 @@ class RefreshExchangeImpl
 
         companion object {
             const val REFRESH_ERROR_TAG = "Refresh Exchange Tokens Error"
-            const val EMPTY_MSG = "Refresh Token Exchange Error - Error message was null."
-            const val ATTESTATION_POP_GENERATE_ERROR = "Couldn't generate App Integrity PoP."
             private const val CONTENT_TYPE_LABEL = "Content-Type"
             private const val CONTENT_TYPE_VALUE = "application/x-www-form-urlencoded"
             private const val GRANT_TYPE_LABEL = "grant_type"
             private const val GRANT_TYPE_VALUE = "refresh_token"
             private const val REFRESH_TOKEN_LABEL = "refresh_token"
-            private const val CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation"
-            private const val POP_CLIENT_ATTESTATION_HEADER_LABEL = "OAuth-Client-Attestation-PoP"
 
             data class RefreshExchangeException(
                 private val msg: String,
