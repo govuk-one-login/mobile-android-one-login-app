@@ -53,13 +53,11 @@ class RemoteLoginImpl
         private val jwksUrl
             get() = context.getString(R.string.stsUrl, context.getString(R.string.jwksEndpoint))
 
-        override suspend fun start(launcher: ActivityResultLauncher<Intent>): RemoteLogin.Result =
-            startRemoteLogin.loginInternal(
-                launcher,
-            ).map {
-                RemoteLogin.Result.Success
-            }.getOrElse { throwable ->
-                when (throwable) {
+        override suspend fun start(launcher: ActivityResultLauncher<Intent>): RemoteLogin.Result {
+            val result = startRemoteLogin.login(launcher)
+
+            if (result is StartRemoteLogin.Result.Failure) {
+                return when (result.error) {
                     is AppIntegrityException.ClientAttestationException,
                     is AppIntegrityException.Other,
                     is AppIntegrityException.FirebaseException -> {
@@ -70,37 +68,46 @@ class RemoteLoginImpl
                 }
             }
 
+            return RemoteLogin.Result.Success
+        }
+
         override suspend fun finalise(
             intent: Intent,
             activity: FragmentActivity,
-        ): RemoteLogin.Result =
-            finaliseRemoteLogin.handleInternal(intent)
-                .onSuccess {
-                    recoverableErrors.reset()
-                }
-                .map {
-                    saveTokens(it, activity)
-                }
-                .getOrElse {
-                    val loginException = LoginException(it)
+        ): RemoteLogin.Result {
+            val result = finaliseRemoteLogin.handle(intent)
+
+            return when (result) {
+                is FinaliseRemoteLogin.Result.Failure -> {
+                    val loginException = LoginException(result.error)
                     logger.error(
                         loginException.javaClass.simpleName,
-                        it.message.toString(),
+                        result.error.message.toString(),
                         loginException,
                     )
 
-                    if (it is AuthenticationError && it.type == AuthenticationError.ErrorType.SERVER_ERROR) {
+                    if (result.error is AuthenticationError &&
+                        result.error.type ==
+                        AuthenticationError.ErrorType.SERVER_ERROR
+                    ) {
                         recoverableErrors.increment()
                     }
 
-                    val result = it.toLoginResult()
+                    val failureResult = result.error.toLoginResult()
 
-                    if (result is RemoteLogin.Result.Failure && result.type == RemoteLogin.FailureType.AccessDenied) {
+                    if (failureResult.type == RemoteLogin.FailureType.AccessDenied) {
                         signOutUseCase.invoke()
                     }
 
-                    result
+                    failureResult
                 }
+
+                is FinaliseRemoteLogin.Result.Success -> {
+                    recoverableErrors.reset()
+                    saveTokens(result.tokenResponse, activity)
+                }
+            }
+        }
 
         private suspend fun saveTokens(
             tokens: TokenResponse,
@@ -156,7 +163,7 @@ class RemoteLoginImpl
             )
         }
 
-        private fun Throwable.toLoginResult(): RemoteLogin.Result =
+        private fun Throwable.toLoginResult(): RemoteLogin.Result.Failure =
             when (this) {
                 is AuthenticationError -> {
                     when (this.type) {
@@ -190,38 +197,6 @@ class RemoteLoginImpl
                 else ->
                     RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
             }
-
-        private suspend fun StartRemoteLogin.loginInternal(
-            launcher: ActivityResultLauncher<Intent>,
-        ): Result<Unit> =
-            CompletableDeferred<Result<Unit>>()
-                .also { deferred ->
-                    login(
-                        launcher,
-                        onSuccess = {
-                            deferred.complete(Result.success(Unit))
-                        },
-                        onFailure = {
-                            deferred.complete(Result.failure(it))
-                        },
-                    )
-                }.await()
-
-        private suspend fun FinaliseRemoteLogin.handleInternal(intent: Intent): Result<TokenResponse> =
-            CompletableDeferred<Result<TokenResponse>>()
-                .also { deferred ->
-                    handle(
-                        intent,
-                        onSuccess = {
-                            deferred.complete(Result.success(it))
-                        },
-                        onFailure = {
-                            val exception = it ?: IllegalStateException("Login finalise failed")
-                            deferred.complete(Result.failure(exception))
-                        }
-                    )
-                }
-                .await()
 
         private suspend fun LocalAuthManager.enforceAndSetInternal(
             activity: FragmentActivity
