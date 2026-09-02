@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.login.ui.welcome
+package uk.gov.onelogin.features.unit.login.ui.signin
 
 import android.content.Context
 import android.content.res.Resources
@@ -15,10 +15,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeBody
+import uk.gov.onelogin.features.login.ui.signin.SignInBody
 
 @RunWith(AndroidJUnit4::class)
-class WelcomeBodyTest : FragmentActivityTestCase() {
+class SignInBodyTest : FragmentActivityTestCase() {
     private lateinit var title: SemanticsMatcher
     private lateinit var subTitle1: SemanticsMatcher
     private lateinit var subTitle2: SemanticsMatcher
@@ -42,7 +42,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
     fun verifyComponents() {
         // Given
         composeTestRule.setContent {
-            WelcomeBody()
+            SignInBody()
         }
         // Then
         composeTestRule.onNode(title).assertIsDisplayed()
@@ -56,7 +56,7 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
     fun verifyPara2Component() {
         // Given
         composeTestRule.setContent {
-            WelcomeBody()
+            SignInBody()
         }
         // Then
 
@@ -65,10 +65,10 @@ class WelcomeBodyTest : FragmentActivityTestCase() {
 
     @Test
     fun onSignIn() {
-        // Given the WelcomeBody Composable
+        // Given the SignInBody Composable
         var actual = false
         composeTestRule.setContent {
-            WelcomeBody(
+            SignInBody(
                 onSignIn = { actual = true },
                 openDevMenu = {}
             )

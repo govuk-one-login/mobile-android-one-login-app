@@ -9,7 +9,7 @@ class LoginRoutesTest {
         listOf(
             LoginRoutes.Root.getRoute() to "/login",
             LoginRoutes.Start.getRoute() to "/login/start",
-            LoginRoutes.Welcome.getRoute() to "/login/welcome",
+            LoginRoutes.SignIn.getRoute() to "/login/welcome",
             LoginRoutes.Loading.getRoute() to "/login/loading",
             LoginRoutes.SignInRecoverableError.getRoute() to "/login/sign_in_recoverable_error",
             LoginRoutes.SignInUnrecoverableError.getRoute() to "/login/sign_in_unrecoverable_error",

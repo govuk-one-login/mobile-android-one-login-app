@@ -56,7 +56,7 @@ class NavControllerExtTest : FragmentActivityTestCase() {
             ) {
                 composable(route = LoginRoutes.Start.getRoute()) {}
 
-                composable(route = LoginRoutes.Welcome.getRoute()) {}
+                composable(route = LoginRoutes.SignIn.getRoute()) {}
 
                 composable(route = LoginRoutes.Loading.getRoute()) {}
 

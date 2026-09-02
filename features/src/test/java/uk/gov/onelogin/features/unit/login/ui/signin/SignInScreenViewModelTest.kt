@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.login.ui.welcome
+package uk.gov.onelogin.features.unit.login.ui.signin
 
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
@@ -15,12 +15,12 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInScreenViewModel
 
 @Suppress("UNCHECKED_CAST", "LargeClass")
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
-class WelcomeScreenViewModelTest {
+class SignInScreenViewModelTest {
     private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var mockActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var analyticsLogger: AnalyticsLogger
@@ -28,7 +28,7 @@ class WelcomeScreenViewModelTest {
     private lateinit var mockOnlineChecker: OnlineChecker
     private lateinit var mockRemoteLogin: RemoteLogin
 
-    private lateinit var viewModel: WelcomeScreenViewModel
+    private lateinit var viewModel: SignInScreenViewModel
 
     @BeforeEach
     fun setup() {
@@ -39,7 +39,7 @@ class WelcomeScreenViewModelTest {
         mockRemoteLogin = mock()
         mockOnlineChecker = mock()
 
-        viewModel = WelcomeScreenViewModel(mockNavigator)
+        viewModel = SignInScreenViewModel(mockNavigator)
     }
 
     @Test
