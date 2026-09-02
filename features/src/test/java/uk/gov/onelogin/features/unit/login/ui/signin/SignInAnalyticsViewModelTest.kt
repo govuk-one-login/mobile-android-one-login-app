@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.login.ui.welcome
+package uk.gov.onelogin.features.unit.login.ui.signin
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
@@ -22,7 +22,7 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 import uk.gov.onelogin.core.utils.GAUtils
 import uk.gov.onelogin.core.utils.GAUtils.FALSE
 import uk.gov.onelogin.core.utils.GAUtils.IS_ERROR_REASON_FALSE
-import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInAnalyticsViewModel
 
 @RunWith(AndroidJUnit4::class)
 class SignInAnalyticsViewModelTest {
