@@ -4,20 +4,9 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 
 class TestStartRemoteLogin : StartRemoteLogin {
-    var result: Result<Unit> = Result.success(Unit)
+    var result: StartRemoteLogin.Result = StartRemoteLogin.Result.Success
 
     override suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
-        onSuccess: () -> Unit,
-        onFailure: (Throwable) -> Unit,
-    ) {
-        val exception = result.exceptionOrNull()
-
-        if (exception != null) {
-            onFailure(exception)
-            return
-        }
-
-        onSuccess()
-    }
+    ): StartRemoteLogin.Result = result
 }
