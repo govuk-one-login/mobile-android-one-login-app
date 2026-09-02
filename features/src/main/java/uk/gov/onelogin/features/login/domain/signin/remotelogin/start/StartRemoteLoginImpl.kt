@@ -32,43 +32,30 @@ class StartRemoteLoginImpl
         @Suppress("TooGenericExceptionCaught")
         override suspend fun login(
             launcher: ActivityResultLauncher<Intent>,
-            onSuccess: () -> Unit,
-            onFailure: (Throwable) -> Unit,
-        ) {
+        ): StartRemoteLogin.Result {
             val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
-            handleGetClientAttestation(
-                {
-                    try {
-                        loginSession.present(
-                            launcher,
-                            configuration = createLoginConfiguration(persistentId),
-                        )
-                        onSuccess()
-                    } catch (e: Throwable) {
-                        val loginException = LoginException(e)
-                        logger.error(
-                            loginException.javaClass.simpleName,
-                            e.message ?: NO_MESSAGE,
-                            loginException,
-                        )
-                        onFailure(e)
-                    }
-                },
-                onFailure,
-            )
-        }
 
-        private suspend fun handleGetClientAttestation(
-            onSuccess: () -> Unit,
-            onFailure: (Throwable) -> Unit,
-        ) {
-            when (val result = appIntegrity.getClientAttestation()) {
-                is AttestationResult.Failure -> {
-                    onFailure(result.error)
-                }
-
-                else -> onSuccess()
+            val attestationResult = appIntegrity.getClientAttestation()
+            if (attestationResult is AttestationResult.Failure) {
+                return StartRemoteLogin.Result.Failure(attestationResult.error)
             }
+
+            try {
+                loginSession.present(
+                    launcher,
+                    configuration = createLoginConfiguration(persistentId),
+                )
+            } catch (e: Throwable) {
+                val loginException = LoginException(e)
+                logger.error(
+                    loginException.javaClass.simpleName,
+                    e.message ?: NO_MESSAGE,
+                    loginException,
+                )
+                return StartRemoteLogin.Result.Failure(e)
+            }
+
+            return StartRemoteLogin.Result.Success
         }
 
         private fun createLoginConfiguration(persistentId: String?): LoginSessionConfiguration {
