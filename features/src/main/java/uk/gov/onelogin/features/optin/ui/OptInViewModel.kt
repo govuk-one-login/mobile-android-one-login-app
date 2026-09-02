@@ -45,6 +45,6 @@ class OptInViewModel
         }
 
         fun goToSignIn() {
-            navigator.navigate(LoginRoutes.Welcome, true)
+            navigator.navigate(LoginRoutes.SignIn, true)
         }
     }
