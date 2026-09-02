@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui.info
+package uk.gov.onelogin.features.signout.ui.reauth
 
 import android.content.Intent
 import androidx.activity.compose.LocalActivity
@@ -31,10 +31,10 @@ import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.login.LoginViewModel
 
 @Composable
-fun SignedOutInfoScreen(
+fun ReAuthLandingScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    viewModel: SignedOutInfoViewModel = hiltViewModel(),
-    analyticsViewModel: SignedOutInfoAnalyticsViewModel = hiltViewModel(),
+    viewModel: ReAuthLandingViewModel = hiltViewModel(),
+    analyticsViewModel: ReAuthAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false },
 ) {
@@ -66,7 +66,7 @@ fun SignedOutInfoScreen(
         if (loading) {
             LoadingScreen(loadingAnalyticsViewModel) {}
         } else {
-            SignedOutInfoBody {
+            ReAuthLandingBody {
                 analyticsViewModel.trackReAuth()
                 startLogin(
                     loginViewModel,
@@ -77,7 +77,7 @@ fun SignedOutInfoScreen(
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        analyticsViewModel.trackSignOutInfoView()
+        analyticsViewModel.trackReAuthLandingScreenView()
     }
 
     LifecycleEventEffect(Lifecycle.Event.ON_START) {
@@ -93,15 +93,15 @@ private fun startLogin(
 }
 
 @Composable
-internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
+internal fun ReAuthLandingBody(onPrimary: () -> Unit) {
     val content =
         listOf(
-            stringResource(R.string.app_youveBeenSignedOutBody1),
-            stringResource(R.string.app_youveBeenSignedOutBody2),
+            stringResource(R.string.app_reauthLandingBody1),
+            stringResource(R.string.app_reauthLandingBody2),
         )
     val buttonText = stringResource(R.string.app_SignInWithGovUKOneLoginButton)
     CentreAlignedScreen(
-        title = stringResource(R.string.app_youveBeenSignedOutTitle),
+        title = stringResource(R.string.app_reauthLandingTitle),
         modifier = Modifier.fillMaxSize(),
         body =
             persistentListOf(
@@ -119,8 +119,8 @@ internal fun SignedOutInfoBody(onPrimary: () -> Unit) {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun SignedOutInfoPreview() {
+internal fun ReAuthLandingPreview() {
     GdsTheme {
-        SignedOutInfoBody {}
+        ReAuthLandingBody {}
     }
 }
