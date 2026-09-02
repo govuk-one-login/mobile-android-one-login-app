@@ -13,9 +13,11 @@ fun interface FinaliseRemoteLogin {
     /**
      * @param intent The intent received after starting a remote login with [StartRemoteLogin]
      */
-    suspend fun handle(
-        intent: Intent,
-        onFailure: (Throwable?) -> Unit,
-        onSuccess: (TokenResponse) -> Unit,
-    )
+    suspend fun handle(intent: Intent): Result
+
+    sealed class Result {
+        data class Success(val tokenResponse: TokenResponse) : Result()
+
+        data class Failure(val error: Throwable) : Result()
+    }
 }
