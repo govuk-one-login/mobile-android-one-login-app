@@ -137,7 +137,6 @@ dependencies {
     listOf(
         libs.androidx.core.ktx,
         platform(libs.androidx.compose.bom),
-        libs.material,
         libs.hilt.android,
         libs.androidx.hilt.navigation.compose,
         libs.androidx.compose.foundation,
