@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.ui.signin.welcome
+package uk.gov.onelogin.features.login.ui.signin
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 @Suppress("LongParameterList", "TooManyFunctions")
-class WelcomeScreenViewModel
+class SignInScreenViewModel
     @Inject
     constructor(
         private val navigator: Navigator,

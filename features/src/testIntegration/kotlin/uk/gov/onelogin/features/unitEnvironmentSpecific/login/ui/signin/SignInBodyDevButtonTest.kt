@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unitEnvironmentSpecific.login.ui.welcome
+package uk.gov.onelogin.features.unitEnvironmentSpecific.login.ui.signin
 
 import androidx.compose.ui.test.hasText
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -6,17 +6,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeBody
+import uk.gov.onelogin.features.login.ui.signin.SignInBody
 
 @RunWith(AndroidJUnit4::class)
-class WelcomeBodyDevButtonTest : FragmentActivityTestCase() {
+class SignInBodyDevButtonTest : FragmentActivityTestCase() {
     private val devButton = hasText(resources.getString(R.string.app_developer_button))
 
     @Test
     fun onAccessDevMenu() {
-        // Given the WelcomeBody Composable
+        // Given the SignInBody Composable
         composeTestRule.setContent {
-            WelcomeBody(
+            SignInBody(
                 onSignIn = {},
                 openDevMenu = { }
             )

@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.ui.signin.welcome
+package uk.gov.onelogin.features.login.ui.signin
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -43,8 +43,8 @@ import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.login.LoginViewModel
 
 @Composable
-fun WelcomeScreen(
-    viewModel: WelcomeScreenViewModel = hiltViewModel(),
+fun SignInScreen(
+    viewModel: SignInScreenViewModel = hiltViewModel(),
     loginViewModel: LoginViewModel = hiltViewModel(),
     analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
@@ -70,7 +70,7 @@ fun WelcomeScreen(
         )
     } else {
         EdgeToEdgePage { _ ->
-            WelcomeBody(
+            SignInBody(
                 onSignIn = {
                     handleScreenExit(loginViewModel, analyticsViewModel, launcher)
                 },
@@ -103,7 +103,7 @@ private fun handleScreenExit(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 @Suppress("LongMethod")
-internal fun WelcomeBody(
+internal fun SignInBody(
     onSignIn: () -> Unit = { },
     openDevMenu: () -> Unit = { },
 ) {
@@ -152,7 +152,7 @@ internal fun WelcomeBody(
                     text = buttonText,
                     buttonType = ButtonTypeV2.Primary(),
                     onClick = onSignIn,
-                    modifier = Modifier.fillMaxWidth().testTag(WELCOME_SIGNIN_BUTTON_TAG),
+                    modifier = Modifier.fillMaxWidth().testTag(SIGN_IN_BUTTON_TAG),
                 )
             },
             secondaryButton = {
@@ -169,11 +169,11 @@ internal fun WelcomeBody(
     }
 }
 
-const val WELCOME_SIGNIN_BUTTON_TAG = "WelcomeSignInButtonTag"
+const val SIGN_IN_BUTTON_TAG = "WelcomeSignInButtonTag"
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun WelcomePreview() {
-    WelcomeBody()
+internal fun SignInPreview() {
+    SignInBody()
 }

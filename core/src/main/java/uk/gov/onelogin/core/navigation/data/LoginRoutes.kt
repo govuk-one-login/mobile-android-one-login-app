@@ -9,7 +9,7 @@ sealed class LoginRoutes(
 
     data object Start : LoginRoutes("/login/start")
 
-    data object Welcome : LoginRoutes("/login/welcome")
+    data object SignIn : LoginRoutes("/login/welcome")
 
     data object Loading : LoginRoutes("/login/loading")
 
