@@ -8,9 +8,9 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorViewModel
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorViewModel
 
-class AuthErrorViewModelTest {
+class AppResetErrorViewModelTest {
     private lateinit var featureFlags: FeatureFlags
     private val mockNavigator: Navigator = mock()
 
@@ -21,7 +21,7 @@ class AuthErrorViewModelTest {
                 InMemoryFeatureFlags(
                     setOf()
                 )
-            val sut = AuthErrorViewModel(mockNavigator)
+            val sut = AppResetErrorViewModel(mockNavigator)
 
             sut.navigateToSignIn()
 
