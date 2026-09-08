@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.component.signout.info
+package uk.gov.onelogin.features.component.signout.reauth
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
@@ -34,12 +34,12 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.LoginViewModel
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoAnalyticsViewModel
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoScreen
-import uk.gov.onelogin.features.signout.ui.info.SignedOutInfoViewModel
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthAnalyticsViewModel
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthLandingScreen
+import uk.gov.onelogin.features.signout.ui.reauth.ReAuthLandingViewModel
 
 @RunWith(AndroidJUnit4::class)
-class SignedOutInfoScreenTest : FragmentActivityTestCase() {
+class ReAuthLandingScreenTest : FragmentActivityTestCase() {
     private lateinit var mockFragmentActivity: FragmentActivity
     private lateinit var getPersistentId: GetPersistentId
     private lateinit var signOutUseCase: SignOutUseCase
@@ -51,14 +51,14 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private lateinit var onlineChecker: OnlineChecker
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var analytics: AnalyticsLogger
-    private lateinit var analyticsViewModel: SignedOutInfoAnalyticsViewModel
+    private lateinit var analyticsViewModel: ReAuthAnalyticsViewModel
     private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
-    private lateinit var viewModel: SignedOutInfoViewModel
+    private lateinit var viewModel: ReAuthLandingViewModel
     private var shouldTryAgainCalled = false
 
-    private val signedOutTitle = hasText(resources.getString(R.string.app_youveBeenSignedOutTitle))
-    private val signedOutBody1 = hasText(resources.getString(R.string.app_youveBeenSignedOutBody1))
-    private val signedOutBody2 = hasText(resources.getString(R.string.app_youveBeenSignedOutBody2))
+    private val signedOutTitle = hasText(resources.getString(R.string.app_reauthLandingTitle))
+    private val signedOutBody1 = hasText(resources.getString(R.string.app_reauthLandingBody1))
+    private val signedOutBody2 = hasText(resources.getString(R.string.app_reauthLandingBody2))
     private val signedOutButton =
         hasText(resources.getString(R.string.app_SignInWithGovUKOneLoginButton))
 
@@ -75,7 +75,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             onlineChecker = mock()
             analytics = mock()
             viewModel =
-                SignedOutInfoViewModel(
+                ReAuthLandingViewModel(
                     navigator,
                     tokenRepository,
                 )
@@ -89,14 +89,14 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
                     localAuthPrefResetUseCase,
                     logger
                 )
-            analyticsViewModel = SignedOutInfoAnalyticsViewModel(context, analytics)
+            analyticsViewModel = ReAuthAnalyticsViewModel(context, analytics)
             loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
         }
 
     @Test
     fun verifyScreenDisplayed() {
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
@@ -118,7 +118,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
             composeTestRule.setContent {
-                SignedOutInfoScreen(
+                ReAuthLandingScreen(
                     loginViewModel,
                     viewModel,
                     analyticsViewModel,
@@ -137,7 +137,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             whenever(onlineChecker.isOnline()).thenReturn(true)
 
             composeTestRule.setContent {
-                SignedOutInfoScreen(
+                ReAuthLandingScreen(
                     loginViewModel,
                     viewModel,
                     analyticsViewModel,
@@ -154,7 +154,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     @Test
     fun shouldTryAgainCalledOnPageLoad() {
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
@@ -175,7 +175,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
             whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
             composeTestRule.setContent {
-                SignedOutInfoScreen(
+                ReAuthLandingScreen(
                     loginViewModel,
                     viewModel,
                     analyticsViewModel,
@@ -194,7 +194,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         runBlocking {
             whenever(onlineChecker.isOnline()).thenReturn(false)
             composeTestRule.setContent {
-                SignedOutInfoScreen(
+                ReAuthLandingScreen(
                     loginViewModel,
                     viewModel,
                     analyticsViewModel,
@@ -220,9 +220,9 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     @Test
     fun screenViewAnalyticsLogOnResume() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        val event = SignedOutInfoAnalyticsViewModel.Companion.makeSignedOutInfoViewEvent(context)
+        val event = ReAuthAnalyticsViewModel.Companion.makeReAuthViewEvent(context)
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
@@ -236,10 +236,10 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     @Test
     fun reAuthAnalyticsLogOnSignInButton() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        val event = SignedOutInfoAnalyticsViewModel.Companion.makeReAuthEvent(context)
+        val event = ReAuthAnalyticsViewModel.Companion.makeReAuthEvent(context)
         whenever(onlineChecker.isOnline()).thenReturn(true)
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
@@ -256,7 +256,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
         remoteLogin.startWillComplete = false
         whenever(onlineChecker.isOnline()).thenReturn(true)
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
@@ -278,7 +278,7 @@ class SignedOutInfoScreenTest : FragmentActivityTestCase() {
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
         composeTestRule.setContent {
-            SignedOutInfoScreen(
+            ReAuthLandingScreen(
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
