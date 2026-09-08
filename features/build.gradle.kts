@@ -158,8 +158,6 @@ dependencies {
         libs.androidx.core.ktx,
         libs.androidx.appcompat,
         platform(libs.androidx.compose.bom),
-        libs.material,
-        libs.androidx.compose.material,
         libs.androidx.compose.material3,
         libs.bundles.gov.uk,
         libs.androidx.hilt.navigation.compose,
