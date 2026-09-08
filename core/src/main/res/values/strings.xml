@@ -59,8 +59,8 @@
     <string name="app_signOutConfirmationBody3">Next time you sign in, you’ll be able to add your documents again and reset your preferences.</string>
     <string name="app_signOutAndDeleteAppDataButton">Sign out and delete information</string>
 
-    <string name="app_youveBeenSignedOutTitle">You need to sign in again</string>
-    <string name="app_youveBeenSignedOutBody1">Sign in with your GOV.UK One Login details to continue.</string>
+    <string name="app_reauthLandingTitle">You need to sign in again</string>
+    <string name="app_reauthLandingBody1">Sign in with your GOV.UK One Login details to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
     <!-- Sign Out Confirmation -->
@@ -204,5 +204,5 @@
     <string name="app_welcomeTileHeader">Welcome</string>
     <string name="app_welcomeTileBody1">You can use this app to prove your identity to access some government services.</string>
 
-    <string name="app_youveBeenSignedOutBody2">This is to keep your information secure.</string>
+    <string name="app_reauthLandingBody2">This is to keep your information secure.</string>
 </resources>
