@@ -40,6 +40,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLoginImpl
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.TestStartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import kotlin.test.assertEquals
@@ -525,7 +526,7 @@ class RemoteLoginImplTest {
         }
 
     private fun givenStartRemoteLoginFailure(throwable: Throwable) {
-        startRemoteLogin.result = Result.failure(throwable)
+        startRemoteLogin.result = StartRemoteLogin.Result.Failure(throwable)
     }
 
     private suspend fun givenLocalAuthCheckSuccess(pref: LocalAuthPreference) {
@@ -542,17 +543,17 @@ class RemoteLoginImplTest {
     }
 
     private suspend fun givenFinaliseRemoteLoginSuccess(response: TokenResponse = tokenResponse) {
-        whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                it.getArgument<(TokenResponse) -> Unit>(2).invoke(response)
-            }
+        whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent)))
+            .thenReturn(FinaliseRemoteLogin.Result.Success(response))
     }
 
     private suspend fun givenFinaliseRemoteLoginError(error: Throwable?) {
-        whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent), any(), any()))
-            .thenAnswer {
-                it.getArgument<(Throwable?) -> Unit>(1).invoke(error)
-            }
+        whenever(mockFinaliseRemoteLogin.handle(eq(mockIntent)))
+            .thenReturn(
+                FinaliseRemoteLogin.Result.Failure(
+                    error ?: IllegalStateException("Login finalise failed"),
+                ),
+            )
     }
 
     private suspend fun givenVerifyIdTokenSuccess() {

@@ -35,6 +35,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLoginImpl
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class StartRemoteLoginTest {
     private val mockContext: Context = mock()
@@ -48,9 +49,6 @@ class StartRemoteLoginTest {
     private val mockUri: Uri = mock()
     private val testAttestation = "testAttestation"
     private val testPersistentId = "12345"
-
-    private val onSuccess: () -> Unit = mock()
-    private val onFailure: (Throwable) -> Unit = mock()
 
     private lateinit var startRemoteLogin: StartRemoteLogin
 
@@ -83,9 +81,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onSuccess).invoke()
+            assertIs<StartRemoteLogin.Result.Success>(result)
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -105,9 +103,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onSuccess).invoke()
+            assertIs<StartRemoteLogin.Result.Success>(result)
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -127,9 +125,9 @@ class StartRemoteLoginTest {
                 AttestationResult.Success(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onSuccess).invoke()
+            assertIs<StartRemoteLogin.Result.Success>(result)
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -152,9 +150,9 @@ class StartRemoteLoginTest {
                 )
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onFailure).invoke(any())
+            assertIs<StartRemoteLogin.Result.Failure>(result)
         }
 
     @Test
@@ -165,9 +163,9 @@ class StartRemoteLoginTest {
                 AttestationResult.NotRequired(testAttestation)
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onSuccess).invoke()
+            assertIs<StartRemoteLogin.Result.Success>(result)
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -187,9 +185,9 @@ class StartRemoteLoginTest {
                 AttestationResult.NotRequired(null)
             )
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
-            verify(onSuccess).invoke()
+            assertIs<StartRemoteLogin.Result.Success>(result)
             argumentCaptor<LoginSessionConfiguration> {
                 verify(mockLoginSession).present(eq(mockLauncher), capture())
                 val capturedConfiguration = firstValue
@@ -212,8 +210,9 @@ class StartRemoteLoginTest {
             )
             whenever(mockLoginSession.present(any(), any())).thenThrow(error)
 
-            startRemoteLogin.login(mockLauncher, onSuccess, onFailure)
+            val result = startRemoteLogin.login(mockLauncher)
 
+            assertIs<StartRemoteLogin.Result.Failure>(result)
             assertThat(
                 mockLogger,
                 hasItem(

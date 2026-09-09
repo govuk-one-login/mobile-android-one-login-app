@@ -6,7 +6,11 @@ import androidx.activity.result.ActivityResultLauncher
 fun interface StartRemoteLogin {
     suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
-        onSuccess: () -> Unit,
-        onFailure: (Throwable) -> Unit,
-    )
+    ): Result
+
+    sealed class Result {
+        data object Success : Result()
+
+        data class Failure(val error: Throwable) : Result()
+    }
 }
