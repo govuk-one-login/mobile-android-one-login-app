@@ -187,7 +187,7 @@ class SplashScreenViewModelTest {
 
             verify(mockAutoInitialiseSecureStore).initialise(null)
             verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError, false)
+            verify(mockNavigator).navigate(SignOutRoutes.AppResetError, false)
             verify(mockSignOutUseCase).invoke()
         }
 

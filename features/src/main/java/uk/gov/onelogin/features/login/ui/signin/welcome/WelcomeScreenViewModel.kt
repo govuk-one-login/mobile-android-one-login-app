@@ -130,7 +130,7 @@ class WelcomeScreenViewModel
                             this.launch {
                                 signOutUseCase.invoke()
                             }
-                            navigator.navigate(SignOutRoutes.ReAuthError)
+                            navigator.navigate(SignOutRoutes.AppResetError)
                         }
 
                         AuthenticationError.ErrorType.SERVER_ERROR -> {

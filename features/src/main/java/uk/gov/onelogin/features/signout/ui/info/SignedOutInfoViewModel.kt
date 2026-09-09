@@ -38,7 +38,7 @@ class SignedOutInfoViewModel
                 if (getPersistentId().isNullOrEmpty()) {
                     try {
                         signOutUseCase.invoke()
-                        navigator.navigate(SignOutRoutes.ReAuthError, true)
+                        navigator.navigate(SignOutRoutes.AppResetError, true)
                     } catch (error: SignOutError) {
                         logger.error(
                             error.javaClass.simpleName,

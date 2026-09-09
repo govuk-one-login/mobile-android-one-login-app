@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.error.ui.auth
+package uk.gov.onelogin.features.error.ui.appreset
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +27,10 @@ import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
-fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
+fun AppResetErrorScreen(viewModel: AppResetErrorViewModel = hiltViewModel()) {
     GdsTheme {
         EdgeToEdgePage { _ ->
-            AuthErrorBody {
+            AppResetErrorBody {
                 viewModel.navigateToSignIn()
             }
         }
@@ -39,7 +39,7 @@ fun AuthErrorScreen(viewModel: AuthErrorViewModel = hiltViewModel()) {
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
+private fun AppResetErrorBody(goToSignIn: () -> Unit = {}) {
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_dataDeletedBody1),
@@ -88,8 +88,8 @@ private fun AuthErrorBody(goToSignIn: () -> Unit = {}) {
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
 @Composable
-internal fun AuthErrorScreenPreview() {
+internal fun AppResetErrorScreenPreview() {
     GdsTheme {
-        AuthErrorBody()
+        AppResetErrorBody()
     }
 }

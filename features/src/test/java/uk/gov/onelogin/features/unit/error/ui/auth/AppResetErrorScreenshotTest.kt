@@ -5,15 +5,15 @@ import com.android.resources.NightMode
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.error.ui.auth.AuthErrorScreenPreview
+import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorScreenPreview
 
 @RunWith(Parameterized::class)
-class AuthErrorScreenshotTest(
+class AppResetErrorScreenshotTest(
     nightMode: NightMode,
     locale: String
 ) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        AuthErrorScreenPreview()
+        AppResetErrorScreenPreview()
     }
 
     companion object {
