@@ -7,7 +7,6 @@ import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import javax.inject.Inject
-import kotlin.jvm.Throws
 
 @Suppress("TooGenericExceptionCaught")
 class FirebaseAppCheck

@@ -2,7 +2,6 @@ package uk.gov.onelogin.features.developer.ui.app
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.util.Log.DEBUG
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

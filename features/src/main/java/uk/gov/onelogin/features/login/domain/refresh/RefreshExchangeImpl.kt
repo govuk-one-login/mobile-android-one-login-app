@@ -31,7 +31,6 @@ import uk.gov.onelogin.core.utils.TimeProvider
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import java.time.Instant
 import javax.inject.Inject
-import kotlin.text.isNullOrEmpty
 
 @Suppress("LongParameterList")
 class RefreshExchangeImpl
