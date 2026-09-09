@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unitEnvironmentSpecific.login.ui.welcome
+package uk.gov.onelogin.features.unitEnvironmentSpecific.login.ui.signin
 
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
@@ -19,13 +19,13 @@ import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.LoginViewModel
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
-import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInAnalyticsViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInScreen
+import uk.gov.onelogin.features.login.ui.signin.SignInScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
-class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
+class SignInScreenDevMenuTest : FragmentActivityTestCase() {
     private lateinit var navigator: Navigator
     private lateinit var remoteLogin: RemoteLogin
     private lateinit var onlineChecker: OnlineChecker
@@ -33,7 +33,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
     private val logger = MemorisedLogger()
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
-    private lateinit var viewModel: WelcomeScreenViewModel
+    private lateinit var viewModel: SignInScreenViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
     private lateinit var loginViewModel: LoginViewModel
@@ -51,7 +51,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         localAuthPrefResetUseCase = mock()
         getPersistentId = mock()
         viewModel =
-            WelcomeScreenViewModel(
+            SignInScreenViewModel(
                 navigator,
             )
         loginViewModel =
@@ -67,7 +67,7 @@ class WelcomeScreenDevMenuTest : FragmentActivityTestCase() {
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
         composeTestRule.setContent {
-            WelcomeScreen(viewModel, loginViewModel, analyticsViewModel, loadingAnalyticsViewModel)
+            SignInScreen(viewModel, loginViewModel, analyticsViewModel, loadingAnalyticsViewModel)
         }
     }
 

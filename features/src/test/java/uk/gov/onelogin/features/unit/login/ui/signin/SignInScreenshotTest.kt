@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.unit.login.ui.welcome
+package uk.gov.onelogin.features.unit.login.ui.signin
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -7,14 +7,14 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
+import uk.gov.onelogin.features.login.ui.signin.SignInPreview
 
 @RunWith(Parameterized::class)
-class WelcomeScreenshotTest(
+class SignInScreenshotTest(
     nightMode: NightMode
 ) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
-        WelcomePreview()
+        SignInPreview()
     }
 
     companion object {
