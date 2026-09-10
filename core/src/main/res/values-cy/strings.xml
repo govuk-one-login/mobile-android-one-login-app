@@ -3,6 +3,7 @@
     <!-- Navigation -->
     <string name="app_continue">Parhau</string>
     <string name="app_closeButton">Cau</string>
+    <string name="app_doneLink">Wedi\’i wneud</string>
     <string name="app_home">Hafan</string>
     <string name="app_wallet">Waled</string>
     <string name="app_settings">Gosodiadau</string>
@@ -144,8 +145,4 @@
     <!-- Welcome tile -->
     <string name="app_welcomeTileHeader">Croeso</string>
     <string name="app_welcomeTileBody1">Gallwch ddefnyddio\’r ap hwn i brofi eich hunaniaeth i gael mynediad at rai gwasanaethau\’r llywodraeth.</string>
-
-    <!-- How to prove your identity tile -->
-    <string name="app_appPurposeTileHeader">Sut i brofi eich hunaniaeth</string>
-    <string name="app_appPurposeTileBody1">Os oes angen i chi brofi eich hunaniaeth gyda GOV.UK One Login i gael mynediad at wasanaeth, gofynnir i chi agor yr ap hwn. Mae\’n gweithio trwy baru eich wyneb â\’ch ID gyda llun.</string>
 </resources>

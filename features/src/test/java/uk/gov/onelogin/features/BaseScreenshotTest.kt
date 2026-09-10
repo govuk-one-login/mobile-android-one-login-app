@@ -24,7 +24,8 @@ import uk.gov.android.ui.theme.m3.GdsTheme
  */
 abstract class BaseScreenshotTest(
     nightMode: NightMode = NOTNIGHT,
-    locale: String = LOCALE_EN
+    locale: String = LOCALE_EN,
+    fontScale: Float = 1f,
 ) {
     @get:Rule
     val paparazzi =
@@ -32,7 +33,8 @@ abstract class BaseScreenshotTest(
             deviceConfig =
                 DeviceConfig.PIXEL_6.copy(
                     nightMode = nightMode,
-                    locale = locale
+                    locale = locale,
+                    fontScale = fontScale,
                 ),
             renderingMode = SHRINK,
             showSystemUi = false,
@@ -68,8 +70,20 @@ abstract class BaseScreenshotTest(
                 arrayOf(NOTNIGHT, LOCALE_CY),
                 arrayOf(NIGHT, LOCALE_CY)
             )
+
+        @JvmStatic
+        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> =
+            arrayListOf(
+                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
+                arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
+                arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
+                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
+            )
     }
 }
 
 const val LOCALE_EN = "en"
 const val LOCALE_CY = "cy"
+
+const val FONT_SCALE_M = 1f
+const val FONT_SCALE_L = 2f

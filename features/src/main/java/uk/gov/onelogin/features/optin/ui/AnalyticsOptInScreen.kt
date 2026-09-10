@@ -23,6 +23,7 @@ import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.Typography
 import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.android.ui.theme.xsmallPadding
@@ -85,7 +86,7 @@ private fun OptInHeader() {
                 .padding(horizontal = smallPadding)
                 .padding(top = mediumPadding),
         color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.headlineLarge,
+        style = Typography.displaySmall,
         text = stringResource(id = R.string.app_analyticsPermissionTitle),
         textAlign = TextAlign.Start,
     )
