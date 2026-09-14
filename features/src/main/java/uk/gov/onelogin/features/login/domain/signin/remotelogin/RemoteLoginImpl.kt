@@ -95,6 +95,9 @@ class RemoteLoginImpl
 
                     val result = it.toLoginResult()
 
+                    // If the failure is access denied, the user will never be able to
+                    // re-authenticate, so we delete all user data.
+                    // See https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/4652892215/DCMAW-10122+STS+Mobile+Platform+Re-authentication+v2#App-(iOS-and-Android)
                     if (result is RemoteLogin.Result.Failure && result.type == RemoteLogin.FailureType.AccessDenied) {
                         signOutUseCase.invoke()
                     }
