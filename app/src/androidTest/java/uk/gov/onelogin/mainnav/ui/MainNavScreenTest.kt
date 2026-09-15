@@ -24,7 +24,8 @@ import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
-import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger as AnalyticsLoggerV1
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.AnalyticsModule
@@ -48,6 +49,9 @@ class MainNavScreenTest : TestCase() {
 
     @BindValue
     val featureFlags: FeatureFlags = mock()
+
+    @BindValue
+    var analyticsV1: AnalyticsLoggerV1 = mock()
 
     @BindValue
     var analytics: AnalyticsLogger = mock()
@@ -91,7 +95,7 @@ class MainNavScreenTest : TestCase() {
             BottomNavDestination.Home.key,
             navController.currentDestination?.route,
         )
-        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeHomeButtonEvent(context))
+        verify(analyticsV1).logEventV3Dot1(MainNavAnalyticsViewModel.makeHomeButtonEvent(context))
     }
 
     @Test
@@ -113,7 +117,7 @@ class MainNavScreenTest : TestCase() {
                 resources.getString(walletR.string.intro_card_title),
             ).assertIsDisplayed()
 
-        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))
+        verify(analyticsV1).logEventV3Dot1(MainNavAnalyticsViewModel.makeWalletButtonEvent(context))
     }
 
     @Test
@@ -130,7 +134,7 @@ class MainNavScreenTest : TestCase() {
 
         composeTestRule.onAllNodes(settingsTab).assertCountEquals(2)
 
-        verify(analytics).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
+        verify(analyticsV1).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
     }
 
     @Ignore("This is failing because the nav graph has not be 'set' in the time")
