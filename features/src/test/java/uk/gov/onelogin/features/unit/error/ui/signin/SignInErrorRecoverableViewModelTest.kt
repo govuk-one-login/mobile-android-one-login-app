@@ -14,7 +14,7 @@ class SignInErrorRecoverableViewModelTest {
     @Test
     fun testOnBack() {
         sut.onBack()
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.SignIn, true)
     }
 
     @Test
