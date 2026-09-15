@@ -1,0 +1,83 @@
+plugin: openapi
+
+resources:
+- path: /authorize
+  method: GET
+  requestHeaders:
+    x-authorize-response:
+      value: success
+      operator: EqualTo
+  response:
+    statusCode: 302
+    headers:
+      Location: "https://mobile.build.account.gov.uk/redirect?code=${random.uuid()}&state=${context.request.queryParams.state}"
+    template: true
+
+- path: /authorize
+  method: GET
+  requestHeaders:
+    x-authorize-response:
+      value: error
+      operator: EqualTo
+  response:
+    statusCode: 302
+    headers:
+      Location: "https://mobile.build.account.gov.uk/redirect?error=invalid_request&error_description=InvalidRequestMade&state=${context.request.queryParams.state}"
+    template: true
+
+- path: /authorize
+  method: GET
+  response:
+    statusCode: 302
+    headers:
+      Location: "https://mobile.build.account.gov.uk/redirect?code=${random.uuid()}&state=${context.request.queryParams.state}"
+    template: true
+
+- path: /token
+  method: POST
+  requestHeaders:
+    x-token-response:
+      value: success
+      operator: EqualTo
+  response:
+    statusCode: 200
+    content: |
+      {
+        "access_token": "mock-access-token",
+        "refresh_token": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjM5MTIyfQ.o6hFvWj08OLhh8BTpnt7nOhzWFbfYr_Q-3pdSlEJeOVZNnZs0GraDtAme_ux2FAXhYr53-u1wvcVKWBZzkYo4w",
+        "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazcifQ.ewogImlzcyI6ICJodHRwOi8vc2VydmVyLmV4YW1wbGUuY29tIiwKICJzdWIiOiAiMjQ4Mjg5NzYxMDAxIiwKICJhdWQiOiAiczZCaGRSa3F0MyIsCiAibm9uY2UiOiAibi0wUzZfV3pBMk1qIiwKICJleHAiOiAxMzExMjgxOTcwLAogImlhdCI6IDEzMTEyODA5NzAKfQ.ggW8hZ1EuVLuxNuuIJKX_V8a_OMXzR0EHR9R6jgdqrOOF4daGU96Sr_P6qJp6IcmD3HP99Obi1PRs-cwh3LO-p146waJ8IhehcwL7F09JdijmBqkvPeB2T9CJNqeGpe-gccMg4vfKjkM8FcGvnzZUN4_KSP0aAp1tOJ1zZwgjxqGByKHiOtX7TpdQyHE5lcMiKPXfEIQILVq0pc_E2DzL7emopWoaoZTF_m0_N0YzFC6g6EJbOEoRoSK5hoDalrcvRYLSrQAZZKflyuVCyixEoV9GfNQC3_osjzw2PAithfubEEBLuVVk4XUVrWOLrLl0nx7RkKU8NXNHq-rvKMzqg",
+        "token_type": "Bearer",
+        "expires_in": 3600
+      }
+
+- path: /token
+  method: POST
+  requestHeaders:
+    x-token-response:
+      value: error
+      operator: EqualTo
+  response:
+    statusCode: 400
+    content: |
+      {
+        "error": "invalid_request",
+        "error_description": "The request parameters were invalid"
+      }
+
+- path: /token
+  method: POST
+  response:
+    statusCode: 200
+    content: |
+      {
+        "access_token": "mock-access-token",
+        "refresh_token": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNTE2MjM5MTIyfQ.o6hFvWj08OLhh8BTpnt7nOhzWFbfYr_Q-3pdSlEJeOVZNnZs0GraDtAme_ux2FAXhYr53-u1wvcVKWBZzkYo4w",
+        "id_token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazcifQ.ewogImlzcyI6ICJodHRwOi8vc2VydmVyLmV4YW1wbGUuY29tIiwKICJzdWIiOiAiMjQ4Mjg5NzYxMDAxIiwKICJhdWQiOiAiczZCaGRSa3F0MyIsCiAibm9uY2UiOiAibi0wUzZfV3pBMk1qIiwKICJleHAiOiAxMzExMjgxOTcwLAogImlhdCI6IDEzMTEyODA5NzAKfQ.ggW8hZ1EuVLuxNuuIJKX_V8a_OMXzR0EHR9R6jgdqrOOF4daGU96Sr_P6qJp6IcmD3HP99Obi1PRs-cwh3LO-p146waJ8IhehcwL7F09JdijmBqkvPeB2T9CJNqeGpe-gccMg4vfKjkM8FcGvnzZUN4_KSP0aAp1tOJ1zZwgjxqGByKHiOtX7TpdQyHE5lcMiKPXfEIQILVq0pc_E2DzL7emopWoaoZTF_m0_N0YzFC6g6EJbOEoRoSK5hoDalrcvRYLSrQAZZKflyuVCyixEoV9GfNQC3_osjzw2PAithfubEEBLuVVk4XUVrWOLrLl0nx7RkKU8NXNHq-rvKMzqg",
+        "token_type": "Bearer",
+        "expires_in": 3600
+      }
+
+validation:
+  request: true
+
+specFile: sts-backend-spec.yaml

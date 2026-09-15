@@ -1,0 +1,979 @@
+# checkov:skip=CKV_OPENAPI_4: Authentication method cannot be used for each grant type on overloaded endpoint so global security is not required
+# checkov:skip=CKV_OPENAPI_5: Unauthenticated endpoints don't require security
+# NOTE: shorthand notation for functions (e.g. !Sub) is not supported for yaml snippets.
+openapi: "3.0.1"
+info:
+  title: "Security Token Service (STS) Backend API"
+  version: "1.0"
+  description: >-
+    STS Backend API.
+
+# Reusable YAML anchors for situations where there is no compatible component type (see below).
+x-definitions:
+  commonSecurityHeaders: &commonSecurityHeaders
+    method.response.header.Cache-Control: "'no-store'"
+    method.response.header.Strict-Transport-Security: "'max-age=31536000; includeSubDomains; preload'"
+    method.response.header.X-Content-Type-Options: "'nosniff'"
+    method.response.header.X-Frame-Options: "'DENY'"
+  htmlSecurityHeaders: &htmlSecurityHeaders
+    # The below content security policy allows any content hosted on this API, and the GOV.UK-provided inline script
+    # that hashes to the specified value.
+    # Hash of additional styles on /error page
+    method.response.header.Content-Security-Policy: "'default-src 'self'; script-src 'self' 'sha256-M80RLcRm48jnTp96aiGlbLYaHFV91XCjJpgYgPmCrZk='; connect-src 'self'; frame-ancestors 'none'; form-action 'none''"
+    method.response.header.Referrer-Policy: "'no-referrer'"
+
+# Reusable OpenAPI components. See https://swagger.io/docs/specification/components/ for more detail.
+components:
+  schemas:
+    JwksResponse:
+      type: object
+      properties:
+        keys:
+          type: array
+          maxItems: 10
+          items:
+            anyOf:
+              - $ref: "#/components/schemas/EllipticCurveJwk"
+              - $ref: "#/components/schemas/RsaJwk"
+    EllipticCurveJwk:
+      type: object
+      properties:
+        kid:
+          type: string
+        kty:
+          type: string
+        alg:
+          type: string
+        use:
+          type: string
+        crv:
+          type: string
+        x:
+          type: string
+        y:
+          type: string
+    RsaJwk:
+      type: object
+      properties:
+        kid:
+          type: string
+        kty:
+          type: string
+        alg:
+          type: string
+        use:
+          type: string
+        e:
+          type: string
+        n:
+          type: string
+  responses:
+    OK:
+      description: "OK"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+    HTML:
+      description: "OK"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+        Content-Security-Policy:
+          schema:
+            type: "string"
+        Referrer-Policy:
+          schema:
+            type: "string"
+    Redirect:
+      description: "Redirect"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+        Location:
+          schema:
+            type: "string"
+            format: uri
+    Unauthorized:
+      description: "Unauthorized"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+      content:
+        text/plain:
+          schema:
+            type: "string"
+            enum:
+              - "Unauthorized"
+    Forbidden:
+      description: "Forbidden"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+      content:
+        text/plain:
+          schema:
+            type: "string"
+            enum:
+              - "Forbidden"
+    InternalServerError:
+      description: "Internal Server Error"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+    NotImplemented:
+      description: "Not Implemented"
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+      content:
+        text/plain:
+          schema:
+            type: "string"
+            enum:
+              - "Not Implemented"
+    TemporarilyUnavailable:
+      description: Temporarily unavailable
+      headers:
+        Cache-Control:
+          schema:
+            type: "string"
+        Content-Type:
+          schema:
+            type: "string"
+        Strict-Transport-Security:
+          schema:
+            type: "string"
+        X-Content-Type-Options:
+          schema:
+            type: "string"
+        X-Frame-Options:
+          schema:
+            type: "string"
+      content:
+        application/json:
+          examples:
+            errorTemporarilyUnavailable:
+              description: |
+                The token endpoint is temporarily unavailable.
+              value:
+                {
+                  "error": "temporarily_unavailable",
+                  "error_description": "Temporarily Unavailable"
+                }
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                enum:
+                  - temporarily_unavailable
+                description: |
+                  The error code.
+              error_description:
+                type: string
+                description: |
+                  A description of the error.
+            required:
+              - error
+              - error_description
+
+paths:
+  /error:
+    get:
+      operationId: getAuthError
+      summary: Display error page when authorization fails
+      description: This endpoint is used to display an error page when the client ID or redirect URI is wrong in the authorize request
+      parameters:
+        - name: lng
+          in: query
+          example: en
+          required: false
+          description: The language preference of the user.
+          schema:
+            type: string
+            enum:
+              - en
+              - cy
+      tags:
+        - Static
+      responses:
+        "200":
+          $ref: "#/components/responses/HTML"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        credentials:
+          Fn::GetAtt: ["AuthorizeErrorBucketRole", "Arn"]
+        requestTemplates:
+          application/json: >
+            #set($supportedLanguages = ["en","cy"])
+            #set($lng = $input.params('lng'))
+            #if($supportedLanguages.contains($lng))
+              #set($context.requestOverride.path.lng = $lng)
+            #else
+              #set($context.requestOverride.path.lng = "en")
+            #end
+        requestParameters:
+          integration.request.path.lng: method.request.path.lng
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:s3:path/${AuthorizeErrorBucket}/{lng}/authorize-error.html"
+        responses:
+          "200":
+            statusCode: "200"
+            description: OK
+            responseParameters:
+              method.response.header.Content-Type: "'text/html'"
+              <<: *commonSecurityHeaders
+              <<: *htmlSecurityHeaders
+          default:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Content-Type: "'text/plain'"
+              <<: *commonSecurityHeaders
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "aws"
+  /assets/{fileName+}:
+    get:
+      operationId: getAuthErrorAssets
+      summary: Retrieve additional assets required for the authorize error page
+      description: This endpoint uses a path parameter to retrieve any static assets from S3 needed to display the authorize error page.
+      tags:
+        - Static
+      responses:
+        "200":
+          $ref: "#/components/responses/OK"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        credentials:
+          Fn::GetAtt: ["AuthorizeErrorBucketRole", "Arn"]
+        requestParameters:
+          integration.request.path.fileName: method.request.path.fileName
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:s3:path/${AuthorizeErrorBucket}/assets/{fileName}"
+        responses:
+          "200":
+            statusCode: "200"
+            description: OK
+            responseParameters:
+              # NOTE: S3 will set the Content-Type header to the appropriate mime type for the file being returned
+              <<: *commonSecurityHeaders
+          default:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Content-Type: "'text/plain'"
+              <<: *commonSecurityHeaders
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "aws"
+  /.well-known/jwks.json:
+    get:
+      operationId: getJwks
+      summary: Get STS JWKS
+      description: Retrieve JSON Web Key Set for verifying STS-issued JSON Web Tokens
+      tags:
+        - Static
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JwksResponse"
+              examples:
+                success:
+                  value:
+                    {
+                      "keys":
+                        [
+                          {
+                            "kty": "EC",
+                            "kid": "C9De3xMDDyG7Nce4kGm09pCamzTMmYefPSmWw4FhnUg",
+                            "use": "sig",
+                            "alg": "ES256",
+                            "crv": "P-256",
+                            "x": "HnS0nYguUiD5l0sM7OQCu3nlFxAcuIK8KzReSlrQvLA",
+                            "y": "oqZL2uXpzHCD73mAs1pcrxTOsilhfzKAIDnoAYVA7jw"
+                          },
+                          {
+                            "kty": "RSA",
+                            "kid": "f3358c64-9204-4c15-9146-77abca37a91a",
+                            "use": "enc",
+                            "alg": "RSA-OAEP-256",
+                            "e": "AQAB",
+                            "n": "tPswN4QP9tRyXb-SyxHt2RB1lLtHezWEnrMNkXohYMVmlhM_v79PZbuv8Jo5sojoRur_7f4ObiTDGkGKlVBlaAt15WAE669MI3q8T0ISXl5B68AaQmspsE_uaMml4Uta3TuHFkHB94U1tzwuRjINtqkU_G7YK2LVbBaXExYz_7RrE6UObyCC7E6DHVhVXcxACxBjCwlHssGlvEUfqtRM4Sk_IXzaO8cAzh8JT_O2Xnil5i20Sn50MmUyuRr-7YKSgU3xAPFb6mnLq4NIO-H8qYRsx6tc2PaXpZCCOqgtPfBWNyUOjHRlNwRa_9GWczpaM_sD30TaF1E8y_wBsgVgdw"
+                          }
+                        ]
+                    }
+          headers:
+            Cache-Control:
+              schema:
+                type: "string"
+            Content-Type:
+              schema:
+                type: "string"
+            Strict-Transport-Security:
+              schema:
+                type: "string"
+            X-Content-Type-Options:
+              schema:
+                type: "string"
+            X-Frame-Options:
+              schema:
+                type: "string"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        credentials:
+          Fn::GetAtt: ["StsApiJwksBucketRole", "Arn"]
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:s3:path/${JsonWebKeysBucket}/.well-known/jwks.json"
+        responses:
+          "200":
+            statusCode: "200"
+            description: OK
+            responseParameters:
+              method.response.header.Content-Type: "'application/json'"
+              <<: *commonSecurityHeaders
+              method.response.header.Cache-Control: "'max-age=3600'"
+            contentHandling: "CONVERT_TO_TEXT"
+          default:
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Content-Type: "'text/plain'"
+              <<: *commonSecurityHeaders
+        passthroughBehavior: "when_no_match"
+        httpMethod: "GET"
+        type: "aws"
+  /authorize:
+    get:
+      operationId: getAuthorize
+      summary: Verify the incoming authorize request and initiate an Auth Session
+      description: This endpoint is used to verify the authorize request against a list of registered clients and start the authorization session
+      parameters:
+        - name: client_id
+          in: query
+          example: xxx
+          required: true
+          description: ID of a client that has been registered with STS (clients S3 bucket)
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          example: https://xxx
+          required: true
+          description: Redirect URI of a client that has been registered with STS (clients S3 bucket)
+          schema:
+            type: string
+            format: uri
+        - name: response_type
+          in: query
+          required: true
+          description: Must be set to `code`.
+          schema:
+            type: string
+            enum:
+              - code
+        - name: scope
+          in: query
+          required: false
+          description: Space-delimited list of requested scope permissions. Currently must equal 'openid' when included in the request.
+          schema:
+            type: string
+            enum:
+              - openid
+        - name: state
+          in: query
+          required: true
+          description: Returned to the client in the authentication response to match this to their request.
+          schema:
+            type: string
+        - name: nonce
+          in: query
+          required: true
+          description: Unique value generated by client. Will be returned in access token allowing client to verify its integrity.
+          schema:
+            type: string
+        - name: code_challenge
+          in: query
+          required: true
+          description: A base64 encoded hash of the `code_verifier` (a high-entropy cryptographic random string generated by the client, which will be used later to verify that they are the same client that sent this challenge).
+          schema:
+            type: string
+        - name: code_challenge_method
+          in: query
+          required: true
+          description: The transformation method applied to the `code_verifier` to generate the `code_challenge`.
+          schema:
+            type: string
+            enum:
+              - S256
+        - name: govuk_signin_session_id
+          in: query
+          schema:
+            type: string
+          description: |
+            A valid STS persistent session identifier obtained from a previous login. Providing this query parameter indicates
+            a request to re-authenticate this user.
+        - name: ui_locales
+          in: query
+          required: false
+          description: Specifies preferred language for login pages. Must be 'en' (English) or 'cy' (Welsh)
+          schema:
+            type: string
+            enum:
+              - en
+              - cy
+      responses:
+        "302":
+          $ref: "#/components/responses/Redirect"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AuthorizeFunction}:live/invocations"
+        passthroughBehavior: "when_no_match"
+        type: "aws_proxy"
+  /redirect:
+    get:
+      operationId: getRedirect
+      summary: Handle redirect from Auth
+      description: This endpoint is used to handle redirection from /authorize on Auth and the issuing of an STS authorization code.
+      parameters:
+        - in: query
+          name: state
+          example: 11111111-1111-1111-1111-111111111111
+          required: true
+          description: SessionId that is created on the initial request to STS /authorize
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: code
+          example: abcdefghij123
+          required: false
+          description: Authorization code generated by Auth
+          schema:
+            type: string
+        - in: query
+          name: error
+          example: invalid_request
+          required: false
+          description: Error response string as defined by the Oauth spec (https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1)
+          schema:
+            type: string
+            enum:
+              - invalid_request
+              - unauthorized_client
+              - access_denied
+              - temporarily_unavailable
+              - unsupported_response_type
+              - invalid_scope
+              - server_error
+        - in: query
+          name: error_description
+          example: Unsupported%20response
+          required: false
+          description: String used to further identify the error that has been occurred.
+          schema:
+            type: string
+      responses:
+        "302":
+          $ref: "#/components/responses/Redirect"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RedirectFunction}:live/invocations"
+        passthroughBehavior: "when_no_match"
+        type: "aws_proxy"
+  /token:
+    post:
+      operationId: postToken
+      summary: Obtain tokens of different types based on the passed grant type
+      description: |
+        This endpoint allows clients to:
+          * Exchange a valid STS-issued authorization code for an access token (grant_type = authorization_code)
+          * Exchange a valid STS-issued access token for a service token (grant_type = urn:ietf:params:oauth:grant-type:token-exchange)
+          * Exchange a valid pre-authorized code issued by a known credential issuer for an access token that can be
+            used to authenticate a request for credential issuance (grant_type = urn:ietf:params:oauth:grant-type:pre-authorized_code)
+          * Exchange a valid STS-issued refresh token for a new access token and refresh token (grant_type = refresh_token)
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            pattern: '^Bearer\s[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$'
+          description: |
+            Required only when `grant_type` in request body is `urn:ietf:params:oauth:grant-type:pre-authorized_code`
+            Value must equal `Bearer <token>` where `<token>` is a valid STS-issued service token (JWE)
+        - in: header
+          name: OAuth-Client-Attestation
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$'
+          description: |
+            Required for clients authenticating using the `attest_jwt_client_auth` authentication method. Client 
+            authentication is only required and checked for access token requests (`grant_type` = `authorization_code`).
+            Must be a valid client attestation JWT as per the [specification](https://datatracker.ietf.org/doc/draft-ietf-oauth-attestation-based-client-auth/)
+        - in: header
+          name: OAuth-Client-Attestation-PoP
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$'
+          description: |
+            Required for clients authenticating using the `attest_jwt_client_auth` authentication method. Client 
+            authentication is only required and checked for access token requests (`grant_type` = `authorization_code`).
+            Must be a valid proof of possession JWT verifiable using the JWK embedded in the client attestation, as per 
+            the [specification](https://datatracker.ietf.org/doc/draft-ietf-oauth-attestation-based-client-auth/)
+        - in: header
+          name: DPoP
+          schema:
+            type: string
+            pattern: '^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$'
+          description: |
+            Optional parameter for clients who are authorised to receive refresh tokens to get a refresh token that
+            is bound to their public key. This parameter is required in order to exchange a refresh token.
+            Must be a valid demonstrating proof of possession JWT verifiable using the JWK embedded in the client
+            attestation, as per the [specification](https://datatracker.ietf.org/doc/html/rfc9449)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - authorization_code
+                    - urn:ietf:params:oauth:grant-type:token-exchange
+                    - urn:ietf:params:oauth:grant-type:pre-authorized_code
+                    - refresh_token
+                  description: |
+                    Set to `authorization_code` to exchange an authorization code for an access token.
+                    Set to `urn:ietf:params:oauth:grant-type:token-exchange` to exchange an access token for a service
+                    token.
+                    Set to `urn:ietf:params:oauth:grant-type:pre-authorized_code` to exchange a pre-authorized code
+                    for an access token usable with a credential issuer.
+                    Set to `refresh_token` to exchange a refresh token for a new access token and refresh token.
+                code:
+                  type: string
+                  example: SplxlOBeZQQYbYS6WxSbIA
+                  description: |
+                    Required if the `grant_type` is `authorization_code`.
+                    The code you received during the `/authorize` flow's redirect.
+                redirect_uri:
+                  type: string
+                  format: uri
+                  example: https://example.com/callback
+                  description: |
+                    Required if the `grant_type` is `authorization_code`.
+                    You'll have specified your `redirect_uri` when you made the initial authorisation request.
+                    This value must be URL encoded.
+                scope:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is specified as `urn:ietf:params:oauth:grant-type:token-exchange`.
+                    A space-delimited list of requested scope permissions used when refreshing the `access_token`.
+                subject_token:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`.
+                    Pass in the `access_token` received from STS here to exchange for service tokens.
+                subject_token_type:
+                  type: string
+                  enum:
+                    - urn:ietf:params:oauth:token-type:access_token
+                  description: |
+                    Required if the `grant_type` is `urn:ietf:params:oauth:grant-type:token-exchange`.
+                    This is required to be `urn:ietf:params:oauth:token-type:access_token`.
+                pre-authorized_code:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is `urn:ietf:params:oauth:grant-type:pre-authorized_code`.
+                    Pre-authorized code received from credential issuer (QR code scanned by app).
+                client_id:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is `urn:ietf:params:oauth:grant-type:pre-authorized_code`.
+                    The ID of a valid STS client authorized to use this grant type.
+                refresh_token:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is `refresh_token`.
+                    Pass in the `refresh_token` received from STS here to exchange for a new access token and refresh token.
+                code_verifier:
+                  type: string
+                  description: |
+                    Required if the `grant_type` is `authorization_code`.
+              required:
+                - grant_type
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              examples:
+                authorization_code:
+                  value:
+                    {
+                      "access_token": "access_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                authorization_code_openid:
+                  value:
+                    {
+                      "access_token": "access_token",
+                      "id_token": "id_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                authorization_code_refresh:
+                  value:
+                    {
+                      "access_token": "access_token",
+                      "refresh_token": "refresh_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                authorization_code_openid_refresh:
+                  value:
+                    {
+                      "access_token": "access_token",
+                      "id_token": "id_token",
+                      "refresh_token": "refresh_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                token_exchange:
+                  value:
+                    {
+                      "access_token": "header.key.iv.ciphertext.tag",
+                      "issued_token_type": "urn:ietf:params:oauth:token-type:access_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                pre_authorized_code:
+                  value:
+                    {
+                      "access_token": "credential_issuer_access_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                pre_authorized_code_refresh:
+                  value:
+                    {
+                      "access_token": "credential_issuer_access_token",
+                      "refresh_token": "refresh_token",
+                      "refresh_token_timeout": 180,
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                login_refresh_token:
+                  value:
+                    {
+                      "access_token": "refreshed_access_token",
+                      "refresh_token": "new_refresh_token",
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+                credential_refresh_token:
+                  value:
+                    {
+                      "access_token": "refreshed_access_token",
+                      "refresh_token": "new_refresh_token",
+                      "refresh_token_timeout": 180,
+                      "token_type": "Bearer",
+                      "expires_in": 180
+                    }
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: |
+                      An access token which grants the caller access to an API. The token depends on the grant_type provided in the request:
+                      * If the `grant_type` was `authorization_code` then the token will be an access token that can be exchanged for an STS issued service token.
+                      * If the `grant_type` was `urn:ietf:params:oauth:grant-type:token-exchange` then the token will be a service token that grants access to a protected resource that has been registered with STS.
+                      * If the `grant_type` was `urn:ietf:params:oauth:grant-type:pre-authorized_code` then the token will be an access token that can be exchanged with a credential issuer to issue credentials to the GOV UK Wallet.
+                      * If the `grant_type` was `refresh_token` then the token will be a new access token that can be exchanged for an STS issued service token.
+                  id_token:
+                    type: string
+                    description: |
+                      The ID token value contains authentication information pertaining to the logged in user, as an STS signed JWT. 
+                      This is only returned if the client requested the `openid` scope during authorization.
+                  refresh_token:
+                    type: string
+                    description: |
+                      A token which may be issued when an STS access token or credential issuer access token is issued. This token can be exchanged to receive a new access token of the type it was issued with.
+                      This field is optional, and may be returned only if the `grant_type` of the request was `authorization_code`, `urn:ietf:params:oauth:grant-type:pre-authorized_code` or `refresh_token` and if a `DPoP` header was provided in the request.
+                  issued_token_type:
+                    type: string
+                    enum:
+                      - urn:ietf:params:oauth:token-type:access_token
+                    description: |
+                      The URI of the [type](https://datatracker.ietf.org/doc/html/rfc8693#name-token-type-identifiers) of the issued token.
+                      This is only returned if the client provided `urn:ietf:params:oauth:grant-type:token-exchange` as the `grant_type`.
+                  token_type:
+                    type: string
+                    enum:
+                      - bearer
+                    description: |
+                      The token type value. STS only supports the [bearer token](https://oauth.net/2/bearer-tokens/).
+                  expires_in:
+                    type: integer
+                    description: |
+                      The length of time the token is valid for. This is displayed in seconds.
+                  refresh_token_timeout:
+                    type: integer
+                    description: |
+                      The length of time the refresh token is valid for. This is displayed in seconds.
+                required:
+                  - access_token
+                  - token_type
+                  - expires_in
+          headers:
+            Cache-Control:
+              schema:
+                type: "string"
+            Content-Type:
+              schema:
+                type: "string"
+            Strict-Transport-Security:
+              schema:
+                type: "string"
+            X-Content-Type-Options:
+              schema:
+                type: "string"
+            X-Frame-Options:
+              schema:
+                type: "string"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              examples:
+                errorInvalidRequest:
+                  description: |
+                    The request is missing a parameter so the server cannot proceed with the request. This error may also be returned if the request includes an unsupported parameter or repeats a parameter.
+                    Review your parameters and check they are supported and not repeated.
+                  value:
+                    {
+                      "error": "invalid_request",
+                      "error_description": "Invalid request"
+                    }
+                errorInvalidTarget:
+                  description: |
+                    The `scope` requested is invalid.
+                  value:
+                    {
+                      "error": "invalid_target",
+                      "error_description": "Scope requested is invalid"
+                    }
+                errorUnsupportedGrantType:
+                  description: |
+                    The grant type is not supported by the server.
+                  value:
+                    {
+                      "error": "unsupported_grant_type",
+                      "error_description": "Unsupported grant type"
+                    }
+                errorInvalidGrant:
+                  description: |
+                    The authorization code is invalid (when using `authorization_code` as the `grant_type`) or the pre-authorized code is invalid (when using `urn:ietf:params:oauth:grant-type:pre-authorized_code` as the `grant_type`).
+                  value:
+                    {
+                      "error": "invalid_grant",
+                      "error_description": "Authorization code is invalid",
+                      "reason": "pre-authorized_code_already_used"
+                    }
+                errorInvalidGrantExpiredPreAuthorizedCode:
+                  description: |
+                    The pre-authorized code is expired.
+                  value:
+                    {
+                      "error": "invalid_grant",
+                      "error_description": "Pre-authorized code is invalid",
+                      "reason": "pre-authorized_code_expired"
+                    }
+                errorInvalidClient:
+                  description: |
+                    The client failed to authenticate, is not a known client of STS, is not authorized to issue credentials to wallet, or did not provide appropriate authentication for the provided grant type
+                  value:
+                    {
+                      "error": "invalid_client",
+                      "error_description": "Failed to authenticate client"
+                    }
+                errorUnauthorizedClient:
+                  description: |
+                    The client corresponding to the `client_id` in the request is not authorized to use this grant type.
+                  value:
+                    {
+                      "error": "unauthorized_client",
+                      "error_description": "unsupported response_type in query params"
+                    }
+                errorInvalidDpopProof:
+                  description: |
+                    The `DPoP` field in request headers is in invalid format or the `DPoP` token provided in the header is invalid.
+                  value:
+                    {
+                      "error": "invalid_dpop_proof",
+                      "error_description": "Invalid htm in DPoP JWT"
+                    }
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                      - invalid_request
+                      - invalid_target
+                      - unsupported_grant_type
+                      - invalid_grant
+                      - invalid_client
+                      - unauthorized_client
+                      - invalid_dpop_proof
+                    description: |
+                      The error code.
+                  error_description:
+                    type: string
+                    description: |
+                      A description of the error.
+                  reason:
+                    type: string
+                    enum:
+                      - "pre-authorized_code_already_used"
+                      - "pre-authorized_code_expired"
+                      - "pre-authorized_code_invalid"
+                    description: |
+                      A more granular error reason for the pre-authorized code failure.
+                      Only present when the pre-authorized code is invalid (when using `urn:ietf:params:oauth:grant-type:pre-authorized_code` as the `grant_type`).
+                required:
+                  - error
+                  - error_description
+          headers:
+            Cache-Control:
+              schema:
+                type: "string"
+            Content-Type:
+              schema:
+                type: "string"
+            Strict-Transport-Security:
+              schema:
+                type: "string"
+            X-Content-Type-Options:
+              schema:
+                type: "string"
+            X-Frame-Options:
+              schema:
+                type: "string"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/TemporarilyUnavailable"
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri:
+          Fn::Sub: "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${TokenFunction}:live/invocations"
+        passthroughBehavior: "when_no_match"
+        type: "aws_proxy"
