@@ -509,7 +509,7 @@ class WelcomeScreenViewModelWithRefreshTest {
             )
 
             verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuthError)
+            verify(mockNavigator).navigate(SignOutRoutes.AppResetError)
             verifyNoInteractions(mockSavePersistentId)
             assertThat("logger has log", logger.contains("access_denied"))
         }
