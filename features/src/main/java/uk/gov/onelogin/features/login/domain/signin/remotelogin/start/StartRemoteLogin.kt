@@ -1,11 +1,12 @@
-package uk.gov.onelogin.features.login.domain.signin.remotelogin
+package uk.gov.onelogin.features.login.domain.signin.remotelogin.start
 
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 
-fun interface HandleRemoteLogin {
+fun interface StartRemoteLogin {
     suspend fun login(
         launcher: ActivityResultLauncher<Intent>,
+        onSuccess: () -> Unit,
         onFailure: (Throwable) -> Unit,
     )
 }

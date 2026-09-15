@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.login.domain.signin.loginredirect
+package uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import javax.inject.Inject
 
-class HandleLoginRedirectImpl
+class FinaliseRemoteLoginImpl
     @Inject
     constructor(
         @param:ApplicationContext
@@ -22,7 +22,7 @@ class HandleLoginRedirectImpl
         private val appIntegrity: AppIntegrity,
         private val loginSession: LoginSession,
         private val logger: Logger,
-    ) : HandleLoginRedirect {
+    ) : FinaliseRemoteLogin {
         override suspend fun handle(
             intent: Intent,
             onFailure: (Throwable?) -> Unit,
