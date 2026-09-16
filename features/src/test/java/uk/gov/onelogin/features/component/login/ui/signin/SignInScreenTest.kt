@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.component.login.welcome
+package uk.gov.onelogin.features.component.login.ui.signin
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
@@ -10,7 +10,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -27,14 +26,14 @@ import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.LoginViewModel
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
-import uk.gov.onelogin.features.login.ui.signin.welcome.SignInAnalyticsViewModel
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomePreview
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreen
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInAnalyticsViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInPreview
+import uk.gov.onelogin.features.login.ui.signin.SignInScreen
+import uk.gov.onelogin.features.login.ui.signin.SignInScreenViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 
 @RunWith(AndroidJUnit4::class)
-class WelcomeScreenTest : FragmentActivityTestCase() {
+class SignInScreenTest : FragmentActivityTestCase() {
     private lateinit var navigator: Navigator
     private val remoteLogin = TestRemoteLogin()
     private lateinit var onlineChecker: OnlineChecker
@@ -42,7 +41,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private val logger = MemorisedLogger()
     private lateinit var signOutUseCase: SignOutUseCase
     private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
-    private lateinit var viewModel: WelcomeScreenViewModel
+    private lateinit var viewModel: SignInScreenViewModel
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var analytics: AnalyticsLogger
     private lateinit var analyticsViewModel: SignInAnalyticsViewModel
@@ -62,7 +61,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
         signOutUseCase = mock()
         localAuthPrefResetUseCase = mock()
         getPersistentId = mock()
-        viewModel = WelcomeScreenViewModel(navigator)
+        viewModel = SignInScreenViewModel(navigator)
         loginViewModel =
             LoginViewModel(
                 navigator,
@@ -81,7 +80,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     @Test
     fun verifyComponents() {
         composeTestRule.setContent {
-            WelcomeScreen(
+            SignInScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
@@ -104,7 +103,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
             whenever(getPersistentId.invoke()).thenReturn("test")
 
             composeTestRule.setContent {
-                WelcomeScreen(
+                SignInScreen(
                     analyticsViewModel = analyticsViewModel,
                     viewModel = viewModel,
                     loginViewModel = loginViewModel,
@@ -129,9 +128,9 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     @Test
     fun screenViewAnalyticsLogOnResume() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        val event = SignInAnalyticsViewModel.Companion.makeWelcomeViewEvent(context)
+        val event = SignInAnalyticsViewModel.makeWelcomeViewEvent(context)
         composeTestRule.setContent {
-            WelcomeScreen(
+            SignInScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
@@ -145,10 +144,10 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     @Test
     fun signInAnalyticsLogOnSignInButton() {
         val context: Context = ApplicationProvider.getApplicationContext()
-        val event = SignInAnalyticsViewModel.Companion.makeSignInEvent(context)
+        val event = SignInAnalyticsViewModel.makeSignInEvent(context)
         whenever(onlineChecker.isOnline()).thenReturn(true)
         composeTestRule.setContent {
-            WelcomeScreen(
+            SignInScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
@@ -163,7 +162,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     fun testBackButton() {
         composeTestRule.setContent {
             whenever(onlineChecker.isOnline()).thenReturn(true)
-            WelcomeScreen(
+            SignInScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
@@ -186,7 +185,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     private fun givenWeAreOffline() {
         whenever(onlineChecker.isOnline()).thenReturn(false)
         composeTestRule.setContent {
-            WelcomeScreen(
+            SignInScreen(
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
@@ -202,7 +201,7 @@ class WelcomeScreenTest : FragmentActivityTestCase() {
     @Test
     fun previewTest() {
         composeTestRule.setContent {
-            WelcomePreview()
+            SignInPreview()
         }
     }
 }
