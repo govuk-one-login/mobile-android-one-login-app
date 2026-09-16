@@ -53,9 +53,9 @@
     <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, byddwch yn gallu ychwanegu eich dogfennau eto ac ailosod eich dewisiadau.</string>
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
-    <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
-    <string name="app_youveBeenSignedOutBody1">Mewngofnodwch gyda\’ch manylion GOV.UK One Login i barhau.</string>
-    <string name="app_youveBeenSignedOutBody2">Mae hyn er mwyn cadw\’ch gwybodaeth yn ddiogel.</string>
+    <string name="app_reauthLandingTitle">Mae angen i chi fewngofnodi eto</string>
+    <string name="app_reauthLandingBody1">Mewngofnodwch gyda\’ch manylion GOV.UK One Login i barhau.</string>
+    <string name="app_reauthLandingBody2">Mae hyn er mwyn cadw\’ch gwybodaeth yn ddiogel.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
     <!-- Sign Out Confirmation -->

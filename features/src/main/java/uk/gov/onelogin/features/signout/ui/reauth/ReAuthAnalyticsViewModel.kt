@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features.signout.ui.info
+package uk.gov.onelogin.features.signout.ui.reauth
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -17,21 +17,21 @@ import uk.gov.logging.api.v3dot1.model.ViewEvent
 import javax.inject.Inject
 
 @HiltViewModel
-class SignedOutInfoAnalyticsViewModel
+class ReAuthAnalyticsViewModel
     @Inject
     constructor(
         @ApplicationContext context: Context,
         private val analyticsLogger: AnalyticsLogger,
     ) : ViewModel() {
         private val reAuthEvent = makeReAuthEvent(context)
-        private val signedOutInfoViewEvent = makeSignedOutInfoViewEvent(context)
+        private val reAuthLandingScreenViewEvent = makeReAuthViewEvent(context)
 
         fun trackReAuth() {
             analyticsLogger.logEventV3Dot1(reAuthEvent)
         }
 
-        fun trackSignOutInfoView() {
-            analyticsLogger.logEventV3Dot1(signedOutInfoViewEvent)
+        fun trackReAuthLandingScreenView() {
+            analyticsLogger.logEventV3Dot1(reAuthLandingScreenViewEvent)
         }
 
         companion object {
@@ -45,10 +45,10 @@ class SignedOutInfoAnalyticsViewModel
                     )
                 }
 
-            fun makeSignedOutInfoViewEvent(context: Context) =
+            fun makeReAuthViewEvent(context: Context) =
                 with(context) {
                     ViewEvent.Screen(
-                        name = getEnglishString(R.string.app_youveBeenSignedOutTitle),
+                        name = getEnglishString(R.string.app_reauthLandingTitle),
                         id = getEnglishString(R.string.signed_out_info_page_id),
                         params = requiredParams,
                     )
