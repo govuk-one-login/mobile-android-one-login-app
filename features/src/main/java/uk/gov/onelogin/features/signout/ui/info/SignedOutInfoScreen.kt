@@ -1,6 +1,5 @@
 package uk.gov.onelogin.features.signout.ui.info
 
-import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,12 +28,12 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
-import uk.gov.onelogin.features.login.ui.signin.welcome.WelcomeScreenViewModel
+import uk.gov.onelogin.features.login.LoginViewModel
 
 @Composable
 fun SignedOutInfoScreen(
-    loginViewModel: WelcomeScreenViewModel = hiltViewModel(),
-    signOutViewModel: SignedOutInfoViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    viewModel: SignedOutInfoViewModel = hiltViewModel(),
     analyticsViewModel: SignedOutInfoAnalyticsViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
     shouldTryAgain: () -> Boolean = { false },
@@ -45,25 +44,20 @@ fun SignedOutInfoScreen(
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                result.data?.let { intent ->
-                    loginViewModel.handleActivityResult(
-                        intent = intent,
-                        isReAuth = signOutViewModel.shouldReAuth(),
-                        activity = activity,
-                    )
-                }
-            }
+            loginViewModel.handleLoginActivityResult(
+                result = result,
+                isReAuth = viewModel.shouldReAuth(),
+                activity = activity,
+            )
         }
 
     LaunchedEffect(key1 = Unit) {
-        signOutViewModel.resetTokens()
+        viewModel.resetTokens()
 
         if (!shouldTryAgain()) return@LaunchedEffect
 
-        handleLogin(
+        startLogin(
             loginViewModel,
-            signOutViewModel,
             launcher,
         )
     }
@@ -74,9 +68,8 @@ fun SignedOutInfoScreen(
         } else {
             SignedOutInfoBody {
                 analyticsViewModel.trackReAuth()
-                handleLogin(
+                startLogin(
                     loginViewModel,
-                    signOutViewModel,
                     launcher,
                 )
             }
@@ -92,18 +85,11 @@ fun SignedOutInfoScreen(
     }
 }
 
-private fun handleLogin(
-    loginViewModel: WelcomeScreenViewModel,
-    signOutViewModel: SignedOutInfoViewModel,
+private fun startLogin(
+    loginViewModel: LoginViewModel,
     launcher: ActivityResultLauncher<Intent>,
 ) {
-    if (loginViewModel.onlineChecker.isOnline()) {
-        signOutViewModel.checkPersistentId {
-            loginViewModel.onPrimary(launcher)
-        }
-    } else {
-        loginViewModel.navigateToOfflineError()
-    }
+    loginViewModel.startLoginActivity(launcher, true)
 }
 
 @Composable
