@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise
 import android.content.Context
 import android.content.Intent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CompletableDeferred
 import uk.gov.android.authentication.integrity.AppIntegrityParameters
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.authentication.login.LoginSession
@@ -23,120 +24,90 @@ class FinaliseRemoteLoginImpl
         private val loginSession: LoginSession,
         private val logger: Logger,
     ) : FinaliseRemoteLogin {
-        override suspend fun handle(
-            intent: Intent,
-            onFailure: (Throwable?) -> Unit,
-            onSuccess: (TokenResponse) -> Unit,
-        ) {
+        override suspend fun handle(intent: Intent): FinaliseRemoteLogin.Result {
             val savedAttestation = appIntegrity.retrieveSavedClientAttestation()
             // Attempt to get a new attestation if the saved one is not available due to device or open secure store
             // Very unlikely to occur
-            if (savedAttestation.isNullOrEmpty()) {
-                handleGetClientAttestation(
-                    onSuccess = { attestation ->
-                        handleCreatePoP(
-                            attestation = attestation,
-                            onSuccess = { jwt ->
-                                handleLoginFinalise(intent, attestation, jwt, onSuccess, onFailure)
-                            },
-                            onFailure = onFailure,
-                        )
-                    },
-                    onFailure = onFailure,
-                )
-                // Attestation retrieved successfully, directly create PoP
+            val attestation = if (savedAttestation.isNullOrEmpty()) {
+                getClientAttestation().getOrElse {
+                    return FinaliseRemoteLogin.Result.Failure(it)
+                }
             } else {
-                handleCreatePoP(
-                    attestation = savedAttestation,
-                    onSuccess = { jwt ->
-                        handleLoginFinalise(intent, savedAttestation, jwt, onSuccess, onFailure)
-                    },
-                    onFailure = onFailure,
-                )
+                savedAttestation
             }
+
+            val popJwt = createPop(attestation = attestation).getOrElse {
+                return FinaliseRemoteLogin.Result.Failure(it)
+            }
+
+            val tokens = finaliseLogin(intent, attestation, popJwt).getOrElse {
+                return FinaliseRemoteLogin.Result.Failure(it)
+            }
+
+            return FinaliseRemoteLogin.Result.Success(tokens)
         }
 
-        private fun handleLoginFinalise(
+        private suspend fun finaliseLogin(
             intent: Intent,
             attestation: String,
             jwt: String,
-            onSuccess: (TokenResponse) -> Unit,
-            onFailure: (Throwable?) -> Unit,
-        ) {
+        ): Result<TokenResponse> {
             val tokenEndpoint =
                 context.getString(
                     R.string.stsUrl,
                     context.getString(R.string.tokenExchangeEndpoint),
                 )
 
-            loginSession.finalise(
+            val result = loginSession.finaliseInternal(
                 intent = intent,
                 appIntegrity = AppIntegrityParameters(attestation, jwt),
                 httpServiceDomain = tokenEndpoint,
-                { tokens ->
-                    onSuccess(tokens)
-                },
-                { authError ->
-                    logger.error(
-                        authError.javaClass.simpleName,
-                        authError.message ?: NO_MESSAGE,
-                        authError,
-                    )
-                    onFailure(authError)
-                },
             )
+
+            result.onFailure { authError ->
+                logger.error(
+                    authError.javaClass.simpleName,
+                    authError.message ?: NO_MESSAGE,
+                    authError,
+                )
+            }
+
+            return result
         }
 
-        private suspend fun handleGetClientAttestation(
-            onSuccess: (String) -> Unit,
-            onFailure: (Throwable?) -> Unit,
-        ) {
+        private suspend fun getClientAttestation(): Result<String> =
             when (val attestation = appIntegrity.getClientAttestation()) {
                 is AttestationResult.Failure ->
-                    onFailure(attestation.error)
+                    Result.failure(attestation.error)
 
                 is AttestationResult.NotRequired ->
-                    onSuccess(
+                    Result.success(
                         attestation.savedAttestation ?: "",
                     )
 
                 is AttestationResult.Success ->
-                    onSuccess(
+                    Result.success(
                         attestation.clientAttestation,
                     )
             }
-        }
 
         @Suppress("TooGenericExceptionCaught")
-        private fun handleCreatePoP(
+        private fun createPop(
             attestation: String,
-            onSuccess: (popJwt: String) -> Unit,
-            onFailure: (Throwable?) -> Unit,
-        ) {
+        ): Result<String> {
             if (attestation.isNotEmpty()) {
                 when (val popResult = appIntegrity.getProofOfPossession()) {
                     is SignedPoP.Success ->
-                        try {
-                            onSuccess(popResult.popJwt)
-                        } catch (e: Throwable) {
-                            // handle both Error and Exception types.
-                            // Includes AuthenticationError
-                            onFailure(e)
-                        }
+                        return Result.success(popResult.popJwt)
 
                     is SignedPoP.Failure -> {
-                        logError(popResult.error, popResult.reason)
-                        onFailure(popResult.error)
+                        val exception = popResult.error ?: IllegalStateException(popResult.reason)
+                        logError(exception, popResult.reason)
+                        return Result.failure(exception)
                     }
                 }
             } else {
-                try {
-                    onSuccess("")
-                } catch (e: Throwable) {
-                    // handle both Error and Exception types.
-                    // Includes AuthenticationError
-                    onFailure(e)
-                }
+                return Result.success("")
             }
         }
 
@@ -151,6 +122,28 @@ class FinaliseRemoteLoginImpl
                 error,
             )
         }
+
+        /**
+         * Wrap [LoginSession.finalise] which is a callback based API
+         */
+        private suspend fun LoginSession.finaliseInternal(
+            intent: Intent,
+            appIntegrity: AppIntegrityParameters,
+            httpServiceDomain: String,
+        ): Result<TokenResponse> =
+            CompletableDeferred<Result<TokenResponse>>().also { deferred ->
+                finalise(
+                    intent = intent,
+                    appIntegrity = appIntegrity,
+                    httpServiceDomain = httpServiceDomain,
+                    onSuccess = {
+                        deferred.complete(Result.success(it))
+                    },
+                    onFailure = {
+                        deferred.complete(Result.failure(it))
+                    }
+                )
+            }.await()
 
         companion object {
             private const val NO_MESSAGE = "No message"
