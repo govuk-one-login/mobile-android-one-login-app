@@ -97,7 +97,7 @@ class SplashScreenViewModel
 
                 // Handle when something went wrong during local auth
                 RefreshExchangeResult.UnrecoverableError ->
-                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
+                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.AppResetError) }
 
                 RefreshExchangeResult.UserCancelledBioPrompt -> {
                     _loading.value = false
@@ -120,7 +120,7 @@ class SplashScreenViewModel
                         DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
 
                 LocalAuthStatus.UnrecoverableError ->
-                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.ReAuthError) }
+                    deleteData.value = DeleteData(true) { nextScreen(SignOutRoutes.AppResetError) }
 
                 is LocalAuthStatus.Success ->
                     nextScreen(MainNavRoutes.Start)

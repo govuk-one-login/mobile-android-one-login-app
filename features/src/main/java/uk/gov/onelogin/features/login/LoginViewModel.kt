@@ -61,7 +61,7 @@ class LoginViewModel
             if (isReAuth && getPersistentId().isNullOrEmpty()) {
                 try {
                     signOutUseCase.invoke()
-                    navigator.navigate(SignOutRoutes.ReAuthError, true)
+                    navigator.navigate(SignOutRoutes.AppResetError, true)
                 } catch (_: SignOutError) {
                     navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
                 }
@@ -138,7 +138,7 @@ class LoginViewModel
                 is RemoteLogin.Result.Failure -> {
                     when (loginResult.type) {
                         RemoteLogin.FailureType.AccessDenied ->
-                            navigate(SignOutRoutes.ReAuthError)
+                            navigate(SignOutRoutes.AppResetError)
 
                         RemoteLogin.FailureType.AppIntegrity ->
                             navigate(ErrorRoutes.AppIntegrity)

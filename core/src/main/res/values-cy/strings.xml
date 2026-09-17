@@ -119,7 +119,7 @@
     <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
     <string name="app_updateAppButton">Diweddaru Ap GOV.UK One Login</string>
 
-    <!--  Re-Auth Error  -->
+    <!--  App Reset Error  -->
     <string name="app_dataDeletedErrorTitle">Mae rhywbeth wedi mynd o\’i le</string>
     <string name="app_dataDeletedButton">Mewngofnodi</string>
     <string name="app_dataDeletedBody1">Ni allem gadarnhau eich manylion mewngofnodi.</string>
