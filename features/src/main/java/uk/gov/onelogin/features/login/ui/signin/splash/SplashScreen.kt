@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.login.ui.signin.splash
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
@@ -123,9 +124,11 @@ internal fun SplashBody(
     trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit,
-) = Surface {
+) {
     val displayUnlock = isUnlock && !loading
-    SubcomposeLayout { constraints ->
+    SubcomposeLayout(
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+    ) { constraints ->
         // Get full specs of device
         val fullHeight = constraints.maxHeight
         val fullWidth = constraints.maxWidth
