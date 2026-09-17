@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.login.ui.signin.splash
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
@@ -124,11 +123,9 @@ internal fun SplashBody(
     trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit,
-) {
+) = Surface {
     val displayUnlock = isUnlock && !loading
-    SubcomposeLayout(
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-    ) { constraints ->
+    SubcomposeLayout { constraints ->
         // Get full specs of device
         val fullHeight = constraints.maxHeight
         val fullWidth = constraints.maxWidth
@@ -320,6 +317,10 @@ internal fun SplashScreenPreview() {
 
 @SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
+@Preview(
+    name = "Phone - Robolectric",
+    device = "spec:width=320dp,height=470dp,orientation=portrait,dpi=420",
+)
 @Preview
 @Composable
 internal fun UnlockScreenPreview() {
