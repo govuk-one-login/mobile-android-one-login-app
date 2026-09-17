@@ -8,7 +8,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.DarkColorPaletteV2
 import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.LightColorPaletteV2
 import uk.gov.onelogin.core.FragmentActivityTestCase
 
 @RunWith(AndroidJUnit4::class)
@@ -16,7 +18,7 @@ class TitledLogoPageTest : FragmentActivityTestCase() {
     @Test
     fun titlePageDisplayedDay() {
         composeTestRule.setContent {
-            GdsTheme(darkTheme = false) {
+            GdsTheme(colorScheme = LightColorPaletteV2) {
                 TitledLogoPage(R.drawable.ic_onelogin_title) {
                     Text("test")
                 }
@@ -36,7 +38,7 @@ class TitledLogoPageTest : FragmentActivityTestCase() {
     @Test
     fun titlePageDisplayedNight() {
         composeTestRule.setContent {
-            GdsTheme(darkTheme = true) {
+            GdsTheme(colorScheme = DarkColorPaletteV2) {
                 TitledLogoPage(R.drawable.ic_onelogin_title) {
                     Text("test")
                 }
