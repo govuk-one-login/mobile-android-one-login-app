@@ -61,7 +61,7 @@ kotlinStdLib = "2.4.20"
 jetbrainsKotlinJvm = "2.4.20"
 ksp = "2.3.12"
 integrity = "1.6.0"
-bouncycastle = "1.84" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
+bouncycastle = "1.85" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
 
