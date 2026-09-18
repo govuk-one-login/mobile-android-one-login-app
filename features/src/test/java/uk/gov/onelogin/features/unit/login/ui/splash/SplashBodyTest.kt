@@ -16,11 +16,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 
 @RunWith(AndroidJUnit4::class)
+@Config(qualifiers = "large-port") // Remove after fixing DCMAW-23546
 class SplashBodyTest : FragmentActivityTestCase() {
     private lateinit var logo: SemanticsMatcher
     private lateinit var crownIcon: SemanticsMatcher
