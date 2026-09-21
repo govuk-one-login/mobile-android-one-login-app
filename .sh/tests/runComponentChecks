@@ -18,15 +18,17 @@ if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
   echo "Running component checks without environment variables (local development)..."
   ./gradlew \
-    :features:componentTestStagingDebug \
-    :features:componentTestProductionDebug \
+    :features:testStagingDebugUnitTest \
+    :features:testProductionDebugUnitTest \
+    -PtestDir="component" \
     --continue \
     --stacktrace
 else
   echo "Running component checks with environment variables (GitHub workflow)..."
   ./gradlew \
-    :features:componentTestStagingDebug \
-    :features:componentTestProductionDebug \
+    :features:testStagingDebugUnitTest \
+    :features:testProductionDebugUnitTest \
+    -PtestDir="component" \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \
