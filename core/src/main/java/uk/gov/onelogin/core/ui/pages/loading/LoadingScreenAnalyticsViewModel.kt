@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.R as ComponentsR
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -36,7 +37,7 @@ class LoadingScreenAnalyticsViewModel
         private fun makeLoadingScreenViewEvent(context: Context) =
             with(context) {
                 ViewEvent.Screen(
-                    name = getEnglishString(R.string.app_loadingBody),
+                    name = getEnglishString(ComponentsR.string.loading),
                     id = getEnglishString(R.string.app_loading_page_id),
                     params =
                         RequiredParameters(

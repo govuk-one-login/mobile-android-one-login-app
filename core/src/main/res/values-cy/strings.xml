@@ -9,10 +9,6 @@
     <string name="app_settings">Gosodiadau</string>
     <string name="app_TabBarWallet">Dogfennau</string>
 
-    <!-- Loading -->
-    <string name="app_loadingBody">Llwytho…</string>
-    <string name="app_loading_content_desc">Llwytho gov dot UK One Login</string>
-
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help ac adborth</string>
     <string name="app_settingsSubtitle2">Am yr ap</string>
@@ -66,6 +62,7 @@
 
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
+    <string name="app_splashScreenLoadingContentDescription">Llwytho gov dot UK One Login</string>
 
     <!--  Sign In  -->
     <string name="app_signInBody1">Profwch eich hunaniaeth i gael mynediad at wasanaethau\’r llywodraeth.</string>
