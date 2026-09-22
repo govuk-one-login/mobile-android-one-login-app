@@ -1,4 +1,4 @@
-package uk.gov.onelogin.features
+package uk.gov.onelogin.core.test.screenshot
 
 import androidx.compose.runtime.Composable
 import app.cash.paparazzi.DeviceConfig

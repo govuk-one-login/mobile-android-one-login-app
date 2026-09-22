@@ -6,9 +6,9 @@ import com.android.resources.NightMode.NIGHT
 import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.LOCALE_CY
-import uk.gov.onelogin.features.LOCALE_EN
+import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
+import uk.gov.onelogin.core.test.screenshot.LOCALE_CY
+import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleBodyPreview
 
 @RunWith(Parameterized::class)
