@@ -6,12 +6,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.oss.licence.about.libraries)
-    alias(libs.plugins.paparazzi)
+    id("uk.gov.onelogin.screenshot-test-config")
     alias(libs.plugins.ksp)
     id("uk.gov.onelogin.plugin.test-config")
 }
-
-apply(from = rootProject.file("gradle/snapshot-test-filter.gradle.kts"))
 
 testTypeConfig {
     testTypes(
