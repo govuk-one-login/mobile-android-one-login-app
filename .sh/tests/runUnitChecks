@@ -21,17 +21,11 @@ then
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
-    :features:testStagingDebugUnitTest \
-    -PtestDir="unit" \
-    --continue \
-    --stacktrace
-
-  ./gradlew \
     :features:testBuildDebugUnitTest \
     :features:testIntegrationDebugUnitTest \
     :features:testStagingDebugUnitTest \
     :features:testProductionDebugUnitTest \
-    -PtestDir="unitEnvironmentSpecific" \
+    -PtestType="unit" \
     --continue \
     --stacktrace
 else
@@ -41,22 +35,13 @@ else
     :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :core:testProductionDebugUnitTest \
-    :features:testStagingDebugUnitTest \
-    :features:testProductionDebugUnitTest \
-    -PversionCode="${INPUT_VERSION_CODE}" \
-    -PversionName="${INPUT_VERSION_NAME}" \
-    -PtestDir="unit" \
-    --continue \
-    --stacktrace
-
-  ./gradlew \
     :features:testBuildDebugUnitTest \
     :features:testIntegrationDebugUnitTest \
     :features:testStagingDebugUnitTest \
     :features:testProductionDebugUnitTest \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
-    -PtestDir="unitEnvironmentSpecific" \
+    -PtestType="unit" \
     --continue \
     --stacktrace
 fi
