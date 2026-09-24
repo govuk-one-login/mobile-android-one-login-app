@@ -9,7 +9,7 @@ import uk.gov.android.authentication.integrity.pop.ProofOfPossessionGenerator
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionConfig
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManager
 import uk.gov.android.authentication.login.refresh.DemonstratingProofOfPossessionManagerImpl
-import uk.gov.logging.api.Logger
+import uk.gov.logging.api.v3.Logger
 
 @Module
 @InstallIn(SingletonComponent::class)
