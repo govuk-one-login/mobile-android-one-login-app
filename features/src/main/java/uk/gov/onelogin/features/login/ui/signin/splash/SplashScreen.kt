@@ -3,7 +3,6 @@ package uk.gov.onelogin.features.login.ui.signin.splash
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +18,7 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -31,7 +31,6 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.layout.SubcomposeMeasureScope
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -51,11 +50,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
-import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.features.login.ui.signin.splash.theme.SplashTheme
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import kotlin.math.roundToInt
 
@@ -124,11 +123,9 @@ internal fun SplashBody(
     trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
     onOpenDeveloperPortal: () -> Unit,
-) {
+) = Surface {
     val displayUnlock = isUnlock && !loading
-    SubcomposeLayout(
-        modifier = Modifier.background(colorResource(R.color.govuk_blue)),
-    ) { constraints ->
+    SubcomposeLayout { constraints ->
         // Get full specs of device
         val fullHeight = constraints.maxHeight
         val fullWidth = constraints.maxWidth
@@ -194,7 +191,7 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
             Icon(
                 painter = painterResource(R.drawable.ic_splash_logo),
                 contentDescription = null,
-                tint = Color.Unspecified,
+                tint = Color.Unspecified, // The logo is multicoloured
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -219,7 +216,6 @@ private fun SubcomposeMeasureScope.createSubcomposeCrown() =
         Icon(
             painter = painterResource(R.drawable.ic_tudor_crown),
             contentDescription = null,
-            tint = Color.White,
             modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
         )
     }.first().measure(Constraints())
@@ -254,7 +250,6 @@ private fun UnlockButton(
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.W600,
-            color = Color.White,
         )
     }
 }
@@ -282,8 +277,6 @@ internal fun LoadingIndicator() {
                     .padding(bottom = smallPadding),
         ) {
             CircularProgressIndicator(
-                color = colorResource(id = R.color.govuk_blue),
-                trackColor = MaterialTheme.colorScheme.onPrimary,
                 strokeCap = StrokeCap.Square,
                 modifier =
                     Modifier
@@ -300,7 +293,6 @@ internal fun LoadingIndicator() {
             Text(
                 text = loadingText,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
                 modifier = Modifier.semantics { hideFromAccessibility() },
             )
         }
@@ -312,7 +304,7 @@ internal fun LoadingIndicator() {
 @ScreenPreview
 @Composable
 internal fun SplashScreenPreview() {
-    GdsTheme {
+    SplashTheme {
         SplashBody(
             isUnlock = false,
             loading = false,
@@ -325,10 +317,14 @@ internal fun SplashScreenPreview() {
 
 @SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
+@Preview(
+    name = "Phone - Robolectric",
+    device = "spec:width=320dp,height=470dp,orientation=portrait,dpi=420",
+)
 @Preview
 @Composable
 internal fun UnlockScreenPreview() {
-    GdsTheme {
+    SplashTheme {
         SplashBody(
             isUnlock = true,
             loading = false,
@@ -344,7 +340,7 @@ internal fun UnlockScreenPreview() {
 @Preview
 @Composable
 internal fun LoadingSplashScreenPreview() {
-    GdsTheme {
+    SplashTheme {
         SplashBody(
             isUnlock = false,
             loading = true,

@@ -20,6 +20,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import org.robolectric.annotation.Config
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -45,9 +46,9 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
+@Config(qualifiers = "large-port") // Remove after fixing DCMAW-23546
 class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var handleLocalLogin: HandleLocalLogin
     private lateinit var navigator: Navigator
@@ -141,9 +142,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         }
 
         // Then
-        composeTestRule.waitUntil(15000) {
-            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
-        }
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
 
         // And
         wheneverBlocking {
@@ -185,9 +184,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
-        assertTrue(
-            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
-        )
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
         composeTestRule.onNode(loadingText).assertIsNotDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
     }
