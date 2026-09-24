@@ -11,7 +11,6 @@
 
     <!-- Loading -->
     <string name="app_loadingBody">Llwytho…</string>
-    <string name="app_loading_content_desc">Llwytho gov dot UK One Login</string>
 
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help ac adborth</string>
@@ -63,9 +62,6 @@
     <string name="app_signOutSuccessButton">@string/app_continue</string>
     <string name="app_signOutBody">Er mwyn cadw\’ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn yr ap hwn wedi\’u dileu ac mae eich dewisiadau wedi\’u hailosod.</string>
     <string name="app_signOutBody2">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\’r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
-
-    <!-- Splash Screen -->
-    <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
 
     <!--  Sign In  -->
     <string name="app_signInBody1">Profwch eich hunaniaeth i gael mynediad at wasanaethau\’r llywodraeth.</string>

@@ -3,10 +3,8 @@ package uk.gov.onelogin.features.unit.login.ui.splash
 import android.content.Context
 import android.content.res.Resources
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
@@ -19,6 +17,7 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
+import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 
 @RunWith(AndroidJUnit4::class)
@@ -27,9 +26,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
     private lateinit var logo: SemanticsMatcher
     private lateinit var crownIcon: SemanticsMatcher
     private lateinit var unlockButton: SemanticsMatcher
-    private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
-    private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
     fun setup() {
@@ -39,12 +36,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
         logo = hasTestTag(context.getString(R.string.splashLogoTestTag))
         crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasText(resources.getString(R.string.app_unlockButton))
-        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
-        loadingContentDescription =
-            hasContentDescription(
-                resources.getString(R.string.app_loading_content_desc)
-            )
-        loadingIndicator = hasTestTag(context.getString(R.string.splashLoadingSpinnerTestTag))
+        loadingIndicator = hasTestTag(PROGRESS_INDICATOR_TEST_TAG)
     }
 
     @Test
@@ -60,7 +52,6 @@ class SplashBodyTest : FragmentActivityTestCase() {
             )
         }
         // Then loading indicator is NOT displayed
-        composeTestRule.onNode(loadingText).assertIsNotDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
         // And `logo`, `crownIcon` and `unlockButton` are displayed
         composeTestRule.onNode(logo).assertIsDisplayed()
@@ -82,12 +73,11 @@ class SplashBodyTest : FragmentActivityTestCase() {
         }
         // Then loading indicator and logo are displayed
         composeTestRule.onNode(logo).assertIsDisplayed()
-        composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingContentDescription).assertCountEquals(2)
-        // And only `logo`, `crownIcon` is displayed and`unlockButton` is not
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
+
+        // And `unlockButton` is not displayed
         composeTestRule.onNode(unlockButton).assertIsNotDisplayed()
     }
 
