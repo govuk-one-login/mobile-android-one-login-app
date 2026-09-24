@@ -15,9 +15,6 @@
     <string name="app_TabBarWallet">Documents</string>
 
     <string name="app_back_icon" translatable="false">Back</string>
-    <!-- Loading -->
-    <string name="app_loadingBody">Loading…</string>
-    <string name="app_loading_content_desc">Loading gov dot UK One Login</string>
 
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help and feedback</string>
@@ -73,6 +70,7 @@
     <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
     <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
     <string name="app_splashScreenLoadingIndicatorText">Loading</string>
+    <string name="app_splashScreenLoadingContentDescription">Loading gov dot UK One Login</string>
 
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>

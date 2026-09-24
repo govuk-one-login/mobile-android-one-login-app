@@ -257,7 +257,7 @@ private fun UnlockButton(
 @Composable
 internal fun LoadingIndicator() {
     val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
-    val loadingContentDescription = stringResource(R.string.app_loading_content_desc)
+    val loadingContentDescription = stringResource(R.string.app_splashScreenLoadingContentDescription)
     Column(
         modifier =
             Modifier

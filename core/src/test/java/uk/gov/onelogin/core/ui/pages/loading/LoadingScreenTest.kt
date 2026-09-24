@@ -30,9 +30,7 @@ class LoadingScreenTest : FragmentActivityTestCase() {
             LoadingScreen(viewModel) { onBackPress++ }
         }
 
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_BOX).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEXT).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
 
         Espresso.pressBack()
 
@@ -45,8 +43,6 @@ class LoadingScreenTest : FragmentActivityTestCase() {
             LoadingPreview()
         }
 
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_BOX).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEXT).assertIsDisplayed()
-        composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
     }
 }
