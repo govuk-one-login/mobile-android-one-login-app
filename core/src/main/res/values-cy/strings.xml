@@ -64,9 +64,6 @@
     <string name="app_signOutBody">Er mwyn cadw\’ch gwybodaeth yn ddiogel, mae unrhyw ddogfennau yn yr ap hwn wedi\’u dileu ac mae eich dewisiadau wedi\’u hailosod.</string>
     <string name="app_signOutBody2">Mae angen i chi fewngofnodi ac ailosod eich dewisiadau i barhau i ddefnyddio\’r ap. Yna byddwch yn gallu ychwanegu eich dogfennau eto.</string>
 
-    <!-- Splash Screen -->
-    <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
-
     <!--  Sign In  -->
     <string name="app_signInBody1">Profwch eich hunaniaeth i gael mynediad at wasanaethau\’r llywodraeth.</string>
     <string name="app_signInBody2">Bydd angen i chi fewngofnodi gyda\’ch manylion GOV.UK One Login.</string>
