@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
+    id("uk.gov.onelogin.screenshot-test-config")
     alias(libs.plugins.ksp)
 }
 
@@ -115,7 +116,6 @@ dependencies {
         libs.androidx.compose.ui.junit4,
         libs.androidx.espresso.core,
         libs.androidx.navigation.testing,
-        libs.androidx.test.orchestrator,
         libs.logging.test,
         testFixtures(libs.network),
         testFixtures(libs.logging.api),
