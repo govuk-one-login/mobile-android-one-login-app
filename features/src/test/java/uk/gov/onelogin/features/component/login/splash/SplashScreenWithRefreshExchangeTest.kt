@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -37,6 +36,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.LoadingSplashScreenPreview
+import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenPreview
@@ -68,7 +68,6 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
-    private lateinit var loadingText: SemanticsMatcher
     private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
@@ -103,11 +102,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasTestTag(resources.getString(R.string.splashUnlockBtnTestTag))
         privacyNotice = hasTestTag(NOTICE_TAG)
-        loadingIndicator =
-            hasTestTag(
-                resources.getString(R.string.splashLoadingSpinnerTestTag)
-            )
-        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
+        loadingIndicator = hasTestTag(PROGRESS_INDICATOR_TEST_TAG)
         loadingContentDescription =
             hasContentDescription(
                 resources.getString(R.string.app_loading_content_desc)
@@ -185,7 +180,6 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
         composeTestRule.onNode(unlockButton).assertIsDisplayed()
-        composeTestRule.onNode(loadingText).assertIsNotDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
     }
 
@@ -198,9 +192,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
-        composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingContentDescription).assertCountEquals(2)
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
     }
 
     @Test

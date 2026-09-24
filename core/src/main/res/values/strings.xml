@@ -72,7 +72,6 @@
     <!-- Splash Screen -->
     <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
     <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
-    <string name="app_splashScreenLoadingIndicatorText">Loading</string>
 
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
