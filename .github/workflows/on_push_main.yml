@@ -1,5 +1,5 @@
 # When making structure changes to the workflow, please ensure the quality-gate.manifest.json is updated accordingly to reflect this.
-name: On Branch Push (main)
+name: On push (main)
 
 on:
   push:
@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   set-up:
-    name: Set-up and generate version name and version code
+    name: Generate versions
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -85,7 +85,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   build-and-publish-release:
-    name: Bundle and publish app in Production and Integration for release
+    name: Publish Production/Integration apps
     needs:
       - set-up
     runs-on: ubuntu-24.04
