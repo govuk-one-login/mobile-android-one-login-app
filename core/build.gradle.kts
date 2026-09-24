@@ -160,6 +160,10 @@ dependencies {
         libs.kotlin.stdlib,
         libs.compose.runtime,
         libs.mockito.kotlin,
+        platform(libs.androidx.compose.bom),
         libs.androidx.activity.compose,
+        platform(libs.junit.bom),
+        libs.junit,
+        libs.paparazzi,
     ).forEach(::testFixturesImplementation)
 }
