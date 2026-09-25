@@ -24,7 +24,7 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
 import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
-import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
+import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_TEST_TAG
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.signout.domain.SignOutError
@@ -82,7 +82,7 @@ class SignOutScreenTest : FragmentActivityTestCase() {
             }
             composeTestRule.onNode(button).performClick()
 
-            composeTestRule.onNodeWithTag(LOADING_SCREEN_PROGRESS_INDICATOR).assertIsDisplayed()
+            composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
             verify(analytics).logEventV3Dot1(
                 SignOutAnalyticsViewModel.Companion.onPrimaryEvent(
                     context

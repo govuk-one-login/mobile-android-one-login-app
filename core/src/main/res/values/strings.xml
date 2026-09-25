@@ -15,9 +15,6 @@
     <string name="app_TabBarWallet">Documents</string>
 
     <string name="app_back_icon" translatable="false">Back</string>
-    <!-- Loading -->
-    <string name="app_loadingBody">Loading…</string>
-    <string name="app_loading_content_desc">Loading gov dot UK One Login</string>
 
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help and feedback</string>
@@ -59,8 +56,8 @@
     <string name="app_signOutConfirmationBody3">Next time you sign in, you’ll be able to add your documents again and reset your preferences.</string>
     <string name="app_signOutAndDeleteAppDataButton">Sign out and delete information</string>
 
-    <string name="app_youveBeenSignedOutTitle">You need to sign in again</string>
-    <string name="app_youveBeenSignedOutBody1">Sign in with your GOV.UK One Login details to continue.</string>
+    <string name="app_reauthLandingTitle">You need to sign in again</string>
+    <string name="app_reauthLandingBody1">Sign in with your GOV.UK One Login details to continue.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Sign in with GOV.UK One Login</string>
 
     <!-- Sign Out Confirmation -->
@@ -73,6 +70,7 @@
     <string name="app_splashScreenAnalyticsScreenName" translatable="false">one login splash screen</string>
     <string name="app_splashScreenUnlockAnalyticsScreenName" translatable="false">one login unlock screen</string>
     <string name="app_splashScreenLoadingIndicatorText">Loading</string>
+    <string name="app_splashScreenLoadingContentDescription">Loading gov dot UK One Login</string>
 
     <!-- Sign in -->
     <string name="app_signInTitle" translatable="false">GOV.UK One Login</string>
@@ -165,7 +163,7 @@
     <string name="app_updateAppBody2">Update your app to continue.</string>
     <string name="app_updateAppButton">Update GOV.UK One Login app</string>
 
-    <!-- Re-Auth Error -->
+    <!-- App Reset Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
     <string name="app_dataDeletedError_ContentDescription" translatable="false">Data deleted error (re-auth) icon content description</string>
     <string name="app_dataDeletedButton">Sign in</string>
@@ -204,5 +202,5 @@
     <string name="app_welcomeTileHeader">Welcome</string>
     <string name="app_welcomeTileBody1">You can use this app to prove your identity to access some government services.</string>
 
-    <string name="app_youveBeenSignedOutBody2">This is to keep your information secure.</string>
+    <string name="app_reauthLandingBody2">This is to keep your information secure.</string>
 </resources>

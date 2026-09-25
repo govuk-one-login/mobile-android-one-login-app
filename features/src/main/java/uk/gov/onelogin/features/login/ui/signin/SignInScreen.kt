@@ -1,0 +1,179 @@
+package uk.gov.onelogin.features.login.ui.signin
+
+import android.content.Intent
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.style.TextAlign
+import androidx.fragment.app.FragmentActivity
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
+import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
+import uk.gov.android.ui.componentsv2.button.GdsButton
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.patterns.centrealignedscreen.CentreAlignedScreen
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.smallPadding
+import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
+import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.core.ui.meta.ScreenPreview
+import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.features.login.LoginViewModel
+
+@Composable
+fun SignInScreen(
+    viewModel: SignInScreenViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    analyticsViewModel: SignInAnalyticsViewModel = hiltViewModel(),
+    loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
+) {
+    val loading by loginViewModel.loading.collectAsState()
+    val context = LocalActivity.current as FragmentActivity
+    val launcher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+        ) { result: ActivityResult ->
+            loginViewModel.handleLoginActivityResult(
+                result = result,
+                activity = context
+            )
+        }
+
+    if (loading) {
+        LoadingScreen(
+            loadingAnalyticsViewModel,
+            backHandler = {
+                loginViewModel.abortLogin()
+            },
+        )
+    } else {
+        EdgeToEdgePage { _ ->
+            SignInBody(
+                onSignIn = {
+                    handleScreenExit(loginViewModel, analyticsViewModel, launcher)
+                },
+                openDevMenu = { viewModel.navigateToDevPanel() },
+            )
+        }
+    }
+
+    BackHandler(enabled = true) {
+        context.finishAndRemoveTask()
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_START) {
+        if (!loading) {
+            analyticsViewModel.trackWelcomeView()
+        }
+        loginViewModel.stopLoading()
+    }
+}
+
+private fun handleScreenExit(
+    loginViewModel: LoginViewModel,
+    analyticsViewModel: SignInAnalyticsViewModel,
+    launcher: ActivityResultLauncher<Intent>,
+) {
+    loginViewModel.startLoginActivity(launcher, false)
+    analyticsViewModel.trackSignIn()
+}
+
+@OptIn(UnstableDesignSystemAPI::class)
+@Composable
+@Suppress("LongMethod")
+internal fun SignInBody(
+    onSignIn: () -> Unit = { },
+    openDevMenu: () -> Unit = { },
+) {
+    val title = stringResource(R.string.app_signInTitle)
+    val content =
+        listOf(
+            stringResource(R.string.app_signInBody1),
+            stringResource(R.string.app_signInBody2),
+        )
+    val buttonText = stringResource(R.string.app_signInButton)
+    val devButtonText = stringResource(R.string.app_developer_button)
+    GdsTheme {
+        CentreAlignedScreen(
+            title = {
+                GdsHeading(
+                    text = title,
+                )
+            },
+            image = {
+                Image(
+                    imageVector = ImageVector.vectorResource(R.drawable.app_icon),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxWidth().clearAndSetSemantics { },
+                )
+            },
+            body = {
+                item {
+                    Text(
+                        text = content[0],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding),
+                    )
+                }
+                item {
+                    Text(
+                        text = content[1],
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = smallPadding),
+                    )
+                }
+            },
+            primaryButton = {
+                GdsButton(
+                    text = buttonText,
+                    buttonType = ButtonTypeV2.Primary(),
+                    onClick = onSignIn,
+                    modifier = Modifier.fillMaxWidth().testTag(SIGN_IN_BUTTON_TAG),
+                )
+            },
+            secondaryButton = {
+                if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                    GdsButton(
+                        text = devButtonText,
+                        buttonType = ButtonTypeV2.Secondary(),
+                        onClick = openDevMenu,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+        )
+    }
+}
+
+const val SIGN_IN_BUTTON_TAG = "WelcomeSignInButtonTag"
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun SignInPreview() {
+    SignInBody()
+}

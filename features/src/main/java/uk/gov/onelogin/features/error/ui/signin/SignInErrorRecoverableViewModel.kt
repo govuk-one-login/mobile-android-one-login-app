@@ -13,7 +13,7 @@ class SignInErrorRecoverableViewModel
         private val navigator: Navigator,
     ) : ViewModel() {
         fun onBack() {
-            navigator.navigate(LoginRoutes.Welcome, true)
+            navigator.navigate(LoginRoutes.SignIn, true)
         }
 
         fun onClick() {

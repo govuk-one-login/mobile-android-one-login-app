@@ -17,7 +17,7 @@ import org.mockito.kotlin.wheneverBlocking
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.appinfo.AppInfoApiModule
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
-import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_PROGRESS_INDICATOR
+import uk.gov.onelogin.core.ui.pages.loading.LOADING_SCREEN_TEST_TAG
 import uk.gov.onelogin.e2e.LoginTest.Companion.TIMEOUT
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoServiceState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
@@ -62,7 +62,7 @@ class LoginGraphObjectTest : TestCase() {
 
         val progressIndicator =
             composeTestRule.onNodeWithTag(
-                LOADING_SCREEN_PROGRESS_INDICATOR,
+                LOADING_SCREEN_TEST_TAG,
             )
         composeTestRule.waitUntil(TIMEOUT) {
             progressIndicator.isDisplayed()
