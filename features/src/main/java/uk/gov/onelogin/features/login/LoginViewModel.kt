@@ -29,6 +29,12 @@ import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import javax.inject.Inject
 
+/**
+ * The [LoginViewModel] is for screens that let a user sign in through the browser,
+ * either as a first time user or during re-authentication.
+ *
+ * @see RemoteLogin
+ */
 @Suppress("LongParameterList")
 @HiltViewModel
 class LoginViewModel
