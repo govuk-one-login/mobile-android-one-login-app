@@ -72,28 +72,28 @@ class SignOutGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun signOutGraph_navigateToSignedOutInfoScreen() {
+    fun signOutGraph_navigateToReAuthLandingScreen() {
         composeTestRule.runOnUiThread {
             navController.setCurrentDestination(SignOutRoutes.ReAuth.getRoute())
         }
 
         composeTestRule.apply {
             onNodeWithText(
-                resources.getString(R.string.app_youveBeenSignedOutTitle),
+                resources.getString(R.string.app_reauthLandingTitle),
             ).assertIsDisplayed()
 
             back()
 
             onNodeWithText(
-                resources.getString(R.string.app_youveBeenSignedOutTitle),
+                resources.getString(R.string.app_reauthLandingTitle),
             ).assertIsDisplayed()
         }
     }
 
     @Test
-    fun signOutGraph_navigateToReAuthErrorScreen() {
+    fun signOutGraph_navigateToAppResetErrorScreen() {
         composeTestRule.runOnUiThread {
-            navController.setCurrentDestination(SignOutRoutes.ReAuthError.getRoute())
+            navController.setCurrentDestination(SignOutRoutes.AppResetError.getRoute())
         }
 
         composeTestRule.apply {

@@ -15,10 +15,10 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
 [versions]
 jose4j = "0.9.6"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 agp = "9.3.1"
 core-ktx = "1.19.0"
-androidx-test-ext-junit = "1.2.1"
+androidx-test-ext-junit = "1.3.0"
 espresso-core = "3.7.0"
 appcompat = "1.7.1"
 lifecycle-runtime-compose = "2.9.1"
@@ -29,42 +29,39 @@ andoridxBrowser = "1.10.0"
 androidxActivityCompose = "1.13.0"
 androidxBiometric = "1.1.0"
 androidxHilt = "1.4.0"
-androidxNavigation = "2.9.1"
+androidxNavigation = "2.10.0"
 androidxTest = "1.6.1"
 constraintlayout = "1.1.1"
 compose-ui-junit4 = "1.11.1"
 junitJupiter = "6.1.2"
 kotlinxCoroutines = "1.11.0"
 lifecycleRuntimeKtx = "2.11.0"
-compose-material = "1.8.2"
 compose-material3 = "1.3.1"
-serialization = "2.4.10"
+serialization = "2.4.20"
 junit = "5.12.2"
 jacoco = "0.8.15"
 googleServices = "4.5.0"
 firebaseBom = "34.18.0"
 crashlytics = "3.0.3"
 classgraph = "4.8.179"
-govuk-ui = "17.3.4"
+govuk-ui = "17.6.0"
 govuk-logging = "0.40.13"
 compose-runtime = "1.9.4"
-auth = "3.3.0"
-wallet = "v3.88.2"
-cri-orchestrator = "0.69.0"
+auth = "4.0.0"
+wallet = "v4.46.3"
+cri-orchestrator = "0.70.0"
 junitVersion = "4.13.2"
-material = "1.12.0"
 robolectric = "4.16.1"
 aboutLibraries = "15.0.3"
 secureStore = "1.1.0"
 paparazzi = "2.0.0-alpha05" # https://github.com/cashapp/paparazzi/releases
 composeBom = "2026.06.01"
-navigationCommonAndroid = "2.9.0"
 network = "0.20.0"
-kotlinStdLib = "2.4.10"
-jetbrainsKotlinJvm = "2.4.10"
-ksp = "2.3.11"
+kotlinStdLib = "2.4.20"
+jetbrainsKotlinJvm = "2.4.20"
+ksp = "2.3.12"
 integrity = "1.6.0"
-bouncycastle = "1.84" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
+bouncycastle = "1.85" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
 
@@ -86,7 +83,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime-j
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.4.0" }
-mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.18.0" }
+mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.23.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.17" }
 uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version = "2.3.0" }
@@ -100,7 +97,6 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "andoridxBrowser" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-compose-material = { group = "androidx.compose.material", name = "material" }
 androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-core", version = "1.7.8" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation-android" }
@@ -131,6 +127,7 @@ bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", ver
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+paparazzi = { module = "app.cash.paparazzi:paparazzi", version.ref = "paparazzi" }
 
 # GDS
 wallet-sdk = { module = "uk.gov.android:wallet_sdk", version.ref = "wallet" }
@@ -144,6 +141,7 @@ patterns = { group = "uk.gov.android", name = "patterns", version.ref = "govuk-u
 theme = { group = "uk.gov.android", name = "theme", version.ref = "govuk-ui" }
 authentication = { group = "uk.gov.android.authentication", name = "app", version.ref = "auth" }
 localauth = { group = "uk.gov.android.authentication", name = "localauth", version.ref = "auth" }
+authentication-json = { group = "uk.gov.android.authentication", name = "json", version.ref = "auth" }
 secure-store = { group = "uk.gov.securestore", name = "app", version.ref = "secureStore" }
 network = { group = "uk.gov.android", name = "network", version.ref = "network" }
 logging-api = { group = "uk.gov.logging", name = "logging-api", version.ref = "govuk-logging" }
@@ -157,13 +155,11 @@ firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debu
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 # OSSL
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutLibraries" }
 aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutLibraries" }
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
-androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
 integrity = { group = "com.google.android.play", name = "integrity", version.ref = "integrity" }
 
 [bundles]
@@ -184,6 +180,7 @@ gov-uk = [
   "logging-impl",
   "cri-orchestrator",
   "localauth",
+   "authentication-json"
 ]
 about-libraries = [
   "aboutlibraries-core",

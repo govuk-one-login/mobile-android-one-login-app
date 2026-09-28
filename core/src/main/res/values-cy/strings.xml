@@ -9,10 +9,6 @@
     <string name="app_settings">Gosodiadau</string>
     <string name="app_TabBarWallet">Dogfennau</string>
 
-    <!-- Loading -->
-    <string name="app_loadingBody">Llwytho…</string>
-    <string name="app_loading_content_desc">Llwytho gov dot UK One Login</string>
-
     <!-- Settings -->
     <string name="app_settingsSubtitle1">Help ac adborth</string>
     <string name="app_settingsSubtitle2">Am yr ap</string>
@@ -53,9 +49,9 @@
     <string name="app_signOutConfirmationBody3">Y tro nesaf y byddwch yn mewngofnodi, byddwch yn gallu ychwanegu eich dogfennau eto ac ailosod eich dewisiadau.</string>
     <string name="app_signOutAndDeleteAppDataButton">Mewngofnodi a dileu gwybodaeth</string>
 
-    <string name="app_youveBeenSignedOutTitle">Mae angen i chi fewngofnodi eto</string>
-    <string name="app_youveBeenSignedOutBody1">Mewngofnodwch gyda\’ch manylion GOV.UK One Login i barhau.</string>
-    <string name="app_youveBeenSignedOutBody2">Mae hyn er mwyn cadw\’ch gwybodaeth yn ddiogel.</string>
+    <string name="app_reauthLandingTitle">Mae angen i chi fewngofnodi eto</string>
+    <string name="app_reauthLandingBody1">Mewngofnodwch gyda\’ch manylion GOV.UK One Login i barhau.</string>
+    <string name="app_reauthLandingBody2">Mae hyn er mwyn cadw\’ch gwybodaeth yn ddiogel.</string>
     <string name="app_SignInWithGovUKOneLoginButton">Mewngofnodi gyda GOV.UK One Login</string>
 
     <!-- Sign Out Confirmation -->
@@ -66,6 +62,7 @@
 
     <!-- Splash Screen -->
     <string name="app_splashScreenLoadingIndicatorText">Llwytho</string>
+    <string name="app_splashScreenLoadingContentDescription">Llwytho gov dot UK One Login</string>
 
     <!--  Sign In  -->
     <string name="app_signInBody1">Profwch eich hunaniaeth i gael mynediad at wasanaethau\’r llywodraeth.</string>
@@ -119,7 +116,7 @@
     <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
     <string name="app_updateAppButton">Diweddaru Ap GOV.UK One Login</string>
 
-    <!--  Re-Auth Error  -->
+    <!--  App Reset Error  -->
     <string name="app_dataDeletedErrorTitle">Mae rhywbeth wedi mynd o\’i le</string>
     <string name="app_dataDeletedButton">Mewngofnodi</string>
     <string name="app_dataDeletedBody1">Ni allem gadarnhau eich manylion mewngofnodi.</string>

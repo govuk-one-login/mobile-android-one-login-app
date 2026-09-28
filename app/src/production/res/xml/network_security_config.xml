@@ -24,6 +24,7 @@
         <pin-set>
             <pin digest="SHA-256">x4QzPSC810K5/cMjb05Qm4k3Bw5zBn4lTdO/nEW/Td4=</pin>
             <pin digest="SHA-256">Douxi77vs4G+Ib/BogbTFymEYq0QSFXwSgVCaZcI09Q=</pin>
+            <pin digest="SHA-256">vRU+17BDT2iGsXvOi76E7TQMcTLXAqj0+jGPdW7L1vM=</pin>
         </pin-set>
     </domain-config>
     <domain-config>

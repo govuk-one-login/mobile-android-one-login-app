@@ -1,0 +1,89 @@
+package uk.gov.onelogin.core.test.screenshot
+
+import androidx.compose.runtime.Composable
+import app.cash.paparazzi.DeviceConfig
+import app.cash.paparazzi.Paparazzi
+import com.android.ide.common.rendering.api.SessionParams.RenderingMode.SHRINK
+import com.android.resources.NightMode
+import com.android.resources.NightMode.NIGHT
+import com.android.resources.NightMode.NOTNIGHT
+import org.junit.Rule
+import org.junit.Test
+import uk.gov.android.ui.theme.m3.GdsTheme
+
+/**
+ * Base implementation for tests that utilise the Paparazzi testing library.
+ *
+ * Implementations of [BaseScreenshotTest] would at minimum override the [generateComposeLayout]
+ * property to verify behaviour.
+ *
+ * Implementations may also use the [org.junit.runners.Parameterized] runner if requiring more than
+ * one UI composition for screenshot purposes.
+ *
+ * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenshotTest
+ */
+abstract class BaseScreenshotTest(
+    nightMode: NightMode = NOTNIGHT,
+    locale: String = LOCALE_EN,
+    fontScale: Float = 1f,
+) {
+    @get:Rule
+    val paparazzi =
+        Paparazzi(
+            deviceConfig =
+                DeviceConfig.PIXEL_6.copy(
+                    nightMode = nightMode,
+                    locale = locale,
+                    fontScale = fontScale,
+                ),
+            renderingMode = SHRINK,
+            showSystemUi = false,
+            maxPercentDifference = 0.1
+        )
+
+    @Test
+    fun testScreenshot() {
+        paparazzi.snapshot {
+            GdsTheme {
+                generateComposeLayout()
+            }
+        }
+    }
+
+    protected abstract val generateComposeLayout: @Composable () -> Unit
+
+    companion object {
+        @JvmStatic
+        fun <T : Any> applyNightMode(result: MutableList<Pair<T, NightMode>>): (
+            T
+        ) -> Unit =
+            { parameters ->
+                result.add(parameters to NOTNIGHT)
+                result.add(parameters to NIGHT)
+            }
+
+        @JvmStatic
+        fun applyNightModeAndLocale(): Iterable<Array<Any>> =
+            arrayListOf(
+                arrayOf(NOTNIGHT, LOCALE_EN),
+                arrayOf(NIGHT, LOCALE_EN),
+                arrayOf(NOTNIGHT, LOCALE_CY),
+                arrayOf(NIGHT, LOCALE_CY)
+            )
+
+        @JvmStatic
+        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> =
+            arrayListOf(
+                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
+                arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
+                arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
+                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
+            )
+    }
+}
+
+const val LOCALE_EN = "en"
+const val LOCALE_CY = "cy"
+
+const val FONT_SCALE_M = 1f
+const val FONT_SCALE_L = 2f

@@ -1,0 +1,207 @@
+package uk.gov.onelogin.features.component.login.ui.signin
+
+import android.content.Context
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import uk.gov.android.network.online.OnlineChecker
+import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
+import uk.gov.onelogin.core.localauth.domain.LocalAuthPrefResetUseCase
+import uk.gov.onelogin.core.navigation.data.ErrorRoutes
+import uk.gov.onelogin.core.navigation.domain.Navigator
+import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.features.FragmentActivityTestCase
+import uk.gov.onelogin.features.login.LoginViewModel
+import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
+import uk.gov.onelogin.features.login.ui.signin.SignInAnalyticsViewModel
+import uk.gov.onelogin.features.login.ui.signin.SignInPreview
+import uk.gov.onelogin.features.login.ui.signin.SignInScreen
+import uk.gov.onelogin.features.login.ui.signin.SignInScreenViewModel
+import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+
+@RunWith(AndroidJUnit4::class)
+class SignInScreenTest : FragmentActivityTestCase() {
+    private lateinit var navigator: Navigator
+    private val remoteLogin = TestRemoteLogin()
+    private lateinit var onlineChecker: OnlineChecker
+    private lateinit var getPersistentId: GetPersistentId
+    private val logger = MemorisedLogger()
+    private lateinit var signOutUseCase: SignOutUseCase
+    private lateinit var localAuthPrefResetUseCase: LocalAuthPrefResetUseCase
+    private lateinit var viewModel: SignInScreenViewModel
+    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var analytics: AnalyticsLogger
+    private lateinit var analyticsViewModel: SignInAnalyticsViewModel
+    private lateinit var loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel
+
+    private val signInTitle = hasText(resources.getString(R.string.app_signInTitle))
+    private val signInSubTitle1 = hasText(resources.getString(R.string.app_signInBody1))
+
+//    private val signInSubTitle2 = hasText(resources.getString(R.string.app_signInBody2))
+    private val signInButton = hasText(resources.getString(R.string.app_signInButton))
+
+    @Before
+    fun setup() {
+        navigator = mock()
+        onlineChecker = mock()
+        analytics = mock()
+        signOutUseCase = mock()
+        localAuthPrefResetUseCase = mock()
+        getPersistentId = mock()
+        viewModel = SignInScreenViewModel(navigator)
+        loginViewModel =
+            LoginViewModel(
+                navigator,
+                onlineChecker,
+                remoteLogin,
+                getPersistentId,
+                signOutUseCase,
+                localAuthPrefResetUseCase,
+                logger
+            )
+        analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
+        loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
+    }
+
+    @Suppress("ForbiddenComment")
+    @Test
+    fun verifyComponents() {
+        composeTestRule.setContent {
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
+            )
+        }
+
+        composeTestRule.onNode(signInTitle).assertIsDisplayed()
+        composeTestRule.onNode(signInSubTitle1).assertIsDisplayed()
+        // TODO Fix breaking line below in buildRelease and StagingRelease flavours
+        // composeTestRule.onNode(signInSubTitle2).assertIsDisplayed()
+        composeTestRule.onAllNodes(signInButton)[0].assertIsDisplayed()
+        // TODO: Add testTag to the icon in mobile ui to be able to test the icon on CentreAlignedScreen when contentDescription is empty
+    }
+
+    @Test
+    fun opensWebLoginViaCustomTab() =
+        runBlocking {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
+            whenever(getPersistentId.invoke()).thenReturn("test")
+
+            composeTestRule.setContent {
+                SignInScreen(
+                    analyticsViewModel = analyticsViewModel,
+                    viewModel = viewModel,
+                    loginViewModel = loginViewModel,
+                    loadingAnalyticsViewModel = loadingAnalyticsViewModel
+                )
+            }
+
+            whenWeClickSignIn()
+
+            assert(remoteLogin.started)
+        }
+
+    @Test
+    fun opensNetworkErrorScreen() {
+        givenWeAreOffline()
+
+        whenWeClickSignIn()
+
+        itOpensErrorScreen()
+    }
+
+    @Test
+    fun screenViewAnalyticsLogOnResume() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignInAnalyticsViewModel.makeWelcomeViewEvent(context)
+        composeTestRule.setContent {
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
+            )
+        }
+
+        verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun signInAnalyticsLogOnSignInButton() {
+        val context: Context = ApplicationProvider.getApplicationContext()
+        val event = SignInAnalyticsViewModel.makeSignInEvent(context)
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        composeTestRule.setContent {
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
+            )
+        }
+        whenWeClickSignIn()
+        verify(analytics).logEventV3Dot1(event)
+    }
+
+    @Test
+    fun testBackButton() {
+        composeTestRule.setContent {
+            whenever(onlineChecker.isOnline()).thenReturn(true)
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
+            )
+        }
+
+        composeTestRule.apply {
+            activityRule.scenario.onActivity { activity ->
+                activity.onBackPressedDispatcher.onBackPressed()
+                assert(activity.isFinishing)
+            }
+        }
+    }
+
+    private fun whenWeClickSignIn() {
+        composeTestRule.onAllNodes(signInButton)[0].performClick()
+    }
+
+    private fun givenWeAreOffline() {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+        composeTestRule.setContent {
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+                loginViewModel = loginViewModel
+            )
+        }
+    }
+
+    private fun itOpensErrorScreen() {
+        verify(navigator).navigate(ErrorRoutes.Offline)
+    }
+
+    @Test
+    fun previewTest() {
+        composeTestRule.setContent {
+            SignInPreview()
+        }
+    }
+}

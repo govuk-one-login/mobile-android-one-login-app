@@ -72,7 +72,7 @@ class OptInScreenTest : FragmentActivityTestCase() {
         // When clicking on the "Share analytics" `primaryButton`
         composeTestRule.onNode(primaryButton).performClick()
         // Then call optIn()
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.SignIn, true)
         verifyBlocking(repository) { optIn() }
     }
 
@@ -85,7 +85,7 @@ class OptInScreenTest : FragmentActivityTestCase() {
         // When clicking on the "Do not share analytics" `textButton`
         composeTestRule.onNode(textButton).performClick()
         // Then call optOut()
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.SignIn, true)
         verifyBlocking(repository) { optOut() }
     }
 
@@ -124,7 +124,7 @@ class OptInScreenTest : FragmentActivityTestCase() {
             activity.onBackPressedDispatcher.onBackPressed()
         }
 
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.SignIn, true)
     }
 
     @Test

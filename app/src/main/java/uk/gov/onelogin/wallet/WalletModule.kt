@@ -14,11 +14,11 @@ import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
-import uk.gov.logging.api.Logger
-import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 import uk.gov.android.network.service.v2.NetworkService
+import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 
 @InstallIn(SingletonComponent::class)
 @Module

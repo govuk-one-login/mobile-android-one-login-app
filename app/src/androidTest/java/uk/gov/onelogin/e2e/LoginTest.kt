@@ -74,7 +74,7 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
 import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
-import uk.gov.onelogin.features.login.ui.signin.welcome.WELCOME_SIGNIN_BUTTON_TAG
+import uk.gov.onelogin.features.login.ui.signin.SIGN_IN_BUTTON_TAG
 import uk.gov.onelogin.login.KeyManagerModule
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
@@ -576,11 +576,11 @@ class LoginTest : FlakyTestCase() {
     private fun clickLogin() {
         composeTestRule.waitUntil(TIMEOUT) {
             composeTestRule
-                .onNodeWithTag(WELCOME_SIGNIN_BUTTON_TAG)
+                .onNodeWithTag(SIGN_IN_BUTTON_TAG)
                 .isDisplayed()
         }
         composeTestRule
-            .onNodeWithTag(WELCOME_SIGNIN_BUTTON_TAG)
+            .onNodeWithTag(SIGN_IN_BUTTON_TAG)
             .performClick()
     }
 

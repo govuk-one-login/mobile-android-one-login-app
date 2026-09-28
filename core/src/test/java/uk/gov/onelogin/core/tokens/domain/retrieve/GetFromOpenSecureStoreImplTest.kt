@@ -11,7 +11,6 @@ import uk.gov.android.securestore.error.SecureStoreErrorTypeV2
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.utils.MockitoHelper
-import java.lang.Exception
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull

@@ -9,7 +9,7 @@
 
 Other dependencies exist within the preceding list of configuration files. 
 
-# Gotchas / considerations
+## Gotchas / considerations
 
 * If a Developer has multiple Java Development Kit versions installed, the `org.gradle.java.home`
   property needs to point to a valid `JAVA_HOME` path. This property should exist within the User's
