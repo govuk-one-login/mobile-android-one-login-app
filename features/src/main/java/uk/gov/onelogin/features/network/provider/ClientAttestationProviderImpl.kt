@@ -1,9 +1,11 @@
 package uk.gov.onelogin.features.network.provider
 
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
 import uk.gov.android.network.attestation.ClientAttestationProvider
 import uk.gov.android.network.attestation.ClientAttestationResponse
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import javax.inject.Inject
 
@@ -38,11 +40,22 @@ class ClientAttestationProviderImpl
 
         private fun AttestationResult.Failure.toFailure(): ClientAttestationResponse.Failure =
             ClientAttestationResponse.Failure(
-                IllegalStateException("Failed to get client attestation", error),
+                reason = type.toErrorReason(),
+                error = IllegalStateException("Failed to get client attestation", error),
             )
 
         private fun SignedPoP.Failure.toFailure(): ClientAttestationResponse.Failure =
             ClientAttestationResponse.Failure(
-                IllegalStateException("Failed to get proof of possession because: $reason", error),
+                reason = ClientAttestationErrorReason.APP_CHECK_FAILED,
+                error = IllegalStateException("Failed to get proof of possession because: $reason", error),
             )
+
+        private fun AppIntegrityException.AppIntegrityErrorType.toErrorReason() = when (this) {
+            AppIntegrityException.AppIntegrityErrorType.INTERMITTENT ->
+                ClientAttestationErrorReason.INTERMITTENT
+            AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED ->
+                ClientAttestationErrorReason.APP_CHECK_FAILED
+            AppIntegrityException.AppIntegrityErrorType.GENERIC ->
+                ClientAttestationErrorReason.GENERIC
+        }
     }

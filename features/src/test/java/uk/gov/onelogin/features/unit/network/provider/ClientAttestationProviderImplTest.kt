@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
 import uk.gov.android.network.attestation.ClientAttestationResponse
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.appintegrity.TestAppIntegrity
 import uk.gov.onelogin.features.network.provider.ClientAttestationProviderImpl
@@ -57,15 +59,51 @@ class ClientAttestationProviderImplTest {
         }
 
     @Test
-    fun `getClientAttestation returns Failure when attestation fails`() =
+    fun `getClientAttestation returns Failure when attestation fails with APP_CHECK_FAILED error`() =
         runTest {
             val error = Exception("attestation error")
-            appIntegrity.attestationResult = AttestationResult.Failure(error)
+            appIntegrity.attestationResult = AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED,
+                error = error
+            )
 
             val result = provider.getClientAttestation()
 
             assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
             assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
+            assertEquals(ClientAttestationErrorReason.APP_CHECK_FAILED, result.reason)
+        }
+
+    @Test
+    fun `getClientAttestation returns Failure when attestation fails with INTERMITTENT error`() =
+        runTest {
+            val error = Exception("attestation error")
+            appIntegrity.attestationResult = AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
+                error = error
+            )
+
+            val result = provider.getClientAttestation()
+
+            assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
+            assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
+            assertEquals(ClientAttestationErrorReason.INTERMITTENT, result.reason)
+        }
+
+    @Test
+    fun `getClientAttestation returns Failure when attestation fails with GENERIC error`() =
+        runTest {
+            val error = Exception("attestation error")
+            appIntegrity.attestationResult = AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                error = error
+            )
+
+            val result = provider.getClientAttestation()
+
+            assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
+            assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
+            assertEquals(ClientAttestationErrorReason.GENERIC, result.reason)
         }
 
     @Test
@@ -78,5 +116,6 @@ class ClientAttestationProviderImplTest {
 
             assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
             assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
+            assertEquals(ClientAttestationErrorReason.APP_CHECK_FAILED, result.reason)
         }
 }

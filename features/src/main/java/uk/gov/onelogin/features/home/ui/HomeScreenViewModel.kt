@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.onelogin.core.navigation.data.HomeRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
@@ -28,6 +29,10 @@ class HomeScreenViewModel
 
         fun openDevPanel() {
             navigator.openDeveloperPanel()
+        }
+
+        fun openHowToProveYourIdentityModal() {
+            navigator.navigate(HomeRoutes.HowToProveYourIdentity)
         }
 
         fun getUiCardFlagState() {

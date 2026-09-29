@@ -71,7 +71,7 @@ class SignInErrorRecoverableScreenTest : FragmentActivityTestCase() {
         }
         Espresso.pressBack()
         verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeBackEvent(context))
-        verify(navigator).navigate(LoginRoutes.Welcome, true)
+        verify(navigator).navigate(LoginRoutes.SignIn, true)
     }
 
     @Test

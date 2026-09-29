@@ -10,7 +10,8 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
-import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.analytics.logging.AnalyticsLogger as AnalyticsLoggerV1
+import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import uk.gov.onelogin.features.optin.domain.FirebaseAnalyticsOptInSource
 import uk.gov.onelogin.features.optin.domain.source.OptInRemoteSource
@@ -22,11 +23,12 @@ import kotlin.test.Test
 class FirebaseAnalyticsOptInSourceTest {
     private val dispatcher = StandardTestDispatcher()
     private val analytics: AnalyticsLogger = mock()
+    private val analyticsV1: AnalyticsLoggerV1 = mock()
     private lateinit var source: OptInRemoteSource
 
     @BeforeTest
     fun setUp() {
-        source = FirebaseAnalyticsOptInSource(analytics, dispatcher)
+        source = FirebaseAnalyticsOptInSource(analyticsV1, analytics, dispatcher)
         Dispatchers.setMain(dispatcher)
     }
 
@@ -39,11 +41,12 @@ class FirebaseAnalyticsOptInSourceTest {
     fun `Default Dispatcher`() =
         runTest {
             // Given FirebaseAnalyticsOptInSource with default construction
-            source = FirebaseAnalyticsOptInSource(analytics)
+            source = FirebaseAnalyticsOptInSource(analyticsV1, analytics)
             // When calling the update suspend method
             source.update(AnalyticsOptInState.None)
             // Then the AnalyticsLogger has analytics collection turned off
             verify(analytics).setEnabled(false)
+            verify(analyticsV1).setEnabled(false)
         }
 
     @Test
@@ -51,7 +54,7 @@ class FirebaseAnalyticsOptInSourceTest {
         runTest {
             // Given FirebaseAnalyticsOptInSource with the test dispatcher passed in
             val passedDispatcher = spy(dispatcher)
-            source = FirebaseAnalyticsOptInSource(analytics, passedDispatcher)
+            source = FirebaseAnalyticsOptInSource(analyticsV1, analytics, passedDispatcher)
             // When calling the update suspend method
             source.update(AnalyticsOptInState.None)
             // Then the test dispatcher is used
@@ -66,6 +69,7 @@ class FirebaseAnalyticsOptInSourceTest {
             source.update(AnalyticsOptInState.None)
             // Then the AnalyticsLogger has analytics collection turned off
             verify(analytics).setEnabled(false)
+            verify(analyticsV1).setEnabled(false)
         }
 
     @Test
@@ -76,6 +80,7 @@ class FirebaseAnalyticsOptInSourceTest {
             source.update(AnalyticsOptInState.No)
             // Then the AnalyticsLogger has analytics collection turned off
             verify(analytics).setEnabled(false)
+            verify(analyticsV1).setEnabled(false)
         }
 
     @Test
@@ -86,5 +91,6 @@ class FirebaseAnalyticsOptInSourceTest {
             source.update(AnalyticsOptInState.Yes)
             // Then the AnalyticsLogger has analytics collection turned on
             verify(analytics).setEnabled(true)
+            verify(analyticsV1).setEnabled(true)
         }
 }

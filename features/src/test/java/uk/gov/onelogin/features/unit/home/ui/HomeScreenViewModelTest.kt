@@ -10,9 +10,10 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.android.featureflags.FeatureFlags
-import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.onelogin.core.navigation.data.HomeRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.create
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
@@ -77,5 +78,12 @@ class HomeScreenViewModelTest {
 
         // THEN
         verify(walletRepository, times(1)).setWalletDeepLinkPathState(deepLink = false)
+    }
+
+    @Test
+    fun `open how to prove your identity modal`() {
+        viewModel.openHowToProveYourIdentityModal()
+
+        verify(mockNavigator).navigate(HomeRoutes.HowToProveYourIdentity)
     }
 }

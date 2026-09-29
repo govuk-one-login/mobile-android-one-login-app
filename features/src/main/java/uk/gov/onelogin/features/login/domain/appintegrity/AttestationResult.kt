@@ -6,6 +6,7 @@ sealed class AttestationResult {
     ) : AttestationResult()
 
     data class Failure(
+        val type: AppIntegrityException.AppIntegrityErrorType,
         val error: Throwable,
     ) : AttestationResult()
 

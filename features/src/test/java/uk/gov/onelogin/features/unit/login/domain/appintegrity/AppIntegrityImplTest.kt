@@ -264,7 +264,13 @@ class AppIntegrityImplTest {
             )
             val result = sut.getClientAttestation()
 
-            assertEquals(AttestationResult.Failure(expectedError), result)
+            assertEquals(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                    error = expectedError
+                ),
+                result
+            )
             assertEquals(0, counter.getValue())
         }
 
@@ -283,7 +289,13 @@ class AppIntegrityImplTest {
             )
             val result = sut.getClientAttestation()
 
-            assertEquals(AttestationResult.Failure(expectedError), result)
+            assertEquals(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
+                    error = expectedError
+                ),
+                result
+            )
             assertEquals(0, counter.getValue())
         }
 
@@ -298,7 +310,13 @@ class AppIntegrityImplTest {
             )
             val result = sut.getClientAttestation()
 
-            assertEquals(AttestationResult.Failure(expectedError), result)
+            assertEquals(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                    error = expectedError
+                ),
+                result
+            )
             assertEquals(0, counter.getValue())
         }
 

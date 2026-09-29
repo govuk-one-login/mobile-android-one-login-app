@@ -40,7 +40,7 @@ gpr.user=Octocat
 gpr.token=ghp_1234567890abcdef
 ```
 
-## The shortcut:
+## The shortcut
 
 Install the [Github Command-Line Interface (CLI) tool] then run:
 ```shell

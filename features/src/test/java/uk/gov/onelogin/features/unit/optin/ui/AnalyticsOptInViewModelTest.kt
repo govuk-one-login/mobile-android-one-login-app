@@ -67,6 +67,6 @@ class AnalyticsOptInViewModelTest {
     fun `navigate to sign`() {
         viewModel.goToSignIn()
 
-        verify(mockNavigator).navigate(LoginRoutes.Welcome, true)
+        verify(mockNavigator).navigate(LoginRoutes.SignIn, true)
     }
 }

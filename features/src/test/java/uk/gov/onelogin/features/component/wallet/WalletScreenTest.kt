@@ -14,7 +14,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
-import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayer
+import uk.gov.onelogin.core.ui.pages.loading.LoadingScreenAnalyticsViewModel
+import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.wallet.ui.WalletScreen
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
@@ -24,7 +25,8 @@ import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
 class WalletScreenTest : FragmentActivityTestCase() {
     private val walletSdk: WalletSdk = mock()
     private val getWalletStoreId: GetWalletStoreId = mock()
-    private val walletAppDisplayer: WalletAppDisplayer = {
+    private val loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = mock()
+    private val walletDisplayer: WalletDisplayer = {
         Text("Stub Wallet SDK")
     }
 
@@ -32,7 +34,7 @@ class WalletScreenTest : FragmentActivityTestCase() {
         WalletScreenViewModel(
             walletSdk = walletSdk,
             getWalletStoreId = getWalletStoreId,
-            walletAppDisplayer = walletAppDisplayer,
+            walletDisplayer = walletDisplayer,
         )
     }
 
@@ -48,7 +50,8 @@ class WalletScreenTest : FragmentActivityTestCase() {
             WalletScreen(
                 false,
                 setDisplayContentAsFullScreen = { true },
-                viewModel = viewModel
+                viewModel = viewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
             )
         }
 
@@ -56,6 +59,4 @@ class WalletScreenTest : FragmentActivityTestCase() {
             .onNodeWithText("Stub Wallet SDK")
             .assertIsDisplayed()
     }
-
-
 }

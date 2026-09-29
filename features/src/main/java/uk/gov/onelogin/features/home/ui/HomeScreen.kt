@@ -1,7 +1,7 @@
 package uk.gov.onelogin.features.home.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -33,6 +33,7 @@ import uk.gov.onelogin.core.ui.pages.TitledLogoPage
 import uk.gov.onelogin.criorchestrator.features.resume.publicapi.ProveYourIdentityCard
 import uk.gov.onelogin.criorchestrator.sdk.publicapi.rememberCriOrchestrator
 import uk.gov.onelogin.developer.DeveloperTools
+import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityCard
 
 @Composable
 fun HomeScreen(
@@ -48,8 +49,8 @@ fun HomeScreen(
         analyticsViewModel.trackScreen()
     }
     HomeScreenBody(
-        uiCardEnabled = viewModel.uiCardEnabled.collectAsState().value,
-        content = {
+        proveYourIdentityCardEnabled = viewModel.uiCardEnabled.collectAsState().value,
+        proveYourIdentityCard = {
             Row(
                 modifier =
                     Modifier
@@ -63,19 +64,21 @@ fun HomeScreen(
             }
         },
         openDevPanel = { viewModel.openDevPanel() },
+        onHowToProveYourIdentityClick = { viewModel.openHowToProveYourIdentityModal() },
     )
 }
 
+@Suppress(
+    // The 'prove your identity' card slot isn't designed for generic 'content'
+    "ComposableLambdaParameterNaming",
+)
 @Composable
 private fun HomeScreenBody(
-    uiCardEnabled: Boolean,
     openDevPanel: () -> Unit = {},
-    content: @Composable () -> Unit = {},
+    onHowToProveYourIdentityClick: () -> Unit = {},
+    proveYourIdentityCardEnabled: Boolean,
+    proveYourIdentityCard: @Composable () -> Unit = {},
 ) {
-    val welcomeCardTitle = stringResource(R.string.app_welcomeTileHeader)
-    val welcomeCardBody = stringResource(R.string.app_welcomeTileBody1)
-    val proveIdentityCardTitle = stringResource(R.string.app_appPurposeTileHeader)
-    val proveIdentityCardBody = stringResource(R.string.app_appPurposeTileBody1)
     TitledLogoPage(R.drawable.ic_onelogin_title) { paddingValues ->
         val scrollState = rememberScrollState()
         Column(
@@ -83,24 +86,19 @@ private fun HomeScreenBody(
                 Modifier
                     .fillMaxSize()
                     .padding(top = paddingValues.calculateTopPadding())
-                    .padding(horizontal = smallPadding)
+                    .padding(smallPadding)
                     .consumeWindowInsets(paddingValues)
                     .verticalScroll(scrollState)
                     .keyboardScroll(scrollState)
                     .windowInsetsPadding(WindowInsets.displayCutout),
+            verticalArrangement = Arrangement.spacedBy(smallPadding)
         ) {
-            if (uiCardEnabled) {
-                content()
+            if (proveYourIdentityCardEnabled) {
+                proveYourIdentityCard()
             }
-            AddCard(
-                cardTitle = welcomeCardTitle,
-                cardBody = welcomeCardBody,
-                testTag = R.string.welcomeCardTestTag,
-            )
-            AddCard(
-                cardTitle = proveIdentityCardTitle,
-                cardBody = proveIdentityCardBody,
-                testTag = R.string.proveIdentityCardTestTag,
+            WelcomeCard()
+            HowToProveYourIdentityCard(
+                onClick = onHowToProveYourIdentityClick
             )
             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
@@ -114,23 +112,17 @@ private fun HomeScreenBody(
 }
 
 @Composable
-private fun AddCard(
-    cardTitle: String,
-    cardBody: String,
-    @StringRes testTag: Int,
-) {
-    GdsCard(
-        title = cardTitle,
-        body = cardBody,
-        displayPrimary = false,
-        shadow = 0.dp,
-        onClick = {},
-        modifier =
-            Modifier
-                .padding(top = smallPadding)
-                .testTag(stringResource(testTag)),
-    )
-}
+private fun WelcomeCard(
+    modifier: Modifier = Modifier
+) = GdsCard(
+    title = stringResource(R.string.app_welcomeTileHeader),
+    body = stringResource(R.string.app_welcomeTileBody1),
+    displayPrimary = false,
+    shadow = 0.dp,
+    onClick = {},
+    modifier = modifier
+        .testTag(stringResource(R.string.welcomeCardTestTag)),
+)
 
 @ExcludeFromJacocoGeneratedReport
 @ScreenPreview
@@ -138,7 +130,26 @@ private fun AddCard(
 internal fun HomeScreenPreview() {
     GdsTheme {
         HomeScreenBody(
-            uiCardEnabled = false,
+            proveYourIdentityCardEnabled = false,
+        )
+    }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@ScreenPreview
+@Composable
+internal fun HomeScreenWithProveYourIdentityCardPreview() {
+    GdsTheme {
+        HomeScreenBody(
+            proveYourIdentityCardEnabled = true,
+            proveYourIdentityCard = {
+                GdsCard(
+                    title = "Prove your identity",
+                    body = "This is a placeholder",
+                    buttonText = "Continue proving your identity",
+                    onClick = {}
+                )
+            },
         )
     }
 }

@@ -7,10 +7,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
-import uk.gov.onelogin.core.ui.wallet.WalletAppDisplayer
+import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import javax.inject.Inject
 
 /**
@@ -27,9 +28,9 @@ import javax.inject.Inject
 class WalletScreenViewModel
     @Inject
     constructor(
-        val walletSdk: WalletSdk,
+        private val walletSdk: WalletSdk,
         private val getWalletStoreId: GetWalletStoreId,
-        private val walletAppDisplayer: WalletAppDisplayer,
+        private val walletDisplayer: WalletDisplayer,
     ) : ViewModel() {
 
     private val _state: MutableStateFlow<WalletScreenState> = MutableStateFlow(
@@ -53,11 +54,15 @@ class WalletScreenViewModel
      *
      * Must be called before [WalletSdk.WalletApp] is invoked.
      *
-     * @return the [WalletAppDisplayer] ready to render the Wallet SDK.
+     * @return the [WalletDisplayer] ready to render the Wallet SDK.
      * @throws IllegalArgumentException if the wallet store ID is null.
      */
-    private suspend fun prepareWalletSdkForDisplay(): WalletAppDisplayer {
+    private suspend fun prepareWalletSdkForDisplay(): WalletDisplayer {
         val walletStoreId = getWalletStoreId()
+
+        // Workaround for DCMAW-22138
+        // Check for coroutine cancellation here because the secure store doesn't propagate it (DCMAW-22143)
+        yield()
 
         requireNotNull(walletStoreId) {
             "Wallet Store ID must not be null. This is guaranteed by ValidateWalletStoreId"
@@ -66,6 +71,6 @@ class WalletScreenViewModel
         // Must be called before WalletSdk.WalletApp()
         walletSdk.setWalletStoreId(walletStoreId)
 
-        return walletAppDisplayer
+        return walletDisplayer
     }
 }
