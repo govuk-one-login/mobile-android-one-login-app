@@ -113,8 +113,8 @@
     <!--  Update Required  -->
     <string name="app_updateApp_Title">Mae angen i chi ddiweddaru eich ap</string>
     <string name="app_updateAppBody1">Rydych yn defnyddio hen fersiwn o\’r ap GOV.UK One Login.</string>
-    <string name="app_updateAppBody2">Ewch i\’r Play Store a diweddarwch eich ap i barhau.</string>
-    <string name="app_updateAppButton">Ewch i\’r Play Store</string>
+    <string name="app_updateAppBody2">Diweddarwch eich ap i barhau</string>
+    <string name="app_updateAppButton">Diweddaru Ap GOV.UK One Login</string>
 
     <!--  App Reset Error  -->
     <string name="app_dataDeletedErrorTitle">Mae rhywbeth wedi mynd o\’i le</string>
@@ -137,7 +137,8 @@
 
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Agor mewn porwr gwe</string>
-    <string name="app_openGooglePlayStore"> yn agor yn play store </string>
+    <string name="app_openGooglePlayStore">Yn agor yn y Google Play Store</string>
+
 
     <!-- Welcome tile -->
     <string name="app_welcomeTileHeader">Croeso</string>

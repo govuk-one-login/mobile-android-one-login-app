@@ -160,8 +160,8 @@
     <!-- Update Required -->
     <string name="app_updateApp_Title">You need to update your app</string>
     <string name="app_updateAppBody1">You’re using an old version of the GOV.UK One Login app.</string>
-    <string name="app_updateAppBody2">Go to the Play Store and update your app to continue.</string>
-    <string name="app_updateAppButton">Go to Play Store</string>
+    <string name="app_updateAppBody2">Update your app to continue.</string>
+    <string name="app_updateAppButton">Update GOV.UK One Login app</string>
 
     <!-- App Reset Error -->
     <string name="app_dataDeletedErrorTitle">Something went wrong</string>
@@ -192,7 +192,7 @@
 
     <!-- Accessibility -->
     <string name="app_openLinkExternally">Opens in web browser</string>
-    <string name="app_openGooglePlayStore">Opens in play store</string>
+    <string name="app_openGooglePlayStore">Opens in Google Play Store</string>
     <string name="one_login_image_content_desc" translatable="false">Gov dot UK one login</string>
 
     <!-- Cri Orchestrator Temporary -->
