@@ -233,7 +233,7 @@ private fun UnlockButtonV2(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = smallPadding)
+                .padding(start = smallPadding, top = 13.dp, end = smallPadding, bottom = 13.dp )
                 .semantics(true) {}
                 .testTag(stringResource(R.string.splashUnlockBtnTestTag)),
         enabled = true,
