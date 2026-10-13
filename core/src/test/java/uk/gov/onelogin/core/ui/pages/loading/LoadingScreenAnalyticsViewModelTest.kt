@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.R as ComponentsR
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -40,7 +41,7 @@ class LoadingScreenAnalyticsViewModelTest {
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
-        name = context.getString(R.string.app_loadingBody)
+        name = context.getString(ComponentsR.string.loading)
         id = context.getString(R.string.app_loading_page_id)
         nativeBackBtn = context.getEnglishString(R.string.system_backButton)
         viewModel = LoadingScreenAnalyticsViewModel(context, logger)

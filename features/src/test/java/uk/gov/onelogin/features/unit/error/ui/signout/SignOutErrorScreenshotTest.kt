@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import uk.gov.onelogin.features.BaseScreenshotTest
+import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.signout.SignOutPreview
 
 @RunWith(Parameterized::class)

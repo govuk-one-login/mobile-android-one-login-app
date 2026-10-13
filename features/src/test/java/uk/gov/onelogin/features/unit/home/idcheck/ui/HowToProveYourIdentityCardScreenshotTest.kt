@@ -2,13 +2,9 @@ package uk.gov.onelogin.features.unit.home.idcheck.ui
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
-import com.android.resources.NightMode.NIGHT
-import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import uk.gov.onelogin.features.BaseScreenshotTest
-import uk.gov.onelogin.features.LOCALE_CY
-import uk.gov.onelogin.features.LOCALE_EN
+import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityCard
 
 @RunWith(Parameterized::class)

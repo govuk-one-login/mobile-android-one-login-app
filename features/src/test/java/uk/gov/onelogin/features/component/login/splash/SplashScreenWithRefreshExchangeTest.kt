@@ -103,10 +103,6 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         unlockButton = hasTestTag(resources.getString(R.string.splashUnlockBtnTestTag))
         privacyNotice = hasTestTag(NOTICE_TAG)
         loadingIndicator = hasTestTag(PROGRESS_INDICATOR_TEST_TAG)
-        loadingContentDescription =
-            hasContentDescription(
-                resources.getString(R.string.app_loading_content_desc)
-            )
     }
 
     @Test
