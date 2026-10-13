@@ -102,5 +102,4 @@ interface NetworkModule {
             return client
         }
     }
-
 }
