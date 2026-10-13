@@ -133,7 +133,7 @@ internal fun SplashBody(
         // Measure loading spinner and/ or unlock text and create slot to be displayed
         val dynamicContentPlaceable =
             subcompose("content") {
-                if (displayUnlock) UnlockButtonV2(trackUnlockButton, onLogin) else LoadingIndicator()
+                if (displayUnlock) UnlockButton(trackUnlockButton, onLogin) else LoadingIndicator()
             }.first().measure(Constraints(maxWidth = fullWidth))
         // Measure unlock button height to be used to enable equal space distribution between the logo, crown and loading spinner (when this is displayed)
         val loadingSpinnerHeight =
@@ -218,14 +218,14 @@ private fun SubcomposeMeasureScope.createSubcomposeCrown() =
     }.first().measure(Constraints())
 
 @Composable
-private fun UnlockButtonV2(
+private fun UnlockButton(
     trackUnlockButton: () -> Unit,
     onLogin: () -> Unit,
 ) {
-    val text = stringResource(R.string.app_unlockButton)
+
 
     GdsButton(
-        text = text,
+        text = stringResource(R.string.app_unlockButton),
         onClick = {
             trackUnlockButton()
             onLogin()
@@ -233,10 +233,10 @@ private fun UnlockButtonV2(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(start = smallPadding, top = 13.dp, end = smallPadding, bottom = 13.dp )
+                .padding(horizontal = smallPadding, vertical = 13.dp)
                 .semantics(true) {}
                 .testTag(stringResource(R.string.splashUnlockBtnTestTag)),
-        enabled = true,
+
         buttonType = ButtonTypeV2.Primary(),
     )
 }
