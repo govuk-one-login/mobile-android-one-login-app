@@ -254,7 +254,8 @@ private fun UnlockButton(
 internal fun ProgressIndicator(
     modifier: Modifier = Modifier,
 ) = GdsProgressIndicator(
-    modifier = modifier,
+    modifier = modifier
+        .padding(bottom = 48.dp),
 )
 
 @SuppressLint("UnrememberedMutableState")
