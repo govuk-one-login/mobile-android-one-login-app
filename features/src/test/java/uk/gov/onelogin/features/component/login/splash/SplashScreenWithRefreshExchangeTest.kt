@@ -68,7 +68,6 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
-    private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
     fun setUp() {

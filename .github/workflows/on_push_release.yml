@@ -14,10 +14,7 @@ jobs:
   set-up:
     name: Set-up and generate version name
     runs-on: ubuntu-24.04
-    # This job doesn't need the environment.
-    # It is behind an approval step so that the version code isn't generated immediately and
-    # is less likely to go stale.
-    environment: release
+
     outputs:
 
       version-name: ${{ steps.next-version.outputs.next-version }}
@@ -36,9 +33,7 @@ jobs:
         with:
           pattern: 'v*'
 
-      - name: Generate version code
-        id: version-code
-        uses: ./mobile-android-pipelines/actions/generate-version-code
+
 
       - name: Get next version from branch
         id: next-version
