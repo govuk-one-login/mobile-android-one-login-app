@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -46,7 +46,10 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         analytics = mock()
         analyticsViewModel = OutdatedAppErrorAnalyticsViewModel(context, analytics)
         Intents.init()
-        primaryButton = hasText(context.getString(R.string.app_updateAppButton))
+        primaryButton = hasContentDescription(
+            context.getString(R.string.app_updateAppButton),
+            substring = true,
+        )
     }
 
     @After

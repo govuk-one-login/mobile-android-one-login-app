@@ -16,7 +16,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonIcon
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
+import uk.gov.android.ui.componentsv2.button.ExternalDestination
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
@@ -91,6 +93,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit = {}) {
                 primaryButton = {
                     GdsButton(
                         text = buttonText,
+                        icon = ButtonIcon.opensExternalDestination(
+                            ExternalDestination.PlayStore,
+                        ),
                         buttonType = ButtonTypeV2.Primary(),
                         onClick = onPrimary,
                         modifier =
