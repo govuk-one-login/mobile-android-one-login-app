@@ -139,6 +139,7 @@
     <string name="app_openLinkExternally">Agor mewn porwr gwe</string>
     <string name="app_openGooglePlayStore">Yn agor yn y Google Play Store</string>
 
+
     <!-- Welcome tile -->
     <string name="app_welcomeTileHeader">Croeso</string>
     <string name="app_welcomeTileBody1">Gallwch ddefnyddio\’r ap hwn i brofi eich hunaniaeth i gael mynediad at rai gwasanaethau\’r llywodraeth.</string>
