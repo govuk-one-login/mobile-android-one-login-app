@@ -42,7 +42,7 @@ class ReAuthLandingAnalyticsViewModelTest : FragmentActivityTestCase() {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         domain = context.getEnglishString(R.string.baseStsUrl, "").domain
         buttonText = context.getEnglishString(R.string.app_SignInWithGovUKOneLoginButton)
@@ -59,7 +59,7 @@ class ReAuthLandingAnalyticsViewModelTest : FragmentActivityTestCase() {
                 isExternal = false,
                 domain = domain,
                 text = buttonText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking re-auth
         viewModel.trackReAuth()
@@ -74,7 +74,7 @@ class ReAuthLandingAnalyticsViewModelTest : FragmentActivityTestCase() {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the signed out info screen view
         viewModel.trackReAuthLandingScreenView()
@@ -83,7 +83,7 @@ class ReAuthLandingAnalyticsViewModelTest : FragmentActivityTestCase() {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(event, FALSE)
+            GAUtils.containsIsError(event, FALSE),
         )
     }
 }

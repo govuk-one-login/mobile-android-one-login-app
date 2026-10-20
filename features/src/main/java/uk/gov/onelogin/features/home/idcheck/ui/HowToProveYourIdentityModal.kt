@@ -51,94 +51,97 @@ private fun HowToProveYourIdentityModalContent(
         modifier = Modifier,
     ) {
         HowToProveYourIdentityGuidanceContent(
-            onGoToGovUkWebsiteClick = onGoToGovUkWebsiteClick
+            onGoToGovUkWebsiteClick = onGoToGovUkWebsiteClick,
         )
     }
 }
 
 @Suppress("LongMethod")
 @Composable
-private fun HowToProveYourIdentityGuidanceContent(
-    onGoToGovUkWebsiteClick: () -> Unit,
-) = LeftAlignedScreen(
-    title = { horizontalPadding ->
-        GdsHeading(
-            text = stringResource(R.string.app_proveYourIdentityGuidanceTitle),
-            textAlign = GdsHeadingAlignment.LeftAligned,
-            modifier = Modifier.padding(horizontal = horizontalPadding),
-        )
-    },
-    body = { horizontalPadding ->
-        item {
-            Text(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody1),
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-            )
-        }
-
-        item {
-            Text(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody2),
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-            )
-        }
-
-        item {
-            Text(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody3),
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-            )
-        }
-
-        item {
-            GdsButton(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceLink),
-                onClick = onGoToGovUkWebsiteClick,
-                contentPosition = Arrangement.Start,
-                textAlign = TextAlign.Start,
-                buttonType =
-                    ButtonTypeV2.Icon(
-                        buttonColors = GdsButtonDefaults.defaultSecondaryColors(),
-                        icon = ImageVector.vectorResource(UiComponentsR.drawable.ic_external_site),
-                        contentDescription = stringResource(CoreR.string.app_openLinkExternally),
-                        isIconTrailing = true,
-                    ),
-                modifier = Modifier.fillMaxWidth(),
-                contentModifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = horizontalPadding),
-            )
-        }
-
-        item {
+private fun HowToProveYourIdentityGuidanceContent(onGoToGovUkWebsiteClick: () -> Unit) =
+    LeftAlignedScreen(
+        title = { horizontalPadding ->
             GdsHeading(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody4),
-                style = GdsHeadingStyle.Body,
+                text = stringResource(R.string.app_proveYourIdentityGuidanceTitle),
                 textAlign = GdsHeadingAlignment.LeftAligned,
                 modifier = Modifier.padding(horizontal = horizontalPadding),
             )
-        }
+        },
+        body = { horizontalPadding ->
+            item {
+                Text(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody1),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
 
-        item {
-            Text(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody5),
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-            )
-        }
+            item {
+                Text(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody2),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
 
-        item {
-            Text(
-                text = stringResource(R.string.app_proveYourIdentityGuidanceBody6),
-                modifier = Modifier.padding(horizontal = horizontalPadding),
-            )
-        }
-    }
-)
+            item {
+                Text(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody3),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
+
+            item {
+                GdsButton(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceLink),
+                    onClick = onGoToGovUkWebsiteClick,
+                    contentPosition = Arrangement.Start,
+                    textAlign = TextAlign.Start,
+                    buttonType =
+                        ButtonTypeV2.Icon(
+                            buttonColors = GdsButtonDefaults.defaultSecondaryColors(),
+                            icon = ImageVector.vectorResource(
+                                UiComponentsR.drawable.ic_external_site,
+                            ),
+                            contentDescription = stringResource(
+                                CoreR.string.app_openLinkExternally,
+                            ),
+                            isIconTrailing = true,
+                        ),
+                    modifier = Modifier.fillMaxWidth(),
+                    contentModifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = horizontalPadding),
+                )
+            }
+
+            item {
+                GdsHeading(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody4),
+                    style = GdsHeadingStyle.Body,
+                    textAlign = GdsHeadingAlignment.LeftAligned,
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
+
+            item {
+                Text(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody5),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
+
+            item {
+                Text(
+                    text = stringResource(R.string.app_proveYourIdentityGuidanceBody6),
+                    modifier = Modifier.padding(horizontal = horizontalPadding),
+                )
+            }
+        },
+    )
 
 @ScreenPreview
 @Composable
 fun HowToProveYourIdentityModalPreview() = GdsTheme {
     HowToProveYourIdentityModalContent(
         onGoToGovUkWebsiteClick = {},
-        onDismissRequest = {}
+        onDismissRequest = {},
     )
 }

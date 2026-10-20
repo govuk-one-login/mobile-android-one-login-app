@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.network.provider
 
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uk.gov.android.network.api.ApiResponseException
@@ -24,7 +25,6 @@ import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import javax.inject.Inject
 
 /**
  * [uk.gov.onelogin.features.network.provider.StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
@@ -52,7 +52,7 @@ class StsAuthenticationProvider @Inject constructor(
     private val navigator: Navigator,
     private val refreshExchange: RefreshExchange,
     private val signOutUseCase: SignOutUseCase,
-    private val logger: Logger
+    private val logger: Logger,
 ) : AuthenticationProvider {
     @Suppress("TooGenericExceptionCaught")
     override suspend fun fetchBearerToken(scope: String): AuthenticationResponse {
@@ -80,10 +80,13 @@ class StsAuthenticationProvider @Inject constructor(
                 // Treat FirstTimeUser the same as no user should be ablet to get to the point of service token without
                 // having a persistent session ID saved/ not empty
                 is RefreshExchangeResult.UnrecoverableError,
-                RefreshExchangeResult.FirstTimeUser -> {
+                RefreshExchangeResult.FirstTimeUser,
+                -> {
                     signOutUseCase.invoke()
                     navigator.navigate(SignOutRoutes.AppResetError)
-                    AuthenticationResponse.Failure(ApiResponseException(MANUAL_SIGN_IN_REQUIRED_ERROR_MSG))
+                    AuthenticationResponse.Failure(
+                        ApiResponseException(MANUAL_SIGN_IN_REQUIRED_ERROR_MSG),
+                    )
                 }
 
                 // If success continue and attempt to get a service token
@@ -94,7 +97,8 @@ class StsAuthenticationProvider @Inject constructor(
                 // which means treating it as a success, and it will fail at getting the access token which will be
                 // treated as an error on the consumer/ SDKs side
                 RefreshExchangeResult.UserCancelledBioPrompt,
-                RefreshExchangeResult.OfflineNetwork ->
+                RefreshExchangeResult.OfflineNetwork,
+                ->
                     attemptServiceTokenExchange(scope)
             }
             // If access token valid, attempt to get a service token
@@ -124,7 +128,7 @@ class StsAuthenticationProvider @Inject constructor(
                 logger.error(
                     this@StsAuthenticationProvider.javaClass.simpleName,
                     error.msg,
-                    error
+                    error,
                 )
                 // AND require re-authentication as the refresh exchange will fail
                 refreshExchangeResult = RefreshExchangeResult.ReauthRequired
@@ -140,8 +144,10 @@ class StsAuthenticationProvider @Inject constructor(
      * a success containing the service token issues
      */
     private suspend fun attemptServiceTokenExchange(scope: String): AuthenticationResponse {
-        val accessToken = tokenRepository.getTokenResponse()?.accessToken ?:
-            return AuthenticationResponse.Failure(IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG))
+        val accessToken = tokenRepository.getTokenResponse()?.accessToken
+            ?: return AuthenticationResponse.Failure(
+                IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG),
+            )
 
         val request = createServiceTokenRequest(accessToken, scope)
         val response = networkService.makeRequest<TokenApiResponse>(request)
@@ -163,33 +169,35 @@ class StsAuthenticationProvider @Inject constructor(
      */
     private fun createServiceTokenRequest(
         accessToken: String,
-        scope: String
-    ): ApiRequest.FormUrlEncoded =
-        ApiRequest.FormUrlEncoded(
-            url = stsUrl,
-            params =
-                listOf(
-                    GRANT_TYPE to GRANT_TYPE_VALUE,
-                    SUBJECT_TOKEN to accessToken,
-                    SUBJECT_TOKEN_TYPE to SUBJECT_TOKEN_TYPE_VALUE,
-                    SCOPE to scope,
-                ),
-        )
+        scope: String,
+    ): ApiRequest.FormUrlEncoded = ApiRequest.FormUrlEncoded(
+        url = stsUrl,
+        params =
+            listOf(
+                GRANT_TYPE to GRANT_TYPE_VALUE,
+                SUBJECT_TOKEN to accessToken,
+                SUBJECT_TOKEN_TYPE to SUBJECT_TOKEN_TYPE_VALUE,
+                SCOPE to scope,
+            ),
+    )
 
     /**
      * Convert the response from the service token request - see [attemptServiceTokenExchange].
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    private fun ApiResponse<TokenApiResponse, String, NetworkingException>
-            .toAuthenticationResponse() : AuthenticationResponse =
+    private fun ApiResponse<
+        TokenApiResponse,
+        String,
+        NetworkingException,
+        >.toAuthenticationResponse(): AuthenticationResponse =
         when (this) {
             is ApiResponse.Success ->
-                    AuthenticationResponse.Success(body.token)
+                AuthenticationResponse.Success(body.token)
 
             is ApiResponse.Failure ->
-                AuthenticationResponse.Failure(Exception(error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, error))
-            }
+                AuthenticationResponse.Failure(Exception(error.message, error))
+        }
 
     companion object {
         private const val GRANT_TYPE = "grant_type"
@@ -200,15 +208,15 @@ class StsAuthenticationProvider @Inject constructor(
         private const val SCOPE = "scope"
 
         const val REFRESH_EXCHANGE_ERROR_MSG = "Failed refresh exchange."
-        const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG = "Failed refresh exchange failed - user cannot reauthenticate."
+        const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG =
+            "Failed refresh exchange failed - user cannot reauthenticate."
         const val NO_ACCESS_TOKEN_ERROR_MSG = "No access token"
         const val SERVICE_TOKEN_FAILURE_ERROR_MSG = "Failed to fetch service token"
         const val FRAGMENT_ACTIVITY_NULL_ERROR_MSG = "FragmentActivity is null"
 
         const val AUTHENTICATION_DENIED = 400
 
-        data class FragmentActivityNull(
-            val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG
-        ) : Exception(msg)
+        data class FragmentActivityNull(val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG) :
+            Exception(msg)
     }
 }

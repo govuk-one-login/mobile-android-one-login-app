@@ -64,34 +64,33 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
 
     @Before
     @Suppress("LongMethod")
-    fun setup() =
-        runBlocking {
-            mockFragmentActivity = mock()
-            signOutUseCase = mock()
-            localAuthPrefResetUseCase = mock()
-            tokenRepository = mock()
-            getPersistentId = mock()
-            navigator = mock()
-            onlineChecker = mock()
-            analytics = mock()
-            viewModel =
-                ReAuthLandingViewModel(
-                    navigator,
-                    tokenRepository,
-                )
-            loginViewModel =
-                LoginViewModel(
-                    navigator,
-                    onlineChecker,
-                    remoteLogin,
-                    getPersistentId,
-                    signOutUseCase,
-                    localAuthPrefResetUseCase,
-                    logger
-                )
-            analyticsViewModel = ReAuthAnalyticsViewModel(context, analytics)
-            loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
-        }
+    fun setup() = runBlocking {
+        mockFragmentActivity = mock()
+        signOutUseCase = mock()
+        localAuthPrefResetUseCase = mock()
+        tokenRepository = mock()
+        getPersistentId = mock()
+        navigator = mock()
+        onlineChecker = mock()
+        analytics = mock()
+        viewModel =
+            ReAuthLandingViewModel(
+                navigator,
+                tokenRepository,
+            )
+        loginViewModel =
+            LoginViewModel(
+                navigator,
+                onlineChecker,
+                remoteLogin,
+                getPersistentId,
+                signOutUseCase,
+                localAuthPrefResetUseCase,
+                logger,
+            )
+        analyticsViewModel = ReAuthAnalyticsViewModel(context, analytics)
+        loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
+    }
 
     @Test
     fun verifyScreenDisplayed() {
@@ -100,7 +99,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -112,44 +111,42 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            whenever(getPersistentId.invoke()).thenReturn("persistentId")
+    fun opensWebLoginViaCustomTab() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-            composeTestRule.setContent {
-                ReAuthLandingScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel
-                )
-            }
-
-            whenWeClickSignIn()
-
-            assert(remoteLogin.started)
+        composeTestRule.setContent {
+            ReAuthLandingScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+            )
         }
+
+        whenWeClickSignIn()
+
+        assert(remoteLogin.started)
+    }
 
     @Test
-    fun noPersistentId_OpensSignInScreen() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
+    fun noPersistentId_OpensSignInScreen() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
 
-            composeTestRule.setContent {
-                ReAuthLandingScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel
-                )
-            }
-
-            whenWeClickSignIn()
-
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.AppResetError, true)
+        composeTestRule.setContent {
+            ReAuthLandingScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+            )
         }
+
+        whenWeClickSignIn()
+
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(SignOutRoutes.AppResetError, true)
+    }
 
     @Test
     fun shouldTryAgainCalledOnPageLoad() {
@@ -162,51 +159,49 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 shouldTryAgain = {
                     shouldTryAgainCalled = true
                     false
-                }
+                },
             )
         }
         Assert.assertTrue(shouldTryAgainCalled)
     }
 
     @Test
-    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            whenever(getPersistentId.invoke()).thenReturn("persistentId")
+    fun loginFiresAutomaticallyIfOnlineAndShouldTryAgainIsTrue(): Unit = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(getPersistentId.invoke()).thenReturn("persistentId")
 
-            composeTestRule.setContent {
-                ReAuthLandingScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
-
-            assert(remoteLogin.started)
+        composeTestRule.setContent {
+            ReAuthLandingScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+                shouldTryAgain = {
+                    true
+                },
+            )
         }
+
+        assert(remoteLogin.started)
+    }
 
     @Test
-    fun loginFiresAutomaticallyButOffline() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(false)
-            composeTestRule.setContent {
-                ReAuthLandingScreen(
-                    loginViewModel,
-                    viewModel,
-                    analyticsViewModel,
-                    loadingAnalyticsViewModel,
-                    shouldTryAgain = {
-                        true
-                    }
-                )
-            }
-
-            itOpensErrorScreen()
+    fun loginFiresAutomaticallyButOffline() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(false)
+        composeTestRule.setContent {
+            ReAuthLandingScreen(
+                loginViewModel,
+                viewModel,
+                analyticsViewModel,
+                loadingAnalyticsViewModel,
+                shouldTryAgain = {
+                    true
+                },
+            )
         }
+
+        itOpensErrorScreen()
+    }
 
     @Test
     fun opensNetworkErrorScreen() {
@@ -226,7 +221,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -243,7 +238,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
         whenWeClickSignIn()
@@ -260,7 +255,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -282,7 +277,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
     }

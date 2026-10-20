@@ -53,22 +53,22 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
     private val toggle = hasTestTag(context.getString(R.string.optInSwitchTestTag))
     private val bulletListTitle =
         hasText(
-            context.getString(R.string.app_biometricsToggleBody1)
+            context.getString(R.string.app_biometricsToggleBody1),
         )
     private val bullet1 = hasText(context.getString(R.string.app_biometricsToggleBullet1))
     private val bullet2 = hasText(context.getString(R.string.app_biometricsToggleBullet2))
     private val body2Wallet =
         hasText(
-            context.getString(R.string.app_biometricsToggleBody2)
+            context.getString(R.string.app_biometricsToggleBody2),
         )
     private val body3Wallet =
         hasText(
-            context.getString(R.string.app_biometricsToggleBody3)
+            context.getString(R.string.app_biometricsToggleBody3),
         )
     private val subtitle = hasText(context.getString(R.string.app_biometricsToggleSubtitle))
     private val body4Wallet =
         hasText(
-            context.getString(R.string.app_biometricsToggleBody4)
+            context.getString(R.string.app_biometricsToggleBody4),
         )
 
     @Before
@@ -80,7 +80,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             BiometricsToggleScreenViewModel(
                 localAuthManager = localAuthManager,
                 navigator = navigator,
-                autoInitialiseSecureStore = autoInitialiseSecureStore
+                autoInitialiseSecureStore = autoInitialiseSecureStore,
             )
         logger = mock()
         analyticsViewModel = BiometricsToggleAnalyticsViewModel(context, logger)
@@ -92,7 +92,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
             ViewEvent.Screen(
                 name = context.getEnglishString(R.string.app_biometricsToggleTitle),
                 id = context.getEnglishString(R.string.biometrics_toggle_wallet_id),
-                params = requiredParams
+                params = requiredParams,
             )
         setContent()
 
@@ -125,7 +125,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
                 text = context.getEnglishString(R.string.app_biometricsToggleLabel),
                 response = true.toString(),
                 params = requiredParams,
-                type = Type.Toggle
+                type = Type.Toggle,
             )
         setContent()
 
@@ -149,7 +149,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
                 text = context.getEnglishString(R.string.app_biometricsToggleLabel),
                 response = true.toString(),
                 params = requiredParams,
-                type = Type.Toggle
+                type = Type.Toggle,
             )
         setContent()
 
@@ -169,7 +169,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         val event =
             TrackEvent.Icon(
                 text = context.getEnglishString(R.string.app_back_icon),
-                params = requiredParams
+                params = requiredParams,
             )
         setContent()
 
@@ -189,7 +189,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         val event =
             TrackEvent.Button(
                 text = context.getEnglishString(R.string.system_backButton),
-                params = requiredParams
+                params = requiredParams,
             )
         setContent()
 
@@ -233,7 +233,7 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
         private val requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
+                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE,
             )
     }
 }

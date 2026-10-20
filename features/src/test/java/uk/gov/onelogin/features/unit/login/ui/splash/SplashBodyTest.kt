@@ -18,7 +18,6 @@ import org.robolectric.annotation.Config
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
-import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 
 @RunWith(AndroidJUnit4::class)
@@ -49,7 +48,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = false,
                 onLogin = {},
                 trackUnlockButton = {},
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // Then loading indicator is NOT displayed
@@ -69,7 +68,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = true,
                 onLogin = {},
                 trackUnlockButton = {},
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // Then loading indicator and logo are displayed
@@ -94,7 +93,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = false,
                 trackUnlockButton = { buttonLogged = true },
                 onLogin = { actual = true },
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // When clicking the `unlockButton`

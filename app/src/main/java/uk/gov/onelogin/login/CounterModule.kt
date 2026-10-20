@@ -4,9 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.counter.CounterImpl
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

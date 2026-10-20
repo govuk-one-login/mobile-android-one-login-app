@@ -32,12 +32,9 @@ interface AuthenticationProviderModule {
     companion object {
         @Provides
         @StsUrl
-        fun provideStsUrl(
-            @ApplicationContext context: Context,
-        ): String =
-            context.getString(
-                R.string.stsUrl,
-                context.getString(R.string.tokenExchangeEndpoint),
-            )
+        fun provideStsUrl(@ApplicationContext context: Context): String = context.getString(
+            R.string.stsUrl,
+            context.getString(R.string.tokenExchangeEndpoint),
+        )
     }
 }

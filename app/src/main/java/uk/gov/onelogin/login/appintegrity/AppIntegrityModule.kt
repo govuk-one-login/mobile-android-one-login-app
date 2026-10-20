@@ -21,14 +21,10 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
 @InstallIn(ViewModelComponent::class)
 interface AppIntegrityModule {
     @Binds
-    fun attestationCaller(
-        attestationApiCall: AttestationApiCall,
-    ): AttestationCaller
+    fun attestationCaller(attestationApiCall: AttestationApiCall): AttestationCaller
 
     @Binds
-    fun provideAppIntegrityCheck(
-        appIntegrityImpl: AppIntegrityImpl,
-    ): AppIntegrity
+    fun provideAppIntegrityCheck(appIntegrityImpl: AppIntegrityImpl): AppIntegrity
 
     companion object {
         @Provides
@@ -36,12 +32,11 @@ interface AppIntegrityModule {
             attestationCaller: AttestationCaller,
             appChecker: AppChecker,
             keyStoreManager: KeyStoreManager,
-        ): AppIntegrityConfiguration =
-            AppIntegrityConfiguration(
-                attestationCaller = attestationCaller,
-                appChecker = appChecker,
-                keyStoreManager = keyStoreManager,
-            )
+        ): AppIntegrityConfiguration = AppIntegrityConfiguration(
+            attestationCaller = attestationCaller,
+            appChecker = appChecker,
+            keyStoreManager = keyStoreManager,
+        )
 
         @Provides
         fun provideFirebaseTokenManager(

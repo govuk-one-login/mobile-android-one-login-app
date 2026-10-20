@@ -50,11 +50,11 @@ class OptInScreenTest : FragmentActivityTestCase() {
         viewModel =
             OptInViewModel(
                 repository,
-                mockNavigator
+                mockNavigator,
             )
         Intents.init()
         Intents.intending(CoreMatchers.not(IntentMatchers.isInternal())).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null),
         )
     }
 
@@ -108,8 +108,8 @@ class OptInScreenTest : FragmentActivityTestCase() {
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
                 IntentMatchers.hasData(UriMatchers.hasHost(host)),
                 IntentMatchers.hasData(UriMatchers.hasPath(path)),
-                IntentMatchers.hasData(UriMatchers.hasScheme(scheme))
-            )
+                IntentMatchers.hasData(UriMatchers.hasScheme(scheme)),
+            ),
         )
     }
 

@@ -6,7 +6,6 @@ import androidx.activity.result.ActivityResultLauncher
 class TestStartRemoteLogin : StartRemoteLogin {
     var result: StartRemoteLogin.Result = StartRemoteLogin.Result.Success
 
-    override suspend fun login(
-        launcher: ActivityResultLauncher<Intent>,
-    ): StartRemoteLogin.Result = result
+    override suspend fun login(launcher: ActivityResultLauncher<Intent>): StartRemoteLogin.Result =
+        result
 }

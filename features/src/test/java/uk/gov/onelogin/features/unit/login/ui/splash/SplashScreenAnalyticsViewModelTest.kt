@@ -49,7 +49,7 @@ class SplashScreenAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         viewModel = SplashScreenAnalyticsViewModel(context, logger)
     }
@@ -60,7 +60,7 @@ class SplashScreenAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackSplashScreen(context, isLocked = false)
@@ -69,7 +69,7 @@ class SplashScreenAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(event, FALSE)
+            GAUtils.containsIsError(event, FALSE),
         )
     }
 
@@ -79,7 +79,7 @@ class SplashScreenAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = nameUnlock,
                 id = idUnlock,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackSplashScreen(context, isLocked = true)
@@ -92,7 +92,7 @@ class SplashScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Button(
                 text = unlockButton,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackUnlockButton()
@@ -105,7 +105,7 @@ class SplashScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backButton,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackBackButton(context)
@@ -118,7 +118,7 @@ class SplashScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backButton,
-                params = requiredParameters
+                params = requiredParameters,
             )
 
         viewModel.trackBackButton(context)

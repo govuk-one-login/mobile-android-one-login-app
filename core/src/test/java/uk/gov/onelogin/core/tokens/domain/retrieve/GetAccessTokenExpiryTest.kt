@@ -25,25 +25,24 @@ class GetAccessTokenExpiryTest {
         whenever(
             context.getSharedPreferences(
                 eq(AuthTokenStoreKeys.TOKEN_SHARED_PREFS),
-                eq(Context.MODE_PRIVATE)
-            )
+                eq(Context.MODE_PRIVATE),
+            ),
         ).thenReturn(mockSharedPreferences)
 
         useCase = GetAccessTokenExpiryImpl(context, mockOpenSecureStore)
     }
 
     @Test
-    fun `returns null when OpenSecureStore value is 0 and sharedPrefs value is 0`() =
-        runTest {
-            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "0"))
-            whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
-                .thenReturn(0)
+    fun `returns null when OpenSecureStore value is 0 and sharedPrefs value is 0`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "0"))
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(0)
 
-            val result = useCase()
+        val result = useCase()
 
-            assertEquals(null, result)
-        }
+        assertEquals(null, result)
+    }
 
     @Test
     fun `returns SharedPrefs when OpenSecureStore value is 0 and sharedPrefs is a valid value`() =
@@ -72,17 +71,16 @@ class GetAccessTokenExpiryTest {
         }
 
     @Test
-    fun `returns null when when OpenSecureStore value!=number and sharedPrefs is 0`() =
-        runTest {
-            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "a"))
-            whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
-                .thenReturn(0)
+    fun `returns null when when OpenSecureStore value!=number and sharedPrefs is 0`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "a"))
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(0)
 
-            val result = useCase()
+        val result = useCase()
 
-            assertEquals(null, result)
-        }
+        assertEquals(null, result)
+    }
 
     @Test
     fun `returns null when when OpenSecureStore value is null and sharedPrefs is a valid value`() =
@@ -98,17 +96,16 @@ class GetAccessTokenExpiryTest {
         }
 
     @Test
-    fun `returns null when when OpenSecureStore value is null and sharedPrefs is 0`() =
-        runTest {
-            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-                .thenReturn(null)
-            whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
-                .thenReturn(0)
+    fun `returns null when when OpenSecureStore value is null and sharedPrefs is 0`() = runTest {
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+            .thenReturn(null)
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(0)
 
-            val result = useCase()
+        val result = useCase()
 
-            assertEquals(null, result)
-        }
+        assertEquals(null, result)
+    }
 
     @Test
     fun `returns null when OpenSecureStore value is empty and sharedPrefs is a valid value`() =
@@ -124,30 +121,28 @@ class GetAccessTokenExpiryTest {
         }
 
     @Test
-    fun `returns expiry from OpenSecureStore when sharedPrefs value is invalid`() =
-        runTest {
-            val expectedExpiryValue = 123L
-            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
-            whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
-                .thenReturn(0)
+    fun `returns expiry from OpenSecureStore when sharedPrefs value is invalid`() = runTest {
+        val expectedExpiryValue = 123L
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(0)
 
-            val result = useCase()
+        val result = useCase()
 
-            assertEquals(expectedExpiryValue, result)
-        }
+        assertEquals(expectedExpiryValue, result)
+    }
 
     @Test
-    fun `returns expiry from OpenSecureStore when sharedPrefs value is valid`() =
-        runTest {
-            val expectedExpiryValue = 123L
-            whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
-                .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
-            whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
-                .thenReturn(172)
+    fun `returns expiry from OpenSecureStore when sharedPrefs value is valid`() = runTest {
+        val expectedExpiryValue = 123L
+        whenever(mockOpenSecureStore.invoke(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY))
+            .thenReturn(mapOf(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY to "123"))
+        whenever(mockSharedPreferences.getLong(AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY, 0))
+            .thenReturn(172)
 
-            val result = useCase()
+        val result = useCase()
 
-            assertEquals(expectedExpiryValue, result)
-        }
+        assertEquals(expectedExpiryValue, result)
+    }
 }

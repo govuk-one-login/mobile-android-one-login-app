@@ -11,8 +11,8 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.features.R
-import uk.gov.logging.testdouble.analytics.FakeAnalyticsLogger
 import uk.gov.android.ui.componentsv2.R as UiComponentsR
+import uk.gov.logging.testdouble.analytics.FakeAnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.WebNavigator
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -60,7 +60,7 @@ class HowToProveYourIdentityModalScreenTest : FragmentActivityTestCase() {
                 substring = true,
             ).assertTextEquals(
                 // This is what is visible to screen readers
-                "Go to the GOV.UK website Opens in web browser"
+                "Go to the GOV.UK website Opens in web browser",
             )
     }
 

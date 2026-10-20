@@ -13,9 +13,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.error.ui.update.UpdateRequiredBody
-import uk.gov.android.ui.patterns.R as patternsR
 
 @RunWith(AndroidJUnit4::class)
 class ErrorUpdateRequiredBodyTest : FragmentActivityTestCase() {
@@ -56,7 +56,7 @@ class ErrorUpdateRequiredBodyTest : FragmentActivityTestCase() {
         var actual = false
         composeTestRule.setContent {
             UpdateRequiredBody(
-                onPrimary = { actual = true }
+                onPrimary = { actual = true },
             )
         }
         // When clicking the `primaryButton`

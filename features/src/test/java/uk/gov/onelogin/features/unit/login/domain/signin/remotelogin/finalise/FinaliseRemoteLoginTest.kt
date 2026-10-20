@@ -2,6 +2,9 @@ package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin.finalise
 
 import android.content.Context
 import android.content.Intent
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -29,9 +32,6 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.FinaliseRemoteLoginImpl
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNull
 
 @Suppress("MaxLineLength")
 class FinaliseRemoteLoginTest {
@@ -51,22 +51,22 @@ class FinaliseRemoteLoginTest {
             testAccessToken,
             1L,
             testIdToken,
-            "testRefreshToken"
+            "testRefreshToken",
         )
     private val accessDeniedError =
         AuthenticationError(
             "access_denied",
-            AuthenticationError.ErrorType.ACCESS_DENIED
+            AuthenticationError.ErrorType.ACCESS_DENIED,
         )
     private val oauthError =
         AuthenticationError(
             "oauth_error",
-            AuthenticationError.ErrorType.OAUTH
+            AuthenticationError.ErrorType.OAUTH,
         )
     private val tokenError =
         AuthenticationError(
             "token_error",
-            AuthenticationError.ErrorType.OAUTH
+            AuthenticationError.ErrorType.OAUTH,
         )
 
     private val exceptionNullMessage = Exception()
@@ -83,7 +83,7 @@ class FinaliseRemoteLoginTest {
                 context,
                 mockAppIntegrity,
                 mockLoginSession,
-                logger
+                logger,
             )
     }
 
@@ -122,10 +122,10 @@ class FinaliseRemoteLoginTest {
                     allOf(
                         isLogLevel(LogLevel.Error),
                         hasMessage(
-                            expectedError.message ?: expectedResult.reason
-                        )
-                    )
-                )
+                            expectedError.message ?: expectedResult.reason,
+                        ),
+                    ),
+                ),
             )
             verifyNoInteractions(mockLoginSession)
         }
@@ -145,69 +145,66 @@ class FinaliseRemoteLoginTest {
                 hasItem(
                     allOf(
                         isLogLevel(LogLevel.Error),
-                        hasMessage(containsString(expectedResult.reason))
-                    )
-                )
+                        hasMessage(containsString(expectedResult.reason)),
+                    ),
+                ),
             )
             verifyNoInteractions(mockLoginSession)
         }
 
     @Test
-    fun `onSuccess, savedAttestation is null and attestation and PoP are successful`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-                AttestationResult.Success(testAttestation)
-            )
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-            }
-
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Success>(result)
-            assertEquals(tokenResponse, result.tokenResponse)
+    fun `onSuccess, savedAttestation is null and attestation and PoP are successful`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
+            AttestationResult.Success(testAttestation),
+        )
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
         }
+
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Success>(result)
+        assertEquals(tokenResponse, result.tokenResponse)
+    }
 
     @Test
-    fun `onSuccess, savedAttestation is empty and attestation and PoP are successful`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn("")
-            whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-                AttestationResult.Success(testAttestation)
-            )
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
-            }
-
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Success>(result)
-            assertEquals(tokenResponse, result.tokenResponse)
+    fun `onSuccess, savedAttestation is empty and attestation and PoP are successful`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn("")
+        whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
+            AttestationResult.Success(testAttestation),
+        )
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
         }
+
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Success>(result)
+        assertEquals(tokenResponse, result.tokenResponse)
+    }
 
     @Test
-    fun `onFailure, savedAttestation is null and getClientAttestation returns Failure`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(
-                    AttestationResult.Failure(
-                        type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                        error = Exception("error")
-                    )
-                )
+    fun `onFailure, savedAttestation is null and getClientAttestation returns Failure`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                    error = Exception("error"),
+                ),
+            )
 
-            val result = finaliseRemoteLogin.handle(mockIntent)
+        val result = finaliseRemoteLogin.handle(mockIntent)
 
-            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-            assertEquals("error", result.error.message)
-            verifyNoInteractions(mockLoginSession)
-        }
+        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+        assertEquals("error", result.error.message)
+        verifyNoInteractions(mockLoginSession)
+    }
 
     @Test
     fun `onSuccess, when savedAttestation is null and getClientAttestation returns NotRequired`() =
@@ -228,84 +225,79 @@ class FinaliseRemoteLoginTest {
         }
 
     @Test
-    fun `onFailure, handleLoginFinalise returns access_denied failure callback`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success(""))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(accessDeniedError)
-            }
-
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-            assertEquals("access_denied", result.error.message)
-            assertThat(
-                logger,
-                hasItem(
-                    allOf(
-                        isLogLevel(LogLevel.Error),
-                        hasMessage(result.error.message!!)
-                    )
-                )
-            )
+    fun `onFailure, handleLoginFinalise returns access_denied failure callback`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success(""))
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(accessDeniedError)
         }
+
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+        assertEquals("access_denied", result.error.message)
+        assertThat(
+            logger,
+            hasItem(
+                allOf(
+                    isLogLevel(LogLevel.Error),
+                    hasMessage(result.error.message!!),
+                ),
+            ),
+        )
+    }
 
     @Test
-    fun `onFailure, handleLoginFinalise returns oauth_error failure callback`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success(""))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(oauthError)
-            }
-
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-            assertEquals("oauth_error", result.error.message)
+    fun `onFailure, handleLoginFinalise returns oauth_error failure callback`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success(""))
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(oauthError)
         }
+
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+        assertEquals("oauth_error", result.error.message)
+    }
 
     @Test
-    fun `onFailure, handleLoginFinalise returns token_error failure callback`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success(""))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(tokenError)
-            }
-            // When
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-            assertEquals("token_error", result.error.message)
+    fun `onFailure, handleLoginFinalise returns token_error failure callback`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success(""))
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[4] as (error: AuthenticationError) -> Unit).invoke(tokenError)
         }
+        // When
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+        assertEquals("token_error", result.error.message)
+    }
 
     @Test
-    fun `onFailure, handleLoginFinalise returns error with null message`() =
-        runTest {
-            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-            whenever(mockAppIntegrity.getClientAttestation())
-                .thenReturn(AttestationResult.Success(""))
-            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-                @Suppress("unchecked_cast")
-                (it.arguments[4] as (error: Throwable) -> Unit).invoke(exceptionNullMessage)
-            }
-
-            val result = finaliseRemoteLogin.handle(mockIntent)
-
-            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-            assertNull(result.error.message)
+    fun `onFailure, handleLoginFinalise returns error with null message`() = runTest {
+        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+        whenever(mockAppIntegrity.getClientAttestation())
+            .thenReturn(AttestationResult.Success(""))
+        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+            @Suppress("unchecked_cast")
+            (it.arguments[4] as (error: Throwable) -> Unit).invoke(exceptionNullMessage)
         }
+
+        val result = finaliseRemoteLogin.handle(mockIntent)
+
+        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+        assertNull(result.error.message)
+    }
 }
-

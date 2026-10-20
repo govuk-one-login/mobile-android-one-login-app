@@ -41,10 +41,9 @@ object BottomNavGraph {
         }
     }
 
-    private fun createUrl(pathPrefix: String): String =
-        if (BuildConfig.FLAVOR == "production") {
-            "https://mobile.account.gov.uk/$pathPrefix"
-        } else {
-            "https://mobile.${BuildConfig.FLAVOR}.account.gov.uk/$pathPrefix"
-        }
+    private fun createUrl(pathPrefix: String): String = if (BuildConfig.FLAVOR == "production") {
+        "https://mobile.account.gov.uk/$pathPrefix"
+    } else {
+        "https://mobile.${BuildConfig.FLAVOR}.account.gov.uk/$pathPrefix"
+    }
 }

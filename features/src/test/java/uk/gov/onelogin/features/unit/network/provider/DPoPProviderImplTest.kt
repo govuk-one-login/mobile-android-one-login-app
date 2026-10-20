@@ -27,36 +27,36 @@ class DPoPProviderImplTest {
     }
 
     @Test
-    fun `getRefreshDPoP returns Success when generateDPoP succeeds`() =
-        runTest {
-            val result = provider.getRefreshDPoP()
+    fun `getRefreshDPoP returns Success when generateDPoP succeeds`() = runTest {
+        val result = provider.getRefreshDPoP()
 
-            assertEquals(DPoPResponse.Success(DPOP_JWT), result)
-            assertEquals(HTU, dPoPManager.spyHtu)
-        }
-
-    @Test
-    fun `getRefreshDPoP returns Failure when generateDPoP fails`() =
-        runTest {
-            val error = Exception("signing error")
-            dPoPManager.response = SignedDPoP.Failure("signing error", error)
-
-            val result = provider.getRefreshDPoP()
-
-            assertInstanceOf(DPoPResponse.Failure::class.java, result)
-            assertEquals(error, (result as DPoPResponse.Failure).error.cause)
-        }
+        assertEquals(DPoPResponse.Success(DPOP_JWT), result)
+        assertEquals(HTU, dPoPManager.spyHtu)
+    }
 
     @Test
-    fun `getRefreshDPoP returns Failure with reason in message when error is null`() =
-        runTest {
-            dPoPManager.response = SignedDPoP.Failure("signing error", null)
+    fun `getRefreshDPoP returns Failure when generateDPoP fails`() = runTest {
+        val error = Exception("signing error")
+        dPoPManager.response = SignedDPoP.Failure("signing error", error)
 
-            val result = provider.getRefreshDPoP()
+        val result = provider.getRefreshDPoP()
 
-            assertInstanceOf(DPoPResponse.Failure::class.java, result)
-            assertEquals("Failed to get DPoP: signing error", (result as DPoPResponse.Failure).error.message)
-        }
+        assertInstanceOf(DPoPResponse.Failure::class.java, result)
+        assertEquals(error, (result as DPoPResponse.Failure).error.cause)
+    }
+
+    @Test
+    fun `getRefreshDPoP returns Failure with reason in message when error is null`() = runTest {
+        dPoPManager.response = SignedDPoP.Failure("signing error", null)
+
+        val result = provider.getRefreshDPoP()
+
+        assertInstanceOf(DPoPResponse.Failure::class.java, result)
+        assertEquals(
+            "Failed to get DPoP: signing error",
+            (result as DPoPResponse.Failure).error.message,
+        )
+    }
 
     companion object {
         private const val HTU = "https://token.account.gov.uk/token"

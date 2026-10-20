@@ -41,13 +41,17 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
 @Suppress("TooManyFunctions")
 interface TokenModule {
     @Binds
-    fun bindGetFromTokenSecureStore(getFromSecureStore: GetFromEncryptedSecureStoreImpl): GetFromEncryptedSecureStore
+    fun bindGetFromTokenSecureStore(
+        getFromSecureStore: GetFromEncryptedSecureStoreImpl,
+    ): GetFromEncryptedSecureStore
 
     @Binds
     fun bindSaveToSecureStore(saveToSecureStore: SaveToTokenSecureStoreImpl): SaveToTokenSecureStore
 
     @Binds
-    fun bindSaveToOpenSecureStore(saveToOpenSecureStore: SaveToOpenSecureStoreImpl): SaveToOpenSecureStore
+    fun bindSaveToOpenSecureStore(
+        saveToOpenSecureStore: SaveToOpenSecureStoreImpl,
+    ): SaveToOpenSecureStore
 
     @Binds
     fun bindRemoveTokenExpiry(removeTokenExpiry: RemoveTokenExpiryImpl): RemoveTokenExpiry
@@ -56,10 +60,14 @@ interface TokenModule {
     fun bindGetEmail(extractEmailImpl: ExtractEmailImpl): ExtractEmail
 
     @Binds
-    fun bindGetAndSaveWalletId(extractAndSaveWalletIdImpl: ExtractAndSaveWalletIdImpl): ExtractAndSaveWalletId
+    fun bindGetAndSaveWalletId(
+        extractAndSaveWalletIdImpl: ExtractAndSaveWalletIdImpl,
+    ): ExtractAndSaveWalletId
 
     @Binds
-    fun bindExtractAndVerifyIss(extractAndVerifyIssuerImpl: ExtractAndVerifyIssuerImpl): ExtractAndVerifyIssuer
+    fun bindExtractAndVerifyIss(
+        extractAndVerifyIssuerImpl: ExtractAndVerifyIssuerImpl,
+    ): ExtractAndVerifyIssuer
 
     @Binds
     fun bindSavePersistentId(saveId: SavePersistentIdImpl): SavePersistentId
@@ -71,11 +79,13 @@ interface TokenModule {
     fun bindSaveTokenExpiry(saveTokenExpiry: SaveTokenExpiryImpl): SaveTokenExpiry
 
     @Binds
-    fun bindRemoveRefreshToken(removeRefreshToken: RemoveRefreshTokenAndExpiryImpl): RemoveRefreshTokenAndExpiry
+    fun bindRemoveRefreshToken(
+        removeRefreshToken: RemoveRefreshTokenAndExpiryImpl,
+    ): RemoveRefreshTokenAndExpiry
 
     @Binds
     fun bindRemoveFromOpenSecureStore(
-        removeFromOpenSecureStoreImpl: RemoveFromOpenSecureStoreImpl
+        removeFromOpenSecureStoreImpl: RemoveFromOpenSecureStoreImpl,
     ): RemoveFromOpenSecureStore
 
     @Binds
@@ -89,5 +99,7 @@ interface TokenModule {
 @InstallIn(SingletonComponent::class)
 interface OpenStoreModule {
     @Binds
-    fun bindGetFromOpenSecureStore(getFromOpenSecureStore: GetFromOpenSecureStoreImpl): GetFromOpenSecureStore
+    fun bindGetFromOpenSecureStore(
+        getFromOpenSecureStore: GetFromOpenSecureStoreImpl,
+    ): GetFromOpenSecureStore
 }

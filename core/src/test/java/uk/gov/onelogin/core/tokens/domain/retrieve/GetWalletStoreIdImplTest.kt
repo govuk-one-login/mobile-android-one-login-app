@@ -13,27 +13,24 @@ class GetWalletStoreIdImplTest {
     private val sut = GetWalletStoreIdImpl(fakeGetFromOpenSecureStore)
 
     @Test
-    fun successScenario() =
-        runTest {
-            fakeGetFromOpenSecureStore["wallet_id"] = expectedWalletId
+    fun successScenario() = runTest {
+        fakeGetFromOpenSecureStore["wallet_id"] = expectedWalletId
 
-            val walletId = sut.invoke()
-            assertEquals(expectedWalletId, walletId)
-        }
-
-    @Test
-    fun `GetWalletStoreIdImpl invoke returns empty when wallet id is empty`() =
-        runTest {
-            fakeGetFromOpenSecureStore["wallet_id"] = ""
-
-            val result = sut.invoke()
-            assertEquals("", result)
-        }
+        val walletId = sut.invoke()
+        assertEquals(expectedWalletId, walletId)
+    }
 
     @Test
-    fun `GetWalletStoreIdImpl invoke returns null when store returns null`() =
-        runTest {
-            val result = sut.invoke()
-            assertNull(result)
-        }
+    fun `GetWalletStoreIdImpl invoke returns empty when wallet id is empty`() = runTest {
+        fakeGetFromOpenSecureStore["wallet_id"] = ""
+
+        val result = sut.invoke()
+        assertEquals("", result)
+    }
+
+    @Test
+    fun `GetWalletStoreIdImpl invoke returns null when store returns null`() = runTest {
+        val result = sut.invoke()
+        assertNull(result)
+    }
 }

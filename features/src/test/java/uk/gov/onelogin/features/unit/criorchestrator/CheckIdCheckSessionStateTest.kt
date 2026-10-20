@@ -1,7 +1,9 @@
 package uk.gov.onelogin.features.unit.criorchestrator
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.util.Collection
 import junit.framework.TestCase
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -19,8 +21,6 @@ import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
-import java.util.Collection
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
@@ -34,7 +34,7 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
             analyticsLogger = mockAnalyticsLogger,
             initialConfig = mockConfig,
             logger = mockLogger,
-            applicationContext = context
+            applicationContext = context,
         )
     private val c = mock<Collection<String>>()
 
@@ -48,12 +48,12 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
 
     @Ignore(
         "To find a way ot test this - at the moment is because of this error: " +
-            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null"
+            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null",
     )
     @Test
     fun sessionIsActive() {
         whenever(mockCriOrchestratorSdk.isIdCheckSdkActive).thenReturn(
-            MockIsIdSCheckSessionActiveImpl(true)
+            MockIsIdSCheckSessionActiveImpl(true),
         )
 
         val result = mockCheckIdCheckSessionState.isIdCheckActive()
@@ -63,12 +63,12 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
 
     @Ignore(
         "To find a way ot test this - at the moment is because of this error: " +
-            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null"
+            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null",
     )
     @Test
     fun sessionIsNotActive() {
         whenever(mockCriOrchestratorSdk.isIdCheckSdkActive).thenReturn(
-            MockIsIdSCheckSessionActiveImpl(false)
+            MockIsIdSCheckSessionActiveImpl(false),
         )
 
         val result = mockCheckIdCheckSessionState.isIdCheckActive()
@@ -76,9 +76,8 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
         TestCase.assertFalse(result)
     }
 
-    private class MockIsIdSCheckSessionActiveImpl(
-        private val result: Boolean
-    ) : IsIdCheckSdkActive {
+    private class MockIsIdSCheckSessionActiveImpl(private val result: Boolean) :
+        IsIdCheckSdkActive {
         override fun invoke(): Boolean = result
     }
 }

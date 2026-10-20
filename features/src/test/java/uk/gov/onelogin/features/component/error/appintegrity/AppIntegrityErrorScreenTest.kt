@@ -24,11 +24,17 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
 
     private val errorIconDescription = resources.getString(R.string.error_icon_description)
     private val errorTitle =
-        hasText(resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorTitle))
+        hasText(
+            resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorTitle),
+        )
     private val errorBody1 =
-        hasText(resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorBody1))
+        hasText(
+            resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorBody1),
+        )
     private val errorBody2 =
-        hasText(resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorBody2))
+        hasText(
+            resources.getString(uk.gov.android.onelogin.core.R.string.app_appIntegrityErrorBody2),
+        )
 
     @Before
     fun setUp() {
@@ -40,12 +46,12 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     fun appIntegrityErrorScreen() {
         composeTestRule.setContent {
             AppIntegrityErrorScreen(
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
         composeTestRule
             .onNodeWithContentDescription(
-                errorIconDescription
+                errorIconDescription,
             ).assertContentDescriptionContains(errorIconDescription)
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
@@ -56,7 +62,7 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
     fun onBackClicked() {
         composeTestRule.setContent {
             AppIntegrityErrorScreen(
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
 
@@ -64,7 +70,7 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
 
         composeTestRule
             .onNodeWithContentDescription(
-                errorIconDescription
+                errorIconDescription,
             ).assertContentDescriptionContains(errorIconDescription)
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()
@@ -78,7 +84,7 @@ class AppIntegrityErrorScreenTest : FragmentActivityTestCase() {
         }
         composeTestRule
             .onNodeWithContentDescription(
-                errorIconDescription
+                errorIconDescription,
             ).assertContentDescriptionContains(errorIconDescription)
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
         composeTestRule.onNode(errorBody1).assertIsDisplayed()

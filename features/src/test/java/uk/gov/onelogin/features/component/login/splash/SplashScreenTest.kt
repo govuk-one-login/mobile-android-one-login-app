@@ -87,7 +87,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 onlineChecker,
                 refreshExchange,
-                getTokenExpiry
+                getTokenExpiry,
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
@@ -118,7 +118,11 @@ class SplashScreenTest : FragmentActivityTestCase() {
     @Test
     fun testUnlockButton() {
         wheneverBlocking { handleLocalLogin.invoke(any(), any()) }.thenAnswer {
-            (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelledBioPrompt)
+            (
+                it.arguments[1] as (
+                    LocalAuthStatus,
+                ) -> Unit
+                ).invoke(LocalAuthStatus.UserCancelledBioPrompt)
         }
 
         // Given
@@ -201,7 +205,7 @@ class SplashScreenTest : FragmentActivityTestCase() {
         }
 
         verify(analytics).logEventV3Dot1(
-            SplashScreenAnalyticsViewModel.makeBackEvent(context)
+            SplashScreenAnalyticsViewModel.makeBackEvent(context),
         )
     }
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,30 +28,28 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetPersistentId
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @HiltViewModel
 class LoginViewModel
-    @Inject
-    constructor(
-        private val navigator: Navigator,
-        private val onlineChecker: OnlineChecker,
-        private val remoteLogin: RemoteLogin,
-        private val getPersistentId: GetPersistentId,
-        private val signOutUseCase: SignOutUseCase,
-        private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
-        private val logger: Logger
-    ) : ViewModel(), LogTagProvider {
-        private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-        val loading = _loading.asStateFlow()
+@Inject
+constructor(
+    private val navigator: Navigator,
+    private val onlineChecker: OnlineChecker,
+    private val remoteLogin: RemoteLogin,
+    private val getPersistentId: GetPersistentId,
+    private val signOutUseCase: SignOutUseCase,
+    private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
+    private val logger: Logger,
+) : ViewModel(),
+    LogTagProvider {
+    private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val loading = _loading.asStateFlow()
 
-        private var startJob: Job? = null
+    private var startJob: Job? = null
 
-        fun startLoginActivity(
-            launcher: ActivityResultLauncher<Intent>,
-            isReAuth: Boolean
-        ) = viewModelScope.launch {
+    fun startLoginActivity(launcher: ActivityResultLauncher<Intent>, isReAuth: Boolean) =
+        viewModelScope.launch {
             _loading.emit(true)
             if (!onlineChecker.isOnline()) {
                 navigator.navigate(ErrorRoutes.Offline)
@@ -80,82 +79,79 @@ class LoginViewModel
             startJob = job
         }
 
-        fun handleLoginActivityResult(
-            result: ActivityResult,
-            isReAuth: Boolean = false,
-            activity: FragmentActivity,
-        ) {
-            if (result.resultCode != Activity.RESULT_OK) {
-                _loading.value = false
-                return
-            }
-
-            val intent = result.data ?: run {
-                logger.error(
-                    NULL_INTENT_MSG,
-                    Exception(NULL_INTENT_MSG),
-                    componentKey(COMPONENT_LOGIN),
-                    actionKey(ACTION_START_LOGIN_RESULT),
-                )
-                _loading.value = false
-                return
-            }
-
-            viewModelScope.launch {
-                _loading.emit(true)
-                val result = remoteLogin.finalise(
-                    intent,
-                    activity
-                )
-
-                navigator.navigate(result, isReAuth)
-            }
-        }
-
-        fun abortLogin() {
+    fun handleLoginActivityResult(
+        result: ActivityResult,
+        isReAuth: Boolean = false,
+        activity: FragmentActivity,
+    ) {
+        if (result.resultCode != Activity.RESULT_OK) {
             _loading.value = false
-            startJob?.cancel()
-            startJob = null
+            return
         }
 
-        fun stopLoading() {
+        val intent = result.data ?: run {
+            logger.error(
+                NULL_INTENT_MSG,
+                Exception(NULL_INTENT_MSG),
+                componentKey(COMPONENT_LOGIN),
+                actionKey(ACTION_START_LOGIN_RESULT),
+            )
             _loading.value = false
+            return
         }
 
-        private fun Navigator.navigate(
-            loginResult: RemoteLogin.Result,
-            isReAuth: Boolean,
-        ) {
-            when (loginResult) {
-                is RemoteLogin.Result.Success -> {
-                    if (isReAuth) {
-                        goBack()
-                    } else {
-                        navigate(MainNavRoutes.Start, true)
-                    }
-                }
+        viewModelScope.launch {
+            _loading.emit(true)
+            val result = remoteLogin.finalise(
+                intent,
+                activity,
+            )
 
-                is RemoteLogin.Result.Failure -> {
-                    when (loginResult.type) {
-                        RemoteLogin.FailureType.AccessDenied ->
-                            navigate(SignOutRoutes.AppResetError)
-
-                        RemoteLogin.FailureType.AppIntegrity ->
-                            navigate(ErrorRoutes.AppIntegrity)
-
-                        RemoteLogin.FailureType.SignInRecoverable ->
-                            navigate(LoginRoutes.SignInRecoverableError, true)
-
-                        RemoteLogin.FailureType.SignInUnrecoverable ->
-                            navigate(LoginRoutes.SignInUnrecoverableError, true)
-                    }
-                }
-            }
-        }
-
-        companion object {
-            internal const val COMPONENT_LOGIN = "login"
-            internal const val ACTION_START_LOGIN_RESULT = "Start Login Result"
-            internal const val NULL_INTENT_MSG = "Intent data is null"
+            navigator.navigate(result, isReAuth)
         }
     }
+
+    fun abortLogin() {
+        _loading.value = false
+        startJob?.cancel()
+        startJob = null
+    }
+
+    fun stopLoading() {
+        _loading.value = false
+    }
+
+    private fun Navigator.navigate(loginResult: RemoteLogin.Result, isReAuth: Boolean) {
+        when (loginResult) {
+            is RemoteLogin.Result.Success -> {
+                if (isReAuth) {
+                    goBack()
+                } else {
+                    navigate(MainNavRoutes.Start, true)
+                }
+            }
+
+            is RemoteLogin.Result.Failure -> {
+                when (loginResult.type) {
+                    RemoteLogin.FailureType.AccessDenied ->
+                        navigate(SignOutRoutes.AppResetError)
+
+                    RemoteLogin.FailureType.AppIntegrity ->
+                        navigate(ErrorRoutes.AppIntegrity)
+
+                    RemoteLogin.FailureType.SignInRecoverable ->
+                        navigate(LoginRoutes.SignInRecoverableError, true)
+
+                    RemoteLogin.FailureType.SignInUnrecoverable ->
+                        navigate(LoginRoutes.SignInUnrecoverableError, true)
+                }
+            }
+        }
+    }
+
+    companion object {
+        internal const val COMPONENT_LOGIN = "login"
+        internal const val ACTION_START_LOGIN_RESULT = "Start Login Result"
+        internal const val NULL_INTENT_MSG = "Intent data is null"
+    }
+}

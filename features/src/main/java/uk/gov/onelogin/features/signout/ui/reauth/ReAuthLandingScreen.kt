@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import kotlinx.collections.immutable.persistentListOf
@@ -85,10 +85,7 @@ fun ReAuthLandingScreen(
     }
 }
 
-private fun startLogin(
-    loginViewModel: LoginViewModel,
-    launcher: ActivityResultLauncher<Intent>,
-) {
+private fun startLogin(loginViewModel: LoginViewModel, launcher: ActivityResultLauncher<Intent>) {
     loginViewModel.startLoginActivity(launcher, true)
 }
 

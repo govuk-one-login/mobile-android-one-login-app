@@ -46,13 +46,13 @@ class AppIntegrityAnalyticsViewModelTest {
         requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         analyticsLogger = mock()
         viewModel =
             AppIntegrityErrorAnalyticsViewModel(
                 context,
-                analyticsLogger
+                analyticsLogger,
             )
     }
 
@@ -65,7 +65,7 @@ class AppIntegrityAnalyticsViewModelTest {
                 endpoint = "",
                 reason = reason,
                 status = "",
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackScreen()
@@ -74,7 +74,7 @@ class AppIntegrityAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 }
