@@ -3,75 +3,70 @@ package uk.gov.onelogin.features.navigation.domain
 import android.os.Handler
 import android.os.Looper
 import androidx.navigation.NavHostController
+import javax.inject.Inject
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.navigation.domain.NavRoute
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
-import javax.inject.Inject
 
 class NavigatorImpl
-    @Inject
-    constructor(
-        private val logger: Logger,
-    ) : Navigator {
-        private var navController: NavHostController? = null
-            get() {
-                if (field == null) {
-                    logger.error(
-                        this::class.java.simpleName,
-                        "Navigator not initialised",
-                        IllegalStateException("Navigator not initialised"),
-                    )
-                }
-                return field
+@Inject
+constructor(private val logger: Logger,) : Navigator {
+    private var navController: NavHostController? = null
+        get() {
+            if (field == null) {
+                logger.error(
+                    this::class.java.simpleName,
+                    "Navigator not initialised",
+                    IllegalStateException("Navigator not initialised"),
+                )
             }
-
-        override fun setController(navController: NavHostController) {
-            this.navController = navController
+            return field
         }
 
-        override fun navigate(
-            route: NavRoute,
-            popUpToInclusive: Boolean,
-        ) {
-            logger.debug("Navigator", "Navigating to: ${route.getRoute()}")
-            runOnMainThread {
-                navController?.let { controller ->
-                    if (popUpToInclusive) {
-                        controller.navigate(route.getRoute()) {
-                            popUpTo(controller.graph.id) {
-                                inclusive = true
-                            }
+    override fun setController(navController: NavHostController) {
+        this.navController = navController
+    }
+
+    override fun navigate(route: NavRoute, popUpToInclusive: Boolean,) {
+        logger.debug("Navigator", "Navigating to: ${route.getRoute()}")
+        runOnMainThread {
+            navController?.let { controller ->
+                if (popUpToInclusive) {
+                    controller.navigate(route.getRoute()) {
+                        popUpTo(controller.graph.id) {
+                            inclusive = true
                         }
-                    } else {
-                        controller.navigate(route.getRoute())
                     }
-                }
-            }
-        }
-
-        override fun goBack() {
-            navController?.popBackStack()
-        }
-
-        override fun openDeveloperPanel() {
-            navController?.navigateToDeveloperPanel()
-        }
-
-        override fun hasBackStack(): Boolean = navController?.hasPreviousBackStack() ?: false
-
-        override fun reset() {
-            navController = null
-        }
-
-        private fun runOnMainThread(action: () -> Unit) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                action()
-            } else {
-                Handler(Looper.getMainLooper()).post {
-                    action()
+                } else {
+                    controller.navigate(route.getRoute())
                 }
             }
         }
     }
+
+    override fun goBack() {
+        navController?.popBackStack()
+    }
+
+    override fun openDeveloperPanel() {
+        navController?.navigateToDeveloperPanel()
+    }
+
+    override fun hasBackStack(): Boolean = navController?.hasPreviousBackStack() ?: false
+
+    override fun reset() {
+        navController = null
+    }
+
+    private fun runOnMainThread(action: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                action()
+            }
+        }
+    }
+}

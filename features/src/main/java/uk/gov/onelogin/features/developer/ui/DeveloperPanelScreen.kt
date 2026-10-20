@@ -166,8 +166,4 @@ fun TabView(goBack: () -> Unit) {
     }
 }
 
-data class TabItem(
-    @StringRes val title: Int,
-    val icon: ImageVector,
-    val screen: @Composable () -> Unit,
-)
+data class TabItem(@StringRes val title: Int, val icon: ImageVector, val screen: @Composable () -> Unit,)

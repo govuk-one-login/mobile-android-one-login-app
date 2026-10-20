@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -29,7 +30,6 @@ import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorAnalyticsViewModel
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorViewModel
-import uk.gov.android.ui.patterns.R as patternsR
 
 @RunWith(AndroidJUnit4::class)
 class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {

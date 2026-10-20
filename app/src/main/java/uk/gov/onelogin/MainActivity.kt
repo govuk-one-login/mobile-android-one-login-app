@@ -9,9 +9,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.core.utils.ActivityProvider
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

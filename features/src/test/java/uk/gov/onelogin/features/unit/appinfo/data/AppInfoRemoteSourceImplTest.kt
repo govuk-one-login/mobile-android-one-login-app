@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.unit.appinfo.data
 
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -12,7 +13,6 @@ import uk.gov.onelogin.features.appinfo.data.AppInfoRemoteSourceImpl
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoRemoteState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoApi
-import kotlin.test.assertEquals
 
 class AppInfoRemoteSourceImplTest {
     private val appInfoApi: AppInfoApi = mock()
@@ -33,29 +33,26 @@ class AppInfoRemoteSourceImplTest {
     private val sut = AppInfoRemoteSourceImpl(appInfoApi, onlineChecker)
 
     @Test
-    fun `successful api call`() =
-        runTest {
-            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Success(200, data))
-            val result = sut.get()
-            assertEquals(AppInfoRemoteState.Success(data), result)
-        }
+    fun `successful api call`() = runTest {
+        whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Success(200, data))
+        val result = sut.get()
+        assertEquals(AppInfoRemoteState.Success(data), result)
+    }
 
     @Test
-    fun `offline api call`() =
-        runTest {
-            onlineChecker.setOnline(false)
-            val result = sut.get()
-            assertEquals(AppInfoRemoteState.Offline, result)
-        }
+    fun `offline api call`() = runTest {
+        onlineChecker.setOnline(false)
+        val result = sut.get()
+        assertEquals(AppInfoRemoteState.Offline, result)
+    }
 
     @Test
-    fun `failed api call`() =
-        runTest {
-            whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(exception, 500))
-            val result = sut.get()
-            assertEquals(
-                AppInfoRemoteState.Failure("Status: 500", exception),
-                result
-            )
-        }
+    fun `failed api call`() = runTest {
+        whenever(appInfoApi.callApi()).thenReturn(ApiResponse.Failure(exception, 500))
+        val result = sut.get()
+        assertEquals(
+            AppInfoRemoteState.Failure("Status: 500", exception),
+            result
+        )
+    }
 }

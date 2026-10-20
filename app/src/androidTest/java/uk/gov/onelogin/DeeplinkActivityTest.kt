@@ -35,14 +35,13 @@ class DeeplinkActivityTest {
     }
 
     @Test
-    fun verifyNavToMainActivity() =
-        runTest {
-            scenario = ActivityScenario.launch(DeeplinkActivity::class.java)
-            intended(
-                allOf(
-                    hasComponent(MainActivity::class.java.name),
-                    hasFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP),
-                ),
-            )
-        }
+    fun verifyNavToMainActivity() = runTest {
+        scenario = ActivityScenario.launch(DeeplinkActivity::class.java)
+        intended(
+            allOf(
+                hasComponent(MainActivity::class.java.name),
+                hasFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            ),
+        )
+    }
 }

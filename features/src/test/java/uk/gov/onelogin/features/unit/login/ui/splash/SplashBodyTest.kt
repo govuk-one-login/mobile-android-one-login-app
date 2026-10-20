@@ -18,7 +18,6 @@ import org.robolectric.annotation.Config
 import uk.gov.android.onelogin.core.R
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
-import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashBody
 
 @RunWith(AndroidJUnit4::class)

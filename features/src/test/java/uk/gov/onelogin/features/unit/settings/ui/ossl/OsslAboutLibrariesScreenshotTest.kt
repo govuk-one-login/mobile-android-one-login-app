@@ -11,10 +11,7 @@ import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.settings.ui.ossl.OsslAboutLibrariesScreenPreview
 
 @RunWith(Parameterized::class)
-class OsslAboutLibrariesScreenshotTest(
-    nightMode: NightMode,
-    locale: String
-) : BaseScreenshotTest(nightMode, locale) {
+class OsslAboutLibrariesScreenshotTest(nightMode: NightMode, locale: String) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         OsslAboutLibrariesScreenPreview()
     }
@@ -22,10 +19,9 @@ class OsslAboutLibrariesScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN),
-                arrayOf(NIGHT, LOCALE_EN)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN),
+            arrayOf(NIGHT, LOCALE_EN)
+        )
     }
 }

@@ -151,11 +151,7 @@ private fun IdTokenSection(tokens: LoginTokens?) {
 }
 
 @Composable
-private fun WalletIdSection(
-    walletId: String?,
-    refreshWalletId: () -> Unit,
-    removeWalletId: () -> Unit
-) {
+private fun WalletIdSection(walletId: String?, refreshWalletId: () -> Unit, removeWalletId: () -> Unit) {
     Text(
         text = "Wallet ID",
         fontWeight = FontWeight.Bold,

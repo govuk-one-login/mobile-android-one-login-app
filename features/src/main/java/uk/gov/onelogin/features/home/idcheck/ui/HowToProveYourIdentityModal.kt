@@ -42,25 +42,21 @@ fun HowToProveYourIdentityModal(
 }
 
 @Composable
-private fun HowToProveYourIdentityModalContent(
-    onDismissRequest: () -> Unit,
-    onGoToGovUkWebsiteClick: () -> Unit,
-) = Surface {
-    FullScreenDialogue(
-        onDismissRequest = onDismissRequest,
-        modifier = Modifier,
-    ) {
-        HowToProveYourIdentityGuidanceContent(
-            onGoToGovUkWebsiteClick = onGoToGovUkWebsiteClick
-        )
+private fun HowToProveYourIdentityModalContent(onDismissRequest: () -> Unit, onGoToGovUkWebsiteClick: () -> Unit,) =
+    Surface {
+        FullScreenDialogue(
+            onDismissRequest = onDismissRequest,
+            modifier = Modifier,
+        ) {
+            HowToProveYourIdentityGuidanceContent(
+                onGoToGovUkWebsiteClick = onGoToGovUkWebsiteClick
+            )
+        }
     }
-}
 
 @Suppress("LongMethod")
 @Composable
-private fun HowToProveYourIdentityGuidanceContent(
-    onGoToGovUkWebsiteClick: () -> Unit,
-) = LeftAlignedScreen(
+private fun HowToProveYourIdentityGuidanceContent(onGoToGovUkWebsiteClick: () -> Unit,) = LeftAlignedScreen(
     title = { horizontalPadding ->
         GdsHeading(
             text = stringResource(R.string.app_proveYourIdentityGuidanceTitle),

@@ -22,11 +22,7 @@ import uk.gov.android.ui.theme.m3.GdsTheme
  *
  * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenshotTest
  */
-abstract class BaseScreenshotTest(
-    nightMode: NightMode = NOTNIGHT,
-    locale: String = LOCALE_EN,
-    fontScale: Float = 1f,
-) {
+abstract class BaseScreenshotTest(nightMode: NightMode = NOTNIGHT, locale: String = LOCALE_EN, fontScale: Float = 1f,) {
     @get:Rule
     val paparazzi =
         Paparazzi(
@@ -63,22 +59,20 @@ abstract class BaseScreenshotTest(
             }
 
         @JvmStatic
-        fun applyNightModeAndLocale(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN),
-                arrayOf(NIGHT, LOCALE_EN),
-                arrayOf(NOTNIGHT, LOCALE_CY),
-                arrayOf(NIGHT, LOCALE_CY)
-            )
+        fun applyNightModeAndLocale(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN),
+            arrayOf(NIGHT, LOCALE_EN),
+            arrayOf(NOTNIGHT, LOCALE_CY),
+            arrayOf(NIGHT, LOCALE_CY)
+        )
 
         @JvmStatic
-        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
-                arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
-                arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
-                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
-            )
+        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
+            arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
+            arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
+            arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
+        )
     }
 }
 

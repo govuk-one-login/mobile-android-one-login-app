@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.developer.ui.logging.LoggingTabScreenPreview
 
 @RunWith(Parameterized::class)
-class LoggingTabScreenshotTest(
-    nightMode: NightMode,
-) : BaseScreenshotTest(nightMode) {
+class LoggingTabScreenshotTest(nightMode: NightMode,) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         LoggingTabScreenPreview()
     }
@@ -20,10 +18,9 @@ class LoggingTabScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT),
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT),
+        )
     }
 }

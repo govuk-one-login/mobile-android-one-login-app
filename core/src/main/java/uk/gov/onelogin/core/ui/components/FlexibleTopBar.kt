@@ -155,10 +155,7 @@ private suspend fun settleAppBar(
 }
 
 @Stable
-class FlexibleTopBarColors internal constructor(
-    val containerColor: Color,
-    val scrolledContainerColor: Color,
-) {
+class FlexibleTopBarColors internal constructor(val containerColor: Color, val scrolledContainerColor: Color,) {
     /**
      * Represents the container color used for the top app bar.
      *
@@ -170,12 +167,11 @@ class FlexibleTopBarColors internal constructor(
      * percentage
      */
     @Composable
-    fun containerColor(colorTransitionFraction: Float): Color =
-        lerp(
-            containerColor,
-            scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction),
-        )
+    fun containerColor(colorTransitionFraction: Float): Color = lerp(
+        containerColor,
+        scrolledContainerColor,
+        FastOutLinearInEasing.transform(colorTransitionFraction),
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -204,17 +200,13 @@ object FlexibleTopBarDefaults {
                 backgroundColor = containerColor,
                 elevation = 4.dp,
             ),
-    ): FlexibleTopBarColors =
-        FlexibleTopBarColors(
-            containerColor,
-            scrolledContainerColor,
-        )
+    ): FlexibleTopBarColors = FlexibleTopBarColors(
+        containerColor,
+        scrolledContainerColor,
+    )
 }
 
-internal fun ColorScheme.applyTonalElevation(
-    backgroundColor: Color,
-    elevation: Dp,
-): Color =
+internal fun ColorScheme.applyTonalElevation(backgroundColor: Color, elevation: Dp,): Color =
     if (backgroundColor == surface) {
         surfaceColorAtElevation(elevation)
     } else {
@@ -235,7 +227,7 @@ fun ColorScheme.surfaceColorAtElevation(elevation: Dp): Color {
     val alpha =
         (
             (ALPHA_MODIFIER * ln(elevation.value + ELEVATION_OFFSET)) + ALPHA_OFFSET
-        ) / PERCENTAGE_DIVIDER
+            ) / PERCENTAGE_DIVIDER
     return surfaceTint.copy(alpha = alpha).compositeOver(surface)
 }
 

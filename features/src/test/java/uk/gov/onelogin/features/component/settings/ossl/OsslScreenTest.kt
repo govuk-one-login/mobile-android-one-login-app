@@ -14,6 +14,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.UriMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertTrue
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -30,7 +31,6 @@ import uk.gov.onelogin.features.settings.ui.ossl.OsslAboutLibrariesScreen
 import uk.gov.onelogin.features.settings.ui.ossl.OsslAnalyticsViewModel
 import uk.gov.onelogin.features.settings.ui.ossl.OsslScreen
 import uk.gov.onelogin.features.settings.ui.ossl.previewLibraries
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class OsslScreenTest : FragmentActivityTestCase() {

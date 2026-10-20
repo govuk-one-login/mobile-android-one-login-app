@@ -35,47 +35,45 @@ class SavePersistentIdTest {
     }
 
     @Test
-    fun savePersistentIdWhenTokensNotNull() =
-        runTest {
-            val testResponse =
-                LoginTokens(
-                    tokenType = "test",
-                    accessToken = "access",
-                    accessTokenExpirationTime = 1L,
-                    idToken = idToken,
-                )
+    fun savePersistentIdWhenTokensNotNull() = runTest {
+        val testResponse =
+            LoginTokens(
+                tokenType = "test",
+                accessToken = "access",
+                accessTokenExpirationTime = 1L,
+                idToken = idToken,
+            )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            savePersistentId()
+        savePersistentId()
 
-            runBlocking {
-                verify(mockSaveToOpenSecureStore).save(
-                    AuthTokenStoreKeys.PERSISTENT_ID_KEY,
-                    "1234",
-                )
-            }
+        runBlocking {
+            verify(mockSaveToOpenSecureStore).save(
+                AuthTokenStoreKeys.PERSISTENT_ID_KEY,
+                "1234",
+            )
         }
+    }
 
     @Test
-    fun notSaveIdWhenTokensNotNullMissingPersistentId() =
-        runTest {
-            val testResponse =
-                LoginTokens(
-                    tokenType = "test",
-                    accessToken = "access",
-                    accessTokenExpirationTime = 1L,
-                    idToken = "id",
-                )
+    fun notSaveIdWhenTokensNotNullMissingPersistentId() = runTest {
+        val testResponse =
+            LoginTokens(
+                tokenType = "test",
+                accessToken = "access",
+                accessTokenExpirationTime = 1L,
+                idToken = "id",
+            )
 
-            whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
+        whenever(mockTokenRepository.getTokenResponse()).thenReturn(testResponse)
 
-            savePersistentId()
-            runBlocking {
-                verifyNoInteractions(mockSaveToOpenSecureStore)
-            }
-            assertThat(logger, hasSize(1))
+        savePersistentId()
+        runBlocking {
+            verifyNoInteractions(mockSaveToOpenSecureStore)
         }
+        assertThat(logger, hasSize(1))
+    }
 
     @Test
     fun noSaveIdWhenTokensIsNull() {

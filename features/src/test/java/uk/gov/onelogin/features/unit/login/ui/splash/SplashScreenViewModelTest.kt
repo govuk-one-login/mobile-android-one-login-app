@@ -69,197 +69,186 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun `RefreshExchange - login fails with client attestation failure`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.ClientAttestationFailure
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - login fails with client attestation failure`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.ClientAttestationFailure
+                )
+            }
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity, false)
-        }
-
-    @Test
-    fun `RefreshExchange - login success`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.Success
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(MainNavRoutes.Start, false)
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(ErrorRoutes.AppIntegrity, false)
+    }
 
     @Test
-    fun `RefreshExchange - login requires sign in`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.FirstTimeUser
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - login success`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.Success
+                )
+            }
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(MainNavRoutes.Start, false)
+    }
 
     @Test
-    fun `RefreshExchange - login requires re auth`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.ReauthRequired
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - login requires sign in`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.FirstTimeUser
+                )
+            }
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
-        }
-
-    @Test
-    fun `RefreshExchange - login returns user cancelled`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.UserCancelledBioPrompt
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verifyNoInteractions(mockNavigator)
-            assertTrue(viewModel.showUnlock.value)
-            assertFalse(viewModel.loading.value)
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockSignOutUseCase).invoke()
+        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
+    }
 
     @Test
-    fun `RefreshExchange - allows subsequent login calls from lock screen`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            // WHEN on resume called more than once
-            viewModel.onResume(mockLifeCycleOwner)
-            viewModel.onResume(mockLifeCycleOwner)
+    fun `RefreshExchange - login requires re auth`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.ReauthRequired
+                )
+            }
+        viewModel.login(mockActivity)
 
-            // AND we call login
-            viewModel.login(mockActivity)
-
-            // THEN the autoinitialise is being called
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            // THEN do NOT login (as the app will be going to background)
-            verify(mockRefreshExchange, times(1))
-                .getTokens(any(), any())
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
+    }
 
     @Test
-    fun `RefreshExchange - login returns unrecoverable error`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(100)
-            whenever(mockRefreshExchange.getTokens(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                        RefreshExchangeResult.UnrecoverableError
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - login returns user cancelled`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.UserCancelledBioPrompt
+                )
+            }
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.AppResetError, false)
-            verify(mockSignOutUseCase).invoke()
-        }
-
-    @Test
-    fun `LocalAuth - login success`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.Success(mapOf("key" to "token"))
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(MainNavRoutes.Start, false)
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verifyNoInteractions(mockNavigator)
+        assertTrue(viewModel.showUnlock.value)
+        assertFalse(viewModel.loading.value)
+    }
 
     @Test
-    fun `LocalAuth - login requires sign in`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.FirstTimeUser
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - allows subsequent login calls from lock screen`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        // WHEN on resume called more than once
+        viewModel.onResume(mockLifeCycleOwner)
+        viewModel.onResume(mockLifeCycleOwner)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
-        }
+        // AND we call login
+        viewModel.login(mockActivity)
 
-    @Test
-    fun `LocalAuth - login requires re auth`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.ReauthRequired
-                    )
-                }
-            viewModel.login(mockActivity)
-
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).goBack()
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
-        }
+        // THEN the autoinitialise is being called
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        // THEN do NOT login (as the app will be going to background)
+        verify(mockRefreshExchange, times(1))
+            .getTokens(any(), any())
+    }
 
     @Test
-    fun `LocalAuth - login returns user cancelled`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.UserCancelledBioPrompt
-                    )
-                }
-            viewModel.login(mockActivity)
+    fun `RefreshExchange - login returns unrecoverable error`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(100)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                    RefreshExchangeResult.UnrecoverableError
+                )
+            }
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verifyNoInteractions(mockNavigator)
-            assertTrue(viewModel.showUnlock.value)
-            assertFalse(viewModel.loading.value)
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(SignOutRoutes.AppResetError, false)
+        verify(mockSignOutUseCase).invoke()
+    }
+
+    @Test
+    fun `LocalAuth - login success`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        whenever(mockHandleLocalLogin(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.Success(mapOf("key" to "token"))
+                )
+            }
+        viewModel.login(mockActivity)
+
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(MainNavRoutes.Start, false)
+    }
+
+    @Test
+    fun `LocalAuth - login requires sign in`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        whenever(mockHandleLocalLogin(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.FirstTimeUser
+                )
+            }
+        viewModel.login(mockActivity)
+
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockSignOutUseCase).invoke()
+        verify(mockNavigator).navigate(LoginRoutes.AnalyticsOptIn)
+    }
+
+    @Test
+    fun `LocalAuth - login requires re auth`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        whenever(mockHandleLocalLogin(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.ReauthRequired
+                )
+            }
+        viewModel.login(mockActivity)
+
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).goBack()
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuth, false)
+    }
+
+    @Test
+    fun `LocalAuth - login returns user cancelled`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        whenever(mockHandleLocalLogin(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.UserCancelledBioPrompt
+                )
+            }
+        viewModel.login(mockActivity)
+
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verifyNoInteractions(mockNavigator)
+        assertTrue(viewModel.showUnlock.value)
+        assertFalse(viewModel.loading.value)
+    }
 
     @Test
     fun `test navigate to analytics screen`() {
@@ -269,20 +258,19 @@ class SplashScreenViewModelTest {
     }
 
     @Test
-    fun `test error during forced sign out`() =
-        runTest {
-            whenever(mockGetRefreshTokenExp()).thenReturn(null)
-            whenever(mockHandleLocalLogin(any(), any()))
-                .thenAnswer {
-                    (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                        LocalAuthStatus.FirstTimeUser
-                    )
-                }
-            whenever(mockSignOutUseCase.invoke()).thenThrow(SignOutError(Exception()))
-            viewModel.login(mockActivity)
+    fun `test error during forced sign out`() = runTest {
+        whenever(mockGetRefreshTokenExp()).thenReturn(null)
+        whenever(mockHandleLocalLogin(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
+                    LocalAuthStatus.FirstTimeUser
+                )
+            }
+        whenever(mockSignOutUseCase.invoke()).thenThrow(SignOutError(Exception()))
+        viewModel.login(mockActivity)
 
-            verify(mockAutoInitialiseSecureStore).initialise(null)
-            verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
-            verify(mockSignOutUseCase).invoke()
-        }
+        verify(mockAutoInitialiseSecureStore).initialise(null)
+        verify(mockNavigator).navigate(SignOutRoutes.ReAuth)
+        verify(mockSignOutUseCase).invoke()
+    }
 }

@@ -31,33 +31,30 @@ class RemoveRefreshTokenAndExpiryTest {
     }
 
     @Test
-    fun testRemove() =
-        runTest {
-            sut.remove()
+    fun testRemove() = runTest {
+        sut.remove()
 
-            verify(mockOpenSecureStore).delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)
-            verify(mockTokenSecureStore).delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)
-        }
-
-    @Test
-    fun testRemoveTokenSecureStoreFailure() =
-        runTest {
-            val message = "Error message"
-            val exception = SecureStorageErrorV2(Exception(message))
-            whenever(mockTokenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)).thenThrow(exception)
-            sut.remove()
-
-            assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))
-        }
+        verify(mockOpenSecureStore).delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)
+        verify(mockTokenSecureStore).delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)
+    }
 
     @Test
-    fun testRemoveOpenSecureStoreFailure() =
-        runTest {
-            val message = "Error message"
-            val exception = SecureStorageErrorV2(Exception(message))
-            whenever(mockOpenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)).thenThrow(exception)
-            sut.remove()
+    fun testRemoveTokenSecureStoreFailure() = runTest {
+        val message = "Error message"
+        val exception = SecureStorageErrorV2(Exception(message))
+        whenever(mockTokenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)).thenThrow(exception)
+        sut.remove()
 
-            assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))
-        }
+        assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))
+    }
+
+    @Test
+    fun testRemoveOpenSecureStoreFailure() = runTest {
+        val message = "Error message"
+        val exception = SecureStorageErrorV2(Exception(message))
+        whenever(mockOpenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)).thenThrow(exception)
+        sut.remove()
+
+        assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))
+    }
 }

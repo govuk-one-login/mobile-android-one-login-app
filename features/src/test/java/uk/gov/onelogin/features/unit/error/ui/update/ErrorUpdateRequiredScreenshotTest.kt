@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.update.UpdateRequiredPreview
 
 @RunWith(Parameterized::class)
-class ErrorUpdateRequiredScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+class ErrorUpdateRequiredScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         UpdateRequiredPreview()
     }
@@ -20,10 +18,9 @@ class ErrorUpdateRequiredScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT)
+        )
     }
 }

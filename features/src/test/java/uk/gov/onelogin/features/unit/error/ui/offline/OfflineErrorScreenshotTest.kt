@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorPreview
 
 @RunWith(Parameterized::class)
-class OfflineErrorScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+class OfflineErrorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         OfflineErrorPreview()
     }
@@ -20,10 +18,9 @@ class OfflineErrorScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT)
+        )
     }
 }

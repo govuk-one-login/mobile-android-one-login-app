@@ -12,9 +12,7 @@ fun interface AppInfoUtils {
      */
     fun getComparableAppVersion(version: String): List<Int>
 
-    sealed class AppError(
-        msg: String,
-    ) : Exception(msg) {
+    sealed class AppError(msg: String,) : Exception(msg) {
         data object IllegalVersionFormat : AppError(
             "Version number does not adhere to Major.minor.patch convention.",
         )
@@ -26,18 +24,18 @@ fun interface AppInfoUtils {
 }
 
 class AppInfoUtilsImpl
-    @Inject
-    constructor() : AppInfoUtils {
-        override fun getComparableAppVersion(version: String): List<Int> {
-            val cleanVersion =
-                pattern.find(version)?.value
-                    ?: throw AppInfoUtils.AppError.IllegalVersionFormat
+@Inject
+constructor() : AppInfoUtils {
+    override fun getComparableAppVersion(version: String): List<Int> {
+        val cleanVersion =
+            pattern.find(version)?.value
+                ?: throw AppInfoUtils.AppError.IllegalVersionFormat
 
-            val result = cleanVersion.split(".").map { it.toInt() }
-            return result
-        }
-
-        companion object {
-            private val pattern = "\\d+\\.\\d+\\.\\d+".toRegex()
-        }
+        val result = cleanVersion.split(".").map { it.toInt() }
+        return result
     }
+
+    companion object {
+        private val pattern = "\\d+\\.\\d+\\.\\d+".toRegex()
+    }
+}

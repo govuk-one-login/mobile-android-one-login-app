@@ -1,8 +1,8 @@
 package uk.gov.onelogin.core.utils
 
+import kotlin.test.assertEquals
 import org.junit.Test
 import uk.gov.android.authentication.login.TokenResponse
-import kotlin.test.assertEquals
 
 class HelperFunctionsTest {
     @Test

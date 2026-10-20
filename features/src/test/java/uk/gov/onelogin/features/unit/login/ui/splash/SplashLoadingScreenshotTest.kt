@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.login.ui.signin.splash.LoadingSplashScreenPreview
 
 @RunWith(Parameterized::class)
-class SplashLoadingScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+class SplashLoadingScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         LoadingSplashScreenPreview()
     }
@@ -20,10 +18,9 @@ class SplashLoadingScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT)
+        )
     }
 }

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import uk.gov.onelogin.core.network.domain.HelloWorldApiCall
 import uk.gov.onelogin.core.tokens.data.LocalAuthStatus
@@ -19,128 +20,127 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromEncryptedSecureStore
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToTokenSecureStore
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
-import javax.inject.Inject
 
 @Suppress("LongParameterList")
 @HiltViewModel
 class AuthTabScreenViewModel
-    @Inject
-    constructor(
-        private val helloWorldApiCall: HelloWorldApiCall,
-        private val tokenRepository: TokenRepository,
-        private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
-        private val getFromOpenSecureStore: GetFromOpenSecureStore,
-        private val removeAllSecureStoreData: RemoveAllSecureStoreData,
-        private val saveToTokenSecureStore: SaveToTokenSecureStore,
-        private val removeWalletStoreID: RemoveWalletStoreId,
-        extractEmail: ExtractEmail,
-    ) : ViewModel() {
-        private val _happyHelloWorldResponse = mutableStateOf("")
-        val happyHelloWorldResponse: State<String>
-            get() = _happyHelloWorldResponse
+@Inject
+constructor(
+    private val helloWorldApiCall: HelloWorldApiCall,
+    private val tokenRepository: TokenRepository,
+    private val getFromEncryptedSecureStore: GetFromEncryptedSecureStore,
+    private val getFromOpenSecureStore: GetFromOpenSecureStore,
+    private val removeAllSecureStoreData: RemoveAllSecureStoreData,
+    private val saveToTokenSecureStore: SaveToTokenSecureStore,
+    private val removeWalletStoreID: RemoveWalletStoreId,
+    extractEmail: ExtractEmail,
+) : ViewModel() {
+    private val _happyHelloWorldResponse = mutableStateOf("")
+    val happyHelloWorldResponse: State<String>
+        get() = _happyHelloWorldResponse
 
-        private val _happyCallLoading = mutableStateOf(false)
-        val happyCallLoading: State<Boolean>
-            get() = _happyCallLoading
+    private val _happyCallLoading = mutableStateOf(false)
+    val happyCallLoading: State<Boolean>
+        get() = _happyCallLoading
 
-        private val _authFailingHelloWorldResponse = mutableStateOf("")
-        val authFailingHelloWorldResponse: State<String>
-            get() = _authFailingHelloWorldResponse
+    private val _authFailingHelloWorldResponse = mutableStateOf("")
+    val authFailingHelloWorldResponse: State<String>
+        get() = _authFailingHelloWorldResponse
 
-        private val _authFailingCallLoading = mutableStateOf(false)
-        val authFailingCallLoading: State<Boolean>
-            get() = _authFailingCallLoading
+    private val _authFailingCallLoading = mutableStateOf(false)
+    val authFailingCallLoading: State<Boolean>
+        get() = _authFailingCallLoading
 
-        private val _serviceFailingHelloWorldResponse = mutableStateOf("")
-        val serviceFailingHelloWorldResponse: State<String>
-            get() = _serviceFailingHelloWorldResponse
+    private val _serviceFailingHelloWorldResponse = mutableStateOf("")
+    val serviceFailingHelloWorldResponse: State<String>
+        get() = _serviceFailingHelloWorldResponse
 
-        private val _serviceFailingCallLoading = mutableStateOf(false)
-        val serviceFailingCallLoading: State<Boolean>
-            get() = _serviceFailingCallLoading
+    private val _serviceFailingCallLoading = mutableStateOf(false)
+    val serviceFailingCallLoading: State<Boolean>
+        get() = _serviceFailingCallLoading
 
-        private val _isRefreshTokenSaved = mutableStateOf(false)
-        val isRefreshTokenSaved: State<Boolean>
-            get() = _isRefreshTokenSaved
+    private val _isRefreshTokenSaved = mutableStateOf(false)
+    val isRefreshTokenSaved: State<Boolean>
+        get() = _isRefreshTokenSaved
 
-        private val _walletId = mutableStateOf<String?>(null)
-        val walletId: State<String?>
-            get() = _walletId
+    private val _walletId = mutableStateOf<String?>(null)
+    val walletId: State<String?>
+        get() = _walletId
 
-        val email = extractEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
+    val email = extractEmail(tokenRepository.getTokenResponse()?.idToken ?: "").orEmpty()
 
-        fun getTokens(): LoginTokens? = tokenRepository.getTokenResponse()
+    fun getTokens(): LoginTokens? = tokenRepository.getTokenResponse()
 
-        fun checkRefreshTokenSaved(context: FragmentActivity) {
-            viewModelScope.launch {
-                getFromEncryptedSecureStore.invoke(
-                    context = context,
-                    AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
-                ) { localAuthStatus ->
-                    _isRefreshTokenSaved.value =
-                        if (localAuthStatus is LocalAuthStatus.Success) {
-                            !localAuthStatus.payload?.get(AuthTokenStoreKeys.REFRESH_TOKEN_KEY).isNullOrEmpty()
-                        } else {
-                            false
-                        }
-                }
-            }
-        }
-
-        fun clearSecureStoreData() {
-            viewModelScope.launch {
-                removeAllSecureStoreData.clean()
-            }
-        }
-
-        fun makeRefreshTokenInvalid() {
-            viewModelScope.launch {
-                saveToTokenSecureStore.invoke(
-                    key = AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
-                    value = "",
-                )
-            }
-        }
-
-        fun makeHappyHelloWorldCall() {
-            _happyCallLoading.value = true
-            viewModelScope.launch {
-                _happyHelloWorldResponse.value = helloWorldApiCall.happyPath()
-                _happyCallLoading.value = false
-            }
-        }
-
-        fun makeAuthFailingHelloWorldCall() {
-            _authFailingCallLoading.value = true
-            viewModelScope.launch {
-                val currentToken = tokenRepository.getTokenResponse()
-                tokenRepository.clearTokenResponse()
-                _authFailingHelloWorldResponse.value = helloWorldApiCall.happyPath()
-                _authFailingCallLoading.value = false
-                if (currentToken != null) {
-                    tokenRepository.setTokenResponse(currentToken)
-                }
-            }
-        }
-
-        fun makeServiceFailingHelloWorldCall() {
-            _serviceFailingCallLoading.value = true
-            viewModelScope.launch {
-                _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
-                _serviceFailingCallLoading.value = false
-            }
-        }
-
-        fun getWalletId() {
-            viewModelScope.launch {
-                _walletId.value = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
-            }
-        }
-
-        fun removeWalletId() {
-            viewModelScope.launch {
-                removeWalletStoreID.invoke()
-                _walletId.value = null
+    fun checkRefreshTokenSaved(context: FragmentActivity) {
+        viewModelScope.launch {
+            getFromEncryptedSecureStore.invoke(
+                context = context,
+                AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+            ) { localAuthStatus ->
+                _isRefreshTokenSaved.value =
+                    if (localAuthStatus is LocalAuthStatus.Success) {
+                        !localAuthStatus.payload?.get(AuthTokenStoreKeys.REFRESH_TOKEN_KEY).isNullOrEmpty()
+                    } else {
+                        false
+                    }
             }
         }
     }
+
+    fun clearSecureStoreData() {
+        viewModelScope.launch {
+            removeAllSecureStoreData.clean()
+        }
+    }
+
+    fun makeRefreshTokenInvalid() {
+        viewModelScope.launch {
+            saveToTokenSecureStore.invoke(
+                key = AuthTokenStoreKeys.REFRESH_TOKEN_KEY,
+                value = "",
+            )
+        }
+    }
+
+    fun makeHappyHelloWorldCall() {
+        _happyCallLoading.value = true
+        viewModelScope.launch {
+            _happyHelloWorldResponse.value = helloWorldApiCall.happyPath()
+            _happyCallLoading.value = false
+        }
+    }
+
+    fun makeAuthFailingHelloWorldCall() {
+        _authFailingCallLoading.value = true
+        viewModelScope.launch {
+            val currentToken = tokenRepository.getTokenResponse()
+            tokenRepository.clearTokenResponse()
+            _authFailingHelloWorldResponse.value = helloWorldApiCall.happyPath()
+            _authFailingCallLoading.value = false
+            if (currentToken != null) {
+                tokenRepository.setTokenResponse(currentToken)
+            }
+        }
+    }
+
+    fun makeServiceFailingHelloWorldCall() {
+        _serviceFailingCallLoading.value = true
+        viewModelScope.launch {
+            _serviceFailingHelloWorldResponse.value = helloWorldApiCall.errorPath()
+            _serviceFailingCallLoading.value = false
+        }
+    }
+
+    fun getWalletId() {
+        viewModelScope.launch {
+            _walletId.value = getFromOpenSecureStore.invoke(WALLET_ID_KEY)?.get(WALLET_ID_KEY)
+        }
+    }
+
+    fun removeWalletId() {
+        viewModelScope.launch {
+            removeWalletStoreID.invoke()
+            _walletId.value = null
+        }
+    }
+}

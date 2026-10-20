@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.logging.api.Logger
@@ -16,16 +17,13 @@ import uk.gov.onelogin.criorchestrator.sdk.publicapi.CriOrchestratorSdkExt.creat
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object CriOrchestratorModule {
     @Provides
     @Singleton
-    fun provideSdkConfig(
-        @ApplicationContext context: Context,
-    ) = Config(
+    fun provideSdkConfig(@ApplicationContext context: Context,) = Config(
         entries =
             persistentListOf(
                 Config.Entry(
@@ -54,14 +52,13 @@ object CriOrchestratorModule {
         analyticsLogger: AnalyticsLogger,
         sdkConfig: Config,
         logger: Logger,
-    ): CriOrchestratorSdk =
-        CriOrchestratorSdk.create(
-            networkService,
-            analyticsLogger,
-            sdkConfig,
-            logger,
-            context,
-        )
+    ): CriOrchestratorSdk = CriOrchestratorSdk.create(
+        networkService,
+        analyticsLogger,
+        sdkConfig,
+        logger,
+        context,
+    )
 
     @Provides
     @Singleton

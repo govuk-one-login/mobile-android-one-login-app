@@ -12,8 +12,5 @@ fun interface RefreshExchange {
      * @param context - required for enabling retrieving the existing refresh token from the secure store
      * @param handleResult - lambda that should be called when exiting the function and includes the LocalAuthStatus to be handled accordingly by the consumer
      */
-    suspend fun getTokens(
-        context: FragmentActivity,
-        handleResult: (RefreshExchangeResult) -> Unit,
-    )
+    suspend fun getTokens(context: FragmentActivity, handleResult: (RefreshExchangeResult) -> Unit,)
 }

@@ -47,10 +47,7 @@ class InMemoryFeatureFlagsTest {
         )
     }
 
-    private fun assertAgainstOriginalFeature(
-        updateByFlag: InMemoryFeatureFlags,
-        updateBySet: InMemoryFeatureFlags,
-    ) {
+    private fun assertAgainstOriginalFeature(updateByFlag: InMemoryFeatureFlags, updateBySet: InMemoryFeatureFlags,) {
         assertNotEquals(
             FeatureFlagsTestData.originalFeatures,
             updateByFlag,

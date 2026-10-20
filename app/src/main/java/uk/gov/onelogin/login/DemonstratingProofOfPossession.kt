@@ -15,14 +15,12 @@ import uk.gov.logging.api.v3.Logger
 @InstallIn(SingletonComponent::class)
 object DemonstratingProofOfPossession {
     @Provides
-    fun provideDemonstratingProofOfPossessionConfig(
-        logger: Logger,
-        keyStoreManager: KeyStoreManager,
-    ) = DemonstratingProofOfPossessionConfig(
-        logger,
-        ProofOfPossessionGenerator,
-        keyStoreManager,
-    )
+    fun provideDemonstratingProofOfPossessionConfig(logger: Logger, keyStoreManager: KeyStoreManager,) =
+        DemonstratingProofOfPossessionConfig(
+            logger,
+            ProofOfPossessionGenerator,
+            keyStoreManager,
+        )
 
     @Provides
     fun provideDemonstratingProofOfPossessionManager(

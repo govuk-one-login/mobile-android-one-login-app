@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.signout.ui.reauth.ReAuthLandingPreview
 
 @RunWith(Parameterized::class)
-class ReAuthLandingScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+class ReAuthLandingScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         ReAuthLandingPreview()
     }
@@ -20,10 +18,9 @@ class ReAuthLandingScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT)
+        )
     }
 }

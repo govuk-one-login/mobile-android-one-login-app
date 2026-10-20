@@ -1,5 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.retrieve
 
+import kotlin.test.assertNull
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
@@ -24,7 +25,6 @@ import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
 import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
 import uk.gov.onelogin.core.utils.MockitoHelper
-import kotlin.test.assertNull
 
 class GetPersistentIdImplTest {
     private val expectedPersistentId = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
@@ -44,41 +44,38 @@ class GetPersistentIdImplTest {
         )
 
     @Test
-    fun successScenario() =
-        runTest {
-            whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
-                .thenReturn(mapOf(AuthTokenStoreKeys.PERSISTENT_ID_KEY to expectedPersistentId))
-            val idResponse = sut.invoke()
+    fun successScenario() = runTest {
+        whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
+            .thenReturn(mapOf(AuthTokenStoreKeys.PERSISTENT_ID_KEY to expectedPersistentId))
+        val idResponse = sut.invoke()
 
-            assertEquals(expectedPersistentId, idResponse)
-        }
-
-    @Test
-    fun `success scenario is empty true`() =
-        runTest {
-            whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
-                .thenReturn(null)
-            whenever(walletSdk.isEmpty()).thenReturn(
-                true
-            )
-            val idResponse = sut.invoke()
-
-            assertEquals(null, idResponse)
-        }
+        assertEquals(expectedPersistentId, idResponse)
+    }
 
     @Test
-    fun missingToken() =
-        runTest {
-            // Given token is null
-            whenever(
-                mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
-            ).thenReturn(
-                null,
-            )
+    fun `success scenario is empty true`() = runTest {
+        whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
+            .thenReturn(null)
+        whenever(walletSdk.isEmpty()).thenReturn(
+            true
+        )
+        val idResponse = sut.invoke()
 
-            val idResponse = sut.invoke()
-            assertNull(idResponse)
-        }
+        assertEquals(null, idResponse)
+    }
+
+    @Test
+    fun missingToken() = runTest {
+        // Given token is null
+        whenever(
+            mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
+        ).thenReturn(
+            null,
+        )
+
+        val idResponse = sut.invoke()
+        assertNull(idResponse)
+    }
 
     @Test
     fun `check if logger logs when wallet is not empty and persistent id is null`() {
@@ -160,43 +157,42 @@ class GetPersistentIdImplTest {
     }
 
     @Test
-    fun `check if logger logs when get wallet throws wallet exception`() =
-        runTest {
-            val expected = WalletSdk.WalletSdkError.WalletEmptyCheckFailed()
+    fun `check if logger logs when get wallet throws wallet exception`() = runTest {
+        val expected = WalletSdk.WalletSdkError.WalletEmptyCheckFailed()
 
-            // Given token is null
-            whenever(
-                mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
-            ).thenReturn(
-                null,
-            )
-            doAnswer {
-                throw expected
-            }.`when`(walletSdk).isEmpty()
+        // Given token is null
+        whenever(
+            mockGetFromOpenSecureStore(eq(AuthTokenStoreKeys.PERSISTENT_ID_KEY)),
+        ).thenReturn(
+            null,
+        )
+        doAnswer {
+            throw expected
+        }.`when`(walletSdk).isEmpty()
 
-            sut.invoke()
+        sut.invoke()
 
-            assertThat(logger, hasSize(1))
-            assertThat(
-                logger,
-                hasLogEntry(
-                    hasItem(
-                        allOf(
-                            hasMessage("Wallet SDK failed to check if wallet is empty"),
-                            hasException(
-                                instanceOf(
-                                    GetPersistentIdException.WalletEmptyCheckFailed::class.java
-                                )
-                            ),
-                            hasCustomKeys(
-                                contains(
-                                    equalTo(componentKey),
-                                    equalTo(actionKey)
-                                )
-                            ),
-                        )
+        assertThat(logger, hasSize(1))
+        assertThat(
+            logger,
+            hasLogEntry(
+                hasItem(
+                    allOf(
+                        hasMessage("Wallet SDK failed to check if wallet is empty"),
+                        hasException(
+                            instanceOf(
+                                GetPersistentIdException.WalletEmptyCheckFailed::class.java
+                            )
+                        ),
+                        hasCustomKeys(
+                            contains(
+                                equalTo(componentKey),
+                                equalTo(actionKey)
+                            )
+                        ),
                     )
                 )
             )
-        }
+        )
+    }
 }

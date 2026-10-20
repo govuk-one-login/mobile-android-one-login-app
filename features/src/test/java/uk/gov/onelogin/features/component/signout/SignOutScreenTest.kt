@@ -74,51 +74,48 @@ class SignOutScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun verifySignOutButtonSucceeds() =
-        runBlocking {
-            viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
-            composeTestRule.setContent {
-                SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
-            }
-            composeTestRule.onNode(button).performClick()
+    fun verifySignOutButtonSucceeds() = runBlocking {
+        viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
+        }
+        composeTestRule.onNode(button).performClick()
 
-            composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
-            verify(analytics).logEventV3Dot1(
-                SignOutAnalyticsViewModel.Companion.onPrimaryEvent(
-                    context
-                )
+        composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
+        verify(analytics).logEventV3Dot1(
+            SignOutAnalyticsViewModel.Companion.onPrimaryEvent(
+                context
             )
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(SignOutRoutes.Success)
-        }
+        )
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(SignOutRoutes.Success)
+    }
 
     @Test
-    fun verifySignOutButtonFails() =
-        runTest {
-            viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
-            composeTestRule.setContent {
-                SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
-            }
-            whenever(signOutUseCase.invoke())
-                .thenThrow(SignOutError(Exception("something went wrong")))
-            composeTestRule.onNode(button).performClick()
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(ErrorRoutes.SignOut, false)
+    fun verifySignOutButtonFails() = runTest {
+        viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
+        whenever(signOutUseCase.invoke())
+            .thenThrow(SignOutError(Exception("something went wrong")))
+        composeTestRule.onNode(button).performClick()
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(ErrorRoutes.SignOut, false)
+    }
 
     @Test
-    fun verifySignOutButtonFailsWithWalletError() =
-        runTest {
-            viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
-            composeTestRule.setContent {
-                SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
-            }
-            whenever(signOutUseCase.invoke())
-                .thenThrow(SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()))
-            composeTestRule.onNode(button).performClick()
-            verify(signOutUseCase).invoke()
-            verify(navigator).navigate(ErrorRoutes.SignOut, false)
+    fun verifySignOutButtonFailsWithWalletError() = runTest {
+        viewModel = SignOutViewModel(navigator, signOutUseCase, logger)
+        composeTestRule.setContent {
+            SignOutScreen(viewModel, analyticsViewModel, loadingAnalyticsVM)
         }
+        whenever(signOutUseCase.invoke())
+            .thenThrow(SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()))
+        composeTestRule.onNode(button).performClick()
+        verify(signOutUseCase).invoke()
+        verify(navigator).navigate(ErrorRoutes.SignOut, false)
+    }
 
     @Test
     fun verifyCloseIconButton() {

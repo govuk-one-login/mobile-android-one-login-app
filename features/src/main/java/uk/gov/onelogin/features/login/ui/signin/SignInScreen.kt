@@ -103,10 +103,7 @@ private fun handleScreenExit(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 @Suppress("LongMethod")
-internal fun SignInBody(
-    onSignIn: () -> Unit = { },
-    openDevMenu: () -> Unit = { },
-) {
+internal fun SignInBody(onSignIn: () -> Unit = { }, openDevMenu: () -> Unit = { },) {
     val title = stringResource(R.string.app_signInTitle)
     val content =
         listOf(

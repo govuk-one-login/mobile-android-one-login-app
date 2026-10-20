@@ -66,19 +66,17 @@ class AppInfoApiImplTest {
     }
 
     @Test
-    fun `app info call successful`(): Unit =
-        runTest {
-            networkService.setSuccessResponse(200, apiResponse)
-            val result = sut.callApi()
-            assertEquals(data, result)
-        }
+    fun `app info call successful`(): Unit = runTest {
+        networkService.setSuccessResponse(200, apiResponse)
+        val result = sut.callApi()
+        assertEquals(data, result)
+    }
 
     @Test
-    fun `app info call fail`() =
-        runTest {
-            networkService.setFailureResponse(TestHttpResponse.internalServerError)
-            val result = sut.callApi()
-            assertInstanceOf<ApiResponse.Failure<*, *>>(result)
-            assertEquals(result.status, 500)
-        }
+    fun `app info call fail`() = runTest {
+        networkService.setFailureResponse(TestHttpResponse.internalServerError)
+        val result = sut.callApi()
+        assertInstanceOf<ApiResponse.Failure<*, *>>(result)
+        assertEquals(result.status, 500)
+    }
 }

@@ -60,12 +60,11 @@ class MainActivityViewModelTest {
         )
     }
 
-    private suspend fun DefaultNetworkService.makeRequest() =
-        makeRequest(
-            ApiRequest.Get("https://example.gov.uk")
-        ) {
-            withAttestation = true
-            withAuthentication("scope")
-            withRefreshDPoP = true
-        }
+    private suspend fun DefaultNetworkService.makeRequest() = makeRequest(
+        ApiRequest.Get("https://example.gov.uk")
+    ) {
+        withAttestation = true
+        withAuthentication("scope")
+        withRefreshDPoP = true
+    }
 }

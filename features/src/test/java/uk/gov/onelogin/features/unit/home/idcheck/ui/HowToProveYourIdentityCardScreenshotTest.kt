@@ -8,11 +8,8 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.home.idcheck.ui.HowToProveYourIdentityCard
 
 @RunWith(Parameterized::class)
-class HowToProveYourIdentityCardScreenshotTest(
-    nightMode: NightMode,
-    locale: String,
-    fontScale: Float,
-) : BaseScreenshotTest(nightMode, locale, fontScale) {
+class HowToProveYourIdentityCardScreenshotTest(nightMode: NightMode, locale: String, fontScale: Float,) :
+    BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         HowToProveYourIdentityCard(
             onClick = {}

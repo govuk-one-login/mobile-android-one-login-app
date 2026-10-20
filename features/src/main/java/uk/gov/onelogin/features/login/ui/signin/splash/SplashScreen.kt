@@ -31,6 +31,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
@@ -43,7 +44,6 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.login.ui.signin.splash.theme.SplashTheme
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun SplashScreen(
@@ -89,13 +89,10 @@ fun SplashScreen(
     }
 }
 
-private fun handleOptInRequired(
-    isRequired: Boolean,
-    viewModel: SplashScreenViewModel,
-    context: FragmentActivity,
-) {
+private fun handleOptInRequired(isRequired: Boolean, viewModel: SplashScreenViewModel, context: FragmentActivity,) {
     when {
         isRequired -> viewModel.navigateToAnalyticsOptIn()
+
         else ->
             if (!viewModel.showUnlock.value) {
                 viewModel.login(context)
@@ -202,22 +199,16 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
     return imagePlaceable
 }
 
-private fun SubcomposeMeasureScope.createSubcomposeCrown() =
-    subcompose("crown") {
-        Icon(
-            painter = painterResource(R.drawable.ic_tudor_crown),
-            contentDescription = null,
-            modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
-        )
-    }.first().measure(Constraints())
+private fun SubcomposeMeasureScope.createSubcomposeCrown() = subcompose("crown") {
+    Icon(
+        painter = painterResource(R.drawable.ic_tudor_crown),
+        contentDescription = null,
+        modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
+    )
+}.first().measure(Constraints())
 
 @Composable
-private fun UnlockButton(
-    trackUnlockButton: () -> Unit,
-    onLogin: () -> Unit,
-) {
-
-
+private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit,) {
     GdsButton(
         text = stringResource(R.string.app_unlockButton),
         onClick = {
@@ -236,9 +227,7 @@ private fun UnlockButton(
 }
 
 @Composable
-internal fun ProgressIndicator(
-    modifier: Modifier = Modifier,
-) = GdsProgressIndicator(
+internal fun ProgressIndicator(modifier: Modifier = Modifier,) = GdsProgressIndicator(
     modifier = modifier
         .padding(bottom = 48.dp),
 )

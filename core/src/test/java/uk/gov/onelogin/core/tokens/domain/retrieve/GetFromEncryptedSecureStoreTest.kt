@@ -35,91 +35,86 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun `secure store fails with user cancelled`() =
-        runTest {
-            mockSecureStore(null, SecureStoreErrorTypeV2.USER_CANCELLED)
+    fun `secure store fails with user cancelled`() = runTest {
+        mockSecureStore(null, SecureStoreErrorTypeV2.USER_CANCELLED)
 
-            assertThat(logger, hasSize(0))
+        assertThat(logger, hasSize(0))
 
-            useCase.invoke(
-                composeTestRule.activity as FragmentActivity,
-                expectedStoreKey,
-            ) {
-                assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
-            }
-
-            assertThat(logger, hasSize(greaterThan(0)))
+        useCase.invoke(
+            composeTestRule.activity as FragmentActivity,
+            expectedStoreKey,
+        ) {
+            assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
         }
+
+        assertThat(logger, hasSize(greaterThan(0)))
+    }
 
     @Test
-    fun `secure store fails with unrecoverable error`() =
-        runTest {
-            mockSecureStore(null, SecureStoreErrorTypeV2.UNRECOVERABLE)
+    fun `secure store fails with unrecoverable error`() = runTest {
+        mockSecureStore(null, SecureStoreErrorTypeV2.UNRECOVERABLE)
 
-            assertThat(logger, hasSize(0))
+        assertThat(logger, hasSize(0))
 
-            useCase.invoke(
-                composeTestRule.activity as FragmentActivity,
-                expectedStoreKey,
-            ) {
-                assertEquals(LocalAuthStatus.ReauthRequired, it)
-            }
-
-            assertThat(logger, hasSize(greaterThan(0)))
+        useCase.invoke(
+            composeTestRule.activity as FragmentActivity,
+            expectedStoreKey,
+        ) {
+            assertEquals(LocalAuthStatus.ReauthRequired, it)
         }
+
+        assertThat(logger, hasSize(greaterThan(0)))
+    }
 
     @Test
-    fun `secure store fails with recoverable`() =
-        runTest {
-            mockSecureStore(null, SecureStoreErrorTypeV2.RECOVERABLE)
+    fun `secure store fails with recoverable`() = runTest {
+        mockSecureStore(null, SecureStoreErrorTypeV2.RECOVERABLE)
 
-            assertThat(logger, hasSize(0))
+        assertThat(logger, hasSize(0))
 
-            useCase.invoke(
-                composeTestRule.activity as FragmentActivity,
-                expectedStoreKey,
-            ) {
-                assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
-            }
-
-            assertThat(logger, hasSize(greaterThan(0)))
+        useCase.invoke(
+            composeTestRule.activity as FragmentActivity,
+            expectedStoreKey,
+        ) {
+            assertEquals(LocalAuthStatus.UserCancelledBioPrompt, it)
         }
+
+        assertThat(logger, hasSize(greaterThan(0)))
+    }
 
     @Test
-    fun `secure store fails with no local auth enabled`() =
-        runTest {
-            mockSecureStore(null, SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED)
+    fun `secure store fails with no local auth enabled`() = runTest {
+        mockSecureStore(null, SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED)
 
-            assertThat(logger, hasSize(0))
+        assertThat(logger, hasSize(0))
 
-            useCase.invoke(
-                composeTestRule.activity as FragmentActivity,
-                expectedStoreKey,
-            ) {
-                assertEquals(LocalAuthStatus.UnrecoverableError, it)
-            }
-
-            assertThat(logger, hasSize(greaterThan(0)))
+        useCase.invoke(
+            composeTestRule.activity as FragmentActivity,
+            expectedStoreKey,
+        ) {
+            assertEquals(LocalAuthStatus.UnrecoverableError, it)
         }
+
+        assertThat(logger, hasSize(greaterThan(0)))
+    }
 
     @Test
-    fun success() =
-        runTest {
-            val expectedKey = "expectedKey"
-            val expectedValue = "expectedValue"
-            val expectedResult = mapOf(expectedKey to expectedValue)
-            mockSecureStore(expectedResult)
+    fun success() = runTest {
+        val expectedKey = "expectedKey"
+        val expectedValue = "expectedValue"
+        val expectedResult = mapOf(expectedKey to expectedValue)
+        mockSecureStore(expectedResult)
 
-            useCase.invoke(
-                composeTestRule.activity as FragmentActivity,
-                expectedStoreKey,
-                "test",
-            ) {
-                assertEquals(LocalAuthStatus.Success(expectedResult), it)
-            }
-
-            assertThat(logger, hasSize(0))
+        useCase.invoke(
+            composeTestRule.activity as FragmentActivity,
+            expectedStoreKey,
+            "test",
+        ) {
+            assertEquals(LocalAuthStatus.Success(expectedResult), it)
         }
+
+        assertThat(logger, hasSize(0))
+    }
 
     private suspend fun mockSecureStore(
         returnResult: Map<String, String?>? = null,

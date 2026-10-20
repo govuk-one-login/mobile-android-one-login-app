@@ -10,15 +10,15 @@ object LocalAuthPrefsMapper {
      * @param localAuthPref [LocalAuthPreference] set by user
      * @return [AccessControlLevel] that the given [LocalAuthPreference] maps to for use in SecureStore instance
      */
-    fun mapAccessControlLevel(localAuthPref: LocalAuthPreference): AccessControlLevel =
-        when (localAuthPref) {
-            LocalAuthPreference.Disabled -> AccessControlLevel.OPEN
-            is LocalAuthPreference.Enabled -> {
-                if (localAuthPref.biometricsEnabled) {
-                    AccessControlLevel.PASSCODE_AND_BIOMETRICS
-                } else {
-                    AccessControlLevel.PASSCODE
-                }
+    fun mapAccessControlLevel(localAuthPref: LocalAuthPreference): AccessControlLevel = when (localAuthPref) {
+        LocalAuthPreference.Disabled -> AccessControlLevel.OPEN
+
+        is LocalAuthPreference.Enabled -> {
+            if (localAuthPref.biometricsEnabled) {
+                AccessControlLevel.PASSCODE_AND_BIOMETRICS
+            } else {
+                AccessControlLevel.PASSCODE
             }
         }
+    }
 }

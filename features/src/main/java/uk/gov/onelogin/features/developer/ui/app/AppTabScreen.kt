@@ -148,10 +148,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
 
 @Composable
 @Suppress("LongMethod")
-private fun AppInfoView(
-    appInfoData: AppInfoData.AppInfo,
-    viewModel: AppTabScreenViewModel,
-) {
+private fun AppInfoView(appInfoData: AppInfoData.AppInfo, viewModel: AppTabScreenViewModel,) {
     var minimumVersion by remember { mutableStateOf(appInfoData.minimumVersion) }
     var appAvailable by remember { mutableStateOf(appInfoData.available) }
     var appCheckEnabled by remember { mutableStateOf(appInfoData.featureFlags.appCheckEnabled) }
@@ -214,13 +211,12 @@ private fun AppInfoView(
 }
 
 @Composable
-private fun textFieldDefaultColors() =
-    TextFieldDefaults.colors().copy(
-        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        focusedContainerColor = MaterialTheme.colorScheme.background,
-        unfocusedContainerColor = MaterialTheme.colorScheme.background,
-    )
+private fun textFieldDefaultColors() = TextFieldDefaults.colors().copy(
+    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+)
 
 const val TEXTFIELD_WEIGHT = 0.7f
 const val BUTTON_WEIGHT = 0.3f

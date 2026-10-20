@@ -4,13 +4,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetterImpl
-import javax.inject.Singleton
 
 @Module
 @InstallIn(
@@ -19,12 +19,11 @@ import javax.inject.Singleton
 object FeaturesModule {
     @Provides
     @Singleton
-    fun providesFeatureFlags(): FeatureFlags =
-        InMemoryFeatureFlags(
-            setOf(
-                CriOrchestratorFeatureFlag.ENABLED,
-            ),
-        )
+    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
+        setOf(
+            CriOrchestratorFeatureFlag.ENABLED,
+        ),
+    )
 
     @Provides
     @Singleton

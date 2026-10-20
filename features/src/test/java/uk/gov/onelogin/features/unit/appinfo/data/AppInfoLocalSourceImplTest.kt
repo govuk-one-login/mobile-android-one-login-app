@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.unit.appinfo.data
 
 import android.content.SharedPreferences
+import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,7 +24,6 @@ import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.AP
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppInfoLocalSourceImplTest {

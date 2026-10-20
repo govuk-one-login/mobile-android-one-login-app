@@ -43,45 +43,42 @@ class SignOutViewModelTest {
     }
 
     @Test
-    fun `sign out use case does not throw`() =
-        runTest {
-            viewModel.signOut()
+    fun `sign out use case does not throw`() = runTest {
+        viewModel.signOut()
 
-            verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(SignOutRoutes.Success)
-            assertThat(logger, hasSize(0))
-        }
-
-    @Test
-    fun `sign out use case does throw`() =
-        runTest {
-            whenever(mockSignOutUseCase.invoke()).thenThrow(
-                SignOutError(Exception("test"))
-            )
-
-            viewModel.signOut()
-
-            verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: test")))
-        }
+        verify(mockSignOutUseCase).invoke()
+        verify(mockNavigator).navigate(SignOutRoutes.Success)
+        assertThat(logger, hasSize(0))
+    }
 
     @Test
-    fun `sign out use case does throw wallet error`() =
-        runTest {
-            whenever(mockSignOutUseCase.invoke()).thenThrow(
-                SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError())
-            )
+    fun `sign out use case does throw`() = runTest {
+        whenever(mockSignOutUseCase.invoke()).thenThrow(
+            SignOutError(Exception("test"))
+        )
 
-            viewModel.signOut()
+        viewModel.signOut()
 
-            verify(mockSignOutUseCase).invoke()
-            verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
-            assertThat(
-                "logger has log",
-                logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
-            )
-        }
+        verify(mockSignOutUseCase).invoke()
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: test")))
+    }
+
+    @Test
+    fun `sign out use case does throw wallet error`() = runTest {
+        whenever(mockSignOutUseCase.invoke()).thenThrow(
+            SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError())
+        )
+
+        viewModel.signOut()
+
+        verify(mockSignOutUseCase).invoke()
+        verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
+        assertThat(
+            "logger has log",
+            logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
+        )
+    }
 
     @Test
     fun `goBack() correctly navigates back`() {

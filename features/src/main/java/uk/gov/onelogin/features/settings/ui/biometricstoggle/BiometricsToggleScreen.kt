@@ -169,11 +169,7 @@ private fun WalletCopyContent() {
 }
 
 @Composable
-private fun BiometricsToggleRow(
-    @StringRes title: Int,
-    checked: StateFlow<Boolean>,
-    onToggle: (Boolean) -> Unit,
-) {
+private fun BiometricsToggleRow(@StringRes title: Int, checked: StateFlow<Boolean>, onToggle: (Boolean) -> Unit,) {
     val state = checked.collectAsState().value
     var toggle by remember { mutableStateOf(state) }
     Row(
@@ -216,10 +212,7 @@ private fun BiometricsToggleRow(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun BiometricsTopAppBar(
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    navIconClick: () -> Unit,
-) {
+private fun BiometricsTopAppBar(scrollBehavior: TopAppBarScrollBehavior? = null, navIconClick: () -> Unit,) {
     // With the current set-up, we can't use the GdsTopAppBar because it breaks the TalkBack behaviour, the
     // title does not get read first, but rather ignored and only read after all elements on the screen
     TopAppBar(

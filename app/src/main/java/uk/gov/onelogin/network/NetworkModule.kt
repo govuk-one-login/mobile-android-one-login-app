@@ -9,41 +9,35 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.android.network.client.GenericHttpClient
 import uk.gov.android.network.client.KtorHttpClient
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.network.online.OnlineCheckerImpl
-import uk.gov.android.network.service.v2.DefaultNetworkService
-import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.network.service.DefaultNetworkService as DefaultNetworkServiceV1
 import uk.gov.android.network.service.NetworkService as NetworkServiceV1
+import uk.gov.android.network.service.v2.DefaultNetworkService
+import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.network.useragent.UserAgent
 import uk.gov.android.network.useragent.UserAgentGenerator
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.android.onelogin.core.R
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface NetworkModule {
     @Binds
-    fun networkService(
-        defaultNetworkService: DefaultNetworkService
-    ): NetworkService
+    fun networkService(defaultNetworkService: DefaultNetworkService): NetworkService
 
     @Binds
-    fun networkServiceV1(
-        defaultNetworkService: DefaultNetworkServiceV1
-    ): NetworkServiceV1
+    fun networkServiceV1(defaultNetworkService: DefaultNetworkServiceV1): NetworkServiceV1
 
     /**
      * [GenericHttpClient] will be deprecated. Prefer [NetworkService] for API requests.
      */
     @Binds
-    fun genericHttpClient(
-        ktorHttpClient: KtorHttpClient
-    ): GenericHttpClient
+    fun genericHttpClient(ktorHttpClient: KtorHttpClient): GenericHttpClient
 
     companion object {
         /**
@@ -53,16 +47,12 @@ interface NetworkModule {
          */
         @Provides
         @Singleton
-        fun provideNetworkService(
-            ktorHttpClient: KtorHttpClient
-        ): DefaultNetworkService =
+        fun provideNetworkService(ktorHttpClient: KtorHttpClient): DefaultNetworkService =
             DefaultNetworkService(ktorHttpClient)
 
         @Provides
         @Singleton
-        fun provideNetworkServiceV1(
-            defaultNetworkService: DefaultNetworkService,
-        ): DefaultNetworkServiceV1 =
+        fun provideNetworkServiceV1(defaultNetworkService: DefaultNetworkService,): DefaultNetworkServiceV1 =
             DefaultNetworkServiceV1(defaultNetworkService)
 
         @Provides
@@ -76,9 +66,7 @@ interface NetworkModule {
         }
 
         @Provides
-        fun providesUserAgentGenerator(
-            @ApplicationContext context: Context,
-        ): UserAgentGenerator {
+        fun providesUserAgentGenerator(@ApplicationContext context: Context,): UserAgentGenerator {
             val userAgentGenerator = UserAgentGeneratorImpl()
             val appName = context.resources.getString(R.string.one_login_app_name)
             userAgentGenerator.setUserAgent(

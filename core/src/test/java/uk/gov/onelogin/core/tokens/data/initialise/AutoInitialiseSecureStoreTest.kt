@@ -1,6 +1,8 @@
 package uk.gov.onelogin.core.tokens.data.initialise
 
 import android.content.Context
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -21,8 +23,6 @@ import uk.gov.android.securestore.SecureStorageConfigurationAsync
 import uk.gov.android.securestore.SecureStoreAsyncV2
 import uk.gov.onelogin.core.tokens.domain.save.SaveTokens
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 
 class AutoInitialiseSecureStoreTest {
     private lateinit var useCase: AutoInitialiseSecureStore
@@ -46,87 +46,83 @@ class AutoInitialiseSecureStoreTest {
     }
 
     @Test
-    fun `does not initialise - when pref is null`() =
-        runTest {
-            whenever(mockLocalAuthManager.localAuthPreference).thenReturn(null)
-            useCase =
-                AutoInitialiseSecureStoreImpl(
-                    mockLocalAuthManager,
-                    mockSaveTokens,
-                    mockSecureStore,
-                    mockContext,
-                    dispatcher,
-                )
+    fun `does not initialise - when pref is null`() = runTest {
+        whenever(mockLocalAuthManager.localAuthPreference).thenReturn(null)
+        useCase =
+            AutoInitialiseSecureStoreImpl(
+                mockLocalAuthManager,
+                mockSaveTokens,
+                mockSecureStore,
+                mockContext,
+                dispatcher,
+            )
 
-            useCase.initialise(null)
+        useCase.initialise(null)
 
-            verify(mockSecureStore, never()).init(any(), any())
-        }
-
-    @Test
-    fun `does not initialise - when pref is NONE`() =
-        runTest {
-            whenever(mockLocalAuthManager.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Disabled)
-            useCase =
-                AutoInitialiseSecureStoreImpl(
-                    mockLocalAuthManager,
-                    mockSaveTokens,
-                    mockSecureStore,
-                    mockContext,
-                    dispatcher,
-                )
-
-            useCase.initialise(null)
-
-            verify(mockSecureStore, never()).init(any(), any())
-        }
+        verify(mockSecureStore, never()).init(any(), any())
+    }
 
     @Test
-    fun `does initialise with PASSCODE ACL - when pref is PASSCODE`() =
-        runTest {
-            whenever(mockLocalAuthManager.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            useCase =
-                AutoInitialiseSecureStoreImpl(
-                    mockLocalAuthManager,
-                    mockSaveTokens,
-                    mockSecureStore,
-                    mockContext,
-                    dispatcher,
-                )
+    fun `does not initialise - when pref is NONE`() = runTest {
+        whenever(mockLocalAuthManager.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Disabled)
+        useCase =
+            AutoInitialiseSecureStoreImpl(
+                mockLocalAuthManager,
+                mockSaveTokens,
+                mockSecureStore,
+                mockContext,
+                dispatcher,
+            )
 
-            useCase.initialise(null)
+        useCase.initialise(null)
 
-            val expectedConfiguration =
-                SecureStorageConfigurationAsync(
-                    AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                    AccessControlLevel.PASSCODE,
-                )
-            verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
-        }
+        verify(mockSecureStore, never()).init(any(), any())
+    }
 
     @Test
-    fun `does initialise with PASSCODE_AND_CURRENT_BIOMETRICS ACL - when pref is BIOMETRICS`() =
-        runTest {
-            whenever(mockLocalAuthManager.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(true))
-            useCase =
-                AutoInitialiseSecureStoreImpl(
-                    mockLocalAuthManager,
-                    mockSaveTokens,
-                    mockSecureStore,
-                    mockContext,
-                    dispatcher,
-                )
+    fun `does initialise with PASSCODE ACL - when pref is PASSCODE`() = runTest {
+        whenever(mockLocalAuthManager.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        useCase =
+            AutoInitialiseSecureStoreImpl(
+                mockLocalAuthManager,
+                mockSaveTokens,
+                mockSecureStore,
+                mockContext,
+                dispatcher,
+            )
 
-            useCase.initialise(null)
+        useCase.initialise(null)
 
-            val expectedConfiguration =
-                SecureStorageConfigurationAsync(
-                    AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
-                    AccessControlLevel.PASSCODE_AND_BIOMETRICS,
-                )
-            verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
-        }
+        val expectedConfiguration =
+            SecureStorageConfigurationAsync(
+                AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
+                AccessControlLevel.PASSCODE,
+            )
+        verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
+    }
+
+    @Test
+    fun `does initialise with PASSCODE_AND_CURRENT_BIOMETRICS ACL - when pref is BIOMETRICS`() = runTest {
+        whenever(mockLocalAuthManager.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(true))
+        useCase =
+            AutoInitialiseSecureStoreImpl(
+                mockLocalAuthManager,
+                mockSaveTokens,
+                mockSecureStore,
+                mockContext,
+                dispatcher,
+            )
+
+        useCase.initialise(null)
+
+        val expectedConfiguration =
+            SecureStorageConfigurationAsync(
+                AuthTokenStoreKeys.TOKEN_SECURE_STORE_ID,
+                AccessControlLevel.PASSCODE_AND_BIOMETRICS,
+            )
+        verify(mockSecureStore, times(1)).init(mockContext, expectedConfiguration)
+    }
 }

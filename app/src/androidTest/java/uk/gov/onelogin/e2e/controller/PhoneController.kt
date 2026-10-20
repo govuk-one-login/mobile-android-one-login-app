@@ -19,12 +19,12 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
+import java.io.File
 import org.hamcrest.CoreMatchers
 import org.junit.Assert
 import org.junit.Assert.assertTrue
 import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.MainActivity
-import java.io.File
 
 typealias BySelectorEntry = Pair<BySelector, String>
 
@@ -83,19 +83,17 @@ class PhoneController(
      * @param selectors the array of [BySelector] objects that should be invisible. The array is
      * handled sequentially.
      */
-    fun waitUntilGone(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelector,
-    ) = selectors.forEach { selector ->
-        Assert.assertTrue(
-            device.wait(
-                Until.gone(selector),
-                actionTimeoutOverride,
-            ),
-        )
+    fun waitUntilGone(actionTimeoutOverride: Long = phoneActionTimeout, vararg selectors: BySelector,) =
+        selectors.forEach { selector ->
+            Assert.assertTrue(
+                device.wait(
+                    Until.gone(selector),
+                    actionTimeoutOverride,
+                ),
+            )
 
-        Thread.sleep(postActionDelay)
-    }
+            Thread.sleep(postActionDelay)
+        }
 
     /**
      * Presses the hardware back button on the Device.
@@ -118,20 +116,18 @@ class PhoneController(
      *
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
-    fun allowPermission() =
-        click(
-            selectors = arrayOf(By.text("Allow") to "Clicking 'Allow' for the open permission dialog"),
-        )
+    fun allowPermission() = click(
+        selectors = arrayOf(By.text("Allow") to "Clicking 'Allow' for the open permission dialog"),
+    )
 
     /**
      * Taps the 'Deny' button that's shown on the Device.
      *
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
-    fun denyPermission() =
-        click(
-            selectors = arrayOf(By.text("Deny") to "Clicking 'Deny' for the open permission dialog"),
-        )
+    fun denyPermission() = click(
+        selectors = arrayOf(By.text("Deny") to "Clicking 'Deny' for the open permission dialog"),
+    )
 
     /**
      * Taps UI elements defined by the [selectors] array.
@@ -148,10 +144,7 @@ class PhoneController(
      * @param selectors the array of [BySelector] objects to tap. The array sequentially handled.
      */
     @Suppress("TooGenericExceptionCaught")
-    fun click(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry,
-    ): Unit =
+    fun click(actionTimeoutOverride: Long = phoneActionTimeout, vararg selectors: BySelectorEntry,): Unit =
         selectors.forEach { selectorEntry: BySelectorEntry ->
             val selector = selectorEntry.first
             val selectorMessage = selectorEntry.second
@@ -195,10 +188,7 @@ class PhoneController(
      * @param selectors the array of [BySelector] objects to tap. The array sequentially handled.
      */
     @Suppress("TooGenericExceptionCaught")
-    fun scrollAndClick(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry,
-    ): Unit =
+    fun scrollAndClick(actionTimeoutOverride: Long = phoneActionTimeout, vararg selectors: BySelectorEntry,): Unit =
         selectors.forEach { selectorEntry: BySelectorEntry ->
             val selector = selectorEntry.first
             val selectorMessage = selectorEntry.second
@@ -277,20 +267,18 @@ class PhoneController(
      * @param selectors the array of [BySelector] objects to tap. The array is sequentially handled.
      */
     @Suppress("TooGenericExceptionCaught")
-    fun optionalClick(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        vararg selectors: BySelectorEntry,
-    ) = selectors.forEach { selectorEntry ->
-        val selectorMessage = selectorEntry.second
-        try {
-            click(actionTimeoutOverride, selectorEntry)
-        } catch (exception: Exception) {
-            println(
-                "Assertion error due to un-required step " +
-                    "( $selectorMessage )!: $exception",
-            )
+    fun optionalClick(actionTimeoutOverride: Long = phoneActionTimeout, vararg selectors: BySelectorEntry,) =
+        selectors.forEach { selectorEntry ->
+            val selectorMessage = selectorEntry.second
+            try {
+                click(actionTimeoutOverride, selectorEntry)
+            } catch (exception: Exception) {
+                println(
+                    "Assertion error due to un-required step " +
+                        "( $selectorMessage )!: $exception",
+                )
+            }
         }
-    }
 
     fun isEnabled(selector: UiSelector): Boolean = device.findObject(selector).isEnabled
 
@@ -350,10 +338,7 @@ class PhoneController(
         ++photoCount
     }
 
-    fun elementExists(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        selector: BySelector,
-    ): Boolean {
+    fun elementExists(actionTimeoutOverride: Long = phoneActionTimeout, selector: BySelector,): Boolean {
         val element =
             device.wait(
                 Until.findObject(selector),
@@ -363,10 +348,7 @@ class PhoneController(
         return element != null && element.isEnabled
     }
 
-    fun assertElementExists(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        selector: BySelector,
-    ) {
+    fun assertElementExists(actionTimeoutOverride: Long = phoneActionTimeout, selector: BySelector,) {
         val element =
             device.wait(
                 Until.findObject(selector),
@@ -401,12 +383,7 @@ class PhoneController(
         action.invoke()
     }
 
-    fun launchDeeplink(
-        context: Context,
-        packageName: String,
-        deeplinkUrl: String,
-        timeout: Long,
-    ) {
+    fun launchDeeplink(context: Context, packageName: String, deeplinkUrl: String, timeout: Long,) {
         device.pressHome()
         Thread.sleep(postActionDelay)
 
@@ -425,10 +402,7 @@ class PhoneController(
         )
     }
 
-    fun navigateToApp(
-        actionTimeoutOverride: Long = phoneActionTimeout,
-        packageName: String,
-    ) {
+    fun navigateToApp(actionTimeoutOverride: Long = phoneActionTimeout, packageName: String,) {
         // Start from the home screen
         device.pressHome()
 

@@ -8,9 +8,5 @@ import androidx.compose.runtime.Composable
 fun interface WalletDisplayer {
 
     @Composable
-    fun Wallet(
-        onFullScreenRequest: (Boolean) -> Unit
-    )
+    fun Wallet(onFullScreenRequest: (Boolean) -> Unit)
 }
-
-

@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import androidx.activity.result.ActivityResult
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.assertFalse
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -41,9 +44,6 @@ import uk.gov.onelogin.features.login.domain.signin.remotelogin.RemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.TestRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import kotlin.test.assertFalse
-import kotlin.test.assertSame
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
@@ -76,32 +76,29 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `startLoginActivity starts remote login`() =
-        runTest {
-            viewModel.startLoginActivity(activityResultLauncher, true)
+    fun `startLoginActivity starts remote login`() = runTest {
+        viewModel.startLoginActivity(activityResultLauncher, true)
 
-            assertTrue(viewModel.loading.value)
-            assertTrue(remoteLogin.started)
-        }
-
-    @Test
-    fun `startLoginActivity resets local auth preference`() =
-        runTest {
-            viewModel.startLoginActivity(activityResultLauncher, true)
-
-            verify(localAuthPrefResetUseCase).reset()
-        }
+        assertTrue(viewModel.loading.value)
+        assertTrue(remoteLogin.started)
+    }
 
     @Test
-    fun `given first time user & persistent id is null, startLoginActivity starts remote login`() =
-        runTest {
-            givenPersistentId(null)
+    fun `startLoginActivity resets local auth preference`() = runTest {
+        viewModel.startLoginActivity(activityResultLauncher, true)
 
-            viewModel.startLoginActivity(activityResultLauncher, false)
+        verify(localAuthPrefResetUseCase).reset()
+    }
 
-            assertTrue(viewModel.loading.value)
-            assertTrue(remoteLogin.started)
-        }
+    @Test
+    fun `given first time user & persistent id is null, startLoginActivity starts remote login`() = runTest {
+        givenPersistentId(null)
+
+        viewModel.startLoginActivity(activityResultLauncher, false)
+
+        assertTrue(viewModel.loading.value)
+        assertTrue(remoteLogin.started)
+    }
 
     @Test
     fun `given offline, startLoginActivity navigates to offline error`() {
@@ -153,167 +150,154 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `given start succeeds, startLoginActivity does not navigate`() =
-        runTest {
-            remoteLogin.startResult = RemoteLogin.Result.Success
+    fun `given start succeeds, startLoginActivity does not navigate`() = runTest {
+        remoteLogin.startResult = RemoteLogin.Result.Success
 
-            viewModel.startLoginActivity(activityResultLauncher, false)
+        viewModel.startLoginActivity(activityResultLauncher, false)
 
-            verifyNoInteractions(navigator)
-        }
-
-    @Test
-    fun `given start succeeds & re-auth, startLoginActivity does not navigate`() =
-        runTest {
-            remoteLogin.startResult = RemoteLogin.Result.Success
-
-            viewModel.startLoginActivity(activityResultLauncher, true)
-
-            verifyNoInteractions(navigator)
-        }
+        verifyNoInteractions(navigator)
+    }
 
     @Test
-    fun `given start returns recoverable failure, startLoginActivity navigates to recoverable error`() =
-        runTest {
-            remoteLogin.startResult =
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
+    fun `given start succeeds & re-auth, startLoginActivity does not navigate`() = runTest {
+        remoteLogin.startResult = RemoteLogin.Result.Success
 
-            viewModel.startLoginActivity(activityResultLauncher, false)
+        viewModel.startLoginActivity(activityResultLauncher, true)
 
-            verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
-        }
+        verifyNoInteractions(navigator)
+    }
 
     @Test
-    fun `given start returns app integrity failure, startLoginActivity navigates to app integrity error`() =
-        runTest {
-            remoteLogin.startResult =
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
+    fun `given start returns recoverable failure, startLoginActivity navigates to recoverable error`() = runTest {
+        remoteLogin.startResult =
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
 
-            viewModel.startLoginActivity(activityResultLauncher, false)
+        viewModel.startLoginActivity(activityResultLauncher, false)
 
-            verify(navigator).navigate(ErrorRoutes.AppIntegrity, false)
-        }
-
-    @Test
-    fun `given login started, abortLogin cancels start job and resets loading`() =
-        runTest {
-            remoteLogin.startWillComplete = false
-
-            viewModel.startLoginActivity(activityResultLauncher, false)
-            assertTrue(remoteLogin.started)
-            assertTrue(viewModel.loading.value)
-
-            viewModel.abortLogin()
-
-            assertFalse(viewModel.loading.value)
-            assertTrue(remoteLogin.startCancelled)
-        }
+        verify(navigator).navigate(LoginRoutes.SignInRecoverableError, true)
+    }
 
     @Test
-    fun `handleLoginActivityResult finalises remote login`() =
-        runTest {
-            val activityResult = givenActivityResult()
+    fun `given start returns app integrity failure, startLoginActivity navigates to app integrity error`() = runTest {
+        remoteLogin.startResult =
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
 
-            viewModel.handleLoginActivityResult(
-                activityResult,
-                activity = fragmentActivity
-            )
+        viewModel.startLoginActivity(activityResultLauncher, false)
 
-            assertTrue(viewModel.loading.value)
-            assertNotNull(remoteLogin.finalisedWith)
-            assertSame(activityResult.data!!, remoteLogin.finalisedWith)
-        }
+        verify(navigator).navigate(ErrorRoutes.AppIntegrity, false)
+    }
 
     @Test
-    fun `given result code is not RESULT_OK, handleLoginActivityResult does not finalise login`() =
-        runTest {
-            val activityResult = givenActivityResult(resultCode = Activity.RESULT_CANCELED)
+    fun `given login started, abortLogin cancels start job and resets loading`() = runTest {
+        remoteLogin.startWillComplete = false
 
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+        viewModel.startLoginActivity(activityResultLauncher, false)
+        assertTrue(remoteLogin.started)
+        assertTrue(viewModel.loading.value)
 
-            assertNull(remoteLogin.finalisedWith)
-        }
+        viewModel.abortLogin()
 
-    @Test
-    fun `given result code is not RESULT_OK, handleLoginActivityResult stops loading`() =
-        runTest {
-            val activityResult = givenActivityResult(resultCode = Activity.RESULT_CANCELED)
-
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
-
-            assertFalse(viewModel.loading.value)
-        }
+        assertFalse(viewModel.loading.value)
+        assertTrue(remoteLogin.startCancelled)
+    }
 
     @Test
-    fun `given intent data is null, handleLoginActivityResult does not finalise login`() =
-        runTest {
-            val activityResult = givenActivityResult(data = false)
+    fun `handleLoginActivityResult finalises remote login`() = runTest {
+        val activityResult = givenActivityResult()
 
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+        viewModel.handleLoginActivityResult(
+            activityResult,
+            activity = fragmentActivity
+        )
 
-            assertNull(remoteLogin.finalisedWith)
-        }
-
-    @Test
-    fun `given intent data is null, handleLoginActivityResult stops loading`() =
-        runTest {
-            val activityResult = givenActivityResult(data = false)
-
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
-
-            assertFalse(viewModel.loading.value)
-        }
+        assertTrue(viewModel.loading.value)
+        assertNotNull(remoteLogin.finalisedWith)
+        assertSame(activityResult.data!!, remoteLogin.finalisedWith)
+    }
 
     @Test
-    fun `given intent data is null, handleLoginActivityResult logs error`() =
-        runTest {
-            val activityResult = givenActivityResult(data = false)
+    fun `given result code is not RESULT_OK, handleLoginActivityResult does not finalise login`() = runTest {
+        val activityResult = givenActivityResult(resultCode = Activity.RESULT_CANCELED)
 
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
 
-            assertThat(
-                logger,
-                hasLogEntry(
-                    hasItem(
-                        allOf(
-                            hasMessage(LoginViewModel.NULL_INTENT_MSG),
-                            hasCustomKeys(
-                                contains(
-                                    equalTo(componentKey(LoginViewModel.COMPONENT_LOGIN)),
-                                    equalTo(actionKey(LoginViewModel.ACTION_START_LOGIN_RESULT))
-                                )
-                            ),
-                        )
+        assertNull(remoteLogin.finalisedWith)
+    }
+
+    @Test
+    fun `given result code is not RESULT_OK, handleLoginActivityResult stops loading`() = runTest {
+        val activityResult = givenActivityResult(resultCode = Activity.RESULT_CANCELED)
+
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+        assertFalse(viewModel.loading.value)
+    }
+
+    @Test
+    fun `given intent data is null, handleLoginActivityResult does not finalise login`() = runTest {
+        val activityResult = givenActivityResult(data = false)
+
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+        assertNull(remoteLogin.finalisedWith)
+    }
+
+    @Test
+    fun `given intent data is null, handleLoginActivityResult stops loading`() = runTest {
+        val activityResult = givenActivityResult(data = false)
+
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+        assertFalse(viewModel.loading.value)
+    }
+
+    @Test
+    fun `given intent data is null, handleLoginActivityResult logs error`() = runTest {
+        val activityResult = givenActivityResult(data = false)
+
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+
+        assertThat(
+            logger,
+            hasLogEntry(
+                hasItem(
+                    allOf(
+                        hasMessage(LoginViewModel.NULL_INTENT_MSG),
+                        hasCustomKeys(
+                            contains(
+                                equalTo(componentKey(LoginViewModel.COMPONENT_LOGIN)),
+                                equalTo(actionKey(LoginViewModel.ACTION_START_LOGIN_RESULT))
+                            )
+                        ),
                     )
                 )
             )
-        }
+        )
+    }
 
     @Test
-    fun `given finalise succeeds, handleLoginActivityResult navigates to start`() =
-        runTest {
-            remoteLogin.finaliseResult = RemoteLogin.Result.Success
-            val activityResult = givenActivityResult()
+    fun `given finalise succeeds, handleLoginActivityResult navigates to start`() = runTest {
+        remoteLogin.finaliseResult = RemoteLogin.Result.Success
+        val activityResult = givenActivityResult()
 
-            viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
+        viewModel.handleLoginActivityResult(activityResult, activity = fragmentActivity)
 
-            verify(navigator).navigate(MainNavRoutes.Start, true)
-        }
+        verify(navigator).navigate(MainNavRoutes.Start, true)
+    }
 
     @Test
-    fun `given finalise succeeds & re-auth, handleLoginActivityResult goes back`() =
-        runTest {
-            remoteLogin.finaliseResult = RemoteLogin.Result.Success
-            val activityResult = givenActivityResult()
+    fun `given finalise succeeds & re-auth, handleLoginActivityResult goes back`() = runTest {
+        remoteLogin.finaliseResult = RemoteLogin.Result.Success
+        val activityResult = givenActivityResult()
 
-            viewModel.handleLoginActivityResult(
-                activityResult,
-                isReAuth = true,
-                activity = fragmentActivity,
-            )
+        viewModel.handleLoginActivityResult(
+            activityResult,
+            isReAuth = true,
+            activity = fragmentActivity,
+        )
 
-            verify(navigator).goBack()
-        }
+        verify(navigator).goBack()
+    }
 
     @Test
     fun `given finalise returns access denied failure, handleLoginActivityResult navigates to app reset error`() =
@@ -364,14 +348,13 @@ class LoginViewModelTest {
         }
 
     @Test
-    fun `given login started, stopLoading stops loading`() =
-        runTest {
-            viewModel.startLoginActivity(activityResultLauncher, true)
-            assertTrue(viewModel.loading.value)
+    fun `given login started, stopLoading stops loading`() = runTest {
+        viewModel.startLoginActivity(activityResultLauncher, true)
+        assertTrue(viewModel.loading.value)
 
-            viewModel.stopLoading()
-            assertFalse(viewModel.loading.value)
-        }
+        viewModel.stopLoading()
+        assertFalse(viewModel.loading.value)
+    }
 
     private fun givenOnline(online: Boolean = true) {
         whenever(onlineChecker.isOnline()).thenReturn(online)
@@ -385,10 +368,7 @@ class LoginViewModelTest {
         whenever(signOutUseCase.invoke()).thenThrow(SignOutError(Exception()))
     }
 
-    private fun givenActivityResult(
-        resultCode: Int = Activity.RESULT_OK,
-        data: Boolean = true
-    ): ActivityResult {
+    private fun givenActivityResult(resultCode: Int = Activity.RESULT_OK, data: Boolean = true): ActivityResult {
         val intent = if (data) mock<Intent>() else null
 
         return ActivityResult(resultCode, intent)

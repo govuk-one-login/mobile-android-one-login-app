@@ -25,19 +25,14 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 @InstallIn(ViewModelComponent::class)
 interface AuthenticationProviderModule {
     @Binds
-    fun authenticationProvider(
-        stsAuthenticationProvider: StsAuthenticationProvider,
-    ): AuthenticationProvider
+    fun authenticationProvider(stsAuthenticationProvider: StsAuthenticationProvider,): AuthenticationProvider
 
     companion object {
         @Provides
         @StsUrl
-        fun provideStsUrl(
-            @ApplicationContext context: Context,
-        ): String =
-            context.getString(
-                R.string.stsUrl,
-                context.getString(R.string.tokenExchangeEndpoint),
-            )
+        fun provideStsUrl(@ApplicationContext context: Context,): String = context.getString(
+            R.string.stsUrl,
+            context.getString(R.string.tokenExchangeEndpoint),
+        )
     }
 }

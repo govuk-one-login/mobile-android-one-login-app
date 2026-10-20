@@ -7,13 +7,7 @@ interface SaveToOpenSecureStore {
      * @param key [String] value of key value pair to save
      * @param value [String] value of value in key value pair to save
      */
-    suspend fun save(
-        key: String,
-        value: String,
-    )
+    suspend fun save(key: String, value: String,)
 
-    suspend fun save(
-        key: String,
-        value: Number,
-    )
+    suspend fun save(key: String, value: Number,)
 }

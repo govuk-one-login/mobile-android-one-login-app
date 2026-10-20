@@ -1,6 +1,9 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.iss
 
 import android.content.Context
+import kotlin.io.encoding.Base64
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -13,9 +16,6 @@ import uk.gov.android.onelogin.core.BuildConfig
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import uk.gov.onelogin.core.tokens.utils.JwtExtractorImpl
-import kotlin.io.encoding.Base64
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 class ExtractAndVerifyIssuerImplTest {
     private val context: Context = mock()

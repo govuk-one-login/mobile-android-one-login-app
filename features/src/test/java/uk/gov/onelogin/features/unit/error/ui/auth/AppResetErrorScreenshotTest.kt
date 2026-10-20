@@ -8,10 +8,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.appreset.AppResetErrorScreenPreview
 
 @RunWith(Parameterized::class)
-class AppResetErrorScreenshotTest(
-    nightMode: NightMode,
-    locale: String
-) : BaseScreenshotTest(nightMode, locale) {
+class AppResetErrorScreenshotTest(nightMode: NightMode, locale: String) : BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         AppResetErrorScreenPreview()
     }

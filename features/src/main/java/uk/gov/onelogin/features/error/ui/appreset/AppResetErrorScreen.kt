@@ -17,6 +17,7 @@ import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -24,7 +25,6 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
-import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 fun AppResetErrorScreen(viewModel: AppResetErrorViewModel = hiltViewModel()) {

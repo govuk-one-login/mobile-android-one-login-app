@@ -112,9 +112,7 @@ private fun HomeScreenBody(
 }
 
 @Composable
-private fun WelcomeCard(
-    modifier: Modifier = Modifier
-) = GdsCard(
+private fun WelcomeCard(modifier: Modifier = Modifier) = GdsCard(
     title = stringResource(R.string.app_welcomeTileHeader),
     body = stringResource(R.string.app_welcomeTileBody1),
     displayPrimary = false,

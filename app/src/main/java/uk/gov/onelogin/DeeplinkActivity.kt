@@ -20,9 +20,8 @@ class DeeplinkActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun mainActivityIntent() =
-        Intent(this, MainActivity::class.java)
-            .apply {
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            }
+    private fun mainActivityIntent() = Intent(this, MainActivity::class.java)
+        .apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
 }

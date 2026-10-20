@@ -388,10 +388,7 @@ internal fun AboutTheAppSection(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun HeadingRow(
-    @StringRes text: Int,
-    traversalIndex: Float,
-) {
+private fun HeadingRow(@StringRes text: Int, traversalIndex: Float,) {
     GdsHeading(
         text = stringResource(text),
         textColour = MaterialTheme.colorScheme.onBackground,
@@ -475,11 +472,7 @@ private fun LinkRow(
 }
 
 @Composable
-internal fun PreferenceToggleRow(
-    @StringRes title: Int,
-    checked: Boolean,
-    onToggle: () -> Unit,
-) {
+internal fun PreferenceToggleRow(@StringRes title: Int, checked: Boolean, onToggle: () -> Unit,) {
     var toggle by remember { mutableStateOf(false) }
     toggle = checked
     Row(

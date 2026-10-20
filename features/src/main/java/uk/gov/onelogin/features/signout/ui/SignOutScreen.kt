@@ -75,11 +75,7 @@ fun SignOutScreen(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-internal fun SignOutBody(
-    onPrimary: () -> Unit,
-    onClose: () -> Unit,
-    onBack: () -> Unit,
-) {
+internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () -> Unit,) {
     FullScreenDialogue(
         onDismissRequest = onClose,
         onBack = onBack,

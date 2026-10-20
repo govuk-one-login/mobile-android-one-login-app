@@ -29,6 +29,9 @@ import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -49,6 +52,7 @@ import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
+import uk.gov.android.authentication.localauth.R as LocalAuthR
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
@@ -82,10 +86,6 @@ import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.FlakyTestCase
 import uk.gov.onelogin.utils.TestUtils
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.io.encoding.ExperimentalEncodingApi
-import uk.gov.android.authentication.localauth.R as LocalAuthR
 
 @Suppress("SwallowedException")
 @HiltAndroidTest
@@ -268,56 +268,55 @@ class LoginTest : FlakyTestCase() {
 
     @Test
     @FlakyTest
-    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() =
-        runTest {
-            wheneverBlocking { mockAppInfoService.get() }
-                .thenReturn(AppInfoServiceState.Successful(appInfoData))
-            wheneverBlocking { mockAppIntegrity.getClientAttestation() }
-                .thenReturn(AttestationResult.Success("Success"))
-            whenever(mockAppIntegrity.getProofOfPossession())
-                .thenReturn(SignedPoP.Success("Success"))
+    fun selectingLoginButtonFiresAuthRequestWithPersistentIdFromSecureStore() = runTest {
+        wheneverBlocking { mockAppInfoService.get() }
+            .thenReturn(AppInfoServiceState.Successful(appInfoData))
+        wheneverBlocking { mockAppIntegrity.getClientAttestation() }
+            .thenReturn(AttestationResult.Success("Success"))
+        whenever(mockAppIntegrity.getProofOfPossession())
+            .thenReturn(SignedPoP.Success("Success"))
 
-            startApp()
-            clickOptOut()
-            setPersistentId()
-            clickLogin()
+        startApp()
+        clickOptOut()
+        setPersistentId()
+        clickLogin()
 
-            val authorizeUrl =
-                Uri.parse(
-                    resources.getString(
-                        R.string.stsUrl,
-                        resources.getString(R.string.openIdConnectAuthorizeEndpoint),
-                    ),
-                )
-            val redirectUrl =
-                Uri.parse(
-                    resources.getString(
-                        R.string.webBaseUrl,
-                        resources.getString(R.string.webRedirectEndpoint),
-                    ),
-                )
-            val tokenEndpoint =
-                Uri.parse(
+        val authorizeUrl =
+            Uri.parse(
+                resources.getString(
+                    R.string.stsUrl,
+                    resources.getString(R.string.openIdConnectAuthorizeEndpoint),
+                ),
+            )
+        val redirectUrl =
+            Uri.parse(
+                resources.getString(
+                    R.string.webBaseUrl,
+                    resources.getString(R.string.webRedirectEndpoint),
+                ),
+            )
+        val tokenEndpoint =
+            Uri.parse(
+                context.resources.getString(
+                    R.string.stsUrl,
                     context.resources.getString(
-                        R.string.stsUrl,
-                        context.resources.getString(
-                            R.string.tokenExchangeEndpoint,
-                        ),
+                        R.string.tokenExchangeEndpoint,
                     ),
-                )
-            val loginConfig =
-                LoginSessionConfiguration(
-                    authorizeEndpoint = authorizeUrl,
-                    clientId = resources.getString(R.string.stsClientId),
-                    locale = localeUtils.getLocaleAsSessionConfig(),
-                    redirectUri = redirectUrl,
-                    scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
-                    tokenEndpoint = tokenEndpoint,
-                    persistentSessionId = PERSISTENT_ID,
-                )
+                ),
+            )
+        val loginConfig =
+            LoginSessionConfiguration(
+                authorizeEndpoint = authorizeUrl,
+                clientId = resources.getString(R.string.stsClientId),
+                locale = localeUtils.getLocaleAsSessionConfig(),
+                redirectUri = redirectUrl,
+                scopes = listOf(LoginSessionConfiguration.Scope.OPENID),
+                tokenEndpoint = tokenEndpoint,
+                persistentSessionId = PERSISTENT_ID,
+            )
 
-            verify(mockLoginSession).present(any(), eq(loginConfig))
-        }
+        verify(mockLoginSession).present(any(), eq(loginConfig))
+    }
 
     // App remains on sign in page when not data is returned in intent from login
     @Test
@@ -500,10 +499,7 @@ class LoginTest : FlakyTestCase() {
             ).isDisplayed()
     }
 
-    private fun setupActivityForResult(
-        returnedIntent: Intent?,
-        resultCode: Int = Activity.RESULT_OK,
-    ) {
+    private fun setupActivityForResult(returnedIntent: Intent?, resultCode: Int = Activity.RESULT_OK,) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())

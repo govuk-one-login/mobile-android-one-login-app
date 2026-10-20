@@ -12,10 +12,7 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @Composable
-fun LoadingScreen(
-    analyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
-    backHandler: () -> Unit,
-) {
+fun LoadingScreen(analyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(), backHandler: () -> Unit,) {
     BackHandler(true) {
         analyticsViewModel.trackBackButton()
         backHandler()
@@ -30,9 +27,7 @@ fun LoadingScreen(
 }
 
 @Composable
-fun LoadingBody(
-    modifier: Modifier = Modifier
-) = LoadingScreen(
+fun LoadingBody(modifier: Modifier = Modifier) = LoadingScreen(
     modifier = modifier.testTag(LOADING_SCREEN_TEST_TAG)
 )
 

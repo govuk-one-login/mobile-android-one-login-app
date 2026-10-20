@@ -1,5 +1,6 @@
 package uk.gov.onelogin.features.network.provider
 
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uk.gov.android.network.api.ApiResponseException
@@ -24,7 +25,6 @@ import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import javax.inject.Inject
 
 /**
  * [uk.gov.onelogin.features.network.provider.StsAuthenticationProvider] provides an implementation of the [AuthenticationProvider]
@@ -140,8 +140,8 @@ class StsAuthenticationProvider @Inject constructor(
      * a success containing the service token issues
      */
     private suspend fun attemptServiceTokenExchange(scope: String): AuthenticationResponse {
-        val accessToken = tokenRepository.getTokenResponse()?.accessToken ?:
-            return AuthenticationResponse.Failure(IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG))
+        val accessToken = tokenRepository.getTokenResponse()?.accessToken
+            ?: return AuthenticationResponse.Failure(IllegalStateException(NO_ACCESS_TOKEN_ERROR_MSG))
 
         val request = createServiceTokenRequest(accessToken, scope)
         val response = networkService.makeRequest<TokenApiResponse>(request)
@@ -161,10 +161,7 @@ class StsAuthenticationProvider @Inject constructor(
      * @param scope the scope of the service token that is required/ requested
      * @return [ApiRequest.FormUrlEncoded]
      */
-    private fun createServiceTokenRequest(
-        accessToken: String,
-        scope: String
-    ): ApiRequest.FormUrlEncoded =
+    private fun createServiceTokenRequest(accessToken: String, scope: String): ApiRequest.FormUrlEncoded =
         ApiRequest.FormUrlEncoded(
             url = stsUrl,
             params =
@@ -181,15 +178,14 @@ class StsAuthenticationProvider @Inject constructor(
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    private fun ApiResponse<TokenApiResponse, String, NetworkingException>
-            .toAuthenticationResponse() : AuthenticationResponse =
+    private fun ApiResponse<TokenApiResponse, String, NetworkingException>.toAuthenticationResponse(): AuthenticationResponse =
         when (this) {
             is ApiResponse.Success ->
-                    AuthenticationResponse.Success(body.token)
+                AuthenticationResponse.Success(body.token)
 
             is ApiResponse.Failure ->
                 AuthenticationResponse.Failure(Exception(error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, error))
-            }
+        }
 
     companion object {
         private const val GRANT_TYPE = "grant_type"
@@ -207,8 +203,6 @@ class StsAuthenticationProvider @Inject constructor(
 
         const val AUTHENTICATION_DENIED = 400
 
-        data class FragmentActivityNull(
-            val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG
-        ) : Exception(msg)
+        data class FragmentActivityNull(val msg: String = FRAGMENT_ACTIVITY_NULL_ERROR_MSG) : Exception(msg)
     }
 }

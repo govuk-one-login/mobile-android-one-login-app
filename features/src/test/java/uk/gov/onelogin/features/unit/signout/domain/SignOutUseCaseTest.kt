@@ -1,5 +1,7 @@
 package uk.gov.onelogin.features.unit.signout.domain
 
+import kotlin.test.Test
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -22,8 +24,6 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.domain.SignOutUseCaseImpl
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
-import kotlin.test.Test
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -34,112 +34,108 @@ class SignOutUseCaseTest {
     private lateinit var useCase: SignOutUseCase
 
     @Test
-    fun `invoke clears all the required data`() =
-        runTest {
-            // Given
-            val removeAllSecureStoreData: RemoveAllSecureStoreData = mock()
-            val removeTokenExpiry: RemoveTokenExpiry = mock()
-            val bioPrefHandler: LocalAuthPreferenceRepo = mock()
+    fun `invoke clears all the required data`() = runTest {
+        // Given
+        val removeAllSecureStoreData: RemoveAllSecureStoreData = mock()
+        val removeTokenExpiry: RemoveTokenExpiry = mock()
+        val bioPrefHandler: LocalAuthPreferenceRepo = mock()
 
-            whenever(deleteWalletData.invoke()).thenReturn(true)
-            // When we call sign out use case
-            useCase =
-                SignOutUseCaseImpl(
-                    MultiCleaner(
-                        Dispatchers.Main,
-                        removeAllSecureStoreData,
-                        removeTokenExpiry,
-                        bioPrefHandler
-                    ),
-                    deleteWalletData,
-                    tokenRepository,
-                    logger
-                )
-            useCase.invoke()
-            // Then it clears all the required data
-            verify(removeTokenExpiry).clean()
-            verify(removeAllSecureStoreData).clean()
-            verify(bioPrefHandler).clean()
-            verify(deleteWalletData).invoke()
-            verify(tokenRepository).clearTokenResponse()
-        }
+        whenever(deleteWalletData.invoke()).thenReturn(true)
+        // When we call sign out use case
+        useCase =
+            SignOutUseCaseImpl(
+                MultiCleaner(
+                    Dispatchers.Main,
+                    removeAllSecureStoreData,
+                    removeTokenExpiry,
+                    bioPrefHandler
+                ),
+                deleteWalletData,
+                tokenRepository,
+                logger
+            )
+        useCase.invoke()
+        // Then it clears all the required data
+        verify(removeTokenExpiry).clean()
+        verify(removeAllSecureStoreData).clean()
+        verify(bioPrefHandler).clean()
+        verify(deleteWalletData).invoke()
+        verify(tokenRepository).clearTokenResponse()
+    }
 
     @Test
-    fun `sign out delete wallet data error`() =
-        runTest {
-            // When invoking the sign out use case
-            whenever(deleteWalletData.invoke()).thenReturn(false)
+    fun `sign out delete wallet data error`() = runTest {
+        // When invoking the sign out use case
+        whenever(deleteWalletData.invoke()).thenReturn(false)
 
-            useCase =
-                SignOutUseCaseImpl(
-                    MultiCleaner(
-                        Dispatchers.Main,
-                        { Result.success(Unit) }
-                    ),
-                    deleteWalletData,
-                    tokenRepository,
-                    logger
-                )
+        useCase =
+            SignOutUseCaseImpl(
+                MultiCleaner(
+                    Dispatchers.Main,
+                    { Result.success(Unit) }
+                ),
+                deleteWalletData,
+                tokenRepository,
+                logger
+            )
 
-            // Then throw SignOutWalletError
-            val exception =
-                assertThrows<SignOutError> {
-                    useCase.invoke()
-                }
-            assertTrue(exception.error.message!!.contains(DELETE_WALLET_DATA_ERROR))
-        }
+        // Then throw SignOutWalletError
+        val exception =
+            assertThrows<SignOutError> {
+                useCase.invoke()
+            }
+        assertTrue(exception.error.message!!.contains(DELETE_WALLET_DATA_ERROR))
+    }
 
     @Test
     @Suppress("TooGenericExceptionThrown")
-    fun `exception propagates up as a SignOutError`() =
-        runTest {
-            // Given
-            val errorMessage = "something went terribly bad"
-            whenever(deleteWalletData.invoke()).thenReturn(true)
-            useCase =
-                SignOutUseCaseImpl(
-                    MultiCleaner(
-                        Dispatchers.Main,
-                        { Result.success(Unit) },
-                        { throw Exception(errorMessage) }
-                    ),
-                    deleteWalletData,
-                    tokenRepository,
-                    logger
-                )
-            // When invoking the sign out use case
-            // Then throw SignOutWalletError
-            val exception =
-                assertThrows<SignOutError> {
-                    useCase.invoke()
-                }
-            assertTrue(exception.error.message!!.contains(errorMessage))
-        }
+    fun `exception propagates up as a SignOutError`() = runTest {
+        // Given
+        val errorMessage = "something went terribly bad"
+        whenever(deleteWalletData.invoke()).thenReturn(true)
+        useCase =
+            SignOutUseCaseImpl(
+                MultiCleaner(
+                    Dispatchers.Main,
+                    { Result.success(Unit) },
+                    { throw Exception(errorMessage) }
+                ),
+                deleteWalletData,
+                tokenRepository,
+                logger
+            )
+        // When invoking the sign out use case
+        // Then throw SignOutWalletError
+        val exception =
+            assertThrows<SignOutError> {
+                useCase.invoke()
+            }
+        assertTrue(exception.error.message!!.contains(errorMessage))
+    }
 
     @Test
     @Suppress("TooGenericExceptionThrown")
-    fun `exception propagates up as a SignOutError via failure`() =
-        runTest {
-            // Given
-            val errorMessage = "something went terribly bad"
-            whenever(deleteWalletData.invoke()).thenReturn(true)
-            useCase =
-                SignOutUseCaseImpl(
-                    MultiCleaner(
-                        Dispatchers.Main,
-                        { Result.success(Unit) },
-                        { Result.failure(Exception(errorMessage)) }
-                    ),
-                    deleteWalletData,
-                    tokenRepository,
-                    logger
-                )
-            // When invoking the sign out use case
-            // Then throw SignOutWalletError
-            val exception =
-                assertThrows<SignOutError> {
-                    useCase.invoke()
-                }
-            assertTrue(exception.error is ResultCollectionUtil.Failure)
-        }
+    fun `exception propagates up as a SignOutError via failure`() = runTest {
+        // Given
+        val errorMessage = "something went terribly bad"
+        whenever(deleteWalletData.invoke()).thenReturn(true)
+        useCase =
+            SignOutUseCaseImpl(
+                MultiCleaner(
+                    Dispatchers.Main,
+                    { Result.success(Unit) },
+                    { Result.failure(Exception(errorMessage)) }
+                ),
+                deleteWalletData,
+                tokenRepository,
+                logger
+            )
+        // When invoking the sign out use case
+        // Then throw SignOutWalletError
+        val exception =
+            assertThrows<SignOutError> {
+                useCase.invoke()
+            }
+        assertTrue(exception.error is ResultCollectionUtil.Failure)
+    }
 }

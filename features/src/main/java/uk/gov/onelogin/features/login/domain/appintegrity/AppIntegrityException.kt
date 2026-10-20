@@ -1,9 +1,6 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
-sealed class AppIntegrityException(
-    open val e: Throwable,
-    open val type: AppIntegrityErrorType
-) : Exception(e) {
+sealed class AppIntegrityException(open val e: Throwable, open val type: AppIntegrityErrorType) : Exception(e) {
     data class FirebaseException(
         override val e: Throwable,
         override val type: AppIntegrityErrorType = AppIntegrityErrorType.GENERIC

@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.unit.login.domain.signin.remotelogin
 import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -43,7 +44,6 @@ import uk.gov.onelogin.features.login.domain.signin.remotelogin.finalise.Finalis
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.StartRemoteLogin
 import uk.gov.onelogin.features.login.domain.signin.remotelogin.start.TestStartRemoteLogin
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("LargeClass")
@@ -199,276 +199,259 @@ class RemoteLoginImplTest {
     }
 
     @Test
-    fun `given passcode enabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
+    fun `given passcode enabled, finalise saves tokens & returns success`() = runTest {
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved()
-            assertSecureStoreIsInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given biometrics enabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(true))
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            assertTokensSaved()
-            assertSecureStoreIsInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
+        assertTokensSaved()
+        assertSecureStoreIsInitialised()
+        assertErrorCountReset()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     @Test
-    fun `given local auth disabled, finalise saves tokens & returns success`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
+    fun `given biometrics enabled, finalise saves tokens & returns success`() = runTest {
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(true))
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved()
-            assertSecureStoreNotInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given access denied error, finalise signs out & returns access denied failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(accessDeniedError)
-
-            val result = remoteLogin.finalise(
-                mockIntent,
-                activity = mockFragmentActivity,
-            )
-
-            assertTokensNotSaved()
-            assertSignedOut()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AccessDenied),
-                result,
-            )
-            assertThat("logger has log", logger.contains("access_denied"))
-        }
+        assertTokensSaved()
+        assertSecureStoreIsInitialised()
+        assertErrorCountReset()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     @Test
-    fun `given oauth error, finalise returns unrecoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(oauthError)
+    fun `given local auth disabled, finalise saves tokens & returns success`() = runTest {
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
 
-            val result = remoteLogin.finalise(
-                mockIntent,
-                activity = mockFragmentActivity,
-            )
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            verifyNoInteractions(mockSignOutUseCase)
-            verifyNoInteractions(mockSavePersistentId)
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
-                result,
-            )
-            assertThat("logger has oauth_error", logger.contains("oauth_error"))
-        }
+        assertTokensSaved()
+        assertSecureStoreNotInitialised()
+        assertErrorCountReset()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     @Test
-    fun `given oauth error 500, finalise returns unrecoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(oauthError500)
+    fun `given access denied error, finalise signs out & returns access denied failure`() = runTest {
+        givenFinaliseRemoteLoginError(accessDeniedError)
 
-            val result = remoteLogin.finalise(
-                mockIntent,
-                activity = mockFragmentActivity,
-            )
+        val result = remoteLogin.finalise(
+            mockIntent,
+            activity = mockFragmentActivity,
+        )
 
-            assertTokensNotSaved()
-            verifyNoInteractions(mockSignOutUseCase)
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
-                result,
-            )
-            assertThat("logger has oauth_error", logger.contains("oauth_error"))
-        }
-
-    @Test
-    fun `given server error & attempt 2, finalise returns recoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(serverError)
-            givenErrorCount(1) // attempt 2
-
-            val result = remoteLogin.finalise(
-                mockIntent,
-                activity = mockFragmentActivity,
-            )
-
-            assertTokensNotSaved()
-            verifyNoInteractions(mockSignOutUseCase)
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
-                result,
-            )
-            assertThat("logger has no server_error", logger.contains("server_error"))
-        }
+        assertTokensNotSaved()
+        assertSignedOut()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AccessDenied),
+            result,
+        )
+        assertThat("logger has log", logger.contains("access_denied"))
+    }
 
     @Test
-    fun `given server error & attempt 3, finalise returns unrecoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(serverError)
-            givenErrorCount(2) // attempt 3
+    fun `given oauth error, finalise returns unrecoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(oauthError)
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(
+            mockIntent,
+            activity = mockFragmentActivity,
+        )
 
-            assertTokensNotSaved()
-            verifyNoInteractions(mockSignOutUseCase)
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
-                result,
-            )
-            assertThat("logger has server_error", logger.contains("server_error"))
-        }
-
-    @Test
-    fun `given token error, finalise returns unrecoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(tokenError400)
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            assertTokensNotSaved()
-            verifyNoInteractions(mockSignOutUseCase)
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
-                result,
-            )
-            assertThat("logger has token_error", logger.contains("token_error"))
-        }
+        verifyNoInteractions(mockSignOutUseCase)
+        verifyNoInteractions(mockSavePersistentId)
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
+            result,
+        )
+        assertThat("logger has oauth_error", logger.contains("oauth_error"))
+    }
 
     @Test
-    fun `given generic throwable, finalise returns recoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(Throwable())
+    fun `given oauth error 500, finalise returns unrecoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(oauthError500)
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(
+            mockIntent,
+            activity = mockFragmentActivity,
+        )
 
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
-                result,
-            )
-            assertThat("logger has log", logger.size == 1)
-        }
-
-    @Test
-    fun `given null error, finalise returns recoverable failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(null)
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
-                result,
-            )
-        }
+        assertTokensNotSaved()
+        verifyNoInteractions(mockSignOutUseCase)
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
+            result,
+        )
+        assertThat("logger has oauth_error", logger.contains("oauth_error"))
+    }
 
     @Test
-    fun `given ClientAttestationException, finalise returns app integrity failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(
-                AppIntegrityException.ClientAttestationException(Exception())
-            )
+    fun `given server error & attempt 2, finalise returns recoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(serverError)
+        givenErrorCount(1) // attempt 2
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(
+            mockIntent,
+            activity = mockFragmentActivity,
+        )
 
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
-                result,
-            )
-        }
-
-    @Test
-    fun `given FirebaseException, finalise returns app integrity failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(
-                AppIntegrityException.FirebaseException(Exception())
-            )
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
-                result,
-            )
-        }
+        assertTokensNotSaved()
+        verifyNoInteractions(mockSignOutUseCase)
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
+            result,
+        )
+        assertThat("logger has no server_error", logger.contains("server_error"))
+    }
 
     @Test
-    fun `given AppIntegrityException Other, finalise returns app integrity failure`() =
-        runTest {
-            givenFinaliseRemoteLoginError(
-                AppIntegrityException.Other(Exception())
-            )
+    fun `given server error & attempt 3, finalise returns unrecoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(serverError)
+        givenErrorCount(2) // attempt 3
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
-                result,
-            )
-        }
-
-    @Test
-    fun `given id token verification fails, finalise returns recoverable failure`() =
-        runTest {
-            givenVerifyIdTokenFailure()
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            assertSecureStoreNotInitialised()
-            assertTokensNotSaved()
-            assertEquals(
-                RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
-                result,
-            )
-        }
+        assertTokensNotSaved()
+        verifyNoInteractions(mockSignOutUseCase)
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
+            result,
+        )
+        assertThat("logger has server_error", logger.contains("server_error"))
+    }
 
     @Test
-    fun `given local auth check fails, finalise returns success`() =
-        runTest {
-            givenLocalAuthCheckFailure()
+    fun `given token error, finalise returns unrecoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(tokenError400)
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved()
-            assertSecureStoreNotInitialised()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
+        assertTokensNotSaved()
+        verifyNoInteractions(mockSignOutUseCase)
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInUnrecoverable),
+            result,
+        )
+        assertThat("logger has token_error", logger.contains("token_error"))
+    }
 
     @Test
-    fun `given refresh token & passcode enabled, finalise saves refresh expiry & initialises secure store`() =
-        runTest {
-            givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
+    fun `given generic throwable, finalise returns recoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(Throwable())
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved(withRefresh = true)
-            assertSecureStoreIsInitialised(validRefreshToken)
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
+            result,
+        )
+        assertThat("logger has log", logger.size == 1)
+    }
+
+    @Test
+    fun `given null error, finalise returns recoverable failure`() = runTest {
+        givenFinaliseRemoteLoginError(null)
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
+            result,
+        )
+    }
+
+    @Test
+    fun `given ClientAttestationException, finalise returns app integrity failure`() = runTest {
+        givenFinaliseRemoteLoginError(
+            AppIntegrityException.ClientAttestationException(Exception())
+        )
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
+            result,
+        )
+    }
+
+    @Test
+    fun `given FirebaseException, finalise returns app integrity failure`() = runTest {
+        givenFinaliseRemoteLoginError(
+            AppIntegrityException.FirebaseException(Exception())
+        )
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
+            result,
+        )
+    }
+
+    @Test
+    fun `given AppIntegrityException Other, finalise returns app integrity failure`() = runTest {
+        givenFinaliseRemoteLoginError(
+            AppIntegrityException.Other(Exception())
+        )
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity),
+            result,
+        )
+    }
+
+    @Test
+    fun `given id token verification fails, finalise returns recoverable failure`() = runTest {
+        givenVerifyIdTokenFailure()
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertSecureStoreNotInitialised()
+        assertTokensNotSaved()
+        assertEquals(
+            RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable),
+            result,
+        )
+    }
+
+    @Test
+    fun `given local auth check fails, finalise returns success`() = runTest {
+        givenLocalAuthCheckFailure()
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertTokensSaved()
+        assertSecureStoreNotInitialised()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
+
+    @Test
+    fun `given refresh token & passcode enabled, finalise saves refresh expiry & initialises secure store`() = runTest {
+        givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertTokensSaved(withRefresh = true)
+        assertSecureStoreIsInitialised(validRefreshToken)
+        assertErrorCountReset()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     @Test
     fun `given refresh token & biometrics enabled, finalise saves refresh expiry & initialises secure store`() =
@@ -485,45 +468,42 @@ class RemoteLoginImplTest {
         }
 
     @Test
-    fun `given refresh token & local auth disabled, finalise does not save refresh token or expiry`() =
-        runTest {
-            givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
+    fun `given refresh token & local auth disabled, finalise does not save refresh token or expiry`() = runTest {
+        givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Disabled)
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved()
-            assertSecureStoreNotInitialised()
-            assertErrorCountReset()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
-
-    @Test
-    fun `given refresh token & local auth enabled, finalise saves new refresh token`() =
-        runTest {
-            givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
-
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
-
-            verify(mockRemoveRefreshTokenAndExpiry, times(0)).remove()
-            assertTokensSaved(withRefresh = true)
-            assertSecureStoreIsInitialised(validRefreshToken)
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
+        assertTokensSaved()
+        assertSecureStoreNotInitialised()
+        assertErrorCountReset()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     @Test
-    fun `given no refresh token & local auth enabled, finalise removes stored refresh token`() =
-        runTest {
-            givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
+    fun `given refresh token & local auth enabled, finalise saves new refresh token`() = runTest {
+        givenFinaliseRemoteLoginSuccess(tokenResponseWithRefresh)
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
 
-            val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
 
-            assertTokensSaved()
-            verify(mockRemoveRefreshTokenAndExpiry, times(1)).remove()
-            assertSecureStoreIsInitialised()
-            assertEquals(RemoteLogin.Result.Success, result)
-        }
+        verify(mockRemoveRefreshTokenAndExpiry, times(0)).remove()
+        assertTokensSaved(withRefresh = true)
+        assertSecureStoreIsInitialised(validRefreshToken)
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
+
+    @Test
+    fun `given no refresh token & local auth enabled, finalise removes stored refresh token`() = runTest {
+        givenLocalAuthCheckSuccess(LocalAuthPreference.Enabled(false))
+
+        val result = remoteLogin.finalise(mockIntent, activity = mockFragmentActivity)
+
+        assertTokensSaved()
+        verify(mockRemoveRefreshTokenAndExpiry, times(1)).remove()
+        assertSecureStoreIsInitialised()
+        assertEquals(RemoteLogin.Result.Success, result)
+    }
 
     private fun givenStartRemoteLoginFailure(throwable: Throwable) {
         startRemoteLogin.result = StartRemoteLogin.Result.Failure(throwable)

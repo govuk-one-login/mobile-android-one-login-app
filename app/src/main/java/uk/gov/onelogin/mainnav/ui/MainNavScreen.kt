@@ -242,10 +242,7 @@ private fun createBottomNavItems(
 }
 
 @Suppress("ForbiddenComment")
-private fun bottomNav(
-    navController: NavHostController,
-    navDest: Pair<BottomNavDestination, () -> Unit>,
-) {
+private fun bottomNav(navController: NavHostController, navDest: Pair<BottomNavDestination, () -> Unit>,) {
     navDest.second()
     val destination =
         if (navDest.first is BottomNavDestination.Wallet) {

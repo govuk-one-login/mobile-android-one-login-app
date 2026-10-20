@@ -78,17 +78,16 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun testDevMenuButton() =
-        runBlocking {
-            composeTestRule.setContent {
-                SplashScreen(viewModel, analyticsViewModel, optInViewModel)
-            }
-
-            composeTestRule.onNode(splashIcon).assert(hasClickAction().not())
-            composeTestRule.onNode(splashIcon).performClick()
-
-            composeTestRule.onNodeWithText("Developer Portal").assertDoesNotExist()
+    fun testDevMenuButton() = runBlocking {
+        composeTestRule.setContent {
+            SplashScreen(viewModel, analyticsViewModel, optInViewModel)
         }
+
+        composeTestRule.onNode(splashIcon).assert(hasClickAction().not())
+        composeTestRule.onNode(splashIcon).performClick()
+
+        composeTestRule.onNodeWithText("Developer Portal").assertDoesNotExist()
+    }
 
     @Test
     fun onOpenDeveloperPortal() {

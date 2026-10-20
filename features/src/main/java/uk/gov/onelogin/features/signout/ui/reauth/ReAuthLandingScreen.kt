@@ -85,10 +85,7 @@ fun ReAuthLandingScreen(
     }
 }
 
-private fun startLogin(
-    loginViewModel: LoginViewModel,
-    launcher: ActivityResultLauncher<Intent>,
-) {
+private fun startLogin(loginViewModel: LoginViewModel, launcher: ActivityResultLauncher<Intent>,) {
     loginViewModel.startLoginActivity(launcher, true)
 }
 

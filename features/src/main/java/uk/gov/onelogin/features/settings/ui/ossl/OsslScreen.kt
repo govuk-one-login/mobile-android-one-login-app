@@ -30,10 +30,7 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OsslScreen(
-    analyticsViewModel: OsslAnalyticsViewModel = hiltViewModel(),
-    onBackBehaviour: () -> Unit = {},
-) {
+fun OsslScreen(analyticsViewModel: OsslAnalyticsViewModel = hiltViewModel(), onBackBehaviour: () -> Unit = {},) {
     BackHandler {
         analyticsViewModel.trackBackButton()
         onBackBehaviour()

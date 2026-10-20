@@ -1,7 +1,9 @@
 package uk.gov.onelogin.features.unit.criorchestrator
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.util.Collection
 import junit.framework.TestCase
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -19,8 +21,6 @@ import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionState
 import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
-import java.util.Collection
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
@@ -76,9 +76,7 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
         TestCase.assertFalse(result)
     }
 
-    private class MockIsIdSCheckSessionActiveImpl(
-        private val result: Boolean
-    ) : IsIdCheckSdkActive {
+    private class MockIsIdSCheckSessionActiveImpl(private val result: Boolean) : IsIdCheckSdkActive {
         override fun invoke(): Boolean = result
     }
 }

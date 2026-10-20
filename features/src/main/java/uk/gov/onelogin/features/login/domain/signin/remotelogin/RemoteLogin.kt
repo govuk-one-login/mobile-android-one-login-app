@@ -11,20 +11,18 @@ import androidx.fragment.app.FragmentActivity
 interface RemoteLogin {
     suspend fun start(launcher: ActivityResultLauncher<Intent>): Result
 
-    suspend fun finalise(
-        intent: Intent,
-        activity: FragmentActivity,
-    ): Result
+    suspend fun finalise(intent: Intent, activity: FragmentActivity,): Result
 
     sealed interface Result {
-        data object Success: Result
+        data object Success : Result
 
-        data class Failure(
-            val type: FailureType
-        ): Result
+        data class Failure(val type: FailureType) : Result
     }
 
     enum class FailureType {
-        AccessDenied, AppIntegrity, SignInRecoverable, SignInUnrecoverable,
+        AccessDenied,
+        AppIntegrity,
+        SignInRecoverable,
+        SignInUnrecoverable,
     }
 }

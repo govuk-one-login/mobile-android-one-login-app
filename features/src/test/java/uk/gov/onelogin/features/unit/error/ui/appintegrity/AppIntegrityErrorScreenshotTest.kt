@@ -10,9 +10,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.appintegrity.AppIntegrityErrorScreenPreview
 
 @RunWith(Parameterized::class)
-class AppIntegrityErrorScreenshotTest(
-    nightMode: NightMode
-) : BaseScreenshotTest(nightMode) {
+class AppIntegrityErrorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
     override val generateComposeLayout: @Composable () -> Unit = {
         AppIntegrityErrorScreenPreview()
     }
@@ -20,10 +18,9 @@ class AppIntegrityErrorScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT),
-                arrayOf(NIGHT)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT)
+        )
     }
 }

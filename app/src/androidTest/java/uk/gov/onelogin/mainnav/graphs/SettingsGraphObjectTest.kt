@@ -13,10 +13,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.R as componentsR
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.utils.TestCase
-import uk.gov.android.ui.componentsv2.R as componentsR
 
 @HiltAndroidTest
 class SettingsGraphObjectTest : TestCase() {
