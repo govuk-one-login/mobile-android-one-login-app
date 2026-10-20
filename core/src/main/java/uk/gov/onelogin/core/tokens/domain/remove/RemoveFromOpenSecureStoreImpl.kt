@@ -41,6 +41,7 @@ constructor(
         private const val COMPONENT = "secure_store"
         private const val ACTION = "Remove from open secure store "
 
-        private const val FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE = "Failed to remove from secure store"
+        private const val FAILED_TO_REMOVE_FROM_OPEN_SECURE_STORE =
+            "Failed to remove from secure store"
     }
 }
