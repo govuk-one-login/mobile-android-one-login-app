@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.ui.patterns.loadingscreen.v2.LoadingScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
