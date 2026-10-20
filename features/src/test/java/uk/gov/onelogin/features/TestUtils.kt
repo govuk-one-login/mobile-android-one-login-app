@@ -19,9 +19,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "1.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     val appInfoDataAppUnavailable =
@@ -31,9 +31,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "1.0.0",
                         available = false,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     val additionalAppInfoData =
@@ -43,9 +43,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "1.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     val appInfoDataDisabledFeatures =
@@ -55,9 +55,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "1.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(false)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(false),
+                    ),
+                ),
         )
 
     val updateRequiredAppInfoData =
@@ -67,9 +67,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "2.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     val extractVersionErrorAppInfoData =
@@ -79,9 +79,9 @@ object TestUtils {
                     AppInfoData.AppInfo(
                         minimumVersion = "One.Two.Zero",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     val criSdkConfig =
@@ -91,80 +91,88 @@ object TestUtils {
                     Config.Entry(
                         key = SdkConfigKey.IdCheckAsyncBackendBaseUrl,
                         Config.Value.StringValue(
-                            value = "https://sessions.review-b-async.build.account.gov.uk"
-                        )
+                            value = "https://sessions.review-b-async.build.account.gov.uk",
+                        ),
                     ),
                     Config.Entry(
                         key = SdkConfigKey.BypassIdCheckAsyncBackend,
                         Config.Value.BooleanValue(
-                            value = true
-                        )
+                            value = true,
+                        ),
                     ),
                     Config.Entry<Config.Value.StringValue>(
                         key = NfcConfigKey.NfcAvailability,
                         Config.Value.StringValue(
-                            value = NfcConfigKey.NfcAvailability.OPTION_NOT_AVAILABLE
-                        )
+                            value = NfcConfigKey.NfcAvailability.OPTION_NOT_AVAILABLE,
+                        ),
                     ),
                     Config.Entry(
                         key = IdCheckWrapperConfigKey.EnableManualLauncher,
                         Config.Value.BooleanValue(
-                            value = true
-                        )
-                    )
-                )
+                            value = true,
+                        ),
+                    ),
+                ),
         )
 
     internal sealed class TrackEventTestCase(val runTrackFunction: () -> Unit) {
-        data class Icon(val trackFunction: () -> Unit, val text: String) : TrackEventTestCase(trackFunction)
+        data class Icon(val trackFunction: () -> Unit, val text: String) :
+            TrackEventTestCase(trackFunction)
 
         data class Link(val trackFunction: () -> Unit, val domain: String, val text: String) :
             TrackEventTestCase(trackFunction)
 
-        data class Button(val trackFunction: () -> Unit, val text: String) : TrackEventTestCase(trackFunction)
+        data class Button(val trackFunction: () -> Unit, val text: String) :
+            TrackEventTestCase(trackFunction)
 
         data class Screen(val trackFunction: () -> Unit, val name: String, val id: String) :
             TrackEventTestCase(trackFunction)
 
-        data class Form(val trackFunction: () -> Unit, val text: String, val type: Type, val response: String) :
-            TrackEventTestCase(trackFunction)
+        data class Form(
+            val trackFunction: () -> Unit,
+            val text: String,
+            val type: Type,
+            val response: String,
+        ) : TrackEventTestCase(trackFunction)
     }
 
-    internal fun executeTrackEventTestCase(testCases: TrackEventTestCase, requiredParameters: RequiredParameters) =
-        when (testCases) {
-            is TrackEventTestCase.Link ->
-                TrackEvent.Link(
-                    isExternal = false,
-                    domain = testCases.domain,
-                    text = testCases.text,
-                    params = requiredParameters
-                )
+    internal fun executeTrackEventTestCase(
+        testCases: TrackEventTestCase,
+        requiredParameters: RequiredParameters,
+    ) = when (testCases) {
+        is TrackEventTestCase.Link ->
+            TrackEvent.Link(
+                isExternal = false,
+                domain = testCases.domain,
+                text = testCases.text,
+                params = requiredParameters,
+            )
 
-            is TrackEventTestCase.Button ->
-                TrackEvent.Button(
-                    text = testCases.text,
-                    params = requiredParameters
-                )
+        is TrackEventTestCase.Button ->
+            TrackEvent.Button(
+                text = testCases.text,
+                params = requiredParameters,
+            )
 
-            is TrackEventTestCase.Icon ->
-                TrackEvent.Icon(
-                    text = testCases.text,
-                    params = requiredParameters
-                )
+        is TrackEventTestCase.Icon ->
+            TrackEvent.Icon(
+                text = testCases.text,
+                params = requiredParameters,
+            )
 
-            is TrackEventTestCase.Screen ->
-                ViewEvent.Screen(
-                    name = testCases.name,
-                    id = testCases.id,
-                    params = requiredParameters
-                )
+        is TrackEventTestCase.Screen ->
+            ViewEvent.Screen(
+                name = testCases.name,
+                id = testCases.id,
+                params = requiredParameters,
+            )
 
-            is TrackEventTestCase.Form ->
-                TrackEvent.Form(
-                    text = testCases.text,
-                    response = testCases.response,
-                    params = requiredParameters,
-                    type = testCases.type
-                )
-        }.also { testCases.runTrackFunction() }
+        is TrackEventTestCase.Form ->
+            TrackEvent.Form(
+                text = testCases.text,
+                response = testCases.response,
+                params = requiredParameters,
+                type = testCases.type,
+            )
+    }.also { testCases.runTrackFunction() }
 }

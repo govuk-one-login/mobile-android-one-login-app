@@ -27,7 +27,7 @@ class AnalyticsOptInRepositoryTest {
         remoteSource = mock()
         repository =
             createTestAnalyticsOptInRepository(
-                remoteSource = remoteSource
+                remoteSource = remoteSource,
             )
         wheneverBlocking { remoteSource.update(any()) }.thenAnswer {}
     }
@@ -130,10 +130,10 @@ class AnalyticsOptInRepositoryTest {
     companion object {
         fun createTestAnalyticsOptInRepository(
             localSource: OptInLocalSource = FakeOptInLocalSource(),
-            remoteSource: OptInRemoteSource = FakeOptInRemoteSource()
+            remoteSource: OptInRemoteSource = FakeOptInRemoteSource(),
         ) = AnalyticsOptInRepository(
             localSource = localSource,
-            remoteSource = remoteSource
+            remoteSource = remoteSource,
         )
     }
 }

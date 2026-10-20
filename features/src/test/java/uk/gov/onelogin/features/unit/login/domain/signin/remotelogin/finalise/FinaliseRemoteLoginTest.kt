@@ -51,22 +51,22 @@ class FinaliseRemoteLoginTest {
             testAccessToken,
             1L,
             testIdToken,
-            "testRefreshToken"
+            "testRefreshToken",
         )
     private val accessDeniedError =
         AuthenticationError(
             "access_denied",
-            AuthenticationError.ErrorType.ACCESS_DENIED
+            AuthenticationError.ErrorType.ACCESS_DENIED,
         )
     private val oauthError =
         AuthenticationError(
             "oauth_error",
-            AuthenticationError.ErrorType.OAUTH
+            AuthenticationError.ErrorType.OAUTH,
         )
     private val tokenError =
         AuthenticationError(
             "token_error",
-            AuthenticationError.ErrorType.OAUTH
+            AuthenticationError.ErrorType.OAUTH,
         )
 
     private val exceptionNullMessage = Exception()
@@ -83,77 +83,80 @@ class FinaliseRemoteLoginTest {
                 context,
                 mockAppIntegrity,
                 mockLoginSession,
-                logger
+                logger,
             )
     }
 
     @Test
-    fun `handle() should call onSuccess with tokens when attestation and PoP are successful`() = runTest {
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
-        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-            @Suppress("unchecked_cast")
-            (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+    fun `handle() should call onSuccess with tokens when attestation and PoP are successful`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
+                (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+
+            val result = finaliseRemoteLogin.handle(mockIntent)
+
+            assertIs<FinaliseRemoteLogin.Result.Success>(result)
+            assertEquals(tokenResponse, result.tokenResponse)
         }
 
-        val result = finaliseRemoteLogin.handle(mockIntent)
+    @Test
+    fun `handle() should call onFailure when getProofOfPossession returns Failure with error`() =
+        runTest {
+            val expectedResult = SignedPoP.Failure("test", Error("error"))
+            val expectedError =
+                AppIntegrityException.ProofOfPossessionException(expectedResult.error!!)
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
-        assertIs<FinaliseRemoteLogin.Result.Success>(result)
-        assertEquals(tokenResponse, result.tokenResponse)
-    }
+            val result = finaliseRemoteLogin.handle(mockIntent)
+
+            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+            assertEquals("error", result.error.message)
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasMessage(
+                            expectedError.message ?: expectedResult.reason,
+                        ),
+                    ),
+                ),
+            )
+            verifyNoInteractions(mockLoginSession)
+        }
 
     @Test
-    fun `handle() should call onFailure when getProofOfPossession returns Failure with error`() = runTest {
-        val expectedResult = SignedPoP.Failure("test", Error("error"))
-        val expectedError =
-            AppIntegrityException.ProofOfPossessionException(expectedResult.error!!)
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
-        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
+    fun `handle() should call onFailure when getProofOfPossession returns Failure without error`() =
+        runTest {
+            val expectedResult = SignedPoP.Failure("test")
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
 
-        val result = finaliseRemoteLogin.handle(mockIntent)
+            val result = finaliseRemoteLogin.handle(mockIntent)
 
-        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-        assertEquals("error", result.error.message)
-        assertThat(
-            logger,
-            hasItem(
-                allOf(
-                    isLogLevel(LogLevel.Error),
-                    hasMessage(
-                        expectedError.message ?: expectedResult.reason
-                    )
-                )
+            assertIs<FinaliseRemoteLogin.Result.Failure>(result)
+            assertThat(
+                logger,
+                hasItem(
+                    allOf(
+                        isLogLevel(LogLevel.Error),
+                        hasMessage(containsString(expectedResult.reason)),
+                    ),
+                ),
             )
-        )
-        verifyNoInteractions(mockLoginSession)
-    }
-
-    @Test
-    fun `handle() should call onFailure when getProofOfPossession returns Failure without error`() = runTest {
-        val expectedResult = SignedPoP.Failure("test")
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(testAttestation)
-        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(expectedResult)
-
-        val result = finaliseRemoteLogin.handle(mockIntent)
-
-        assertIs<FinaliseRemoteLogin.Result.Failure>(result)
-        assertThat(
-            logger,
-            hasItem(
-                allOf(
-                    isLogLevel(LogLevel.Error),
-                    hasMessage(containsString(expectedResult.reason))
-                )
-            )
-        )
-        verifyNoInteractions(mockLoginSession)
-    }
+            verifyNoInteractions(mockLoginSession)
+        }
 
     @Test
     fun `onSuccess, savedAttestation is null and attestation and PoP are successful`() = runTest {
         whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.Success(testAttestation)
+            AttestationResult.Success(testAttestation),
         )
         whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
         whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
@@ -171,7 +174,7 @@ class FinaliseRemoteLoginTest {
     fun `onSuccess, savedAttestation is empty and attestation and PoP are successful`() = runTest {
         whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn("")
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.Success(testAttestation)
+            AttestationResult.Success(testAttestation),
         )
         whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
         whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
@@ -192,8 +195,8 @@ class FinaliseRemoteLoginTest {
             .thenReturn(
                 AttestationResult.Failure(
                     type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                    error = Exception("error")
-                )
+                    error = Exception("error"),
+                ),
             )
 
         val result = finaliseRemoteLogin.handle(mockIntent)
@@ -204,21 +207,22 @@ class FinaliseRemoteLoginTest {
     }
 
     @Test
-    fun `onSuccess, when savedAttestation is null and getClientAttestation returns NotRequired`() = runTest {
-        whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
-        whenever(mockAppIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.NotRequired(testAttestation))
-        whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
-        whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
-            @Suppress("unchecked_cast")
-            (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+    fun `onSuccess, when savedAttestation is null and getClientAttestation returns NotRequired`() =
+        runTest {
+            whenever(mockAppIntegrity.retrieveSavedClientAttestation()).thenReturn(null)
+            whenever(mockAppIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired(testAttestation))
+            whenever(mockAppIntegrity.getProofOfPossession()).thenReturn(SignedPoP.Success(testJwt))
+            whenever(mockLoginSession.finalise(any(), any(), any(), any(), any())).thenAnswer {
+                @Suppress("unchecked_cast")
+                (it.arguments[3] as (token: TokenResponse) -> Unit).invoke(tokenResponse)
+            }
+
+            val result = finaliseRemoteLogin.handle(mockIntent)
+
+            assertIs<FinaliseRemoteLogin.Result.Success>(result)
+            assertEquals(tokenResponse, result.tokenResponse)
         }
-
-        val result = finaliseRemoteLogin.handle(mockIntent)
-
-        assertIs<FinaliseRemoteLogin.Result.Success>(result)
-        assertEquals(tokenResponse, result.tokenResponse)
-    }
 
     @Test
     fun `onFailure, handleLoginFinalise returns access_denied failure callback`() = runTest {
@@ -240,9 +244,9 @@ class FinaliseRemoteLoginTest {
             hasItem(
                 allOf(
                     isLogLevel(LogLevel.Error),
-                    hasMessage(result.error.message!!)
-                )
-            )
+                    hasMessage(result.error.message!!),
+                ),
+            ),
         )
     }
 

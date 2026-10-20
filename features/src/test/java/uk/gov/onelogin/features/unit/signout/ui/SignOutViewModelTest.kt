@@ -38,7 +38,7 @@ class SignOutViewModelTest {
             SignOutViewModel(
                 mockNavigator,
                 mockSignOutUseCase,
-                logger
+                logger,
             )
     }
 
@@ -54,7 +54,7 @@ class SignOutViewModelTest {
     @Test
     fun `sign out use case does throw`() = runTest {
         whenever(mockSignOutUseCase.invoke()).thenThrow(
-            SignOutError(Exception("test"))
+            SignOutError(Exception("test")),
         )
 
         viewModel.signOut()
@@ -67,7 +67,7 @@ class SignOutViewModelTest {
     @Test
     fun `sign out use case does throw wallet error`() = runTest {
         whenever(mockSignOutUseCase.invoke()).thenThrow(
-            SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError())
+            SignOutError(DeleteWalletDataUseCaseImpl.DeleteWalletDataError()),
         )
 
         viewModel.signOut()
@@ -76,7 +76,7 @@ class SignOutViewModelTest {
         verify(mockNavigator).navigate(ErrorRoutes.SignOut, false)
         assertThat(
             "logger has log",
-            logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString())
+            logger.contains(DeleteWalletDataUseCaseImpl.DeleteWalletDataError().toString()),
         )
     }
 

@@ -34,7 +34,7 @@ class DeleteWalletDataUseCaseTest {
             throw Error("Error")
         }
         Assertions.assertThrows(
-            Error::class.java
+            Error::class.java,
         ) {
             runBlocking { sut.invoke() }
         }

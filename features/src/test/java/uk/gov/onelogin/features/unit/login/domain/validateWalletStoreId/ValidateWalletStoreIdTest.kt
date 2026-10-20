@@ -36,7 +36,7 @@ class ValidateWalletStoreIdTest {
     private fun sut(persistentId: String? = "persistentId") = ValidateWalletStoreIdImpl(
         getWalletStoreId = getWalletStoreId,
         getPersistentId = { persistentId },
-        logger = logger
+        logger = logger,
     )
 
     @Test
@@ -64,18 +64,18 @@ class ValidateWalletStoreIdTest {
                         hasMessage("Wallet store ID is missing from device storage"),
                         hasException(
                             instanceOf(
-                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
-                            )
+                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java,
+                            ),
                         ),
                         hasCustomKeys(
                             contains(
                                 equalTo(walletComponentKey),
-                                equalTo(walletActionKey)
-                            )
-                        )
-                    )
-                )
-            )
+                                equalTo(walletActionKey),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 
@@ -86,7 +86,10 @@ class ValidateWalletStoreIdTest {
                 assertThrows<AssertionError> {
                     sut(null).invoke()
                 }
-            assertEquals("User must be signed-in before validating wallet store ID", exception.message)
+            assertEquals(
+                "User must be signed-in before validating wallet store ID",
+                exception.message,
+            )
         }
     }
 
@@ -104,18 +107,18 @@ class ValidateWalletStoreIdTest {
                         hasMessage("Wallet store ID is missing from device storage"),
                         hasException(
                             instanceOf(
-                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
-                            )
+                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java,
+                            ),
                         ),
                         hasCustomKeys(
                             contains(
                                 equalTo(walletComponentKey),
-                                equalTo(walletActionKey)
-                            )
-                        )
-                    )
-                )
-            )
+                                equalTo(walletActionKey),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
     }
 }

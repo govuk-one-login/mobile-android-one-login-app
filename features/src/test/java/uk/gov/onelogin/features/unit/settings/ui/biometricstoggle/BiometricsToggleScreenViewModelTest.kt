@@ -44,7 +44,7 @@ class BiometricsToggleScreenViewModelTest {
             LocalAuthManagerImpl(
                 localAuthPrefRepo = localAuthPrefRepo,
                 deviceBiometricsManager = deviceBiometricsManager,
-                analyticsLogger = analyticsLogger
+                analyticsLogger = analyticsLogger,
             )
         navigator = mock()
         autoInitialiseSecureStore = mock()
@@ -52,7 +52,7 @@ class BiometricsToggleScreenViewModelTest {
             BiometricsToggleScreenViewModel(
                 localAuthManager = localAuthManager,
                 navigator = navigator,
-                autoInitialiseSecureStore = autoInitialiseSecureStore
+                autoInitialiseSecureStore = autoInitialiseSecureStore,
             )
     }
 
@@ -92,7 +92,7 @@ class BiometricsToggleScreenViewModelTest {
 
         assertEquals(
             LocalAuthPreference.Enabled(false),
-            localAuthManager.localAuthPreference
+            localAuthManager.localAuthPreference,
         )
         verify(autoInitialiseSecureStore, times(0)).initialise(null)
     }
@@ -108,7 +108,7 @@ class BiometricsToggleScreenViewModelTest {
 
         assertEquals(
             LocalAuthPreference.Enabled(true),
-            localAuthManager.localAuthPreference
+            localAuthManager.localAuthPreference,
         )
         verify(autoInitialiseSecureStore).initialise(null)
     }
@@ -124,7 +124,7 @@ class BiometricsToggleScreenViewModelTest {
 
         assertEquals(
             LocalAuthPreference.Enabled(true),
-            localAuthManager.localAuthPreference
+            localAuthManager.localAuthPreference,
         )
         verify(autoInitialiseSecureStore).initialise(null)
     }

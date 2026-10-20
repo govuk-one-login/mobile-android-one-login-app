@@ -56,7 +56,7 @@ class ErrorUpdateRequiredBodyTest : FragmentActivityTestCase() {
         var actual = false
         composeTestRule.setContent {
             UpdateRequiredBody(
-                onPrimary = { actual = true }
+                onPrimary = { actual = true },
             )
         }
         // When clicking the `primaryButton`

@@ -49,13 +49,13 @@ class SignInErrorAnalyticsViewModelTest {
         requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         analyticsLogger = mock()
         viewModel =
             SignInErrorAnalyticsViewModel(
                 context,
-                analyticsLogger
+                analyticsLogger,
             )
     }
 
@@ -68,7 +68,7 @@ class SignInErrorAnalyticsViewModelTest {
                 endpoint = "",
                 reason = recoverableReason,
                 status = "",
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackRecoverableScreen()
@@ -77,7 +77,7 @@ class SignInErrorAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 
@@ -90,7 +90,7 @@ class SignInErrorAnalyticsViewModelTest {
                 endpoint = "",
                 reason = unrecoverableReason,
                 status = "",
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackUnrecoverableScreen()
@@ -99,7 +99,7 @@ class SignInErrorAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 
@@ -108,7 +108,7 @@ class SignInErrorAnalyticsViewModelTest {
         val event =
             TrackEvent.Button(
                 text = button,
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackButton()
@@ -121,7 +121,7 @@ class SignInErrorAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backButton,
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackBackButton()

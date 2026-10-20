@@ -12,12 +12,13 @@ import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.signout.ui.SignOutBody
 
 @RunWith(Parameterized::class)
-class SignOutScreenshotTest(nightMode: NightMode, locale: String) : BaseScreenshotTest(nightMode, locale) {
+class SignOutScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignOutBody(
             onPrimary = {},
             onClose = {},
-            onBack = {}
+            onBack = {},
         )
     }
 
@@ -28,7 +29,7 @@ class SignOutScreenshotTest(nightMode: NightMode, locale: String) : BaseScreensh
             arrayOf(NOTNIGHT, LOCALE_EN),
             arrayOf(NOTNIGHT, LOCALE_CY),
             arrayOf(NIGHT, LOCALE_EN),
-            arrayOf(NIGHT, LOCALE_CY)
+            arrayOf(NIGHT, LOCALE_CY),
         )
     }
 }

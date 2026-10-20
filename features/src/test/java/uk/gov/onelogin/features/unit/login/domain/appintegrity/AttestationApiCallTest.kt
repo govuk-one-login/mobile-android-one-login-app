@@ -54,31 +54,34 @@ class AttestationApiCallTest {
     }
 
     @Test
-    fun `call() - Failure without error message and 500 status code - invalid app check token`() = runTest {
-        givenApiFailure(AttestationApiCall.INVALID_APP_CHECK_TOKEN)
+    fun `call() - Failure without error message and 500 status code - invalid app check token`() =
+        runTest {
+            givenApiFailure(AttestationApiCall.INVALID_APP_CHECK_TOKEN)
 
-        val result = assertionApiCall.call("", jwk)
+            val result = assertionApiCall.call("", jwk)
 
-        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
-    }
-
-    @Test
-    fun `call() - Failure without error message and 500 status code - intermittent app check token`() = runTest {
-        givenApiFailure(AttestationApiCall.INTERMITTENT_SERVER_ERROR)
-
-        val result = assertionApiCall.call("", jwk)
-
-        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
-    }
+            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
+        }
 
     @Test
-    fun `call() - Failure without error message and 400 status code - invalid public key jwk`() = runTest {
-        givenApiFailure(AttestationApiCall.INVALID_PUBLIC_KEY_JWK)
+    fun `call() - Failure without error message and 500 status code - intermittent app check token`() =
+        runTest {
+            givenApiFailure(AttestationApiCall.INTERMITTENT_SERVER_ERROR)
 
-        val result = assertionApiCall.call("", jwk)
+            val result = assertionApiCall.call("", jwk)
 
-        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED)
-    }
+            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
+        }
+
+    @Test
+    fun `call() - Failure without error message and 400 status code - invalid public key jwk`() =
+        runTest {
+            givenApiFailure(AttestationApiCall.INVALID_PUBLIC_KEY_JWK)
+
+            val result = assertionApiCall.call("", jwk)
+
+            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED)
+        }
 
     @Test
     fun `call() - Failure without error message and unexpected status code`() = runTest {
@@ -97,14 +100,16 @@ class AttestationApiCallTest {
 
         result.assertFailure(AppIntegrityException.AppIntegrityErrorType.GENERIC)
     }
-    private fun givenApiSuccess(body: String = VALID_CLIENT_ATTESTATION,) {
+    private fun givenApiSuccess(body: String = VALID_CLIENT_ATTESTATION) {
         networkService.setSuccessResponse(200, body)
     }
 
     private fun givenApiFailure(status: Int) {
         networkService.setFailureResponse(GenericHttpResponse(status, "error"))
     }
-    private fun AttestationResponse.assertFailure(expectedType: AppIntegrityException.AppIntegrityErrorType,) {
+    private fun AttestationResponse.assertFailure(
+        expectedType: AppIntegrityException.AppIntegrityErrorType,
+    ) {
         assertInstanceOf<AttestationResponse.Failure>(this)
         val error = this.error
         assertInstanceOf<AppIntegrityException.ClientAttestationException>(error)

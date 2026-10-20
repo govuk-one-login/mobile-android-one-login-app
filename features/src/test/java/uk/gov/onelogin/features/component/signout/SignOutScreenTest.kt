@@ -68,8 +68,8 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(title).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(
             SignOutAnalyticsViewModel.Companion.makeSignOutViewEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -84,8 +84,8 @@ class SignOutScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNodeWithTag(LOADING_SCREEN_TEST_TAG).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(
             SignOutAnalyticsViewModel.Companion.onPrimaryEvent(
-                context
-            )
+                context,
+            ),
         )
         verify(signOutUseCase).invoke()
         verify(navigator).navigate(SignOutRoutes.Success)

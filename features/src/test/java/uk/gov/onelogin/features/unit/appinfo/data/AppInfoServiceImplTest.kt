@@ -58,7 +58,7 @@ class AppInfoServiceImplTest {
                 localSource,
                 appVersionCheck,
                 featureFlagSetter,
-                logger
+                logger,
             )
     }
 
@@ -108,7 +108,7 @@ class AppInfoServiceImplTest {
         logger = MemorisedLogger()
         setup()
         whenever(remoteSource.get()).thenReturn(
-            AppInfoRemoteState.Failure(err.message!!, err.exception)
+            AppInfoRemoteState.Failure(err.message!!, err.exception),
         )
         whenever(localSource.get()).thenReturn(AppInfoLocalState.Success(data))
         whenever(appVersionCheck.compareVersions(eq(data)))
@@ -125,11 +125,11 @@ class AppInfoServiceImplTest {
                     hasCustomKeys(
                         contains(
                             equalTo(errorKeyComponent),
-                            equalTo(errorKeyActionGetRemote)
-                        )
-                    )
-                )
-            )
+                            equalTo(errorKeyActionGetRemote),
+                        ),
+                    ),
+                ),
+            ),
         )
         verify(featureFlagSetter).setFromAppInfo(data.apps.android)
     }
@@ -141,7 +141,7 @@ class AppInfoServiceImplTest {
         logger = MemorisedLogger()
         setup()
         whenever(remoteSource.get()).thenReturn(
-            AppInfoRemoteState.Failure(err.message!!, err)
+            AppInfoRemoteState.Failure(err.message!!, err),
         )
         whenever(localSource.get()).thenReturn(AppInfoLocalState.Failure(localSourceErrorMsg))
         val result = sut.get()
@@ -156,11 +156,11 @@ class AppInfoServiceImplTest {
                     hasCustomKeys(
                         contains(
                             equalTo(errorKeyComponent),
-                            equalTo(errorKeyActionGetRemote)
-                        )
-                    )
-                )
-            )
+                            equalTo(errorKeyActionGetRemote),
+                        ),
+                    ),
+                ),
+            ),
         )
         verifyNoInteractions(featureFlagSetter)
     }

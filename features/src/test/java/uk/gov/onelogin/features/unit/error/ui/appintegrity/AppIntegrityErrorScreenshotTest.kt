@@ -20,7 +20,7 @@ class AppIntegrityErrorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> = arrayListOf(
             arrayOf(NOTNIGHT),
-            arrayOf(NIGHT)
+            arrayOf(NIGHT),
         )
     }
 }

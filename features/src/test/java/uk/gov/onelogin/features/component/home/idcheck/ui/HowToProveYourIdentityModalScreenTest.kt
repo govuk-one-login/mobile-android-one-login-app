@@ -60,7 +60,7 @@ class HowToProveYourIdentityModalScreenTest : FragmentActivityTestCase() {
                 substring = true,
             ).assertTextEquals(
                 // This is what is visible to screen readers
-                "Go to the GOV.UK website Opens in web browser"
+                "Go to the GOV.UK website Opens in web browser",
             )
     }
 

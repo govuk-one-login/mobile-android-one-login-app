@@ -232,10 +232,14 @@ constructor(
         // This will have to updated after the secure store errors are now mapped correctly according to the TD
         return when (status) {
             is LocalAuthStatus.FirstTimeUser -> RefreshExchangeResult.FirstTimeUser
+
             is LocalAuthStatus.UnrecoverableError -> RefreshExchangeResult.UnrecoverableError
+
             is LocalAuthStatus.Success -> RefreshExchangeResult.Success
+
             is LocalAuthStatus.UserCancelledBioPrompt ->
                 RefreshExchangeResult.UserCancelledBioPrompt
+
             else -> RefreshExchangeResult.ReauthRequired
         }
     }

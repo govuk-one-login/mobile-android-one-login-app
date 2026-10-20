@@ -62,13 +62,13 @@ class StartRemoteLoginTest {
                 mockGetPersistentId,
                 mockAppIntegrity,
                 mockUriParser,
-                mockLogger
+                mockLogger,
             )
 
         whenever(mockContext.getString(any())).thenReturn("")
         whenever(mockContext.getString(any(), any<String>())).thenReturn("")
         whenever(mockLocaleUtils.getLocaleAsSessionConfig()).thenReturn(
-            LoginSessionConfiguration.Locale.EN
+            LoginSessionConfiguration.Locale.EN,
         )
         whenever(mockUriParser.parse(any())).thenReturn(mockUri)
     }
@@ -77,7 +77,7 @@ class StartRemoteLoginTest {
     fun `login() - success with persistentId`() = runTest {
         whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.Success(testAttestation)
+            AttestationResult.Success(testAttestation),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -89,7 +89,7 @@ class StartRemoteLoginTest {
             assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
             Assertions.assertEquals(
                 LoginSessionConfiguration.Locale.EN,
-                capturedConfiguration.locale
+                capturedConfiguration.locale,
             )
         }
     }
@@ -98,7 +98,7 @@ class StartRemoteLoginTest {
     fun `login() - success without persistentId`() = runTest {
         whenever(mockGetPersistentId.invoke()).thenReturn(null)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.Success(testAttestation)
+            AttestationResult.Success(testAttestation),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -110,7 +110,7 @@ class StartRemoteLoginTest {
             assertEquals(null, capturedConfiguration.persistentSessionId)
             Assertions.assertEquals(
                 LoginSessionConfiguration.Locale.EN,
-                capturedConfiguration.locale
+                capturedConfiguration.locale,
             )
         }
     }
@@ -119,7 +119,7 @@ class StartRemoteLoginTest {
     fun `login() - success with empty persistentId`() = runTest {
         whenever(mockGetPersistentId.invoke()).thenReturn("")
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.Success(testAttestation)
+            AttestationResult.Success(testAttestation),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -131,7 +131,7 @@ class StartRemoteLoginTest {
             assertEquals(null, capturedConfiguration.persistentSessionId)
             Assertions.assertEquals(
                 LoginSessionConfiguration.Locale.EN,
-                capturedConfiguration.locale
+                capturedConfiguration.locale,
             )
         }
     }
@@ -142,8 +142,8 @@ class StartRemoteLoginTest {
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
             AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                error = Exception("error")
-            )
+                error = Exception("error"),
+            ),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -155,7 +155,7 @@ class StartRemoteLoginTest {
     fun `login() - handles AttestationResult NotRequired with savedAttestation`() = runTest {
         whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.NotRequired(testAttestation)
+            AttestationResult.NotRequired(testAttestation),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -167,7 +167,7 @@ class StartRemoteLoginTest {
             assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
             Assertions.assertEquals(
                 LoginSessionConfiguration.Locale.EN,
-                capturedConfiguration.locale
+                capturedConfiguration.locale,
             )
         }
     }
@@ -176,7 +176,7 @@ class StartRemoteLoginTest {
     fun `login() - handles AttestationResult NotRequired without savedAttestation`() = runTest {
         whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.NotRequired(null)
+            AttestationResult.NotRequired(null),
         )
 
         val result = startRemoteLogin.login(mockLauncher)
@@ -188,7 +188,7 @@ class StartRemoteLoginTest {
             assertEquals(testPersistentId, capturedConfiguration.persistentSessionId)
             Assertions.assertEquals(
                 LoginSessionConfiguration.Locale.EN,
-                capturedConfiguration.locale
+                capturedConfiguration.locale,
             )
         }
     }
@@ -199,7 +199,7 @@ class StartRemoteLoginTest {
         val expectedWrappedException = LoginException(error)
         whenever(mockGetPersistentId.invoke()).thenReturn(testPersistentId)
         whenever(mockAppIntegrity.getClientAttestation()).thenReturn(
-            AttestationResult.NotRequired(null)
+            AttestationResult.NotRequired(null),
         )
         whenever(mockLoginSession.present(any(), any())).thenThrow(error)
 
@@ -212,9 +212,9 @@ class StartRemoteLoginTest {
                 allOf(
                     isLogLevel(LogLevel.Error),
                     hasMessage(error.message ?: "No message"),
-                    hasException(equalTo(expectedWrappedException))
-                )
-            )
+                    hasException(equalTo(expectedWrappedException)),
+                ),
+            ),
         )
     }
 }

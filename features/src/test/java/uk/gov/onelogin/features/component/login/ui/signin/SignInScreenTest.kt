@@ -70,7 +70,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 getPersistentId,
                 signOutUseCase,
                 localAuthPrefResetUseCase,
-                logger
+                logger,
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
@@ -84,7 +84,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -106,7 +106,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loginViewModel = loginViewModel,
-                loadingAnalyticsViewModel = loadingAnalyticsViewModel
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
             )
         }
 
@@ -133,7 +133,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -150,7 +150,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
         whenWeClickSignIn()
@@ -165,7 +165,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -188,7 +188,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
     }

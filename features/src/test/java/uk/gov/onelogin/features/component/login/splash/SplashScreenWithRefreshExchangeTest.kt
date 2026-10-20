@@ -89,7 +89,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 onlineChecker,
                 refreshExchange,
-                getTokenExpiry
+                getTokenExpiry,
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
@@ -123,7 +123,11 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         wheneverBlocking { getTokenExpiry() }.thenReturn(1L)
 
         wheneverBlocking { refreshExchange.getTokens(any(), any()) }.thenAnswer {
-            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.UserCancelledBioPrompt)
+            (
+                it.arguments[1] as (
+                    RefreshExchangeResult,
+                ) -> Unit
+                ).invoke(RefreshExchangeResult.UserCancelledBioPrompt)
         }
 
         // When
@@ -138,7 +142,11 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         wheneverBlocking {
             refreshExchange.getTokens(any(), any())
         }.thenAnswer {
-            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.FirstTimeUser)
+            (
+                it.arguments[1] as (
+                    RefreshExchangeResult,
+                ) -> Unit
+                ).invoke(RefreshExchangeResult.FirstTimeUser)
         }
 
         // When
@@ -206,7 +214,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         }
 
         verify(analytics).logEventV3Dot1(
-            SplashScreenAnalyticsViewModel.makeBackEvent(context)
+            SplashScreenAnalyticsViewModel.makeBackEvent(context),
         )
     }
 }

@@ -24,9 +24,9 @@ class AppInfoRemoteSourceImplTest {
                     AppInfoData.AppInfo(
                         minimumVersion = "0.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
     private val exception = ApiResponseException("500", TestResponseException.internalServerError)
 
@@ -52,7 +52,7 @@ class AppInfoRemoteSourceImplTest {
         val result = sut.get()
         assertEquals(
             AppInfoRemoteState.Failure("Status: 500", exception),
-            result
+            result,
         )
     }
 }

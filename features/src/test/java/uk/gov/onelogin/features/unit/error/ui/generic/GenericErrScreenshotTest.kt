@@ -20,7 +20,7 @@ class GenericErrScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightM
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> = arrayListOf(
             arrayOf(NOTNIGHT),
-            arrayOf(NIGHT)
+            arrayOf(NIGHT),
         )
     }
 }

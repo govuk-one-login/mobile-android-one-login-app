@@ -40,7 +40,7 @@ class HomeScreenViewModelTest {
             analyticsLogger = analyticsLogger,
             initialConfig = TestUtils.criSdkConfig,
             logger = logger,
-            applicationContext = context
+            applicationContext = context,
         )
 
     private val walletRepository: WalletRepository = mock()
@@ -50,7 +50,7 @@ class HomeScreenViewModelTest {
             featureFlag,
             mockNavigator,
             walletRepository,
-            criOrchestratorSdk
+            criOrchestratorSdk,
         )
     }
 

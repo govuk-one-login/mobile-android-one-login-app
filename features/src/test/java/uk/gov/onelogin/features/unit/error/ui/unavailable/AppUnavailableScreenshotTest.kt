@@ -20,7 +20,7 @@ class AppUnavailableScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(ni
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> = arrayListOf(
             arrayOf(NOTNIGHT),
-            arrayOf(NIGHT)
+            arrayOf(NIGHT),
         )
     }
 }

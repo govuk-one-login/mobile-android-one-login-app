@@ -86,7 +86,7 @@ class AnalyticsOptInBodyTest : FragmentActivityTestCase() {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = {},
                 onShare = { actual = true },
-                onDoNotShare = {}
+                onDoNotShare = {},
             )
         }
         // When clicking the `primaryButton`
@@ -104,7 +104,7 @@ class AnalyticsOptInBodyTest : FragmentActivityTestCase() {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = {},
                 onShare = {},
-                onDoNotShare = { actual = true }
+                onDoNotShare = { actual = true },
             )
         }
         // When clicking the `textButton`
@@ -122,7 +122,7 @@ class AnalyticsOptInBodyTest : FragmentActivityTestCase() {
                 uiState = OptInUIState.PreChoice,
                 onPrivacyNotice = { actual = true },
                 onShare = {},
-                onDoNotShare = {}
+                onDoNotShare = {},
             )
         }
         // When clicking the `privacyNotice`

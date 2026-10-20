@@ -63,7 +63,7 @@ class SplashScreenViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp
+                mockGetRefreshTokenExp,
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(true)
     }
@@ -74,7 +74,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.ClientAttestationFailure
+                    RefreshExchangeResult.ClientAttestationFailure,
                 )
             }
         viewModel.login(mockActivity)
@@ -90,7 +90,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.Success
+                    RefreshExchangeResult.Success,
                 )
             }
         viewModel.login(mockActivity)
@@ -106,7 +106,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.FirstTimeUser
+                    RefreshExchangeResult.FirstTimeUser,
                 )
             }
         viewModel.login(mockActivity)
@@ -123,7 +123,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.ReauthRequired
+                    RefreshExchangeResult.ReauthRequired,
                 )
             }
         viewModel.login(mockActivity)
@@ -139,7 +139,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.UserCancelledBioPrompt
+                    RefreshExchangeResult.UserCancelledBioPrompt,
                 )
             }
         viewModel.login(mockActivity)
@@ -173,7 +173,7 @@ class SplashScreenViewModelTest {
         whenever(mockRefreshExchange.getTokens(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
-                    RefreshExchangeResult.UnrecoverableError
+                    RefreshExchangeResult.UnrecoverableError,
                 )
             }
         viewModel.login(mockActivity)
@@ -190,7 +190,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLocalLogin(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(mapOf("key" to "token"))
+                    LocalAuthStatus.Success(mapOf("key" to "token")),
                 )
             }
         viewModel.login(mockActivity)
@@ -206,7 +206,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLocalLogin(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.FirstTimeUser
+                    LocalAuthStatus.FirstTimeUser,
                 )
             }
         viewModel.login(mockActivity)
@@ -223,7 +223,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLocalLogin(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.ReauthRequired
+                    LocalAuthStatus.ReauthRequired,
                 )
             }
         viewModel.login(mockActivity)
@@ -239,7 +239,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLocalLogin(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.UserCancelledBioPrompt
+                    LocalAuthStatus.UserCancelledBioPrompt,
                 )
             }
         viewModel.login(mockActivity)
@@ -263,7 +263,7 @@ class SplashScreenViewModelTest {
         whenever(mockHandleLocalLogin(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.FirstTimeUser
+                    LocalAuthStatus.FirstTimeUser,
                 )
             }
         whenever(mockSignOutUseCase.invoke()).thenThrow(SignOutError(Exception()))

@@ -8,7 +8,7 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.home.ui.HomeScreenPreview
 
 @RunWith(Parameterized::class)
-class HomeScreenshotTest(nightMode: NightMode, locale: String, fontScale: Float,) :
+class HomeScreenshotTest(nightMode: NightMode, locale: String, fontScale: Float) :
     BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         HomeScreenPreview()

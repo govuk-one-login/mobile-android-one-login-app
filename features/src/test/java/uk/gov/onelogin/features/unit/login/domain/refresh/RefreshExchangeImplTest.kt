@@ -94,7 +94,7 @@ class RefreshExchangeImplTest {
         saveTokens = saveTokens,
         logger = logger,
         timeProvider = timeProvider,
-        validateWalletStoreId = validateWalletStoreId
+        validateWalletStoreId = validateWalletStoreId,
     )
 
     @BeforeEach
@@ -114,9 +114,9 @@ class RefreshExchangeImplTest {
             LocalAuthStatus.Success(
                 mapOf(
                     AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                    AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                )
-            )
+                    AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken",
+                ),
+            ),
         )
         whenever(dPoPManager.generateDPoP(any()))
             .thenReturn(SignedDPoP.Success("signedDPoP"))
@@ -181,31 +181,33 @@ class RefreshExchangeImplTest {
     }
 
     @Test
-    fun `given saved client attestation is null but not required anyway, then result is still success`() = runTest {
-        whenever(appIntegrity.getClientAttestation())
-            .thenReturn(AttestationResult.NotRequired(null))
+    fun `given saved client attestation is null but not required anyway, then result is still success`() =
+        runTest {
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(AttestationResult.NotRequired(null))
 
-        val result = getTokens()
+            val result = getTokens()
 
-        assertLoginTokensSaved()
-        assertEquals(RefreshExchangeResult.Success, result)
-    }
+            assertLoginTokensSaved()
+            assertEquals(RefreshExchangeResult.Success, result)
+        }
 
     @Test
-    fun `given client attestation is expired, then result is client attestation failure`() = runTest {
-        whenever(appIntegrity.getClientAttestation())
-            .thenReturn(
-                AttestationResult.Failure(
-                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                    error = Exception("Client Attestation failure!")
+    fun `given client attestation is expired, then result is client attestation failure`() =
+        runTest {
+            whenever(appIntegrity.getClientAttestation())
+                .thenReturn(
+                    AttestationResult.Failure(
+                        type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                        error = Exception("Client Attestation failure!"),
+                    ),
                 )
-            )
 
-        val result = getTokens()
+            val result = getTokens()
 
-        assertNothingSaved()
-        assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
-    }
+            assertNothingSaved()
+            assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
+        }
 
     @Test
     fun `given client attestation is saved but not required, then result is success`() = runTest {
@@ -225,45 +227,50 @@ class RefreshExchangeImplTest {
 
         val result = getTokens()
 
-        assertErrorLogged("DPoP provider failed to fetch refresh DPoP proof", ServiceException::class.java)
-        assertNothingSaved()
-        assertEquals(RefreshExchangeResult.ReauthRequired, result)
-    }
-
-    @Test
-    fun `given failure generating Demonstrating PoP with exception, then result is re-auth required`() = runTest {
-        val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
-        whenever(dPoPManager.generateDPoP(any()))
-            .thenReturn(SignedDPoP.Failure("Failure", exp))
-
-        val result = getTokens()
-
-        assertErrorLogged("DPoP provider failed to fetch refresh DPoP proof")
-        assertNothingSaved()
-        assertEquals(RefreshExchangeResult.ReauthRequired, result)
-    }
-
-    @Test
-    fun `given failure with generating app integrity PoP, then result is client attestation failure`() = runTest {
-        whenever(appIntegrity.getProofOfPossession())
-            .thenReturn(SignedPoP.Failure("Failure"))
-
-        val result = getTokens()
-
         assertErrorLogged(
-            "Attestation provider failed to fetch client attestation",
-            ClientAttestationException::class.java
+            "DPoP provider failed to fetch refresh DPoP proof",
+            ServiceException::class.java,
         )
         assertNothingSaved()
-        assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
+        assertEquals(RefreshExchangeResult.ReauthRequired, result)
     }
+
+    @Test
+    fun `given failure generating Demonstrating PoP with exception, then result is re-auth required`() =
+        runTest {
+            val exp = RefreshExchangeImpl.Companion.RefreshExchangeException("error")
+            whenever(dPoPManager.generateDPoP(any()))
+                .thenReturn(SignedDPoP.Failure("Failure", exp))
+
+            val result = getTokens()
+
+            assertErrorLogged("DPoP provider failed to fetch refresh DPoP proof")
+            assertNothingSaved()
+            assertEquals(RefreshExchangeResult.ReauthRequired, result)
+        }
+
+    @Test
+    fun `given failure with generating app integrity PoP, then result is client attestation failure`() =
+        runTest {
+            whenever(appIntegrity.getProofOfPossession())
+                .thenReturn(SignedPoP.Failure("Failure"))
+
+            val result = getTokens()
+
+            assertErrorLogged(
+                "Attestation provider failed to fetch client attestation",
+                ClientAttestationException::class.java,
+            )
+            assertNothingSaved()
+            assertEquals(RefreshExchangeResult.ClientAttestationFailure, result)
+        }
 
     @Test
     fun `given network api response failure, then result is re-auth required`() = runTest {
         httpClient.exception =
             GenericResponseException(
                 TestHttpResponse.internalServerError,
-                IllegalStateException()
+                IllegalStateException(),
             )
 
         val result = getTokens()
@@ -296,15 +303,17 @@ class RefreshExchangeImplTest {
 
     @ParameterizedTest
     @MethodSource("getFromEncryptedSecureStoreErrors")
-    fun `given error in local auth status`(returnedLocalAuthStatus: LocalAuthStatus, expected: RefreshExchangeResult) =
-        runTest {
-            givenLocalAuthStatus(returnedLocalAuthStatus)
+    fun `given error in local auth status`(
+        returnedLocalAuthStatus: LocalAuthStatus,
+        expected: RefreshExchangeResult,
+    ) = runTest {
+        givenLocalAuthStatus(returnedLocalAuthStatus)
 
-            val result = getTokens()
+        val result = getTokens()
 
-            assertNothingSaved()
-            assertEquals(expected, result)
-        }
+        assertNothingSaved()
+        assertEquals(expected, result)
+    }
 
     private suspend fun getTokens(): RefreshExchangeResult {
         lateinit var result: RefreshExchangeResult
@@ -312,7 +321,7 @@ class RefreshExchangeImplTest {
             fragmentContext,
             handleResult = {
                 result = it
-            }
+            },
         )
         return result
     }
@@ -323,7 +332,7 @@ class RefreshExchangeImplTest {
                 any(),
                 anyVararg(),
                 callback = any(),
-            )
+            ),
         ).thenAnswer {
             it.getArgument<(LocalAuthStatus) -> Unit>(2).invoke(localAuthStatus)
         }
@@ -349,7 +358,7 @@ class RefreshExchangeImplTest {
         assertThat(logger, hasSize(0))
     }
 
-    private fun assertErrorLogged(message: String, exceptionClass: Class<*>? = null,) {
+    private fun assertErrorLogged(message: String, exceptionClass: Class<*>? = null) {
         val exceptionMatcher = if (exceptionClass != null) {
             hasException(instanceOf(exceptionClass))
         } else {
@@ -364,8 +373,8 @@ class RefreshExchangeImplTest {
                     hasTag(RefreshExchangeImpl.REFRESH_ERROR_TAG),
                     hasMessage(message),
                     exceptionMatcher,
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -384,7 +393,7 @@ class RefreshExchangeImplTest {
                 "    \"refresh_token\": \"refreshToken\",\n" +
                 "    \"token_type\": \"Bearer\",\n" +
                 "    \"expires_in\": 1\n" +
-                "}"
+                "}",
         )
         private val refreshApiNoRefreshTokenResponse = GenericHttpResponse(
             200,
@@ -392,7 +401,7 @@ class RefreshExchangeImplTest {
                 "    \"access_token\": \"accessToken\",\n" +
                 "    \"token_type\": \"Bearer\",\n" +
                 "    \"expires_in\": 1\n" +
-                "}"
+                "}",
         )
 
         @JvmStatic
@@ -400,23 +409,23 @@ class RefreshExchangeImplTest {
         fun getFromEncryptedSecureStoreErrors(): Stream<Arguments> = Stream.of(
             Arguments.of(
                 LocalAuthStatus.FirstTimeUser,
-                RefreshExchangeResult.FirstTimeUser
+                RefreshExchangeResult.FirstTimeUser,
             ),
             Arguments.of(
                 LocalAuthStatus.UnrecoverableError,
-                RefreshExchangeResult.UnrecoverableError
+                RefreshExchangeResult.UnrecoverableError,
             ),
             Arguments.of(
                 LocalAuthStatus.UserCancelledBioPrompt,
-                RefreshExchangeResult.UserCancelledBioPrompt
+                RefreshExchangeResult.UserCancelledBioPrompt,
             ),
             Arguments.of(
                 LocalAuthStatus.ReauthRequired,
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 LocalAuthStatus.Success(null),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
@@ -424,11 +433,11 @@ class RefreshExchangeImplTest {
                     LocalAuthStatus.Success(
                         mapOf(
                             AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
-                        )
-                    )
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "",
+                        ),
+                    ),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
@@ -436,11 +445,11 @@ class RefreshExchangeImplTest {
                     LocalAuthStatus.Success(
                         mapOf(
                             AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken",
+                        ),
+                    ),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
@@ -448,40 +457,40 @@ class RefreshExchangeImplTest {
                     LocalAuthStatus.Success(
                         mapOf(
                             AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to ""
-                        )
-                    )
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "",
+                        ),
+                    ),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
                     "Missing tokens",
-                    LocalAuthStatus.Success(emptyMap())
+                    LocalAuthStatus.Success(emptyMap()),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
                     "Missing refresh token",
                     LocalAuthStatus.Success(
                         mapOf(
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken"
-                        )
-                    )
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "testIdToken",
+                        ),
+                    ),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
             Arguments.of(
                 named(
                     "Missing ID token",
                     LocalAuthStatus.Success(
                         mapOf(
-                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken"
-                        )
-                    )
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "testRefreshToken",
+                        ),
+                    ),
                 ),
-                RefreshExchangeResult.ReauthRequired
+                RefreshExchangeResult.ReauthRequired,
             ),
         )
     }

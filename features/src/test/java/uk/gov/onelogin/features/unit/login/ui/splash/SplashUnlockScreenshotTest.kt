@@ -20,7 +20,7 @@ class SplashUnlockScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nigh
         @Parameterized.Parameters
         fun values(): Iterable<Array<Any>> = arrayListOf(
             arrayOf(NOTNIGHT),
-            arrayOf(NIGHT)
+            arrayOf(NIGHT),
         )
     }
 }

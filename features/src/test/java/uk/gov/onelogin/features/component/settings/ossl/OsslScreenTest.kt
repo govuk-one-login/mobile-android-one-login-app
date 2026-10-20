@@ -59,11 +59,13 @@ class OsslScreenTest : FragmentActivityTestCase() {
             }
 
             onNodeWithText(
-                context.getString(R.string.app_osslTitle)
+                context.getString(R.string.app_osslTitle),
             ).assertIsDisplayed()
         }
 
-        verify(analyticsLogger).logEventV3Dot1(OsslAnalyticsViewModel.Companion.makeScreenEvent(context))
+        verify(
+            analyticsLogger,
+        ).logEventV3Dot1(OsslAnalyticsViewModel.Companion.makeScreenEvent(context))
     }
 
     @Test
@@ -92,8 +94,8 @@ class OsslScreenTest : FragmentActivityTestCase() {
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
                 IntentMatchers.hasData(UriMatchers.hasHost(host)),
                 IntentMatchers.hasData(UriMatchers.hasPath(path)),
-                IntentMatchers.hasData(UriMatchers.hasScheme(scheme))
-            )
+                IntentMatchers.hasData(UriMatchers.hasScheme(scheme)),
+            ),
         )
     }
 
@@ -110,7 +112,7 @@ class OsslScreenTest : FragmentActivityTestCase() {
         Espresso.pressBack()
 
         verify(analyticsLogger).logEventV3Dot1(
-            OsslAnalyticsViewModel.Companion.makeBackButtonEvent(context)
+            OsslAnalyticsViewModel.Companion.makeBackButtonEvent(context),
         )
         assertTrue(backClicked)
     }
@@ -127,11 +129,11 @@ class OsslScreenTest : FragmentActivityTestCase() {
 
         composeTestRule
             .onNodeWithContentDescription(
-                resources.getString(R.string.app_back_icon)
+                resources.getString(R.string.app_back_icon),
             ).performClick()
 
         verify(analyticsLogger).logEventV3Dot1(
-            OsslAnalyticsViewModel.Companion.makeBackIconEvent(context)
+            OsslAnalyticsViewModel.Companion.makeBackIconEvent(context),
         )
         assertTrue(backClicked)
     }

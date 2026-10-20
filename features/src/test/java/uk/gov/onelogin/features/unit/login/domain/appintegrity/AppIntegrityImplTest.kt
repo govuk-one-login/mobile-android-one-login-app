@@ -52,7 +52,7 @@ class AppIntegrityImplTest {
                 appCheck,
                 saveToOpenSecureStore,
                 getFromOpenSecureStore,
-                counter
+                counter,
             )
     }
 
@@ -63,8 +63,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(validAttestationExpSSResult)
 
         val result = sut.getClientAttestation()
@@ -78,8 +78,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(validAttestationExpSSResult)
 
         val result = sut.getClientAttestation()
@@ -92,8 +92,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(validAttestationExpSSResult)
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
         whenever(appCheck.getAttestation())
@@ -113,8 +113,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(validAttestationExpSSResult)
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         val result = sut.getClientAttestation()
@@ -127,8 +127,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(validAttestationExpSSResult)
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
         whenever(appCheck.getAttestation())
@@ -145,8 +145,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(invalidAttestationExpSSResult)
         println(invalidAttestationExpSSResult)
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
@@ -164,8 +164,8 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(mapOf(CLIENT_ATTESTATION to ATTESTATION))
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
@@ -182,13 +182,13 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to "",
-                CLIENT_ATTESTATION to ATTESTATION
-            )
+                CLIENT_ATTESTATION to ATTESTATION,
+            ),
         )
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
@@ -205,12 +205,12 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(
             mapOf(
-                CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP
-            )
+                CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
+            ),
         )
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
@@ -227,13 +227,13 @@ class AppIntegrityImplTest {
         whenever(
             getFromOpenSecureStore.invoke(
                 CLIENT_ATTESTATION_EXPIRY,
-                CLIENT_ATTESTATION
-            )
+                CLIENT_ATTESTATION,
+            ),
         ).thenReturn(
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
-                CLIENT_ATTESTATION to ""
-            )
+                CLIENT_ATTESTATION to "",
+            ),
         )
         whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
         whenever(appCheck.getAttestation())
@@ -249,16 +249,16 @@ class AppIntegrityImplTest {
         val expectedError = AppIntegrityException.ClientAttestationException(Exception())
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation()).thenReturn(
-            AttestationResponse.Failure(reason = FAILURE, error = expectedError)
+            AttestationResponse.Failure(reason = FAILURE, error = expectedError),
         )
         val result = sut.getClientAttestation()
 
         assertEquals(
             AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                error = expectedError
+                error = expectedError,
             ),
-            result
+            result,
         )
         assertEquals(0, counter.getValue())
     }
@@ -268,44 +268,45 @@ class AppIntegrityImplTest {
         val expectedError =
             AppIntegrityException.ClientAttestationException(
                 Exception(),
-                AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+                AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
             )
 
         whenever(featureFlags[any()]).thenReturn(true)
         whenever(appCheck.getAttestation()).thenReturn(
-            AttestationResponse.Failure(reason = FAILURE, error = expectedError)
+            AttestationResponse.Failure(reason = FAILURE, error = expectedError),
         )
         val result = sut.getClientAttestation()
 
         assertEquals(
             AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
-                error = expectedError
+                error = expectedError,
             ),
-            result
+            result,
         )
         assertEquals(0, counter.getValue())
     }
 
     @Test
-    fun `get client attestation - attestation call failure - no known app integrity error`() = runTest {
-        val expectedError = Exception()
+    fun `get client attestation - attestation call failure - no known app integrity error`() =
+        runTest {
+            val expectedError = Exception()
 
-        whenever(featureFlags[any()]).thenReturn(true)
-        whenever(appCheck.getAttestation()).thenReturn(
-            AttestationResponse.Failure(reason = FAILURE, error = expectedError)
-        )
-        val result = sut.getClientAttestation()
+            whenever(featureFlags[any()]).thenReturn(true)
+            whenever(appCheck.getAttestation()).thenReturn(
+                AttestationResponse.Failure(reason = FAILURE, error = expectedError),
+            )
+            val result = sut.getClientAttestation()
 
-        assertEquals(
-            AttestationResult.Failure(
-                type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                error = expectedError
-            ),
-            result
-        )
-        assertEquals(0, counter.getValue())
-    }
+            assertEquals(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                    error = expectedError,
+                ),
+                result,
+            )
+            assertEquals(0, counter.getValue())
+        }
 
     @Test
     fun `generate Proof of Possession - success`() {
@@ -363,12 +364,12 @@ class AppIntegrityImplTest {
         private val validAttestationExpSSResult =
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
-                CLIENT_ATTESTATION to ATTESTATION
+                CLIENT_ATTESTATION to ATTESTATION,
             )
         private val invalidAttestationExpSSResult =
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to INVALID_ATTESTATION_EXP,
-                CLIENT_ATTESTATION to ATTESTATION
+                CLIENT_ATTESTATION to ATTESTATION,
             )
 
         private fun getFiveMinInMillis(): Int = 5 * 60000

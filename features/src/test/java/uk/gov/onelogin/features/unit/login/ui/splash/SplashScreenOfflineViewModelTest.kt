@@ -66,7 +66,7 @@ class SplashScreenOfflineViewModelTest {
                 mockAutoInitialiseSecureStore,
                 mockOnlineChecker,
                 mockRefreshExchange,
-                mockGetRefreshTokenExp
+                mockGetRefreshTokenExp,
             )
         whenever(mockOnlineChecker.isOnline()).thenReturn(false)
         runBlocking {
@@ -79,7 +79,7 @@ class SplashScreenOfflineViewModelTest {
         whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(mapOf("key" to "token"))
+                    LocalAuthStatus.Success(mapOf("key" to "token")),
                 )
             }
         viewModel.login(mockActivity)
@@ -94,7 +94,7 @@ class SplashScreenOfflineViewModelTest {
         whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.FirstTimeUser
+                    LocalAuthStatus.FirstTimeUser,
                 )
             }
         viewModel.login(mockActivity)
@@ -110,7 +110,7 @@ class SplashScreenOfflineViewModelTest {
         whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.ReauthRequired
+                    LocalAuthStatus.ReauthRequired,
                 )
             }
         viewModel.login(mockActivity)
@@ -125,7 +125,7 @@ class SplashScreenOfflineViewModelTest {
         whenever(mockHandleLocalLogin.invoke(any(), any()))
             .thenAnswer {
                 (it.arguments[1] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.UserCancelledBioPrompt
+                    LocalAuthStatus.UserCancelledBioPrompt,
                 )
             }
         viewModel.login(mockActivity)

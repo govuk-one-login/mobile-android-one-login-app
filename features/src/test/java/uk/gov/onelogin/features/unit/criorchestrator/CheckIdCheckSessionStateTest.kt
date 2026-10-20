@@ -34,7 +34,7 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
             analyticsLogger = mockAnalyticsLogger,
             initialConfig = mockConfig,
             logger = mockLogger,
-            applicationContext = context
+            applicationContext = context,
         )
     private val c = mock<Collection<String>>()
 
@@ -48,12 +48,12 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
 
     @Ignore(
         "To find a way ot test this - at the moment is because of this error: " +
-            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null"
+            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null",
     )
     @Test
     fun sessionIsActive() {
         whenever(mockCriOrchestratorSdk.isIdCheckSdkActive).thenReturn(
-            MockIsIdSCheckSessionActiveImpl(true)
+            MockIsIdSCheckSessionActiveImpl(true),
         )
 
         val result = mockCheckIdCheckSessionState.isIdCheckActive()
@@ -63,12 +63,12 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
 
     @Ignore(
         "To find a way ot test this - at the moment is because of this error: " +
-            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null"
+            "Cannot invoke \"java.util.Collection.toArray()\" because \"c\" is null",
     )
     @Test
     fun sessionIsNotActive() {
         whenever(mockCriOrchestratorSdk.isIdCheckSdkActive).thenReturn(
-            MockIsIdSCheckSessionActiveImpl(false)
+            MockIsIdSCheckSessionActiveImpl(false),
         )
 
         val result = mockCheckIdCheckSessionState.isIdCheckActive()
@@ -76,7 +76,8 @@ class CheckIdCheckSessionStateTest : FragmentActivityTestCase() {
         TestCase.assertFalse(result)
     }
 
-    private class MockIsIdSCheckSessionActiveImpl(private val result: Boolean) : IsIdCheckSdkActive {
+    private class MockIsIdSCheckSessionActiveImpl(private val result: Boolean) :
+        IsIdCheckSdkActive {
         override fun invoke(): Boolean = result
     }
 }

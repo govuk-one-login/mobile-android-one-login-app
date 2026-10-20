@@ -86,7 +86,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 getPersistentId,
                 signOutUseCase,
                 localAuthPrefResetUseCase,
-                logger
+                logger,
             )
         analyticsViewModel = ReAuthAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
@@ -99,7 +99,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -120,7 +120,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -138,7 +138,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -159,7 +159,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 shouldTryAgain = {
                     shouldTryAgainCalled = true
                     false
-                }
+                },
             )
         }
         Assert.assertTrue(shouldTryAgainCalled)
@@ -178,7 +178,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loadingAnalyticsViewModel,
                 shouldTryAgain = {
                     true
-                }
+                },
             )
         }
 
@@ -196,7 +196,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loadingAnalyticsViewModel,
                 shouldTryAgain = {
                     true
-                }
+                },
             )
         }
 
@@ -221,7 +221,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -238,7 +238,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
         whenWeClickSignIn()
@@ -255,7 +255,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
 
@@ -277,7 +277,7 @@ class ReAuthLandingScreenTest : FragmentActivityTestCase() {
                 loginViewModel,
                 viewModel,
                 analyticsViewModel,
-                loadingAnalyticsViewModel
+                loadingAnalyticsViewModel,
             )
         }
     }

@@ -12,7 +12,8 @@ import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.settings.ui.SettingsScreenOptInNoShowBiometricsPreview
 
 @RunWith(Parameterized::class)
-class SettingsOptInScreenshotTest(nightMode: NightMode, locale: String) : BaseScreenshotTest(nightMode, locale) {
+class SettingsOptInScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SettingsScreenOptInNoShowBiometricsPreview()
     }
@@ -24,7 +25,7 @@ class SettingsOptInScreenshotTest(nightMode: NightMode, locale: String) : BaseSc
             arrayOf(NOTNIGHT, LOCALE_EN),
             arrayOf(NOTNIGHT, LOCALE_CY),
             arrayOf(NIGHT, LOCALE_EN),
-            arrayOf(NIGHT, LOCALE_CY)
+            arrayOf(NIGHT, LOCALE_CY),
         )
     }
 }

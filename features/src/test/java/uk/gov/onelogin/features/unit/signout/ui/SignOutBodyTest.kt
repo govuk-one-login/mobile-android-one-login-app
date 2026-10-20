@@ -40,7 +40,7 @@ class SignOutBodyTest : FragmentActivityTestCase() {
             subtitle =
                 hasText(
                     getString(R.string.app_signOutConfirmationSubtitle),
-                    substring = true
+                    substring = true,
                 )
             bullet1 = hasText(getString(R.string.app_signOutConfirmationBullet1), substring = true)
             bullet2 = hasText(getString(R.string.app_signOutConfirmationBullet2), substring = true)
@@ -79,7 +79,7 @@ class SignOutBodyTest : FragmentActivityTestCase() {
             SignOutBody(
                 onPrimary = {},
                 onClose = { actual = true },
-                onBack = {}
+                onBack = {},
             )
         }
         // When clicking the `closeButton`
@@ -96,7 +96,7 @@ class SignOutBodyTest : FragmentActivityTestCase() {
             SignOutBody(
                 onPrimary = { actual = true },
                 onClose = {},
-                onBack = {}
+                onBack = {},
             )
         }
         // When clicking the `primaryButton`
@@ -113,7 +113,7 @@ class SignOutBodyTest : FragmentActivityTestCase() {
             SignOutBody(
                 onPrimary = {},
                 onClose = {},
-                onBack = { actual = true }
+                onBack = { actual = true },
             )
         }
         // When clicking the `primaryButton`

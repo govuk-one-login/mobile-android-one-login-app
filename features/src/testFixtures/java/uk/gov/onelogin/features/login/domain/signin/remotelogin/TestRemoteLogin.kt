@@ -35,7 +35,7 @@ class TestRemoteLogin : RemoteLogin {
         return startResult
     }
 
-    override suspend fun finalise(intent: Intent, activity: FragmentActivity,): RemoteLogin.Result {
+    override suspend fun finalise(intent: Intent, activity: FragmentActivity): RemoteLogin.Result {
         finalisedWith = intent
         return finaliseResult
     }

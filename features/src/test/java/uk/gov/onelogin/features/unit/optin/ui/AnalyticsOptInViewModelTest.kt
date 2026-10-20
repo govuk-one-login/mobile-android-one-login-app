@@ -28,7 +28,7 @@ class AnalyticsOptInViewModelTest {
         viewModel =
             OptInViewModel(
                 repository = createTestAnalyticsOptInRepository(),
-                navigator = mockNavigator
+                navigator = mockNavigator,
             )
     }
 

@@ -18,7 +18,7 @@ class AppResetErrorViewModelTest {
     fun `navigate to sign in`() = runTest {
         featureFlags =
             InMemoryFeatureFlags(
-                setOf()
+                setOf(),
             )
         val sut = AppResetErrorViewModel(mockNavigator)
 

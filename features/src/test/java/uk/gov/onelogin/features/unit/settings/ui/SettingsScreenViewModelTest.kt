@@ -51,7 +51,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
     }
 
@@ -107,7 +107,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
         assertEquals(true, viewModel.optInState.value)
     }
@@ -122,7 +122,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
         assertEquals(true, viewModel.optInState.value)
 
@@ -141,7 +141,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
         assertEquals(false, viewModel.optInState.value)
 
@@ -162,7 +162,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
 
         assertFalse(viewModel.biometricsOptionState.value)
@@ -183,7 +183,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
 
         assertFalse(viewModel.biometricsOptionState.value)

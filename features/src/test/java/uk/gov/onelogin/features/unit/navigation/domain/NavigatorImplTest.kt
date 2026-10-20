@@ -49,7 +49,10 @@ class NavigatorImplTest {
         navigator.navigate({ "test" }, true)
 
         verify(mockNavController).navigate(route = eq("test"), builder = any())
-        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))))
+        assertThat(
+            logger,
+            hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))),
+        )
     }
 
     @Test
@@ -57,7 +60,10 @@ class NavigatorImplTest {
         navigator.navigate({ "test" })
 
         verifyNoInteractions(mockNavController)
-        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage("Navigator not initialised"))))
+        assertThat(
+            logger,
+            hasItem(allOf(isLogLevel(LogLevel.Error), hasMessage("Navigator not initialised"))),
+        )
     }
 
     @Test
@@ -71,7 +77,10 @@ class NavigatorImplTest {
 
         verify(mockNavController, times(1))
             .navigate("test")
-        assertThat(logger, hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))))
+        assertThat(
+            logger,
+            hasItem(allOf(isLogLevel(LogLevel.Debug), hasMessage("Navigating to: test"))),
+        )
     }
 
     @Test

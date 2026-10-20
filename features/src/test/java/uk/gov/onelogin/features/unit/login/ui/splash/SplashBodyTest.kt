@@ -48,7 +48,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = false,
                 onLogin = {},
                 trackUnlockButton = {},
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // Then loading indicator is NOT displayed
@@ -68,7 +68,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = true,
                 onLogin = {},
                 trackUnlockButton = {},
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // Then loading indicator and logo are displayed
@@ -93,7 +93,7 @@ class SplashBodyTest : FragmentActivityTestCase() {
                 loading = false,
                 trackUnlockButton = { buttonLogged = true },
                 onLogin = { actual = true },
-                onOpenDeveloperPortal = {}
+                onOpenDeveloperPortal = {},
             )
         }
         // When clicking the `unlockButton`

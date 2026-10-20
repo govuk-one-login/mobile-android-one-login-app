@@ -48,11 +48,11 @@ class SignOutUseCaseTest {
                     Dispatchers.Main,
                     removeAllSecureStoreData,
                     removeTokenExpiry,
-                    bioPrefHandler
+                    bioPrefHandler,
                 ),
                 deleteWalletData,
                 tokenRepository,
-                logger
+                logger,
             )
         useCase.invoke()
         // Then it clears all the required data
@@ -72,11 +72,11 @@ class SignOutUseCaseTest {
             SignOutUseCaseImpl(
                 MultiCleaner(
                     Dispatchers.Main,
-                    { Result.success(Unit) }
+                    { Result.success(Unit) },
                 ),
                 deleteWalletData,
                 tokenRepository,
-                logger
+                logger,
             )
 
         // Then throw SignOutWalletError
@@ -98,11 +98,11 @@ class SignOutUseCaseTest {
                 MultiCleaner(
                     Dispatchers.Main,
                     { Result.success(Unit) },
-                    { throw Exception(errorMessage) }
+                    { throw Exception(errorMessage) },
                 ),
                 deleteWalletData,
                 tokenRepository,
-                logger
+                logger,
             )
         // When invoking the sign out use case
         // Then throw SignOutWalletError
@@ -124,11 +124,11 @@ class SignOutUseCaseTest {
                 MultiCleaner(
                     Dispatchers.Main,
                     { Result.success(Unit) },
-                    { Result.failure(Exception(errorMessage)) }
+                    { Result.failure(Exception(errorMessage)) },
                 ),
                 deleteWalletData,
                 tokenRepository,
-                logger
+                logger,
             )
         // When invoking the sign out use case
         // Then throw SignOutWalletError

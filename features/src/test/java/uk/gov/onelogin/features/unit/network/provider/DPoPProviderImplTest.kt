@@ -52,7 +52,10 @@ class DPoPProviderImplTest {
         val result = provider.getRefreshDPoP()
 
         assertInstanceOf(DPoPResponse.Failure::class.java, result)
-        assertEquals("Failed to get DPoP: signing error", (result as DPoPResponse.Failure).error.message)
+        assertEquals(
+            "Failed to get DPoP: signing error",
+            (result as DPoPResponse.Failure).error.message,
+        )
     }
 
     companion object {

@@ -100,7 +100,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                extractEmail
+                extractEmail,
             )
         analytics = Mockito.mock()
         analyticsViewModel = SettingsAnalyticsViewModel(context, analytics)
@@ -108,7 +108,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         yourDetailsTitle = hasText(resources.getString(R.string.app_settingsSignInDetailsLink))
         yourDetailsSubTitle =
             hasText(
-                resources.getString(R.string.app_settingSignInDetailsFootnote)
+                resources.getString(R.string.app_settingSignInDetailsFootnote),
             )
         legalLink1 = hasText(resources.getString(R.string.app_privacyNoticeLink2))
         legalLink2 = hasText(resources.getString(R.string.app_openSourceLicences))
@@ -119,7 +119,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         aboutTheAppSubTitle =
             hasText(
                 resources.getString(R.string.app_settingsAnalyticsToggleFootnote),
-                substring = true
+                substring = true,
             )
         aboutTheAppPrivacyLink = hasTestTag(NOTICE_TAG)
         signOutButton = hasText(resources.getString(R.string.app_signOutButton))
@@ -127,7 +127,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         biometricsOptIn = hasText(context.getString(R.string.app_settingsBiometricsField))
         Intents.init()
         Intents.intending(CoreMatchers.not(IntentMatchers.isInternal())).respondWith(
-            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null),
         )
         addDocumentsLink = hasText(resources.getString(R.string.app_addDocumentsLink))
         termsAndConditionsLink = hasText(resources.getString(R.string.app_termsAndConditionsLink))
@@ -149,7 +149,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                extractEmail
+                extractEmail,
             )
         composeTestRule.setContent {
             SettingsScreen(settingsViewModel, analyticsViewModel)
@@ -162,8 +162,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(addDocumentsLink).assertIsDisplayed()
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeSettingsViewEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -177,7 +177,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                extractEmail
+                extractEmail,
             )
         composeTestRule.setContent {
             SettingsScreen(settingsViewModel, analyticsViewModel)
@@ -216,7 +216,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
             PreferenceToggleRow(
                 title = R.string.app_settingsAnalyticsToggle,
                 checked = optInState,
-                onToggle = { optInState = true }
+                onToggle = { optInState = true },
             )
         }
         composeTestRule.onNode(aboutTheAppSwitch).performClick()
@@ -238,7 +238,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 biometricsOptInState,
                 onBiometrics = { biometricsClick++ },
                 onToggle = { optInState = true },
-                onPrivacyNoticeClick = { privacyNoticeClicked = true }
+                onPrivacyNoticeClick = { privacyNoticeClicked = true },
             )
         }
         composeTestRule
@@ -309,8 +309,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         verify(navigator).navigate(SignOutRoutes.Start)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeSignOutEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -325,8 +325,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         verify(navigator).navigate(SettingsRoutes.Ossl)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeOpenSourceEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -339,8 +339,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         checkTheLinkOpensTheCorrectUrl(yourDetailsTitle, url)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeSignInDetailsEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -352,8 +352,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         checkTheLinkOpensTheCorrectUrl(helpLink, url)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeUsingOneLoginEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -366,8 +366,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         checkTheLinkOpensTheCorrectUrl(contactLink, url)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeContactEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -380,8 +380,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         checkTheLinkOpensTheCorrectUrl(legalLink1, url)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makePrivacyNoticeEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -394,8 +394,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
         checkTheLinkOpensTheCorrectUrl(legalLink3, url)
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeAccessibilityEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -409,17 +409,17 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                extractEmail
+                extractEmail,
             )
         checkTheLinkOpensTheCorrectUrl(
             addDocumentsLink,
             url,
-            settingsViewModel
+            settingsViewModel,
         )
         verify(analytics).logEventV3Dot1(
             SettingsAnalyticsViewModel.Companion.makeAddDocumentsEvent(
-                context
-            )
+                context,
+            ),
         )
     }
 
@@ -432,16 +432,16 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 localAuthManager,
                 mockWalletRepository,
                 tokenRepository,
-                extractEmail
+                extractEmail,
             )
         val url = resources.getString(R.string.app_terms_and_conditions_url)
         checkTheLinkOpensTheCorrectUrl(
             termsAndConditionsLink,
             url,
-            settingsViewModel
+            settingsViewModel,
         )
         verify(analytics).logEventV3Dot1(
-            SettingsAnalyticsViewModel.Companion.makeTermsAndConditionsEvent(context)
+            SettingsAnalyticsViewModel.Companion.makeTermsAndConditionsEvent(context),
         )
     }
 
@@ -481,7 +481,7 @@ class SettingsScreenTest : FragmentActivityTestCase() {
     private fun checkTheLinkOpensTheCorrectUrl(
         linkView: SemanticsMatcher,
         url: String,
-        settingsViewModel: SettingsScreenViewModel = viewModel
+        settingsViewModel: SettingsScreenViewModel = viewModel,
     ) {
         val signInURL = Uri.parse(url)
         composeTestRule.setContent {
@@ -499,8 +499,8 @@ class SettingsScreenTest : FragmentActivityTestCase() {
                 IntentMatchers.hasAction(Intent.ACTION_VIEW),
                 IntentMatchers.hasData(UriMatchers.hasHost(host)),
                 IntentMatchers.hasData(UriMatchers.hasPath(path)),
-                IntentMatchers.hasData(UriMatchers.hasScheme(scheme))
-            )
+                IntentMatchers.hasData(UriMatchers.hasScheme(scheme)),
+            ),
         )
     }
 }

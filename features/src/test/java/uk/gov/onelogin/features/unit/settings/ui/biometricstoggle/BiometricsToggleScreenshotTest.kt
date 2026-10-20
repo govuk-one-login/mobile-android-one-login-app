@@ -12,7 +12,8 @@ import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.settings.ui.biometricstoggle.BiometricsToggleBodyPreview
 
 @RunWith(Parameterized::class)
-class BiometricsToggleScreenshotTest(nightMode: NightMode, locale: String) : BaseScreenshotTest(nightMode, locale) {
+class BiometricsToggleScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         BiometricsToggleBodyPreview()
     }
@@ -24,7 +25,7 @@ class BiometricsToggleScreenshotTest(nightMode: NightMode, locale: String) : Bas
             arrayOf(NOTNIGHT, LOCALE_EN),
             arrayOf(NOTNIGHT, LOCALE_CY),
             arrayOf(NIGHT, LOCALE_EN),
-            arrayOf(NIGHT, LOCALE_CY)
+            arrayOf(NIGHT, LOCALE_CY),
         )
     }
 }

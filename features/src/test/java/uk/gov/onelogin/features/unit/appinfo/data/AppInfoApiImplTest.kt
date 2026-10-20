@@ -31,10 +31,10 @@ class AppInfoApiImplTest {
                         AppInfoData.AppInfo(
                             minimumVersion = "0.0.0",
                             available = true,
-                            featureFlags = AppInfoData.FeatureFlags(true)
-                        )
-                    )
-            )
+                            featureFlags = AppInfoData.FeatureFlags(true),
+                        ),
+                    ),
+            ),
         )
     private lateinit var request: ApiRequest
 
@@ -55,8 +55,8 @@ class AppInfoApiImplTest {
                         "Content-Type" to "application/json",
                         "Strict-Transport-Security" to "max-age=31536000",
                         "X-Content-Type-Options" to "nosniff",
-                        "X-Frame-Options" to "DENY"
-                    )
+                        "X-Frame-Options" to "DENY",
+                    ),
             )
 
         whenever(context.getString(any())).thenReturn("/appInfo")
