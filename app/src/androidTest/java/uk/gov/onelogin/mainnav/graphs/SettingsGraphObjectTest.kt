@@ -14,6 +14,8 @@ import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.R as componentsR
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsThemeDefaults
 import uk.gov.onelogin.core.navigation.data.SettingsRoutes
 import uk.gov.onelogin.mainnav.graphs.SettingsNavGraph.settingsGraph
 import uk.gov.onelogin.utils.TestCase
@@ -24,15 +26,18 @@ class SettingsGraphObjectTest : TestCase() {
     fun setup() {
         hiltRule.inject()
         composeTestRule.setContent {
-            navController = TestNavHostController(context)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            navController.setLifecycleOwner(LocalLifecycleOwner.current)
-            navController.setViewModelStore(LocalViewModelStoreOwner.current!!.viewModelStore)
-            NavHost(
-                navController = navController,
-                startDestination = SettingsRoutes.Ossl.getRoute(),
-            ) {
-                settingsGraph(navController)
+            val customExtendedColorScheme = GdsThemeDefaults.extendedColorScheme()
+            GdsTheme(extendedColorScheme = customExtendedColorScheme) {
+                navController = TestNavHostController(context)
+                navController.navigatorProvider.addNavigator(ComposeNavigator())
+                navController.setLifecycleOwner(LocalLifecycleOwner.current)
+                navController.setViewModelStore(LocalViewModelStoreOwner.current!!.viewModelStore)
+                NavHost(
+                    navController = navController,
+                    startDestination = SettingsRoutes.Ossl.getRoute(),
+                ) {
+                    settingsGraph(navController)
+                }
             }
         }
     }

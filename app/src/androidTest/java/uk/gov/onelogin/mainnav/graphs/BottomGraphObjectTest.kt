@@ -9,6 +9,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsThemeDefaults
 import uk.gov.android.wallet.core.R as walletR
 import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
 import uk.gov.onelogin.mainnav.ui.BottomNavDestination
@@ -20,13 +22,16 @@ class BottomGraphObjectTest : TestCase() {
     fun setup() {
         hiltRule.inject()
         composeTestRule.setContent {
-            navController = TestNavHostController(context)
-            navController.navigatorProvider.addNavigator(ComposeNavigator())
-            NavHost(
-                navController = navController,
-                startDestination = BottomNavDestination.Home.key,
-            ) {
-                bottomGraph { false }
+            val customExtendedColorScheme = GdsThemeDefaults.extendedColorScheme()
+            GdsTheme(extendedColorScheme = customExtendedColorScheme) {
+                navController = TestNavHostController(context)
+                navController.navigatorProvider.addNavigator(ComposeNavigator())
+                NavHost(
+                    navController = navController,
+                    startDestination = BottomNavDestination.Home.key,
+                ) {
+                    bottomGraph { false }
+                }
             }
         }
     }

@@ -19,6 +19,8 @@ import org.mockito.kotlin.whenever
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.localauth.preference.LocalAuthPreference
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.theme.m3.GdsTheme
+import uk.gov.android.ui.theme.m3.GdsThemeDefaults
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.analytics.parameters.data.TaxonomyLevel2
@@ -220,7 +222,10 @@ class BiometricsToggleScreenTest : FragmentActivityTestCase() {
 
     fun setContent() {
         composeTestRule.setContent {
-            BiometricsToggleScreen(viewModel, analyticsViewModel)
+            val customExtendedColorScheme = GdsThemeDefaults.extendedColorScheme()
+            GdsTheme(extendedColorScheme = customExtendedColorScheme) {
+                BiometricsToggleScreen(viewModel, analyticsViewModel)
+            }
         }
     }
 
