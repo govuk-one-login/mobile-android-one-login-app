@@ -8,7 +8,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 @HiltViewModel
 class SignOutErrorViewModel
 @Inject
-constructor(val navigator: Navigator,) : ViewModel() {
+constructor(val navigator: Navigator) : ViewModel() {
     fun goBackToSettingsScreen() {
         navigator.goBack()
         navigator.goBack()

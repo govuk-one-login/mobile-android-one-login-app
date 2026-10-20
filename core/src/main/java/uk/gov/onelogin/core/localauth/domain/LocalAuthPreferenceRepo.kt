@@ -31,12 +31,13 @@ constructor(
         }
     }
 
-    override fun getLocalAuthPref(): LocalAuthPreference? = when (sharedPrefs.getString(LOCAL_AUTH_PREF, null)) {
-        LocalAuthPreference.Enabled(true).toString() -> LocalAuthPreference.Enabled(true)
-        LocalAuthPreference.Enabled(false).toString() -> LocalAuthPreference.Enabled(false)
-        LocalAuthPreference.Disabled.toString() -> LocalAuthPreference.Disabled
-        else -> null
-    }
+    override fun getLocalAuthPref(): LocalAuthPreference? =
+        when (sharedPrefs.getString(LOCAL_AUTH_PREF, null)) {
+            LocalAuthPreference.Enabled(true).toString() -> LocalAuthPreference.Enabled(true)
+            LocalAuthPreference.Enabled(false).toString() -> LocalAuthPreference.Enabled(false)
+            LocalAuthPreference.Disabled.toString() -> LocalAuthPreference.Disabled
+            else -> null
+        }
 
     override suspend fun clean(): Result<Unit> {
         sharedPrefs.edit {

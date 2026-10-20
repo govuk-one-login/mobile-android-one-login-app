@@ -9,7 +9,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 @HiltViewModel
 class AppResetErrorViewModel
 @Inject
-constructor(private val navigator: Navigator,) : ViewModel() {
+constructor(private val navigator: Navigator) : ViewModel() {
     fun navigateToSignIn() {
         navigator.navigate(LoginRoutes.Start, true)
     }

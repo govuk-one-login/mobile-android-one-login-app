@@ -9,7 +9,7 @@ import uk.gov.logging.api.v3.Logger
 @HiltViewModel
 class LoggingTabViewModel
 @Inject
-constructor(private val logger: Logger,) :
+constructor(private val logger: Logger) :
     ViewModel(),
     LogTagProvider {
     fun crash(): Unit = throw DeveloperException("Forced crash from developer menu")

@@ -34,7 +34,7 @@ constructor(
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<WalletScreenState> = MutableStateFlow(
-        WalletScreenState.Loading
+        WalletScreenState.Loading,
     )
     val state: StateFlow<WalletScreenState> = _state.asStateFlow()
 

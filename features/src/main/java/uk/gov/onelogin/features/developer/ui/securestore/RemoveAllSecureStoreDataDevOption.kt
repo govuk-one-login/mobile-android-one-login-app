@@ -17,16 +17,17 @@ constructor(
     private val secureStoreRepo: SecureStoreDevOptionsRepository,
     private val logger: Logger,
 ) : RemoveAllSecureStoreData {
-    override suspend fun clean(): Result<Unit> = if (secureStoreRepo.isLocalDataDeleteFailEnabled()) {
-        Result.failure(SecureStorageErrorV2(Exception("Simulate secure storage error")))
-    } else {
-        try {
-            tokenSecureStore.deleteAll()
-            openSecureStore.deleteAll()
-            Result.success(Unit)
-        } catch (e: SecureStorageErrorV2) {
-            logger.error(this::class.simpleName.toString(), e.message.toString(), e)
-            Result.failure(e)
+    override suspend fun clean(): Result<Unit> =
+        if (secureStoreRepo.isLocalDataDeleteFailEnabled()) {
+            Result.failure(SecureStorageErrorV2(Exception("Simulate secure storage error")))
+        } else {
+            try {
+                tokenSecureStore.deleteAll()
+                openSecureStore.deleteAll()
+                Result.success(Unit)
+            } catch (e: SecureStorageErrorV2) {
+                logger.error(this::class.simpleName.toString(), e.message.toString(), e)
+                Result.failure(e)
+            }
         }
-    }
 }

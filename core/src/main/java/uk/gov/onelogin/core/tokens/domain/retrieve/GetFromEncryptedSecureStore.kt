@@ -11,5 +11,9 @@ fun interface GetFromEncryptedSecureStore {
      * @param key [String] value of key value pairs to retrieve
      * @param callback which is used for handling [LocalAuthStatus] result
      */
-    suspend operator fun invoke(context: FragmentActivity, vararg key: String, callback: (LocalAuthStatus) -> Unit,)
+    suspend operator fun invoke(
+        context: FragmentActivity,
+        vararg key: String,
+        callback: (LocalAuthStatus) -> Unit,
+    )
 }

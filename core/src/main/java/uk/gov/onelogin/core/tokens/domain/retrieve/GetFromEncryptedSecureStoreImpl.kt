@@ -18,7 +18,11 @@ constructor(
     private val secureStore: SecureStoreAsyncV2,
     private val logger: Logger,
 ) : GetFromEncryptedSecureStore {
-    override suspend fun invoke(context: FragmentActivity, vararg key: String, callback: (LocalAuthStatus) -> Unit,) {
+    override suspend fun invoke(
+        context: FragmentActivity,
+        vararg key: String,
+        callback: (LocalAuthStatus) -> Unit,
+    ) {
         val authPromptConfig =
             AuthenticatorPromptConfiguration(
                 title = context.getString(R.string.app_authenticationDialogueTitle),
@@ -36,7 +40,7 @@ constructor(
             logger.error(
                 this.javaClass.simpleName,
                 "${e.message} - type: ${e.type}",
-                e
+                e,
             )
             val localAuthStatus =
                 when (e.type) {
@@ -45,7 +49,8 @@ constructor(
                     SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED -> LocalAuthStatus.UnrecoverableError
 
                     SecureStoreErrorTypeV2.RECOVERABLE,
-                    SecureStoreErrorTypeV2.USER_CANCELLED -> LocalAuthStatus.UserCancelledBioPrompt
+                    SecureStoreErrorTypeV2.USER_CANCELLED,
+                    -> LocalAuthStatus.UserCancelledBioPrompt
                 }
             callback(localAuthStatus)
         }

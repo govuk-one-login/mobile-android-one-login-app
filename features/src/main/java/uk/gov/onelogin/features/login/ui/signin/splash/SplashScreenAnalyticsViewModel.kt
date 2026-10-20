@@ -24,7 +24,7 @@ constructor(
 ) : ViewModel() {
     private val unlockBtnEvent = makeButtonEvent(context)
 
-    fun trackSplashScreen(context: Context, isLocked: Boolean,) {
+    fun trackSplashScreen(context: Context, isLocked: Boolean) {
         val event = makeScreenEvent(context, isLocked)
         analyticsLogger.logEventV3Dot1(event)
     }
@@ -44,7 +44,7 @@ constructor(
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
 
-        internal fun makeScreenEvent(context: Context, isLocked: Boolean,) = with(context) {
+        internal fun makeScreenEvent(context: Context, isLocked: Boolean) = with(context) {
             val correctDetails = getCorrectDetails(isLocked)
 
             ViewEvent.Screen(

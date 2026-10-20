@@ -13,7 +13,7 @@ class HelperFunctionsTest {
                 accessToken = "accessToken",
                 idToken = "idToken",
                 accessTokenExpirationTime = 1,
-                refreshToken = "refreshToken"
+                refreshToken = "refreshToken",
             )
 
         val actual = tokenResponse.convertToLoginTokens()
@@ -24,7 +24,7 @@ class HelperFunctionsTest {
         assertEquals(1, actual.accessTokenExpirationTime)
         assertEquals(
             "LoginTokens(tokenType=token, accessToken=accessToken, accessTokenExpirationTime=1, idToken=idToken)",
-            actual.toString()
+            actual.toString(),
         )
     }
 }

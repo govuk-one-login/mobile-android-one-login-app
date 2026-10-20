@@ -38,7 +38,7 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_signOutErrorBody1),
-            stringResource(R.string.app_signOutErrorBody2)
+            stringResource(R.string.app_signOutErrorBody2),
         )
     GdsTheme {
         EdgeToEdgePage { _ ->
@@ -46,8 +46,10 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                 icon = { padding ->
                     GdsIcon(
                         image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
-                        contentDescription = stringResource(patternsR.string.error_icon_description),
-                        modifier = Modifier.errorBodyItemModifier(padding)
+                        contentDescription = stringResource(
+                            patternsR.string.error_icon_description,
+                        ),
+                        modifier = Modifier.errorBodyItemModifier(padding),
                     )
                 },
                 title = { padding ->
@@ -63,7 +65,7 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                             text = bodyContent[index],
                             textAlign = TextAlign.Center,
                             modifier = Modifier.errorBodyItemModifier(padding),
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                 },
@@ -73,7 +75,7 @@ private fun SignOutErrorBody(onBackToSettings: () -> Unit) {
                         text = text,
                         buttonType = ButtonTypeV2.Primary(),
                         onClick = onBackToSettings,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 },
             )

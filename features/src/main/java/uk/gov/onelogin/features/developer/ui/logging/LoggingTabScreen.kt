@@ -54,7 +54,7 @@ internal fun LoggingTabScreenContent(
                     onClick = onLogInfo,
                 )
             }
-        }
+        },
     )
 }
 

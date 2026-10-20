@@ -105,27 +105,32 @@ class ResultCollectionUtilTest {
 
     @ParameterizedTest
     @MethodSource("suspendFunctionProvider")
-    fun `runConcurrentlyForResults completes to Result list`(cleaners: List<Cleaner>, expected: List<Result<Unit>>,) =
-        runTest {
-            // Given a ResultCollectionUtil
-            // When calling runConcurrentlyForResults
-            val actual =
-                with(util) {
-                    cleaners.map { it::clean }.runConcurrentlyForResults()
-                }
-            // Then
-            assertIs<List<Result<Unit>>>(actual)
-            val expectedSuccess = expected.filter { it.isSuccess }
-            val actualSuccess = actual.filter { it.isSuccess }
-            assertEquals(expected = expectedSuccess.size, actual = actualSuccess.size)
-            val expectedFailure = expected.filter { it.isFailure }
-            val actualFailure = actual.filter { it.isFailure }
-            assertEquals(expected = expectedFailure.size, actual = actualFailure.size)
-        }
+    fun `runConcurrentlyForResults completes to Result list`(
+        cleaners: List<Cleaner>,
+        expected: List<Result<Unit>>,
+    ) = runTest {
+        // Given a ResultCollectionUtil
+        // When calling runConcurrentlyForResults
+        val actual =
+            with(util) {
+                cleaners.map { it::clean }.runConcurrentlyForResults()
+            }
+        // Then
+        assertIs<List<Result<Unit>>>(actual)
+        val expectedSuccess = expected.filter { it.isSuccess }
+        val actualSuccess = actual.filter { it.isSuccess }
+        assertEquals(expected = expectedSuccess.size, actual = actualSuccess.size)
+        val expectedFailure = expected.filter { it.isFailure }
+        val actualFailure = actual.filter { it.isFailure }
+        assertEquals(expected = expectedFailure.size, actual = actualFailure.size)
+    }
 
     @ParameterizedTest
     @MethodSource("combineProvider")
-    fun `combineResults only successful on all successful results`(results: List<Result<Unit>>, expected: Boolean,) {
+    fun `combineResults only successful on all successful results`(
+        results: List<Result<Unit>>,
+        expected: Boolean,
+    ) {
         // Given a ResultCollectionUtil
         // When combing results
         val actual =

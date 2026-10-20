@@ -62,7 +62,7 @@ constructor(
     }
 
     private fun handleAndConvertPlayIntegrityError(
-        e: IntegrityServiceException
+        e: IntegrityServiceException,
     ): AppIntegrityException.FirebaseException {
         val errorType =
             when (e.errorCode) {
@@ -74,7 +74,7 @@ constructor(
                 INTEGRITY_STANDARD_INTEGRITY_INTERNAL_ERROR,
                 INTEGRITY_GOOGLE_SERVER_UNAVAILABLE,
                 INTEGRITY_STANDARD_INTEGRITY_INITIALIZATION_FAILED,
-                INTEGRITY_TOO_MANY_REQUESTS
+                INTEGRITY_TOO_MANY_REQUESTS,
                 -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
 
                 // Non-retryable known errors - https://developer.android.com/google/play/integrity/error-codes#iErr_3
@@ -95,7 +95,7 @@ constructor(
                 INTEGRITY_REQUEST_HASH_TOO_LONG,
                 INTEGRITY_INTEGRITY_TOKEN_PROVIDER_INVALID,
                 INTEGRITY_STANDARD_INTEGRITY_INITIALIZATION_NEEDED,
-                INTEGRITY_STANDARD_INTEGRITY_INVALID_ARGUMENT
+                INTEGRITY_STANDARD_INTEGRITY_INVALID_ARGUMENT,
                 -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
 
                 // All other unknown errors

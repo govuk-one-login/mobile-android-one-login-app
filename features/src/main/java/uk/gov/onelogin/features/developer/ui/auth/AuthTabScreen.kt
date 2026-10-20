@@ -88,7 +88,7 @@ private fun AuthTokensSection(viewModel: AuthTabScreenViewModel) {
 }
 
 @Composable
-private fun RefreshTokenSection(viewModel: AuthTabScreenViewModel,) {
+private fun RefreshTokenSection(viewModel: AuthTabScreenViewModel) {
     Text(
         text = "Refresh Token",
         fontWeight = FontWeight.Bold,
@@ -151,7 +151,11 @@ private fun IdTokenSection(tokens: LoginTokens?) {
 }
 
 @Composable
-private fun WalletIdSection(walletId: String?, refreshWalletId: () -> Unit, removeWalletId: () -> Unit) {
+private fun WalletIdSection(
+    walletId: String?,
+    refreshWalletId: () -> Unit,
+    removeWalletId: () -> Unit,
+) {
     Text(
         text = "Wallet ID",
         fontWeight = FontWeight.Bold,

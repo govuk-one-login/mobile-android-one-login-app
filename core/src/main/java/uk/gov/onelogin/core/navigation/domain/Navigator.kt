@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 interface Navigator {
     fun setController(navController: NavHostController)
 
-    fun navigate(route: NavRoute, popUpToInclusive: Boolean = false,)
+    fun navigate(route: NavRoute, popUpToInclusive: Boolean = false)
 
     fun goBack()
 

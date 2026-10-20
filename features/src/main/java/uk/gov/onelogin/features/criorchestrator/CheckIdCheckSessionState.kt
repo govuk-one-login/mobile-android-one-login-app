@@ -10,7 +10,8 @@ fun interface CheckIdCheckSessionState {
 
 class CheckIdCheckSessionStateImpl
 @Inject
-constructor(private val criOrchestratorSdk: CriOrchestratorSdk,) :
-    CheckIdCheckSessionState {
+constructor(
+    private val criOrchestratorSdk: CriOrchestratorSdk,
+) : CheckIdCheckSessionState {
     override fun isIdCheckActive(): Boolean = criOrchestratorSdk.isIdCheckSdkActive.invoke()
 }

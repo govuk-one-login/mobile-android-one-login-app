@@ -12,7 +12,7 @@ fun interface AppInfoUtils {
      */
     fun getComparableAppVersion(version: String): List<Int>
 
-    sealed class AppError(msg: String,) : Exception(msg) {
+    sealed class AppError(msg: String) : Exception(msg) {
         data object IllegalVersionFormat : AppError(
             "Version number does not adhere to Major.minor.patch convention.",
         )

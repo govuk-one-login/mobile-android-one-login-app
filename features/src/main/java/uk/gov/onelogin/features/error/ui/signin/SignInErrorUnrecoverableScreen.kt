@@ -58,7 +58,7 @@ private fun SignInErrorBody() {
             GdsIcon(
                 image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
                 contentDescription = stringResource(patternsR.string.error_icon_description),
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         title = { padding ->
@@ -74,10 +74,10 @@ private fun SignInErrorBody() {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     modifier = Modifier.errorBodyItemModifier(padding),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
-        }
+        },
     )
 }
 

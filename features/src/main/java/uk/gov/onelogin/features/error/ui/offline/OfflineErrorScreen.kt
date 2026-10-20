@@ -29,7 +29,10 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 
 @Composable
-fun OfflineErrorScreen(analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel(), goBack: () -> Unit = {},) {
+fun OfflineErrorScreen(
+    analyticsViewModel: OfflineErrorAnalyticsViewModel = hiltViewModel(),
+    goBack: () -> Unit = {},
+) {
     GdsTheme {
         BackHandler(true) {
             analyticsViewModel.trackBackButton()
@@ -51,7 +54,7 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
     val bodyContent =
         persistentListOf(
             stringResource(R.string.app_networkErrorBody1),
-            stringResource(R.string.app_networkErrorBody2)
+            stringResource(R.string.app_networkErrorBody2),
         )
 
     ErrorScreen(
@@ -59,14 +62,14 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
             GdsIcon(
                 image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
                 contentDescription = stringResource(patternsR.string.error_icon_description),
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_networkErrorTitle),
                 textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         body = { padding ->
@@ -75,7 +78,7 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     modifier = Modifier.errorBodyItemModifier(padding),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         },
@@ -85,7 +88,7 @@ private fun OfflineErrorBody(primaryOnClick: () -> Unit = {}) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = primaryOnClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
     )

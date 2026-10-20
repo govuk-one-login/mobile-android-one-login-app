@@ -8,7 +8,8 @@ import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 
 class FeatureFlagSetterImpl
 @Inject
-constructor(private val featureFlags: FeatureFlags,) : FeatureFlagSetter {
+constructor(private val featureFlags: FeatureFlags) :
+    FeatureFlagSetter {
     override fun setFromAppInfo(appInfo: AppInfoData.AppInfo) {
         setAppCheckEnabledFlag(appInfo)
     }

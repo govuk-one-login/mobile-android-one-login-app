@@ -61,14 +61,14 @@ private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
             GdsIcon(
                 image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
                 contentDescription = stringResource(patternsR.string.error_icon_description),
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_genericErrorPage),
                 textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         body = { padding ->
@@ -77,7 +77,7 @@ private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     modifier = Modifier.errorBodyItemModifier(padding),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
         },
@@ -87,7 +87,7 @@ private fun GenericErrorBody(primaryOnClick: () -> Unit = {}) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = primaryOnClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
     )

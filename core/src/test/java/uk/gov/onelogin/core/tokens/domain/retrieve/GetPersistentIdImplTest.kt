@@ -40,7 +40,7 @@ class GetPersistentIdImplTest {
         GetPersistentIdImpl(
             mockGetFromOpenSecureStore,
             walletSdk = walletSdk,
-            logger = logger
+            logger = logger,
         )
 
     @Test
@@ -57,7 +57,7 @@ class GetPersistentIdImplTest {
         whenever(mockGetFromOpenSecureStore.invoke(MockitoHelper.anyObject()))
             .thenReturn(null)
         whenever(walletSdk.isEmpty()).thenReturn(
-            true
+            true,
         )
         val idResponse = sut.invoke()
 
@@ -81,7 +81,7 @@ class GetPersistentIdImplTest {
     fun `check if logger logs when wallet is not empty and persistent id is null`() {
         runTest {
             whenever(
-                walletSdk.isEmpty()
+                walletSdk.isEmpty(),
             ).thenReturn(false)
 
             // Given token is null
@@ -100,16 +100,18 @@ class GetPersistentIdImplTest {
                     hasItem(
                         allOf(
                             hasMessage("No persistent ID but wallet isn't empty"),
-                            hasException(instanceOf(GetPersistentIdException.WalletNotEmpty::class.java)),
+                            hasException(
+                                instanceOf(GetPersistentIdException.WalletNotEmpty::class.java),
+                            ),
                             hasCustomKeys(
                                 contains(
                                     equalTo(componentKey),
-                                    equalTo(actionKey)
-                                )
+                                    equalTo(actionKey),
+                                ),
                             ),
-                        )
-                    )
-                )
+                        ),
+                    ),
+                ),
             )
         }
     }
@@ -140,18 +142,18 @@ class GetPersistentIdImplTest {
                             hasMessage("Wallet SDK failed to check if wallet is empty"),
                             hasException(
                                 instanceOf(
-                                    GetPersistentIdException.WalletEmptyCheckFailed::class.java
-                                )
+                                    GetPersistentIdException.WalletEmptyCheckFailed::class.java,
+                                ),
                             ),
                             hasCustomKeys(
                                 contains(
                                     equalTo(componentKey),
-                                    equalTo(actionKey)
-                                )
+                                    equalTo(actionKey),
+                                ),
                             ),
-                        )
-                    )
-                )
+                        ),
+                    ),
+                ),
             )
         }
     }
@@ -181,18 +183,18 @@ class GetPersistentIdImplTest {
                         hasMessage("Wallet SDK failed to check if wallet is empty"),
                         hasException(
                             instanceOf(
-                                GetPersistentIdException.WalletEmptyCheckFailed::class.java
-                            )
+                                GetPersistentIdException.WalletEmptyCheckFailed::class.java,
+                            ),
                         ),
                         hasCustomKeys(
                             contains(
                                 equalTo(componentKey),
-                                equalTo(actionKey)
-                            )
+                                equalTo(actionKey),
+                            ),
                         ),
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         )
     }
 }

@@ -12,7 +12,7 @@ import uk.gov.onelogin.core.tokens.utils.LocalAuthPrefsMapper.mapAccessControlLe
 class LocalAuthPrefsMapperTest {
     @ParameterizedTest
     @MethodSource("args")
-    fun checkACLMappings(input: LocalAuthPreference, output: AccessControlLevel,) {
+    fun checkACLMappings(input: LocalAuthPreference, output: AccessControlLevel) {
         val result = mapAccessControlLevel(input)
 
         assertEquals(output, result)

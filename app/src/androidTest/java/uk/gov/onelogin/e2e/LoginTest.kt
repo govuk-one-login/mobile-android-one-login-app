@@ -499,7 +499,10 @@ class LoginTest : FlakyTestCase() {
             ).isDisplayed()
     }
 
-    private fun setupActivityForResult(returnedIntent: Intent?, resultCode: Int = Activity.RESULT_OK,) {
+    private fun setupActivityForResult(
+        returnedIntent: Intent?,
+        resultCode: Int = Activity.RESULT_OK,
+    ) {
         whenever(mockLoginSession.present(any(), any())).thenAnswer {
             @Suppress("unchecked_cast")
             (it.arguments[0] as ActivityResultLauncher<Intent>).launch(Intent())

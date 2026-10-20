@@ -48,7 +48,7 @@ object SecureStoreSingletonModule {
 object SecureStoreViewModelModule {
     @Provides
     fun providesAutoInitialiseSecureStore(
-        autoInitialiseSecureStoreImpl: AutoInitialiseSecureStoreImpl
+        autoInitialiseSecureStoreImpl: AutoInitialiseSecureStoreImpl,
     ): AutoInitialiseSecureStore = autoInitialiseSecureStoreImpl
 }
 
@@ -57,5 +57,6 @@ object SecureStoreViewModelModule {
 object SecureStoreDevModeModule {
     @Provides
     @Singleton
-    fun providesSecureStoreRepository(): SecureStoreDevOptionsRepository = SecureStoreDevOptionsRepositoryImpl()
+    fun providesSecureStoreRepository(): SecureStoreDevOptionsRepository =
+        SecureStoreDevOptionsRepositoryImpl()
 }

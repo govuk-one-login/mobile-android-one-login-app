@@ -11,10 +11,12 @@ fun interface DeleteWalletDataUseCase {
 
 class DeleteWalletDataUseCaseImpl
 @Inject
-constructor(private val walletSdk: WalletSdk,) : DeleteWalletDataUseCase {
+constructor(private val walletSdk: WalletSdk) :
+    DeleteWalletDataUseCase {
     override suspend fun invoke(): Boolean = walletSdk.deleteWalletData()
 
-    data class DeleteWalletDataError(override val message: String = DELETE_WALLET_DATA_ERROR,) : Exception()
+    data class DeleteWalletDataError(override val message: String = DELETE_WALLET_DATA_ERROR) :
+        Exception()
 
     companion object {
         const val DELETE_WALLET_DATA_ERROR = "Failed deleting wallet data."

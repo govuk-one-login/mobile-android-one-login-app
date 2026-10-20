@@ -34,7 +34,10 @@ constructor(
     private val getPersistentId: GetPersistentId,
     private val validateWalletStoreId: ValidateWalletStoreId,
 ) : HandleLocalLogin {
-    override suspend fun invoke(fragmentActivity: FragmentActivity, callback: (LocalAuthStatus) -> Unit,) {
+    override suspend fun invoke(
+        fragmentActivity: FragmentActivity,
+        callback: (LocalAuthStatus) -> Unit,
+    ) {
         if (getPersistentId().isNullOrEmpty()) {
             callback(LocalAuthStatus.FirstTimeUser)
         } else {
@@ -52,7 +55,10 @@ constructor(
         }
     }
 
-    private suspend fun handleRefreshToken(fragmentActivity: FragmentActivity, callback: (LocalAuthStatus) -> Unit,) {
+    private suspend fun handleRefreshToken(
+        fragmentActivity: FragmentActivity,
+        callback: (LocalAuthStatus) -> Unit,
+    ) {
         // When Refresh Token not expired
         if (!isRefreshTokenExpired()) {
             // Get Refresh and AccessToken (require Access Token to be able to not break existing behaviour since the refresh exchange ahs not been completed yet

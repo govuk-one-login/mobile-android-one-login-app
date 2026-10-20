@@ -155,7 +155,7 @@ private fun RowScope.NavBarItem(
                             navController,
                             navigationDestination,
                         )
-                    }
+                    },
                 ).then(
                     if (focusStateEnabled) {
                         val lineColour = MaterialTheme.colorScheme.onBackground
@@ -164,20 +164,20 @@ private fun RowScope.NavBarItem(
                                 topLeft =
                                     Offset(
                                         x = size.width * FOCUS_BORDER_OFFSET_WIDTH_MULTIPLIER,
-                                        y = size.height * FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER
+                                        y = size.height * FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER,
                                     ),
                                 color = lineColour,
                                 style = Stroke(FOCUS_BORDER_STROKE_WIDTH.dp.toPx()),
                                 size =
                                     Size(
                                         width = size.width * FOCUS_BORDER_WIDTH_MULTIPLIER,
-                                        height = size.height * FOCUS_BORDER_HEIGHT_MULTIPLIER
-                                    )
+                                        height = size.height * FOCUS_BORDER_HEIGHT_MULTIPLIER,
+                                    ),
                             )
                         }
                     } else {
                         Modifier
-                    }
+                    },
                 ),
         selected = selected,
         onClick = {
@@ -203,7 +203,7 @@ private fun RowScope.NavBarItem(
                 indicatorColor =
                     NavigationElements.navigationBarSelectedState.toMappedColors(),
                 selectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors(),
-                unselectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors()
+                unselectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors(),
             ),
     )
 }
@@ -242,7 +242,10 @@ private fun createBottomNavItems(
 }
 
 @Suppress("ForbiddenComment")
-private fun bottomNav(navController: NavHostController, navDest: Pair<BottomNavDestination, () -> Unit>,) {
+private fun bottomNav(
+    navController: NavHostController,
+    navDest: Pair<BottomNavDestination, () -> Unit>,
+) {
     navDest.second()
     val destination =
         if (navDest.first is BottomNavDestination.Wallet) {

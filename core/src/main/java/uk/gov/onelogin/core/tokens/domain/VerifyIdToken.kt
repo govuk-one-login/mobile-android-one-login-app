@@ -16,7 +16,7 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
 
 interface VerifyIdToken {
-    suspend operator fun invoke(idToken: String, jwksUrl: String,): Boolean
+    suspend operator fun invoke(idToken: String, jwksUrl: String): Boolean
 }
 
 @Suppress("TooGenericExceptionCaught")
@@ -30,17 +30,18 @@ constructor(
     private val extractAndVerifyIssuer: ExtractAndVerifyIssuer,
     private val logger: Logger,
 ) : VerifyIdToken {
-    override suspend fun invoke(idToken: String, jwksUrl: String,): Boolean {
+    override suspend fun invoke(idToken: String, jwksUrl: String): Boolean {
         val isIssValid = extractAndVerifyIssuer.verify(idToken)
         val isWalletIdValid = extractAndSaveWalletId.extractAndSave(idToken) != null
         val verified =
-            isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid && isIssValid
+            isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid &&
+                isIssValid
         return verified
     }
 
     private fun isEmailValid(idToken: String): Boolean = extractEmail(idToken) != null
 
-    private suspend fun isIdTokenJwksValid(jwksUrl: String, idToken: String,): Boolean {
+    private suspend fun isIdTokenJwksValid(jwksUrl: String, idToken: String): Boolean {
         var verified = false
 
         val response = networkService.makeRequest(ApiRequest.Get(jwksUrl))
@@ -60,7 +61,7 @@ constructor(
         return verified
     }
 
-    private fun useJwksResponseToVerify(response: String, idToken: String,): Boolean {
+    private fun useJwksResponseToVerify(response: String, idToken: String): Boolean {
         getKeyId(idToken)?.let { keyId ->
             getKey(keyId, response)?.let { key ->
                 return verifier.verify(
@@ -72,7 +73,7 @@ constructor(
         return false
     }
 
-    private fun getKey(keyId: String, jwksResponse: String,): String? {
+    private fun getKey(keyId: String, jwksResponse: String): String? {
         try {
             val data = Json.parseToJsonElement(jwksResponse)
             data.jsonObject["keys"]?.jsonArray?.forEach {

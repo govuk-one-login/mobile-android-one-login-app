@@ -32,7 +32,7 @@ class DeleteWalletDataUseCaseDevOptionTest {
         whenever(secureStoreDevOptionsRepository.isWalletDeleteOverride()).thenReturn(true)
 
         Assertions.assertThrows(
-            SecureStorageErrorV2::class.java
+            SecureStorageErrorV2::class.java,
         ) {
             runBlocking { sut.invoke() }
         }

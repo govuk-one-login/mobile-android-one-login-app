@@ -12,7 +12,8 @@ import uk.gov.onelogin.features.wallet.data.WalletRepository
 @HiltViewModel
 class MainNavViewModel
 @Inject
-constructor(private val walletRepository: WalletRepository,) : ViewModel() {
+constructor(private val walletRepository: WalletRepository) :
+    ViewModel() {
     private val _displayContentAsFullScreenState = mutableStateOf(false)
     val displayContentAsFullScreenState: State<Boolean> = _displayContentAsFullScreenState
 

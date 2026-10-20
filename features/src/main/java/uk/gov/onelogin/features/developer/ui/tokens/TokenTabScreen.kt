@@ -49,7 +49,7 @@ fun TokenTabScreen(viewModel: TokenTabScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun PersistentIdSection(persistentId: String, viewModel: TokenTabScreenViewModel,) {
+private fun PersistentIdSection(persistentId: String, viewModel: TokenTabScreenViewModel) {
     Row(
         modifier =
             Modifier
@@ -78,7 +78,11 @@ private fun PersistentIdSection(persistentId: String, viewModel: TokenTabScreenV
 }
 
 @Composable
-private fun AccessTokenSection(viewModel: TokenTabScreenViewModel, accessTokenExpiry: String, context: Context,) {
+private fun AccessTokenSection(
+    viewModel: TokenTabScreenViewModel,
+    accessTokenExpiry: String,
+    context: Context,
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth(),
@@ -122,7 +126,11 @@ private fun AccessTokenSection(viewModel: TokenTabScreenViewModel, accessTokenEx
 }
 
 @Composable
-private fun RefreshTokenSection(viewModel: TokenTabScreenViewModel, refreshTokenExpiry: String, context: Context,) {
+private fun RefreshTokenSection(
+    viewModel: TokenTabScreenViewModel,
+    refreshTokenExpiry: String,
+    context: Context,
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxWidth(),
@@ -177,7 +185,7 @@ private fun RefreshTokenSection(viewModel: TokenTabScreenViewModel, refreshToken
 }
 
 @Composable
-private fun ButtonRow(text: String, onClick: () -> Unit,) {
+private fun ButtonRow(text: String, onClick: () -> Unit) {
     Row(
         modifier =
             Modifier

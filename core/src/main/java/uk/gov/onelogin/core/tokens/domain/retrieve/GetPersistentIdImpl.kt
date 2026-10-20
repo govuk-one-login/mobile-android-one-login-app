@@ -46,16 +46,18 @@ constructor(
     )
 }
 
-internal sealed class GetPersistentIdException(override val message: String, override val cause: Throwable? = null,) :
-    RuntimeException() {
+internal sealed class GetPersistentIdException(
+    override val message: String,
+    override val cause: Throwable? = null,
+) : RuntimeException() {
     class WalletEmptyCheckFailed(cause: Throwable) :
         GetPersistentIdException(
             "Wallet SDK failed to check if wallet is empty",
-            cause = cause
+            cause = cause,
         )
 
     class WalletNotEmpty :
         GetPersistentIdException(
-            "No persistent ID but wallet isn't empty"
+            "No persistent ID but wallet isn't empty",
         )
 }

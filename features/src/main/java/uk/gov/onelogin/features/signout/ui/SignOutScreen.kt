@@ -75,7 +75,7 @@ fun SignOutScreen(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () -> Unit,) {
+internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () -> Unit) {
     FullScreenDialogue(
         onDismissRequest = onClose,
         onBack = onBack,
@@ -102,9 +102,15 @@ internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () 
                 GdsBulletedList(
                     bulletListItems =
                         persistentListOf(
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet1)),
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet2)),
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet3)),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet1),
+                            ),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet2),
+                            ),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet3),
+                            ),
                         ),
                     title = ListTitle(text = listTitle, titleType = TitleType.Text),
                     modifier = Modifier.padding(),

@@ -26,7 +26,9 @@ import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
 
 @Composable
-fun AppIntegrityErrorScreen(analyticsViewModel: AppIntegrityErrorAnalyticsViewModel = hiltViewModel()) {
+fun AppIntegrityErrorScreen(
+    analyticsViewModel: AppIntegrityErrorAnalyticsViewModel = hiltViewModel(),
+) {
     GdsTheme {
         BackHandler(false) {
             // Nothing to do
@@ -52,7 +54,7 @@ private fun AppIntegrityErrorBody() {
             GdsIcon(
                 image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
                 contentDescription = stringResource(patternsR.string.error_icon_description),
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         title = { padding ->
@@ -68,10 +70,10 @@ private fun AppIntegrityErrorBody() {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     modifier = Modifier.errorBodyItemModifier(padding),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
-        }
+        },
     )
 }
 

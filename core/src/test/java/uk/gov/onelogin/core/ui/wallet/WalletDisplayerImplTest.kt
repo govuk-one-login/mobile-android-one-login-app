@@ -29,7 +29,7 @@ class WalletDisplayerImplTest : FragmentActivityTestCase() {
     fun `Wallet delegates to walletSdk WalletApp`() {
         composeTestRule.setContent {
             displayer.Wallet(
-                onFullScreenRequest = {}
+                onFullScreenRequest = {},
             )
             verify(walletSdk).WalletApp()
         }
@@ -41,7 +41,7 @@ class WalletDisplayerImplTest : FragmentActivityTestCase() {
 
         composeTestRule.setContent {
             displayer.Wallet(
-                onFullScreenRequest = onFullScreenRequest
+                onFullScreenRequest = onFullScreenRequest,
             )
         }
         composeTestRule.awaitIdle()

@@ -21,5 +21,5 @@ interface ResultCollectionUtil {
     val <T> List<Result<T>>.throwables: List<Throwable>
         get() = filter { it.isFailure }.mapNotNull { it.exceptionOrNull() }
 
-    class Failure(val causes: List<Throwable>,) : Exception()
+    class Failure(val causes: List<Throwable>) : Exception()
 }

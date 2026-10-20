@@ -8,6 +8,6 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 @HiltViewModel
 class OptInRequirementViewModel
 @Inject
-constructor(repository: OptInRepository,) : ViewModel() {
+constructor(repository: OptInRepository) : ViewModel() {
     val isOptInRequired = repository.isOptInPreferenceRequired()
 }

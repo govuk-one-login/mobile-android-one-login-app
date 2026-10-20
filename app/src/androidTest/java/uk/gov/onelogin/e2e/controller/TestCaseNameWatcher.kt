@@ -14,7 +14,7 @@ import org.junit.runner.Description
  * - [starting]
  * - [succeeded]
  */
-class TestCaseNameWatcher(private val shouldLogToConsole: Boolean = false,) : TestName() {
+class TestCaseNameWatcher(private val shouldLogToConsole: Boolean = false) : TestName() {
     @Volatile
     private var _className: String? = null
 
@@ -37,9 +37,10 @@ class TestCaseNameWatcher(private val shouldLogToConsole: Boolean = false,) : Te
         logToConsole("Succeeded")
     }
 
-    override fun failed(e: Throwable?, description: Description?,) = super.failed(e, description).also {
-        logToConsole("Failed")
-    }
+    override fun failed(e: Throwable?, description: Description?) =
+        super.failed(e, description).also {
+            logToConsole("Failed")
+        }
 
     private fun logToConsole(middle: String) {
         if (shouldLogToConsole) {

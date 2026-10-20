@@ -32,7 +32,7 @@ constructor(
         analyticsLogger.logEventV3Dot1(screenEvent)
     }
 
-    fun trackLink(licenseTitle: String, url: String,) {
+    fun trackLink(licenseTitle: String, url: String) {
         analyticsLogger.logEventV3Dot1(
             makeLinkEvent(
                 context,
@@ -50,7 +50,7 @@ constructor(
         analyticsLogger.logEventV3Dot1(backButtonEvent)
     }
 
-    fun logError(tag: String, msg: String, exception: Exception,) {
+    fun logError(tag: String, msg: String, exception: Exception) {
         logger.error(tag, msg, exception)
     }
 
@@ -63,7 +63,7 @@ constructor(
             )
         }
 
-        internal fun makeLinkEvent(context: Context, url: String, title: String,) = with(context) {
+        internal fun makeLinkEvent(context: Context, url: String, title: String) = with(context) {
             TrackEvent.Link(
                 isExternal = true,
                 domain = url,

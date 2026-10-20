@@ -1,10 +1,12 @@
 package uk.gov.onelogin.features.login.domain.appintegrity
 
 sealed class AttestationResult {
-    data class Success(val clientAttestation: String,) : AttestationResult()
+    data class Success(val clientAttestation: String) : AttestationResult()
 
-    data class Failure(val type: AppIntegrityException.AppIntegrityErrorType, val error: Throwable,) :
-        AttestationResult()
+    data class Failure(
+        val type: AppIntegrityException.AppIntegrityErrorType,
+        val error: Throwable,
+    ) : AttestationResult()
 
     /**
      * @property savedAttestation The cached client attestation.
@@ -12,5 +14,5 @@ sealed class AttestationResult {
      *   - there is no cached client attestation
      *   - client attestation isn't required because the App Check feature is disabled
      */
-    data class NotRequired(val savedAttestation: String?,) : AttestationResult()
+    data class NotRequired(val savedAttestation: String?) : AttestationResult()
 }

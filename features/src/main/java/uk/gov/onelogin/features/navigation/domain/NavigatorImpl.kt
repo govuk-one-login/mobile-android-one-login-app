@@ -12,7 +12,7 @@ import uk.gov.onelogin.developer.DeveloperRoutes.navigateToDeveloperPanel
 
 class NavigatorImpl
 @Inject
-constructor(private val logger: Logger,) : Navigator {
+constructor(private val logger: Logger) : Navigator {
     private var navController: NavHostController? = null
         get() {
             if (field == null) {
@@ -29,7 +29,7 @@ constructor(private val logger: Logger,) : Navigator {
         this.navController = navController
     }
 
-    override fun navigate(route: NavRoute, popUpToInclusive: Boolean,) {
+    override fun navigate(route: NavRoute, popUpToInclusive: Boolean) {
         logger.debug("Navigator", "Navigating to: ${route.getRoute()}")
         runOnMainThread {
             navController?.let { controller ->

@@ -17,7 +17,7 @@ internal object ProviderModule {
     private const val SHARED_PREFS_KEY = "SharedPrefs.key"
 
     @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context,): SharedPreferences =
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
         context.getSharedPreferences(SHARED_PREFS_KEY, Context.MODE_PRIVATE)
 
     @IODispatcherQualifier

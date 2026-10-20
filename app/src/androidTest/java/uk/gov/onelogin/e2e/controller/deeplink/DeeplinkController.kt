@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import uk.gov.onelogin.e2e.JourneyController
 
 object DeeplinkController {
-    fun testDeeplink(context: Context, deeplinkFilePath: String,) = JourneyController { controller ->
+    fun testDeeplink(context: Context, deeplinkFilePath: String) = JourneyController { controller ->
         controller.apply {
             launchDeeplink(
                 context,

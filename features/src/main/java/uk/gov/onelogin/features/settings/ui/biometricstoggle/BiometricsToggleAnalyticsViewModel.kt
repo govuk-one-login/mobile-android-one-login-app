@@ -79,7 +79,7 @@ constructor(
             )
         }
 
-        internal fun makeToggleEventFormEvent(context: Context, value: Boolean,) = with(context) {
+        internal fun makeToggleEventFormEvent(context: Context, value: Boolean) = with(context) {
             TrackEvent.Form(
                 text = getEnglishString(R.string.app_biometricsToggleLabel),
                 response = value.toString(),

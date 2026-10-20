@@ -7,7 +7,7 @@ package uk.gov.android.featureflags
  * @param enabledFeatureFlags The private container for enabled [FeatureFlag] objects. Disabled
  * features won't be within this collection.
  */
-data class InMemoryFeatureFlags(private var enabledFeatureFlags: MutableSet<FeatureFlag>,) :
+data class InMemoryFeatureFlags(private var enabledFeatureFlags: MutableSet<FeatureFlag>) :
     FeatureFlags,
     Iterable<FeatureFlag> {
     /**
@@ -33,7 +33,8 @@ data class InMemoryFeatureFlags(private var enabledFeatureFlags: MutableSet<Feat
         enabledFeatureFlags.toMutableSet(),
     )
 
-    override operator fun get(vararg flags: FeatureFlag) = this.enabledFeatureFlags.containsAll(flags.toSet())
+    override operator fun get(vararg flags: FeatureFlag) =
+        this.enabledFeatureFlags.containsAll(flags.toSet())
 
     override operator fun iterator() = this.enabledFeatureFlags.iterator()
 

@@ -60,7 +60,8 @@ constructor(
             return when (result.error) {
                 is AppIntegrityException.ClientAttestationException,
                 is AppIntegrityException.Other,
-                is AppIntegrityException.FirebaseException -> {
+                is AppIntegrityException.FirebaseException,
+                -> {
                     RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
                 }
 
@@ -71,7 +72,7 @@ constructor(
         return RemoteLogin.Result.Success
     }
 
-    override suspend fun finalise(intent: Intent, activity: FragmentActivity,): RemoteLogin.Result {
+    override suspend fun finalise(intent: Intent, activity: FragmentActivity): RemoteLogin.Result {
         val result = finaliseRemoteLogin.handle(intent)
 
         return when (result) {
@@ -109,7 +110,10 @@ constructor(
         }
     }
 
-    private suspend fun saveTokens(tokens: TokenResponse, activity: FragmentActivity,): RemoteLogin.Result {
+    private suspend fun saveTokens(
+        tokens: TokenResponse,
+        activity: FragmentActivity,
+    ): RemoteLogin.Result {
         if (!verifyIdToken(tokens.idToken, jwksUrl)) {
             return RemoteLogin.Result.Failure(RemoteLogin.FailureType.SignInRecoverable)
         }
@@ -186,7 +190,8 @@ constructor(
 
         is AppIntegrityException.ClientAttestationException,
         is AppIntegrityException.Other,
-        is AppIntegrityException.FirebaseException -> {
+        is AppIntegrityException.FirebaseException,
+        -> {
             RemoteLogin.Result.Failure(RemoteLogin.FailureType.AppIntegrity)
         }
 
@@ -195,7 +200,7 @@ constructor(
     }
 
     private suspend fun LocalAuthManager.enforceAndSetInternal(
-        activity: FragmentActivity
+        activity: FragmentActivity,
     ): Result<LocalAuthPreference?> = // Adapts the callback based API to a result
         CompletableDeferred<Result<LocalAuthPreference?>>()
             .also { deferred ->
@@ -210,8 +215,8 @@ constructor(
                         override fun onFailure(backButtonPressed: Boolean) {
                             deferred.complete(
                                 Result.failure(
-                                    IllegalStateException("Failed to check local auth status")
-                                )
+                                    IllegalStateException("Failed to check local auth status"),
+                                ),
                             )
                         }
                     },

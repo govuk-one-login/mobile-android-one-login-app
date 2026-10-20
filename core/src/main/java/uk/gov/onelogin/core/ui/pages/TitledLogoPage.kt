@@ -30,7 +30,7 @@ import uk.gov.onelogin.core.ui.components.FlexibleTopBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitledLogoPage(@DrawableRes logo: Int, content: @Composable (PaddingValues) -> Unit,) {
+fun TitledLogoPage(@DrawableRes logo: Int, content: @Composable (PaddingValues) -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(

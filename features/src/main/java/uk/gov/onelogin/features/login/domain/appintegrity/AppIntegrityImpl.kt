@@ -26,16 +26,20 @@ constructor(
     private val appCheck: AppIntegrityManager,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getFromOpenSecureStore: GetFromOpenSecureStore,
-    private val retryCounter: Counter
+    private val retryCounter: Counter,
 ) : AppIntegrity {
-    override suspend fun getClientAttestation(): AttestationResult = if (isAttestationCallRequired()) {
-        when (val result = appCheck.getAttestation()) {
-            is AttestationResponse.Success -> handleClientAttestation(result)
-            is AttestationResponse.Failure -> handleAppIntegrityErrorFromAttestation(result = result)
+    override suspend fun getClientAttestation(): AttestationResult =
+        if (isAttestationCallRequired()) {
+            when (val result = appCheck.getAttestation()) {
+                is AttestationResponse.Success -> handleClientAttestation(result)
+
+                is AttestationResponse.Failure -> handleAppIntegrityErrorFromAttestation(
+                    result = result,
+                )
+            }
+        } else {
+            AttestationResult.NotRequired(retrieveSavedClientAttestation())
         }
-    } else {
-        AttestationResult.NotRequired(retrieveSavedClientAttestation())
-    }
 
     override fun getProofOfPossession(): SignedPoP = appCheck.generatePoP(
         iss = context.getString(R.string.stsClientId),
@@ -52,7 +56,9 @@ constructor(
         }
     }
 
-    private suspend fun handleClientAttestation(result: AttestationResponse.Success): AttestationResult {
+    private suspend fun handleClientAttestation(
+        result: AttestationResponse.Success,
+    ): AttestationResult {
         // This never throws error
         saveToOpenSecureStore.save(CLIENT_ATTESTATION, result.attestationJwt)
         // This can only return null, no error to be returned
@@ -80,51 +86,54 @@ constructor(
         return featureFlags[AppIntegrityFeatureFlag.ENABLED] && result
     }
 
-    private fun isAttestationExpired(expiryTime: String?): Boolean = if (!expiryTime.isNullOrEmpty()) {
-        expiryTime.toLong() <= getTimeMillis() / CONVERT_TO_SECONDS
-    } else {
-        true
-    }
+    private fun isAttestationExpired(expiryTime: String?): Boolean =
+        if (!expiryTime.isNullOrEmpty()) {
+            expiryTime.toLong() <= getTimeMillis() / CONVERT_TO_SECONDS
+        } else {
+            true
+        }
 
-    private suspend fun handleAppIntegrityErrorFromAttestation(result: AttestationResponse.Failure): AttestationResult =
-        when (val error = result.error) {
-            // When an AppIntegrityException gets thrown from either backend or Firebase.getLimitedToken
-            is AppIntegrityException -> {
-                when (error.type) {
-                    // When an INTERMITTENT error is returned, attempt to get the attestation again up to 3 times
-                    // before returning a result
-                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
-                        val count = retryCounter.getValue()
-                        if (count < MAX_RETRY) {
-                            calculateDelay(count)
-                            retryCounter.increment()
-                            getClientAttestation()
-                            // If retired 2 times already, return the error to the consumer directly
-                        } else {
-                            retryCounter.reset()
-                            AttestationResult.Failure(type = error.type, error = error)
-                        }
-                    }
-
-                    // Any other type of AppIntegrityError, return the error to the consumer directly
-                    AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED,
-                    AppIntegrityException.AppIntegrityErrorType.GENERIC -> {
+    private suspend fun handleAppIntegrityErrorFromAttestation(
+        result: AttestationResponse.Failure,
+    ): AttestationResult = when (val error = result.error) {
+        // When an AppIntegrityException gets thrown from either backend or Firebase.getLimitedToken
+        is AppIntegrityException -> {
+            when (error.type) {
+                // When an INTERMITTENT error is returned, attempt to get the attestation again up to 3 times
+                // before returning a result
+                AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
+                    val count = retryCounter.getValue()
+                    if (count < MAX_RETRY) {
+                        calculateDelay(count)
+                        retryCounter.increment()
+                        getClientAttestation()
+                        // If retired 2 times already, return the error to the consumer directly
+                    } else {
                         retryCounter.reset()
                         AttestationResult.Failure(type = error.type, error = error)
                     }
                 }
-            }
 
-            // Any other errors, return the error to the consumer directly
-            // and treat it like a 'generic' app integrity error
-            else -> {
-                retryCounter.reset()
-                AttestationResult.Failure(
-                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                    error = result.error
-                )
+                // Any other type of AppIntegrityError, return the error to the consumer directly
+                AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED,
+                AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                -> {
+                    retryCounter.reset()
+                    AttestationResult.Failure(type = error.type, error = error)
+                }
             }
         }
+
+        // Any other errors, return the error to the consumer directly
+        // and treat it like a 'generic' app integrity error
+        else -> {
+            retryCounter.reset()
+            AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                error = result.error,
+            )
+        }
+    }
 
     private suspend fun calculateDelay(count: Int) {
         if (count == FIRST_COUNT) {

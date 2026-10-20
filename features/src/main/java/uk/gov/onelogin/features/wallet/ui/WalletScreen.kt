@@ -25,7 +25,7 @@ fun WalletScreen(
 
             is WalletScreenState.Display -> {
                 state.walletDisplayer.Wallet(
-                    onFullScreenRequest = setDisplayContentAsFullScreen
+                    onFullScreenRequest = setDisplayContentAsFullScreen,
                 )
             }
         }

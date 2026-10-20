@@ -42,7 +42,7 @@ object WalletModule {
                 localAuthManger = localAuthManager,
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
-                networkService = networkService
+                networkService = networkService,
             )
         return WalletSdkImpl(navigator, config, context)
     }
@@ -53,5 +53,5 @@ object WalletModule {
 interface WalletUiModule {
 
     @Binds
-    fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl,): WalletDisplayer
+    fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl): WalletDisplayer
 }

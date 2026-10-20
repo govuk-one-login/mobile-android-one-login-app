@@ -14,7 +14,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
  */
 class ClientAttestationProviderImpl
 @Inject
-constructor(private val appIntegrity: AppIntegrity,) :
+constructor(private val appIntegrity: AppIntegrity) :
     ClientAttestationProvider {
     override suspend fun getClientAttestation(): ClientAttestationResponse {
         val clientAttestation =
@@ -45,10 +45,14 @@ constructor(private val appIntegrity: AppIntegrity,) :
             error = IllegalStateException("Failed to get client attestation", error),
         )
 
-    private fun SignedPoP.Failure.toFailure(): ClientAttestationResponse.Failure = ClientAttestationResponse.Failure(
-        reason = ClientAttestationErrorReason.APP_CHECK_FAILED,
-        error = IllegalStateException("Failed to get proof of possession because: $reason", error),
-    )
+    private fun SignedPoP.Failure.toFailure(): ClientAttestationResponse.Failure =
+        ClientAttestationResponse.Failure(
+            reason = ClientAttestationErrorReason.APP_CHECK_FAILED,
+            error = IllegalStateException(
+                "Failed to get proof of possession because: $reason",
+                error,
+            ),
+        )
 
     private fun AppIntegrityException.AppIntegrityErrorType.toErrorReason() = when (this) {
         AppIntegrityException.AppIntegrityErrorType.INTERMITTENT ->

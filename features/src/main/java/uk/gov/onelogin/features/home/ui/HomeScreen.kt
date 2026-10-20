@@ -91,14 +91,14 @@ private fun HomeScreenBody(
                     .verticalScroll(scrollState)
                     .keyboardScroll(scrollState)
                     .windowInsetsPadding(WindowInsets.displayCutout),
-            verticalArrangement = Arrangement.spacedBy(smallPadding)
+            verticalArrangement = Arrangement.spacedBy(smallPadding),
         ) {
             if (proveYourIdentityCardEnabled) {
                 proveYourIdentityCard()
             }
             WelcomeCard()
             HowToProveYourIdentityCard(
-                onClick = onHowToProveYourIdentityClick
+                onClick = onHowToProveYourIdentityClick,
             )
             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
@@ -145,7 +145,7 @@ internal fun HomeScreenWithProveYourIdentityCardPreview() {
                     title = "Prove your identity",
                     body = "This is a placeholder",
                     buttonText = "Continue proving your identity",
-                    onClick = {}
+                    onClick = {},
                 )
             },
         )

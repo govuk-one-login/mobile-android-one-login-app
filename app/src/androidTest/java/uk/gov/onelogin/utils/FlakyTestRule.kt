@@ -6,8 +6,8 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 @Suppress("TooGenericExceptionCaught")
-class FlakyTestRule(private val retryCount: Int = 3,) : TestRule {
-    override fun apply(base: Statement, description: Description,): Statement {
+class FlakyTestRule(private val retryCount: Int = 3) : TestRule {
+    override fun apply(base: Statement, description: Description): Statement {
         val isAnnotationEnabled =
             description
                 .annotations

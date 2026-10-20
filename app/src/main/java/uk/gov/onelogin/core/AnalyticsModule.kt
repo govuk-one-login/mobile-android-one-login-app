@@ -32,17 +32,20 @@ object AnalyticsModule {
     fun provideFirebaseCrashlytics(): FirebaseCrashlytics = Firebase.crashlytics
 
     @Provides
-    fun provideCrashlyticsLogger(crashlytics: FirebaseCrashlytics): CrashLogger = CrashlyticsLogger(crashlytics)
+    fun provideCrashlyticsLogger(crashlytics: FirebaseCrashlytics): CrashLogger =
+        CrashlyticsLogger(crashlytics)
 
     @Provides
     fun provideLogger(crashLogger: CrashLogger): Logger = AndroidLogger(crashLogger)
 
     @Provides
-    fun providesAnalyticsLoggerAdapter(analytics: FirebaseAnalytics, logger: Logger,): AnalyticsLogger =
-        FirebaseAnalyticsLogger(analytics, logger)
+    fun providesAnalyticsLoggerAdapter(
+        analytics: FirebaseAnalytics,
+        logger: Logger,
+    ): AnalyticsLogger = FirebaseAnalyticsLogger(analytics, logger)
 
     @Provides
-    fun providesAnalyticsLoggerV3(analytics: FirebaseAnalytics,): AnalyticsLoggerV3 =
+    fun providesAnalyticsLoggerV3(analytics: FirebaseAnalytics): AnalyticsLoggerV3 =
         FirebaseAnalyticsLoggerV3(analytics, LogcatLogger())
 
     @Provides

@@ -43,7 +43,7 @@ constructor(
         logger.error(
             this.javaClass.simpleName,
             e.message ?: DEFAULT_ERROR_MSG,
-            e
+            e,
         )
     }
 
@@ -52,4 +52,4 @@ constructor(
     }
 }
 
-data class SignOutError(val error: Throwable,) : Error(error)
+data class SignOutError(val error: Throwable) : Error(error)

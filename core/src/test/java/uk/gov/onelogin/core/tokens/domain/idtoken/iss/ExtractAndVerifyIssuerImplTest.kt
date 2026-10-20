@@ -84,7 +84,7 @@ class ExtractAndVerifyIssuerImplTest {
                 put("iss", expectedIssValue)
             }
         return Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(
-            jsonObject.toString().toByteArray()
+            jsonObject.toString().toByteArray(),
         )
     }
 }

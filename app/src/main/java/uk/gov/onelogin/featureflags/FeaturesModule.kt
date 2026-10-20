@@ -27,7 +27,8 @@ object FeaturesModule {
 
     @Provides
     @Singleton
-    fun provideFeatureFlagSetter(featureFlags: FeatureFlags): FeatureFlagSetter = FeatureFlagSetterImpl(featureFlags)
+    fun provideFeatureFlagSetter(featureFlags: FeatureFlags): FeatureFlagSetter =
+        FeatureFlagSetterImpl(featureFlags)
 
     @Provides
     @Singleton

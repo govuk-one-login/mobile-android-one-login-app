@@ -3,7 +3,7 @@ package uk.gov.onelogin.features.featureflags.data
 import javax.inject.Inject
 import uk.gov.android.featureflags.FeatureFlag
 
-class AvailableFeatures(private val features: MutableSet<FeatureFlag>,) : Iterable<FeatureFlag> {
+class AvailableFeatures(private val features: MutableSet<FeatureFlag>) : Iterable<FeatureFlag> {
     @Inject
     constructor() : this(
         listOf(

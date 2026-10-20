@@ -11,7 +11,7 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 @Suppress("LongParameterList", "TooManyFunctions")
 class SignInScreenViewModel
 @Inject
-constructor(private val navigator: Navigator,) : ViewModel() {
+constructor(private val navigator: Navigator) : ViewModel() {
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 

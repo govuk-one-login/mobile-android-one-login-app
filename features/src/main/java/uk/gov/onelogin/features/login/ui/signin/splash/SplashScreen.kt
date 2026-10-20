@@ -89,7 +89,11 @@ fun SplashScreen(
     }
 }
 
-private fun handleOptInRequired(isRequired: Boolean, viewModel: SplashScreenViewModel, context: FragmentActivity,) {
+private fun handleOptInRequired(
+    isRequired: Boolean,
+    viewModel: SplashScreenViewModel,
+    context: FragmentActivity,
+) {
     when {
         isRequired -> viewModel.navigateToAnalyticsOptIn()
 
@@ -187,7 +191,9 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         .then(
                             // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
                             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
-                                Modifier.clickable(enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                Modifier.clickable(
+                                    enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED,
+                                ) {
                                     onOpenDeveloperPortal()
                                 }
                             } else {
@@ -208,7 +214,7 @@ private fun SubcomposeMeasureScope.createSubcomposeCrown() = subcompose("crown")
 }.first().measure(Constraints())
 
 @Composable
-private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit,) {
+private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
     GdsButton(
         text = stringResource(R.string.app_unlockButton),
         onClick = {
@@ -227,7 +233,7 @@ private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit,) {
 }
 
 @Composable
-internal fun ProgressIndicator(modifier: Modifier = Modifier,) = GdsProgressIndicator(
+internal fun ProgressIndicator(modifier: Modifier = Modifier) = GdsProgressIndicator(
     modifier = modifier
         .padding(bottom = 48.dp),
 )

@@ -1,3 +1,3 @@
 package uk.gov.onelogin.core.tokens.data
 
-data class ApiInfoException(val exception: Throwable,) : Exception(exception.message)
+data class ApiInfoException(val exception: Throwable) : Exception(exception.message)

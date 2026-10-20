@@ -52,8 +52,9 @@ interface NetworkModule {
 
         @Provides
         @Singleton
-        fun provideNetworkServiceV1(defaultNetworkService: DefaultNetworkService,): DefaultNetworkServiceV1 =
-            DefaultNetworkServiceV1(defaultNetworkService)
+        fun provideNetworkServiceV1(
+            defaultNetworkService: DefaultNetworkService,
+        ): DefaultNetworkServiceV1 = DefaultNetworkServiceV1(defaultNetworkService)
 
         @Provides
         fun provideOnlineChecker(
@@ -66,7 +67,7 @@ interface NetworkModule {
         }
 
         @Provides
-        fun providesUserAgentGenerator(@ApplicationContext context: Context,): UserAgentGenerator {
+        fun providesUserAgentGenerator(@ApplicationContext context: Context): UserAgentGenerator {
             val userAgentGenerator = UserAgentGeneratorImpl()
             val appName = context.resources.getString(R.string.one_login_app_name)
             userAgentGenerator.setUserAgent(

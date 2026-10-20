@@ -31,5 +31,7 @@ constructor(
         _featureList.value = createMap()
     }
 
-    private fun createMap(): Map<FeatureFlag, Boolean> = availableFeatures.associateWith { featureFlags[it] }
+    private fun createMap(): Map<FeatureFlag, Boolean> = availableFeatures.associateWith {
+        featureFlags[it]
+    }
 }

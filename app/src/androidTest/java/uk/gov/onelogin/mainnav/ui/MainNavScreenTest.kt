@@ -134,7 +134,9 @@ class MainNavScreenTest : TestCase() {
 
         composeTestRule.onAllNodes(settingsTab).assertCountEquals(2)
 
-        verify(analyticsV1).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
+        verify(
+            analyticsV1,
+        ).logEventV3Dot1(MainNavAnalyticsViewModel.makeSettingsButtonEvent(context))
     }
 
     @Ignore("This is failing because the nav graph has not be 'set' in the time")

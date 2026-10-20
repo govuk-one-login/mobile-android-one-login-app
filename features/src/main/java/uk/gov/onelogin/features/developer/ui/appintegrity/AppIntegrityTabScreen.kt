@@ -150,7 +150,11 @@ private fun ActionItemIcon(
 }
 
 @Composable
-private fun ActionItemFullWidth(action: () -> Unit, result: MutableState<String>, buttonText: String,) {
+private fun ActionItemFullWidth(
+    action: () -> Unit,
+    result: MutableState<String>,
+    buttonText: String,
+) {
     Row {
         GdsButton(
             text = buttonText,

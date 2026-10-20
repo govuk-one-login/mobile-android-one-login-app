@@ -148,7 +148,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
 
 @Composable
 @Suppress("LongMethod")
-private fun AppInfoView(appInfoData: AppInfoData.AppInfo, viewModel: AppTabScreenViewModel,) {
+private fun AppInfoView(appInfoData: AppInfoData.AppInfo, viewModel: AppTabScreenViewModel) {
     var minimumVersion by remember { mutableStateOf(appInfoData.minimumVersion) }
     var appAvailable by remember { mutableStateOf(appInfoData.available) }
     var appCheckEnabled by remember { mutableStateOf(appInfoData.featureFlags.appCheckEnabled) }

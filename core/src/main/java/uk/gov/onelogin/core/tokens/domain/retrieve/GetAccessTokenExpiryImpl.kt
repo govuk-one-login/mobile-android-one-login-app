@@ -11,7 +11,7 @@ class GetAccessTokenExpiryImpl
 constructor(
     @param:ApplicationContext
     private val context: Context,
-    private val getFromOpenSecureStore: GetFromOpenSecureStore
+    private val getFromOpenSecureStore: GetFromOpenSecureStore,
 ) : GetTokenExpiry {
     override suspend fun invoke(): Long? {
         try {
@@ -35,7 +35,7 @@ constructor(
         val sharedPrefs =
             context.getSharedPreferences(
                 TOKEN_SHARED_PREFS,
-                Context.MODE_PRIVATE
+                Context.MODE_PRIVATE,
             )
         // The SharedPrefs will be removed in a period to be determined to allow for migration for all users and avoid
         // creating a breaking change that forces the user to be treated as a new user.

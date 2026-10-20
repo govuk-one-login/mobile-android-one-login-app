@@ -54,7 +54,10 @@ constructor(
     private var idToken = ""
     private var areChecksSuccessful = false
 
-    override suspend fun getTokens(context: FragmentActivity, handleResult: (RefreshExchangeResult) -> Unit,) {
+    override suspend fun getTokens(
+        context: FragmentActivity,
+        handleResult: (RefreshExchangeResult) -> Unit,
+    ) {
         // Check the persistent session ID is valid
         if (!getPersistentId().isNullOrEmpty()) {
             // Check Refresh token is NOT expired and wallet store ID is valid
@@ -177,26 +180,27 @@ constructor(
         }
     }
 
-    private fun createApiRequestPost(authUrl: String, refreshToken: String,): ApiRequest = ApiRequest.Post(
-        url = authUrl,
-        body =
-            FormDataContent(
-                Parameters.build {
-                    append(
-                        GRANT_TYPE_LABEL,
-                        GRANT_TYPE_VALUE,
-                    )
-                    append(
-                        REFRESH_TOKEN_LABEL,
-                        refreshToken,
-                    )
-                },
-            ),
-        headers =
-            listOf(
-                CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
-            ),
-    )
+    private fun createApiRequestPost(authUrl: String, refreshToken: String): ApiRequest =
+        ApiRequest.Post(
+            url = authUrl,
+            body =
+                FormDataContent(
+                    Parameters.build {
+                        append(
+                            GRANT_TYPE_LABEL,
+                            GRANT_TYPE_VALUE,
+                        )
+                        append(
+                            REFRESH_TOKEN_LABEL,
+                            refreshToken,
+                        )
+                    },
+                ),
+            headers =
+                listOf(
+                    CONTENT_TYPE_LABEL to CONTENT_TYPE_VALUE,
+                ),
+        )
 
     private suspend fun saveTokensExpiryToOpenStore(tokens: RefreshExchangeApiResponse) {
         // Calculate the correct expiry
@@ -222,7 +226,9 @@ constructor(
         }
     }
 
-    private fun mapLocalAuthStatusToRefreshExchangeResult(status: LocalAuthStatus): RefreshExchangeResult {
+    private fun mapLocalAuthStatusToRefreshExchangeResult(
+        status: LocalAuthStatus,
+    ): RefreshExchangeResult {
         // This will have to updated after the secure store errors are now mapped correctly according to the TD
         return when (status) {
             is LocalAuthStatus.FirstTimeUser -> RefreshExchangeResult.FirstTimeUser
@@ -241,6 +247,6 @@ constructor(
         private const val GRANT_TYPE_VALUE = "refresh_token"
         private const val REFRESH_TOKEN_LABEL = "refresh_token"
 
-        data class RefreshExchangeException(private val msg: String,) : Exception(msg)
+        data class RefreshExchangeException(private val msg: String) : Exception(msg)
     }
 }

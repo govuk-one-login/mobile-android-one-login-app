@@ -8,8 +8,10 @@ import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 @Suppress("TooGenericExceptionCaught")
 class ExtractEmailImpl
 @Inject
-constructor(private val extractFromJson: JwtExtractor, private val logger: Logger,) :
-    ExtractEmail {
+constructor(
+    private val extractFromJson: JwtExtractor,
+    private val logger: Logger,
+) : ExtractEmail {
     override fun invoke(idToken: String) = extractEmail(idToken)
 
     private fun extractEmail(idToken: String): String? = try {

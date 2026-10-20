@@ -13,7 +13,7 @@ constructor(
     private val secureStore: SecureStoreAsyncV2,
     private val logger: Logger,
 ) : SaveToTokenSecureStore {
-    override suspend fun invoke(key: String, value: String,) {
+    override suspend fun invoke(key: String, value: String) {
         try {
             secureStore.upsert(
                 key = key,

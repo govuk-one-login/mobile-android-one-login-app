@@ -16,5 +16,5 @@ sealed interface WalletScreenState {
 
     data object Loading : WalletScreenState
 
-    data class Display(val walletDisplayer: WalletDisplayer,) : WalletScreenState
+    data class Display(val walletDisplayer: WalletDisplayer) : WalletScreenState
 }

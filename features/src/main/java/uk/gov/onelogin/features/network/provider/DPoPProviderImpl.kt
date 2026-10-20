@@ -19,7 +19,10 @@ constructor(
 ) : DPoPProvider {
     override suspend fun getRefreshDPoP(): DPoPResponse {
         // htu (HTTP URI) is the token endpoint URL where this DPoP will be used
-        val htu = context.getString(R.string.stsUrl, context.getString(R.string.tokenExchangeEndpoint))
+        val htu = context.getString(
+            R.string.stsUrl,
+            context.getString(R.string.tokenExchangeEndpoint),
+        )
 
         return when (val result = dPoPManager.generateDPoP(htu)) {
             is SignedDPoP.Success -> DPoPResponse.Success(result.popJwt)
@@ -28,6 +31,6 @@ constructor(
     }
 
     private fun SignedDPoP.Failure.toFailure(): DPoPResponse.Failure = DPoPResponse.Failure(
-        IllegalStateException("Failed to get DPoP: $reason", error)
+        IllegalStateException("Failed to get DPoP: $reason", error),
     )
 }

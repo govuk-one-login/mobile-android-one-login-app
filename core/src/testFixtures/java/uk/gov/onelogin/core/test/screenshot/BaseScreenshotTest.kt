@@ -22,7 +22,11 @@ import uk.gov.android.ui.theme.m3.GdsTheme
  *
  * @sample uk.gov.onelogin.features.error.ui.generic.GenericErrorScreenshotTest
  */
-abstract class BaseScreenshotTest(nightMode: NightMode = NOTNIGHT, locale: String = LOCALE_EN, fontScale: Float = 1f,) {
+abstract class BaseScreenshotTest(
+    nightMode: NightMode = NOTNIGHT,
+    locale: String = LOCALE_EN,
+    fontScale: Float = 1f,
+) {
     @get:Rule
     val paparazzi =
         Paparazzi(
@@ -34,7 +38,7 @@ abstract class BaseScreenshotTest(nightMode: NightMode = NOTNIGHT, locale: Strin
                 ),
             renderingMode = SHRINK,
             showSystemUi = false,
-            maxPercentDifference = 0.1
+            maxPercentDifference = 0.1,
         )
 
     @Test
@@ -50,20 +54,21 @@ abstract class BaseScreenshotTest(nightMode: NightMode = NOTNIGHT, locale: Strin
 
     companion object {
         @JvmStatic
-        fun <T : Any> applyNightMode(result: MutableList<Pair<T, NightMode>>): (
-            T
-        ) -> Unit =
-            { parameters ->
-                result.add(parameters to NOTNIGHT)
-                result.add(parameters to NIGHT)
-            }
+        fun <T : Any> applyNightMode(
+            result: MutableList<Pair<T, NightMode>>,
+        ): (
+            T,
+        ) -> Unit = { parameters ->
+            result.add(parameters to NOTNIGHT)
+            result.add(parameters to NIGHT)
+        }
 
         @JvmStatic
         fun applyNightModeAndLocale(): Iterable<Array<Any>> = arrayListOf(
             arrayOf(NOTNIGHT, LOCALE_EN),
             arrayOf(NIGHT, LOCALE_EN),
             arrayOf(NOTNIGHT, LOCALE_CY),
-            arrayOf(NIGHT, LOCALE_CY)
+            arrayOf(NIGHT, LOCALE_CY),
         )
 
         @JvmStatic

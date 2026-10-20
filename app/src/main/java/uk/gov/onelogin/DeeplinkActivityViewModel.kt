@@ -22,7 +22,9 @@ constructor(
 ) : ViewModel() {
     fun handleIntent(intent: Intent?) {
         if (intent?.action == ACTION_VIEW && intent.data != null) {
-            intent.data?.getQueryParameter(CREDENTIAL_OFFER_QUERY_PARAM_KEY)?.let { credentialOffer ->
+            intent.data?.getQueryParameter(
+                CREDENTIAL_OFFER_QUERY_PARAM_KEY,
+            )?.let { credentialOffer ->
                 viewModelScope.launch {
                     walletRepository.setWalletDeepLinkPathState(deepLink = true)
                     walletSdk.setDeeplink(deeplink = credentialOffer)

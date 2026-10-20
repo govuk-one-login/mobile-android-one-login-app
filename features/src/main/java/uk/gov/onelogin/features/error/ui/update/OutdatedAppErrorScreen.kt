@@ -61,7 +61,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit = {}) {
                 icon = { padding ->
                     GdsIcon(
                         image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
-                        contentDescription = stringResource(patternsR.string.error_icon_description),
+                        contentDescription = stringResource(
+                            patternsR.string.error_icon_description,
+                        ),
                         modifier = Modifier.errorBodyItemModifier(padding),
                     )
                 },

@@ -13,7 +13,7 @@ constructor(
     private val secureStore: SecureStoreAsyncV2,
     private val logger: Logger,
 ) : SaveToOpenSecureStore {
-    override suspend fun save(key: String, value: String,) {
+    override suspend fun save(key: String, value: String) {
         try {
             secureStore.upsert(
                 key = key,
@@ -24,7 +24,7 @@ constructor(
         }
     }
 
-    override suspend fun save(key: String, value: Number,) {
+    override suspend fun save(key: String, value: Number) {
         try {
             secureStore.upsert(
                 key = key,

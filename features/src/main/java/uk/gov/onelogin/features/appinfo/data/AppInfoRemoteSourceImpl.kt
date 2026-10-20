@@ -19,7 +19,11 @@ constructor(
         }
         return when (val result = appInfoApi.callApi()) {
             is ApiResponse.Success -> AppInfoRemoteState.Success(result.body)
-            is ApiResponse.Failure -> AppInfoRemoteState.Failure("Status: ${result.status}", result.error)
+
+            is ApiResponse.Failure -> AppInfoRemoteState.Failure(
+                "Status: ${result.status}",
+                result.error,
+            )
         }
     }
 

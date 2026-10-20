@@ -20,7 +20,7 @@ constructor(
     private val localAuthPreferenceRepo: LocalAuthPreferenceRepo,
     private val analyticsLogger: AnalyticsLogger,
 ) : ViewModel() {
-    fun triggerLocalAuthMock(activity: FragmentActivity, isDeviceSecure: Boolean,) {
+    fun triggerLocalAuthMock(activity: FragmentActivity, isDeviceSecure: Boolean) {
         val localAuthManager = configureLocalAuthManager(isDeviceSecure)
         viewModelScope.launch {
             val realPref = localAuthManager.localAuthPreference

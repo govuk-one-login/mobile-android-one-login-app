@@ -47,7 +47,11 @@ constructor(
         return FinaliseRemoteLogin.Result.Success(tokens)
     }
 
-    private suspend fun finaliseLogin(intent: Intent, attestation: String, jwt: String,): Result<TokenResponse> {
+    private suspend fun finaliseLogin(
+        intent: Intent,
+        attestation: String,
+        jwt: String,
+    ): Result<TokenResponse> {
         val tokenEndpoint =
             context.getString(
                 R.string.stsUrl,
@@ -88,7 +92,7 @@ constructor(
         }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun createPop(attestation: String,): Result<String> {
+    private fun createPop(attestation: String): Result<String> {
         if (attestation.isNotEmpty()) {
             when (val popResult = appIntegrity.getProofOfPossession()) {
                 is SignedPoP.Success ->
@@ -105,7 +109,7 @@ constructor(
         }
     }
 
-    private fun logError(e: Throwable?, reason: String,) {
+    private fun logError(e: Throwable?, reason: String) {
         val error = AppIntegrityException.ProofOfPossessionException(e ?: Exception(reason))
         logger.error(
             error.javaClass.simpleName,
@@ -131,7 +135,7 @@ constructor(
             },
             onFailure = {
                 deferred.complete(Result.failure(it))
-            }
+            },
         )
     }.await()
 

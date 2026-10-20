@@ -30,7 +30,7 @@ constructor(
     private val logger: Logger,
 ) : StartRemoteLogin {
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun login(launcher: ActivityResultLauncher<Intent>,): StartRemoteLogin.Result {
+    override suspend fun login(launcher: ActivityResultLauncher<Intent>): StartRemoteLogin.Result {
         val persistentId = getPersistentId()?.takeIf { it.isNotEmpty() }
 
         val attestationResult = appIntegrity.getClientAttestation()

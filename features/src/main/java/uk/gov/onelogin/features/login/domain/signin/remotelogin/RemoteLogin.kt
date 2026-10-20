@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentActivity
 interface RemoteLogin {
     suspend fun start(launcher: ActivityResultLauncher<Intent>): Result
 
-    suspend fun finalise(intent: Intent, activity: FragmentActivity,): Result
+    suspend fun finalise(intent: Intent, activity: FragmentActivity): Result
 
     sealed interface Result {
         data object Success : Result

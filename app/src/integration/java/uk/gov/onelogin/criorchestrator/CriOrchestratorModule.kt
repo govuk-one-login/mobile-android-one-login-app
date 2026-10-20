@@ -23,7 +23,7 @@ import uk.gov.onelogin.features.criorchestrator.CheckIdCheckSessionStateImpl
 object CriOrchestratorModule {
     @Provides
     @Singleton
-    fun provideSdkConfig(@ApplicationContext context: Context,) = Config(
+    fun provideSdkConfig(@ApplicationContext context: Context) = Config(
         entries =
             persistentListOf(
                 Config.Entry(
@@ -56,6 +56,7 @@ object CriOrchestratorModule {
 
     @Provides
     @Singleton
-    fun provideCheckIdCheckIsActive(criOrchestratorSdk: CriOrchestratorSdk): CheckIdCheckSessionState =
-        CheckIdCheckSessionStateImpl(criOrchestratorSdk)
+    fun provideCheckIdCheckIsActive(
+        criOrchestratorSdk: CriOrchestratorSdk,
+    ): CheckIdCheckSessionState = CheckIdCheckSessionStateImpl(criOrchestratorSdk)
 }

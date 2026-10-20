@@ -19,7 +19,7 @@ constructor(
         logger.error(
             e::class.simpleName.toString(),
             "Attempting to retrieve $key \n Error: ${e.message} - type: ${e.type}",
-            e
+            e,
         )
         null
     }

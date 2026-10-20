@@ -13,7 +13,7 @@ class ValidateWalletStoreIdImpl
 constructor(
     private val getWalletStoreId: GetWalletStoreId,
     private val getPersistentId: GetPersistentId,
-    private val logger: Logger
+    private val logger: Logger,
 ) : ValidateWalletStoreId,
     LogTagProvider {
     /**
@@ -42,7 +42,7 @@ constructor(
             WALLET_STORE_ID_MISSING,
             throwable = throwable,
             componentKey(COMPONENT),
-            actionKey(ACTION)
+            actionKey(ACTION),
         )
     }
 

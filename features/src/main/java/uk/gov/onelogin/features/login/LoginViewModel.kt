@@ -40,7 +40,7 @@ constructor(
     private val getPersistentId: GetPersistentId,
     private val signOutUseCase: SignOutUseCase,
     private val localAuthPrefResetUseCase: LocalAuthPrefResetUseCase,
-    private val logger: Logger
+    private val logger: Logger,
 ) : ViewModel(),
     LogTagProvider {
     private val _loading: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -48,37 +48,42 @@ constructor(
 
     private var startJob: Job? = null
 
-    fun startLoginActivity(launcher: ActivityResultLauncher<Intent>, isReAuth: Boolean) = viewModelScope.launch {
-        _loading.emit(true)
-        if (!onlineChecker.isOnline()) {
-            navigator.navigate(ErrorRoutes.Offline)
-            return@launch
-        }
-
-        // If persistent session ID is empty on re-auth, that suggests something went wrong and we delete all data
-        if (isReAuth && getPersistentId().isNullOrEmpty()) {
-            try {
-                signOutUseCase.invoke()
-                navigator.navigate(SignOutRoutes.AppResetError, true)
-            } catch (_: SignOutError) {
-                navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+    fun startLoginActivity(launcher: ActivityResultLauncher<Intent>, isReAuth: Boolean) =
+        viewModelScope.launch {
+            _loading.emit(true)
+            if (!onlineChecker.isOnline()) {
+                navigator.navigate(ErrorRoutes.Offline)
+                return@launch
             }
-            return@launch
+
+            // If persistent session ID is empty on re-auth, that suggests something went wrong and we delete all data
+            if (isReAuth && getPersistentId().isNullOrEmpty()) {
+                try {
+                    signOutUseCase.invoke()
+                    navigator.navigate(SignOutRoutes.AppResetError, true)
+                } catch (_: SignOutError) {
+                    navigator.navigate(LoginRoutes.SignInUnrecoverableError, true)
+                }
+                return@launch
+            }
+
+            // This allows for the BiometricOptIn prompt to be displayed anytime a re-auth is done ONLY IF the
+            // user eith has no preference (something went wrong) or opted out at an earlier time
+            localAuthPrefResetUseCase.reset()
+            val result = remoteLogin.start(launcher)
+
+            if (result is RemoteLogin.Result.Failure) {
+                navigator.navigate(result, isReAuth)
+            }
+        }.also { job ->
+            startJob = job
         }
 
-        // This allows for the BiometricOptIn prompt to be displayed anytime a re-auth is done ONLY IF the
-        // user eith has no preference (something went wrong) or opted out at an earlier time
-        localAuthPrefResetUseCase.reset()
-        val result = remoteLogin.start(launcher)
-
-        if (result is RemoteLogin.Result.Failure) {
-            navigator.navigate(result, isReAuth)
-        }
-    }.also { job ->
-        startJob = job
-    }
-
-    fun handleLoginActivityResult(result: ActivityResult, isReAuth: Boolean = false, activity: FragmentActivity,) {
+    fun handleLoginActivityResult(
+        result: ActivityResult,
+        isReAuth: Boolean = false,
+        activity: FragmentActivity,
+    ) {
         if (result.resultCode != Activity.RESULT_OK) {
             _loading.value = false
             return
@@ -99,7 +104,7 @@ constructor(
             _loading.emit(true)
             val result = remoteLogin.finalise(
                 intent,
-                activity
+                activity,
             )
 
             navigator.navigate(result, isReAuth)
@@ -116,7 +121,7 @@ constructor(
         _loading.value = false
     }
 
-    private fun Navigator.navigate(loginResult: RemoteLogin.Result, isReAuth: Boolean,) {
+    private fun Navigator.navigate(loginResult: RemoteLogin.Result, isReAuth: Boolean) {
         when (loginResult) {
             is RemoteLogin.Result.Success -> {
                 if (isReAuth) {

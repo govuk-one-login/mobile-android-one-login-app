@@ -51,7 +51,7 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun FeatureToggle(featureFlag: FeatureFlag, checked: Boolean, onToggle: () -> Unit,) {
+private fun FeatureToggle(featureFlag: FeatureFlag, checked: Boolean, onToggle: () -> Unit) {
     Row(
         modifier = Modifier.padding(smallPadding),
         verticalAlignment = Alignment.CenterVertically,

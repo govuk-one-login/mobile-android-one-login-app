@@ -15,8 +15,10 @@ import uk.gov.onelogin.features.optin.domain.SingleChoice
 @HiltViewModel
 class OptInViewModel
 @Inject
-constructor(private val repository: OptInRepository, private val navigator: Navigator,) :
-    ViewModel() {
+constructor(
+    private val repository: OptInRepository,
+    private val navigator: Navigator,
+) : ViewModel() {
     private val choice = SingleChoice()
     val uiState: Flow<OptInUIState> =
         choice.state.map {

@@ -155,7 +155,10 @@ private suspend fun settleAppBar(
 }
 
 @Stable
-class FlexibleTopBarColors internal constructor(val containerColor: Color, val scrolledContainerColor: Color,) {
+class FlexibleTopBarColors internal constructor(
+    val containerColor: Color,
+    val scrolledContainerColor: Color,
+) {
     /**
      * Represents the container color used for the top app bar.
      *
@@ -206,7 +209,7 @@ object FlexibleTopBarDefaults {
     )
 }
 
-internal fun ColorScheme.applyTonalElevation(backgroundColor: Color, elevation: Dp,): Color =
+internal fun ColorScheme.applyTonalElevation(backgroundColor: Color, elevation: Dp): Color =
     if (backgroundColor == surface) {
         surfaceColorAtElevation(elevation)
     } else {

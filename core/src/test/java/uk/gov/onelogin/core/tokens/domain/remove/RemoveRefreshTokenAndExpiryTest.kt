@@ -26,7 +26,7 @@ class RemoveRefreshTokenAndExpiryTest {
             RemoveRefreshTokenAndExpiryImpl(
                 openSecureStore = mockOpenSecureStore,
                 tokenSecureStore = mockTokenSecureStore,
-                logger = mockLogger
+                logger = mockLogger,
             )
     }
 
@@ -42,7 +42,9 @@ class RemoveRefreshTokenAndExpiryTest {
     fun testRemoveTokenSecureStoreFailure() = runTest {
         val message = "Error message"
         val exception = SecureStorageErrorV2(Exception(message))
-        whenever(mockTokenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY)).thenThrow(exception)
+        whenever(
+            mockTokenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_KEY),
+        ).thenThrow(exception)
         sut.remove()
 
         assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))
@@ -52,7 +54,9 @@ class RemoveRefreshTokenAndExpiryTest {
     fun testRemoveOpenSecureStoreFailure() = runTest {
         val message = "Error message"
         val exception = SecureStorageErrorV2(Exception(message))
-        whenever(mockOpenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY)).thenThrow(exception)
+        whenever(
+            mockOpenSecureStore.delete(AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY),
+        ).thenThrow(exception)
         sut.remove()
 
         assertThat(mockLogger, hasItem(hasMessage("java.lang.Exception: $message")))

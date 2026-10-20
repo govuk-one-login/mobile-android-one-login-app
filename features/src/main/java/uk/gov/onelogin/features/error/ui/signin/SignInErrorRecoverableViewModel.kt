@@ -9,7 +9,8 @@ import uk.gov.onelogin.core.navigation.domain.Navigator
 @HiltViewModel
 class SignInErrorRecoverableViewModel
 @Inject
-constructor(private val navigator: Navigator,) : ViewModel() {
+constructor(private val navigator: Navigator) :
+    ViewModel() {
     fun onBack() {
         navigator.navigate(LoginRoutes.SignIn, true)
     }

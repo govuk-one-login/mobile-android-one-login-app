@@ -26,6 +26,8 @@ object AppCheckerModule {
     }
 
     @Provides
-    fun provideAppCheck(firebaseAppCheckProvider: FirebaseAppCheckProvider, logger: Logger,): AppChecker =
-        FirebaseAppCheck(firebaseAppCheckProvider, logger)
+    fun provideAppCheck(
+        firebaseAppCheckProvider: FirebaseAppCheckProvider,
+        logger: Logger,
+    ): AppChecker = FirebaseAppCheck(firebaseAppCheckProvider, logger)
 }

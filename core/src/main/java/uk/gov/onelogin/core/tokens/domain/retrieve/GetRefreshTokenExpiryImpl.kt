@@ -5,8 +5,9 @@ import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY
 
 class GetRefreshTokenExpiryImpl
 @Inject
-constructor(private val getFromOpenSecureStore: GetFromOpenSecureStore,) :
-    GetTokenExpiry {
+constructor(
+    private val getFromOpenSecureStore: GetFromOpenSecureStore,
+) : GetTokenExpiry {
     override suspend fun invoke(): Long? {
         try {
             val expiryTimestamp =

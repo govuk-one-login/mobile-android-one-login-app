@@ -118,7 +118,7 @@ class GetFromEncryptedSecureStoreTest : FragmentActivityTestCase() {
 
     private suspend fun mockSecureStore(
         returnResult: Map<String, String?>? = null,
-        secureErrorType: SecureStoreErrorTypeV2? = null
+        secureErrorType: SecureStoreErrorTypeV2? = null,
     ) {
         returnResult?.let {
             whenever(

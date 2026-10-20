@@ -20,7 +20,7 @@ constructor(
     private val context: Context,
     private val networkService: NetworkService,
 ) : AttestationCaller {
-    override suspend fun call(token: String, jwk: JWK.JsonWebKey,): AttestationResponse {
+    override suspend fun call(token: String, jwk: JWK.JsonWebKey): AttestationResponse {
         val endpoint = context.getString(R.string.clientAttestationEndpoint)
         val request =
             ApiRequest.Post(
@@ -32,7 +32,11 @@ constructor(
                     ),
                 contentType = ContentType.APPLICATION_JSON,
             )
-        return when (val apiResponse = networkService.makeRequest<AttestationResponse.Success>(request)) {
+        return when (
+            val apiResponse = networkService.makeRequest<AttestationResponse.Success>(
+                request,
+            )
+        ) {
             is ApiResponse.Success -> apiResponse.body
 
             is ApiResponse.Failure -> {
@@ -40,17 +44,20 @@ constructor(
                 // https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/3787195450/GOV.UK+One+Login+app+-+Error+handling#App-integrity-check-failures
                 val expType =
                     when (apiResponse.status) {
-                        INVALID_PUBLIC_KEY_JWK
+                        INVALID_PUBLIC_KEY_JWK,
                         -> AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED
 
-                        SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR
+                        SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR,
                         -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
 
                         // This should never be reached as per guidance
                         else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
                     }
 
-                val exp = AppIntegrityException.ClientAttestationException(apiResponse.error, expType)
+                val exp = AppIntegrityException.ClientAttestationException(
+                    apiResponse.error,
+                    expType,
+                )
                 AttestationResponse.Failure(
                     exp.e.message ?: NETWORK_ERROR,
                     exp,

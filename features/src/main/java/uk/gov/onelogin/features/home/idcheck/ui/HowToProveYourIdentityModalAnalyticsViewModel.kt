@@ -26,7 +26,7 @@ class HowToProveYourIdentityModalAnalyticsViewModel @Inject constructor(
             params = RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.HOME,
                 taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
-            )
+            ),
         )
 
         analyticsLogger.logEventV3Dot1(event)

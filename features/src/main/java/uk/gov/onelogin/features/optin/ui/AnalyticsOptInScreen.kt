@@ -93,7 +93,7 @@ private fun OptInHeader() {
 }
 
 @Composable
-private fun OptInContent(onPrivacyNotice: (String) -> Unit, url: String,) {
+private fun OptInContent(onPrivacyNotice: (String) -> Unit, url: String) {
     Text(
         modifier =
             Modifier
@@ -114,7 +114,7 @@ private fun OptInContent(onPrivacyNotice: (String) -> Unit, url: String,) {
 }
 
 @Composable
-private fun OptInButtons(onShare: () -> Unit, uiState: OptInUIState, onDoNotShare: () -> Unit,) {
+private fun OptInButtons(onShare: () -> Unit, uiState: OptInUIState, onDoNotShare: () -> Unit) {
     GdsButton(
         text = stringResource(R.string.app_shareAnalyticsButton),
         buttonType = ButtonTypeV2.Primary(),
