@@ -208,7 +208,8 @@ class StsAuthenticationProvider @Inject constructor(
         private const val SCOPE = "scope"
 
         const val REFRESH_EXCHANGE_ERROR_MSG = "Failed refresh exchange."
-        const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG = "Failed refresh exchange failed - user cannot reauthenticate."
+        const val MANUAL_SIGN_IN_REQUIRED_ERROR_MSG =
+            "Failed refresh exchange failed - user cannot reauthenticate."
         const val NO_ACCESS_TOKEN_ERROR_MSG = "No access token"
         const val SERVICE_TOKEN_FAILURE_ERROR_MSG = "Failed to fetch service token"
         const val FRAGMENT_ACTIVITY_NULL_ERROR_MSG = "FragmentActivity is null"

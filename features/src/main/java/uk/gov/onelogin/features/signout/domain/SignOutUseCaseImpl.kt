@@ -48,7 +48,8 @@ constructor(
     }
 
     companion object {
-        private const val DEFAULT_ERROR_MSG = "Sign out error was caught when attempting to delete user data!"
+        private const val DEFAULT_ERROR_MSG =
+            "Sign out error was caught when attempting to delete user data!"
     }
 }
 

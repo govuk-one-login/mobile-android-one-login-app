@@ -44,9 +44,11 @@ constructor(
             )
             val localAuthStatus =
                 when (e.type) {
-                    SecureStoreErrorTypeV2.UNRECOVERABLE -> LocalAuthStatus.ReauthRequired
+                    SecureStoreErrorTypeV2.UNRECOVERABLE ->
+                        LocalAuthStatus.ReauthRequired
 
-                    SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED -> LocalAuthStatus.UnrecoverableError
+                    SecureStoreErrorTypeV2.NO_LOCAL_AUTH_ENABLED ->
+                        LocalAuthStatus.UnrecoverableError
 
                     SecureStoreErrorTypeV2.RECOVERABLE,
                     SecureStoreErrorTypeV2.USER_CANCELLED,

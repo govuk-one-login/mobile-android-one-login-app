@@ -234,7 +234,8 @@ constructor(
             is LocalAuthStatus.FirstTimeUser -> RefreshExchangeResult.FirstTimeUser
             is LocalAuthStatus.UnrecoverableError -> RefreshExchangeResult.UnrecoverableError
             is LocalAuthStatus.Success -> RefreshExchangeResult.Success
-            is LocalAuthStatus.UserCancelledBioPrompt -> RefreshExchangeResult.UserCancelledBioPrompt
+            is LocalAuthStatus.UserCancelledBioPrompt ->
+                RefreshExchangeResult.UserCancelledBioPrompt
             else -> RefreshExchangeResult.ReauthRequired
         }
     }
