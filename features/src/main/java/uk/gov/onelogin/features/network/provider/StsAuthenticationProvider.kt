@@ -178,13 +178,17 @@ class StsAuthenticationProvider @Inject constructor(
      * @return [AuthenticationResponse] which returns a response either containing a failure containing a message or
      * a success containing the service token issues
      */
-    private fun ApiResponse<TokenApiResponse, String, NetworkingException>.toAuthenticationResponse(): AuthenticationResponse =
+    private fun ApiResponse<
+        TokenApiResponse,
+        String,
+        NetworkingException
+        >.toAuthenticationResponse(): AuthenticationResponse =
         when (this) {
             is ApiResponse.Success ->
                 AuthenticationResponse.Success(body.token)
 
             is ApiResponse.Failure ->
-                AuthenticationResponse.Failure(Exception(error.message ?: SERVICE_TOKEN_FAILURE_ERROR_MSG, error))
+                AuthenticationResponse.Failure(Exception(error.message, error))
         }
 
     companion object {
