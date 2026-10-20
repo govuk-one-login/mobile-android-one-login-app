@@ -29,9 +29,6 @@ import androidx.test.filters.FlakyTest
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -52,7 +49,6 @@ import uk.gov.android.authentication.integrity.keymanager.ECKeyManager
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.android.authentication.integrity.pop.SignedPoP
-import uk.gov.android.authentication.localauth.R as LocalAuthR
 import uk.gov.android.authentication.login.AuthenticationError
 import uk.gov.android.authentication.login.LoginSession
 import uk.gov.android.authentication.login.LoginSessionConfiguration
@@ -86,6 +82,10 @@ import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.FlakyTestCase
 import uk.gov.onelogin.utils.TestUtils
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
+import uk.gov.android.authentication.localauth.R as LocalAuthR
 
 @Suppress("SwallowedException")
 @HiltAndroidTest
@@ -639,15 +639,15 @@ class LoginTest : FlakyTestCase() {
                 tokenType = "test",
                 accessToken = "test",
                 accessTokenExpirationTime = 1L,
-                idToken =
-                    "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi1hN" +
-                        "2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJzal9fMUVOUU0iLCJ" +
-                        "pc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ292LnVrIiwic3ViIjoiOWQwZjIxZG" +
-                        "UtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTVlM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlL" +
-                        "WI2YmQtNDQ0ZC05YmI0LWRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIx" +
-                        "OTk4MzU4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tIiwiZW1" +
-                        "haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7AXjz_CaJDiuuqSyHZ4W" +
-                        "48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg",
+                idToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjE2ZGI2NTg3LTU0NDUtNDVkNi" +
+                        "1hN2Q5LTk4NzgxZWJkZjkzZCJ9.eyJhdWQiOiJHRVV6a0V6SVFVOXJmYmdBWmJ" +
+                        "zal9fMUVOUU0iLCJpc3MiOiJodHRwczovL3Rva2VuLmJ1aWxkLmFjY291bnQuZ" +
+                        "292LnVrIiwic3ViIjoiOWQwZjIxZGUtMmZkNy00MjdiLWE2ZGYtMDdjZDBkOTV" +
+                        "lM2I2IiwicGVyc2lzdGVudF9pZCI6ImNjODkzZWNlLWI2YmQtNDQ0ZC05YmI0L" +
+                        "WRlYzZmNTc3OGU1MCIsImlhdCI6MTcyMTk5ODE3OCwiZXhwIjoxNzIxOTk4MzU" +
+                        "4LCJub25jZSI6InRlc3Rfbm9uY2UiLCJlbWFpbCI6Im1vY2tAZW1haWwuY29tI" +
+                        "iwiZW1haWxfdmVyaWZpZWQiOnRydWV9.G1uQ9z2i-214kEmmtK7hEHRsgqJdk7" +
+                        "AXjz_CaJDiuuqSyHZ4W48oE1karDBA-pKWpADdBpHeUC-eCjjfBObjOg",
                 refreshToken = null,
             )
     }
