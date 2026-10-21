@@ -39,56 +39,52 @@ class SaveToOpenSecureStoreTest {
     }
 
     @Test
-    fun `does not throw - when SecureStorageErrorV2 thrown when saving strings`() =
-        runTest {
-            whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageErrorV2(Exception("Some error")),
-            )
+    fun `does not throw - when SecureStorageErrorV2 thrown when saving strings`() = runTest {
+        whenever(mockSecureStore.upsert(any(), any())).thenThrow(
+            SecureStorageErrorV2(Exception("Some error")),
+        )
 
-            assertDoesNotThrow {
-                useCase.save(expectedStoreStringKey, expectedStoreValueString)
-            }
-
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
-        }
-
-    @Test
-    fun `does not throw - when SecureStorageErrorV2 thrown when saving integers`() =
-        runTest {
-            whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageErrorV2(Exception("Some error")),
-            )
-
-            assertDoesNotThrow {
-                useCase.save(expectedStoreIntKey, expectedStoreValueInt)
-            }
-
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
-        }
-
-    @Test
-    fun `saves value successfully (String, String)`() =
-        runTest {
+        assertDoesNotThrow {
             useCase.save(expectedStoreStringKey, expectedStoreValueString)
-
-            verify(mockSecureStore).upsert(
-                expectedStoreStringKey,
-                expectedStoreValueString,
-            )
-
-            assertThat(logger, hasSize(0))
         }
+
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
+    }
 
     @Test
-    fun `saves value successfully (String, Number)`() =
-        runTest {
-            useCase.save(expectedStoreStringKey, expectedStoreValueNumber)
+    fun `does not throw - when SecureStorageErrorV2 thrown when saving integers`() = runTest {
+        whenever(mockSecureStore.upsert(any(), any())).thenThrow(
+            SecureStorageErrorV2(Exception("Some error")),
+        )
 
-            verify(mockSecureStore).upsert(
-                expectedStoreStringKey,
-                expectedStoreValueNumber.toString(),
-            )
-
-            assertThat(logger, hasSize(0))
+        assertDoesNotThrow {
+            useCase.save(expectedStoreIntKey, expectedStoreValueInt)
         }
+
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
+    }
+
+    @Test
+    fun `saves value successfully (String, String)`() = runTest {
+        useCase.save(expectedStoreStringKey, expectedStoreValueString)
+
+        verify(mockSecureStore).upsert(
+            expectedStoreStringKey,
+            expectedStoreValueString,
+        )
+
+        assertThat(logger, hasSize(0))
+    }
+
+    @Test
+    fun `saves value successfully (String, Number)`() = runTest {
+        useCase.save(expectedStoreStringKey, expectedStoreValueNumber)
+
+        verify(mockSecureStore).upsert(
+            expectedStoreStringKey,
+            expectedStoreValueNumber.toString(),
+        )
+
+        assertThat(logger, hasSize(0))
+    }
 }

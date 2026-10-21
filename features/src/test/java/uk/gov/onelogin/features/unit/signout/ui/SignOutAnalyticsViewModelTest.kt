@@ -38,7 +38,7 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT
+                taxonomyLevel3 = TaxonomyLevel3.SIGN_OUT,
             )
         buttonText = context.getEnglishString(R.string.app_signOutAndDeleteAppDataButton)
         name = context.getEnglishString(R.string.app_signOutConfirmationTitle)
@@ -53,7 +53,7 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
         val event =
             TrackEvent.Button(
                 text = buttonText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking re-auth
         viewModel.trackPrimary()
@@ -68,14 +68,14 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
                 trackFunction = {
                     viewModel.trackCloseIcon()
                 },
-                text = "back"
+                text = "back",
             ),
             TestUtils.TrackEventTestCase.Icon(
                 trackFunction = {
                     viewModel.trackBackPressed()
                 },
-                text = "back - system"
-            )
+                text = "back - system",
+            ),
         ).forEach {
             val result = executeTrackEventTestCase(it, requiredParameters)
 
@@ -91,7 +91,7 @@ class SignOutAnalyticsViewModelTest : FragmentActivityTestCase() {
                     viewModel.trackSignOutView()
                 },
                 name = name,
-                id = walletId
+                id = walletId,
             )
         val result = executeTrackEventTestCase(event, requiredParameters)
 

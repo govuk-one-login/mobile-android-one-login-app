@@ -11,7 +11,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
@@ -23,6 +23,7 @@ import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -31,7 +32,6 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
-import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 fun ErrorUpdateRequiredScreen(
@@ -63,7 +63,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit = {}) {
                 icon = { padding ->
                     GdsIcon(
                         image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
-                        contentDescription = stringResource(patternsR.string.error_icon_description),
+                        contentDescription = stringResource(
+                            patternsR.string.error_icon_description,
+                        ),
                         modifier = Modifier.errorBodyItemModifier(padding),
                     )
                 },

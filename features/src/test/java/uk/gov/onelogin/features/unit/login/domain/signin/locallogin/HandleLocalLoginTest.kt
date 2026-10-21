@@ -1,6 +1,8 @@
 package uk.gov.onelogin.features.unit.login.domain.signin.locallogin
 
 import androidx.fragment.app.FragmentActivity
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -26,8 +28,6 @@ import uk.gov.onelogin.core.utils.MockitoHelper
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLoginImpl
 import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 @Suppress("LargeClass")
 class HandleLocalLoginTest {
@@ -72,108 +72,104 @@ class HandleLocalLoginTest {
     }
 
     @Test
-    fun `access token expired and not null requires re-auth`() =
-        runTest {
-            mockGetPersistentSessionIdSuccessful()
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `access token expired and not null requires re-auth`() = runTest {
+        mockGetPersistentSessionIdSuccessful()
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `refresh token expired and not null requires re-auth`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `refresh token expired and not null requires re-auth`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `access token expired and null requires sign-in`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `access token expired and null requires sign-in`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    }
 
     @Test
-    fun `refresh token null, fallback to access token only flow`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            val expected =
-                LocalAuthStatus.Success(
-                    payload =
-                        mapOf(
-                            AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
-                        )
-                )
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            wheneverBlocking {
-                mockGetFromEncryptedSecureStore.invoke(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            }.thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(expected)
-            }
-
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(expected, actual)
+    fun `refresh token null, fallback to access token only flow`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        val expected =
+            LocalAuthStatus.Success(
+                payload =
+                    mapOf(
+                        AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                        AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
+                    ),
+            )
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            )
+        }.thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(expected)
         }
+
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
+        }
+
+        assertEquals(expected, actual)
+    }
 
     @Test
     fun `refresh and access token null, fallback to access token only flow, re-auth required`() =
@@ -182,8 +178,8 @@ class HandleLocalLoginTest {
                 LocalAuthStatus.Success(
                     payload =
                         mapOf(
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
-                        )
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
+                        ),
                 )
             var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
             val expected = LocalAuthStatus.ReauthRequired
@@ -197,7 +193,7 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore.invoke(
                     context = any(),
                     MockitoHelper.anyObject(),
-                    callback = any()
+                    callback = any(),
                 )
             }.thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(encryptedStoreResult)
@@ -205,7 +201,7 @@ class HandleLocalLoginTest {
             whenever(validateWalletStoreId.invoke())
                 .thenReturn(true)
             useCase(
-                mockActivity
+                mockActivity,
             ) {
                 actual = it
             }
@@ -214,43 +210,42 @@ class HandleLocalLoginTest {
         }
 
     @Test
-    fun `refresh token null, access token valid, fallback to access token only flow`() =
-        runTest {
-            val expected =
-                LocalAuthStatus.Success(
-                    payload =
-                        mapOf(
-                            AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
-                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
-                        )
-                )
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            wheneverBlocking {
-                mockGetFromEncryptedSecureStore.invoke(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            }.thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(expected)
-            }
-
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(expected, actual)
+    fun `refresh token null, access token valid, fallback to access token only flow`() = runTest {
+        val expected =
+            LocalAuthStatus.Success(
+                payload =
+                    mapOf(
+                        AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                        AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
+                    ),
+            )
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(true)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            )
+        }.thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(expected)
         }
+
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
+        }
+
+        assertEquals(expected, actual)
+    }
 
     @Test
     fun `refresh token not issued, id token null, access token valid, re-auth required`() =
@@ -266,16 +261,16 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore.invoke(
                     context = any(),
                     ArgumentMatchers.contains(AuthTokenStoreKeys.ID_TOKEN_KEY),
-                    callback = any()
+                    callback = any(),
                 )
             }.thenAnswer {
                 (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
                     LocalAuthStatus.Success(
                         payload =
                             mapOf(
-                                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken"
-                            )
-                    )
+                                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                            ),
+                    ),
                 )
             }
             whenever(validateWalletStoreId.invoke())
@@ -288,116 +283,113 @@ class HandleLocalLoginTest {
         }
 
     @Test
-    fun `id token null, refresh token valid, re-auth required`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            wheneverBlocking {
-                mockGetFromEncryptedSecureStore.invoke(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            }.thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        payload =
-                            mapOf(
-                                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
-                                AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "refreshToken"
-                            )
-                    )
-                )
-            }
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    fun `id token null, refresh token valid, re-auth required`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            )
+        }.thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(
+                    payload =
+                        mapOf(
+                            AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "refreshToken",
+                        ),
+                ),
+            )
         }
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `access token null, refresh token valid, re-auth required`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            wheneverBlocking {
-                mockGetFromEncryptedSecureStore.invoke(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            }.thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        payload =
-                            mapOf(
-                                AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
-                                AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "refreshToken"
-                            )
-                    )
-                )
-            }
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            useCase(mockActivity) {
-                actual = it
-                println(it)
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    fun `access token null, refresh token valid, re-auth required`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            )
+        }.thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(
+                    payload =
+                        mapOf(
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
+                            AuthTokenStoreKeys.REFRESH_TOKEN_KEY to "refreshToken",
+                        ),
+                ),
+            )
         }
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        useCase(mockActivity) {
+            actual = it
+            println(it)
+        }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `refresh token issues BUT null, re-auth required`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            wheneverBlocking {
-                mockGetFromEncryptedSecureStore.invoke(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            }.thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(
-                        payload =
-                            mapOf(
-                                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
-                                AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken"
-                            )
-                    )
-                )
-            }
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    fun `refresh token issues BUT null, re-auth required`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        wheneverBlocking {
+            mockGetFromEncryptedSecureStore.invoke(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            )
+        }.thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(
+                    payload =
+                        mapOf(
+                            AuthTokenStoreKeys.ACCESS_TOKEN_KEY to "accessToken",
+                            AuthTokenStoreKeys.ID_TOKEN_KEY to "idToken",
+                        ),
+                ),
+            )
         }
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
     fun `refresh token not issued, no biometrics and access token valid but expiry is null`() =
@@ -407,7 +399,9 @@ class HandleLocalLoginTest {
             whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
             whenever(mockGetAccessTokenExpiry()).thenReturn(null)
-            whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+            whenever(
+                mockBioPrefHandler.localAuthPreference,
+            ).thenReturn(LocalAuthPreference.Disabled)
             whenever(validateWalletStoreId.invoke())
                 .thenReturn(true)
 
@@ -419,181 +413,174 @@ class HandleLocalLoginTest {
         }
 
     @Test
-    fun `refresh token not issued, no biometrics and access token expiry is valid`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry()).thenReturn(1)
-            whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `refresh token not issued, no biometrics and access token expiry is valid`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry()).thenReturn(1)
+        whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        useCase(mockActivity) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `refresh token valid, no biometrics and access token valid but null`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry()).thenReturn(null)
-            whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `refresh token valid, no biometrics and access token valid but null`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(1)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry()).thenReturn(null)
+        whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+        useCase(mockActivity) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    }
 
     @Test
-    fun `refresh token valid, no biometrics and access token expiry valid`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
-            whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
+    fun `refresh token valid, no biometrics and access token expiry valid`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.localAuthPreference).thenReturn(LocalAuthPreference.Disabled)
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
 
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        useCase(mockActivity) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
-    fun `access token retrieval from encrypted secure store returns FirstTimeUser`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
-            }
-
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    fun `access token retrieval from encrypted secure store returns FirstTimeUser`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
         }
+
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    }
 
     @Test
-    fun `refresh token retrieval from encrypted secure store returns FirstTimeUser`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
+    fun `refresh token retrieval from encrypted secure store returns FirstTimeUser`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
-            }
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.FirstTimeUser)
         }
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    }
 
     @Test
-    fun `access token retrieval from encrypted secure store returns ReauthRequired`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ReauthRequired)
-            }
-
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    fun `access token retrieval from encrypted secure store returns ReauthRequired`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockGetAccessTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ReauthRequired)
         }
+
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    }
 
     @Test
-    fun `refresh token retrieval from encrypted secure store returns ReauthRequired`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ReauthRequired)
-            }
-
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
-            verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    fun `refresh token retrieval from encrypted secure store returns ReauthRequired`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.ReauthRequired)
         }
+
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        verify(mockTokenRepository, times(0)).setTokenResponse(any())
+    }
 
     @Test
     fun `access token retrieval from encrypted secure store returns UnrecoverableError`() =
@@ -610,10 +597,14 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore(
                     any(),
                     MockitoHelper.anyObject(),
-                    callback = any()
-                )
+                    callback = any(),
+                ),
             ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UnrecoverableError)
+                (
+                    it.arguments[2] as (
+                        LocalAuthStatus,
+                    ) -> Unit
+                    ).invoke(LocalAuthStatus.UnrecoverableError)
             }
 
             useCase(mockActivity) {
@@ -640,10 +631,14 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore(
                     any(),
                     MockitoHelper.anyObject(),
-                    callback = any()
-                )
+                    callback = any(),
+                ),
             ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UnrecoverableError)
+                (
+                    it.arguments[2] as (
+                        LocalAuthStatus,
+                    ) -> Unit
+                    ).invoke(LocalAuthStatus.UnrecoverableError)
             }
 
             useCase(mockActivity) {
@@ -655,21 +650,20 @@ class HandleLocalLoginTest {
         }
 
     @Test
-    fun `returns ReauthRequired when  wallet store ID validation  returns false`() =
-        runTest {
-            mockGetPersistentSessionIdSuccessful()
-            var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(false)
+    fun `returns ReauthRequired when  wallet store ID validation  returns false`() = runTest {
+        mockGetPersistentSessionIdSuccessful()
+        var actual: LocalAuthStatus = LocalAuthStatus.FirstTimeUser
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(false)
 
-            useCase(
-                mockActivity
-            ) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.ReauthRequired, actual)
+        useCase(
+            mockActivity,
+        ) {
+            actual = it
         }
+
+        assertEquals(LocalAuthStatus.ReauthRequired, actual)
+    }
 
     @Test
     fun `access token retrieval from encrypted secure store returns UserCancelledBioPrompt`() =
@@ -686,10 +680,14 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore(
                     any(),
                     MockitoHelper.anyObject(),
-                    callback = any()
-                )
+                    callback = any(),
+                ),
             ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelledBioPrompt)
+                (
+                    it.arguments[2] as (
+                        LocalAuthStatus,
+                    ) -> Unit
+                    ).invoke(LocalAuthStatus.UserCancelledBioPrompt)
             }
 
             useCase(mockActivity) {
@@ -716,10 +714,14 @@ class HandleLocalLoginTest {
                 mockGetFromEncryptedSecureStore(
                     any(),
                     MockitoHelper.anyObject(),
-                    callback = any()
-                )
+                    callback = any(),
+                ),
             ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(LocalAuthStatus.UserCancelledBioPrompt)
+                (
+                    it.arguments[2] as (
+                        LocalAuthStatus,
+                    ) -> Unit
+                    ).invoke(LocalAuthStatus.UserCancelledBioPrompt)
             }
 
             useCase(mockActivity) {
@@ -731,125 +733,121 @@ class HandleLocalLoginTest {
         }
 
     @Test
-    fun `verify persistent session ID is null returns FirstTimeUser`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            whenever(mockGetPersistentId.invoke()).thenReturn(null)
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    fun `verify persistent session ID is null returns FirstTimeUser`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        whenever(mockGetPersistentId.invoke()).thenReturn(null)
+        useCase(mockActivity) {
+            actual = it
         }
 
-    @Test
-    fun `verify persistent session ID is empty returns FirstTimeUser`() =
-        runTest {
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            whenever(mockGetPersistentId.invoke()).thenReturn("")
-            useCase(mockActivity) {
-                actual = it
-            }
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    }
 
-            assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    @Test
+    fun `verify persistent session ID is empty returns FirstTimeUser`() = runTest {
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        whenever(mockGetPersistentId.invoke()).thenReturn("")
+        useCase(mockActivity) {
+            actual = it
         }
 
+        assertEquals(LocalAuthStatus.FirstTimeUser, actual)
+    }
+
     @Test
-    fun `access token only flow successfully completed`() =
-        runTest {
-            val accessToken = "Token"
-            val idToken = "IdToken"
-            val tokenResponse =
-                mapOf(
-                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY to accessToken,
-                    AuthTokenStoreKeys.ID_TOKEN_KEY to idToken
-                )
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
+    fun `access token only flow successfully completed`() = runTest {
+        val accessToken = "Token"
+        val idToken = "IdToken"
+        val tokenResponse =
+            mapOf(
+                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to accessToken,
+                AuthTokenStoreKeys.ID_TOKEN_KEY to idToken,
+            )
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(null)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
 
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(tokenResponse)
-                )
-            }
-
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.Success(tokenResponse), actual)
-            verify(mockTokenRepository).setTokenResponse(
-                LoginTokens(
-                    accessToken = accessToken,
-                    idToken = idToken,
-                    tokenType = "",
-                    accessTokenExpirationTime = unexpiredTime
-                )
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(tokenResponse),
             )
         }
 
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.Success(tokenResponse), actual)
+        verify(mockTokenRepository).setTokenResponse(
+            LoginTokens(
+                accessToken = accessToken,
+                idToken = idToken,
+                tokenType = "",
+                accessTokenExpirationTime = unexpiredTime,
+            ),
+        )
+    }
+
     @Test
-    fun `refresh token flow successfully completed`() =
-        runTest {
-            val accessToken = "Token"
-            val idToken = "IdToken"
-            val refreshToken = "RefreshToken"
-            val tokenResponse =
-                mapOf(
-                    AuthTokenStoreKeys.ACCESS_TOKEN_KEY to accessToken,
-                    AuthTokenStoreKeys.ID_TOKEN_KEY to idToken,
-                    AuthTokenStoreKeys.REFRESH_TOKEN_KEY to refreshToken
-                )
+    fun `refresh token flow successfully completed`() = runTest {
+        val accessToken = "Token"
+        val idToken = "IdToken"
+        val refreshToken = "RefreshToken"
+        val tokenResponse =
+            mapOf(
+                AuthTokenStoreKeys.ACCESS_TOKEN_KEY to accessToken,
+                AuthTokenStoreKeys.ID_TOKEN_KEY to idToken,
+                AuthTokenStoreKeys.REFRESH_TOKEN_KEY to refreshToken,
+            )
 
-            var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
-            mockGetPersistentSessionIdSuccessful()
-            whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
-            whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
-            whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
-            whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
-            whenever(mockBioPrefHandler.localAuthPreference)
-                .thenReturn(LocalAuthPreference.Enabled(false))
-            whenever(validateWalletStoreId.invoke())
-                .thenReturn(true)
-            whenever(
-                mockGetFromEncryptedSecureStore(
-                    context = any(),
-                    MockitoHelper.anyObject(),
-                    callback = any()
-                )
-            ).thenAnswer {
-                (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
-                    LocalAuthStatus.Success(tokenResponse)
-                )
-            }
-
-            useCase(mockActivity) {
-                actual = it
-            }
-
-            assertEquals(LocalAuthStatus.Success(tokenResponse), actual)
-            verify(mockTokenRepository).setTokenResponse(
-                LoginTokens(
-                    accessToken = accessToken,
-                    idToken = idToken,
-                    tokenType = "",
-                    accessTokenExpirationTime = unexpiredTime
-                )
+        var actual: LocalAuthStatus = LocalAuthStatus.ReauthRequired
+        mockGetPersistentSessionIdSuccessful()
+        whenever(mockGetRefreshTokenExpiry.invoke()).thenReturn(unexpiredTime)
+        whenever(mockGetAccessTokenExpiry()).thenReturn(unexpiredTime)
+        whenever(mockIsRefreshTokenExpired.invoke()).thenReturn(false)
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(false)
+        whenever(mockBioPrefHandler.localAuthPreference)
+            .thenReturn(LocalAuthPreference.Enabled(false))
+        whenever(validateWalletStoreId.invoke())
+            .thenReturn(true)
+        whenever(
+            mockGetFromEncryptedSecureStore(
+                context = any(),
+                MockitoHelper.anyObject(),
+                callback = any(),
+            ),
+        ).thenAnswer {
+            (it.arguments[2] as (LocalAuthStatus) -> Unit).invoke(
+                LocalAuthStatus.Success(tokenResponse),
             )
         }
+
+        useCase(mockActivity) {
+            actual = it
+        }
+
+        assertEquals(LocalAuthStatus.Success(tokenResponse), actual)
+        verify(mockTokenRepository).setTokenResponse(
+            LoginTokens(
+                accessToken = accessToken,
+                idToken = idToken,
+                tokenType = "",
+                accessTokenExpirationTime = unexpiredTime,
+            ),
+        )
+    }
 
     private suspend fun mockGetPersistentSessionIdSuccessful() {
         whenever(mockGetPersistentId.invoke()).thenReturn("persistentId")

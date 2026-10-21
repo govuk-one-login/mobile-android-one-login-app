@@ -1,11 +1,11 @@
 package uk.gov.onelogin.core.utils
 
 import androidx.fragment.app.FragmentActivity
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.mockito.kotlin.mock
-import kotlin.test.assertEquals
 
 class ActivityProviderTest {
     private lateinit var sut: ActivityProvider

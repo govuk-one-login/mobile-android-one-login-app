@@ -1,9 +1,9 @@
 package uk.gov.onelogin.core.tokens
 
+import kotlin.test.assertEquals
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class RefreshExchangeApiResponseTest {
     private val json = Json

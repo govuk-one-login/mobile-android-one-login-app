@@ -4,56 +4,46 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusGroup
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.layout.SubcomposeMeasureScope
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
+import uk.gov.android.ui.componentsv2.progress.GdsProgressIndicator
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.login.ui.signin.splash.theme.SplashTheme
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun SplashScreen(
@@ -106,6 +96,7 @@ private fun handleOptInRequired(
 ) {
     when {
         isRequired -> viewModel.navigateToAnalyticsOptIn()
+
         else ->
             if (!viewModel.showUnlock.value) {
                 viewModel.login(context)
@@ -133,12 +124,16 @@ internal fun SplashBody(
         // Measure loading spinner and/ or unlock text and create slot to be displayed
         val dynamicContentPlaceable =
             subcompose("content") {
-                if (displayUnlock) UnlockButton(trackUnlockButton, onLogin) else LoadingIndicator()
+                if (displayUnlock) {
+                    UnlockButton(trackUnlockButton, onLogin)
+                } else {
+                    ProgressIndicator(modifier = Modifier.testTag(PROGRESS_INDICATOR_TEST_TAG))
+                }
             }.first().measure(Constraints(maxWidth = fullWidth))
         // Measure unlock button height to be used to enable equal space distribution between the logo, crown and loading spinner (when this is displayed)
         val loadingSpinnerHeight =
             subcompose("loading spinner") {
-                LoadingIndicator()
+                ProgressIndicator()
             }.first().measure(Constraints(maxWidth = fullWidth)).height
 
         // Calculate logo height
@@ -196,7 +191,9 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         .then(
                             // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
                             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
-                                Modifier.clickable(enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                Modifier.clickable(
+                                    enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED,
+                                ) {
                                     onOpenDeveloperPortal()
                                 }
                             } else {
@@ -208,22 +205,16 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
     return imagePlaceable
 }
 
-private fun SubcomposeMeasureScope.createSubcomposeCrown() =
-    subcompose("crown") {
-        Icon(
-            painter = painterResource(R.drawable.ic_tudor_crown),
-            contentDescription = null,
-            modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
-        )
-    }.first().measure(Constraints())
+private fun SubcomposeMeasureScope.createSubcomposeCrown() = subcompose("crown") {
+    Icon(
+        painter = painterResource(R.drawable.ic_tudor_crown),
+        contentDescription = null,
+        modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
+    )
+}.first().measure(Constraints())
 
 @Composable
-private fun UnlockButton(
-    trackUnlockButton: () -> Unit,
-    onLogin: () -> Unit,
-) {
-
-
+private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
     GdsButton(
         text = stringResource(R.string.app_unlockButton),
         onClick = {
@@ -242,49 +233,10 @@ private fun UnlockButton(
 }
 
 @Composable
-internal fun LoadingIndicator() {
-    val loadingText = stringResource(R.string.app_splashScreenLoadingIndicatorText)
-    val loadingContentDescription = stringResource(R.string.app_splashScreenLoadingContentDescription)
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = smallPadding,
-                    end = smallPadding,
-                    bottom = PROGRESS_BAR,
-                ).focusGroup()
-                .semantics(true) { contentDescription = loadingContentDescription },
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = smallPadding),
-        ) {
-            CircularProgressIndicator(
-                strokeCap = StrokeCap.Square,
-                modifier =
-                    Modifier
-                        .width(PROGRESS_BAR)
-                        .height(PROGRESS_BAR)
-                        .semantics { hideFromAccessibility() }
-                        .testTag(stringResource(R.string.splashLoadingSpinnerTestTag)),
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = loadingText,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.semantics { hideFromAccessibility() },
-            )
-        }
-    }
-}
+internal fun ProgressIndicator(modifier: Modifier = Modifier) = GdsProgressIndicator(
+    modifier = modifier
+        .padding(bottom = 48.dp),
+)
 
 @SuppressLint("UnrememberedMutableState")
 @ExcludeFromJacocoGeneratedReport
@@ -338,5 +290,5 @@ internal fun LoadingSplashScreenPreview() {
     }
 }
 
-val PROGRESS_BAR = 48.dp
+internal const val PROGRESS_INDICATOR_TEST_TAG = "progress_indicator_test_tag"
 val BOTTOM_PADDING = 48.dp

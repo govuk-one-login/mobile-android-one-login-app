@@ -10,8 +10,8 @@ import uk.gov.onelogin.core.navigation.domain.hasPreviousBackStack
 import uk.gov.onelogin.core.ui.pages.loading.LoadingScreen
 import uk.gov.onelogin.features.error.ui.signin.SignInErrorRecoverableScreen
 import uk.gov.onelogin.features.error.ui.signin.SignInErrorUnrecoverableScreen
-import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.SignInScreen
+import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.theme.SplashTheme
 import uk.gov.onelogin.features.optin.ui.OptInScreen
 

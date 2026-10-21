@@ -19,7 +19,7 @@ class InstantExecutorExtension :
                     override fun postToMainThread(runnable: Runnable) = runnable.run()
 
                     override fun isMainThread(): Boolean = true
-                }
+                },
             )
     }
 

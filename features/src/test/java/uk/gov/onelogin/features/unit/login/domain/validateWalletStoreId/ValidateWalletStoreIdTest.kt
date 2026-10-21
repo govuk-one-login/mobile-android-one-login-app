@@ -33,94 +33,92 @@ class ValidateWalletStoreIdTest {
     private val walletComponentKey = componentKey("wallet_store_id")
     private val walletActionKey = actionKey("Get wallet store ID")
 
-    private fun sut(persistentId: String? = "persistentId") =
-        ValidateWalletStoreIdImpl(
-            getWalletStoreId = getWalletStoreId,
-            getPersistentId = { persistentId },
-            logger = logger
+    private fun sut(persistentId: String? = "persistentId") = ValidateWalletStoreIdImpl(
+        getWalletStoreId = getWalletStoreId,
+        getPersistentId = { persistentId },
+        logger = logger,
+    )
+
+    @Test
+    fun `returns true when wallet store id is present`() = runTest {
+        fakeGetFromOpenSecureStore["wallet_id"] = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
+
+        val result = sut().invoke()
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `returns false and logs error when wallet id is empty`() = runTest {
+        fakeGetFromOpenSecureStore["wallet_id"] = ""
+
+        val result = sut().invoke()
+
+        assertFalse(result)
+        assertThat(logger, hasSize(1))
+        assertThat(
+            logger,
+            hasLogEntry(
+                hasItem(
+                    allOf(
+                        hasMessage("Wallet store ID is missing from device storage"),
+                        hasException(
+                            instanceOf(
+                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java,
+                            ),
+                        ),
+                        hasCustomKeys(
+                            contains(
+                                equalTo(walletComponentKey),
+                                equalTo(walletActionKey),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         )
+    }
 
     @Test
-    fun `returns true when wallet store id is present`() =
-        runTest {
-            fakeGetFromOpenSecureStore["wallet_id"] = "cc893ece-b6bd-444d-9bb4-dec6f5778e50"
-
-            val result = sut().invoke()
-
-            assertTrue(result)
-        }
-
-    @Test
-    fun `returns false and logs error when wallet id is empty`() =
-        runTest {
-            fakeGetFromOpenSecureStore["wallet_id"] = ""
-
-            val result = sut().invoke()
-
-            assertFalse(result)
-            assertThat(logger, hasSize(1))
-            assertThat(
-                logger,
-                hasLogEntry(
-                    hasItem(
-                        allOf(
-                            hasMessage("Wallet store ID is missing from device storage"),
-                            hasException(
-                                instanceOf(
-                                    ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
-                                )
-                            ),
-                            hasCustomKeys(
-                                contains(
-                                    equalTo(walletComponentKey),
-                                    equalTo(walletActionKey)
-                                )
-                            )
-                        )
-                    )
-                )
+    fun `throws AssertionError when persistent id is null`() = runTest {
+        if (BuildConfig.DEBUG) {
+            val exception =
+                assertThrows<AssertionError> {
+                    sut(null).invoke()
+                }
+            assertEquals(
+                "User must be signed-in before validating wallet store ID",
+                exception.message,
             )
         }
+    }
 
     @Test
-    fun `throws AssertionError when persistent id is null`() =
-        runTest {
-            if (BuildConfig.DEBUG) {
-                val exception =
-                    assertThrows<AssertionError> {
-                        sut(null).invoke()
-                    }
-                assertEquals("User must be signed-in before validating wallet store ID", exception.message)
-            }
-        }
+    fun `returns false and logs error when store returns null`() = runTest {
+        val result = sut().invoke()
 
-    @Test
-    fun `returns false and logs error when store returns null`() =
-        runTest {
-            val result = sut().invoke()
-
-            assertFalse(result)
-            assertThat(logger, hasSize(1))
-            assertThat(
-                logger,
-                hasLogEntry(
-                    hasItem(
-                        allOf(
-                            hasMessage("Wallet store ID is missing from device storage"),
-                            hasException(
-                                instanceOf(
-                                    ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java
-                                )
+        assertFalse(result)
+        assertThat(logger, hasSize(1))
+        assertThat(
+            logger,
+            hasLogEntry(
+                hasItem(
+                    allOf(
+                        hasMessage("Wallet store ID is missing from device storage"),
+                        hasException(
+                            instanceOf(
+                                ValidateWalletStoreIdImpl.WalletStoreIdMissingException::class.java,
                             ),
-                            hasCustomKeys(
-                                contains(
-                                    equalTo(walletComponentKey),
-                                    equalTo(walletActionKey)
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        }
+                        ),
+                        hasCustomKeys(
+                            contains(
+                                equalTo(walletComponentKey),
+                                equalTo(walletActionKey),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        )
+    }
 }

@@ -11,15 +11,15 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import uk.gov.logging.api.CrashLogger
 import uk.gov.logging.api.Logger
-import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger as AnalyticsLoggerV3
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
+import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger as AnalyticsLoggerV3
+import uk.gov.logging.api.v3.Logger as LoggerV3
 import uk.gov.logging.impl.AndroidLogger
 import uk.gov.logging.impl.CrashlyticsLogger
 import uk.gov.logging.impl.analytics.FirebaseAnalyticsLogger
 import uk.gov.logging.impl.analytics.v3.FirebaseAnalyticsLogger as FirebaseAnalyticsLoggerV3
-import uk.gov.logging.impl.v3.LogcatLogger
-import uk.gov.logging.api.v3.Logger as LoggerV3
 import uk.gov.logging.impl.v3.CrashlyticsLogger as CrashlyticsLoggerV3
+import uk.gov.logging.impl.v3.LogcatLogger
 import uk.gov.logging.impl.v3.MultiLogger as MultiLoggerV3
 
 @Module
@@ -32,7 +32,8 @@ object AnalyticsModule {
     fun provideFirebaseCrashlytics(): FirebaseCrashlytics = Firebase.crashlytics
 
     @Provides
-    fun provideCrashlyticsLogger(crashlytics: FirebaseCrashlytics): CrashLogger = CrashlyticsLogger(crashlytics)
+    fun provideCrashlyticsLogger(crashlytics: FirebaseCrashlytics): CrashLogger =
+        CrashlyticsLogger(crashlytics)
 
     @Provides
     fun provideLogger(crashLogger: CrashLogger): Logger = AndroidLogger(crashLogger)
@@ -44,9 +45,8 @@ object AnalyticsModule {
     ): AnalyticsLogger = FirebaseAnalyticsLogger(analytics, logger)
 
     @Provides
-    fun providesAnalyticsLoggerV3(
-        analytics: FirebaseAnalytics,
-    ): AnalyticsLoggerV3 = FirebaseAnalyticsLoggerV3(analytics, LogcatLogger())
+    fun providesAnalyticsLoggerV3(analytics: FirebaseAnalytics): AnalyticsLoggerV3 =
+        FirebaseAnalyticsLoggerV3(analytics, LogcatLogger())
 
     @Provides
     fun provideLoggerV3(crashlytics: FirebaseCrashlytics): LoggerV3 =

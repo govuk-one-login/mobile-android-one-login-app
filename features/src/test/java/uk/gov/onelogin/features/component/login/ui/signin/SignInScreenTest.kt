@@ -70,7 +70,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 getPersistentId,
                 signOutUseCase,
                 localAuthPrefResetUseCase,
-                logger
+                logger,
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)
@@ -84,7 +84,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -97,24 +97,23 @@ class SignInScreenTest : FragmentActivityTestCase() {
     }
 
     @Test
-    fun opensWebLoginViaCustomTab() =
-        runBlocking {
-            whenever(onlineChecker.isOnline()).thenReturn(true)
-            whenever(getPersistentId.invoke()).thenReturn("test")
+    fun opensWebLoginViaCustomTab() = runBlocking {
+        whenever(onlineChecker.isOnline()).thenReturn(true)
+        whenever(getPersistentId.invoke()).thenReturn("test")
 
-            composeTestRule.setContent {
-                SignInScreen(
-                    analyticsViewModel = analyticsViewModel,
-                    viewModel = viewModel,
-                    loginViewModel = loginViewModel,
-                    loadingAnalyticsViewModel = loadingAnalyticsViewModel
-                )
-            }
-
-            whenWeClickSignIn()
-
-            assert(remoteLogin.started)
+        composeTestRule.setContent {
+            SignInScreen(
+                analyticsViewModel = analyticsViewModel,
+                viewModel = viewModel,
+                loginViewModel = loginViewModel,
+                loadingAnalyticsViewModel = loadingAnalyticsViewModel,
+            )
         }
+
+        whenWeClickSignIn()
+
+        assert(remoteLogin.started)
+    }
 
     @Test
     fun opensNetworkErrorScreen() {
@@ -134,7 +133,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -151,7 +150,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
         whenWeClickSignIn()
@@ -166,7 +165,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
 
@@ -189,7 +188,7 @@ class SignInScreenTest : FragmentActivityTestCase() {
                 analyticsViewModel = analyticsViewModel,
                 viewModel = viewModel,
                 loadingAnalyticsViewModel = loadingAnalyticsViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
             )
         }
     }

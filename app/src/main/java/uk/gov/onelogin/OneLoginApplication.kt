@@ -6,6 +6,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.android.HiltAndroidApp
+import java.io.OutputStream
+import java.io.PrintStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -15,8 +17,6 @@ import uk.gov.android.onelogin.BuildConfig
 import uk.gov.onelogin.core.ApplicationEntryPoint
 import uk.gov.onelogin.core.navigation.data.LoginRoutes
 import uk.gov.onelogin.core.navigation.data.MainNavRoutes
-import java.io.OutputStream
-import java.io.PrintStream
 
 @HiltAndroidApp
 class OneLoginApplication :

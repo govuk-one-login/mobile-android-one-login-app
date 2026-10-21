@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import uk.gov.android.ui.theme.m3.GdsTheme
 
 @Composable
-fun SplashTheme(
-    content: @Composable () -> Unit,
-) = GdsTheme(
+fun SplashTheme(content: @Composable () -> Unit) = GdsTheme(
     colorScheme = SplashThemeColorScheme,
     extendedColorScheme = SplashThemeExtendedColorScheme,
     content = content,

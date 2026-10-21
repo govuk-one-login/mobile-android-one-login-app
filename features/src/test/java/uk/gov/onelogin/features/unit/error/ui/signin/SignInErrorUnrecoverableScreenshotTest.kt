@@ -8,10 +8,8 @@ import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.signin.SignInErrorUnrecoverableScreenPreview
 
 @RunWith(Parameterized::class)
-class SignInErrorUnrecoverableScreenshotTest(
-    nightMode: NightMode,
-    locale: String
-) : BaseScreenshotTest(nightMode, locale) {
+class SignInErrorUnrecoverableScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignInErrorUnrecoverableScreenPreview()
     }

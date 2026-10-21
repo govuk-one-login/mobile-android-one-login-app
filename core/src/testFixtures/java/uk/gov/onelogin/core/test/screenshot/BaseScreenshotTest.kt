@@ -38,7 +38,7 @@ abstract class BaseScreenshotTest(
                 ),
             renderingMode = SHRINK,
             showSystemUi = false,
-            maxPercentDifference = 0.1
+            maxPercentDifference = 0.1,
         )
 
     @Test
@@ -54,31 +54,30 @@ abstract class BaseScreenshotTest(
 
     companion object {
         @JvmStatic
-        fun <T : Any> applyNightMode(result: MutableList<Pair<T, NightMode>>): (
-            T
-        ) -> Unit =
-            { parameters ->
-                result.add(parameters to NOTNIGHT)
-                result.add(parameters to NIGHT)
-            }
+        fun <T : Any> applyNightMode(
+            result: MutableList<Pair<T, NightMode>>,
+        ): (
+            T,
+        ) -> Unit = { parameters ->
+            result.add(parameters to NOTNIGHT)
+            result.add(parameters to NIGHT)
+        }
 
         @JvmStatic
-        fun applyNightModeAndLocale(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN),
-                arrayOf(NIGHT, LOCALE_EN),
-                arrayOf(NOTNIGHT, LOCALE_CY),
-                arrayOf(NIGHT, LOCALE_CY)
-            )
+        fun applyNightModeAndLocale(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN),
+            arrayOf(NIGHT, LOCALE_EN),
+            arrayOf(NOTNIGHT, LOCALE_CY),
+            arrayOf(NIGHT, LOCALE_CY),
+        )
 
         @JvmStatic
-        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
-                arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
-                arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
-                arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
-            )
+        fun applyLightDarkWelshAndFontScale(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_M), // Defaults
+            arrayOf(NIGHT, LOCALE_EN, FONT_SCALE_M), // Dark
+            arrayOf(NOTNIGHT, LOCALE_CY, FONT_SCALE_M), // Welsh
+            arrayOf(NOTNIGHT, LOCALE_EN, FONT_SCALE_L), // Large text
+        )
     }
 }
 

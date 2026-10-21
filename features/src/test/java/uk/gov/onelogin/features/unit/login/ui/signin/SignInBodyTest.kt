@@ -70,7 +70,7 @@ class SignInBodyTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInBody(
                 onSignIn = { actual = true },
-                openDevMenu = {}
+                openDevMenu = {},
             )
         }
         // When clicking the `primaryButton`

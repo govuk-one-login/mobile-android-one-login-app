@@ -7,8 +7,5 @@ fun interface SaveToTokenSecureStore {
      * @param key [String] value of key value pair to save
      * @param value [String] value of value in key value pair to save
      */
-    suspend operator fun invoke(
-        key: String,
-        value: String,
-    )
+    suspend operator fun invoke(key: String, value: String)
 }
