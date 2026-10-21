@@ -21,9 +21,11 @@ import uk.gov.android.ui.theme.mediumPadding
 import uk.gov.android.ui.theme.smallPadding
 
 @Composable
+@Suppress("LongMethod")
 fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
     val overrideWallet by viewModel.overrideWallet.collectAsState()
     val enableDeletionFail by viewModel.enableDeletionFail.collectAsState()
+    val walletMock by viewModel.walletMock.collectAsState()
 
     Column(
         modifier =
@@ -69,6 +71,27 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 Switch(
                     checked = enableDeletionFail,
                     onCheckedChange = { viewModel.setDeletionFail(!enableDeletionFail) },
+                    colors =
+                        uk.gov.android.ui.theme.m3.Switch
+                            .defaultColors(),
+                )
+            }
+            Row(
+                modifier = Modifier.padding(smallPadding),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    modifier = Modifier.weight(1F),
+                    text = "Use Wallet Mock",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color =
+                        uk.gov.android.ui.theme.m3.Text.primary
+                            .toMappedColors(),
+                )
+                Switch(
+                    checked = walletMock,
+                    onCheckedChange = { viewModel.setWalletMock(!walletMock) },
                     colors =
                         uk.gov.android.ui.theme.m3.Switch
                             .defaultColors(),

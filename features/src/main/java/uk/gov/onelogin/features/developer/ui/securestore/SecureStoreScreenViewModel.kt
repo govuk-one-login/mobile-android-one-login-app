@@ -21,10 +21,16 @@ class SecureStoreScreenViewModel
             MutableStateFlow(
                 secureStoreRepository.isLocalDataDeleteFailEnabled(),
             )
+        private val _walletMock =
+            MutableStateFlow(
+                secureStoreRepository.isWalletMockOverride(),
+            )
         val overrideWallet: StateFlow<Boolean>
             get() = _overrideWallet.asStateFlow()
         val enableDeletionFail: StateFlow<Boolean>
             get() = _enableDeletionFail.asStateFlow()
+        val walletMock: StateFlow<Boolean>
+            get() = _walletMock.asStateFlow()
 
         fun setOverride(override: Boolean) {
             secureStoreRepository.overrideWalletDelete(override)
@@ -34,5 +40,10 @@ class SecureStoreScreenViewModel
         fun setDeletionFail(enableFail: Boolean) {
             secureStoreRepository.enableLocalDataDeleteFail(enableFail)
             _enableDeletionFail.value = enableFail
+        }
+
+        fun setWalletMock(enabled: Boolean) {
+            secureStoreRepository.overrideWalletMock(enabled)
+            _walletMock.value = enabled
         }
     }
