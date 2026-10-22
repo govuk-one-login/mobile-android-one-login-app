@@ -32,7 +32,10 @@ class ErrorUpdateRequiredBodyTest : FragmentActivityTestCase() {
         title = hasText(context.getString(R.string.app_updateApp_Title))
         body1 = hasText(context.getString(R.string.app_updateAppBody1))
         body2 = hasText(context.getString(R.string.app_updateAppBody2))
-        primaryButton = hasText(context.getString(R.string.app_updateAppButton))
+        primaryButton = hasContentDescription(
+            context.getString(R.string.app_updateAppButton),
+            substring = true,
+        )
         icon = hasContentDescription(context.getString(patternsR.string.error_icon_description))
     }
 
