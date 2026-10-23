@@ -50,6 +50,9 @@ constructor(
                         SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR,
                         -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
 
+                        SERVER_ERROR, INVALID_APP_CHECK_TOKEN, INTERMITTENT_SERVER_ERROR,
+                        -> AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
+
                         // This should never be reached as per guidance
                         else -> AppIntegrityException.AppIntegrityErrorType.GENERIC
                     }

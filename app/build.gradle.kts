@@ -112,50 +112,58 @@ android {
 }
 
 androidComponents {
-    onVariants {
-        it.buildType?.let { builtType ->
-            if (builtType == "debug") {
-                it.flavorName?.let { flavourName ->
-                    when (flavourName) {
-                        "build" -> {
-                            it.buildConfigFields?.put(
-                                "AppCheckDebugSecret",
-                                BuildConfigField(
-                                    "String",
-                                    "\"" +
-                                        rootProject.ext["debugBuildAppCheckToken"]
-                                            as String + "\"",
-                                    "debug token",
-                                ),
-                            )
-                        }
+    onVariants { variant ->
+        variant.flavorName?.let { flavourName ->
+            val useMock =
+                if (project.hasProperty("buildWalletMock")) {
+                    project.property("buildWalletMock").toString().toBoolean()
+                } else {
+                    flavourName == "build" && variant.buildType == "debug"
+                }
+            if (variant.buildType == "debug") {
+                when (flavourName) {
+                    "build" -> {
+                        variant.buildConfigFields?.put(
+                            "AppCheckDebugSecret",
+                            BuildConfigField(
+                                "String",
+                                "\"" +
+                                    rootProject.ext["debugBuildAppCheckToken"]
+                                        as String + "\"",
+                                "debug token",
+                            ),
+                        )
+                    }
 
-                        "staging" -> {
-                            it.buildConfigFields?.put(
-                                "AppCheckDebugSecret",
-                                BuildConfigField(
-                                    "String",
-                                    "\"" +
-                                        rootProject.ext["debugStagingAppCheckToken"]
-                                            as String + "\"",
-                                    "debug token",
-                                ),
-                            )
-                        }
+                    "staging" -> {
+                        variant.buildConfigFields?.put(
+                            "AppCheckDebugSecret",
+                            BuildConfigField(
+                                "String",
+                                "\"" +
+                                    rootProject.ext["debugStagingAppCheckToken"]
+                                        as String + "\"",
+                                "debug token",
+                            ),
+                        )
+                    }
 
-                        else -> {
-                            it.buildConfigFields?.put(
-                                "AppCheckDebugSecret",
-                                BuildConfigField(
-                                    "String",
-                                    "\"\"",
-                                    "debug token",
-                                ),
-                            )
-                        }
+                    else -> {
+                        variant.buildConfigFields?.put(
+                            "AppCheckDebugSecret",
+                            BuildConfigField(
+                                "String",
+                                "\"\"",
+                                "debug token",
+                            ),
+                        )
                     }
                 }
             }
+            variant.buildConfigFields?.put(
+                "BUILD_WALLET_MOCK",
+                BuildConfigField("boolean", useMock.toString(), "Enable wallet mock for testing"),
+            )
         }
     }
 }
