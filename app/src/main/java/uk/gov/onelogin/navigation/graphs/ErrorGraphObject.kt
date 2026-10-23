@@ -56,7 +56,7 @@ object ErrorGraphObject {
                 AppUnavailableScreen()
             }
             composable(
-                route = ErrorRoutes.AppIntegrity.getRoute()
+                route = ErrorRoutes.AppIntegrity.getRoute(),
             ) {
                 AppIntegrityErrorScreen()
             }

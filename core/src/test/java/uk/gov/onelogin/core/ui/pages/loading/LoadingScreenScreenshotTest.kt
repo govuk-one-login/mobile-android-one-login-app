@@ -7,11 +7,8 @@ import org.junit.runners.Parameterized
 import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 
 @RunWith(Parameterized::class)
-class LoadingScreenScreenshotTest(
-    nightMode: NightMode,
-    locale: String,
-    fontScale: Float,
-) : BaseScreenshotTest(nightMode, locale, fontScale) {
+class LoadingScreenScreenshotTest(nightMode: NightMode, locale: String, fontScale: Float) :
+    BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         LoadingPreview()
     }

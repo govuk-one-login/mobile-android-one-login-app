@@ -13,17 +13,17 @@ interface ActivityProvider {
 }
 
 class ActivityProviderImpl
-    @Inject
-    constructor() : ActivityProvider {
-        private val currentActivity = AtomicReference<FragmentActivity?>()
+@Inject
+constructor() : ActivityProvider {
+    private val currentActivity = AtomicReference<FragmentActivity?>()
 
-        override fun getCurrentActivity(): FragmentActivity? = currentActivity.get()
+    override fun getCurrentActivity(): FragmentActivity? = currentActivity.get()
 
-        override fun setCurrentActivity(activity: FragmentActivity) {
-            this.currentActivity.set(activity)
-        }
-
-        override fun clearActivity() {
-            this.currentActivity.set(null)
-        }
+    override fun setCurrentActivity(activity: FragmentActivity) {
+        this.currentActivity.set(activity)
     }
+
+    override fun clearActivity() {
+        this.currentActivity.set(null)
+    }
+}

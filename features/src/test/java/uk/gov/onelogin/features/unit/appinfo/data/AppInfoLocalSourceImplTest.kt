@@ -1,6 +1,7 @@
 package uk.gov.onelogin.features.unit.appinfo.data
 
 import android.content.SharedPreferences
+import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -23,7 +24,6 @@ import uk.gov.onelogin.features.appinfo.data.AppInfoLocalSourceImpl.Companion.AP
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoData
 import uk.gov.onelogin.features.appinfo.data.model.AppInfoLocalState
 import uk.gov.onelogin.features.appinfo.domain.AppInfoLocalSource
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppInfoLocalSourceImplTest {
@@ -54,9 +54,9 @@ class AppInfoLocalSourceImplTest {
                     AppInfoData.AppInfo(
                         minimumVersion = "0.0.0",
                         available = true,
-                        featureFlags = AppInfoData.FeatureFlags(true)
-                    )
-                )
+                        featureFlags = AppInfoData.FeatureFlags(true),
+                    ),
+                ),
         )
 
     lateinit var sut: AppInfoLocalSource
@@ -87,7 +87,7 @@ class AppInfoLocalSourceImplTest {
         val result = sut.get()
         assertEquals(
             AppInfoLocalState.Failure(APP_INFO_LOCAL_SOURCE_ERROR),
-            result
+            result,
         )
     }
 
@@ -96,7 +96,7 @@ class AppInfoLocalSourceImplTest {
         whenever(prefs.getString(eq(APP_INFO_KEY), eq(null))).thenReturn(encodedInvalidValue)
         val result = sut.get()
         assert(
-            (result as AppInfoLocalState.Failure).reason.contains(APP_INFO_ILLEGAL_ARG_ERROR)
+            (result as AppInfoLocalState.Failure).reason.contains(APP_INFO_ILLEGAL_ARG_ERROR),
         )
     }
 
@@ -105,7 +105,7 @@ class AppInfoLocalSourceImplTest {
         whenever(prefs.getString(eq(APP_INFO_KEY), eq(null))).thenThrow(ClassCastException("Error"))
         val result = sut.get()
         assert(
-            (result as AppInfoLocalState.Failure).reason.contains(APP_INFO_CLASS_CAST_ERROR)
+            (result as AppInfoLocalState.Failure).reason.contains(APP_INFO_CLASS_CAST_ERROR),
         )
     }
 

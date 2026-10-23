@@ -1,5 +1,8 @@
 package uk.gov.onelogin.features.unit.optin.ui
 
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -13,9 +16,6 @@ import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.optin.ui.OptInUIState
 import uk.gov.onelogin.features.optin.ui.OptInViewModel
 import uk.gov.onelogin.features.unit.optin.data.AnalyticsOptInRepositoryTest.Companion.createTestAnalyticsOptInRepository
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -28,40 +28,37 @@ class AnalyticsOptInViewModelTest {
         viewModel =
             OptInViewModel(
                 repository = createTestAnalyticsOptInRepository(),
-                navigator = mockNavigator
+                navigator = mockNavigator,
             )
     }
 
     @Test
-    fun `initial UI state is PreChoice`() =
-        runTest {
-            // Given a new OptInViewModel
-            // Then the `uiState` is OptInUIState.PreChoice
-            val state = viewModel.uiState.first()
-            assertEquals(expected = OptInUIState.PreChoice, state)
-        }
+    fun `initial UI state is PreChoice`() = runTest {
+        // Given a new OptInViewModel
+        // Then the `uiState` is OptInUIState.PreChoice
+        val state = viewModel.uiState.first()
+        assertEquals(expected = OptInUIState.PreChoice, state)
+    }
 
     @Test
-    fun `optIn changes UI state to PostChoice`() =
-        runTest {
-            // Given a new OptInViewModel
-            // When calling optIn()
-            viewModel.optIn()
-            // Then the `uiState` is OptInUIState.PostChoice
-            val state = viewModel.uiState.first()
-            assertEquals(expected = OptInUIState.PostChoice, state)
-        }
+    fun `optIn changes UI state to PostChoice`() = runTest {
+        // Given a new OptInViewModel
+        // When calling optIn()
+        viewModel.optIn()
+        // Then the `uiState` is OptInUIState.PostChoice
+        val state = viewModel.uiState.first()
+        assertEquals(expected = OptInUIState.PostChoice, state)
+    }
 
     @Test
-    fun `optOut changes UI state to PostChoice`() =
-        runTest {
-            // Given a new OptInViewModel
-            // When calling optOut()
-            viewModel.optOut()
-            // Then the `uiState` is OptInUIState.PostChoice
-            val state = viewModel.uiState.first()
-            assertEquals(expected = OptInUIState.PostChoice, state)
-        }
+    fun `optOut changes UI state to PostChoice`() = runTest {
+        // Given a new OptInViewModel
+        // When calling optOut()
+        viewModel.optOut()
+        // Then the `uiState` is OptInUIState.PostChoice
+        val state = viewModel.uiState.first()
+        assertEquals(expected = OptInUIState.PostChoice, state)
+    }
 
     @Test
     fun `navigate to sign`() {

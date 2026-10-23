@@ -8,10 +8,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 
 object ModifierExtensions {
-    fun Modifier.drawAfterMeasured(previousItemHeightPx: Int): Modifier =
-        this.offset {
-            IntOffset(x = 0, y = previousItemHeightPx)
-        }
+    fun Modifier.drawAfterMeasured(previousItemHeightPx: Int): Modifier = this.offset {
+        IntOffset(x = 0, y = previousItemHeightPx)
+    }
 
     fun Modifier.errorBodyItemModifier(padding: Dp): Modifier =
         this.then(Modifier.fillMaxWidth().padding(horizontal = padding))

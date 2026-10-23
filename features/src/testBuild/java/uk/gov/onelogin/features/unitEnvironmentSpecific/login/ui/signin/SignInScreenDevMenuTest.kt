@@ -62,7 +62,7 @@ class SignInScreenDevMenuTest : FragmentActivityTestCase() {
                 getPersistentId,
                 signOutUseCase,
                 localAuthPrefResetUseCase,
-                logger
+                logger,
             )
         analyticsViewModel = SignInAnalyticsViewModel(context, analytics)
         loadingAnalyticsViewModel = LoadingScreenAnalyticsViewModel(context, analytics)

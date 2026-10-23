@@ -12,10 +12,8 @@ import uk.gov.onelogin.core.test.screenshot.LOCALE_EN
 import uk.gov.onelogin.features.signout.ui.success.SignOutConfirmationBody
 
 @RunWith(Parameterized::class)
-class SignOutSuccessScreenshotTest(
-    nightMode: NightMode,
-    locale: String
-) : BaseScreenshotTest(nightMode, locale) {
+class SignOutSuccessScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignOutConfirmationBody {}
     }
@@ -23,12 +21,11 @@ class SignOutSuccessScreenshotTest(
     companion object {
         @JvmStatic
         @Parameterized.Parameters
-        fun values(): Iterable<Array<Any>> =
-            arrayListOf(
-                arrayOf(NOTNIGHT, LOCALE_EN),
-                arrayOf(NOTNIGHT, LOCALE_CY),
-                arrayOf(NIGHT, LOCALE_EN),
-                arrayOf(NIGHT, LOCALE_CY)
-            )
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT, LOCALE_EN),
+            arrayOf(NOTNIGHT, LOCALE_CY),
+            arrayOf(NIGHT, LOCALE_EN),
+            arrayOf(NIGHT, LOCALE_CY),
+        )
     }
 }

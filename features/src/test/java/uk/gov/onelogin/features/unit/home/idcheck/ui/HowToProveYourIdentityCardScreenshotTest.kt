@@ -15,7 +15,7 @@ class HowToProveYourIdentityCardScreenshotTest(
 ) : BaseScreenshotTest(nightMode, locale, fontScale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         HowToProveYourIdentityCard(
-            onClick = {}
+            onClick = {},
         )
     }
 

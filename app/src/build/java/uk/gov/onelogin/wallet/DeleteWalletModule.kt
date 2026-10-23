@@ -16,5 +16,6 @@ object DeleteWalletModule {
     fun provideDeleteWalletData(
         walletSdk: WalletSdk,
         secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository,
-    ): DeleteWalletDataUseCase = DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreDevOptionsRepository)
+    ): DeleteWalletDataUseCase =
+        DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreDevOptionsRepository)
 }

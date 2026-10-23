@@ -19,12 +19,13 @@ object ErrorKeys {
      */
     fun componentKey(component: String): CustomKey {
         assert(component.matches(Regex("^[a-z][a-z._]*$"))) {
-            "component must be snake case with dot separators only (e.g. 'login' or 'wallet.store'), got: $component"
+            "component must be snake case with dot separators only " +
+                "(e.g. 'login' or 'wallet.store'), got: $component"
         }
         assert(!component.startsWith("app.")) {
             "component includes the app prefix, unnecessarily: $component"
         }
-        return CustomKey.StringKey(ErrorKeys.COMPONENT, "app.$component")
+        return CustomKey.StringKey(COMPONENT, "app.$component")
     }
 
     /**
@@ -33,7 +34,7 @@ object ErrorKeys {
      * @param action what was being attempted, e.g. "Redirect to app", "Get persistent ID"
      * @sample errorKeysSample
      */
-    fun actionKey(action: String): CustomKey = CustomKey.StringKey(ErrorKeys.ACTION, action)
+    fun actionKey(action: String): CustomKey = CustomKey.StringKey(ACTION, action)
 }
 
 @ExcludeFromJacocoGeneratedReport

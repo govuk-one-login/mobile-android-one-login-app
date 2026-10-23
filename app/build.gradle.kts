@@ -113,14 +113,14 @@ android {
 
 androidComponents {
     onVariants { variant ->
-        if (variant.buildType == "debug") {
-            variant.flavorName?.let { flavourName ->
-                val useMock =
-                    if (project.hasProperty("buildWalletMock")) {
-                        project.property("buildWalletMock").toString().toBoolean()
-                    } else {
-                        flavourName == "build"
-                    }
+        variant.flavorName?.let { flavourName ->
+            val useMock =
+                if (project.hasProperty("buildWalletMock")) {
+                    project.property("buildWalletMock").toString().toBoolean()
+                } else {
+                    flavourName == "build" && variant.buildType == "debug"
+                }
+            if (variant.buildType == "debug") {
                 when (flavourName) {
                     "build" -> {
                         variant.buildConfigFields?.put(
@@ -134,6 +134,7 @@ androidComponents {
                             ),
                         )
                     }
+
                     "staging" -> {
                         variant.buildConfigFields?.put(
                             "AppCheckDebugSecret",
@@ -146,6 +147,7 @@ androidComponents {
                             ),
                         )
                     }
+
                     else -> {
                         variant.buildConfigFields?.put(
                             "AppCheckDebugSecret",
@@ -157,11 +159,11 @@ androidComponents {
                         )
                     }
                 }
-                variant.buildConfigFields?.put(
-                    "BUILD_WALLET_MOCK",
-                    BuildConfigField("boolean", useMock.toString(), "Enable wallet mock for testing"),
-                )
             }
+            variant.buildConfigFields?.put(
+                "BUILD_WALLET_MOCK",
+                BuildConfigField("boolean", useMock.toString(), "Enable wallet mock for testing"),
+            )
         }
     }
 }

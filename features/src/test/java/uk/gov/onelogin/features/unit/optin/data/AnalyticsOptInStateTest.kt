@@ -1,8 +1,8 @@
 package uk.gov.onelogin.features.unit.optin.data
 
-import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import uk.gov.onelogin.features.optin.data.AnalyticsOptInState
 
 class AnalyticsOptInStateTest {
     @Test

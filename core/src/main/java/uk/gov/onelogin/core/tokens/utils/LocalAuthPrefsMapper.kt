@@ -13,6 +13,7 @@ object LocalAuthPrefsMapper {
     fun mapAccessControlLevel(localAuthPref: LocalAuthPreference): AccessControlLevel =
         when (localAuthPref) {
             LocalAuthPreference.Disabled -> AccessControlLevel.OPEN
+
             is LocalAuthPreference.Enabled -> {
                 if (localAuthPref.biometricsEnabled) {
                     AccessControlLevel.PASSCODE_AND_BIOMETRICS

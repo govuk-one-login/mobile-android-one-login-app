@@ -14,7 +14,7 @@ class HowToProveYourIdentityModalAnalyticsViewModelTest {
     private val analyticsLogger = FakeAnalyticsLogger()
     private val viewModel = HowToProveYourIdentityModalAnalyticsViewModel(
         ApplicationProvider.getApplicationContext(),
-        analyticsLogger
+        analyticsLogger,
     )
 
     @Test
@@ -32,7 +32,8 @@ class HowToProveYourIdentityModalAnalyticsViewModelTest {
                     "screen_class" to "how to prove your identity",
                     "screen_name" to "how to prove your identity",
                     "saved_doc_type" to "undefined",
-                    "primary_publishing_organisation" to "government digital service - digital identity",
+                    "primary_publishing_organisation" to
+                        "government digital service - digital identity",
                     "organisation" to "<OT1056>",
                     "taxonomy_level1" to "one login mobile application",
                     "taxonomy_level2" to "home",

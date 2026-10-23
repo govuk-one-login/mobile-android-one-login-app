@@ -135,12 +135,11 @@ class OneLoginApplicationTest {
     }
 
     @Test
-    fun `AnalyticsRepo Synchronise is called from onStart`() =
-        runTest {
-            app.onStart(ProcessLifecycleOwner.get())
-            shadowOf(Looper.getMainLooper()).idle()
-            verify(mockAnalyticsOptInRepo).synchronise()
-        }
+    fun `AnalyticsRepo Synchronise is called from onStart`() = runTest {
+        app.onStart(ProcessLifecycleOwner.get())
+        shadowOf(Looper.getMainLooper()).idle()
+        verify(mockAnalyticsOptInRepo).synchronise()
+    }
 
     @Test
     fun `navigate to MainNavRoutes Start when onResume called`() {

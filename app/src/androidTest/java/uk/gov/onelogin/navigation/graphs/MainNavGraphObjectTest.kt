@@ -7,6 +7,7 @@ import androidx.navigation.testing.TestNavHostController
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +23,6 @@ import uk.gov.onelogin.features.appinfo.domain.AppInfoService
 import uk.gov.onelogin.navigation.graphs.MainNavGraph.mainNavRoutesFlow
 import uk.gov.onelogin.utils.TestCase
 import uk.gov.onelogin.utils.TestUtils
-import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppInfoApiModule::class)
@@ -56,15 +56,14 @@ class MainNavGraphObjectTest : TestCase() {
     }
 
     @Test
-    fun mainGraph_startingDestination() =
-        runTest {
-            composeTestRule.runOnUiThread {
-                navController.setCurrentDestination(MainNavRoutes.Start.getRoute())
-            }
-
-            composeTestRule
-                .onNodeWithTag(
-                    resources.getString(R.string.welcomeCardTestTag),
-                ).assertExists()
+    fun mainGraph_startingDestination() = runTest {
+        composeTestRule.runOnUiThread {
+            navController.setCurrentDestination(MainNavRoutes.Start.getRoute())
         }
+
+        composeTestRule
+            .onNodeWithTag(
+                resources.getString(R.string.welcomeCardTestTag),
+            ).assertExists()
+    }
 }

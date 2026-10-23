@@ -15,7 +15,6 @@ fun WalletScreen(
     viewModel: WalletScreenViewModel = hiltViewModel(),
     loadingAnalyticsViewModel: LoadingScreenAnalyticsViewModel = hiltViewModel(),
 ) {
-
     val state: WalletScreenState by viewModel.state.collectAsState()
 
     key(deepLinkRoute) {
@@ -23,9 +22,10 @@ fun WalletScreen(
             is WalletScreenState.Loading -> {
                 LoadingScreen(analyticsViewModel = loadingAnalyticsViewModel) { }
             }
+
             is WalletScreenState.Display -> {
                 state.walletDisplayer.Wallet(
-                    onFullScreenRequest = setDisplayContentAsFullScreen
+                    onFullScreenRequest = setDisplayContentAsFullScreen,
                 )
             }
         }

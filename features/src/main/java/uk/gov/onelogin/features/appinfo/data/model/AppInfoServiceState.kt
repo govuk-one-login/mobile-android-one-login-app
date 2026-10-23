@@ -1,9 +1,7 @@
 package uk.gov.onelogin.features.appinfo.data.model
 
 sealed class AppInfoServiceState {
-    data class Successful(
-        val value: AppInfoData,
-    ) : AppInfoServiceState()
+    data class Successful(val value: AppInfoData) : AppInfoServiceState()
 
     data object Unavailable : AppInfoServiceState()
 

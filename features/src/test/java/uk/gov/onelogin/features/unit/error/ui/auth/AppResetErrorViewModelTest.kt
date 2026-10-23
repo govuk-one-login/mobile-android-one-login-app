@@ -15,16 +15,15 @@ class AppResetErrorViewModelTest {
     private val mockNavigator: Navigator = mock()
 
     @Test
-    fun `navigate to sign in`() =
-        runTest {
-            featureFlags =
-                InMemoryFeatureFlags(
-                    setOf()
-                )
-            val sut = AppResetErrorViewModel(mockNavigator)
+    fun `navigate to sign in`() = runTest {
+        featureFlags =
+            InMemoryFeatureFlags(
+                setOf(),
+            )
+        val sut = AppResetErrorViewModel(mockNavigator)
 
-            sut.navigateToSignIn()
+        sut.navigateToSignIn()
 
-            verify(mockNavigator).navigate(LoginRoutes.Start, popUpToInclusive = true)
-        }
+        verify(mockNavigator).navigate(LoginRoutes.Start, popUpToInclusive = true)
+    }
 }

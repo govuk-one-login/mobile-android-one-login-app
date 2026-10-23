@@ -37,7 +37,7 @@ class SettingsAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         logger = mock()
         viewModel = SettingsAnalyticsViewModel(context, logger)
@@ -51,7 +51,7 @@ class SettingsAnalyticsViewModelTest {
                     viewModel.trackSettingsView()
                 },
                 name = context.getEnglishString(R.string.action_settings),
-                id = context.getEnglishString(R.string.settings_page_id)
+                id = context.getEnglishString(R.string.settings_page_id),
             )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
@@ -59,7 +59,7 @@ class SettingsAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(result as ViewEvent, FALSE)
+            GAUtils.containsIsError(result as ViewEvent, FALSE),
         )
     }
 
@@ -70,14 +70,14 @@ class SettingsAnalyticsViewModelTest {
                 trackFunction = {
                     viewModel.trackSignOutButton()
                 },
-                text = context.getEnglishString(R.string.app_signOutButton)
+                text = context.getEnglishString(R.string.app_signOutButton),
             ),
             TestUtils.TrackEventTestCase.Button(
                 trackFunction = {
                     viewModel.trackOpenSourceButton()
                 },
-                text = context.getEnglishString(R.string.app_openSourceLicences)
-            )
+                text = context.getEnglishString(R.string.app_openSourceLicences),
+            ),
         ).forEach {
             // When tracking
             val result = executeTrackEventTestCase(it, requiredParameters)
@@ -95,61 +95,61 @@ class SettingsAnalyticsViewModelTest {
                 trackFunction = {
                     viewModel.trackBackButton()
                 },
-                text = context.getEnglishString(R.string.system_backButton)
+                text = context.getEnglishString(R.string.system_backButton),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackSignInDetailLink()
                 },
                 domain = context.getEnglishString(R.string.app_manageSignInDetailsUrl).domain,
-                text = context.getEnglishString(R.string.app_settingsSignInDetailsLink)
+                text = context.getEnglishString(R.string.app_settingsSignInDetailsLink),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackUsingOneLoginLink()
                 },
                 domain = context.getEnglishString(R.string.app_oneLoginCardLinkUrl).domain,
-                text = context.getEnglishString(R.string.app_proveYourIdentityLink)
+                text = context.getEnglishString(R.string.app_proveYourIdentityLink),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackContactOneLoginLink()
                 },
                 domain = context.getEnglishString(R.string.app_contactUrl).domain,
-                text = context.getEnglishString(R.string.app_contactLink)
+                text = context.getEnglishString(R.string.app_contactLink),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackPrivacyNoticeLink()
                 },
                 domain = context.getEnglishString(R.string.privacy_notice_url).domain,
-                text = context.getEnglishString(R.string.app_privacyNoticeLink2)
+                text = context.getEnglishString(R.string.app_privacyNoticeLink2),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackAccessibilityStatementLink()
                 },
                 domain = context.getEnglishString(R.string.app_accessibilityStatementUrl).domain,
-                text = context.getEnglishString(R.string.app_accessibilityStatement)
+                text = context.getEnglishString(R.string.app_accessibilityStatement),
             ),
             TestUtils.TrackEventTestCase.Button(
                 trackFunction = { viewModel.trackBiometricsButton() },
-                text = context.getEnglishString(R.string.app_settingsBiometricsField)
+                text = context.getEnglishString(R.string.app_settingsBiometricsField),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackAddDocumentsLink()
                 },
                 domain = context.getEnglishString(R.string.app_add_document_url).domain,
-                text = context.getEnglishString(R.string.app_addDocumentsLink)
+                text = context.getEnglishString(R.string.app_addDocumentsLink),
             ),
             TestUtils.TrackEventTestCase.Link(
                 trackFunction = {
                     viewModel.trackTermsAndConditionsLink()
                 },
                 domain = context.getEnglishString(R.string.app_terms_and_conditions_url).domain,
-                text = context.getEnglishString(R.string.app_termsAndConditionsLink)
-            )
+                text = context.getEnglishString(R.string.app_termsAndConditionsLink),
+            ),
         ).forEach {
             // When tracking
             val result = executeTrackEventTestCase(it, requiredParameters)

@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -155,7 +155,7 @@ private fun RowScope.NavBarItem(
                             navController,
                             navigationDestination,
                         )
-                    }
+                    },
                 ).then(
                     if (focusStateEnabled) {
                         val lineColour = MaterialTheme.colorScheme.onBackground
@@ -164,20 +164,20 @@ private fun RowScope.NavBarItem(
                                 topLeft =
                                     Offset(
                                         x = size.width * FOCUS_BORDER_OFFSET_WIDTH_MULTIPLIER,
-                                        y = size.height * FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER
+                                        y = size.height * FOCUS_BORDER_OFFSET_HEIGHT_MULTIPLIER,
                                     ),
                                 color = lineColour,
                                 style = Stroke(FOCUS_BORDER_STROKE_WIDTH.dp.toPx()),
                                 size =
                                     Size(
                                         width = size.width * FOCUS_BORDER_WIDTH_MULTIPLIER,
-                                        height = size.height * FOCUS_BORDER_HEIGHT_MULTIPLIER
-                                    )
+                                        height = size.height * FOCUS_BORDER_HEIGHT_MULTIPLIER,
+                                    ),
                             )
                         }
                     } else {
                         Modifier
-                    }
+                    },
                 ),
         selected = selected,
         onClick = {
@@ -203,7 +203,7 @@ private fun RowScope.NavBarItem(
                 indicatorColor =
                     NavigationElements.navigationBarSelectedState.toMappedColors(),
                 selectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors(),
-                unselectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors()
+                unselectedTextColor = NavigationElements.navigationBarIconAndLabel.toMappedColors(),
             ),
     )
 }

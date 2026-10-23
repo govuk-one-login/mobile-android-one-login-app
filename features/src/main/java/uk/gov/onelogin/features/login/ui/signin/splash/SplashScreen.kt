@@ -26,11 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
@@ -43,7 +44,6 @@ import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.developer.DeveloperTools
 import uk.gov.onelogin.features.login.ui.signin.splash.theme.SplashTheme
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
-import kotlin.math.roundToInt
 
 @Composable
 fun SplashScreen(
@@ -96,6 +96,7 @@ private fun handleOptInRequired(
 ) {
     when {
         isRequired -> viewModel.navigateToAnalyticsOptIn()
+
         else ->
             if (!viewModel.showUnlock.value) {
                 viewModel.login(context)
@@ -190,7 +191,9 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
                         .then(
                             // This allows for the logo not to be treated as a button in production/ integration and be ignored for accessibility purposes
                             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
-                                Modifier.clickable(enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
+                                Modifier.clickable(
+                                    enabled = DeveloperTools.IS_DEVELOPER_PANEL_ENABLED,
+                                ) {
                                     onOpenDeveloperPortal()
                                 }
                             } else {
@@ -202,22 +205,16 @@ private fun SubcomposeMeasureScope.createSubcomposeLogo(
     return imagePlaceable
 }
 
-private fun SubcomposeMeasureScope.createSubcomposeCrown() =
-    subcompose("crown") {
-        Icon(
-            painter = painterResource(R.drawable.ic_tudor_crown),
-            contentDescription = null,
-            modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
-        )
-    }.first().measure(Constraints())
+private fun SubcomposeMeasureScope.createSubcomposeCrown() = subcompose("crown") {
+    Icon(
+        painter = painterResource(R.drawable.ic_tudor_crown),
+        contentDescription = null,
+        modifier = Modifier.testTag(stringResource(id = R.string.splashCrownIconTestTag)),
+    )
+}.first().measure(Constraints())
 
 @Composable
-private fun UnlockButton(
-    trackUnlockButton: () -> Unit,
-    onLogin: () -> Unit,
-) {
-
-
+private fun UnlockButton(trackUnlockButton: () -> Unit, onLogin: () -> Unit) {
     GdsButton(
         text = stringResource(R.string.app_unlockButton),
         onClick = {
@@ -236,9 +233,7 @@ private fun UnlockButton(
 }
 
 @Composable
-internal fun ProgressIndicator(
-    modifier: Modifier = Modifier,
-) = GdsProgressIndicator(
+internal fun ProgressIndicator(modifier: Modifier = Modifier) = GdsProgressIndicator(
     modifier = modifier
         .padding(bottom = 48.dp),
 )

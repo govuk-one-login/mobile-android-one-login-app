@@ -9,12 +9,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Test
 import uk.gov.android.onelogin.core.R
-import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
-import uk.gov.onelogin.mainnav.ui.BottomNavDestination
-import uk.gov.onelogin.utils.TestCase
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.m3.GdsThemeDefaults
 import uk.gov.android.wallet.core.R as walletR
+import uk.gov.onelogin.mainnav.graphs.BottomNavGraph.bottomGraph
+import uk.gov.onelogin.mainnav.ui.BottomNavDestination
+import uk.gov.onelogin.utils.TestCase
 
 @HiltAndroidTest
 class BottomGraphObjectTest : TestCase() {

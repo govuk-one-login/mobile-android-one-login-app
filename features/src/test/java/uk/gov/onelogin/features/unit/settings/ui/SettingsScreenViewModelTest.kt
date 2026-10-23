@@ -1,5 +1,7 @@
 package uk.gov.onelogin.features.unit.settings.ui
 
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -25,8 +27,6 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.settings.ui.SettingsScreenViewModel
 import uk.gov.onelogin.features.wallet.data.WalletRepository
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SettingsScreenViewModelTest {
@@ -51,7 +51,7 @@ class SettingsScreenViewModelTest {
                 mockLocalAuthManager,
                 mockWalletRepository,
                 mockTokenRepository,
-                mockExtractEmail
+                mockExtractEmail,
             )
     }
 
@@ -91,113 +91,107 @@ class SettingsScreenViewModelTest {
     }
 
     @Test
-    fun `optInState is false when repository returns false`() =
-        runTest {
-            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+    fun `optInState is false when repository returns false`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
 
-            assertEquals(false, viewModel.optInState.value)
-        }
-
-    @Test
-    fun `optInState is true when repository returns true`() =
-        runTest {
-            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(true))
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    mockWalletRepository,
-                    mockTokenRepository,
-                    mockExtractEmail
-                )
-            assertEquals(true, viewModel.optInState.value)
-        }
+        assertEquals(false, viewModel.optInState.value)
+    }
 
     @Test
-    fun `toggleOptInPreference calls optOut on repository when state is true`() =
-        runTest {
-            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(true))
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    mockWalletRepository,
-                    mockTokenRepository,
-                    mockExtractEmail
-                )
-            assertEquals(true, viewModel.optInState.value)
-
-            viewModel.toggleOptInPreference()
-
-            verify(mockOptInRepository).optOut()
-        }
+    fun `optInState is true when repository returns true`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(true))
+        viewModel =
+            SettingsScreenViewModel(
+                mockOptInRepository,
+                mockNavigator,
+                mockLocalAuthManager,
+                mockWalletRepository,
+                mockTokenRepository,
+                mockExtractEmail,
+            )
+        assertEquals(true, viewModel.optInState.value)
+    }
 
     @Test
-    fun `toggleOptInPreference calls optOut on repository when state is false`() =
-        runTest {
-            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    mockWalletRepository,
-                    mockTokenRepository,
-                    mockExtractEmail
-                )
-            assertEquals(false, viewModel.optInState.value)
+    fun `toggleOptInPreference calls optOut on repository when state is true`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(true))
+        viewModel =
+            SettingsScreenViewModel(
+                mockOptInRepository,
+                mockNavigator,
+                mockLocalAuthManager,
+                mockWalletRepository,
+                mockTokenRepository,
+                mockExtractEmail,
+            )
+        assertEquals(true, viewModel.optInState.value)
 
-            viewModel.toggleOptInPreference()
+        viewModel.toggleOptInPreference()
 
-            verify(mockOptInRepository).optIn()
-        }
-
-    @Test
-    fun `biometrics are not available`() =
-        runTest {
-            whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
-            whenever(mockLocalAuthManager.biometricsAvailable())
-                .thenReturn(false)
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    mockWalletRepository,
-                    mockTokenRepository,
-                    mockExtractEmail
-                )
-
-            assertFalse(viewModel.biometricsOptionState.value)
-
-            viewModel.checkDeviceBiometricsStatus()
-
-            assertFalse(viewModel.biometricsOptionState.value)
-        }
+        verify(mockOptInRepository).optOut()
+    }
 
     @Test
-    fun `biometrics are available`() =
-        runTest {
-            whenever(mockLocalAuthManager.biometricsAvailable())
-                .thenReturn(true)
-            viewModel =
-                SettingsScreenViewModel(
-                    mockOptInRepository,
-                    mockNavigator,
-                    mockLocalAuthManager,
-                    mockWalletRepository,
-                    mockTokenRepository,
-                    mockExtractEmail
-                )
+    fun `toggleOptInPreference calls optOut on repository when state is false`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+        viewModel =
+            SettingsScreenViewModel(
+                mockOptInRepository,
+                mockNavigator,
+                mockLocalAuthManager,
+                mockWalletRepository,
+                mockTokenRepository,
+                mockExtractEmail,
+            )
+        assertEquals(false, viewModel.optInState.value)
 
-            assertFalse(viewModel.biometricsOptionState.value)
+        viewModel.toggleOptInPreference()
 
-            viewModel.checkDeviceBiometricsStatus()
+        verify(mockOptInRepository).optIn()
+    }
 
-            assertTrue(viewModel.biometricsOptionState.value)
-        }
+    @Test
+    fun `biometrics are not available`() = runTest {
+        whenever(mockOptInRepository.hasAnalyticsOptIn()).thenReturn(flowOf(false))
+        whenever(mockLocalAuthManager.biometricsAvailable())
+            .thenReturn(false)
+        viewModel =
+            SettingsScreenViewModel(
+                mockOptInRepository,
+                mockNavigator,
+                mockLocalAuthManager,
+                mockWalletRepository,
+                mockTokenRepository,
+                mockExtractEmail,
+            )
+
+        assertFalse(viewModel.biometricsOptionState.value)
+
+        viewModel.checkDeviceBiometricsStatus()
+
+        assertFalse(viewModel.biometricsOptionState.value)
+    }
+
+    @Test
+    fun `biometrics are available`() = runTest {
+        whenever(mockLocalAuthManager.biometricsAvailable())
+            .thenReturn(true)
+        viewModel =
+            SettingsScreenViewModel(
+                mockOptInRepository,
+                mockNavigator,
+                mockLocalAuthManager,
+                mockWalletRepository,
+                mockTokenRepository,
+                mockExtractEmail,
+            )
+
+        assertFalse(viewModel.biometricsOptionState.value)
+
+        viewModel.checkDeviceBiometricsStatus()
+
+        assertTrue(viewModel.biometricsOptionState.value)
+    }
 
     @Test
     fun `received wallet deeplink`() {

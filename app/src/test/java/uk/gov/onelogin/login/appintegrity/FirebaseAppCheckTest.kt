@@ -1,6 +1,8 @@
 package uk.gov.onelogin.login.appintegrity
 
 import com.google.firebase.FirebaseNetworkException
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItem
@@ -15,8 +17,6 @@ import uk.gov.logging.api.v3.LogLevel
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class FirebaseAppCheckTest {
     private val provider: FirebaseAppCheckProvider = mock()
@@ -29,45 +29,42 @@ class FirebaseAppCheckTest {
     }
 
     @Test
-    fun `test initialise and get token success`() =
-        runTest {
-            whenever(provider.getToken()).thenReturn("token")
+    fun `test initialise and get token success`() = runTest {
+        whenever(provider.getToken()).thenReturn("token")
 
-            val actual = sut.getAppCheckToken()
+        val actual = sut.getAppCheckToken()
 
-            assertEquals(Result.success(AppCheckToken("token")), actual)
-            verify(provider).init()
-        }
-
-    @Test
-    fun `test firebase provider get limited token returns Exception`() =
-        runTest {
-            val expected = Exception()
-            whenever(provider.getToken()).thenThrow(expected)
-            val actual = sut.getAppCheckToken()
-
-            verify(provider).init()
-            assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
-            assertTrue(actual.isFailure)
-            actual.onFailure {
-                assertTrue(it is AppIntegrityException.Other)
-                assertEquals(expected, it.cause)
-            }
-        }
+        assertEquals(Result.success(AppCheckToken("token")), actual)
+        verify(provider).init()
+    }
 
     @Test
-    fun `test firebase provider get limited token returns Firebase Exception`() =
-        runTest {
-            val expected = FirebaseNetworkException("network exception")
-            whenever(provider.getToken()).thenThrow(expected)
-            val actual = sut.getAppCheckToken()
+    fun `test firebase provider get limited token returns Exception`() = runTest {
+        val expected = Exception()
+        whenever(provider.getToken()).thenThrow(expected)
+        val actual = sut.getAppCheckToken()
 
-            verify(provider).init()
-            assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
-            assertTrue(actual.isFailure)
-            actual.onFailure {
-                assertTrue(it is AppIntegrityException.FirebaseException)
-                assertEquals(expected, it.cause)
-            }
+        verify(provider).init()
+        assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
+        assertTrue(actual.isFailure)
+        actual.onFailure {
+            assertTrue(it is AppIntegrityException.Other)
+            assertEquals(expected, it.cause)
         }
+    }
+
+    @Test
+    fun `test firebase provider get limited token returns Firebase Exception`() = runTest {
+        val expected = FirebaseNetworkException("network exception")
+        whenever(provider.getToken()).thenThrow(expected)
+        val actual = sut.getAppCheckToken()
+
+        verify(provider).init()
+        assertThat(logger, hasItem(isLogLevel(LogLevel.Error)))
+        assertTrue(actual.isFailure)
+        actual.onFailure {
+            assertTrue(it is AppIntegrityException.FirebaseException)
+            assertEquals(expected, it.cause)
+        }
+    }
 }
