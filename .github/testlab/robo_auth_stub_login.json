@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1000,
+    "description": "Open auth stub and press Login",
+    "actions": [
+      {
+        "eventType": "WAIT",
+        "delayTime": 5000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "visionText": "Do not share"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 2000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "description": "Tap app sign-in button",
+        "pointTapXPercent": 50,
+        "pointTapYPercent": 73
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 10000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "visionText": "Reject additional cookies"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 3000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "visionText": "Sign in with GOV.UK One Login"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 12000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "optional": true,
+        "visionText": "Login"
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 1000
+      },
+      {
+        "eventType": "VIEW_CLICKED",
+        "description": "Direct tap on Auth Stub Login button",
+        "pointTapXPercent": 50,
+        "pointTapYPercent": 22
+      },
+      {
+        "eventType": "WAIT",
+        "delayTime": 5000
+      }
+    ]
+  }
+]
