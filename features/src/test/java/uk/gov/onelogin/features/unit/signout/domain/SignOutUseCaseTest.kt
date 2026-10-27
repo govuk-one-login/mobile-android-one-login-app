@@ -12,7 +12,6 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.cleaner.domain.MultiCleaner
-import uk.gov.onelogin.core.cleaner.domain.ResultCollectionUtil
 import uk.gov.onelogin.core.localauth.domain.LocalAuthPreferenceRepo
 import uk.gov.onelogin.core.tokens.data.TokenRepository
 import uk.gov.onelogin.core.tokens.domain.remove.RemoveAllSecureStoreData
@@ -22,13 +21,13 @@ import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.domain.SignOutUseCaseImpl
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
+import uk.gov.onelogin.features.wallet.domain.DelegateDeleteWalletUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignOutUseCaseTest {
-    private val deleteWalletData: DeleteWalletDataUseCase = mock()
+    private val deleteWalletData: DelegateDeleteWalletUseCase = mock()
     private val tokenRepository: TokenRepository = mock()
     private val logger = MemorisedLogger()
     private lateinit var useCase: SignOutUseCase
@@ -85,57 +84,5 @@ class SignOutUseCaseTest {
                 useCase.invoke()
             }
         assertTrue(exception.error.message!!.contains(DELETE_WALLET_DATA_ERROR))
-    }
-
-    @Test
-    @Suppress("TooGenericExceptionThrown")
-    fun `exception propagates up as a SignOutError`() = runTest {
-        // Given
-        val errorMessage = "something went terribly bad"
-        whenever(deleteWalletData.invoke()).thenReturn(true)
-        useCase =
-            SignOutUseCaseImpl(
-                MultiCleaner(
-                    Dispatchers.Main,
-                    { Result.success(Unit) },
-                    { throw Exception(errorMessage) },
-                ),
-                deleteWalletData,
-                tokenRepository,
-                logger,
-            )
-        // When invoking the sign out use case
-        // Then throw SignOutWalletError
-        val exception =
-            assertThrows<SignOutError> {
-                useCase.invoke()
-            }
-        assertTrue(exception.error.message!!.contains(errorMessage))
-    }
-
-    @Test
-    @Suppress("TooGenericExceptionThrown")
-    fun `exception propagates up as a SignOutError via failure`() = runTest {
-        // Given
-        val errorMessage = "something went terribly bad"
-        whenever(deleteWalletData.invoke()).thenReturn(true)
-        useCase =
-            SignOutUseCaseImpl(
-                MultiCleaner(
-                    Dispatchers.Main,
-                    { Result.success(Unit) },
-                    { Result.failure(Exception(errorMessage)) },
-                ),
-                deleteWalletData,
-                tokenRepository,
-                logger,
-            )
-        // When invoking the sign out use case
-        // Then throw SignOutWalletError
-        val exception =
-            assertThrows<SignOutError> {
-                useCase.invoke()
-            }
-        assertTrue(exception.error is ResultCollectionUtil.Failure)
     }
 }

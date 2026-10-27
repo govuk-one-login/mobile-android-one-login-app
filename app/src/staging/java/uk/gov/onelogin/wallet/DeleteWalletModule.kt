@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
+import uk.gov.onelogin.features.wallet.domain.DelegateDeleteWalletUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseDevOption
 
@@ -18,4 +19,9 @@ object DeleteWalletModule {
         secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository,
     ): DeleteWalletDataUseCase =
         DeleteWalletDataUseCaseDevOption(walletSdk, secureStoreDevOptionsRepository)
+
+    @Provides
+    fun provideDelegateDeleteWallet(
+        deleteWalletDataUseCase: DeleteWalletDataUseCase,
+    ): DelegateDeleteWalletUseCase = deleteWalletDataUseCase
 }

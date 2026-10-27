@@ -49,7 +49,7 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 )
                 Switch(
                     checked = overrideWallet,
-                    onCheckedChange = { viewModel.setOverride(!overrideWallet) },
+                    onCheckedChange = { viewModel.setOverride(it) },
                     colors =
                         uk.gov.android.ui.theme.m3.Switch
                             .defaultColors(),
@@ -70,7 +70,7 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 )
                 Switch(
                     checked = enableDeletionFail,
-                    onCheckedChange = { viewModel.setDeletionFail(!enableDeletionFail) },
+                    onCheckedChange = { viewModel.setDeletionFail(it) },
                     colors =
                         uk.gov.android.ui.theme.m3.Switch
                             .defaultColors(),
@@ -91,7 +91,7 @@ fun SecureStoreScreen(viewModel: SecureStoreScreenViewModel = hiltViewModel()) {
                 )
                 Switch(
                     checked = walletMock,
-                    onCheckedChange = { viewModel.setWalletMock(!walletMock) },
+                    onCheckedChange = { viewModel.setWalletMock(it) },
                     colors =
                         uk.gov.android.ui.theme.m3.Switch
                             .defaultColors(),

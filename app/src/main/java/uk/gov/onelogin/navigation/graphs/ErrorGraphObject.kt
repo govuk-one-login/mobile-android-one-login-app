@@ -8,12 +8,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.gov.onelogin.core.navigation.data.ErrorRoutes
+import uk.gov.onelogin.core.navigation.data.MainNavRoutes
 import uk.gov.onelogin.features.error.ui.appintegrity.AppIntegrityErrorScreen
 import uk.gov.onelogin.features.error.ui.generic.GenericErrorScreen
 import uk.gov.onelogin.features.error.ui.offline.OfflineErrorScreen
 import uk.gov.onelogin.features.error.ui.signout.SignOutErrorScreen
 import uk.gov.onelogin.features.error.ui.unavailable.AppUnavailableScreen
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
+import uk.gov.onelogin.features.wallet.ui.WalletScreen
 
 object ErrorGraphObject {
     const val OFFLINE_ERROR_TRY_AGAIN_KEY: String = "OFFLINE_ERROR_TRY_AGAIN_KEY"
@@ -59,6 +61,18 @@ object ErrorGraphObject {
                 route = ErrorRoutes.AppIntegrity.getRoute(),
             ) {
                 AppIntegrityErrorScreen()
+            }
+            composable(
+                route = ErrorRoutes.MockSignOut.getRoute(),
+            ) {
+                BackHandler(enabled = true) {
+                    navController.navigate(MainNavRoutes.Start.getRoute()) {
+                        popUpTo(MainNavRoutes.Root.getRoute()) {
+                            inclusive = false
+                        }
+                    }
+                }
+                WalletScreen(deepLinkRoute = false, setDisplayContentAsFullScreen = {})
             }
         }
     }

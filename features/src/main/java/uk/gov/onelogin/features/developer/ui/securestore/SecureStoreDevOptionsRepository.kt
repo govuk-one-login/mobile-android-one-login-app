@@ -1,7 +1,5 @@
 package uk.gov.onelogin.features.developer.ui.securestore
 
-import uk.gov.android.onelogin.features.BuildConfig
-
 interface SecureStoreDevOptionsRepository {
     fun overrideWalletDelete(override: Boolean)
 
@@ -19,7 +17,7 @@ interface SecureStoreDevOptionsRepository {
 class SecureStoreDevOptionsRepositoryImpl : SecureStoreDevOptionsRepository {
     private var overrideWalletData = false
     private var enableLocalDataDeleteFail = false
-    private var overrideWalletMock = BuildConfig.BUILD_WALLET_MOCK
+    private var overrideWalletMock = false
 
     override fun overrideWalletDelete(override: Boolean) {
         overrideWalletData = override

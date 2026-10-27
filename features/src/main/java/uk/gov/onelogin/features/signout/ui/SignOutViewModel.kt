@@ -13,6 +13,7 @@ import uk.gov.onelogin.core.navigation.data.SignOutRoutes
 import uk.gov.onelogin.core.navigation.domain.Navigator
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
+import uk.gov.onelogin.features.wallet.domain.DeleteWalletMock
 
 @HiltViewModel
 class SignOutViewModel
@@ -31,6 +32,9 @@ constructor(
             try {
                 signOutUseCase.invoke()
                 navigator.navigate(SignOutRoutes.Success)
+            } catch (e: DeleteWalletMock.DeleteWalletMockError) {
+                logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
+                navigator.navigate(ErrorRoutes.MockSignOut)
             } catch (e: SignOutError) {
                 logger.error(SignOutViewModel::class.java.simpleName, e.message.toString(), e)
                 navigator.navigate(ErrorRoutes.SignOut, false)

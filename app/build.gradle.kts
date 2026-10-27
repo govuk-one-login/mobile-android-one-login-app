@@ -114,12 +114,7 @@ android {
 androidComponents {
     onVariants { variant ->
         variant.flavorName?.let { flavourName ->
-            val useMock =
-                if (project.hasProperty("buildWalletMock")) {
-                    project.property("buildWalletMock").toString().toBoolean()
-                } else {
-                    flavourName == "build" && variant.buildType == "debug"
-                }
+            val useMock = flavourName == "build"
             if (variant.buildType == "debug") {
                 when (flavourName) {
                     "build" -> {
