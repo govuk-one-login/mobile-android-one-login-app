@@ -93,11 +93,13 @@ class StsAuthenticationProvider @Inject constructor(
                 RefreshExchangeResult.Success ->
                     attemptServiceTokenExchange(scope)
 
-                // If user cancelled bio prompt/ bio check failed/ offline, allow for the consumer to handle the error
-                // which means treating it as a success, and it will fail at getting the access token which will be
-                // treated as an error on the consumer/ SDKs side
+                // If user cancelled bio prompt/ bio check failed/ offline/ or a retryable failure,
+                // allow for the consumer to handle the error which means treating it as a success, and it
+                // will fail at getting the access token which will be treated as an error on the
+                // consumer/ SDKs side
                 RefreshExchangeResult.UserCancelledBioPrompt,
                 RefreshExchangeResult.OfflineNetwork,
+                RefreshExchangeResult.RetryLater,
                 ->
                     attemptServiceTokenExchange(scope)
             }

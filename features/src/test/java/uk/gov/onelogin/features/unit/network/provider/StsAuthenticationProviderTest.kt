@@ -132,6 +132,22 @@ class StsAuthenticationProviderTest {
         }
 
     @Test
+    fun `access token expired, refresh exchange has failed with retry later`() = runTest {
+        whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
+        whenever(mockRefreshExchange.getTokens(any(), any()))
+            .thenAnswer {
+                (it.arguments[1] as (RefreshExchangeResult) -> Unit)
+                    .invoke(RefreshExchangeResult.RetryLater)
+            }
+        httpClient.exception = badRequestResponse
+
+        val response = provider.fetchBearerToken(SCOPE)
+
+        assertInstanceOf<AuthenticationResponse.Failure>(response)
+        assertInstanceOf<ApiResponseException>(response.error.cause)
+    }
+
+    @Test
     fun `access token expired, refresh exchange has failed with user cancelled bio prompt`() =
         runTest {
             whenever(mockIsAccessTokenExpired.invoke()).thenReturn(true)
