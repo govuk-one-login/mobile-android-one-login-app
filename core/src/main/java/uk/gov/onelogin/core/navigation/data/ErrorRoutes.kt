@@ -17,5 +17,7 @@ sealed class ErrorRoutes(private val route: String) : NavRoute {
 
     data object AppIntegrity : ErrorRoutes("/error/app_integrity")
 
+    data object MockSignOut : ErrorRoutes("/error/mock_sign_out")
+
     override fun getRoute() = route
 }

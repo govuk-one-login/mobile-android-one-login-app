@@ -40,7 +40,7 @@ import uk.gov.onelogin.features.signout.domain.SignOutUseCase
  * @param logger provides a [Logger] to enable logging errors to Crashlytics
  *
  */
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "standard:max-line-length")
 class StsAuthenticationProvider @Inject constructor(
     private val activityProvider: ActivityProvider,
     @param:StsUrl

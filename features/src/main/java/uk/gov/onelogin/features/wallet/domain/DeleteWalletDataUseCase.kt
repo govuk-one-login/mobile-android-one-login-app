@@ -5,8 +5,8 @@ import uk.gov.android.securestore.error.SecureStorageErrorV2
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
 
-fun interface DeleteWalletDataUseCase {
-    suspend fun invoke(): Boolean
+fun interface DeleteWalletDataUseCase : DelegateDeleteWalletUseCase {
+    override suspend fun invoke(): Boolean
 }
 
 class DeleteWalletDataUseCaseImpl
@@ -27,11 +27,14 @@ class DeleteWalletDataUseCaseDevOption(
     private val walletSdk: WalletSdk,
     private val secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository,
 ) : DeleteWalletDataUseCase {
-    override suspend fun invoke(): Boolean {
-        if (secureStoreDevOptionsRepository.isWalletDeleteOverride()) {
+    override suspend fun invoke(): Boolean =
+        if (secureStoreDevOptionsRepository.isWalletMockOverride()) {
+            // this becomes the mock wallet sdk triggering its own delete function
+            // showing the mock wallet delete UI
+            walletSdk.deleteWalletData()
+        } else if (secureStoreDevOptionsRepository.isWalletDeleteOverride()) {
             throw SecureStorageErrorV2(Exception("Simulate wallet deletion failure"))
         } else {
-            return walletSdk.deleteWalletData()
+            walletSdk.deleteWalletData()
         }
-    }
 }

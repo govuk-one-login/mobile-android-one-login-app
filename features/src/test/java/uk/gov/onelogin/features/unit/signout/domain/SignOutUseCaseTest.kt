@@ -22,13 +22,13 @@ import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.signout.domain.SignOutError
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
 import uk.gov.onelogin.features.signout.domain.SignOutUseCaseImpl
-import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
+import uk.gov.onelogin.features.wallet.domain.DelegateDeleteWalletUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl.Companion.DELETE_WALLET_DATA_ERROR
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
 class SignOutUseCaseTest {
-    private val deleteWalletData: DeleteWalletDataUseCase = mock()
+    private val deleteWalletData: DelegateDeleteWalletUseCase = mock()
     private val tokenRepository: TokenRepository = mock()
     private val logger = MemorisedLogger()
     private lateinit var useCase: SignOutUseCase

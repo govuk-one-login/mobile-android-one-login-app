@@ -5,8 +5,8 @@ has the ability to include a script to run. What gets executed is contextually
 arbitrary - common examples are to enforce linting rules before committed code
 enters the code base.
 
-The [Project's Git Hooks] contain the customised scripts for the project. In
-order to use this folder, run the following command in a terminal window:
+The [Project's Git Hooks] contain the customised scripts for the project. To use
+this folder, run the following command in a terminal window:
 
 ```shell
 git config core.hooksPath $(git rev-parse --show-toplevel)/.githooks
