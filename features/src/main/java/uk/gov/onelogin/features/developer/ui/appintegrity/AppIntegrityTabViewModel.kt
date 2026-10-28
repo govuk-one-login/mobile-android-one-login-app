@@ -27,7 +27,7 @@ constructor(
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")
-    val networkResponse: MutableState<String> = mutableStateOf("")
+    val clientAttestationApiResponse: MutableState<String> = mutableStateOf("")
     val clientAttestationResult: MutableState<String> = mutableStateOf("")
     val clientAttestation: MutableState<String> = mutableStateOf("")
     val clientAttestationExpiry: MutableState<String> = mutableStateOf("")
@@ -44,15 +44,15 @@ constructor(
         }
     }
 
-    fun makeNetworkCall() {
+    fun getClientAttestationFromApi() {
         viewModelScope.launch {
-            networkResponse.value = "Loading..."
-            networkResponse.value = appCheck.getAttestation().toString()
+            clientAttestationApiResponse.value = "Loading..."
+            clientAttestationApiResponse.value = appCheck.getAttestation().toString()
             getSavedAttestation()
         }
     }
 
-    fun getClientAttestation() {
+    fun getClientAttestationAndCache() {
         viewModelScope.launch {
             clientAttestationResult.value = "Loading..."
             clientAttestationResult.value = appIntegrity.getClientAttestation().toString()
