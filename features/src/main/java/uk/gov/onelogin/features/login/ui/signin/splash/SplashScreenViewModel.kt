@@ -104,7 +104,15 @@ constructor(
                 _showUnlock.value = true
             }
 
-            RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
+            is RefreshExchangeResult.ClientAttestationFailure -> {
+                if (result.treatAsSuccess) {
+                    nextScreen(MainNavRoutes.Start)
+                } else {
+                    nextScreen(ErrorRoutes.AppIntegrity)
+                }
+            }
+
+
 
             // Handles ReuAuth
             else -> {

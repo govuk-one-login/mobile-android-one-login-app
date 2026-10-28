@@ -9,6 +9,7 @@ import java.time.Instant
 import javax.inject.Inject
 import uk.gov.android.network.api.v2.ApiRequest
 import uk.gov.android.network.api.v3.ApiResponse
+import uk.gov.android.network.attestation.ClientAttestationErrorReason
 import uk.gov.android.network.service.ClientAttestationException
 import uk.gov.android.network.service.NetworkingException
 import uk.gov.android.network.service.v2.NetworkService
@@ -149,10 +150,15 @@ constructor(
                     refreshExchangeResult.error.message,
                     refreshExchangeResult.error,
                 )
-                when (refreshExchangeResult.error) {
-                    is ClientAttestationException -> RefreshExchangeResult.ClientAttestationFailure
-                    else -> RefreshExchangeResult.ReauthRequired
-                }
+                when (val error = refreshExchangeResult.error) {
+                        is ClientAttestationException -> {
+                            val treatAsSuccess = error.reason == ClientAttestationErrorReason.INTERMITTENT
+                            RefreshExchangeResult.ClientAttestationFailure(
+                                treatAsSuccess = treatAsSuccess
+                            )
+                        }
+                        else -> RefreshExchangeResult.ReauthRequired
+                    }
             }
         }
     }

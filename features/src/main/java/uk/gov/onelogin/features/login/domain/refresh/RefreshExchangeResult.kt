@@ -9,7 +9,9 @@ sealed class RefreshExchangeResult {
 
     data object UnrecoverableError : RefreshExchangeResult()
 
-    data object ClientAttestationFailure : RefreshExchangeResult()
+    data class ClientAttestationFailure(
+        val treatAsSuccess: Boolean,
+    ) : RefreshExchangeResult()
 
     data object OfflineNetwork : RefreshExchangeResult()
 
