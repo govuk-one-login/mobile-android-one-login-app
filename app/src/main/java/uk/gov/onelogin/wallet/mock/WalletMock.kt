@@ -25,7 +25,7 @@ import uk.gov.android.wallet.sdk.WalletSdk
  * The Mock implementation is designed in line with [Mobile Testing Mocks - Mobile SDK] recommendations [https://govukverify.atlassian.net/wiki/spaces/DCMAW/pages/7051450372/TD+DCMAW-20333+Mobile+Testing+Mocks+-+Mobile+SDK]
  *
  * This mock implementation provides fake data and a local fake UI composable
- * for [WalletApp] to allow testing without requiring a real wallet SDK connection.
+ * for [WalletApp] to allow testing without requiring a real wallet SDK instantiation.
  * It tracks deletion calls to enable UI assertions in automated tests.
  */
 open class WalletMock(
