@@ -85,6 +85,24 @@ class SplashScreenViewModelTest {
     }
 
     @Test
+    fun `RefreshExchange - login proceeds when refresh exchange needs to retry later`() =
+        runTest {
+            whenever(mockGetRefreshTokenExp()).thenReturn(100)
+            whenever(mockRefreshExchange.getTokens(any(), any()))
+                .thenAnswer {
+                    (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(
+                        RefreshExchangeResult.RetryLater,
+                    )
+                }
+
+            viewModel.login(mockActivity)
+
+            verify(mockAutoInitialiseSecureStore).initialise(null)
+            verify(mockNavigator).goBack()
+            verify(mockNavigator).navigate(MainNavRoutes.Start, false)
+        }
+
+    @Test
     fun `RefreshExchange - login success`() = runTest {
         whenever(mockGetRefreshTokenExp()).thenReturn(100)
         whenever(mockRefreshExchange.getTokens(any(), any()))

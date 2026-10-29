@@ -88,7 +88,8 @@ constructor(
 
     private fun handleRefreshExchangeResult(result: RefreshExchangeResult) {
         when (result) {
-            RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
+            RefreshExchangeResult.Success,
+            RefreshExchangeResult.RetryLater -> nextScreen(MainNavRoutes.Start)
 
             // Handle when a user ia a first time user
             RefreshExchangeResult.FirstTimeUser -> {
@@ -104,15 +105,7 @@ constructor(
                 _showUnlock.value = true
             }
 
-            is RefreshExchangeResult.ClientAttestationFailure -> {
-                if (result.treatAsSuccess) {
-                    nextScreen(MainNavRoutes.Start)
-                } else {
-                    nextScreen(ErrorRoutes.AppIntegrity)
-                }
-            }
-
-
+            RefreshExchangeResult.ClientAttestationFailure -> nextScreen(ErrorRoutes.AppIntegrity)
 
             // Handles ReuAuth
             else -> {

@@ -151,14 +151,16 @@ constructor(
                     refreshExchangeResult.error,
                 )
                 when (val error = refreshExchangeResult.error) {
-                        is ClientAttestationException -> {
-                            val treatAsSuccess = error.reason == ClientAttestationErrorReason.INTERMITTENT
-                            RefreshExchangeResult.ClientAttestationFailure(
-                                treatAsSuccess = treatAsSuccess
-                            )
+                    is ClientAttestationException -> {
+                        if (error.reason == ClientAttestationErrorReason.INTERMITTENT) {
+                            RefreshExchangeResult.RetryLater
+                        } else {
+                            RefreshExchangeResult.ClientAttestationFailure
                         }
-                        else -> RefreshExchangeResult.ReauthRequired
                     }
+
+                    else -> RefreshExchangeResult.ReauthRequired
+                }
             }
         }
     }
