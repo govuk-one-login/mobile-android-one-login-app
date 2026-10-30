@@ -88,7 +88,8 @@ constructor(
 
     private fun handleRefreshExchangeResult(result: RefreshExchangeResult) {
         when (result) {
-            RefreshExchangeResult.Success -> nextScreen(MainNavRoutes.Start)
+            RefreshExchangeResult.Success,
+            RefreshExchangeResult.RetryLater -> nextScreen(MainNavRoutes.Start)
 
             // Handle when a user ia a first time user
             RefreshExchangeResult.FirstTimeUser -> {
