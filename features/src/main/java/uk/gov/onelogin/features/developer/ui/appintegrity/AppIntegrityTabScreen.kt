@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -17,9 +19,8 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
-import uk.gov.android.ui.theme.m3.Switch
-import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.smallPadding
+import uk.gov.onelogin.features.developer.ui.components.StringSettingItem
 
 @Suppress("LongMethod")
 @Composable
@@ -42,11 +43,14 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
                 )
             }
             item {
-                ToggleItem(
-                    text = "Force 'intermittent' errors",
-                    checked = false,
-                    onToggle = {
+                var selected by remember { mutableStateOf("Disabled") }
+                StringSettingItem(
+                    title = "Simulate errors",
+                    selected = selected,
+                    options = listOf("Disabled", "Intermittent", "App check failed", "Generic"),
+                    onSelectionChanged = {
                         // TODO: DCMAW-18663
+                        selected = it
                     },
                     modifier = Modifier.padding(horizontal = horizontalPadding),
                 )
@@ -179,25 +183,4 @@ private fun DataItem(
             Text(text = result.value)
         }
     }
-}
-
-@Composable
-private fun ToggleItem(
-    text: String,
-    checked: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) = Row(
-    modifier = modifier,
-    verticalAlignment = Alignment.CenterVertically,
-) {
-    Text(
-        modifier = Modifier.weight(1F),
-        text = text,
-    )
-    Switch(
-        checked = checked,
-        onCheckedChange = { onToggle(it) },
-        colors = Switch.defaultColors(),
-    )
 }
