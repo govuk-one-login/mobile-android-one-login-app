@@ -5,7 +5,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.wallet.sdk.WalletSdk
-import uk.gov.onelogin.features.wallet.domain.DelegateDeleteWalletUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCase
 import uk.gov.onelogin.features.wallet.domain.DeleteWalletDataUseCaseImpl
 
@@ -15,9 +14,4 @@ object DeleteWalletModule {
     @Provides
     fun provideDeleteWalletData(walletSdk: WalletSdk): DeleteWalletDataUseCase =
         DeleteWalletDataUseCaseImpl(walletSdk)
-
-    @Provides
-    fun provideDelegateDeleteWallet(
-        deleteWalletDataUseCase: DeleteWalletDataUseCase,
-    ): DelegateDeleteWalletUseCase = deleteWalletDataUseCase
 }

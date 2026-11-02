@@ -112,53 +112,50 @@ android {
 }
 
 androidComponents {
-    onVariants { variant ->
-        variant.flavorName?.let { flavourName ->
-            val useMock = flavourName == "build"
-            if (variant.buildType == "debug") {
-                when (flavourName) {
-                    "build" -> {
-                        variant.buildConfigFields?.put(
-                            "AppCheckDebugSecret",
-                            BuildConfigField(
-                                "String",
-                                "\"" +
-                                    rootProject.ext["debugBuildAppCheckToken"]
-                                        as String + "\"",
-                                "debug token",
-                            ),
-                        )
-                    }
+    onVariants {
+        it.buildType?.let { builtType ->
+            if (builtType == "debug") {
+                it.flavorName?.let { flavourName ->
+                    when (flavourName) {
+                        "build" -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"" +
+                                        rootProject.ext["debugBuildAppCheckToken"]
+                                            as String + "\"",
+                                    "debug token",
+                                ),
+                            )
+                        }
 
-                    "staging" -> {
-                        variant.buildConfigFields?.put(
-                            "AppCheckDebugSecret",
-                            BuildConfigField(
-                                "String",
-                                "\"" +
-                                    rootProject.ext["debugStagingAppCheckToken"]
-                                        as String + "\"",
-                                "debug token",
-                            ),
-                        )
-                    }
+                        "staging" -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"" +
+                                        rootProject.ext["debugStagingAppCheckToken"]
+                                            as String + "\"",
+                                    "debug token",
+                                ),
+                            )
+                        }
 
-                    else -> {
-                        variant.buildConfigFields?.put(
-                            "AppCheckDebugSecret",
-                            BuildConfigField(
-                                "String",
-                                "\"\"",
-                                "debug token",
-                            ),
-                        )
+                        else -> {
+                            it.buildConfigFields?.put(
+                                "AppCheckDebugSecret",
+                                BuildConfigField(
+                                    "String",
+                                    "\"\"",
+                                    "debug token",
+                                ),
+                            )
+                        }
                     }
                 }
             }
-            variant.buildConfigFields?.put(
-                "BUILD_WALLET_MOCK",
-                BuildConfigField("boolean", useMock.toString(), "Enable wallet mock for testing"),
-            )
         }
     }
 }
@@ -208,6 +205,7 @@ dependencies {
         projects.featureflags,
         projects.core,
         projects.features,
+        projects.librariesMockWalletSdk,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
         libs.bundles.firebase,

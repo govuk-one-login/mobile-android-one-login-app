@@ -9,7 +9,6 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import kotlinx.coroutines.flow.MutableStateFlow
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.onelogin.core.R
@@ -19,11 +18,8 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
-import uk.gov.logging.impl.performance.NoOpPerformanceMonitor
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
-import uk.gov.onelogin.features.developer.ui.securestore.SecureStoreDevOptionsRepository
-import uk.gov.onelogin.wallet.mock.WalletMock
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -40,7 +36,6 @@ object WalletModule {
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
-        secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository,
     ): WalletSdk {
         val config =
             WalletSdk.Configuration(
@@ -51,27 +46,13 @@ object WalletModule {
                 logger = logger,
                 networkService = networkService,
             )
-        val realWalletSdk = WalletSdkImpl(navigator, config, context)
-
-        val configV2 = WalletSdk.ConfigurationV2(
-            clientId = config.clientId,
-            networkService = config.networkService,
-            analyticsLogger = config.analyticsLogger,
-            localAuthManger = config.localAuthManger,
-            deleteAllDataUseCase = config.deleteAllDataUseCase,
-            logger = config.logger,
-            monitor = NoOpPerformanceMonitor,
-            trustedReaderCertificates = emptyList(),
-        )
-        val mockWalletSdk = WalletMock(configV2, MutableStateFlow(false))
-
-        return WalletSdkWrapper(realWalletSdk, mockWalletSdk, secureStoreDevOptionsRepository)
+        return WalletSdkImpl(navigator, config, context)
     }
 }
 
 @InstallIn(ViewModelComponent::class)
 @Module
-interface WalletUiModule {
+fun interface WalletUiModule {
 
     @Binds
     fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl): WalletDisplayer

@@ -8,16 +8,11 @@ interface SecureStoreDevOptionsRepository {
     fun enableLocalDataDeleteFail(failEnabled: Boolean)
 
     fun isLocalDataDeleteFailEnabled(): Boolean
-
-    fun overrideWalletMock(override: Boolean)
-
-    fun isWalletMockOverride(): Boolean
 }
 
 class SecureStoreDevOptionsRepositoryImpl : SecureStoreDevOptionsRepository {
     private var overrideWalletData = false
     private var enableLocalDataDeleteFail = false
-    private var overrideWalletMock = false
 
     override fun overrideWalletDelete(override: Boolean) {
         overrideWalletData = override
@@ -30,10 +25,4 @@ class SecureStoreDevOptionsRepositoryImpl : SecureStoreDevOptionsRepository {
     }
 
     override fun isLocalDataDeleteFailEnabled(): Boolean = enableLocalDataDeleteFail
-
-    override fun overrideWalletMock(override: Boolean) {
-        overrideWalletMock = override
-    }
-
-    override fun isWalletMockOverride(): Boolean = overrideWalletMock
 }

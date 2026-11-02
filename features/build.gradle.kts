@@ -1,5 +1,3 @@
-import com.android.build.api.variant.BuildConfigField
-
 plugins {
     id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.ktlint)
@@ -97,18 +95,6 @@ android {
     }
     testFixtures {
         enable = true
-    }
-}
-
-androidComponents {
-    onVariants { variant ->
-        variant.flavorName?.let { flavourName ->
-            val useMock = flavourName == "build"
-            variant.buildConfigFields?.put(
-                "BUILD_WALLET_MOCK",
-                BuildConfigField("boolean", useMock.toString(), "Enable wallet mock for testing"),
-            )
-        }
     }
 }
 
