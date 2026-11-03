@@ -1,0 +1,111 @@
+name: On Push (Maestro Spike)
+on:
+  push:
+    branches:
+      - spike/maestro
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: 21
+  REPORT_RETENTION_DAYS: 1
+
+jobs:
+  set-up:
+    name: Run Maestro Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+
+    steps:
+      - name: Run checkout github action
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          lfs: 'true'
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Setup GitHub Runner workflow
+        uses: ./mobile-android-pipelines/actions/setup-runner
+        with:
+          jdk-version: ${{ env.JAVA_VERSION }}
+
+      - name: Prepare Android SDK
+        uses: android-actions/setup-android@be39fa834029ff78f1a44aa3bb0819b8fc2bd8fd
+        with:
+          packages: 'platform-tools emulator system-images;android-35;google_apis;x86_64'
+          log-accepted-android-sdk-licenses: 'false'
+
+      - name: Create emulator
+        shell: bash
+        run: |
+          echo no | avdmanager create avd \
+            --name maestro \
+            --package "system-images;android-35;google_apis;x86_64"
+
+      - name: Install Maestro runner
+        shell: bash
+        run: |
+          curl -fsSL https://open.devicelab.dev/install/maestro-runner \
+            | bash -s -- --version 1.1.29
+
+      # - name: Start emulator and wait for Android
+      #   timeout-minutes: 6
+      #   shell: bash
+      #   run: |
+      #     adb start-server
+
+      #     "$ANDROID_HOME/emulator/emulator" \
+      #       -avd maestro \
+      #       -port 5554 \
+      #       -no-window \
+      #       -no-audio \
+      #       -no-boot-anim \
+      #       -no-snapshot \
+      #       > "$RUNNER_TEMP/maestro-emulator.log" 2>&1 &
+      #     emulator_pid=$!
+      #     boot_deadline=$((SECONDS + 300))
+
+      #     while (( SECONDS < boot_deadline )); do
+      #       if ! kill -0 "$emulator_pid" 2>/dev/null; then
+      #         echo "::error::The emulator exited during startup."
+      #         tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
+      #         exit 1
+      #       fi
+
+      #       if timeout 5s adb -s emulator-5554 \
+      #           shell getprop sys.boot_completed 2>/dev/null \
+      #           | tr -d '\r' | grep -qx '1'; then
+      #         echo "Android has finished booting."
+      #         exit 0
+      #       fi
+
+      #       sleep 2
+      #     done
+
+      #     echo "::error::Android did not finish booting within 300 seconds."
+      #     tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
+      #     exit 1
+
+      - name: Run Maestro
+        env:
+          MAESTRO_RUNNER_NO_TELEMETRY: "1"
+          DO_NOT_TRACK: "1"
+        shell: bash
+        run: |
+          "$HOME/.maestro-runner/bin/maestro-runner" \
+            --platform android \
+            --start-emulator "maestro" \
+            --artifacts always \
+            test ./flow.yml
+
+      - name: Upload Maestro reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-test-reports
+          path: reports/
+          retention-days: ${{ env.REPORT_RETENTION_DAYS }}

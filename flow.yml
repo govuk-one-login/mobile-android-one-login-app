@@ -1,0 +1,21 @@
+# pick_first_image.yaml
+# Requirements: Images must already exist in the device gallery
+# Strategy: Attempt platform-specific selectors with 'optional: true'
+
+appId: demo-app
+---
+# Step 1: Android Media Selection
+# Different Android versions use different underlying file managers.
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      # Targets the modern Android SDK 33/34 Media Provider
+      - tapOn:
+          id: 'com.google.android.providers.media.module:id/icon_thumbnail'
+          optional: true
+
+      # Fallback for older SDK 30 (DocumentsUI) selector
+      - tapOn:
+          id: 'com.google.android.documentsui:id/thumbnail'
+          optional: true
