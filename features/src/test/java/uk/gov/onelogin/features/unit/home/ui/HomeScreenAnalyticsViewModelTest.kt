@@ -40,7 +40,7 @@ class HomeScreenAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.HOME,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         logger = mock()
         domain = context.getEnglishString(R.string.app_oneLoginCardLinkUrl)
@@ -58,7 +58,7 @@ class HomeScreenAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the home screen
         viewModel.trackScreen()
@@ -67,7 +67,7 @@ class HomeScreenAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(event, FALSE)
+            GAUtils.containsIsError(event, FALSE),
         )
     }
 
@@ -79,7 +79,7 @@ class HomeScreenAnalyticsViewModelTest {
                 isExternal = true,
                 domain = domain,
                 text = linkText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking redirect to "Using your ..." web page
         viewModel.trackLink()
@@ -93,7 +93,7 @@ class HomeScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = back,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the hardware back button
         viewModel.trackBackButton()

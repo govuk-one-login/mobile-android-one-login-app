@@ -51,7 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
@@ -125,7 +125,9 @@ fun SettingsScreen(
                     trackOpenSourceButton = { analyticsViewModel.trackOpenSourceButton() },
                     trackSignOutButton = { analyticsViewModel.trackSignOutButton() },
                     trackAddDocumentsLink = { analyticsViewModel.trackAddDocumentsLink() },
-                    trackTermsAndConditionsLink = { analyticsViewModel.trackTermsAndConditionsLink() },
+                    trackTermsAndConditionsLink = {
+                        analyticsViewModel.trackTermsAndConditionsLink()
+                    },
                 ),
             uriHandler = uriHandler,
             settingsScreenLinks = settingsScreenLinks,
@@ -388,10 +390,7 @@ internal fun AboutTheAppSection(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-private fun HeadingRow(
-    @StringRes text: Int,
-    traversalIndex: Float,
-) {
+private fun HeadingRow(@StringRes text: Int, traversalIndex: Float) {
     GdsHeading(
         text = stringResource(text),
         textColour = MaterialTheme.colorScheme.onBackground,
@@ -470,16 +469,12 @@ private fun LinkRow(
         }
     }
     HorizontalDivider(
-        color = Dividers.row.toMappedColors()
+        color = Dividers.row.toMappedColors(),
     )
 }
 
 @Composable
-internal fun PreferenceToggleRow(
-    @StringRes title: Int,
-    checked: Boolean,
-    onToggle: () -> Unit,
-) {
+internal fun PreferenceToggleRow(@StringRes title: Int, checked: Boolean, onToggle: () -> Unit) {
     var toggle by remember { mutableStateOf(false) }
     toggle = checked
     Row(

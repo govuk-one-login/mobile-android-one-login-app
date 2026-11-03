@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -20,6 +20,7 @@ import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
@@ -27,7 +28,6 @@ import uk.gov.android.ui.theme.meta.ScreenPreview
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
-import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 @Preview
@@ -63,14 +63,14 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
             GdsIcon(
                 image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
                 contentDescription = stringResource(patternsR.string.error_icon_description),
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         title = { padding ->
             GdsHeading(
                 text = stringResource(R.string.app_signInErrorTitle),
                 textAlign = GdsHeadingAlignment.CenterAligned,
-                modifier = Modifier.errorBodyItemModifier(padding)
+                modifier = Modifier.errorBodyItemModifier(padding),
             )
         },
         body = { padding ->
@@ -79,7 +79,7 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
                     text = bodyContent[index],
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.errorBodyItemModifier(padding)
+                    modifier = Modifier.errorBodyItemModifier(padding),
                 )
             }
         },
@@ -89,7 +89,7 @@ private fun SignInErrorBody(onPrimary: () -> Unit) {
                 text = text,
                 buttonType = ButtonTypeV2.Primary(),
                 onClick = onPrimary,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
         },
     )

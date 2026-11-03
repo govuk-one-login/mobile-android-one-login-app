@@ -14,10 +14,7 @@ import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
  */
 sealed interface WalletScreenState {
 
-
     data object Loading : WalletScreenState
 
-    data class Display(
-        val walletDisplayer: WalletDisplayer,
-    ) : WalletScreenState
+    data class Display(val walletDisplayer: WalletDisplayer) : WalletScreenState
 }

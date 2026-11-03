@@ -5,6 +5,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +18,6 @@ import uk.gov.onelogin.features.FragmentActivityTestCase
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccess
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccessPreview
 import uk.gov.onelogin.features.signout.ui.success.SignOutSuccessViewModel
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class SignOutSuccessScreenTest : FragmentActivityTestCase() {

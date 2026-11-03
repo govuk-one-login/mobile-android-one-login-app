@@ -13,7 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.theme.m3.defaultColors
 import uk.gov.android.ui.theme.m3.toMappedColors

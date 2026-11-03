@@ -4,14 +4,12 @@ import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import uk.gov.onelogin.features.BaseScreenshotTest
+import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
 import uk.gov.onelogin.features.error.ui.signout.SignOutPreview
 
 @RunWith(Parameterized::class)
-class SignOutErrorScreenshotTest(
-    nightMode: NightMode,
-    locale: String
-) : BaseScreenshotTest(nightMode, locale) {
+class SignOutErrorScreenshotTest(nightMode: NightMode, locale: String) :
+    BaseScreenshotTest(nightMode, locale) {
     override val generateComposeLayout: @Composable () -> Unit = {
         SignOutPreview()
     }

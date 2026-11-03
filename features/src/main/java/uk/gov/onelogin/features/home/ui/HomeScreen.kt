@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.GdsCard
 import uk.gov.android.ui.patterns.utils.ModifierExtensions.keyboardScroll
@@ -91,14 +91,14 @@ private fun HomeScreenBody(
                     .verticalScroll(scrollState)
                     .keyboardScroll(scrollState)
                     .windowInsetsPadding(WindowInsets.displayCutout),
-            verticalArrangement = Arrangement.spacedBy(smallPadding)
+            verticalArrangement = Arrangement.spacedBy(smallPadding),
         ) {
             if (proveYourIdentityCardEnabled) {
                 proveYourIdentityCard()
             }
             WelcomeCard()
             HowToProveYourIdentityCard(
-                onClick = onHowToProveYourIdentityClick
+                onClick = onHowToProveYourIdentityClick,
             )
             if (DeveloperTools.IS_DEVELOPER_PANEL_ENABLED) {
                 TextButton(
@@ -112,9 +112,7 @@ private fun HomeScreenBody(
 }
 
 @Composable
-private fun WelcomeCard(
-    modifier: Modifier = Modifier
-) = GdsCard(
+private fun WelcomeCard(modifier: Modifier = Modifier) = GdsCard(
     title = stringResource(R.string.app_welcomeTileHeader),
     body = stringResource(R.string.app_welcomeTileBody1),
     displayPrimary = false,
@@ -147,7 +145,7 @@ internal fun HomeScreenWithProveYourIdentityCardPreview() {
                     title = "Prove your identity",
                     body = "This is a placeholder",
                     buttonText = "Continue proving your identity",
-                    onClick = {}
+                    onClick = {},
                 )
             },
         )

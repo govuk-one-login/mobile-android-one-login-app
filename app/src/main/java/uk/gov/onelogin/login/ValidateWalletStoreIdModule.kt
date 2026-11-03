@@ -11,5 +11,7 @@ import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalle
 @InstallIn(ViewModelComponent::class)
 interface ValidateWalletStoreIdModule {
     @Binds
-    fun bindsValidateWalletStoreId(validateWalletStoreIdImpl: ValidateWalletStoreIdImpl): ValidateWalletStoreId
+    fun bindsValidateWalletStoreId(
+        validateWalletStoreIdImpl: ValidateWalletStoreIdImpl,
+    ): ValidateWalletStoreId
 }

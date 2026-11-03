@@ -44,7 +44,8 @@ class SystemTimeProvider : TimeProvider {
         return result
     }
 
-    override fun calculateExpiryTime(expiredInSeconds: Long): Long = Instant.now().epochSecond + expiredInSeconds
+    override fun calculateExpiryTime(expiredInSeconds: Long): Long =
+        Instant.now().epochSecond + expiredInSeconds
 
     companion object {
         private const val THIRTY: Long = 30

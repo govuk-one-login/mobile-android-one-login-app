@@ -28,36 +28,32 @@ class HelloWorldApiCallTest {
     }
 
     @Test
-    fun `happy path successful call returns hello world text`() =
-        runTest {
-            stubNetworkService.setSuccessResponse(200, "Hello World!")
-            val response = helloWorldService.happyPath()
+    fun `happy path successful call returns hello world text`() = runTest {
+        stubNetworkService.setSuccessResponse(200, "Hello World!")
+        val response = helloWorldService.happyPath()
 
-            assertEquals("Hello World!", response)
-        }
-
-    @Test
-    fun `happy path error call returns failure`() =
-        runTest {
-            stubNetworkService.setFailureResponse(400, "Bad")
-            val response = helloWorldService.happyPath()
-            assertThat(response, containsString("400"))
-        }
+        assertEquals("Hello World!", response)
+    }
 
     @Test
-    fun `error path successful call returns hello world text`() =
-        runTest {
-            stubNetworkService.setSuccessResponse(200, "Hello World!")
-            val response = helloWorldService.errorPath()
-
-            assertEquals("Hello World!", response)
-        }
+    fun `happy path error call returns failure`() = runTest {
+        stubNetworkService.setFailureResponse(400, "Bad")
+        val response = helloWorldService.happyPath()
+        assertThat(response, containsString("400"))
+    }
 
     @Test
-    fun `error path error call returns failure`() =
-        runTest {
-            stubNetworkService.setFailureResponse(400, "Bad")
-            val response = helloWorldService.errorPath()
-            assertThat(response, containsString("400"))
-        }
+    fun `error path successful call returns hello world text`() = runTest {
+        stubNetworkService.setSuccessResponse(200, "Hello World!")
+        val response = helloWorldService.errorPath()
+
+        assertEquals("Hello World!", response)
+    }
+
+    @Test
+    fun `error path error call returns failure`() = runTest {
+        stubNetworkService.setFailureResponse(400, "Bad")
+        val response = helloWorldService.errorPath()
+        assertThat(response, containsString("400"))
+    }
 }

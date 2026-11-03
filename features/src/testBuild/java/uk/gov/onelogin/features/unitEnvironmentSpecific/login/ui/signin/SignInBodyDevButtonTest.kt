@@ -21,7 +21,7 @@ class SignInBodyDevButtonTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInBody(
                 onSignIn = {},
-                openDevMenu = { actual = true }
+                openDevMenu = { actual = true },
             )
         }
 

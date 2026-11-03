@@ -31,7 +31,7 @@ class AvailableFeaturesTest {
         featureFlagList.forEach { classInfo ->
             if (classInfo.isEnum) {
                 foundFeatureFlags.addAll(
-                    classInfo.enumConstantObjects as List<out FeatureFlag>
+                    classInfo.enumConstantObjects as List<out FeatureFlag>,
                 )
             }
         }
@@ -68,7 +68,7 @@ class AvailableFeaturesTest {
     fun `to String`() {
         Assertions.assertEquals(
             "AvailableFeatures[ENABLED, ENABLED]",
-            availableFeatures.toString()
+            availableFeatures.toString(),
         )
     }
 
@@ -86,13 +86,13 @@ class AvailableFeaturesTest {
         var result = ClassInfoList()
         val appInfo =
             ClassGraph().enableAllInfo().acceptPackages(
-                "uk.gov"
+                "uk.gov",
             )
         try {
             val scanResult = appInfo.scan()
             result = scanResult.getClassesImplementing(FeatureFlag::class.java)
         } catch (
-            @Suppress("TooGenericExceptionCaught") exception: Exception
+            @Suppress("TooGenericExceptionCaught") exception: Exception,
         ) {
             Assertions.fail(exception.message)
         }

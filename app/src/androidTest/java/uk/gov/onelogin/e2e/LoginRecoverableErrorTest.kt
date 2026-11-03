@@ -23,6 +23,9 @@ import androidx.test.espresso.intent.Intents
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
+import javax.inject.Named
+import kotlin.io.encoding.ExperimentalEncodingApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -66,9 +69,6 @@ import uk.gov.onelogin.login.VerifyIdModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
-import javax.inject.Inject
-import javax.inject.Named
-import kotlin.io.encoding.ExperimentalEncodingApi
 
 @Suppress("SwallowedException")
 @HiltAndroidTest

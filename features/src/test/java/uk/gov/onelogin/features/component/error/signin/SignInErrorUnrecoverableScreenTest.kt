@@ -41,14 +41,14 @@ class SignInErrorUnrecoverableScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInErrorUnrecoverableScreen(
                 analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
         composeTestRule.onNode(title).assertIsDisplayed()
         composeTestRule.onNode(body).assertIsDisplayed()
         composeTestRule.onNode(button).assertIsNotDisplayed()
         verify(analytics).logEventV3Dot1(
-            SignInErrorAnalyticsViewModel.Companion.makeUnrecoverableScreenEvent(context)
+            SignInErrorAnalyticsViewModel.Companion.makeUnrecoverableScreenEvent(context),
         )
     }
 
@@ -57,11 +57,13 @@ class SignInErrorUnrecoverableScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInErrorUnrecoverableScreen(
                 analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
         Espresso.pressBack()
-        verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeBackEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeBackEvent(context))
     }
 
     @Test

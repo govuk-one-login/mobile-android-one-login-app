@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -20,6 +19,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.mockito.kotlin.wheneverBlocking
+import org.robolectric.annotation.Config
 import uk.gov.android.network.online.OnlineChecker
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -36,6 +36,7 @@ import uk.gov.onelogin.features.login.domain.refresh.RefreshExchange
 import uk.gov.onelogin.features.login.domain.refresh.RefreshExchangeResult
 import uk.gov.onelogin.features.login.domain.signin.locallogin.HandleLocalLogin
 import uk.gov.onelogin.features.login.ui.signin.splash.LoadingSplashScreenPreview
+import uk.gov.onelogin.features.login.ui.signin.splash.PROGRESS_INDICATOR_TEST_TAG
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreen
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenAnalyticsViewModel
 import uk.gov.onelogin.features.login.ui.signin.splash.SplashScreenPreview
@@ -45,9 +46,9 @@ import uk.gov.onelogin.features.optin.data.OptInRepository
 import uk.gov.onelogin.features.optin.ui.NOTICE_TAG
 import uk.gov.onelogin.features.optin.ui.OptInRequirementViewModel
 import uk.gov.onelogin.features.signout.domain.SignOutUseCase
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
+@Config(qualifiers = "large-port") // Remove after fixing DCMAW-23546
 class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var handleLocalLogin: HandleLocalLogin
     private lateinit var navigator: Navigator
@@ -67,8 +68,6 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
     private lateinit var unlockButton: SemanticsMatcher
     private lateinit var privacyNotice: SemanticsMatcher
     private lateinit var loadingIndicator: SemanticsMatcher
-    private lateinit var loadingText: SemanticsMatcher
-    private lateinit var loadingContentDescription: SemanticsMatcher
 
     @Before
     fun setUp() {
@@ -90,7 +89,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
                 autoInitialiseSecureStore,
                 onlineChecker,
                 refreshExchange,
-                getTokenExpiry
+                getTokenExpiry,
             )
         analytics = mock()
         analyticsViewModel = SplashScreenAnalyticsViewModel(context, analytics)
@@ -102,15 +101,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         crownIcon = hasTestTag(resources.getString(R.string.splashCrownIconTestTag))
         unlockButton = hasTestTag(resources.getString(R.string.splashUnlockBtnTestTag))
         privacyNotice = hasTestTag(NOTICE_TAG)
-        loadingIndicator =
-            hasTestTag(
-                resources.getString(R.string.splashLoadingSpinnerTestTag)
-            )
-        loadingText = hasText(resources.getString(R.string.app_splashScreenLoadingIndicatorText))
-        loadingContentDescription =
-            hasContentDescription(
-                resources.getString(R.string.app_loading_content_desc)
-            )
+        loadingIndicator = hasTestTag(PROGRESS_INDICATOR_TEST_TAG)
     }
 
     @Test
@@ -132,7 +123,11 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         wheneverBlocking { getTokenExpiry() }.thenReturn(1L)
 
         wheneverBlocking { refreshExchange.getTokens(any(), any()) }.thenAnswer {
-            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.UserCancelledBioPrompt)
+            (
+                it.arguments[1] as (
+                    RefreshExchangeResult,
+                ) -> Unit
+                ).invoke(RefreshExchangeResult.UserCancelledBioPrompt)
         }
 
         // When
@@ -141,15 +136,17 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         }
 
         // Then
-        composeTestRule.waitUntil(15000) {
-            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
-        }
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
 
         // And
         wheneverBlocking {
             refreshExchange.getTokens(any(), any())
         }.thenAnswer {
-            (it.arguments[1] as (RefreshExchangeResult) -> Unit).invoke(RefreshExchangeResult.FirstTimeUser)
+            (
+                it.arguments[1] as (
+                    RefreshExchangeResult,
+                ) -> Unit
+                ).invoke(RefreshExchangeResult.FirstTimeUser)
         }
 
         // When
@@ -185,10 +182,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
-        assertTrue(
-            composeTestRule.onAllNodes(unlockButton).fetchSemanticsNodes().isNotEmpty()
-        )
-        composeTestRule.onNode(loadingText).assertIsNotDisplayed()
+        composeTestRule.onNode(unlockButton).assertIsDisplayed()
         composeTestRule.onNode(loadingIndicator).assertIsNotDisplayed()
     }
 
@@ -201,9 +195,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         composeTestRule.onNode(privacyNotice).assertIsNotDisplayed()
         composeTestRule.onNode(logo).assertIsDisplayed()
         composeTestRule.onNode(crownIcon).assertIsDisplayed()
-        composeTestRule.onAllNodes(loadingText).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingIndicator).assertCountEquals(2)
-        composeTestRule.onAllNodes(loadingContentDescription).assertCountEquals(2)
+        composeTestRule.onNode(loadingIndicator).assertIsDisplayed()
     }
 
     @Test
@@ -222,7 +214,7 @@ class SplashScreenWithRefreshExchangeTest : FragmentActivityTestCase() {
         }
 
         verify(analytics).logEventV3Dot1(
-            SplashScreenAnalyticsViewModel.makeBackEvent(context)
+            SplashScreenAnalyticsViewModel.makeBackEvent(context),
         )
     }
 }

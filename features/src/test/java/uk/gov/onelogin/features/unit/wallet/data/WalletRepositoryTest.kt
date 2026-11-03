@@ -1,9 +1,9 @@
 package uk.gov.onelogin.features.unit.wallet.data
 
+import kotlin.test.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import uk.gov.onelogin.features.wallet.data.WalletRepositoryImpl
-import kotlin.test.assertTrue
 
 class WalletRepositoryTest {
     val sut = WalletRepositoryImpl()

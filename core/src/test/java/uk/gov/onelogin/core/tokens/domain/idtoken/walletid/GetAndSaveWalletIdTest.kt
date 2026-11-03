@@ -1,5 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.walletid
 
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -8,7 +9,6 @@ import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletI
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import uk.gov.onelogin.core.tokens.utils.JwtExtractorImpl
-import kotlin.test.assertEquals
 
 class GetAndSaveWalletIdTest {
     private val expectedWalletId = "test_wallet_id"
@@ -30,24 +30,21 @@ class GetAndSaveWalletIdTest {
     val sut = ExtractAndSaveWalletIdImpl(extractFromJson, saveToOpenSecureStore, logger)
 
     @Test
-    fun `success scenario`() =
-        runTest {
-            val emailResponse = sut.extractAndSave(idTokenWithWalletId)
-            assertEquals(expectedWalletId, emailResponse)
-        }
+    fun `success scenario`() = runTest {
+        val emailResponse = sut.extractAndSave(idTokenWithWalletId)
+        assertEquals(expectedWalletId, emailResponse)
+    }
 
     @Test
-    fun `missing wallet id scenario`() =
-        runTest {
-            val emailResponse = sut.extractAndSave(idTokenWithoutWalletId)
-            assertEquals(null, emailResponse)
-        }
+    fun `missing wallet id scenario`() = runTest {
+        val emailResponse = sut.extractAndSave(idTokenWithoutWalletId)
+        assertEquals(null, emailResponse)
+    }
 
     @Test
-    fun `malformed Id token scenario`() =
-        runTest {
-            val emailResponse = sut.extractAndSave("not an id token")
-            assertEquals(null, emailResponse)
-            assertEquals(1, logger.size)
-        }
+    fun `malformed Id token scenario`() = runTest {
+        val emailResponse = sut.extractAndSave("not an id token")
+        assertEquals(null, emailResponse)
+        assertEquals(1, logger.size)
+    }
 }

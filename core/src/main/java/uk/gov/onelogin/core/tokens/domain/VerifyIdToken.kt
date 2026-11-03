@@ -1,5 +1,7 @@
 package uk.gov.onelogin.core.tokens.domain
 
+import javax.inject.Inject
+import kotlin.io.encoding.Base64
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -12,89 +14,41 @@ import uk.gov.onelogin.core.tokens.data.LoginException
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
-import javax.inject.Inject
-import kotlin.io.encoding.Base64
 
 interface VerifyIdToken {
-    suspend operator fun invoke(
-        idToken: String,
-        jwksUrl: String,
-    ): Boolean
+    suspend operator fun invoke(idToken: String, jwksUrl: String): Boolean
 }
 
 @Suppress("TooGenericExceptionCaught")
 class VerifyIdTokenImpl
-    @Inject
-    constructor(
-        private val networkService: NetworkService,
-        private val verifier: JwtVerifier,
-        private val extractEmail: ExtractEmail,
-        private val extractAndSaveWalletId: ExtractAndSaveWalletId,
-        private val extractAndVerifyIssuer: ExtractAndVerifyIssuer,
-        private val logger: Logger,
-    ) : VerifyIdToken {
-        override suspend fun invoke(
-            idToken: String,
-            jwksUrl: String,
-        ): Boolean {
-            val isIssValid = extractAndVerifyIssuer.verify(idToken)
-            val isWalletIdValid = extractAndSaveWalletId.extractAndSave(idToken) != null
-            val verified =
-                isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid && isIssValid
-            return verified
-        }
+@Inject
+constructor(
+    private val networkService: NetworkService,
+    private val verifier: JwtVerifier,
+    private val extractEmail: ExtractEmail,
+    private val extractAndSaveWalletId: ExtractAndSaveWalletId,
+    private val extractAndVerifyIssuer: ExtractAndVerifyIssuer,
+    private val logger: Logger,
+) : VerifyIdToken {
+    override suspend fun invoke(idToken: String, jwksUrl: String): Boolean {
+        val isIssValid = extractAndVerifyIssuer.verify(idToken)
+        val isWalletIdValid = extractAndSaveWalletId.extractAndSave(idToken) != null
+        val verified =
+            isEmailValid(idToken) && isIdTokenJwksValid(jwksUrl, idToken) && isWalletIdValid &&
+                isIssValid
+        return verified
+    }
 
-        private fun isEmailValid(idToken: String): Boolean = extractEmail(idToken) != null
+    private fun isEmailValid(idToken: String): Boolean = extractEmail(idToken) != null
 
-        private suspend fun isIdTokenJwksValid(
-            jwksUrl: String,
-            idToken: String,
-        ): Boolean {
-            var verified = false
+    private suspend fun isIdTokenJwksValid(jwksUrl: String, idToken: String): Boolean {
+        var verified = false
 
-            val response = networkService.makeRequest(ApiRequest.Get(jwksUrl))
+        val response = networkService.makeRequest(ApiRequest.Get(jwksUrl))
 
-            if (response is ApiResponse.Success) {
-                try {
-                    verified = useJwksResponseToVerify(response.body, idToken)
-                } catch (e: Exception) {
-                    val loginException = LoginException(e)
-                    logger.error(
-                        loginException::class.java.simpleName,
-                        e.toString(),
-                        loginException,
-                    )
-                }
-            }
-            return verified
-        }
-
-        private fun useJwksResponseToVerify(
-            response: String,
-            idToken: String,
-        ): Boolean {
-            getKeyId(idToken)?.let { keyId ->
-                getKey(keyId, response)?.let { key ->
-                    return verifier.verify(
-                        idToken,
-                        key,
-                    )
-                }
-            }
-            return false
-        }
-
-        private fun getKey(
-            keyId: String,
-            jwksResponse: String,
-        ): String? {
+        if (response is ApiResponse.Success) {
             try {
-                val data = Json.parseToJsonElement(jwksResponse)
-                data.jsonObject["keys"]?.jsonArray?.forEach {
-                    if (it.jsonObject["kid"].toString() == keyId) {
-                        return it.jsonObject.toString()
-                    }
-                }
+                verified = useJwksResponseToVerify(response.body, idToken)
             } catch (e: Exception) {
                 val loginException = LoginException(e)
                 logger.error(
@@ -103,24 +57,56 @@ class VerifyIdTokenImpl
                     loginException,
                 )
             }
+        }
+        return verified
+    }
+
+    private fun useJwksResponseToVerify(response: String, idToken: String): Boolean {
+        getKeyId(idToken)?.let { keyId ->
+            getKey(keyId, response)?.let { key ->
+                return verifier.verify(
+                    idToken,
+                    key,
+                )
+            }
+        }
+        return false
+    }
+
+    private fun getKey(keyId: String, jwksResponse: String): String? {
+        try {
+            val data = Json.parseToJsonElement(jwksResponse)
+            data.jsonObject["keys"]?.jsonArray?.forEach {
+                if (it.jsonObject["kid"].toString() == keyId) {
+                    return it.jsonObject.toString()
+                }
+            }
+        } catch (e: Exception) {
+            val loginException = LoginException(e)
+            logger.error(
+                loginException::class.java.simpleName,
+                e.toString(),
+                loginException,
+            )
+        }
+        return null
+    }
+
+    private fun getKeyId(idToken: String): String? {
+        try {
+            val headerEncoded = idToken.split(".")[0]
+            val header = String(Base64.decode(headerEncoded))
+            val data = Json.parseToJsonElement(header)
+            // the kid returned here will be surrounded by double quotes
+            return data.jsonObject["kid"].toString()
+        } catch (e: Exception) {
+            val loginException = LoginException(e)
+            logger.error(
+                loginException::class.java.simpleName,
+                e.toString(),
+                loginException,
+            )
             return null
         }
-
-        private fun getKeyId(idToken: String): String? {
-            try {
-                val headerEncoded = idToken.split(".")[0]
-                val header = String(Base64.decode(headerEncoded))
-                val data = Json.parseToJsonElement(header)
-                // the kid returned here will be surrounded by double quotes
-                return data.jsonObject["kid"].toString()
-            } catch (e: Exception) {
-                val loginException = LoginException(e)
-                logger.error(
-                    loginException::class.java.simpleName,
-                    e.toString(),
-                    loginException,
-                )
-                return null
-            }
-        }
     }
+}

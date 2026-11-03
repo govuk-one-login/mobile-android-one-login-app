@@ -1,4 +1,4 @@
-name: Run checks (tests and style checks)
+name: Check
 
 on:
   pull_request:
@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   set-up:
-    name: Set-up and generate version name and version code
+    name: Generate versions
     runs-on: ubuntu-24.04
     outputs:
       version-code: ${{ steps.version-code.outputs.version-code }}
@@ -54,7 +54,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   style-checks:
-    name: Run style (detekt, lint & vale) checks
+    name: Run lint and style checks
     runs-on: ubuntu-24.04
     needs:
       - set-up
@@ -256,7 +256,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   snapshot-checks:
-    name: Run snapshot/ screenshot tests
+    name: Run screenshot tests
     runs-on: ubuntu-24.04
     needs:
       - set-up
@@ -295,7 +295,7 @@ jobs:
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
   sonar-analysis:
-    name: Run sonar analysis and check sonar quality gate
+    name: Scan with Sonar
     runs-on: ubuntu-24.04
     needs:
       - set-up

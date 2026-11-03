@@ -3,6 +3,7 @@ package uk.gov.onelogin.features.wallet.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,9 +11,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.yield
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetWalletStoreId
-import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
-import javax.inject.Inject
+import uk.gov.onelogin.features.login.domain.validateWalletStoreId.ValidateWalletStoreId
 
 /**
  * ViewModel for [WalletScreen].
@@ -26,15 +26,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class WalletScreenViewModel
-    @Inject
-    constructor(
-        private val walletSdk: WalletSdk,
-        private val getWalletStoreId: GetWalletStoreId,
-        private val walletDisplayer: WalletDisplayer,
-    ) : ViewModel() {
+@Inject
+constructor(
+    private val walletSdk: WalletSdk,
+    private val getWalletStoreId: GetWalletStoreId,
+    private val walletDisplayer: WalletDisplayer,
+) : ViewModel() {
 
     private val _state: MutableStateFlow<WalletScreenState> = MutableStateFlow(
-        WalletScreenState.Loading
+        WalletScreenState.Loading,
     )
     val state: StateFlow<WalletScreenState> = _state.asStateFlow()
 

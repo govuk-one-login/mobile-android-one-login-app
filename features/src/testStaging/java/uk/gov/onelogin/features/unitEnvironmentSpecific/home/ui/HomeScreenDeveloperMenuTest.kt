@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
-import uk.gov.android.network.service.NetworkService
+import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.logging.api.Logger
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.onelogin.core.navigation.domain.Navigator
@@ -53,11 +53,11 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
                 analyticsLogger = analyticsLogger,
                 initialConfig = TestUtils.criSdkConfig,
                 logger = logger,
-                applicationContext = context
+                applicationContext = context,
             )
         featureFlags =
             InMemoryFeatureFlags(
-                setOf()
+                setOf(),
             )
         walletRepository = mock()
         navigator = mock()
@@ -66,7 +66,7 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
                 featureFlags,
                 navigator,
                 walletRepository,
-                criOrchestratorSdk
+                criOrchestratorSdk,
             )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)

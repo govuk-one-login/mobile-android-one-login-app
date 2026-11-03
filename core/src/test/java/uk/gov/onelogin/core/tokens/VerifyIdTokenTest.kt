@@ -1,5 +1,8 @@
 package uk.gov.onelogin.core.tokens
 
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItem
@@ -18,9 +21,6 @@ import uk.gov.onelogin.core.tokens.domain.VerifyIdTokenImpl
 import uk.gov.onelogin.core.tokens.domain.idtoken.email.ExtractEmail
 import uk.gov.onelogin.core.tokens.domain.idtoken.iss.ExtractAndVerifyIssuer
 import uk.gov.onelogin.core.tokens.domain.idtoken.walletId.ExtractAndSaveWalletId
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class VerifyIdTokenTest {
     private val networkService = StubNetworkService()
@@ -77,145 +77,136 @@ class VerifyIdTokenTest {
     }
 
     @Test
-    fun `non 200 response from jwks endpoint`() =
-        runTest {
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setFailureResponse(TestHttpResponse.internalServerError)
-            buildVerifyToken()
+    fun `non 200 response from jwks endpoint`() = runTest {
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setFailureResponse(TestHttpResponse.internalServerError)
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-            assertThat(logger, hasSize(0))
-        }
-
-    @Test
-    fun `unable to verify token`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(false)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, jwksResponse)
-            buildVerifyToken()
-
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-            assertThat(logger, hasSize(0))
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+        assertThat(logger, hasSize(0))
+    }
 
     @Test
-    fun `verifier throws exception`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, jwksResponse)
-            buildVerifyToken()
+    fun `unable to verify token`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(false)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, jwksResponse)
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-            assertThat(logger, hasItem(hasMessage("java.lang.IllegalArgumentException: fail")))
-        }
-
-    @Test
-    fun `idToken json parse throws exception`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, "not a json")
-            buildVerifyToken()
-
-            val result = verifyIdToken("not an id token", "testUrl")
-            assertFalse(result)
-            assertTrue(
-                logger.contains(
-                    "java.lang.IllegalArgumentException: Invalid symbol ' '(40) at index 3",
-                ),
-            )
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+        assertThat(logger, hasSize(0))
+    }
 
     @Test
-    fun `jwks json parse throws exception`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, "not a json")
-            buildVerifyToken()
+    fun `verifier throws exception`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenThrow(IllegalArgumentException("fail"))
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, jwksResponse)
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-            assertTrue(
-                logger.contains(
-                    "kotlinx.serialization.json.JsonDecodingException: " +
-                        "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
-                        "instead at path: \$\nJSON input: not a json",
-                ),
-            )
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+        assertThat(logger, hasItem(hasMessage("java.lang.IllegalArgumentException: fail")))
+    }
 
     @Test
-    fun `id_token successfully verified`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, jwksResponse)
-            buildVerifyToken()
+    fun `idToken json parse throws exception`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, "not a json")
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertTrue(result)
-            assertThat(logger, hasSize(0))
-        }
-
-    @Test
-    fun `verify fails - email missing`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn(null)
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
-            networkService.setSuccessResponse(200, idTokenMissingEmail)
-            buildVerifyToken()
-
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-        }
+        val result = verifyIdToken("not an id token", "testUrl")
+        assertFalse(result)
+        assertTrue(
+            logger.contains(
+                "java.lang.IllegalArgumentException: Invalid symbol ' '(40) at index 3",
+            ),
+        )
+    }
 
     @Test
-    fun `verify fails - wallet id missing`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn(null)
-            networkService.setSuccessResponse(200, idTokenMissingEmail)
-            buildVerifyToken()
+    fun `jwks json parse throws exception`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, "not a json")
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+        assertTrue(
+            logger.contains(
+                "kotlinx.serialization.json.JsonDecodingException: " +
+                    "Unexpected JSON token at offset 5: Expected EOF after parsing, but had a " +
+                    "instead at path: \$\nJSON input: not a json",
+            ),
+        )
+    }
 
     @Test
-    fun `verify fails - iss missing or id token malformed`() =
-        runTest {
-            whenever(extractAndVerifyIssuer.verify(any())).thenReturn(false)
-            whenever(extractEmail.invoke(any())).thenReturn("email")
-            whenever(stubVerifier.verify(any(), any())).thenReturn(true)
-            whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("id")
-            networkService.setSuccessResponse(200, idTokenMissingEmail)
-            buildVerifyToken()
+    fun `id_token successfully verified`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, jwksResponse)
+        buildVerifyToken()
 
-            val result = verifyIdToken(idToken, "testUrl")
-            assertFalse(result)
-        }
+        val result = verifyIdToken(idToken, "testUrl")
+        assertTrue(result)
+        assertThat(logger, hasSize(0))
+    }
+
+    @Test
+    fun `verify fails - email missing`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn(null)
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("wallet_id")
+        networkService.setSuccessResponse(200, idTokenMissingEmail)
+        buildVerifyToken()
+
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+    }
+
+    @Test
+    fun `verify fails - wallet id missing`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(true)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn(null)
+        networkService.setSuccessResponse(200, idTokenMissingEmail)
+        buildVerifyToken()
+
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+    }
+
+    @Test
+    fun `verify fails - iss missing or id token malformed`() = runTest {
+        whenever(extractAndVerifyIssuer.verify(any())).thenReturn(false)
+        whenever(extractEmail.invoke(any())).thenReturn("email")
+        whenever(stubVerifier.verify(any(), any())).thenReturn(true)
+        whenever(extractAndSaveWalletId.extractAndSave(any())).thenReturn("id")
+        networkService.setSuccessResponse(200, idTokenMissingEmail)
+        buildVerifyToken()
+
+        val result = verifyIdToken(idToken, "testUrl")
+        assertFalse(result)
+    }
 
     private fun buildVerifyToken() {
         verifyIdToken =

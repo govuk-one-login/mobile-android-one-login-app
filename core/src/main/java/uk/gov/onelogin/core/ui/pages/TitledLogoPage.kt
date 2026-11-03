@@ -30,10 +30,7 @@ import uk.gov.onelogin.core.ui.components.FlexibleTopBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitledLogoPage(
-    @DrawableRes logo: Int,
-    content: @Composable (PaddingValues) -> Unit,
-) {
+fun TitledLogoPage(@DrawableRes logo: Int, content: @Composable (PaddingValues) -> Unit) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -75,11 +72,10 @@ fun TitledLogoPage(
 }
 
 @Composable
-private fun getAppBarColor(): Color =
-    colorResource(
-        if (isSystemInDarkTheme()) {
-            R.color.govuk_dark_blue
-        } else {
-            R.color.govuk_blue
-        },
-    )
+private fun getAppBarColor(): Color = colorResource(
+    if (isSystemInDarkTheme()) {
+        R.color.govuk_dark_blue
+    } else {
+        R.color.govuk_blue
+    },
+)
