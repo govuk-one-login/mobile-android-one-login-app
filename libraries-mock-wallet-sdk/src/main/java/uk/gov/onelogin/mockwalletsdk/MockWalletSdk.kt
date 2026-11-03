@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import uk.gov.android.ui.componentsv2.warning.GdsWarningText
+import uk.gov.android.ui.theme.m3.ExtraTypography
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.wallet.sdk.WalletSdk
 
@@ -77,8 +78,8 @@ private fun MockWalletContent(deleteCount: Int) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "Mock Wallet (Test Build)",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.Black,
+                    style = ExtraTypography.headlineLargeReg,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
                 if (deleteCount > 0) {
                     GdsWarningText(

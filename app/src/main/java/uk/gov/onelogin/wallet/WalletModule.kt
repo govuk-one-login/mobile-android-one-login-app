@@ -26,7 +26,6 @@ import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 object WalletModule {
     @Suppress("LongParameterList")
     @Provides
-    @Singleton
     fun provideWalletSdk(
         @ApplicationContext
         context: Context,
