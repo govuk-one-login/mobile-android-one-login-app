@@ -10,6 +10,7 @@ import uk.gov.android.authentication.integrity.appcheck.model.AttestationRespons
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
@@ -27,6 +28,7 @@ constructor(
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getFromOpenSecureStore: GetFromOpenSecureStore,
     private val retryCounter: Counter,
+    private val logger: Logger,
 ) : AppIntegrity {
     override suspend fun getClientAttestation(): AttestationResult =
         if (isAttestationCallRequired()) {
