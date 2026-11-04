@@ -98,7 +98,7 @@ jobs:
         run: |
           "$HOME/.maestro-runner/bin/maestro-runner" \
             --platform android \
-            --start-emulator "maestro" \
+            --auto-start-emulator \
             --artifacts always \
             test ./flow.yml
 
