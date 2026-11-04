@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
 import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.onelogin.features.FragmentActivityTestCase
@@ -29,7 +30,6 @@ import uk.gov.onelogin.features.appinfo.AppInfoUtils
 import uk.gov.onelogin.features.error.ui.update.ErrorUpdateRequiredScreen
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorAnalyticsViewModel
 import uk.gov.onelogin.features.error.ui.update.OutdatedAppErrorViewModel
-import uk.gov.android.ui.patterns.R as patternsR
 
 @RunWith(AndroidJUnit4::class)
 class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
@@ -46,7 +46,10 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         analytics = mock()
         analyticsViewModel = OutdatedAppErrorAnalyticsViewModel(context, analytics)
         Intents.init()
-        primaryButton = hasText(context.getString(R.string.app_updateAppButton))
+        primaryButton = hasContentDescription(
+            context.getString(R.string.app_updateAppButton),
+            substring = true,
+        )
     }
 
     @After
@@ -59,24 +62,24 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             ErrorUpdateRequiredScreen(
                 viewModel = viewModel,
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
         composeTestRule.apply {
             onNodeWithContentDescription(
-                resources.getString(patternsR.string.error_icon_description)
+                resources.getString(patternsR.string.error_icon_description),
             ).assertIsDisplayed()
 
             onNodeWithText(
-                resources.getString(R.string.app_updateApp_Title)
+                resources.getString(R.string.app_updateApp_Title),
             ).assertIsDisplayed()
 
             onNodeWithText(
-                resources.getString(R.string.app_updateAppBody1)
+                resources.getString(R.string.app_updateAppBody1),
             ).assertIsDisplayed()
 
             onNodeWithText(
-                resources.getString(R.string.app_updateAppBody2)
+                resources.getString(R.string.app_updateAppBody2),
             ).assertIsDisplayed()
         }
     }
@@ -86,10 +89,12 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             ErrorUpdateRequiredScreen(
                 viewModel = viewModel,
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
-        Intents.intending(IntentMatchers.hasData(AppInfoUtils.Companion.GOOGLE_PLAY_URL)).respondWith(result)
+        Intents.intending(
+            IntentMatchers.hasData(AppInfoUtils.Companion.GOOGLE_PLAY_URL),
+        ).respondWith(result)
         composeTestRule.onNode(primaryButton).performClick()
         Intents.intended(IntentMatchers.hasAction(Intent.ACTION_VIEW))
         Intents.intended(IntentMatchers.hasData(Uri.parse(AppInfoUtils.Companion.GOOGLE_PLAY_URL)))
@@ -100,10 +105,12 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             ErrorUpdateRequiredScreen(
                 viewModel = viewModel,
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
-        val event = OutdatedAppErrorAnalyticsViewModel.Companion.makeUpdateRequiredViewEvent(context)
+        val event = OutdatedAppErrorAnalyticsViewModel.Companion.makeUpdateRequiredViewEvent(
+            context,
+        )
 
         verify(analytics).logEventV3Dot1(event)
     }
@@ -113,11 +120,13 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             ErrorUpdateRequiredScreen(
                 viewModel = viewModel,
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
         val event = OutdatedAppErrorAnalyticsViewModel.Companion.makeUpdateEvent(context)
-        Intents.intending(IntentMatchers.hasData(AppInfoUtils.Companion.GOOGLE_PLAY_URL)).respondWith(result)
+        Intents.intending(
+            IntentMatchers.hasData(AppInfoUtils.Companion.GOOGLE_PLAY_URL),
+        ).respondWith(result)
         composeTestRule.onNode(primaryButton).performClick()
         verify(analytics).logEventV3Dot1(event)
     }
@@ -127,7 +136,7 @@ class ErrorUpdateRequiredErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             ErrorUpdateRequiredScreen(
                 viewModel = viewModel,
-                analyticsViewModel = analyticsViewModel
+                analyticsViewModel = analyticsViewModel,
             )
         }
         val event = OutdatedAppErrorAnalyticsViewModel.Companion.makeBackEvent(context)

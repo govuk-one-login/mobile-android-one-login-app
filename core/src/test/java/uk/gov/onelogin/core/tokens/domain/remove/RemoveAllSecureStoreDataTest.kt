@@ -1,5 +1,6 @@
 package uk.gov.onelogin.core.tokens.domain.remove
 
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,7 +18,6 @@ import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
 import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.extensions.CoroutinesTestExtension
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(CoroutinesTestExtension::class)
@@ -33,41 +33,38 @@ class RemoveAllSecureStoreDataTest {
     }
 
     @Test
-    fun `removes access token and id token`() =
-        runTest {
-            val result = useCase.clean()
+    fun `removes access token and id token`() = runTest {
+        val result = useCase.clean()
 
-            verify(tokenSecureStore).deleteAll()
-            verify(openSecureStore).deleteAll()
-            assertEquals(Result.success(Unit), result)
-            assertThat(logger, hasSize(0))
-        }
-
-    @Test
-    fun `token secure store exception is propagated up`() =
-        runTest {
-            whenever(
-                tokenSecureStore.deleteAll(),
-            ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
-
-            val result = useCase.clean()
-            assertTrue(result.isFailure)
-            assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
-            assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: something went wrong")))
-        }
+        verify(tokenSecureStore).deleteAll()
+        verify(openSecureStore).deleteAll()
+        assertEquals(Result.success(Unit), result)
+        assertThat(logger, hasSize(0))
+    }
 
     @Test
-    fun `open secure store exception is propagated up`() =
-        runTest {
-            whenever(
-                openSecureStore.deleteAll(),
-            ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
+    fun `token secure store exception is propagated up`() = runTest {
+        whenever(
+            tokenSecureStore.deleteAll(),
+        ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
 
-            val result = useCase.clean()
-            assertTrue(result.isFailure)
-            assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
-            assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: something went wrong")))
-        }
+        val result = useCase.clean()
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
+        assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: something went wrong")))
+    }
+
+    @Test
+    fun `open secure store exception is propagated up`() = runTest {
+        whenever(
+            openSecureStore.deleteAll(),
+        ).thenThrow(SecureStorageErrorV2(Exception("something went wrong")))
+
+        val result = useCase.clean()
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is SecureStorageErrorV2)
+        assertTrue(result.exceptionOrNull()?.message!!.contains("something went wrong"))
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: something went wrong")))
+    }
 }

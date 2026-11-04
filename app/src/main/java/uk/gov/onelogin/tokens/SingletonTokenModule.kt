@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsAccessTokenExpiredImpl
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsRefreshTokenExpiredImpl
 import uk.gov.onelogin.core.tokens.domain.expirychecks.IsTokenExpired
@@ -12,7 +13,6 @@ import uk.gov.onelogin.core.tokens.domain.retrieve.GetRefreshTokenExpiryImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetTokenExpiry
 import uk.gov.onelogin.core.utils.AccessToken
 import uk.gov.onelogin.core.utils.RefreshToken
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -44,7 +44,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         domain = AppInfoUtils.GOOGLE_PLAY_URL.domain
         buttonText = context.getEnglishString(R.string.app_updateAppButton)
@@ -63,7 +63,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
                 isExternal = true,
                 domain = domain,
                 text = buttonText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking an app update
         viewModel.trackAppUpdate()
@@ -81,7 +81,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
                 endpoint = "",
                 status = "",
                 reason = reason,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the update required screen view
         viewModel.trackUpdateRequiredView()
@@ -90,7 +90,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 
@@ -100,7 +100,7 @@ class OutdatedAppErrorAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = iconText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the hardware back button
         viewModel.trackBackButton()

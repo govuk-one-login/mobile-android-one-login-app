@@ -33,27 +33,25 @@ class AttestationApiCallTest {
     }
 
     @Test
-    fun `call() - Success`() =
-        runTest {
-            givenApiSuccess()
+    fun `call() - Success`() = runTest {
+        givenApiSuccess()
 
-            val result = assertionApiCall.call("", jwk)
+        val result = assertionApiCall.call("", jwk)
 
-            assertEquals(
-                AttestationResponse.Success("Success", 0),
-                result,
-            )
-        }
+        assertEquals(
+            AttestationResponse.Success("Success", 0),
+            result,
+        )
+    }
 
     @Test
-    fun `call() - Failure with error message and 500 status code - server error`() =
-        runTest {
-            givenApiFailure(AttestationApiCall.SERVER_ERROR)
+    fun `call() - Failure with error message and 500 status code - server error`() = runTest {
+        givenApiFailure(AttestationApiCall.SERVER_ERROR)
 
-            val result = assertionApiCall.call("", jwk)
+        val result = assertionApiCall.call("", jwk)
 
-            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
-        }
+        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.INTERMITTENT)
+    }
 
     @Test
     fun `call() - Failure without error message and 500 status code - invalid app check token`() =
@@ -86,33 +84,27 @@ class AttestationApiCallTest {
         }
 
     @Test
-    fun `call() - Failure without error message and unexpected status code`() =
-        runTest {
-            givenApiFailure(301)
+    fun `call() - Failure without error message and unexpected status code`() = runTest {
+        givenApiFailure(301)
 
-            val result = assertionApiCall.call("", jwk)
+        val result = assertionApiCall.call("", jwk)
 
-            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.GENERIC)
-        }
+        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.GENERIC)
+    }
 
     @Test
-    fun `call() - Json failure`() =
-        runTest {
-            networkService.setSuccessResponse(200, INVALID_CLIENT_ATTESTATION)
+    fun `call() - Json failure`() = runTest {
+        networkService.setSuccessResponse(200, INVALID_CLIENT_ATTESTATION)
 
-            val result = assertionApiCall.call("", jwk)
+        val result = assertionApiCall.call("", jwk)
 
-            result.assertFailure(AppIntegrityException.AppIntegrityErrorType.GENERIC)
-        }
-    private fun givenApiSuccess(
-        body: String = VALID_CLIENT_ATTESTATION,
-    ) {
+        result.assertFailure(AppIntegrityException.AppIntegrityErrorType.GENERIC)
+    }
+    private fun givenApiSuccess(body: String = VALID_CLIENT_ATTESTATION) {
         networkService.setSuccessResponse(200, body)
     }
 
-    private fun givenApiFailure(
-        status: Int
-    ) {
+    private fun givenApiFailure(status: Int) {
         networkService.setFailureResponse(GenericHttpResponse(status, "error"))
     }
     private fun AttestationResponse.assertFailure(

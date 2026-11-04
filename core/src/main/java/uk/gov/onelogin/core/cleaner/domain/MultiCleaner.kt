@@ -11,11 +11,10 @@ class MultiCleaner(
     ResultCollectionUtil {
     private val cleaners = cleaner.toList()
 
-    override suspend fun clean(): Result<Unit> =
-        withContext(dispatcher) {
-            cleaners
-                .map { it::clean }
-                .runConcurrentlyForResults()
-                .combineResults()
-        }
+    override suspend fun clean(): Result<Unit> = withContext(dispatcher) {
+        cleaners
+            .map { it::clean }
+            .runConcurrentlyForResults()
+            .combineResults()
+    }
 }

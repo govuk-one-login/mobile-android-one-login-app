@@ -50,7 +50,7 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
         logger = mock()
         featureFlags =
             InMemoryFeatureFlags(
-                setOf(CriOrchestratorFeatureFlag.ENABLED)
+                setOf(CriOrchestratorFeatureFlag.ENABLED),
             )
         navigator = mock()
         criOrchestratorSdk =
@@ -59,7 +59,7 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
                 analyticsLogger = analyticsLogger,
                 initialConfig = TestUtils.criSdkConfig,
                 logger = logger,
-                applicationContext = context
+                applicationContext = context,
             )
         walletRepository = mock()
         viewModel =
@@ -67,7 +67,7 @@ class HomeScreenDeveloperMenuTest : FragmentActivityTestCase() {
                 featureFlags,
                 navigator,
                 walletRepository,
-                criOrchestratorSdk
+                criOrchestratorSdk,
             )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)

@@ -33,7 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.features.BuildConfig
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -148,10 +148,7 @@ fun AppTabScreen(viewModel: AppTabScreenViewModel = hiltViewModel()) {
 
 @Composable
 @Suppress("LongMethod")
-private fun AppInfoView(
-    appInfoData: AppInfoData.AppInfo,
-    viewModel: AppTabScreenViewModel,
-) {
+private fun AppInfoView(appInfoData: AppInfoData.AppInfo, viewModel: AppTabScreenViewModel) {
     var minimumVersion by remember { mutableStateOf(appInfoData.minimumVersion) }
     var appAvailable by remember { mutableStateOf(appInfoData.available) }
     var appCheckEnabled by remember { mutableStateOf(appInfoData.featureFlags.appCheckEnabled) }
@@ -214,13 +211,12 @@ private fun AppInfoView(
 }
 
 @Composable
-private fun textFieldDefaultColors() =
-    TextFieldDefaults.colors().copy(
-        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
-        focusedContainerColor = MaterialTheme.colorScheme.background,
-        unfocusedContainerColor = MaterialTheme.colorScheme.background,
-    )
+private fun textFieldDefaultColors() = TextFieldDefaults.colors().copy(
+    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    unfocusedIndicatorColor = MaterialTheme.colorScheme.primary,
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+)
 
 const val TEXTFIELD_WEIGHT = 0.7f
 const val BUTTON_WEIGHT = 0.3f

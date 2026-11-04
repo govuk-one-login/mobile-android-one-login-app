@@ -32,7 +32,7 @@ class BiometricsToggleAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE
+                taxonomyLevel3 = TaxonomyLevel3.BIOMETRICS_TOGGLE,
             )
         logger = mock()
         viewModel = BiometricsToggleAnalyticsViewModel(context, logger)
@@ -46,7 +46,7 @@ class BiometricsToggleAnalyticsViewModelTest {
                     viewModel.trackWalletCopyView()
                 },
                 name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-                id = context.getEnglishString(R.string.biometrics_toggle_wallet_id)
+                id = context.getEnglishString(R.string.biometrics_toggle_wallet_id),
             )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
@@ -61,7 +61,7 @@ class BiometricsToggleAnalyticsViewModelTest {
                     viewModel.trackNoWalletCopyView()
                 },
                 name = context.getEnglishString(R.string.app_biometricsToggleTitle),
-                id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id)
+                id = context.getEnglishString(R.string.biometrics_toggle_no_wallet_id),
             )
         val result = executeTrackEventTestCase(event, requiredParameters)
         // Then log a event to the AnalyticsLogger
@@ -75,20 +75,20 @@ class BiometricsToggleAnalyticsViewModelTest {
                 trackFunction = {
                     viewModel.trackBackButton()
                 },
-                text = context.getEnglishString(R.string.system_backButton)
+                text = context.getEnglishString(R.string.system_backButton),
             ),
             TestUtils.TrackEventTestCase.Icon(
                 trackFunction = {
                     viewModel.trackIconBackButton()
                 },
-                text = context.getEnglishString(R.string.app_back_icon)
+                text = context.getEnglishString(R.string.app_back_icon),
             ),
             TestUtils.TrackEventTestCase.Form(
                 trackFunction = { viewModel.trackToggleEvent(true) },
                 text = context.getEnglishString(R.string.app_biometricsToggleLabel),
                 type = Type.Toggle,
-                response = true.toString()
-            )
+                response = true.toString(),
+            ),
         ).forEach {
             // When tracking
             val result = executeTrackEventTestCase(it, requiredParameters)

@@ -31,10 +31,10 @@ class AppInfoApiImplTest {
                         AppInfoData.AppInfo(
                             minimumVersion = "0.0.0",
                             available = true,
-                            featureFlags = AppInfoData.FeatureFlags(true)
-                        )
-                    )
-            )
+                            featureFlags = AppInfoData.FeatureFlags(true),
+                        ),
+                    ),
+            ),
         )
     private lateinit var request: ApiRequest
 
@@ -55,8 +55,8 @@ class AppInfoApiImplTest {
                         "Content-Type" to "application/json",
                         "Strict-Transport-Security" to "max-age=31536000",
                         "X-Content-Type-Options" to "nosniff",
-                        "X-Frame-Options" to "DENY"
-                    )
+                        "X-Frame-Options" to "DENY",
+                    ),
             )
 
         whenever(context.getString(any())).thenReturn("/appInfo")
@@ -66,19 +66,17 @@ class AppInfoApiImplTest {
     }
 
     @Test
-    fun `app info call successful`(): Unit =
-        runTest {
-            networkService.setSuccessResponse(200, apiResponse)
-            val result = sut.callApi()
-            assertEquals(data, result)
-        }
+    fun `app info call successful`(): Unit = runTest {
+        networkService.setSuccessResponse(200, apiResponse)
+        val result = sut.callApi()
+        assertEquals(data, result)
+    }
 
     @Test
-    fun `app info call fail`() =
-        runTest {
-            networkService.setFailureResponse(TestHttpResponse.internalServerError)
-            val result = sut.callApi()
-            assertInstanceOf<ApiResponse.Failure<*, *>>(result)
-            assertEquals(result.status, 500)
-        }
+    fun `app info call fail`() = runTest {
+        networkService.setFailureResponse(TestHttpResponse.internalServerError)
+        val result = sut.callApi()
+        assertInstanceOf<ApiResponse.Failure<*, *>>(result)
+        assertEquals(result.status, 500)
+    }
 }

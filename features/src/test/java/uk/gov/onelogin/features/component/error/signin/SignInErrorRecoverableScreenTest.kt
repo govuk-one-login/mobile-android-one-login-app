@@ -45,7 +45,7 @@ class SignInErrorRecoverableScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInErrorRecoverableScreen(
                 analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
         composeTestRule.onNode(title).assertIsDisplayed()
@@ -55,9 +55,11 @@ class SignInErrorRecoverableScreenTest : FragmentActivityTestCase() {
             performClick()
         }
         verify(analytics).logEventV3Dot1(
-            SignInErrorAnalyticsViewModel.Companion.makeRecoverableScreenEvent(context)
+            SignInErrorAnalyticsViewModel.Companion.makeRecoverableScreenEvent(context),
         )
-        verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeButtonEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeButtonEvent(context))
         verify(navigator).navigate(LoginRoutes.Start, true)
     }
 
@@ -66,11 +68,13 @@ class SignInErrorRecoverableScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             SignInErrorRecoverableScreen(
                 analyticsViewModel = analyticsViewModel,
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
         Espresso.pressBack()
-        verify(analytics).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeBackEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(SignInErrorAnalyticsViewModel.Companion.makeBackEvent(context))
         verify(navigator).navigate(LoginRoutes.SignIn, true)
     }
 

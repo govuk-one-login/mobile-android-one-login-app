@@ -6,6 +6,9 @@ import kotlin.test.assertEquals
 class HomeRoutesTest {
     @Test
     fun verifyRoutes() {
-        assertEquals("/home/how_to_prove_your_identity", HomeRoutes.HowToProveYourIdentity.getRoute())
+        assertEquals(
+            "/home/how_to_prove_your_identity",
+            HomeRoutes.HowToProveYourIdentity.getRoute(),
+        )
     }
 }

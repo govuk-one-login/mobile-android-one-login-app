@@ -34,29 +34,27 @@ class SaveToTokenSecureStoreTest {
     }
 
     @Test
-    fun `does not throw - when SecureStorageErrorV2 thrown`() =
-        runTest {
-            whenever(mockSecureStore.upsert(any(), any())).thenThrow(
-                SecureStorageErrorV2(Exception("Some error")),
-            )
+    fun `does not throw - when SecureStorageErrorV2 thrown`() = runTest {
+        whenever(mockSecureStore.upsert(any(), any())).thenThrow(
+            SecureStorageErrorV2(Exception("Some error")),
+        )
 
-            assertDoesNotThrow {
-                useCase.invoke(expectedStoreKey, expectedStoreValue)
-            }
-
-            assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
+        assertDoesNotThrow {
+            useCase.invoke(expectedStoreKey, expectedStoreValue)
         }
+
+        assertThat(logger, hasItem(hasMessage("java.lang.Exception: Some error")))
+    }
 
     @Test
-    fun `saves value successfully`() =
-        runTest {
-            useCase.invoke(expectedStoreKey, expectedStoreValue)
+    fun `saves value successfully`() = runTest {
+        useCase.invoke(expectedStoreKey, expectedStoreValue)
 
-            verify(mockSecureStore).upsert(
-                expectedStoreKey,
-                expectedStoreValue,
-            )
+        verify(mockSecureStore).upsert(
+            expectedStoreKey,
+            expectedStoreValue,
+        )
 
-            assertThat(logger, hasSize(0))
-        }
+        assertThat(logger, hasSize(0))
+    }
 }

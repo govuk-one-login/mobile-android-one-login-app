@@ -1,9 +1,9 @@
 package uk.gov.onelogin.core.tokens.utils
 
-import kotlinx.serialization.SerializationException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlinx.serialization.SerializationException
 
 class ExtractFromJsonImplTest {
     private val expectedValue = "value"

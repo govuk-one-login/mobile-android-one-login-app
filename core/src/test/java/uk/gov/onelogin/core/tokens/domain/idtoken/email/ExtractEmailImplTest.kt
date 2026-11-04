@@ -1,10 +1,10 @@
 package uk.gov.onelogin.core.tokens.domain.idtoken.email
 
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 import uk.gov.logging.api.v3.MemorisedLogger
 import uk.gov.onelogin.core.tokens.utils.JwtExtractor
 import uk.gov.onelogin.core.tokens.utils.JwtExtractorImpl
-import kotlin.test.assertEquals
 
 class ExtractEmailImplTest {
     private val expectedEmail = "email@mail.com"

@@ -18,7 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import kotlinx.collections.immutable.persistentListOf
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -75,11 +75,7 @@ fun SignOutScreen(
 
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
-internal fun SignOutBody(
-    onPrimary: () -> Unit,
-    onClose: () -> Unit,
-    onBack: () -> Unit,
-) {
+internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () -> Unit) {
     FullScreenDialogue(
         onDismissRequest = onClose,
         onBack = onBack,
@@ -106,9 +102,15 @@ internal fun SignOutBody(
                 GdsBulletedList(
                     bulletListItems =
                         persistentListOf(
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet1)),
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet2)),
-                            ListItem(text = stringResource(R.string.app_signOutConfirmationBullet3)),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet1),
+                            ),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet2),
+                            ),
+                            ListItem(
+                                text = stringResource(R.string.app_signOutConfirmationBullet3),
+                            ),
                         ),
                     title = ListTitle(text = listTitle, titleType = TitleType.Text),
                     modifier = Modifier.padding(),

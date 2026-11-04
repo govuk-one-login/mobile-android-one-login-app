@@ -11,25 +11,22 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.onelogin.core.ui.meta.ComponentPreview
 
 @Composable
-fun HowToProveYourIdentityCard(
-    onClick: () -> Unit,
-) =
-    GdsCard(
-        title = stringResource(R.string.app_howToTileTitle),
-        body = stringResource(R.string.app_howToTileBody),
-        displayPrimary = false,
-        shadow = 0.dp,
-        onClick = onClick,
-        displaySecondary = true,
-        buttonText = stringResource(R.string.app_howToTileLink),
-        secondaryIcon = null,
-        modifier = Modifier.testTag(stringResource(R.string.proveIdentityCardTestTag)),
-    )
+fun HowToProveYourIdentityCard(onClick: () -> Unit) = GdsCard(
+    title = stringResource(R.string.app_howToTileTitle),
+    body = stringResource(R.string.app_howToTileBody),
+    displayPrimary = false,
+    shadow = 0.dp,
+    onClick = onClick,
+    displaySecondary = true,
+    buttonText = stringResource(R.string.app_howToTileLink),
+    secondaryIcon = null,
+    modifier = Modifier.testTag(stringResource(R.string.proveIdentityCardTestTag)),
+)
 
 @ComponentPreview
 @Composable
 fun HowToProveYourIdentityCardPreview() = GdsTheme {
     HowToProveYourIdentityCard(
-        onClick = {}
+        onClick = {},
     )
 }

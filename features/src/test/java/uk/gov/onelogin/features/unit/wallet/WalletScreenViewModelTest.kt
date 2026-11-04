@@ -1,6 +1,8 @@
 package uk.gov.onelogin.features.unit.wallet
 
 import app.cash.turbine.test
+import kotlin.test.assertIs
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -21,8 +23,6 @@ import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.wallet.ui.WalletScreenState
 import uk.gov.onelogin.features.wallet.ui.WalletScreenViewModel
-import kotlin.test.assertIs
-import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class WalletScreenViewModelTest {
@@ -68,21 +68,19 @@ class WalletScreenViewModelTest {
     }
 
     @Test
-    fun `setWalletStoreId is called on Wallet SDK`() =
-        runTest {
-            viewModel.state.test {
-                skipItems(1) // Loading
-                mainScheduler.advanceTimeBy(loadingTime)
-                mainScheduler.runCurrent()
+    fun `setWalletStoreId is called on Wallet SDK`() = runTest {
+        viewModel.state.test {
+            skipItems(1) // Loading
+            mainScheduler.advanceTimeBy(loadingTime)
+            mainScheduler.runCurrent()
 
-                verify(walletSdk).setWalletStoreId(WALLET_STORE_ID)
-                skipItems(1) // Display
-            }
+            verify(walletSdk).setWalletStoreId(WALLET_STORE_ID)
+            skipItems(1) // Display
         }
+    }
 
     @Test
     fun `crashes with IllegalArgumentException when wallet store ID is null`() {
-
         val thrown = assertThrows<Exception> {
             runTest {
                 WalletScreenViewModel(

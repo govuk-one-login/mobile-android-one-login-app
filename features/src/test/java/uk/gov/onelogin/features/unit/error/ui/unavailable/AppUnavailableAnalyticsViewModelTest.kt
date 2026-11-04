@@ -40,7 +40,7 @@ class AppUnavailableAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         name = context.getEnglishString(R.string.app_appUnavailableTitle)
         id = context.getEnglishString(R.string.app_unavailable_page_id)
@@ -59,7 +59,7 @@ class AppUnavailableAnalyticsViewModelTest {
                 endpoint = "",
                 status = "",
                 reason = reason,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the app unavailable screen view
         viewModel.trackUnavailableView()
@@ -68,7 +68,7 @@ class AppUnavailableAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 
@@ -78,7 +78,7 @@ class AppUnavailableAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = iconText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the hardware back button
         viewModel.trackBackButton()

@@ -2,6 +2,10 @@ package uk.gov.onelogin.features.unit.login.domain.appintegrity
 
 import android.content.Context
 import io.ktor.util.date.getTimeMillis
+import java.security.SignatureException
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
@@ -22,10 +26,6 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityImpl
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
-import java.security.SignatureException
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class AppIntegrityImplTest {
     private lateinit var context: Context
@@ -52,252 +52,240 @@ class AppIntegrityImplTest {
                 appCheck,
                 saveToOpenSecureStore,
                 getFromOpenSecureStore,
-                counter
+                counter,
             )
     }
 
     @Test
-    fun `get client attestation - feature flag disabled`() =
-        runTest {
-            whenever(featureFlags[eq(AppIntegrityFeatureFlag.ENABLED)]).thenReturn(false)
-            whenever(getFromOpenSecureStore(CLIENT_ATTESTATION)).thenReturn(attestationSsResult)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(validAttestationExpSSResult)
+    fun `get client attestation - feature flag disabled`() = runTest {
+        whenever(featureFlags[eq(AppIntegrityFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(getFromOpenSecureStore(CLIENT_ATTESTATION)).thenReturn(attestationSsResult)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(validAttestationExpSSResult)
 
-            val result = sut.getClientAttestation()
-            assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
-        }
-
-    @Test
-    fun `get client attestation - feature flag disabled and no saved attestation`() =
-        runTest {
-            whenever(featureFlags[eq(AppIntegrityFeatureFlag.ENABLED)]).thenReturn(false)
-            whenever(getFromOpenSecureStore(eq(CLIENT_ATTESTATION))).thenReturn(null)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(validAttestationExpSSResult)
-
-            val result = sut.getClientAttestation()
-            assertEquals(AttestationResult.NotRequired(null), result)
-        }
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
+    }
 
     @Test
-    fun `get client attestation - attestation call successful`() =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(validAttestationExpSSResult)
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            whenever(appCheck.getExpiry(SUCCESS)).thenReturn(100L)
-            val result = sut.getClientAttestation()
+    fun `get client attestation - feature flag disabled and no saved attestation`() = runTest {
+        whenever(featureFlags[eq(AppIntegrityFeatureFlag.ENABLED)]).thenReturn(false)
+        whenever(getFromOpenSecureStore(eq(CLIENT_ATTESTATION))).thenReturn(null)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(validAttestationExpSSResult)
 
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, 100L)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired(null), result)
+    }
 
     @Test
-    fun `get client attestation - attestation already stored in secure store`() =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(getFromOpenSecureStore(CLIENT_ATTESTATION)).thenReturn(attestationSsResult)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(validAttestationExpSSResult)
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            val result = sut.getClientAttestation()
-            assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
-        }
+    fun `get client attestation - attestation call successful`() = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(validAttestationExpSSResult)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        whenever(appCheck.getExpiry(SUCCESS)).thenReturn(100L)
+        val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION_EXPIRY, 100L)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
 
     @Test
-    fun `get client attestation - saved attestation does not match saved jwks`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(validAttestationExpSSResult)
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
-
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
+    fun `get client attestation - attestation already stored in secure store`() = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(getFromOpenSecureStore(CLIENT_ATTESTATION)).thenReturn(attestationSsResult)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(validAttestationExpSSResult)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        val result = sut.getClientAttestation()
+        assertEquals(AttestationResult.NotRequired(ATTESTATION), result)
+    }
 
     @Test
-    fun `get client attestation - attestation stored is expired`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(invalidAttestationExpSSResult)
-            println(invalidAttestationExpSSResult)
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
+    fun `get client attestation - saved attestation does not match saved jwks`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(validAttestationExpSSResult)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(false)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
 
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
 
     @Test
-    fun `get client attestation - attestation expiry time is null`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(mapOf(CLIENT_ATTESTATION to ATTESTATION))
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
+    fun `get client attestation - attestation stored is expired`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(invalidAttestationExpSSResult)
+        println(invalidAttestationExpSSResult)
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
 
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
 
     @Test
-    fun `get client attestation - attestation expiry time is empty`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(
-                mapOf(
-                    CLIENT_ATTESTATION_EXPIRY to "",
-                    CLIENT_ATTESTATION to ATTESTATION
-                )
+    fun `get client attestation - attestation expiry time is null`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(mapOf(CLIENT_ATTESTATION to ATTESTATION))
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
+
+    @Test
+    fun `get client attestation - attestation expiry time is empty`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(
+            mapOf(
+                CLIENT_ATTESTATION_EXPIRY to "",
+                CLIENT_ATTESTATION to ATTESTATION,
+            ),
+        )
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
+
+    @Test
+    fun `get client attestation - attestation is not stored`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(
+            mapOf(
+                CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
+            ),
+        )
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
+
+    @Test
+    fun `get client attestation - saved attestation is empty`(): Unit = runTest {
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(
+            getFromOpenSecureStore.invoke(
+                CLIENT_ATTESTATION_EXPIRY,
+                CLIENT_ATTESTATION,
+            ),
+        ).thenReturn(
+            mapOf(
+                CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
+                CLIENT_ATTESTATION to "",
+            ),
+        )
+        whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
+        whenever(appCheck.getAttestation())
+            .thenReturn(AttestationResponse.Success(SUCCESS, 0))
+        val result = sut.getClientAttestation()
+
+        verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
+        assertEquals(AttestationResult.Success(SUCCESS), result)
+    }
+
+    @Test
+    fun `get client attestation - attestation call failure - GENERAL`() = runTest {
+        val expectedError = AppIntegrityException.ClientAttestationException(Exception())
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(appCheck.getAttestation()).thenReturn(
+            AttestationResponse.Failure(reason = FAILURE, error = expectedError),
+        )
+        val result = sut.getClientAttestation()
+
+        assertEquals(
+            AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
+                error = expectedError,
+            ),
+            result,
+        )
+        assertEquals(0, counter.getValue())
+    }
+
+    @Test
+    fun `get client attestation - attestation call failure - INTERMITTENT`() = runTest {
+        val expectedError =
+            AppIntegrityException.ClientAttestationException(
+                Exception(),
+                AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
             )
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
 
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(appCheck.getAttestation()).thenReturn(
+            AttestationResponse.Failure(reason = FAILURE, error = expectedError),
+        )
+        val result = sut.getClientAttestation()
 
-    @Test
-    fun `get client attestation - attestation is not stored`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(
-                mapOf(
-                    CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP
-                )
-            )
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
-
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
-
-    @Test
-    fun `get client attestation - saved attestation is empty`(): Unit =
-        runTest {
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(
-                getFromOpenSecureStore.invoke(
-                    CLIENT_ATTESTATION_EXPIRY,
-                    CLIENT_ATTESTATION
-                )
-            ).thenReturn(
-                mapOf(
-                    CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
-                    CLIENT_ATTESTATION to ""
-                )
-            )
-            whenever(appCheck.verifyAttestationJwk(ATTESTATION)).thenReturn(true)
-            whenever(appCheck.getAttestation())
-                .thenReturn(AttestationResponse.Success(SUCCESS, 0))
-            val result = sut.getClientAttestation()
-
-            verify(saveToOpenSecureStore).save(CLIENT_ATTESTATION, SUCCESS)
-            assertEquals(AttestationResult.Success(SUCCESS), result)
-        }
-
-    @Test
-    fun `get client attestation - attestation call failure - GENERAL`() =
-        runTest {
-            val expectedError = AppIntegrityException.ClientAttestationException(Exception())
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(appCheck.getAttestation()).thenReturn(
-                AttestationResponse.Failure(reason = FAILURE, error = expectedError)
-            )
-            val result = sut.getClientAttestation()
-
-            assertEquals(
-                AttestationResult.Failure(
-                    type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                    error = expectedError
-                ),
-                result
-            )
-            assertEquals(0, counter.getValue())
-        }
-
-    @Test
-    fun `get client attestation - attestation call failure - INTERMITTENT`() =
-        runTest {
-            val expectedError =
-                AppIntegrityException.ClientAttestationException(
-                    Exception(),
-                    AppIntegrityException.AppIntegrityErrorType.INTERMITTENT
-                )
-
-            whenever(featureFlags[any()]).thenReturn(true)
-            whenever(appCheck.getAttestation()).thenReturn(
-                AttestationResponse.Failure(reason = FAILURE, error = expectedError)
-            )
-            val result = sut.getClientAttestation()
-
-            assertEquals(
-                AttestationResult.Failure(
-                    type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
-                    error = expectedError
-                ),
-                result
-            )
-            assertEquals(0, counter.getValue())
-        }
+        assertEquals(
+            AttestationResult.Failure(
+                type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
+                error = expectedError,
+            ),
+            result,
+        )
+        assertEquals(0, counter.getValue())
+    }
 
     @Test
     fun `get client attestation - attestation call failure - no known app integrity error`() =
@@ -306,16 +294,16 @@ class AppIntegrityImplTest {
 
             whenever(featureFlags[any()]).thenReturn(true)
             whenever(appCheck.getAttestation()).thenReturn(
-                AttestationResponse.Failure(reason = FAILURE, error = expectedError)
+                AttestationResponse.Failure(reason = FAILURE, error = expectedError),
             )
             val result = sut.getClientAttestation()
 
             assertEquals(
                 AttestationResult.Failure(
                     type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                    error = expectedError
+                    error = expectedError,
                 ),
-                result
+                result,
             )
             assertEquals(0, counter.getValue())
         }
@@ -344,29 +332,27 @@ class AppIntegrityImplTest {
     }
 
     @Test
-    fun `retrieve saved ClientAttestation success`() =
-        runTest {
-            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-                .thenReturn(attestationSsResult)
-            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
-                .thenReturn(validAttestationExpSSResult)
-            val result = sut.retrieveSavedClientAttestation()
+    fun `retrieve saved ClientAttestation success`() = runTest {
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn(attestationSsResult)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
+            .thenReturn(validAttestationExpSSResult)
+        val result = sut.retrieveSavedClientAttestation()
 
-            assertEquals(ATTESTATION, result)
-        }
+        assertEquals(ATTESTATION, result)
+    }
 
     @Test
-    fun `retrieve saved ClientAttestation failure`() =
-        runTest {
-            whenever(featureFlags[AppIntegrityFeatureFlag.ENABLED]).thenReturn(true)
-            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
-                .thenReturn(attestationSsResult)
-            whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
-                .thenReturn(invalidAttestationExpSSResult)
-            val result = sut.retrieveSavedClientAttestation()
+    fun `retrieve saved ClientAttestation failure`() = runTest {
+        whenever(featureFlags[AppIntegrityFeatureFlag.ENABLED]).thenReturn(true)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION))
+            .thenReturn(attestationSsResult)
+        whenever(getFromOpenSecureStore.invoke(CLIENT_ATTESTATION_EXPIRY, CLIENT_ATTESTATION))
+            .thenReturn(invalidAttestationExpSSResult)
+        val result = sut.retrieveSavedClientAttestation()
 
-            assertEquals(null, result)
-        }
+        assertEquals(null, result)
+    }
 
     companion object {
         private const val SUCCESS = "Success"
@@ -378,12 +364,12 @@ class AppIntegrityImplTest {
         private val validAttestationExpSSResult =
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to VALID_ATTESTATION_EXP,
-                CLIENT_ATTESTATION to ATTESTATION
+                CLIENT_ATTESTATION to ATTESTATION,
             )
         private val invalidAttestationExpSSResult =
             mapOf(
                 CLIENT_ATTESTATION_EXPIRY to INVALID_ATTESTATION_EXP,
-                CLIENT_ATTESTATION to ATTESTATION
+                CLIENT_ATTESTATION to ATTESTATION,
             )
 
         private fun getFiveMinInMillis(): Int = 5 * 60000

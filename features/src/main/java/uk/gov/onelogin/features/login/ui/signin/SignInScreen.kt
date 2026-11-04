@@ -23,7 +23,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.fragment.app.FragmentActivity
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import uk.gov.android.onelogin.core.R
@@ -57,7 +57,7 @@ fun SignInScreen(
         ) { result: ActivityResult ->
             loginViewModel.handleLoginActivityResult(
                 result = result,
-                activity = context
+                activity = context,
             )
         }
 
@@ -103,10 +103,7 @@ private fun handleScreenExit(
 @OptIn(UnstableDesignSystemAPI::class)
 @Composable
 @Suppress("LongMethod")
-internal fun SignInBody(
-    onSignIn: () -> Unit = { },
-    openDevMenu: () -> Unit = { },
-) {
+internal fun SignInBody(onSignIn: () -> Unit = { }, openDevMenu: () -> Unit = { }) {
     val title = stringResource(R.string.app_signInTitle)
     val content =
         listOf(

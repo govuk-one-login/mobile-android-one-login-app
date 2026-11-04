@@ -41,7 +41,7 @@ class SignInAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         domain = context.getEnglishString(R.string.baseStsUrl, "").domain
         buttonText = context.getEnglishString(R.string.app_signInButton)
@@ -58,7 +58,7 @@ class SignInAnalyticsViewModelTest {
                 isExternal = false,
                 domain = domain,
                 text = buttonText,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When calling trackSignIn
         viewModel.trackSignIn()
@@ -73,7 +73,7 @@ class SignInAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When calling trackSignIn
         viewModel.trackWelcomeView()
@@ -82,7 +82,7 @@ class SignInAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_FALSE,
-            GAUtils.containsIsError(event, FALSE)
+            GAUtils.containsIsError(event, FALSE),
         )
     }
 }

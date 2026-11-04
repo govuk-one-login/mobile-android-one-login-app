@@ -10,10 +10,9 @@ open class InstrumentationTestRunner : AndroidJUnitRunner() {
         cl: ClassLoader?,
         className: String?,
         context: Context?,
-    ): Application =
-        super.newApplication(
-            cl,
-            HiltTestApplication::class.java.name,
-            context,
-        )
+    ): Application = super.newApplication(
+        cl,
+        HiltTestApplication::class.java.name,
+        context,
+    )
 }

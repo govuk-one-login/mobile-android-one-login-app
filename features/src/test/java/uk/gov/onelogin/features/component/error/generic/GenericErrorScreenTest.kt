@@ -38,7 +38,7 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             GenericErrorScreen(
                 analyticsViewModel = viewModel,
-                onClick = { primaryClicked = true }
+                onClick = { primaryClicked = true },
             )
         }
 
@@ -57,7 +57,7 @@ class GenericErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.setContent {
             GenericErrorScreen(
                 analyticsViewModel = viewModel,
-                onClick = { primaryClicked = true }
+                onClick = { primaryClicked = true },
             )
         }
 

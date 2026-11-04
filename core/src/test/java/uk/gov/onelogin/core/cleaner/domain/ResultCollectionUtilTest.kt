@@ -1,5 +1,14 @@
 package uk.gov.onelogin.core.cleaner.domain
 
+import java.util.stream.Stream
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertContains
+import kotlin.test.assertEquals
+import kotlin.test.assertIs
+import kotlin.test.assertTrue
+import kotlin.time.measureTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -10,15 +19,6 @@ import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
-import kotlin.time.measureTime
 
 @ExperimentalCoroutinesApi
 class ResultCollectionUtilTest {
@@ -68,41 +68,40 @@ class ResultCollectionUtilTest {
         }
 
     @Test
-    fun `runConcurrentlyForResults runs concurrently`() =
-        runTest {
-            // Given a ResultCollectionUtil
-            val delayTime = 1000L
-            val suspendFunctions =
-                listOf<suspend () -> Result<Unit>>(
-                    {
-                        delay(delayTime)
-                        Result.success(Unit)
-                    },
-                    {
-                        delay(delayTime)
-                        Result.success(Unit)
-                    },
-                    {
-                        delay(delayTime)
-                        Result.success(Unit)
-                    },
-                    {
-                        delay(delayTime)
-                        Result.success(Unit)
-                    },
-                )
-            // When calling runConcurrentlyForResults
-            val totalTime =
-                with(util) {
-                    measureTime {
-                        suspendFunctions.runConcurrentlyForResults()
-                    }
+    fun `runConcurrentlyForResults runs concurrently`() = runTest {
+        // Given a ResultCollectionUtil
+        val delayTime = 1000L
+        val suspendFunctions =
+            listOf<suspend () -> Result<Unit>>(
+                {
+                    delay(delayTime)
+                    Result.success(Unit)
+                },
+                {
+                    delay(delayTime)
+                    Result.success(Unit)
+                },
+                {
+                    delay(delayTime)
+                    Result.success(Unit)
+                },
+                {
+                    delay(delayTime)
+                    Result.success(Unit)
+                },
+            )
+        // When calling runConcurrentlyForResults
+        val totalTime =
+            with(util) {
+                measureTime {
+                    suspendFunctions.runConcurrentlyForResults()
                 }
-            // Then simultaneously run the coroutines
-            println(totalTime.inWholeMilliseconds)
-            println(delayTime * suspendFunctions.size)
-            assertTrue(totalTime.inWholeMilliseconds < delayTime * suspendFunctions.size)
-        }
+            }
+        // Then simultaneously run the coroutines
+        println(totalTime.inWholeMilliseconds)
+        println(delayTime * suspendFunctions.size)
+        assertTrue(totalTime.inWholeMilliseconds < delayTime * suspendFunctions.size)
+    }
 
     @ParameterizedTest
     @MethodSource("suspendFunctionProvider")
@@ -160,89 +159,86 @@ class ResultCollectionUtilTest {
 
     companion object {
         @JvmStatic
-        fun suspendFunctionProvider(): Stream<Arguments> =
-            Stream.of(
-                Arguments.of(emptyList<Cleaner>(), emptyList<Result<Unit>>()),
-                Arguments.of(
-                    listOf(
-                        Cleaner { Result.success(Unit) },
-                    ),
-                    listOf(Result.success(Unit)),
+        fun suspendFunctionProvider(): Stream<Arguments> = Stream.of(
+            Arguments.of(emptyList<Cleaner>(), emptyList<Result<Unit>>()),
+            Arguments.of(
+                listOf(
+                    Cleaner { Result.success(Unit) },
                 ),
-                Arguments.of(
-                    listOf(
-                        Cleaner { Result.success(Unit) },
-                        Cleaner { Result.success(Unit) },
-                    ),
-                    listOf(Result.success(Unit), Result.success(Unit)),
+                listOf(Result.success(Unit)),
+            ),
+            Arguments.of(
+                listOf(
+                    Cleaner { Result.success(Unit) },
+                    Cleaner { Result.success(Unit) },
                 ),
-                Arguments.of(
-                    listOf(
-                        Cleaner {
-                            Result.success(Unit)
-                        },
-                        Cleaner { Result.failure(Exception()) },
-                    ),
-                    listOf(Result.success(Unit), Result.failure(Exception())),
+                listOf(Result.success(Unit), Result.success(Unit)),
+            ),
+            Arguments.of(
+                listOf(
+                    Cleaner {
+                        Result.success(Unit)
+                    },
+                    Cleaner { Result.failure(Exception()) },
                 ),
-                Arguments.of(
-                    listOf(Cleaner { Result.failure(Exception()) }),
-                    listOf<Result<Unit>>(Result.failure(Exception())),
+                listOf(Result.success(Unit), Result.failure(Exception())),
+            ),
+            Arguments.of(
+                listOf(Cleaner { Result.failure(Exception()) }),
+                listOf<Result<Unit>>(Result.failure(Exception())),
+            ),
+            Arguments.of(
+                listOf(
+                    Cleaner { Result.failure(Exception()) },
+                    Cleaner { Result.failure(Exception()) },
                 ),
-                Arguments.of(
-                    listOf(
-                        Cleaner { Result.failure(Exception()) },
-                        Cleaner { Result.failure(Exception()) },
-                    ),
-                    listOf<Result<Unit>>(
-                        Result.failure(Exception()),
-                        Result.failure(Exception()),
-                    ),
+                listOf<Result<Unit>>(
+                    Result.failure(Exception()),
+                    Result.failure(Exception()),
                 ),
-            )
+            ),
+        )
 
         @JvmStatic
-        fun combineProvider(): Stream<Arguments> =
-            Stream.of(
-                Arguments.of(emptyList<Result<Unit>>(), true),
-                Arguments.of(listOf(Result.success(Unit)), true),
-                Arguments.of(
-                    listOf(Result.success(Unit), Result.success(Unit)),
-                    true,
-                ),
-                Arguments.of(
-                    listOf(Result.success(Unit), Result.failure(Exception())),
-                    false,
-                ),
-                Arguments.of(
-                    listOf<Result<Unit>>(Result.failure(Exception()), Result.failure(Exception())),
-                    false,
-                ),
-            )
+        fun combineProvider(): Stream<Arguments> = Stream.of(
+            Arguments.of(emptyList<Result<Unit>>(), true),
+            Arguments.of(listOf(Result.success(Unit)), true),
+            Arguments.of(
+                listOf(Result.success(Unit), Result.success(Unit)),
+                true,
+            ),
+            Arguments.of(
+                listOf(Result.success(Unit), Result.failure(Exception())),
+                false,
+            ),
+            Arguments.of(
+                listOf<Result<Unit>>(Result.failure(Exception()), Result.failure(Exception())),
+                false,
+            ),
+        )
 
         @JvmStatic
-        fun throwablesProvider(): Stream<Arguments> =
-            Stream.of(
-                Arguments.of(emptyList<Result<Unit>>(), emptyList<Throwable>()),
-                Arguments.of(listOf(Result.success(Unit)), emptyList<Throwable>()),
-                Arguments.of(
-                    listOf(Result.success(Unit), Result.success(Unit)),
-                    emptyList<Throwable>(),
+        fun throwablesProvider(): Stream<Arguments> = Stream.of(
+            Arguments.of(emptyList<Result<Unit>>(), emptyList<Throwable>()),
+            Arguments.of(listOf(Result.success(Unit)), emptyList<Throwable>()),
+            Arguments.of(
+                listOf(Result.success(Unit), Result.success(Unit)),
+                emptyList<Throwable>(),
+            ),
+            Arguments.of(
+                listOf(Result.success(Unit), Result.failure(Exception())),
+                listOf(Exception()),
+            ),
+            Arguments.of(
+                listOf<Result<Unit>>(
+                    Result.failure(Exception()),
+                    Result.failure(Exception()),
                 ),
-                Arguments.of(
-                    listOf(Result.success(Unit), Result.failure(Exception())),
-                    listOf(Exception()),
+                listOf(
+                    Exception(),
+                    Exception(),
                 ),
-                Arguments.of(
-                    listOf<Result<Unit>>(
-                        Result.failure(Exception()),
-                        Result.failure(Exception()),
-                    ),
-                    listOf(
-                        Exception(),
-                        Exception(),
-                    ),
-                ),
-            )
+            ),
+        )
     }
 }
