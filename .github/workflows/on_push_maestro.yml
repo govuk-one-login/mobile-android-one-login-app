@@ -52,43 +52,43 @@ jobs:
           curl -fsSL https://open.devicelab.dev/install/maestro-runner \
             | bash -s -- --version 1.1.29
 
-      # - name: Start emulator and wait for Android
-      #   timeout-minutes: 6
-      #   shell: bash
-      #   run: |
-      #     adb start-server
+      - name: Start emulator and wait for Android
+        timeout-minutes: 6
+        shell: bash
+        run: |
+          adb start-server
 
-      #     "$ANDROID_HOME/emulator/emulator" \
-      #       -avd maestro \
-      #       -port 5554 \
-      #       -no-window \
-      #       -no-audio \
-      #       -no-boot-anim \
-      #       -no-snapshot \
-      #       > "$RUNNER_TEMP/maestro-emulator.log" 2>&1 &
-      #     emulator_pid=$!
-      #     boot_deadline=$((SECONDS + 300))
+          "$ANDROID_HOME/emulator/emulator" \
+            -avd maestro \
+            -port 5554 \
+            -no-window \
+            -no-audio \
+            -no-boot-anim \
+            -no-snapshot \
+            > "$RUNNER_TEMP/maestro-emulator.log" 2>&1 &
+          emulator_pid=$!
+          boot_deadline=$((SECONDS + 300))
 
-      #     while (( SECONDS < boot_deadline )); do
-      #       if ! kill -0 "$emulator_pid" 2>/dev/null; then
-      #         echo "::error::The emulator exited during startup."
-      #         tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
-      #         exit 1
-      #       fi
+          while (( SECONDS < boot_deadline )); do
+            if ! kill -0 "$emulator_pid" 2>/dev/null; then
+              echo "::error::The emulator exited during startup."
+              tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
+              exit 1
+            fi
 
-      #       if timeout 5s adb -s emulator-5554 \
-      #           shell getprop sys.boot_completed 2>/dev/null \
-      #           | tr -d '\r' | grep -qx '1'; then
-      #         echo "Android has finished booting."
-      #         exit 0
-      #       fi
+            if timeout 5s adb -s emulator-5554 \
+                shell getprop sys.boot_completed 2>/dev/null \
+                | tr -d '\r' | grep -qx '1'; then
+              echo "Android has finished booting."
+              exit 0
+            fi
 
-      #       sleep 2
-      #     done
+            sleep 2
+          done
 
-      #     echo "::error::Android did not finish booting within 300 seconds."
-      #     tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
-      #     exit 1
+          echo "::error::Android did not finish booting within 300 seconds."
+          tail -n 80 "$RUNNER_TEMP/maestro-emulator.log"
+          exit 1
 
       - name: Run Maestro
         env:
@@ -98,7 +98,7 @@ jobs:
         run: |
           "$HOME/.maestro-runner/bin/maestro-runner" \
             --platform android \
-            --auto-start-emulator \
+            --device emulator-5554 \
             --artifacts always \
             test ./flow.yml
 
