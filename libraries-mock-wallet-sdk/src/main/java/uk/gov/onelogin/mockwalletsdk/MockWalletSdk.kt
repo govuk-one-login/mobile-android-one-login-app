@@ -22,6 +22,13 @@ import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.wallet.sdk.WalletSdk
 
 /**
+ * Custom exception thrown by [MockWalletSdk] when a mock deletion error occurs.
+ */
+class MockWalletDeletionException(
+    override val message: String = "Mock wallet deletion triggered navigation to mock UI",
+) : Exception(message)
+
+/**
  * Mock implementation of [WalletSdk] for testing.
  *
  * This mock implementation provides fake data and a local fake UI composable
@@ -31,11 +38,21 @@ import uk.gov.android.wallet.sdk.WalletSdk
 open class MockWalletSdk(
     private val configValue: WalletSdk.ConfigurationV2,
     private val displayAsFullScreenFlow: StateFlow<Boolean>,
+    var shouldDeleteWalletDataException: Boolean = false,
 ) : WalletSdk {
+
+    var customDeletionException: Exception? = null
 
     private var walletStoreId: String? = null
     private val _deleteCallCount = MutableStateFlow(0)
     val deleteCallCount: StateFlow<Int> = _deleteCallCount.asStateFlow()
+
+    private val _withDeleteException: MutableStateFlow<Pair<Exception, Boolean>> =
+        MutableStateFlow(Pair(MockWalletDeletionException(), true))
+
+    // observe to retrieve delete wallet data exception and boolean
+    val withDeleteException: StateFlow<Pair<Exception, Boolean>> =
+        _withDeleteException.asStateFlow()
 
     override val config: WalletSdk.ConfigurationV2
         get() = configValue
@@ -56,6 +73,13 @@ open class MockWalletSdk(
     override suspend fun deleteWalletData(): Boolean {
         this.walletStoreId = null
         _deleteCallCount.value += 1
+
+        if (shouldDeleteWalletDataException) {
+            val error = customDeletionException ?: MockWalletDeletionException()
+            _withDeleteException.value = Pair(error, true)
+            return true
+        }
+
         return true
     }
 

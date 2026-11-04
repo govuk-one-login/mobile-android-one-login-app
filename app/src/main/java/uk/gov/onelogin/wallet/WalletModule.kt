@@ -8,7 +8,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.onelogin.core.R

@@ -25,6 +25,24 @@ android {
             }
         }
     }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+            it.testLogging {
+                events =
+                    setOf(
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                        org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+                    )
+            }
+        }
+        unitTests {
+            isReturnDefaultValues = true
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -53,7 +71,11 @@ dependencies {
         libs.kotlinx.coroutines.test,
         libs.junit,
         libs.androidx.test.ext.junit,
+        libs.androidx.compose.ui.junit4,
+        libs.roboelectric,
     ).forEach(::testImplementation)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 
     listOf(
         libs.androidx.espresso.core,
