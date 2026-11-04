@@ -28,6 +28,12 @@ jobs:
           submodules: 'true'
           fetch-depth: 0
 
+      - name: Install DeviceLab:Maestro
+        shell: bash
+        run: |
+          curl -fsSL https://open.devicelab.dev/install/maestro-runner \
+            | bash -s -- --version 1.1.29
+
       - name: Setup GitHub Runner workflow
         uses: ./mobile-android-pipelines/actions/setup-runner
         with:
@@ -39,18 +45,9 @@ jobs:
           packages: 'platform-tools emulator system-images;android-35;google_apis;x86_64'
           log-accepted-android-sdk-licenses: 'false'
 
-      - name: Create emulator
-        shell: bash
-        run: |
-          echo no | avdmanager create avd \
-            --name maestro \
-            --package "system-images;android-35;google_apis;x86_64"
+      - name: Create Android Emulator
+        run: android emulator create
 
-      - name: Install Maestro runner
-        shell: bash
-        run: |
-          curl -fsSL https://open.devicelab.dev/install/maestro-runner \
-            | bash -s -- --version 1.1.29
 
       - name: Start emulator and wait for Android
         timeout-minutes: 6
@@ -59,7 +56,7 @@ jobs:
           adb start-server
 
           "$ANDROID_HOME/emulator/emulator" \
-            -avd maestro \
+            -avd medium_phone \
             -port 5554 \
             -no-window \
             -no-audio \
