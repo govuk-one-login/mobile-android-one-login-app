@@ -260,6 +260,22 @@ dependencies {
     }
 }
 
+// Force a patched netty on AGP's Unified Test Platform configurations only.
+// These configs resolve grpc-netty which drags in a vulnerable netty stack (flagged by
+// Dependabot). The whole io.netty group is aligned to the patched version so the netty
+// modules stay mutually consistent. These configs are used only when running instrumented
+// tests, so this does not affect the shipped application. See gradle/libs.versions.toml ("netty").
+configurations.configureEach {
+    if (name.startsWith("unified-test-platform")) {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "io.netty" && requested.name != "netty-bom") {
+                useVersion(libs.versions.netty.get())
+                because("CVE fix for transitive netty via UTP grpc-netty")
+            }
+        }
+    }
+}
+
 fun getVersionCode(): Int {
     val code =
         if (rootProject.hasProperty("versionCode")) {
