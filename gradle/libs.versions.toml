@@ -68,6 +68,13 @@ turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
 # Dependabot CVEs. Test/build-time only; netty is not on any app runtime classpath.
 # https://netty.io/news/ — bump as new advisories require.
 netty = "4.1.137.Final"
+# Transitive security patches for build/test tooling (Android Lint, ktlint, annotation
+# processors). None of these are on the app runtime classpath. Pinned to clear Dependabot CVEs.
+guava = "33.7.2-android" # CVE-2026-102554 etc.
+commonsCompress = "1.27.1" # CVE-2024-25710 / CVE-2024-26308
+commonsLang3 = "3.18.0" # CVE-2025-48924
+httpclient = "4.5.14" # CVE-2020-13956
+logbackCore = "1.5.34" # CVE-2026-1225 / 9828 / 10532
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -129,6 +136,12 @@ classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref 
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 
+# Transitive security constraints for build/test tooling (not on app runtime classpath).
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+commons-compress = { group = "org.apache.commons", name = "commons-compress", version.ref = "commonsCompress" }
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3" }
+httpclient = { group = "org.apache.httpcomponents", name = "httpclient", version.ref = "httpclient" }
+logback-core = { group = "ch.qos.logback", name = "logback-core", version.ref = "logbackCore" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
@@ -188,6 +201,14 @@ tooling-security-netty = [
   "patch-netty-codec",
   "patch-netty-codec-http",
   "patch-netty-codec-http2",
+]
+# Transitive build/test tooling dependencies flagged by Dependabot, pinned for security.
+tooling-security-other = [
+  "guava",
+  "commons-compress",
+  "commons-lang3",
+  "httpclient",
+  "logback-core",
 ]
 firebase = [
   "firebase-appcheck",
