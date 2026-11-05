@@ -1,8 +1,6 @@
 plugins {
     id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -12,20 +10,9 @@ android {
         compose = true
     }
 
-    flavorDimensions += "env"
-    productFlavors {
-        listOf(
-            "build",
-            "staging",
-            "integration",
-            "production",
-        ).forEach { environment ->
-            create(environment) {
-                dimension = "env"
-            }
-        }
+    defaultConfig {
+        missingDimensionStrategy("env", "build")
     }
-
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -52,14 +39,13 @@ dependencies {
         libs.androidx.compose.material3,
         libs.androidx.compose.ui.tooling.preview,
         libs.androidx.lifecycle.runtime.compose,
-        libs.hilt.android,
-        libs.bundles.gov.uk,
+        libs.componentsv2,
+        libs.patterns,
+        libs.theme,
         platform(libs.androidx.compose.bom),
     ).forEach(::implementation)
 
     implementation(libs.wallet.sdk)
-    ksp(libs.hilt.android.compiler)
-    ksp(libs.hilt.compiler)
 
     listOf(
         kotlin("test-junit5"),
@@ -82,8 +68,4 @@ dependencies {
         libs.androidx.test.ext.junit,
         libs.mockito.kotlin,
     ).forEach(::androidTestImplementation)
-
-    listOf(
-        libs.bundles.gov.uk,
-    ).forEach(::implementation)
 }

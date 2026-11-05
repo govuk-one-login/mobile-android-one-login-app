@@ -1,0 +1,25 @@
+package uk.gov.onelogin.mockwalletsdk
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
+import uk.gov.android.ui.theme.m3.GdsTheme
+
+@Composable
+internal fun MockWalletContent() {
+    GdsTheme {
+        LeftAlignedScreen(
+            modifier = Modifier.fillMaxSize(),
+            title = { GdsHeading(text = "Mock Wallet (Test Build)") },
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+internal fun MockWalletPreview() {
+    MockWalletContent()
+}
