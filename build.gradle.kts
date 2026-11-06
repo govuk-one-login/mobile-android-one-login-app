@@ -12,6 +12,23 @@ buildscript {
         ).forEach {
             classpath(it)
         }
+
+        // Transitive dependencies of the Gradle plugin classpath (AGP, Kotlin Gradle plugin,
+        // the shared pipelines plugins) flagged by Dependabot against `settings.gradle.kts`.
+        // These live only on the build/plugin classpath, never in the shipped app, but are
+        // constrained here to patched versions to clear the alerts. The JVM (`-jre`) guava
+        // flavour is used because the buildscript classpath is a plain JVM one.
+        constraints {
+            classpath(libs.patch.guava.jvm) {
+                because("Earlier versions contain known vulnerabilities (GHSA-xxph-c9ww-hj94)")
+            }
+            classpath(libs.bouncycastle.bcprov) {
+                because("Earlier versions contain known vulnerabilities (GHSA-9pwp-9qqc-pr26, GHSA-qp49-qgx5-5m26)")
+            }
+            classpath(libs.patch.logback.core) {
+                because("Earlier versions contain known vulnerabilities (GHSA-jhq6-gfmj-v8fx)")
+            }
+        }
     }
 
     val localProperties = java.util.Properties()

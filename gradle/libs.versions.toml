@@ -71,6 +71,7 @@ netty = "4.1.137.Final"
 # Transitive security patches for build/test tooling (Android Lint, ktlint, annotation
 # processors). None of these are on the app runtime classpath. Updated to clear Dependabot CVEs.
 guava = "33.7.2-android" # CVE-2026-102554 etc.
+guavaJvm = "33.7.2-jre" # GHSA-xxph-c9ww-hj94 — JVM flavour for the build/plugin classpath
 commonsCompress = "1.27.1" # CVE-2024-25710 / CVE-2024-26308
 commonsLang3 = "3.18.0" # CVE-2025-48924
 httpclient = "4.5.14" # CVE-2020-13956
@@ -187,6 +188,7 @@ patch-netty-codec-http2 = { group = "io.netty", name = "netty-codec-http2", vers
 # Transitive constraints for build/test tooling (not on the app runtime classpath),
 # raised to patched versions to clear Dependabot CVEs.
 patch-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+patch-guava-jvm = { group = "com.google.guava", name = "guava", version.ref = "guavaJvm" }
 patch-commons-compress = { group = "org.apache.commons", name = "commons-compress", version.ref = "commonsCompress" }
 patch-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3" }
 patch-httpclient = { group = "org.apache.httpcomponents", name = "httpclient", version.ref = "httpclient" }
