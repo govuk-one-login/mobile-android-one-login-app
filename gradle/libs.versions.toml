@@ -181,7 +181,7 @@ patch-netty-codec-http2 = { group = "io.netty", name = "netty-codec-http2", vers
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
 # Transitive netty modules flagged by Dependabot, updated as a group for security patching.
-netty-security = [
+tooling-security-netty = [
   "patch-netty-handler",
   "patch-netty-handler-proxy",
   "patch-netty-common",
