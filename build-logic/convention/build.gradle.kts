@@ -22,10 +22,9 @@ dependencies {
     // Transitive dependencies of the build/plugin tooling (AGP, Kotlin Gradle plugin, the
     // shared pipelines plugins) flagged by Dependabot against `settings.gradle.kts`. These
     // only exist on the build-logic / plugin classpath, never in the shipped app, but they
-    // are constrained here to patched versions to clear the alerts. The JVM (`-jre`) guava
-    // flavour is used because this is a plain JVM classpath, not an Android one.
+    // are constrained here to patched versions to clear the alerts.
     constraints {
-        implementation(libs.patch.guava.jvm) {
+        implementation(libs.patch.guava) {
             because("Earlier versions contain known vulnerabilities (GHSA-xxph-c9ww-hj94)")
         }
         implementation(libs.bouncycastle.bcprov) {

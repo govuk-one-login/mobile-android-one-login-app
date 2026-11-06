@@ -16,10 +16,9 @@ buildscript {
         // Transitive dependencies of the Gradle plugin classpath (AGP, Kotlin Gradle plugin,
         // the shared pipelines plugins) flagged by Dependabot against `settings.gradle.kts`.
         // These live only on the build/plugin classpath, never in the shipped app, but are
-        // constrained here to patched versions to clear the alerts. The JVM (`-jre`) guava
-        // flavour is used because the buildscript classpath is a plain JVM one.
+        // constrained here to patched versions to clear the alerts.
         constraints {
-            classpath(libs.patch.guava.jvm) {
+            classpath(libs.patch.guava) {
                 because("Earlier versions contain known vulnerabilities (GHSA-xxph-c9ww-hj94)")
             }
             classpath(libs.bouncycastle.bcprov) {
