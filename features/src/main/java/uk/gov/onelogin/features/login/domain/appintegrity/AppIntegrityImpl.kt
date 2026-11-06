@@ -107,8 +107,8 @@ constructor(
                         calculateDelay(count)
                         retryCounter.increment()
                         getClientAttestation()
-                        // If retired 2 times already, return the error to the consumer directly
                     } else {
+                        // If retried 2 times already, return the error to the consumer directly
                         retryCounter.reset()
                         AttestationResult.Failure(type = error.type, error = error)
                     }

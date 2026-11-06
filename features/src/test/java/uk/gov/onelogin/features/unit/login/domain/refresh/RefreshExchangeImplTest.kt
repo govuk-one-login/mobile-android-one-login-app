@@ -210,6 +210,22 @@ class RefreshExchangeImplTest {
         }
 
     @Test
+    fun `given client attestation fails intermittently, then result is retry later`() = runTest {
+        whenever(appIntegrity.getClientAttestation())
+            .thenReturn(
+                AttestationResult.Failure(
+                    type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
+                    error = Exception("Intermittent client attestation failure!"),
+                ),
+            )
+
+        val result = getTokens()
+
+        assertNothingSaved()
+        assertEquals(RefreshExchangeResult.RetryLater, result)
+    }
+
+    @Test
     fun `given client attestation is saved but not required, then result is success`() = runTest {
         whenever(appIntegrity.getClientAttestation())
             .thenReturn(AttestationResult.NotRequired("savedAttestation"))
