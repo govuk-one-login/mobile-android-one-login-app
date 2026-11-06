@@ -2,7 +2,6 @@ package uk.gov.onelogin.mockwalletsdk
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.yield
 import uk.gov.android.wallet.sdk.WalletSdk
 
 /**
@@ -35,7 +34,6 @@ class MockWalletSdk(
     override fun isEmpty(): Boolean = walletStoreId.isNullOrEmpty()
 
     override suspend fun deleteWalletData(): Boolean {
-        yield()
         this.walletStoreId = null
         return true
     }

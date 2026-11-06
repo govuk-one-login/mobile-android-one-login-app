@@ -1,6 +1,7 @@
 plugins {
     id("uk.gov.onelogin.android-lib-config")
     alias(libs.plugins.compose.compiler)
+    id("uk.gov.onelogin.screenshot-test-config")
 }
 
 android {
@@ -59,6 +60,7 @@ dependencies {
         libs.androidx.test.ext.junit,
         libs.androidx.compose.ui.junit4,
         libs.roboelectric,
+        testFixtures(projects.core),
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
