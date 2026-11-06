@@ -50,7 +50,7 @@ object WalletModule {
 
 @InstallIn(ViewModelComponent::class)
 @Module
-fun interface WalletUiModule {
+interface WalletUiModule {
 
     @Binds
     fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl): WalletDisplayer
