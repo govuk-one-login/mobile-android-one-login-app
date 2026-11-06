@@ -21,9 +21,20 @@ class MockWalletScreenTest {
     private val mockWalletSdk = MockWalletSdk(config, displayAsFullScreen)
 
     @Test
-    fun `displays initial mock wallet content`() {
+    fun `displays initial mock wallet content via WalletApp`() {
         composeTestRule.setContent {
             mockWalletSdk.WalletApp()
+        }
+
+        composeTestRule
+            .onNodeWithText("Mock Wallet (Test Build)")
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `displays MockWalletContent directly`() {
+        composeTestRule.setContent {
+            MockWalletContent()
         }
 
         composeTestRule

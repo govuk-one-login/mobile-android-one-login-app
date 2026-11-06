@@ -2,6 +2,7 @@ package uk.gov.onelogin.mockwalletsdk
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.yield
 import uk.gov.android.wallet.sdk.WalletSdk
 
 /**
@@ -10,12 +11,12 @@ import uk.gov.android.wallet.sdk.WalletSdk
  * This mock implementation provides fake data and a local fake UI composable
  * for [WalletApp] to allow testing without requiring a real wallet SDK instantiation.
  */
-open class MockWalletSdk(
+class MockWalletSdk(
     private val configValue: WalletSdk.ConfigurationV2,
     private val displayAsFullScreenFlow: StateFlow<Boolean>,
 ) : WalletSdk {
 
-    private var walletStoreId: String? = null
+    internal var walletStoreId: String? = null
 
     override val config: WalletSdk.ConfigurationV2
         get() = configValue
@@ -34,6 +35,7 @@ open class MockWalletSdk(
     override fun isEmpty(): Boolean = walletStoreId.isNullOrEmpty()
 
     override suspend fun deleteWalletData(): Boolean {
+        yield()
         this.walletStoreId = null
         return true
     }
