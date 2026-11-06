@@ -64,6 +64,10 @@ integrity = "1.6.0"
 bouncycastle = "1.85" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
+# Transitive via AGP's Unified Test Platform (grpc-netty). Updated to patch a batch of
+# Dependabot CVEs. Test/build-time only; netty is not on any app runtime classpath.
+# https://netty.io/news/ — bump as new advisories require.
+netty = "4.1.137.Final"
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -124,6 +128,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
@@ -162,8 +167,28 @@ aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", 
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 integrity = { group = "com.google.android.play", name = "integrity", version.ref = "integrity" }
 
+# Security patches
+# Transitive netty constraints (via AGP Unified Test Platform / grpc-netty; not on the app
+# runtime classpath). Declared as the full set of flagged modules so the group stays
+# version-aligned, raised to a patched version to clear Dependabot CVEs.
+patch-netty-handler = { group = "io.netty", name = "netty-handler", version.ref = "netty" }
+patch-netty-handler-proxy = { group = "io.netty", name = "netty-handler-proxy", version.ref = "netty" }
+patch-netty-common = { group = "io.netty", name = "netty-common", version.ref = "netty" }
+patch-netty-codec = { group = "io.netty", name = "netty-codec", version.ref = "netty" }
+patch-netty-codec-http = { group = "io.netty", name = "netty-codec-http", version.ref = "netty" }
+patch-netty-codec-http2 = { group = "io.netty", name = "netty-codec-http2", version.ref = "netty" }
+
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
+# Transitive netty modules flagged by Dependabot, updated as a group for security patching.
+tooling-security-netty = [
+  "patch-netty-handler",
+  "patch-netty-handler-proxy",
+  "patch-netty-common",
+  "patch-netty-codec",
+  "patch-netty-codec-http",
+  "patch-netty-codec-http2",
+]
 firebase = [
   "firebase-appcheck",
   "firebase-appcheck-debug",
