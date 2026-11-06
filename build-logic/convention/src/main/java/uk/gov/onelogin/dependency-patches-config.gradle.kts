@@ -23,7 +23,7 @@ dependencies {
             // Transitive netty (via AGP's Unified Test Platform / grpc-netty) is flagged by
             // a batch of Dependabot CVEs. netty is not on any app runtime classpath, but the
             // whole group is aligned to a patched version so the modules stay consistent.
-            add(configuration.name, libs.bundles.netty.security) {
+            add(configuration.name, libs.bundles.tooling.security.netty) {
                 because("Earlier versions contain known vulnerabilities")
             }
         }
