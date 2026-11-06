@@ -12,6 +12,30 @@ buildscript {
         ).forEach {
             classpath(it)
         }
+
+        // Transitive dependencies of the Gradle plugin classpath (AGP, Kotlin Gradle plugin,
+        // the shared pipelines plugins) flagged by Dependabot against `settings.gradle.kts`.
+        // These live only on the build/plugin classpath, never in the shipped app, but are
+        // constrained here to patched versions to clear the alerts.
+        constraints {
+            classpath(libs.patch.guava) {
+                because("Earlier versions contain known vulnerabilities (GHSA-xxph-c9ww-hj94)")
+            }
+            // The bouncycastle modules must move together — mixing bcprov 1.85 with older
+            // bcutil/bcpkix causes a NoSuchFieldError at runtime.
+            classpath(libs.bouncycastle.bcprov) {
+                because("Earlier versions contain known vulnerabilities (GHSA-9pwp-9qqc-pr26, GHSA-qp49-qgx5-5m26)")
+            }
+            classpath(libs.bouncycastle.bcutil) {
+                because("Kept in lockstep with bcprov to avoid a mixed-version NoSuchFieldError")
+            }
+            classpath(libs.bouncycastle.bcpkix) {
+                because("Kept in lockstep with bcprov to avoid a mixed-version NoSuchFieldError")
+            }
+            classpath(libs.patch.logback.core) {
+                because("Earlier versions contain known vulnerabilities (GHSA-jhq6-gfmj-v8fx)")
+            }
+        }
     }
 
     val localProperties = java.util.Properties()

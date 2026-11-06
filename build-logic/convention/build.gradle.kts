@@ -19,6 +19,30 @@ dependencies {
         implementation(it)
     }
 
+    // Transitive dependencies of the build/plugin tooling (AGP, Kotlin Gradle plugin, the
+    // shared pipelines plugins) flagged by Dependabot against `settings.gradle.kts`. These
+    // only exist on the build-logic / plugin classpath, never in the shipped app, but they
+    // are constrained here to patched versions to clear the alerts.
+    constraints {
+        implementation(libs.patch.guava) {
+            because("Earlier versions contain known vulnerabilities (GHSA-xxph-c9ww-hj94)")
+        }
+        // The bouncycastle modules must move together — mixing bcprov 1.85 with older
+        // bcutil/bcpkix causes a NoSuchFieldError at runtime.
+        implementation(libs.bouncycastle.bcprov) {
+            because("Earlier versions contain known vulnerabilities (GHSA-9pwp-9qqc-pr26, GHSA-qp49-qgx5-5m26)")
+        }
+        implementation(libs.bouncycastle.bcutil) {
+            because("Kept in lockstep with bcprov to avoid a mixed-version NoSuchFieldError")
+        }
+        implementation(libs.bouncycastle.bcpkix) {
+            because("Kept in lockstep with bcprov to avoid a mixed-version NoSuchFieldError")
+        }
+        implementation(libs.patch.logback.core) {
+            because("Earlier versions contain known vulnerabilities (GHSA-jhq6-gfmj-v8fx)")
+        }
+    }
+
     //https://github.com/gradle/gradle/issues/15383
     implementation(files((libs as Any).javaClass.superclass.protectionDomain.codeSource.location))
 }
