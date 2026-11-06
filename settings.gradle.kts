@@ -76,5 +76,6 @@ include(":app")
 include(":core")
 include(":featureflags")
 include(":features")
+include(":libraries:mock-wallet-sdk")
 
 gradle.startParameter.excludedTaskNames.addAll(listOf(":buildLogic:plugins:testClasses"))
