@@ -30,10 +30,8 @@ dependencies {
             // Transitive dependencies of build/test tooling (Android Lint, ktlint, annotation
             // processors) flagged by Dependabot. None are on the app runtime classpath; the
             // constraints simply raise the tooling's transitives to patched versions.
-            libs.bundles.tooling.security.other.get().forEach { patched ->
-                add(configuration.name, patched) {
-                    because("Earlier versions contain known vulnerabilities")
-                }
+            add(configuration.name, libs.bundles.tooling.security.other) {
+                because("Earlier versions contain known vulnerabilities")
             }
         }
     }
