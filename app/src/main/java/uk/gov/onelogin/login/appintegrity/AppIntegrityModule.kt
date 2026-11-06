@@ -5,13 +5,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import uk.gov.android.authentication.integrity.AppIntegrityManager
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import uk.gov.android.authentication.integrity.FirebaseAppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.usecase.AppChecker
 import uk.gov.android.authentication.integrity.appcheck.usecase.AttestationCaller
 import uk.gov.android.authentication.integrity.keymanager.KeyStoreManager
 import uk.gov.android.authentication.integrity.model.AppIntegrityConfiguration
 import uk.gov.logging.api.v3.Logger
+import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityDevOptionsRepository
+import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityDevOptionsRepositoryImpl
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityImpl
 import uk.gov.onelogin.features.login.domain.appintegrity.AttestationApiCall
@@ -39,9 +42,18 @@ interface AppIntegrityModule {
         )
 
         @Provides
-        fun provideFirebaseTokenManager(
+        fun provideFirebaseAppIntegrityManager(
             logger: Logger,
             config: AppIntegrityConfiguration,
-        ): AppIntegrityManager = FirebaseAppIntegrityManager(logger, config)
+        ): FirebaseAppIntegrityManager = FirebaseAppIntegrityManager(logger, config)
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppIntegrityDevModeModule {
+    @Provides
+    @Singleton
+    fun providesAppIntegrityDevOptionsRepository(): AppIntegrityDevOptionsRepository =
+        AppIntegrityDevOptionsRepositoryImpl()
 }
