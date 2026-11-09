@@ -26,6 +26,7 @@ then
     :features:unitEnvironmentSpecificTestStagingDebug \
     :features:unitEnvironmentSpecificTestProductionDebug \
     :features:unitTestStagingDebug \
+    :libraries:mock-wallet-sdk:test \
     --continue \
     --stacktrace
 else
@@ -41,6 +42,7 @@ else
     :features:unitEnvironmentSpecificTestProductionDebug \
     :features:unitTestStagingDebug \
     :features:unitTestProductionDebug \
+    :libraries:mock-wallet-sdk:test \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     --continue \
