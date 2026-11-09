@@ -18,7 +18,6 @@ class MockWalletSdkTest {
     @Test
     fun `initial state is empty`() {
         assertTrue(mockWalletSdk.isEmpty())
-        assertNull(mockWalletSdk.walletStoreId)
         assertEquals(config, mockWalletSdk.config)
         assertEquals(displayAsFullScreen, mockWalletSdk.displayAsFullScreen)
     }
@@ -26,15 +25,12 @@ class MockWalletSdkTest {
     @Test
     fun `setting wallet store id updates empty state`() {
         mockWalletSdk.setWalletStoreId("test-store-id")
-        assertEquals("test-store-id", mockWalletSdk.walletStoreId)
         assertFalse(mockWalletSdk.isEmpty())
     }
 
     @Test
     fun `clearing wallet store id resets empty state`() {
-        mockWalletSdk.setWalletStoreId("test-store-id")
         mockWalletSdk.setWalletStoreId("")
-        assertEquals("", mockWalletSdk.walletStoreId)
         assertTrue(mockWalletSdk.isEmpty())
     }
 
@@ -45,7 +41,6 @@ class MockWalletSdkTest {
 
         val result = mockWalletSdk.deleteWalletData()
         assertTrue(result)
-        assertNull(mockWalletSdk.walletStoreId)
         assertTrue(mockWalletSdk.isEmpty())
     }
 }

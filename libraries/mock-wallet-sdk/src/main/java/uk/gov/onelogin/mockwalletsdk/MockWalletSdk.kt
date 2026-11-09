@@ -15,7 +15,7 @@ class MockWalletSdk(
     private val displayAsFullScreenFlow: StateFlow<Boolean>,
 ) : WalletSdk {
 
-    internal var walletStoreId: String? = null
+    private var walletStoreId: String? = null
 
     override val config: WalletSdk.ConfigurationV2
         get() = configValue
