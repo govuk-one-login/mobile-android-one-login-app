@@ -16,7 +16,10 @@ dependencies {
                 return@configureEach
             }
 
-            add(configuration.name, libs.bouncycastle.bcprov) {
+            // bouncycastle is flagged by Dependabot CVEs. The whole group is aligned to a
+            // patched version so the modules stay consistent (mixing bcprov with older
+            // bcutil/bcpkix causes a runtime error).
+            add(configuration.name, libs.bundles.tooling.security.bouncycastle) {
                 because("Earlier versions contain known vulnerabilities")
             }
 

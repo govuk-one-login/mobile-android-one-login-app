@@ -134,7 +134,6 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
@@ -191,6 +190,11 @@ patch-commons-compress = { group = "org.apache.commons", name = "commons-compres
 patch-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3" }
 patch-httpclient = { group = "org.apache.httpcomponents", name = "httpclient", version.ref = "httpclient" }
 patch-logback-core = { group = "ch.qos.logback", name = "logback-core", version.ref = "logbackCore" }
+# bouncycastle constraints for the plugin/build classpath. The whole group is declared so the
+# modules stay version-aligned — mixing bcprov with older bcutil/bcpkix causes a runtime error.
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcutil = { group = "org.bouncycastle", name = "bcutil-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
 
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
@@ -210,6 +214,13 @@ tooling-security-other = [
   "patch-commons-lang3",
   "patch-httpclient",
   "patch-logback-core",
+]
+# bouncycastle modules flagged by Dependabot, updated as a group so the modules stay
+# version-aligned (mixing bcprov with older bcutil/bcpkix causes a runtime error).
+tooling-security-bouncycastle = [
+  "bouncycastle-bcprov",
+  "bouncycastle-bcutil",
+  "bouncycastle-bcpkix",
 ]
 firebase = [
   "firebase-appcheck",
