@@ -10,13 +10,18 @@ import uk.gov.android.authentication.integrity.appcheck.model.AttestationRespons
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.onelogin.core.R
+import uk.gov.logging.api.LogTagProvider
+import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.counter.Counter
+import uk.gov.onelogin.core.logging.ErrorKeys.actionKey
+import uk.gov.onelogin.core.logging.ErrorKeys.componentKey
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
 import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
 
+@Suppress("LongParameterList")
 class AppIntegrityImpl
 @Inject
 constructor(
@@ -27,7 +32,9 @@ constructor(
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
     private val getFromOpenSecureStore: GetFromOpenSecureStore,
     private val retryCounter: Counter,
-) : AppIntegrity {
+    private val logger: Logger,
+) : AppIntegrity,
+    LogTagProvider {
     override suspend fun getClientAttestation(): AttestationResult =
         if (isAttestationCallRequired()) {
             when (val result = appCheck.getAttestation()) {
@@ -102,6 +109,12 @@ constructor(
                 // When an INTERMITTENT error is returned, attempt to get the attestation again up to 3 times
                 // before returning a result
                 AppIntegrityException.AppIntegrityErrorType.INTERMITTENT -> {
+                    logger.error(
+                        "Intermittent error getting client attestation: ${result.reason}",
+                        error,
+                        componentKey(COMPONENT),
+                        actionKey("Get client attestation"),
+                    )
                     val count = retryCounter.getValue()
                     if (count < MAX_RETRY) {
                         calculateDelay(count)
@@ -144,6 +157,7 @@ constructor(
     }
 
     companion object {
+        internal const val COMPONENT = "app_integrity"
         private const val CONVERT_TO_SECONDS = 1000
         private const val MAX_RETRY = 3
         private const val FIRST_COUNT = 1
