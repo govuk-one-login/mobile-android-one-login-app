@@ -15,6 +15,7 @@ import uk.gov.onelogin.core.tokens.domain.save.SaveToOpenSecureStore
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION
 import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity.Companion.CLIENT_ATTESTATION_EXPIRY
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException
 
 @HiltViewModel
 class AppIntegrityTabViewModel
@@ -25,6 +26,7 @@ constructor(
     private val appIntegrity: AppIntegrity,
     private val getFromOpenSecureStore: GetFromOpenSecureStore,
     private val saveToOpenSecureStore: SaveToOpenSecureStore,
+    private val devOptionsRepository: AppIntegrityDevOptionsRepository,
 ) : ViewModel() {
     val tokenResponse: MutableState<String> = mutableStateOf("")
     val clientAttestationApiResponse: MutableState<String> = mutableStateOf("")
@@ -32,9 +34,16 @@ constructor(
     val clientAttestation: MutableState<String> = mutableStateOf("")
     val clientAttestationExpiry: MutableState<String> = mutableStateOf("")
     val proofOfPossessionResult: MutableState<String> = mutableStateOf("")
+    val forceError: MutableState<AppIntegrityException.AppIntegrityErrorType?> =
+        mutableStateOf(devOptionsRepository.forceError)
 
     init {
         getSavedAttestation()
+    }
+
+    fun setForceError(type: AppIntegrityException.AppIntegrityErrorType?) {
+        devOptionsRepository.forceError = type
+        forceError.value = devOptionsRepository.forceError
     }
 
     fun getToken() {

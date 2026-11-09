@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
@@ -21,6 +17,7 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeadingStyle
 import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
 import uk.gov.android.ui.theme.smallPadding
 import uk.gov.onelogin.features.developer.ui.components.StringSettingItem
+import uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrityException.AppIntegrityErrorType
 
 @Suppress("LongMethod")
 @Composable
@@ -43,15 +40,9 @@ fun AppIntegrityTabScreen(viewModel: AppIntegrityTabViewModel = hiltViewModel())
                 )
             }
             item {
-                var selected by remember { mutableStateOf("Disabled") }
-                StringSettingItem(
-                    title = "Simulate errors",
-                    selected = selected,
-                    options = listOf("Disabled", "Intermittent", "App check failed", "Generic"),
-                    onSelectionChanged = {
-                        // TODO: DCMAW-18663
-                        selected = it
-                    },
+                SimulateErrorsSettingItem(
+                    value = viewModel.forceError.value,
+                    onSelected = { viewModel.setForceError(it) },
                     modifier = Modifier.padding(horizontal = horizontalPadding),
                 )
             }
@@ -183,4 +174,26 @@ private fun DataItem(
             Text(text = result.value)
         }
     }
+}
+
+@Composable
+private fun SimulateErrorsSettingItem(
+    value: AppIntegrityErrorType?,
+    onSelected: (AppIntegrityErrorType?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val simulateErrorOptions = linkedMapOf(
+        "Disabled" to null,
+        "Intermittent" to AppIntegrityErrorType.INTERMITTENT,
+        "App check failed" to AppIntegrityErrorType.APP_CHECK_FAILED,
+        "Generic" to AppIntegrityErrorType.GENERIC,
+    )
+
+    StringSettingItem(
+        title = "Simulate errors",
+        selected = simulateErrorOptions.entries.first { it.value == value }.key,
+        options = simulateErrorOptions.keys.toList(),
+        onSelectionChanged = { onSelected(simulateErrorOptions[it]) },
+        modifier = modifier,
+    )
 }
