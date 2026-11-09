@@ -215,6 +215,13 @@ tooling-security-other = [
   "patch-httpclient",
   "patch-logback-core",
 ]
+# bouncycastle modules flagged by Dependabot, updated as a group so the modules stay
+# version-aligned (mixing bcprov with older bcutil/bcpkix causes a runtime error).
+tooling-security-bouncycastle = [
+  "bouncycastle-bcprov",
+  "bouncycastle-bcutil",
+  "bouncycastle-bcpkix",
+]
 firebase = [
   "firebase-appcheck",
   "firebase-appcheck-debug",
