@@ -88,9 +88,15 @@ constructor(
 
     private fun handleRefreshExchangeResult(result: RefreshExchangeResult) {
         when (result) {
-            RefreshExchangeResult.Success,
-            RefreshExchangeResult.RetryLater,
-            -> nextScreen(MainNavRoutes.Start)
+            RefreshExchangeResult.Success ->
+                nextScreen(MainNavRoutes.Start)
+
+            // If the refresh exhange failed for a reason that is likely to be intermittent,
+            // the user may continue past the splash screen for an offline-like experience.
+            // Then, when the app then makes further network calls, there is another opportunity to
+            // attempt the refresh exchange.
+            RefreshExchangeResult.RetryLater ->
+                nextScreen(MainNavRoutes.Start)
 
             // Handle when a user ia a first time user
             RefreshExchangeResult.FirstTimeUser -> {
