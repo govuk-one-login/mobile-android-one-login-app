@@ -98,7 +98,7 @@ constructor(
             RefreshExchangeResult.RetryLater ->
                 nextScreen(MainNavRoutes.Start)
 
-            // Handle when a user ia a first time user
+            // Handle when a user is a first time user
             RefreshExchangeResult.FirstTimeUser -> {
                 deleteData.value = DeleteData(true) { nextScreen(LoginRoutes.AnalyticsOptIn) }
             }
