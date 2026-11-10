@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "uk.gov.onelogin.mockwalletsdk"
+    namespace = "uk.gov.onelogin.libraries.mockwalletsdk"
 
     buildFeatures {
         compose = true

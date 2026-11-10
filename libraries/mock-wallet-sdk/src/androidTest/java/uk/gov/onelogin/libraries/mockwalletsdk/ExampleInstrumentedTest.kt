@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("uk.gov.onelogin.mockwalletsdk", appContext.packageName)
+        assertEquals("uk.gov.onelogin.libraries.mockwalletsdk", appContext.packageName)
     }
 }

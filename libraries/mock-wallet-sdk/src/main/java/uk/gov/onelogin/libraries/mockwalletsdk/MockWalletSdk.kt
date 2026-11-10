@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.StateFlow

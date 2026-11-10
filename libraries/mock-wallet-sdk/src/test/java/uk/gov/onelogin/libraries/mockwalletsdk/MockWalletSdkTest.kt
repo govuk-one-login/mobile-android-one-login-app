@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest

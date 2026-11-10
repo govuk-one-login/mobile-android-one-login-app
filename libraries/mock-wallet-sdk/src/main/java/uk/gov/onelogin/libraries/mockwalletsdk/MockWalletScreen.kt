@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable

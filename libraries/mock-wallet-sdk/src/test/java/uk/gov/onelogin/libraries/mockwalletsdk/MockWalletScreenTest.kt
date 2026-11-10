@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

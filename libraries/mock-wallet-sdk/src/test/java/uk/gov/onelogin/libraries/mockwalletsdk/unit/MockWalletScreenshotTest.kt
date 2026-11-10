@@ -1,4 +1,4 @@
-package uk.gov.onelogin.mockwalletsdk.unit
+package uk.gov.onelogin.libraries.mockwalletsdk.unit
 
 import androidx.compose.runtime.Composable
 import com.android.resources.NightMode
@@ -7,7 +7,7 @@ import com.android.resources.NightMode.NOTNIGHT
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
-import uk.gov.onelogin.mockwalletsdk.MockWalletPreview
+import uk.gov.onelogin.libraries.mockwalletsdk.MockWalletPreview
 
 @RunWith(Parameterized::class)
 class MockWalletScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
