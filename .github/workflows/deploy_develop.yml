@@ -3,7 +3,7 @@ name: Deploy Build/Staging (develop)
 
 on:
   workflow_run:
-    workflows: [ Run checks (tests and style checks) ]
+    workflows: [ Check ]
     branches: [ develop ]
     types: [ completed ]
 
