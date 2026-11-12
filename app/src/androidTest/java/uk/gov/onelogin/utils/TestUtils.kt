@@ -19,7 +19,9 @@ object TestUtils {
                 ),
         )
 
-    fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.setActivity(action: () -> Unit) {
+    fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.setActivity(
+        action: () -> Unit,
+    ) {
         this.activityRule.scenario.onActivity { action() }
     }
 

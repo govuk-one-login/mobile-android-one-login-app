@@ -1,6 +1,8 @@
 package uk.gov.onelogin.features.unit.home.ui
 
 import android.content.Context
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -22,8 +24,6 @@ import uk.gov.onelogin.features.extensions.CoroutinesTestExtension
 import uk.gov.onelogin.features.extensions.InstantExecutorExtension
 import uk.gov.onelogin.features.home.ui.HomeScreenViewModel
 import uk.gov.onelogin.features.wallet.data.WalletRepository
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(InstantExecutorExtension::class, CoroutinesTestExtension::class)
@@ -40,7 +40,7 @@ class HomeScreenViewModelTest {
             analyticsLogger = analyticsLogger,
             initialConfig = TestUtils.criSdkConfig,
             logger = logger,
-            applicationContext = context
+            applicationContext = context,
         )
 
     private val walletRepository: WalletRepository = mock()
@@ -50,7 +50,7 @@ class HomeScreenViewModelTest {
             featureFlag,
             mockNavigator,
             walletRepository,
-            criOrchestratorSdk
+            criOrchestratorSdk,
         )
     }
 

@@ -26,6 +26,6 @@ object DemonstratingProofOfPossession {
 
     @Provides
     fun provideDemonstratingProofOfPossessionManager(
-        config: DemonstratingProofOfPossessionConfig
+        config: DemonstratingProofOfPossessionConfig,
     ): DemonstratingProofOfPossessionManager = DemonstratingProofOfPossessionManagerImpl(config)
 }

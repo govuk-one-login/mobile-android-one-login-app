@@ -98,7 +98,7 @@ class SplashScreenDevMenuTest : FragmentActivityTestCase() {
                 loading = false,
                 trackUnlockButton = { },
                 onLogin = {},
-                onOpenDeveloperPortal = { actual = true }
+                onOpenDeveloperPortal = { actual = true },
             )
         }
         // When clicking the `splashIcon`

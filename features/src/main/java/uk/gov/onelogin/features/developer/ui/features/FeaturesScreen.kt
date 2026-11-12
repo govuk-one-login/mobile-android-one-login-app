@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.ui.theme.m3.Dividers
@@ -51,11 +51,7 @@ fun FeaturesScreen(viewModel: FeaturesScreenViewModel = hiltViewModel()) {
 }
 
 @Composable
-private fun FeatureToggle(
-    featureFlag: FeatureFlag,
-    checked: Boolean,
-    onToggle: () -> Unit,
-) {
+private fun FeatureToggle(featureFlag: FeatureFlag, checked: Boolean, onToggle: () -> Unit) {
     Row(
         modifier = Modifier.padding(smallPadding),
         verticalAlignment = Alignment.CenterVertically,

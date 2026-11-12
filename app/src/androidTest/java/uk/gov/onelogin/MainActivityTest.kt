@@ -5,6 +5,7 @@ import androidx.test.core.app.launchActivity
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import javax.inject.Inject
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -16,7 +17,6 @@ import uk.gov.onelogin.core.utils.ActivityProvider
 import uk.gov.onelogin.e2e.controller.TestCase
 import uk.gov.onelogin.navigation.NavigatorModule
 import uk.gov.onelogin.utils.ActivityProviderModule
-import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(NavigatorModule::class, ActivityProviderModule::class)

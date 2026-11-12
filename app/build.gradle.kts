@@ -129,6 +129,7 @@ androidComponents {
                                 ),
                             )
                         }
+
                         "staging" -> {
                             it.buildConfigFields?.put(
                                 "AppCheckDebugSecret",
@@ -141,6 +142,7 @@ androidComponents {
                                 ),
                             )
                         }
+
                         else -> {
                             it.buildConfigFields?.put(
                                 "AppCheckDebugSecret",

@@ -22,15 +22,14 @@ class ClientAttestationProviderImplTest {
     }
 
     @Test
-    fun `getClientAttestation returns Success when attestation and PoP succeed`() =
-        runTest {
-            val result = provider.getClientAttestation()
+    fun `getClientAttestation returns Success when attestation and PoP succeed`() = runTest {
+        val result = provider.getClientAttestation()
 
-            assertEquals(
-                ClientAttestationResponse.Success(CLIENT_ATTESTATION, CLIENT_ATTESTATION_POP),
-                result,
-            )
-        }
+        assertEquals(
+            ClientAttestationResponse.Success(CLIENT_ATTESTATION, CLIENT_ATTESTATION_POP),
+            result,
+        )
+    }
 
     @Test
     fun `getClientAttestation returns Success when attestation not required with saved attestation`() =
@@ -64,7 +63,7 @@ class ClientAttestationProviderImplTest {
             val error = Exception("attestation error")
             appIntegrity.attestationResult = AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.APP_CHECK_FAILED,
-                error = error
+                error = error,
             )
 
             val result = provider.getClientAttestation()
@@ -80,7 +79,7 @@ class ClientAttestationProviderImplTest {
             val error = Exception("attestation error")
             appIntegrity.attestationResult = AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
-                error = error
+                error = error,
             )
 
             val result = provider.getClientAttestation()
@@ -96,7 +95,7 @@ class ClientAttestationProviderImplTest {
             val error = Exception("attestation error")
             appIntegrity.attestationResult = AttestationResult.Failure(
                 type = AppIntegrityException.AppIntegrityErrorType.GENERIC,
-                error = error
+                error = error,
             )
 
             val result = provider.getClientAttestation()
@@ -107,15 +106,14 @@ class ClientAttestationProviderImplTest {
         }
 
     @Test
-    fun `getClientAttestation returns Failure when PoP fails`() =
-        runTest {
-            val error = Exception("pop error")
-            appIntegrity.popResult = SignedPoP.Failure("pop error", error)
+    fun `getClientAttestation returns Failure when PoP fails`() = runTest {
+        val error = Exception("pop error")
+        appIntegrity.popResult = SignedPoP.Failure("pop error", error)
 
-            val result = provider.getClientAttestation()
+        val result = provider.getClientAttestation()
 
-            assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
-            assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
-            assertEquals(ClientAttestationErrorReason.APP_CHECK_FAILED, result.reason)
-        }
+        assertInstanceOf(ClientAttestationResponse.Failure::class.java, result)
+        assertEquals(error, (result as ClientAttestationResponse.Failure).error.cause)
+        assertEquals(ClientAttestationErrorReason.APP_CHECK_FAILED, result.reason)
+    }
 }

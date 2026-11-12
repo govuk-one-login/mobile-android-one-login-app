@@ -1,11 +1,11 @@
 package uk.gov.onelogin.core.tokens.data
 
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import uk.gov.onelogin.core.tokens.data.tokendata.LoginTokens
-import kotlin.test.assertEquals
 
 class TokenRepositoryTest {
     private lateinit var repo: TokenRepository

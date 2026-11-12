@@ -26,21 +26,19 @@ class RemoveFromOpenSecureStoreTest {
     }
 
     @Test
-    fun `remove from open secure store`() =
-        runTest {
-            useCase.remove("key")
+    fun `remove from open secure store`() = runTest {
+        useCase.remove("key")
 
-            verify(openSecureStore).delete("key")
-        }
+        verify(openSecureStore).delete("key")
+    }
 
     @Test
-    fun `logs error when secure store throws SecureStorageErrorV2`() =
-        runTest {
-            val exception = SecureStorageErrorV2(Exception("something went wrong"))
-            whenever(openSecureStore.delete("key")).thenThrow(exception)
+    fun `logs error when secure store throws SecureStorageErrorV2`() = runTest {
+        val exception = SecureStorageErrorV2(Exception("something went wrong"))
+        whenever(openSecureStore.delete("key")).thenThrow(exception)
 
-            useCase.remove("key")
+        useCase.remove("key")
 
-            assertThat(logger, hasItem(hasMessage("Failed to remove from secure store")))
-        }
+        assertThat(logger, hasItem(hasMessage("Failed to remove from secure store")))
+    }
 }

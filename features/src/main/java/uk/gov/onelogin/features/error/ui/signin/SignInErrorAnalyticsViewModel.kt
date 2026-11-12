@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import uk.gov.android.onelogin.core.R
 import uk.gov.logging.api.analytics.extensions.getEnglishString
 import uk.gov.logging.api.analytics.logging.AnalyticsLogger
@@ -13,81 +14,76 @@ import uk.gov.logging.api.v3dot1.logger.logEventV3Dot1
 import uk.gov.logging.api.v3dot1.model.RequiredParameters
 import uk.gov.logging.api.v3dot1.model.TrackEvent
 import uk.gov.logging.api.v3dot1.model.ViewEvent
-import javax.inject.Inject
 
 @HiltViewModel
 class SignInErrorAnalyticsViewModel
-    @Inject
-    constructor(
-        @ApplicationContext context: Context,
-        private val analyticsLogger: AnalyticsLogger,
-    ) : ViewModel() {
-        private val recoverableScreenEvent = makeRecoverableScreenEvent(context)
-        private val unRecoverableScreenEvent = makeUnrecoverableScreenEvent(context)
-        private val buttonEvent = makeButtonEvent(context)
-        private val backButtonEvent = makeBackEvent(context)
+@Inject
+constructor(
+    @ApplicationContext context: Context,
+    private val analyticsLogger: AnalyticsLogger,
+) : ViewModel() {
+    private val recoverableScreenEvent = makeRecoverableScreenEvent(context)
+    private val unRecoverableScreenEvent = makeUnrecoverableScreenEvent(context)
+    private val buttonEvent = makeButtonEvent(context)
+    private val backButtonEvent = makeBackEvent(context)
 
-        fun trackRecoverableScreen() {
-            analyticsLogger.logEventV3Dot1(recoverableScreenEvent)
-        }
-
-        fun trackUnrecoverableScreen() {
-            analyticsLogger.logEventV3Dot1(unRecoverableScreenEvent)
-        }
-
-        fun trackButton() {
-            analyticsLogger.logEventV3Dot1(buttonEvent)
-        }
-
-        fun trackBackButton() {
-            analyticsLogger.logEventV3Dot1(backButtonEvent)
-        }
-
-        companion object {
-            internal fun makeRecoverableScreenEvent(context: Context) =
-                with(context) {
-                    ViewEvent.Error(
-                        name = getEnglishString(R.string.app_signInErrorTitle),
-                        id = getEnglishString(R.string.sign_in_recoverable_error_screen_id),
-                        endpoint = "",
-                        reason = getEnglishString(R.string.sign_in_error_recoverable_reason),
-                        status = "",
-                        params = requiredParams,
-                    )
-                }
-
-            internal fun makeUnrecoverableScreenEvent(context: Context) =
-                with(context) {
-                    ViewEvent.Error(
-                        name = getEnglishString(R.string.app_signInErrorTitle),
-                        id = getEnglishString(R.string.sign_in_unrecoverable_error_screen_id),
-                        endpoint = "",
-                        reason = getEnglishString(R.string.sign_in_error_unrecoverable_reason),
-                        status = "",
-                        params = requiredParams,
-                    )
-                }
-
-            internal fun makeButtonEvent(context: Context) =
-                with(context) {
-                    TrackEvent.Button(
-                        text = getEnglishString(R.string.app_closeButton),
-                        params = requiredParams,
-                    )
-                }
-
-            internal fun makeBackEvent(context: Context) =
-                with(context) {
-                    TrackEvent.Icon(
-                        text = getEnglishString(R.string.system_backButton),
-                        params = requiredParams,
-                    )
-                }
-
-            private val requiredParams =
-                RequiredParameters(
-                    taxonomyLevel2 = TaxonomyLevel2.LOGIN,
-                    taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
-                )
-        }
+    fun trackRecoverableScreen() {
+        analyticsLogger.logEventV3Dot1(recoverableScreenEvent)
     }
+
+    fun trackUnrecoverableScreen() {
+        analyticsLogger.logEventV3Dot1(unRecoverableScreenEvent)
+    }
+
+    fun trackButton() {
+        analyticsLogger.logEventV3Dot1(buttonEvent)
+    }
+
+    fun trackBackButton() {
+        analyticsLogger.logEventV3Dot1(backButtonEvent)
+    }
+
+    companion object {
+        internal fun makeRecoverableScreenEvent(context: Context) = with(context) {
+            ViewEvent.Error(
+                name = getEnglishString(R.string.app_signInErrorTitle),
+                id = getEnglishString(R.string.sign_in_recoverable_error_screen_id),
+                endpoint = "",
+                reason = getEnglishString(R.string.sign_in_error_recoverable_reason),
+                status = "",
+                params = requiredParams,
+            )
+        }
+
+        internal fun makeUnrecoverableScreenEvent(context: Context) = with(context) {
+            ViewEvent.Error(
+                name = getEnglishString(R.string.app_signInErrorTitle),
+                id = getEnglishString(R.string.sign_in_unrecoverable_error_screen_id),
+                endpoint = "",
+                reason = getEnglishString(R.string.sign_in_error_unrecoverable_reason),
+                status = "",
+                params = requiredParams,
+            )
+        }
+
+        internal fun makeButtonEvent(context: Context) = with(context) {
+            TrackEvent.Button(
+                text = getEnglishString(R.string.app_closeButton),
+                params = requiredParams,
+            )
+        }
+
+        internal fun makeBackEvent(context: Context) = with(context) {
+            TrackEvent.Icon(
+                text = getEnglishString(R.string.system_backButton),
+                params = requiredParams,
+            )
+        }
+
+        private val requiredParams =
+            RequiredParameters(
+                taxonomyLevel2 = TaxonomyLevel2.LOGIN,
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
+            )
+    }
+}

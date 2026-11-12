@@ -11,16 +11,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.compose.rememberNavController
 import uk.gov.android.onelogin.core.R
+import uk.gov.android.ui.componentsv2.button.ButtonIcon
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
+import uk.gov.android.ui.componentsv2.button.ExternalDestination
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
 import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.componentsv2.images.GdsIcon
+import uk.gov.android.ui.patterns.R as patternsR
 import uk.gov.android.ui.patterns.errorscreen.v2.ErrorScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.util.UnstableDesignSystemAPI
@@ -29,7 +32,6 @@ import uk.gov.onelogin.core.ui.meta.ExcludeFromJacocoGeneratedReport
 import uk.gov.onelogin.core.ui.meta.ScreenPreview
 import uk.gov.onelogin.core.ui.pages.EdgeToEdgePage
 import uk.gov.onelogin.core.utils.ModifierExtensions.errorBodyItemModifier
-import uk.gov.android.ui.patterns.R as patternsR
 
 @Composable
 fun ErrorUpdateRequiredScreen(
@@ -61,7 +63,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit = {}) {
                 icon = { padding ->
                     GdsIcon(
                         image = ImageVector.vectorResource(patternsR.drawable.ic_warning_error),
-                        contentDescription = stringResource(patternsR.string.error_icon_description),
+                        contentDescription = stringResource(
+                            patternsR.string.error_icon_description,
+                        ),
                         modifier = Modifier.errorBodyItemModifier(padding),
                     )
                 },
@@ -91,6 +95,9 @@ internal fun UpdateRequiredBody(onPrimary: () -> Unit = {}) {
                 primaryButton = {
                     GdsButton(
                         text = buttonText,
+                        icon = ButtonIcon.opensExternalDestination(
+                            ExternalDestination.PlayStore,
+                        ),
                         buttonType = ButtonTypeV2.Primary(),
                         onClick = onPrimary,
                         modifier =

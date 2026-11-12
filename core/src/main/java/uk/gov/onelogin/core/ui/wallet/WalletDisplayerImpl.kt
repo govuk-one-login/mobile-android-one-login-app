@@ -4,17 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import uk.gov.android.wallet.sdk.WalletSdk
 import javax.inject.Inject
+import uk.gov.android.wallet.sdk.WalletSdk
 
-class WalletDisplayerImpl @Inject constructor(
-    private val walletSdk: WalletSdk
-) : WalletDisplayer {
+class WalletDisplayerImpl @Inject constructor(private val walletSdk: WalletSdk) : WalletDisplayer {
 
     @Composable
-    override fun Wallet(
-        onFullScreenRequest: (Boolean) -> Unit
-    ) {
+    override fun Wallet(onFullScreenRequest: (Boolean) -> Unit) {
         val fullScreen by walletSdk
             .displayAsFullScreen
             .collectAsStateWithLifecycle()

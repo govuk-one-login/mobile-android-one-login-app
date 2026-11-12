@@ -63,7 +63,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
         analyticsLogger = mock()
         featureFlags =
             InMemoryFeatureFlags(
-                setOf(CriOrchestratorFeatureFlag.ENABLED)
+                setOf(CriOrchestratorFeatureFlag.ENABLED),
             )
         navigator = mock()
         logger = mock()
@@ -73,7 +73,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
                 analyticsLogger = analyticsLogger,
                 initialConfig = TestUtils.criSdkConfig,
                 logger = logger,
-                applicationContext = context
+                applicationContext = context,
             )
         walletRepository = mock()
         viewModel =
@@ -81,7 +81,7 @@ class HomeScreenTest : FragmentActivityTestCase() {
                 featureFlags,
                 navigator,
                 walletRepository,
-                criOrchestratorSdk
+                criOrchestratorSdk,
             )
         analytics = mock()
         analyticsViewModel = HomeScreenAnalyticsViewModel(context, analytics)
@@ -99,17 +99,17 @@ class HomeScreenTest : FragmentActivityTestCase() {
             closeContinueToProveYourIdentityModal()
 
             onNodeWithContentDescription(
-                resources.getString(R.string.one_login_image_content_desc)
+                resources.getString(R.string.one_login_image_content_desc),
             ).assertIsDisplayed()
 
             onNodeWithTag(
                 resources.getString(R.string.welcomeCardTestTag),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).assertIsDisplayed()
 
             onNodeWithTag(
                 resources.getString(FeaturesR.string.proveIdentityCardTestTag),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).performScrollTo().assertIsDisplayed()
         }
     }
@@ -129,17 +129,17 @@ class HomeScreenTest : FragmentActivityTestCase() {
         setupPreview()
         composeTestRule.apply {
             onNodeWithContentDescription(
-                resources.getString(R.string.one_login_image_content_desc)
+                resources.getString(R.string.one_login_image_content_desc),
             ).assertIsDisplayed()
 
             onNodeWithTag(
                 resources.getString(R.string.welcomeCardTestTag),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).assertIsDisplayed()
 
             onNodeWithTag(
                 resources.getString(FeaturesR.string.proveIdentityCardTestTag),
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).performScrollTo().assertIsDisplayed()
         }
     }
@@ -184,14 +184,14 @@ class HomeScreenTest : FragmentActivityTestCase() {
             onNodeWithContentDescription(
                 "Close",
                 substring = true,
-                useUnmergedTree = true
+                useUnmergedTree = true,
             ).isDisplayed()
         }
 
         onNodeWithContentDescription(
             "Close",
             substring = true,
-            useUnmergedTree = true
+            useUnmergedTree = true,
         ).performClick()
     }
 

@@ -1,10 +1,10 @@
 package uk.gov.onelogin.features.unit.optin.ui
 
-import uk.gov.onelogin.features.optin.ui.OptInUIState
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import uk.gov.onelogin.features.optin.ui.OptInUIState
 
 class AnalyticsOptInUIStateTest {
     private lateinit var uiState: OptInUIState

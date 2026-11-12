@@ -45,13 +45,13 @@ class OfflineErrorAnalyticsViewModelTest {
         requiredParams =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.APP_SYSTEM,
-                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED
+                taxonomyLevel3 = TaxonomyLevel3.UNDEFINED,
             )
         analyticsLogger = mock()
         viewModel =
             OfflineErrorAnalyticsViewModel(
                 context,
-                analyticsLogger
+                analyticsLogger,
             )
     }
 
@@ -64,7 +64,7 @@ class OfflineErrorAnalyticsViewModelTest {
                 endpoint = "",
                 reason = reason,
                 status = "",
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackScreen()
@@ -73,7 +73,7 @@ class OfflineErrorAnalyticsViewModelTest {
 
         assertThat(
             IS_ERROR_REASON_TRUE,
-            GAUtils.containsIsError(event, TRUE)
+            GAUtils.containsIsError(event, TRUE),
         )
     }
 
@@ -82,7 +82,7 @@ class OfflineErrorAnalyticsViewModelTest {
         val event =
             TrackEvent.Button(
                 text = button,
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackButton()
@@ -95,7 +95,7 @@ class OfflineErrorAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backButton,
-                params = requiredParams
+                params = requiredParams,
             )
 
         viewModel.trackBackButton()

@@ -33,10 +33,7 @@ class RetryableComposeTestRule constructor(
     override val mainClock: MainTestClock
         get() = rule.mainClock
 
-    override fun apply(
-        base: Statement,
-        description: Description,
-    ): Statement =
+    override fun apply(base: Statement, description: Description): Statement =
         object : Statement() {
             override fun evaluate() {
                 try {
@@ -59,7 +56,8 @@ class RetryableComposeTestRule constructor(
         useUnmergedTree: Boolean,
     ): SemanticsNodeInteraction = rule.onNode(matcher, useUnmergedTree)
 
-    override fun registerIdlingResource(idlingResource: IdlingResource) = rule.registerIdlingResource(idlingResource)
+    override fun registerIdlingResource(idlingResource: IdlingResource) =
+        rule.registerIdlingResource(idlingResource)
 
     override fun <T> runOnIdle(action: () -> T): T = rule.runOnIdle(action)
 
@@ -70,41 +68,26 @@ class RetryableComposeTestRule constructor(
 
     override fun waitForIdle() = rule.waitForIdle()
 
-    override fun waitUntil(
-        timeoutMillis: Long,
-        condition: () -> Boolean,
-    ) = rule.waitUntil(timeoutMillis, condition)
+    override fun waitUntil(timeoutMillis: Long, condition: () -> Boolean) =
+        rule.waitUntil(timeoutMillis, condition)
 
     @ExperimentalTestApi
-    override fun waitUntilNodeCount(
-        matcher: SemanticsMatcher,
-        count: Int,
-        timeoutMillis: Long,
-    ) {
+    override fun waitUntilNodeCount(matcher: SemanticsMatcher, count: Int, timeoutMillis: Long) {
         rule.waitUntilNodeCount(matcher, count, timeoutMillis)
     }
 
     @ExperimentalTestApi
-    override fun waitUntilAtLeastOneExists(
-        matcher: SemanticsMatcher,
-        timeoutMillis: Long,
-    ) {
+    override fun waitUntilAtLeastOneExists(matcher: SemanticsMatcher, timeoutMillis: Long) {
         rule.waitUntilAtLeastOneExists(matcher, timeoutMillis)
     }
 
     @ExperimentalTestApi
-    override fun waitUntilExactlyOneExists(
-        matcher: SemanticsMatcher,
-        timeoutMillis: Long,
-    ) {
+    override fun waitUntilExactlyOneExists(matcher: SemanticsMatcher, timeoutMillis: Long) {
         rule.waitUntilExactlyOneExists(matcher, timeoutMillis)
     }
 
     @ExperimentalTestApi
-    override fun waitUntilDoesNotExist(
-        matcher: SemanticsMatcher,
-        timeoutMillis: Long,
-    ) {
+    override fun waitUntilDoesNotExist(matcher: SemanticsMatcher, timeoutMillis: Long) {
         rule.waitUntilDoesNotExist(matcher, timeoutMillis)
     }
 }

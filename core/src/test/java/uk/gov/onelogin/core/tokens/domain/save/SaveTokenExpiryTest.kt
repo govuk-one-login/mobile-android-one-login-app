@@ -1,5 +1,8 @@
 package uk.gov.onelogin.core.tokens.domain.save
 
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,9 +16,6 @@ import uk.gov.onelogin.core.tokens.domain.save.tokenexpiry.SaveTokenExpiryImpl
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.ACCESS_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.tokens.utils.AuthTokenStoreKeys.REFRESH_TOKEN_EXPIRY_KEY
 import uk.gov.onelogin.core.utils.SystemTimeProvider
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-import kotlin.test.assertEquals
 
 class SaveTokenExpiryTest {
     private val validRefreshToken =
@@ -38,23 +38,22 @@ class SaveTokenExpiryTest {
     }
 
     @Test
-    fun `check expiry saved`() =
-        runTest {
-            val expiry = 1L
-            useCase.saveExp(
-                ExpiryInfo(
-                    key = ACCESS_TOKEN_EXPIRY_KEY,
-                    value = expiry,
-                ),
-                ExpiryInfo(
-                    key = REFRESH_TOKEN_EXPIRY_KEY,
-                    value = expiry,
-                ),
-            )
+    fun `check expiry saved`() = runTest {
+        val expiry = 1L
+        useCase.saveExp(
+            ExpiryInfo(
+                key = ACCESS_TOKEN_EXPIRY_KEY,
+                value = expiry,
+            ),
+            ExpiryInfo(
+                key = REFRESH_TOKEN_EXPIRY_KEY,
+                value = expiry,
+            ),
+        )
 
-            verify(saveToOpenSecureStore).save(ACCESS_TOKEN_EXPIRY_KEY, expiry)
-            verify(saveToOpenSecureStore).save(REFRESH_TOKEN_EXPIRY_KEY, expiry)
-        }
+        verify(saveToOpenSecureStore).save(ACCESS_TOKEN_EXPIRY_KEY, expiry)
+        verify(saveToOpenSecureStore).save(REFRESH_TOKEN_EXPIRY_KEY, expiry)
+    }
 
     @Test
     fun `check extract exp from refresh successful`() {

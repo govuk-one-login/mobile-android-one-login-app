@@ -31,36 +31,34 @@ class DeeplinkActivityViewModelTest {
     }
 
     @Test
-    fun validDeepLink() =
-        runTest {
-            val credentialOffer = "xxx"
-            val deeplink = "app://route?credential_offer=$credentialOffer"
-            val intent =
-                Intent().apply {
-                    action = ACTION_VIEW
-                    data = deeplink.toUri()
-                }
-            viewModel.handleIntent(intent)
+    fun validDeepLink() = runTest {
+        val credentialOffer = "xxx"
+        val deeplink = "app://route?credential_offer=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_VIEW
+                data = deeplink.toUri()
+            }
+        viewModel.handleIntent(intent)
 
-            verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
-            verify(walletSdk).setDeeplink(credentialOffer)
-        }
+        verify(walletRepository).setWalletDeepLinkPathState(deepLink = true)
+        verify(walletSdk).setDeeplink(credentialOffer)
+    }
 
     @Test
-    fun invalidDeepLink() =
-        runTest {
-            val credentialOffer = "xxx"
-            val deeplink = "https://mobile.build.account.gov.uk/wallet/add?invalid=$credentialOffer"
-            val intent =
-                Intent().apply {
-                    action = ACTION_VIEW
-                    data = deeplink.toUri()
-                }
-            viewModel.handleIntent(intent)
+    fun invalidDeepLink() = runTest {
+        val credentialOffer = "xxx"
+        val deeplink = "https://mobile.build.account.gov.uk/wallet/add?invalid=$credentialOffer"
+        val intent =
+            Intent().apply {
+                action = ACTION_VIEW
+                data = deeplink.toUri()
+            }
+        viewModel.handleIntent(intent)
 
-            verifyNoInteractions(walletRepository)
-            verifyNoInteractions(walletSdk)
-        }
+        verifyNoInteractions(walletRepository)
+        verifyNoInteractions(walletSdk)
+    }
 
     @Test
     fun nullIntentData() {

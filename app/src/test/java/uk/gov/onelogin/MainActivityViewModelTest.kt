@@ -29,7 +29,8 @@ class MainActivityViewModelTest {
     private val defaultNetworkService = DefaultNetworkService(stubHttpClient)
     private val authenticationProvider: AuthenticationProvider = TestAuthenticationProvider()
     private var dPoPProvider: DPoPProvider = TestDPoPProvider()
-    private var clientAttestationProvider: ClientAttestationProvider = TestClientAttestationProvider()
+    private var clientAttestationProvider: ClientAttestationProvider =
+        TestClientAttestationProvider()
     private val vm =
         MainActivityViewModel(
             genericHttpClient,
@@ -56,16 +57,15 @@ class MainActivityViewModelTest {
         val success = defaultNetworkService.makeRequest().expectSuccess()
         assertEquals(
             ApiResponse.Success(okResponse.status, okResponse.body),
-            success
+            success,
         )
     }
 
-    private suspend fun DefaultNetworkService.makeRequest() =
-        makeRequest(
-            ApiRequest.Get("https://example.gov.uk")
-        ) {
-            withAttestation = true
-            withAuthentication("scope")
-            withRefreshDPoP = true
-        }
+    private suspend fun DefaultNetworkService.makeRequest() = makeRequest(
+        ApiRequest.Get("https://example.gov.uk"),
+    ) {
+        withAttestation = true
+        withAuthentication("scope")
+        withRefreshDPoP = true
+    }
 }

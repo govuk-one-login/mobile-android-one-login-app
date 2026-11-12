@@ -41,7 +41,7 @@ class OfflineErrorScreenTest : FragmentActivityTestCase() {
     fun offlineErrorScreen() {
         composeTestRule.setContent {
             OfflineErrorScreen(
-                analyticsViewModel = viewModel
+                analyticsViewModel = viewModel,
             ) {
                 goBack = true
             }
@@ -54,15 +54,19 @@ class OfflineErrorScreenTest : FragmentActivityTestCase() {
             performClick()
         }
         assert(goBack)
-        verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeScreenEvent(context))
-        verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeButtonEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeScreenEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeButtonEvent(context))
     }
 
     @Test
     fun offlineErrorScreenNoAction() {
         composeTestRule.setContent {
             OfflineErrorScreen(
-                analyticsViewModel = viewModel
+                analyticsViewModel = viewModel,
             )
         }
         composeTestRule.onNode(errorTitle).assertIsDisplayed()
@@ -70,7 +74,9 @@ class OfflineErrorScreenTest : FragmentActivityTestCase() {
         composeTestRule.onNode(errorBody2).assertIsDisplayed()
         composeTestRule.onNode(tryAgainButton).assertIsDisplayed()
 
-        verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeScreenEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeScreenEvent(context))
         verify(analytics, times(0))
             .logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeButtonEvent(context))
     }
@@ -79,12 +85,14 @@ class OfflineErrorScreenTest : FragmentActivityTestCase() {
     fun onBackClicked() {
         composeTestRule.setContent {
             OfflineErrorScreen(
-                analyticsViewModel = viewModel
+                analyticsViewModel = viewModel,
             )
         }
 
         Espresso.pressBack()
-        verify(analytics).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeBackEvent(context))
+        verify(
+            analytics,
+        ).logEventV3Dot1(OfflineErrorAnalyticsViewModel.Companion.makeBackEvent(context))
     }
 
     @Test

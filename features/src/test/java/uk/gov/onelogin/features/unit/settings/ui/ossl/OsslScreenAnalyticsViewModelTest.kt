@@ -37,7 +37,7 @@ class OsslScreenAnalyticsViewModelTest {
         requiredParameters =
             RequiredParameters(
                 taxonomyLevel2 = TaxonomyLevel2.SETTINGS,
-                taxonomyLevel3 = TaxonomyLevel3.LICENCES
+                taxonomyLevel3 = TaxonomyLevel3.LICENCES,
             )
         logger = mock()
         crashLogger = mock()
@@ -55,7 +55,7 @@ class OsslScreenAnalyticsViewModelTest {
             ViewEvent.Screen(
                 name = name,
                 id = id,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the home screen
         viewModel.trackScreen()
@@ -73,12 +73,12 @@ class OsslScreenAnalyticsViewModelTest {
                 isExternal = true,
                 domain = domain,
                 text = title,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking redirect to "Using your ..." web page
         viewModel.trackLink(
             title,
-            domain
+            domain,
         )
         // Then log a TrackEvent to the AnalyticsLogger
         verify(logger).logEventV3Dot1(event)
@@ -90,7 +90,7 @@ class OsslScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backButton,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the hardware back button
         viewModel.trackBackButton()
@@ -104,7 +104,7 @@ class OsslScreenAnalyticsViewModelTest {
         val event =
             TrackEvent.Icon(
                 text = backIcon,
-                params = requiredParameters
+                params = requiredParameters,
             )
         // When tracking the hardware back button
         viewModel.trackBackIcon()
