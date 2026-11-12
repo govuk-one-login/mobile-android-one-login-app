@@ -18,13 +18,15 @@ if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
 then
   echo "Running Paparazzi verify (snapshot tests) without environment variables (local development)..."
   ./gradlew \
-    features:verifyPaparazziBuildDebug \
+    :features:verifyPaparazziBuildDebug \
+    :libraries:mock-wallet-sdk:verifyPaparazziDebug \
     --continue \
     --stacktrace
 else
    echo "Running Paparazzi verify (snapshot tests) with environment variables (GitHub workflow)..."
     ./gradlew  \
-      features:verifyPaparazziBuildDebug \
+      :features:verifyPaparazziBuildDebug \
+      :libraries:mock-wallet-sdk:verifyPaparazziDebug \
       -PversionCode="${INPUT_VERSION_CODE}" \
       -PversionName="${INPUT_VERSION_NAME}" \
       --continue \
