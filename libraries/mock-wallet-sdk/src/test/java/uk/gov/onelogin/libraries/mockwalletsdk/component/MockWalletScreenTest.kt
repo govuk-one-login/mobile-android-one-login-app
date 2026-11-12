@@ -1,4 +1,4 @@
-package uk.gov.onelogin.libraries.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk.component
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -10,6 +10,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import uk.gov.android.wallet.sdk.WalletSdk
+import uk.gov.onelogin.libraries.mockwalletsdk.MockWalletSdk
 
 @RunWith(AndroidJUnit4::class)
 class MockWalletScreenTest {

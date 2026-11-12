@@ -1,4 +1,4 @@
-package uk.gov.onelogin.libraries.mockwalletsdk
+package uk.gov.onelogin.libraries.mockwalletsdk.unit
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import uk.gov.android.wallet.sdk.WalletSdk
+import uk.gov.onelogin.libraries.mockwalletsdk.MockWalletSdk
 
 class MockWalletSdkTest {
     private val config: WalletSdk.ConfigurationV2 = mock()
