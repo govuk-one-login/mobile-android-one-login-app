@@ -21,13 +21,13 @@ then
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
-    :features:unitEnvironmentSpecificTestBuildDebug \
-    :features:unitEnvironmentSpecificTestIntegrationDebug \
-    :features:unitEnvironmentSpecificTestStagingDebug \
-    :features:unitEnvironmentSpecificTestProductionDebug \
-    :features:unitTestStagingDebug \
+    :features:testBuildDebugUnitTest \
+    :features:testIntegrationDebugUnitTest \
+    :features:testStagingDebugUnitTest \
+    :features:testProductionDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
+    -PtestType="unit" \
     --continue \
     --stacktrace
 else
@@ -37,16 +37,15 @@ else
     :app:testProductionDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :core:testProductionDebugUnitTest \
-    :features:unitEnvironmentSpecificTestBuildDebug \
-    :features:unitEnvironmentSpecificTestIntegrationDebug \
-    :features:unitEnvironmentSpecificTestStagingDebug \
-    :features:unitEnvironmentSpecificTestProductionDebug \
-    :features:unitTestStagingDebug \
-    :features:unitTestProductionDebug \
+    :features:testBuildDebugUnitTest \
+    :features:testIntegrationDebugUnitTest \
+    :features:testStagingDebugUnitTest \
+    :features:testProductionDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
+    -PtestType="unit" \
     --continue \
     --stacktrace
 fi
