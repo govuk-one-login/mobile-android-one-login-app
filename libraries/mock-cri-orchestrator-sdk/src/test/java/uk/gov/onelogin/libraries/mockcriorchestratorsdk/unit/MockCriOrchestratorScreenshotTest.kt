@@ -1,0 +1,27 @@
+package uk.gov.onelogin.libraries.mockcriorchestratorsdk.unit
+
+import androidx.compose.runtime.Composable
+import com.android.resources.NightMode
+import com.android.resources.NightMode.NIGHT
+import com.android.resources.NightMode.NOTNIGHT
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import uk.gov.onelogin.core.test.screenshot.BaseScreenshotTest
+import uk.gov.onelogin.libraries.mockcriorchestratorsdk.MockCriOrchestratorPreview
+
+@RunWith(Parameterized::class)
+class MockCriOrchestratorScreenshotTest(nightMode: NightMode) : BaseScreenshotTest(nightMode) {
+
+    override val generateComposeLayout: @Composable () -> Unit = {
+        MockCriOrchestratorPreview()
+    }
+
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters
+        fun values(): Iterable<Array<Any>> = arrayListOf(
+            arrayOf(NOTNIGHT),
+            arrayOf(NIGHT),
+        )
+    }
+}
