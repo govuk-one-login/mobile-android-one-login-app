@@ -43,10 +43,9 @@ dependencies {
         libs.componentsv2,
         libs.patterns,
         libs.theme,
+        libs.cri.orchestrator,
         platform(libs.androidx.compose.bom),
     ).forEach(::implementation)
-
-    implementation(libs.cri.orchestrator)
 
     listOf(
         kotlin("test-junit5"),
