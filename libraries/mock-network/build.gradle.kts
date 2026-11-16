@@ -40,9 +40,6 @@ dependencies {
         libs.androidx.compose.foundation,
         libs.androidx.compose.material3,
         libs.androidx.compose.ui.tooling.preview,
-        // Aligns lifecycle-runtime with the repo's shared lifecycle version. Without this the
-        // design system resolves an older version whose bundled lint checks are incompatible
-        // with the current Android Lint (ObsoleteLintCustomCheck).
         libs.androidx.lifecycle.runtime,
         libs.androidx.lifecycle.runtime.compose,
         libs.componentsv2,
