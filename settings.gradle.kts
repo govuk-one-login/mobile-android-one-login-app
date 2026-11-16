@@ -77,5 +77,6 @@ include(":core")
 include(":featureflags")
 include(":features")
 include(":libraries:mock-wallet-sdk")
+include(":libraries:mock-cri-orchestrator-sdk")
 
 gradle.startParameter.excludedTaskNames.addAll(listOf(":buildLogic:plugins:testClasses"))
