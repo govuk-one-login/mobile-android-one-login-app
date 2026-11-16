@@ -1,4 +1,4 @@
-package uk.gov.onelogin.libraries.mockcriorchestratorsdk
+package uk.gov.onelogin.libraries.mockcriorchestratorsdk.unit
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import uk.gov.onelogin.criorchestrator.features.idcheckwrapper.publicapi.idchecksdkactivestate.isIdCheckSdkActive
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
+import uk.gov.onelogin.libraries.mockcriorchestratorsdk.MockCriOrchestratorSdk
 
 class MockCriOrchestratorSdkTest {
 

@@ -6,23 +6,17 @@ import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorAppGraph
 import uk.gov.onelogin.criorchestrator.sdk.sharedapi.CriOrchestratorSdk
 
 /**
- * Mock implementation of [CriOrchestratorSdk] (ID Check SDK) for testing.
+ * Mock implementation of [CriOrchestratorSdk] (which wraps the ID Check SDK) that can
+ * replace the real implementation in tests.
  *
- * This is scaffolding so that a future test build flavour can inject it in place of the
- * real [CriOrchestratorSdk] for use with Maestro UI tests, without instantiating the real
- * SDK.
- *
- * The only behaviour it provides is a static answer for whether an ID Check journey is
- * active. This is reached via the `CriOrchestratorSdk.isIdCheckSdkActive` extension, which
- * casts [appGraph] to [IsIdCheckSdkActiveProviders] - so the mock's [appGraph] must
- * implement that provider for the mock to be usable (e.g. by `CheckIdCheckSessionState`).
- *
- * @param isIdCheckSdkActive the static value returned by the mocked [IsIdCheckSdkActive]
- * use case. Defaults to `false` (no ID Check journey in progress).
+ * @param isIdCheckSdkActive the static value reported for whether an ID Check journey is
+ * active. Defaults to `false`.
  */
 class MockCriOrchestratorSdk(private val isIdCheckSdkActive: Boolean = false) :
     CriOrchestratorSdk {
 
+    // The CriOrchestratorSdk.isIdCheckSdkActive extension casts appGraph to
+    // IsIdCheckSdkActiveProviders, so appGraph must implement it for the mock to be usable.
     override val appGraph: CriOrchestratorAppGraph =
         object : CriOrchestratorAppGraph, IsIdCheckSdkActiveProviders {
             override fun isIdCheckSdkActive(): IsIdCheckSdkActive =
