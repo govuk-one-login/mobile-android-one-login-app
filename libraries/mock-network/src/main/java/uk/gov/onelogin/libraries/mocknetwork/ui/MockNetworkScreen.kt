@@ -1,5 +1,6 @@
 package uk.gov.onelogin.libraries.mocknetwork.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -9,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
 import uk.gov.android.ui.componentsv2.heading.GdsHeading
+import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
@@ -37,7 +39,13 @@ internal fun MockNetworkContent(
     onScenarioSelected: (MockNetworkScenario) -> Unit = {},
 ) {
     LeftAlignedScreen(
-        title = { GdsHeading(text = "Mock Network (Test Build)") },
+        title = { horizontalPadding ->
+            GdsHeading(
+                text = "Mock Network (Test Build)",
+                textAlign = GdsHeadingAlignment.LeftAligned,
+                modifier = Modifier.padding(horizontal = horizontalPadding),
+            )
+        },
         body = { horizontalPadding ->
             MockNetworkScenario.entries.forEach { scenario ->
                 item {
@@ -49,6 +57,7 @@ internal fun MockNetworkContent(
                             ButtonTypeV2.Secondary()
                         },
                         modifier = Modifier
+                            .padding(horizontal = horizontalPadding)
                             .testTag("mockNetworkScenario_${scenario.name}"),
                         onClick = { onScenarioSelected(scenario) },
                     )
