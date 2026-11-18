@@ -1,18 +1,16 @@
 package uk.gov.onelogin.libraries.mocknetwork
 
-import io.ktor.http.HttpStatusCode
-
 /**
- * A predefined network scenario used by [MockNetworkEngineFactory] to decide how the mocked
- * network layer responds.
+ * A named way for the mocked network layer to respond to requests.
  *
- * @property statusCode the HTTP status every mocked request responds with.
- * @property responseBody the response body every mocked request responds with.
+ * Scenarios are defined by the app module, as the concrete responses depend on the features that
+ * are making the requests.
+ *
+ * @property name a unique, human readable name. It is shown on the configuration screen and is
+ * used in the test tag of the scenario's button.
+ * @property respond produces the response for each [MockNetworkRequest].
  */
-enum class MockNetworkScenario(val statusCode: HttpStatusCode, val responseBody: String) {
-    /** Request succeeds with an empty JSON body. */
-    EMPTY_SUCCESS(HttpStatusCode.OK, "{}"),
-
-    /** Request fails with a server error. */
-    SERVER_ERROR(HttpStatusCode.InternalServerError, "{}"),
-}
+class MockNetworkScenario(
+    val name: String,
+    val respond: (MockNetworkRequest) -> MockNetworkResponse,
+)

@@ -15,6 +15,7 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
+import uk.gov.onelogin.libraries.mocknetwork.MockNetworkResponse
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
 
 /**
@@ -22,12 +23,13 @@ import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
  *
  * It is intended to be hosted in the app's developer menu in the mocked build so that automated
  * (e.g. Maestro) tests can switch the mocked network behaviour mid-journey. Each scenario button
- * carries a stable test tag of the form `mockNetworkScenario_<SCENARIO_NAME>`.
+ * carries a stable test tag of the form `mockNetworkScenario_<scenario name>`.
  */
 @Composable
 fun MockNetworkScreen(viewModel: MockNetworkViewModel = hiltViewModel()) {
     val selected by viewModel.scenario.collectAsStateWithLifecycle()
     MockNetworkContent(
+        scenarios = viewModel.scenarios,
         selectedScenario = selected,
         onScenarioSelected = viewModel::selectScenario,
     )
@@ -35,6 +37,7 @@ fun MockNetworkScreen(viewModel: MockNetworkViewModel = hiltViewModel()) {
 
 @Composable
 internal fun MockNetworkContent(
+    scenarios: List<MockNetworkScenario>,
     selectedScenario: MockNetworkScenario,
     onScenarioSelected: (MockNetworkScenario) -> Unit = {},
 ) {
@@ -47,7 +50,7 @@ internal fun MockNetworkContent(
             )
         },
         body = { horizontalPadding ->
-            MockNetworkScenario.entries.forEach { scenario ->
+            scenarios.forEach { scenario ->
                 item {
                     GdsButton(
                         text = scenario.displayName(selected = scenario == selectedScenario),
@@ -67,16 +70,22 @@ internal fun MockNetworkContent(
     )
 }
 
-private fun MockNetworkScenario.displayName(selected: Boolean): String {
-    val label = name.lowercase().replace('_', ' ')
-    return if (selected) "✓ $label" else label
-}
+private fun MockNetworkScenario.displayName(selected: Boolean): String =
+    if (selected) "✓ $name" else name
+
+private val previewScenarios = listOf(
+    MockNetworkScenario("Empty success") { MockNetworkResponse() },
+    MockNetworkScenario("Server error") { MockNetworkResponse(statusCode = 500) },
+)
 
 @ExcludeFromJacocoGeneratedReport
 @Preview(showBackground = true)
 @Composable
 internal fun MockNetworkPreview() {
     GdsTheme {
-        MockNetworkContent(selectedScenario = MockNetworkScenario.EMPTY_SUCCESS)
+        MockNetworkContent(
+            scenarios = previewScenarios,
+            selectedScenario = previewScenarios.first(),
+        )
     }
 }

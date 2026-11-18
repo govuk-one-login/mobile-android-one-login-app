@@ -12,6 +12,7 @@ class MockNetworkViewModel
 @Inject
 constructor(private val config: MockNetworkConfig) :
     ViewModel() {
+    val scenarios: List<MockNetworkScenario> = config.scenarios
     val scenario: StateFlow<MockNetworkScenario> = config.scenario
 
     fun selectScenario(scenario: MockNetworkScenario) = config.setScenario(scenario)

@@ -10,7 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkConfig
-import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
+import uk.gov.onelogin.libraries.mocknetwork.TestMockNetworkScenarios
 import uk.gov.onelogin.libraries.mocknetwork.ui.MockNetworkScreen
 import uk.gov.onelogin.libraries.mocknetwork.ui.MockNetworkViewModel
 
@@ -22,10 +22,12 @@ class MockNetworkScreenTest {
     @Test
     fun `renders a button per scenario`() {
         composeTestRule.setContent {
-            MockNetworkScreen(viewModel = MockNetworkViewModel(MockNetworkConfig()))
+            MockNetworkScreen(
+                viewModel = MockNetworkViewModel(MockNetworkConfig(TestMockNetworkScenarios.all)),
+            )
         }
 
-        MockNetworkScenario.entries.forEach { scenario ->
+        TestMockNetworkScenarios.all.forEach { scenario ->
             composeTestRule
                 .onNodeWithTag("mockNetworkScenario_${scenario.name}")
                 .assertIsDisplayed()
@@ -34,17 +36,20 @@ class MockNetworkScreenTest {
 
     @Test
     fun `selecting a scenario updates the config`() {
-        val config = MockNetworkConfig(initialScenario = MockNetworkScenario.EMPTY_SUCCESS)
+        val config = MockNetworkConfig(
+            scenarios = TestMockNetworkScenarios.all,
+            initialScenario = TestMockNetworkScenarios.success,
+        )
 
         composeTestRule.setContent {
             MockNetworkScreen(viewModel = MockNetworkViewModel(config))
         }
 
         composeTestRule
-            .onNodeWithTag("mockNetworkScenario_${MockNetworkScenario.SERVER_ERROR.name}")
+            .onNodeWithTag("mockNetworkScenario_${TestMockNetworkScenarios.serverError.name}")
             .performClick()
 
         composeTestRule.waitForIdle()
-        assertEquals(MockNetworkScenario.SERVER_ERROR, config.scenario.value)
+        assertEquals(TestMockNetworkScenarios.serverError, config.scenario.value)
     }
 }
