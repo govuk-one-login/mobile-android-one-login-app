@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.gov.android.ui.componentsv2.button.ButtonTypeV2
 import uk.gov.android.ui.componentsv2.button.GdsButton
@@ -14,7 +15,6 @@ import uk.gov.android.ui.componentsv2.heading.GdsHeadingAlignment
 import uk.gov.android.ui.patterns.leftalignedscreen.LeftAlignedScreen
 import uk.gov.android.ui.theme.m3.GdsTheme
 import uk.gov.android.ui.theme.meta.ExcludeFromJacocoGeneratedReport
-import uk.gov.onelogin.libraries.mocknetwork.MockNetworkConfig
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
 
 /**
@@ -25,11 +25,11 @@ import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
  * carries a stable test tag of the form `mockNetworkScenario_<SCENARIO_NAME>`.
  */
 @Composable
-fun MockNetworkScreen(config: MockNetworkConfig) {
-    val selected by config.scenario.collectAsStateWithLifecycle()
+fun MockNetworkScreen(viewModel: MockNetworkViewModel = hiltViewModel()) {
+    val selected by viewModel.scenario.collectAsStateWithLifecycle()
     MockNetworkContent(
         selectedScenario = selected,
-        onScenarioSelected = config::setScenario,
+        onScenarioSelected = viewModel::selectScenario,
     )
 }
 

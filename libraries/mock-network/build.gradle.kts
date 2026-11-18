@@ -1,5 +1,7 @@
 plugins {
     id("uk.gov.onelogin.android-lib-config")
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
     id("uk.gov.onelogin.screenshot-test-config")
 }
@@ -42,6 +44,8 @@ dependencies {
         libs.androidx.compose.ui.tooling.preview,
         libs.androidx.lifecycle.runtime,
         libs.androidx.lifecycle.runtime.compose,
+        libs.androidx.hilt.navigation.compose,
+        libs.hilt.android,
         libs.componentsv2,
         libs.patterns,
         libs.theme,
@@ -50,6 +54,11 @@ dependencies {
         libs.ktor.client.mock,
         platform(libs.androidx.compose.bom),
     ).forEach(::implementation)
+
+    listOf(
+        libs.hilt.android.compiler,
+        libs.hilt.compiler,
+    ).forEach(::ksp)
 
     listOf(
         kotlin("test-junit5"),
