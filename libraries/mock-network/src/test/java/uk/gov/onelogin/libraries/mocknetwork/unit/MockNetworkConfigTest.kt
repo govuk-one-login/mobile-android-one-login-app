@@ -25,16 +25,6 @@ class MockNetworkConfigTest {
     }
 
     @Test
-    fun `honours an explicit initial scenario`() {
-        val config = MockNetworkConfig(
-            scenarios = TestMockNetworkScenarios.all,
-            initialScenario = TestMockNetworkScenarios.serverError,
-        )
-
-        assertEquals(TestMockNetworkScenarios.serverError, config.scenario.value)
-    }
-
-    @Test
     fun `updates the current scenario`() {
         val config = MockNetworkConfig(TestMockNetworkScenarios.all)
 
@@ -58,16 +48,6 @@ class MockNetworkConfigTest {
 
         assertThrows(IllegalArgumentException::class.java) {
             MockNetworkConfig(listOf(TestMockNetworkScenarios.success, duplicate))
-        }
-    }
-
-    @Test
-    fun `rejects an initial scenario that is not available`() {
-        assertThrows(IllegalArgumentException::class.java) {
-            MockNetworkConfig(
-                scenarios = listOf(TestMockNetworkScenarios.success),
-                initialScenario = TestMockNetworkScenarios.serverError,
-            )
         }
     }
 

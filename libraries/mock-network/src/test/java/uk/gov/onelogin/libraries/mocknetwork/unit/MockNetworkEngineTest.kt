@@ -39,10 +39,7 @@ class MockNetworkEngineTest {
 
     @Test
     fun `success scenario returns a 200 success`() = runTest {
-        val config = MockNetworkConfig(
-            scenarios = TestMockNetworkScenarios.all,
-            initialScenario = TestMockNetworkScenarios.success,
-        )
+        val config = MockNetworkConfig(TestMockNetworkScenarios.all)
         val service = networkService(config)
 
         val response = service.makeRequest(ApiRequest.Get("https://mock.example/"))
@@ -53,10 +50,7 @@ class MockNetworkEngineTest {
 
     @Test
     fun `server error scenario returns a 500 failure`() = runTest {
-        val config = MockNetworkConfig(
-            scenarios = TestMockNetworkScenarios.all,
-            initialScenario = TestMockNetworkScenarios.serverError,
-        )
+        val config = MockNetworkConfig(listOf(TestMockNetworkScenarios.serverError))
         val service = networkService(config)
 
         val response = service.makeRequest(ApiRequest.Get("https://mock.example/"))

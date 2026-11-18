@@ -12,31 +12,24 @@ import kotlinx.coroutines.flow.asStateFlow
  * the mocked network behaviour on the fly. It is intended to be a singleton within the mocked
  * build.
  *
+ * The first of [scenarios] is initially selected.
+ *
  * @param scenarios the scenarios that can be selected. Must not be empty, and their names must be
  * unique.
- * @param initialScenario the scenario selected initially. Defaults to the first of [scenarios].
  */
-class MockNetworkConfig(
-    val scenarios: List<MockNetworkScenario>,
-    initialScenario: MockNetworkScenario =
-        requireNotNull(scenarios.firstOrNull()) { "At least one scenario is required" },
-) {
+class MockNetworkConfig(val scenarios: List<MockNetworkScenario>) {
     init {
-        require(scenarios.map { it.name }.distinct().size == scenarios.size) {
+        require(scenarios.isNotEmpty()) { "At least one scenario is required" }
+        require(scenarios.distinctBy { it.name }.size == scenarios.size) {
             "Scenario names must be unique"
-        }
-        require(initialScenario in scenarios) {
-            "The initial scenario must be one of the available scenarios"
         }
     }
 
-    private val _scenario = MutableStateFlow(initialScenario)
+    private val _scenario = MutableStateFlow(scenarios.first())
     val scenario: StateFlow<MockNetworkScenario> = _scenario.asStateFlow()
 
     fun setScenario(scenario: MockNetworkScenario) {
-        require(scenario in scenarios) {
-            "The scenario must be one of the available scenarios"
-        }
+        require(scenario in scenarios) { "The scenario must be one of the available scenarios" }
         _scenario.value = scenario
     }
 }

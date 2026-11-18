@@ -36,10 +36,7 @@ class MockNetworkScreenTest {
 
     @Test
     fun `selecting a scenario updates the config`() {
-        val config = MockNetworkConfig(
-            scenarios = TestMockNetworkScenarios.all,
-            initialScenario = TestMockNetworkScenarios.success,
-        )
+        val config = MockNetworkConfig(TestMockNetworkScenarios.all)
 
         composeTestRule.setContent {
             MockNetworkScreen(viewModel = MockNetworkViewModel(config))
