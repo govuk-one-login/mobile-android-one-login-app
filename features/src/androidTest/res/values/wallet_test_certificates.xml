@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="wallet_test_reader_auth_certificates_valid">
+        <item>@raw/wallet_test_reader_auth_cert_v1</item>
+        <item>@raw/wallet_test_reader_auth_cert_v2</item>
+    </array>
+
+    <array name="wallet_test_reader_auth_certificates_invalid_format">
+        <item>@raw/wallet_test_reader_auth_cert_v1</item>
+        <item>@raw/wallet_test_reader_auth_cert_invalid</item>
+    </array>
+
+    <array name="wallet_test_reader_auth_certificates_invalid_resource_id">
+        <item>@raw/wallet_test_reader_auth_cert_v1</item>
+        <item>not_a_resource_id</item>
+    </array>
+</resources>
