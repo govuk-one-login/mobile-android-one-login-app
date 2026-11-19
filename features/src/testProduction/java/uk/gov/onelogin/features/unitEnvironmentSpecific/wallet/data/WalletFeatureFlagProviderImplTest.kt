@@ -12,6 +12,6 @@ class WalletFeatureFlagProviderImplTest {
 
         val featureFlags = provider.provideFeatureFlags()
 
-        assertEquals(emptySet<WalletFeatureFlag>(), featureFlags)
+        assertEquals(setOf(WalletFeatureFlag.sharing(false)), featureFlags)
     }
 }

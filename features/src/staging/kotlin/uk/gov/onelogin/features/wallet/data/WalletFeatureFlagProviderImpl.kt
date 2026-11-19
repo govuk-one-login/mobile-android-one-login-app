@@ -6,5 +6,6 @@ import uk.gov.android.wallet.sdk.WalletFeatureFlag
 class WalletFeatureFlagProviderImpl
 @Inject
 constructor() : WalletFeatureFlagProvider {
-    override fun provideFeatureFlags(): Set<WalletFeatureFlag> = emptySet()
+    override fun provideFeatureFlags(): Set<WalletFeatureFlag> =
+        setOf(WalletFeatureFlag.sharing(false))
 }
