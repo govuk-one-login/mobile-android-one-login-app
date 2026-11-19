@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stsUrl" translatable="false">https://token.build.account.gov.uk%1$s</string>
+    <string name="baseStsUrl" translatable="false">https://token.build.account.gov.uk</string>
+    <string name="stsClientId" translatable="false">bYrcuRVvnylvEgYSSbBjwXzHrwJ</string>
+    <string name="webBaseUrl" translatable="false">https://mobile.build.account.gov.uk%1$s</string>
+    <string name="webBaseHost" translatable="false">mobile.build.account.gov.uk</string>
+    <string name="helloWorldUrl" translatable="false">https://hello-world.token.build.account.gov.uk%1$s</string>
+    <string name="appInfoUrl" translatable="false">https://mobile.build.account.gov.uk%1$s</string>
+</resources>

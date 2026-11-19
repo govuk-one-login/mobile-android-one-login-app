@@ -1,11 +1,9 @@
 package uk.gov.onelogin.wallet
 
 import android.content.Context
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.localauth.LocalAuthManager
@@ -17,10 +15,6 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
-import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
-import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
-import uk.gov.onelogin.features.wallet.data.AndroidWalletCertificateProvider
-import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -48,22 +42,4 @@ object WalletModule {
             )
         return WalletSdkImpl(navigator, config, context)
     }
-
-    @Provides
-    fun provideWalletCertificateProvider(
-        @ApplicationContext
-        context: Context,
-        logger: Logger,
-    ): WalletCertificateProvider = AndroidWalletCertificateProvider(
-        context = context,
-        logger = logger,
-    )
-}
-
-@InstallIn(ViewModelComponent::class)
-@Module
-interface WalletUiModule {
-
-    @Binds
-    fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl): WalletDisplayer
 }

@@ -43,6 +43,7 @@ android {
             "staging",
             "integration",
             "production",
+            "mock",
         ).forEach { environment ->
             create(environment) {
                 var suffix = ""
@@ -50,6 +51,11 @@ android {
                 dimension = "env"
                 if (environment == "integration") {
                     matchingFallbacks.add("production")
+                }
+                if (environment == "mock") {
+                    // Dependencies published per environment have no mock variant, so resolve
+                    // them against the build environment.
+                    matchingFallbacks.add("build")
                 }
                 if (environment != "production") {
                     suffix = ".$environment"

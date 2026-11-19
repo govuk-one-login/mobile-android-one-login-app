@@ -20,6 +20,7 @@ then
   ./gradlew \
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
+    :app:testMockDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :features:testBuildDebugUnitTest \
     :features:testIntegrationDebugUnitTest \
@@ -36,6 +37,7 @@ else
   ./gradlew \
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
+    :app:testMockDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :core:testProductionDebugUnitTest \
     :features:testBuildDebugUnitTest \

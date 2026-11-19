@@ -44,19 +44,25 @@ android {
         buildConfig = true
     }
     flavorDimensions += "env"
+
+    // Every environment except `mock` talks to real services and real SDKs. `mock` swaps in the
+    // mock SDKs for automated UI testing, so the live environments share a single copy of the
+    // real SDK/network wiring from `src/live` rather than duplicating it four times.
+    val liveEnvironments = listOf("build", "staging", "integration", "production")
+
     productFlavors {
-        listOf(
-            "build",
-            "staging",
-            "integration",
-            "production",
-        ).forEach { environment ->
+        (liveEnvironments + "mock").forEach { environment ->
             create(environment) {
                 var suffix = ""
 
                 dimension = "env"
                 if (environment == "integration") {
                     matchingFallbacks.add("production")
+                }
+                if (environment == "mock") {
+                    // Dependencies published per environment have no mock variant, so resolve
+                    // them against the build environment.
+                    matchingFallbacks.add("build")
                 }
 
                 if (environment != "production") {
@@ -70,6 +76,10 @@ android {
                 manifestPlaceholders["appAuthRedirectScheme"] = packageName
             }
         }
+    }
+
+    liveEnvironments.forEach { environment ->
+        sourceSets.getByName(environment).kotlin.srcDir("src/live/java")
     }
     testOptions {
         unitTests.all {
@@ -205,8 +215,6 @@ dependencies {
         projects.featureflags,
         projects.core,
         projects.features,
-        projects.libraries.mockWalletSdk,
-        projects.libraries.mockCriOrchestratorSdk,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
         libs.bundles.firebase,
@@ -219,6 +227,14 @@ dependencies {
         exclude(group = "uk.gov.android", module = "network")
         exclude(group = "uk.gov.securestore", module = "app")
     }
+
+    // The mocks are only wired up by the `mock` flavour's Hilt modules, so they are scoped to
+    // that flavour and cannot reach a shippable build.
+    listOf(
+        projects.libraries.mockWalletSdk,
+        projects.libraries.mockCriOrchestratorSdk,
+        projects.libraries.mockNetwork,
+    ).forEach { add("mockImplementation", it) }
 
     listOf(
         libs.hilt.android.compiler,

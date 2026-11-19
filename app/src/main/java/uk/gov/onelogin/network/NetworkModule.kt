@@ -83,12 +83,5 @@ interface NetworkModule {
             )
             return userAgentGenerator
         }
-
-        @Provides
-        @Singleton
-        fun provideHttpClient(userAgentGenerator: UserAgentGenerator): KtorHttpClient {
-            val client = KtorHttpClient(userAgentGenerator)
-            return client
-        }
     }
 }
