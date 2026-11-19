@@ -27,6 +27,7 @@ then
     :features:testProductionDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
+    :libraries:mock-network:testDebugUnitTest \
     -PtestType="unit" \
     --continue \
     --stacktrace
@@ -43,6 +44,7 @@ else
     :features:testProductionDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
+    :libraries:mock-network:testDebugUnitTest \
     -PversionCode="${INPUT_VERSION_CODE}" \
     -PversionName="${INPUT_VERSION_NAME}" \
     -PtestType="unit" \
