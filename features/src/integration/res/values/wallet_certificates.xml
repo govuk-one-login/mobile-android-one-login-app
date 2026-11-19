@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="wallet_reader_auth_certificates">
-        <item>@raw/wallet_reader_auth_root_ca_2026_v1</item>
         <item>@raw/wallet_reader_auth_root_ca_2026_v2</item>
     </array>
 </resources>
