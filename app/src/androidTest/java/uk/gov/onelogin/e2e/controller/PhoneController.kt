@@ -119,7 +119,9 @@ class PhoneController(
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
     fun allowPermission() = click(
-        selectors = arrayOf(By.text("Allow") to "Clicking 'Allow' for the open permission dialog"),
+        selectors = arrayOf(
+            By.text("Allow") to "Clicking 'Allow' for the open permission dialog",
+        ),
     )
 
     /**
@@ -128,7 +130,9 @@ class PhoneController(
      * Calling this function is usually for when the Android system dialog appears for permissions.
      */
     fun denyPermission() = click(
-        selectors = arrayOf(By.text("Deny") to "Clicking 'Deny' for the open permission dialog"),
+        selectors = arrayOf(
+            By.text("Deny") to "Clicking 'Deny' for the open permission dialog",
+        ),
     )
 
     /**

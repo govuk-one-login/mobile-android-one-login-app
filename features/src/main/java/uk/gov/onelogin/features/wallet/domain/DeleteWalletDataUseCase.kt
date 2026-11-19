@@ -27,11 +27,10 @@ class DeleteWalletDataUseCaseDevOption(
     private val walletSdk: WalletSdk,
     private val secureStoreDevOptionsRepository: SecureStoreDevOptionsRepository,
 ) : DeleteWalletDataUseCase {
-    override suspend fun invoke(): Boolean {
+    override suspend fun invoke(): Boolean =
         if (secureStoreDevOptionsRepository.isWalletDeleteOverride()) {
             throw SecureStorageErrorV2(Exception("Simulate wallet deletion failure"))
         } else {
             return walletSdk.deleteWalletData()
         }
-    }
 }

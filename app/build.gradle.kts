@@ -205,6 +205,8 @@ dependencies {
         projects.featureflags,
         projects.core,
         projects.features,
+        projects.libraries.mockWalletSdk,
+        projects.libraries.mockCriOrchestratorSdk,
         libs.runtime.livedata,
         platform(libs.firebase.bom),
         libs.bundles.firebase,

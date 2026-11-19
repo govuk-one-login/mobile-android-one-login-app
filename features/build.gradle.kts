@@ -11,15 +11,6 @@ plugins {
     id("uk.gov.onelogin.plugin.test-config")
 }
 
-testTypeConfig {
-    testTypes(
-        "component",
-        "unit",
-        // These are to ensure the project compiles in all environments
-        "unitEnvironmentSpecific",
-    )
-}
-
 android {
     namespace = "uk.gov.android.onelogin.features"
 

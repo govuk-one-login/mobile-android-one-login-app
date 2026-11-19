@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -55,7 +56,7 @@ import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 @Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabView(goBack: () -> Unit) {
+fun TabView(goBack: () -> Unit) = Surface {
     val tabs =
         listOf(
             TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
@@ -90,7 +91,7 @@ fun TabView(goBack: () -> Unit) {
         )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
-    Column(Modifier.background(MaterialTheme.colorScheme.background)) {
+    Column {
         CenterAlignedTopAppBar(
             colors =
                 TopAppBarDefaults.topAppBarColors(

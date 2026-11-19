@@ -7,6 +7,10 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
 import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
@@ -16,6 +20,12 @@ import uk.gov.android.authentication.integrity.AppIntegrityManager
 import uk.gov.android.authentication.integrity.appcheck.model.AttestationResponse
 import uk.gov.android.authentication.integrity.pop.SignedPoP
 import uk.gov.android.featureflags.FeatureFlags
+import uk.gov.logging.api.v3.LogLevel
+import uk.gov.logging.api.v3.MemorisedLogger
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasException
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.hasMessage
+import uk.gov.logging.api.v3.matchers.LogEntryMatchers.isLogLevel
+import uk.gov.logging.api.v3.matchers.MemorisedLoggerMatchers.hasSize
 import uk.gov.onelogin.core.counter.Counter
 import uk.gov.onelogin.core.counter.CounterImpl
 import uk.gov.onelogin.core.tokens.domain.retrieve.GetFromOpenSecureStore
@@ -34,6 +44,7 @@ class AppIntegrityImplTest {
     private lateinit var saveToOpenSecureStore: SaveToOpenSecureStore
     private lateinit var getFromOpenSecureStore: GetFromOpenSecureStore
     private lateinit var counter: Counter
+    private lateinit var logger: MemorisedLogger
 
     private lateinit var sut: uk.gov.onelogin.features.login.domain.appintegrity.AppIntegrity
 
@@ -45,6 +56,7 @@ class AppIntegrityImplTest {
         getFromOpenSecureStore = mock()
         context = mock()
         counter = CounterImpl()
+        logger = MemorisedLogger()
         sut =
             AppIntegrityImpl(
                 context,
@@ -53,6 +65,7 @@ class AppIntegrityImplTest {
                 saveToOpenSecureStore,
                 getFromOpenSecureStore,
                 counter,
+                logger,
             )
     }
 
@@ -285,6 +298,36 @@ class AppIntegrityImplTest {
             result,
         )
         assertEquals(0, counter.getValue())
+    }
+
+    @Test
+    fun `get client attestation - logs an error on each intermittent failure`() = runTest {
+        val failureReason = "Server problem"
+        val expectedError =
+            AppIntegrityException.ClientAttestationException(
+                Exception(),
+                AppIntegrityException.AppIntegrityErrorType.INTERMITTENT,
+            )
+        whenever(featureFlags[any()]).thenReturn(true)
+        whenever(appCheck.getAttestation()).thenReturn(
+            AttestationResponse.Failure(reason = failureReason, error = expectedError),
+        )
+
+        sut.getClientAttestation()
+
+        assertThat(logger, hasSize(4)) // One failure and 3 retries
+        logger.entries.forEach {
+            assertThat(
+                it,
+                allOf(
+                    isLogLevel(LogLevel.Error),
+                    hasMessage(
+                        "Intermittent error getting client attestation: Server problem",
+                    ),
+                    hasException(equalTo(expectedError)),
+                ),
+            )
+        }
     }
 
     @Test
