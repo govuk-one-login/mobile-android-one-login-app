@@ -14,6 +14,7 @@ object MockNetworkScenarios {
     private const val APP_INFO_PATH = "/appInfo"
 
     private val APP_INFO_RESPONSE = MockNetworkResponse(
+        statusCode = OK,
         body = """
             {
               "apps": {
@@ -65,4 +66,5 @@ object MockNetworkScenarios {
     )
 
     private const val NOT_IMPLEMENTED = 501
+    private const val OK = 200
 }

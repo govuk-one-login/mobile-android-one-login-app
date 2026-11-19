@@ -22,6 +22,11 @@ import uk.gov.onelogin.libraries.mockcriorchestratorsdk.MockCriOrchestratorSdk
 @Module
 @InstallIn(SingletonComponent::class)
 object CriOrchestratorModule {
+    /**
+     * The mocked SDK ignores this, as the config is only an input to creating the real SDK. It is
+     * still provided because the shared instrumentation test `CriOrchestratorModuleTest` injects
+     * it for every flavour.
+     */
     @Provides
     @Singleton
     fun provideSdkConfig(@ApplicationContext context: Context) = Config(
@@ -34,12 +39,6 @@ object CriOrchestratorModule {
                             context.getString(
                                 uk.gov.android.onelogin.core.R.string.backendAsyncUrl,
                             ),
-                    ),
-                ),
-                Config.Entry(
-                    key = SdkConfigKey.BypassIdCheckAsyncBackend,
-                    Config.Value.BooleanValue(
-                        value = true,
                     ),
                 ),
             ),
