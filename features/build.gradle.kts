@@ -183,6 +183,10 @@ dependencies {
         libs.hilt.compiler,
     ).forEach(::ksp)
 
+    // Only the mocked environment contributes a developer panel tab for the mocked network, so
+    // the library is scoped to that flavour.
+    add("mockImplementation", projects.libraries.mockNetwork)
+
     listOf(
         libs.authentication,
         libs.androidx.activity.compose,
