@@ -19,6 +19,8 @@ import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
+import uk.gov.onelogin.features.wallet.data.AndroidWalletCertificateProvider
+import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -46,6 +48,16 @@ object WalletModule {
             )
         return WalletSdkImpl(navigator, config, context)
     }
+
+    @Provides
+    fun provideWalletCertificateProvider(
+        @ApplicationContext
+        context: Context,
+        logger: Logger,
+    ): WalletCertificateProvider = AndroidWalletCertificateProvider(
+        context = context,
+        logger = logger,
+    )
 }
 
 @InstallIn(ViewModelComponent::class)

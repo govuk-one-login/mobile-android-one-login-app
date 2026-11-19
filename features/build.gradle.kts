@@ -101,6 +101,7 @@ dependencies {
         libs.mockito.kotlin,
         libs.mockito.android,
         libs.logging.test,
+        testFixtures(libs.logging.api),
     ).forEach(::androidTestImplementation)
 
     listOf(
