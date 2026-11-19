@@ -1,0 +1,51 @@
+name: 'Run Maestro tests'
+description: 'Run the Maestro UI test flows against the mocked flavour of the app'
+
+inputs:
+  github-token:
+    description: 'Service account access token that allows publishing packages'
+    required: true
+  github-actor:
+    description: 'Service account name that allows publishing packages'
+    required: true
+  version-code:
+    description: 'Version code'
+    required: true
+  version-name:
+    description: 'Version name'
+    required: true
+  api-level:
+    description: 'Android API level of the emulator the flows run on'
+    required: false
+    default: '34'
+
+runs:
+  using: "composite"
+  steps:
+    # The emulator needs hardware acceleration to be usable on the runner.
+    - name: Enable KVM
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Run Maestro flows
+      uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+      env:
+        CI: 'true'
+        INPUT_VERSION_CODE: ${{ inputs.version-code }}
+        INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        TOKEN: ${{ inputs.github-token }}
+        USERNAME: ${{ inputs.github-actor }}
+      with:
+        api-level: ${{ inputs.api-level }}
+        arch: x86_64
+        target: google_apis
+        # Animations interfere with waiting for elements to settle.
+        emulator-options: >-
+          -no-window -no-snapshot-save -no-boot-anim -camera-back none
+          -gpu swiftshader_indirect -noaudio
+        disable-animations: true
+        script: ./.sh/tests/runMaestroChecks
