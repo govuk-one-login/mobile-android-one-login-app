@@ -11,6 +11,7 @@ import uk.gov.android.network.useragent.UserAgent
 import uk.gov.android.network.useragent.UserAgentGeneratorImpl
 import uk.gov.onelogin.libraries.mocknetwork.MockKtorHttpClientFactory
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkConfig
+import uk.gov.onelogin.libraries.mocknetwork.MockNetworkEngineFactory
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkRequest
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkResponse
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
@@ -96,6 +97,16 @@ class MockNetworkEngineTest {
         assertEquals("""{"value":"found"}""", success.body)
         val failure = assertInstanceOf(ApiResponse.Failure::class.java, missing)
         assertEquals(404, failure.status)
+    }
+
+    @Test
+    fun `responds with not implemented when no scenario is selected`() = runTest {
+        val service = networkService(MockNetworkConfig(emptyList()))
+
+        val response = service.makeRequest(ApiRequest.Get("https://mock.example/"))
+
+        val failure = assertInstanceOf(ApiResponse.Failure::class.java, response)
+        assertEquals(MockNetworkEngineFactory.NO_SCENARIO_RESPONSE.statusCode, failure.status)
     }
 
     @Test

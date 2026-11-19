@@ -1,62 +1,45 @@
 package uk.gov.onelogin.libraries.mocknetwork.unit
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import uk.gov.onelogin.libraries.mocknetwork.MockNetworkConfig
-import uk.gov.onelogin.libraries.mocknetwork.MockNetworkResponse
-import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
 import uk.gov.onelogin.libraries.mocknetwork.TestMockNetworkScenarios
 
 class MockNetworkConfigTest {
+    private val config = MockNetworkConfig(TestMockNetworkScenarios.all)
 
     @Test
     fun `exposes the available scenarios`() {
-        val config = MockNetworkConfig(TestMockNetworkScenarios.all)
-
         assertEquals(TestMockNetworkScenarios.all, config.scenarios)
     }
 
     @Test
-    fun `defaults to the first scenario`() {
-        val config = MockNetworkConfig(TestMockNetworkScenarios.all)
-
+    fun `selects the first scenario initially`() {
         assertEquals(TestMockNetworkScenarios.success, config.scenario.value)
     }
 
     @Test
     fun `updates the current scenario`() {
-        val config = MockNetworkConfig(TestMockNetworkScenarios.all)
-
         config.setScenario(TestMockNetworkScenarios.serverError)
 
         assertEquals(TestMockNetworkScenarios.serverError, config.scenario.value)
     }
 
     @Test
-    fun `rejects an empty list of scenarios`() {
-        assertThrows(IllegalArgumentException::class.java) {
-            MockNetworkConfig(emptyList())
-        }
+    fun `has no scenarios and none selected when given an empty list`() {
+        val empty = MockNetworkConfig(emptyList())
+
+        assertTrue(empty.scenarios.isEmpty())
+        assertNull(empty.scenario.value)
     }
 
     @Test
-    fun `rejects duplicate scenario names`() {
-        val duplicate = MockNetworkScenario(TestMockNetworkScenarios.success.name) {
-            MockNetworkResponse()
-        }
+    fun `has no scenarios and none selected by default`() {
+        val empty = MockNetworkConfig()
 
-        assertThrows(IllegalArgumentException::class.java) {
-            MockNetworkConfig(listOf(TestMockNetworkScenarios.success, duplicate))
-        }
-    }
-
-    @Test
-    fun `rejects selecting a scenario that is not available`() {
-        val config = MockNetworkConfig(listOf(TestMockNetworkScenarios.success))
-
-        assertThrows(IllegalArgumentException::class.java) {
-            config.setScenario(TestMockNetworkScenarios.serverError)
-        }
+        assertTrue(empty.scenarios.isEmpty())
+        assertNull(empty.scenario.value)
     }
 }

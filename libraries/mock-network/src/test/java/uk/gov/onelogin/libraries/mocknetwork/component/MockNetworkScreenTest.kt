@@ -35,6 +35,19 @@ class MockNetworkScreenTest {
     }
 
     @Test
+    fun `shows no scenarios when none are configured`() {
+        composeTestRule.setContent {
+            MockNetworkScreen(viewModel = MockNetworkViewModel(MockNetworkConfig(emptyList())))
+        }
+
+        TestMockNetworkScenarios.all.forEach { scenario ->
+            composeTestRule
+                .onNodeWithTag("mockNetworkScenario_${scenario.name}")
+                .assertDoesNotExist()
+        }
+    }
+
+    @Test
     fun `selecting a scenario updates the config`() {
         val config = MockNetworkConfig(TestMockNetworkScenarios.all)
 

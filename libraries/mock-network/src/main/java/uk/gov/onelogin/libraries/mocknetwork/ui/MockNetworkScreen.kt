@@ -24,6 +24,8 @@ import uk.gov.onelogin.libraries.mocknetwork.MockNetworkScenario
  * It is intended to be hosted in the app's developer menu in the mocked build so that automated
  * (e.g. Maestro) tests can switch the mocked network behaviour mid-journey. Each scenario button
  * carries a stable test tag of the form `mockNetworkScenario_<scenario name>`.
+ *
+ * No buttons are shown when no scenarios are configured.
  */
 @Composable
 fun MockNetworkScreen(viewModel: MockNetworkViewModel = hiltViewModel()) {
@@ -38,7 +40,7 @@ fun MockNetworkScreen(viewModel: MockNetworkViewModel = hiltViewModel()) {
 @Composable
 internal fun MockNetworkContent(
     scenarios: List<MockNetworkScenario>,
-    selectedScenario: MockNetworkScenario,
+    selectedScenario: MockNetworkScenario?,
     onScenarioSelected: (MockNetworkScenario) -> Unit = {},
 ) {
     LeftAlignedScreen(
