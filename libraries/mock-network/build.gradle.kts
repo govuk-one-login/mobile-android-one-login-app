@@ -33,6 +33,9 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    testFixtures {
+        enable = true
+    }
 }
 
 dependencies {
@@ -76,6 +79,13 @@ dependencies {
     ).forEach(::testImplementation)
 
     testRuntimeOnly(libs.junit.jupiter.engine)
+
+    // The Compose compiler plugin applies to every source set in this module, so the fixtures
+    // need the Compose runtime on their class path even though they contain no Compose code.
+    listOf(
+        libs.compose.runtime,
+        platform(libs.androidx.compose.bom),
+    ).forEach(::testFixturesImplementation)
 
     listOf(
         libs.androidx.espresso.core,
