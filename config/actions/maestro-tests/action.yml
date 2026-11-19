@@ -18,6 +18,10 @@ inputs:
     description: 'Android API level of the emulator the flows run on'
     required: false
     default: '34'
+  video:
+    description: 'When to keep screen recordings: always, on-failure or never'
+    required: false
+    default: 'always'
 
 runs:
   using: "composite"
@@ -37,6 +41,7 @@ runs:
         CI: 'true'
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
+        MAESTRO_VIDEO: ${{ inputs.video }}
         TOKEN: ${{ inputs.github-token }}
         USERNAME: ${{ inputs.github-actor }}
       with:

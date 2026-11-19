@@ -18,6 +18,12 @@ REPORT_DIR="app/build/reports/maestro"
 # Counts only, no names, paths or machine identifiers. Off in CI regardless.
 export MAESTRO_RUNNER_NO_TELEMETRY=1
 
+# Record the screen for every flow. The recording is written into the flow's report assets and is
+# embedded in the HTML report. Set to "on-failure" to keep recordings only for flows that fail,
+# or "never" to turn recording off.
+MAESTRO_VIDEO="${MAESTRO_VIDEO:-always}"
+export MAESTRO_VIDEO
+
 if ! command -v maestro-runner > /dev/null 2>&1; then
   echo "Installing maestro-runner ${MAESTRO_RUNNER_VERSION}..."
   curl -fsSL https://open.devicelab.dev/install/maestro-runner |
