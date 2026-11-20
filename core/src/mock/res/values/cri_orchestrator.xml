@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Not reachable: the mocked ID Check SDK ignores its config, and the mocked network answers
+     every request. The host is deliberately not that of a real environment. -->
 <resources>
-    <string name="backendAsyncUrl" translatable="false">https://sessions.review-b-async.build.account.gov.uk</string>
+    <string name="backendAsyncUrl" translatable="false">https://sessions.review-b-async.mock.account.gov.uk</string>
 </resources>

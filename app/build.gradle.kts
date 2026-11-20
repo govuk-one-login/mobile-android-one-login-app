@@ -79,7 +79,7 @@ android {
     }
 
     liveEnvironments.forEach { environment ->
-        sourceSets.getByName(environment).kotlin.srcDir("src/live/java")
+        sourceSets.getByName(environment).kotlin.srcDir("src/live/kotlin")
     }
     testOptions {
         unitTests.all {
