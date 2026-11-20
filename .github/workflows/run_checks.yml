@@ -294,8 +294,8 @@ jobs:
       - name: Clean workspace
         uses: ./mobile-android-pipelines/actions/clean-workspace
 
-  maestro-checks:
-    name: Run Maestro tests
+  user-journey-checks:
+    name: Run user journey tests
     runs-on: ubuntu-24.04
     # Not yet blocking: the job reports failures without failing the workflow.
     continue-on-error: true
