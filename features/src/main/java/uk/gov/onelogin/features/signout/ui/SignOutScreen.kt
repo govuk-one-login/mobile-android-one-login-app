@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
@@ -87,7 +88,7 @@ internal fun SignOutBody(onPrimary: () -> Unit, onClose: () -> Unit, onBack: () 
                         .verticalScroll(scrollState)
                         .keyboardScroll(scrollState)
                         .weight(1f)
-                        .semantics(true) { }
+                        .semantics { isTraversalGroup = true }
                         .focusGroup(),
             ) {
                 GdsHeading(
