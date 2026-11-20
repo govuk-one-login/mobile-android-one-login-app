@@ -5,13 +5,13 @@ set -o errexit
 
 # Builds the mocked flavour of the app and runs the Maestro flows against it.
 #
-# Requires a running emulator or a connected device. maestro-runner installs the app itself,
-# so the only prerequisite is the device.
+# Requires a running emulator or a connected device, and maestro-runner on the path. See
+# maestro/README.md for how to install it. maestro-runner installs the app itself, so the device
+# is the only other prerequisite.
 #
 # Optionally provide the INPUT_VERSION_CODE or INPUT_VERSION_NAME environment variables for being
 # able to defer them to the gradle commands.
 
-MAESTRO_RUNNER_VERSION="1.1.31"
 APK_PATH="app/build/outputs/apk/mock/debug/app-mock-debug.apk"
 REPORT_DIR="app/build/reports/maestro"
 
@@ -24,12 +24,11 @@ export MAESTRO_RUNNER_NO_TELEMETRY=1
 MAESTRO_VIDEO="${MAESTRO_VIDEO:-always}"
 export MAESTRO_VIDEO
 
-if ! command -v maestro-runner > /dev/null 2>&1; then
-  echo "Installing maestro-runner ${MAESTRO_RUNNER_VERSION}..."
-  curl -fsSL https://open.devicelab.dev/install/maestro-runner |
-    bash -s -- --version "${MAESTRO_RUNNER_VERSION}"
-  PATH="${HOME}/.maestro-runner/bin:${PATH}"
-  export PATH
+if ! command -v maestro-runner > /dev/null 2>&1
+then
+  echo "maestro-runner was not found on the path." >&2
+  echo "See maestro/README.md for how to install it." >&2
+  exit 1
 fi
 
 # INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty

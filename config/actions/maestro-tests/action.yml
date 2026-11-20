@@ -3,10 +3,10 @@ description: 'Run the Maestro UI test flows against the mocked flavour of the ap
 
 inputs:
   github-token:
-    description: 'Service account access token that allows publishing packages'
+    description: 'Service account access token that allows fetching packages'
     required: true
   github-actor:
-    description: 'Service account name that allows publishing packages'
+    description: 'Service account name that allows fetching packages'
     required: true
   version-code:
     description: 'Version code'
@@ -26,6 +26,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup maestro-runner
+      uses: ./config/actions/setup-maestro-runner
+
     # The emulator needs hardware acceleration to be usable on the runner.
     - name: Enable KVM
       shell: bash
