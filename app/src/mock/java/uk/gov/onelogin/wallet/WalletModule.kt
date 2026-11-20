@@ -14,6 +14,8 @@ import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
+import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
+import uk.gov.onelogin.features.wallet.data.WalletFeatureFlagProvider
 import uk.gov.onelogin.libraries.mockwalletsdk.MockWalletSdk
 
 /**
@@ -32,6 +34,8 @@ object WalletModule {
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
+        certificateProvider: WalletCertificateProvider,
+        featureFlagProvider: WalletFeatureFlagProvider,
     ): WalletSdk = MockWalletSdk(
         configValue = WalletSdk.ConfigurationV2(
             clientId = context.resources.getString(R.string.stsClientId),
@@ -40,7 +44,8 @@ object WalletModule {
             deleteAllDataUseCase = deleteAllDataUseCase,
             logger = logger,
             networkService = networkService,
-            trustedReaderCertificates = emptyList(),
+            trustedReaderCertificates = certificateProvider.getTrustedReaderAuthCertificates(),
+            featureFlags = featureFlagProvider.provideFeatureFlags(),
         ),
         displayAsFullScreenFlow = MutableStateFlow(false),
     )
