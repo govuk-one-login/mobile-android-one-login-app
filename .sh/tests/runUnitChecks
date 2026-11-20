@@ -26,6 +26,7 @@ then
     :features:testIntegrationDebugUnitTest \
     :features:testStagingDebugUnitTest \
     :features:testProductionDebugUnitTest \
+    :features:testMockDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
     :libraries:mock-network:testDebugUnitTest \
