@@ -21,6 +21,7 @@ import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
 import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
 import uk.gov.onelogin.features.wallet.data.AndroidWalletCertificateProvider
 import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
+import uk.gov.onelogin.features.wallet.data.WalletFeatureFlagProvider
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -37,6 +38,7 @@ object WalletModule {
         localAuthManager: LocalAuthManager,
         logger: Logger,
         certificateProvider: WalletCertificateProvider,
+        featureFlagProvider: WalletFeatureFlagProvider,
     ): WalletSdk {
         val config =
             WalletSdk.ConfigurationV2(
@@ -47,6 +49,7 @@ object WalletModule {
                 logger = logger,
                 networkService = networkService,
                 trustedReaderCertificates = certificateProvider.getTrustedReaderAuthCertificates(),
+                featureFlags = featureFlagProvider.provideFeatureFlags(),
             )
         return WalletSdkImpl(navigator, config, context)
     }
