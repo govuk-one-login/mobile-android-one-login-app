@@ -36,15 +36,17 @@ object WalletModule {
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
+        certificateProvider: WalletCertificateProvider,
     ): WalletSdk {
         val config =
-            WalletSdk.Configuration(
+            WalletSdk.ConfigurationV2(
                 clientId = context.resources.getString(R.string.stsClientId),
                 analyticsLogger = analyticsLogger,
                 localAuthManger = localAuthManager,
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
                 networkService = networkService,
+                trustedReaderCertificates = certificateProvider.getTrustedReaderAuthCertificates(),
             )
         return WalletSdkImpl(navigator, config, context)
     }
