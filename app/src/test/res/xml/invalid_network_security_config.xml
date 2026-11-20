@@ -8,8 +8,9 @@
     <domain-config>
         <domain>valid-domain.test-example.gov.uk</domain>
         <domain includeSubdomains="true">valid-subdomains.test-example.gov.uk</domain>
+        <!-- Android automatically trims spaces from domains, so this is valid -->
+        <domain>valid-trailing-space.test-example.gov.uk </domain>
         <domain>invalid-double-dot..test-example.gov.uk</domain>
-        <domain>invalid-trailing-space.test-example.gov.uk </domain>
         <domain>invalid-trailing-slash.test-example.gov.uk/</domain>
         <domain>https://invalid-scheme.test-example.gov.uk</domain>
         <domain>invalid-port.test-example.gov.uk:443</domain>

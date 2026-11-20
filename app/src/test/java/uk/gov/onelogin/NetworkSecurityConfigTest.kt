@@ -45,7 +45,6 @@ class NetworkSecurityConfigTest {
         assertEquals(
             """
                 src/test/res/xml/invalid_network_security_config.xml: "invalid-double-dot..test-example.gov.uk" is not a bare hostname
-                src/test/res/xml/invalid_network_security_config.xml: "invalid-trailing-space.test-example.gov.uk " is not a bare hostname
                 src/test/res/xml/invalid_network_security_config.xml: "invalid-trailing-slash.test-example.gov.uk/" has a trailing '/'
                 src/test/res/xml/invalid_network_security_config.xml: "https://invalid-scheme.test-example.gov.uk" must not include a scheme
                 src/test/res/xml/invalid_network_security_config.xml: "invalid-port.test-example.gov.uk:443" is not a bare hostname
@@ -76,6 +75,6 @@ class NetworkSecurityConfigTest {
     private fun domainsIn(file: File): List<String> {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
         val nodes = doc.getElementsByTagName("domain") // exact match
-        return (0 until nodes.length).map { nodes.item(it).textContent }
+        return (0 until nodes.length).map { nodes.item(it).textContent.trim() }
     }
 }
