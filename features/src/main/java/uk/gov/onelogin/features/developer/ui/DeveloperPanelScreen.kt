@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.developer.developerExtraTabs
 import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
 import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
@@ -88,7 +89,7 @@ fun TabView(goBack: () -> Unit) = Surface {
             TabItem(R.string.app_developer_tab_logging, Icons.Filled.Info) {
                 LoggingTabScreen()
             },
-        )
+        ) + developerExtraTabs
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     Column {

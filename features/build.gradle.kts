@@ -37,19 +37,24 @@ android {
         buildConfig = true
     }
     flavorDimensions += "env"
+
+    // Every environment except `mock` talks to real services, so they share a single copy of the
+    // code that only differs between the live environments and the mocked one.
+    val liveEnvironments = listOf("build", "staging", "integration", "production")
+
     productFlavors {
-        listOf(
-            "build",
-            "staging",
-            "integration",
-            "production",
-        ).forEach { environment ->
+        (liveEnvironments + "mock").forEach { environment ->
             create(environment) {
                 var suffix = ""
 
                 dimension = "env"
                 if (environment == "integration") {
                     matchingFallbacks.add("production")
+                }
+                if (environment == "mock") {
+                    // Dependencies published per environment have no mock variant, so resolve
+                    // them against the build environment.
+                    matchingFallbacks.add("build")
                 }
                 if (environment != "production") {
                     suffix = ".$environment"
@@ -58,6 +63,11 @@ android {
             }
         }
     }
+
+    liveEnvironments.forEach { environment ->
+        sourceSets.getByName(environment).kotlin.srcDir("src/live/kotlin")
+    }
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -176,6 +186,11 @@ dependencies {
         libs.hilt.android.compiler,
         libs.hilt.compiler,
     ).forEach(::ksp)
+
+    // The mocked environment contributes mocked responses and a developer panel tab, so the
+    // library is scoped to that flavour. It is `api` because the mocked responses appear in
+    // public signatures the app module composes.
+    add("mockApi", projects.libraries.mockNetwork)
 
     listOf(
         libs.authentication,

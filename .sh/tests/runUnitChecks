@@ -20,11 +20,13 @@ then
   ./gradlew \
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
+    :app:testMockDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :features:testBuildDebugUnitTest \
     :features:testIntegrationDebugUnitTest \
     :features:testStagingDebugUnitTest \
     :features:testProductionDebugUnitTest \
+    :features:testMockDebugUnitTest \
     :libraries:mock-wallet-sdk:testDebugUnitTest \
     :libraries:mock-cri-orchestrator-sdk:testDebugUnitTest \
     :libraries:mock-network:testDebugUnitTest \
@@ -36,6 +38,7 @@ else
   ./gradlew \
     :app:testStagingDebugUnitTest \
     :app:testProductionDebugUnitTest \
+    :app:testMockDebugUnitTest \
     :core:testStagingDebugUnitTest \
     :core:testProductionDebugUnitTest \
     :features:testBuildDebugUnitTest \
