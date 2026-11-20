@@ -2,6 +2,7 @@ package uk.gov.onelogin
 
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
@@ -39,26 +40,42 @@ class NetworkSecurityConfigTest {
     }
 
     @Test
+    fun `problems are detected in invalid config file`() {
+        val problems = findProblems(File("src/test/res/xml/invalid_network_security_config.xml"))
+        assertEquals(
+            """
+                src/test/res/xml/invalid_network_security_config.xml: "invalid-double-dot..test-example.gov.uk" is not a bare hostname
+                src/test/res/xml/invalid_network_security_config.xml: "invalid-trailing-space.test-example.gov.uk " is not a bare hostname
+                src/test/res/xml/invalid_network_security_config.xml: "invalid-trailing-slash.test-example.gov.uk/" has a trailing '/'
+                src/test/res/xml/invalid_network_security_config.xml: "https://invalid-scheme.test-example.gov.uk" must not include a scheme
+                src/test/res/xml/invalid_network_security_config.xml: "invalid-port.test-example.gov.uk:443" is not a bare hostname
+                src/test/res/xml/invalid_network_security_config.xml: "invalid-second-domain-config.test-example.gov.uk/" has a trailing '/'
+            """.trimIndent(),
+            problems.joinToString("\n"),
+        )
+    }
+
+    @Test
     fun `domains are bare hostnames`() {
-        val problems = configFiles.flatMap { file ->
-            domainsIn(file).mapNotNull { domain ->
-                when {
-                    domain.endsWith("/") -> "$file: \"$domain\" has a trailing '/'"
-                    "://" in domain -> "$file: \"$domain\" must not include a scheme"
-                    !hostname.matches(domain) -> "$file: \"$domain\" is not a bare hostname"
-                    else -> null
-                }
-            }
-        }
+        val problems = configFiles.flatMap(::findProblems)
         assertTrue(
             problems.isEmpty(),
             problems.joinToString("\n"),
         )
     }
 
+    private fun findProblems(file: File) = domainsIn(file).mapNotNull { domain ->
+        when {
+            domain.endsWith("/") -> "$file: \"$domain\" has a trailing '/'"
+            "://" in domain -> "$file: \"$domain\" must not include a scheme"
+            !hostname.matches(domain) -> "$file: \"$domain\" is not a bare hostname"
+            else -> null
+        }
+    }
+
     private fun domainsIn(file: File): List<String> {
         val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
         val nodes = doc.getElementsByTagName("domain") // exact match
-        return (0 until nodes.length).map { nodes.item(it).textContent.trim() }
+        return (0 until nodes.length).map { nodes.item(it).textContent }
     }
 }
