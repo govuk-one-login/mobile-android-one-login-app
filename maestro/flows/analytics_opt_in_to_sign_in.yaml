@@ -1,0 +1,25 @@
+# Launches the mocked build, shares analytics, and checks the sign in screen is reached.
+#
+# `clearState` is required: the analytics choice is persisted, so the consent screen is only
+# shown while no choice has been made.
+appId: uk.gov.onelogin.mock
+name: Share analytics and reach the sign in screen
+tags:
+  - smoke
+---
+- launchApp:
+    clearState: true
+
+# The splash screen waits for the app info response before it navigates, so wait for the
+# consent screen rather than assuming a fixed splash duration.
+- extendedWaitUntil:
+    visible: "Help improve the app by sharing analytics"
+    timeout: 30000
+
+- tapOn: "Share analytics"
+
+- extendedWaitUntil:
+    visible: "Prove your identity to access government services."
+    timeout: 15000
+
+- assertVisible: "Sign in with GOV.UK One Login"
