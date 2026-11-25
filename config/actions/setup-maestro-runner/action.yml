@@ -1,0 +1,24 @@
+name: 'Setup maestro-runner'
+description: 'Install maestro-runner and add it to the path'
+
+inputs:
+  version:
+    description: 'Version of maestro-runner to install'
+    required: false
+    default: '1.1.31'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install maestro-runner
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+      run: |
+        curl -fsSL https://open.devicelab.dev/install/maestro-runner |
+          bash -s -- --version "${VERSION}"
+        echo "${HOME}/.maestro-runner/bin" >> "${GITHUB_PATH}"
+
+    - name: Report the installed version
+      shell: bash
+      run: maestro-runner --version

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Exit immediately if a simple command exits with a non-zero status
+# see also: the 'set' command within the 'Shell Builtin Commands' section of `man bash`
+set -o errexit
+
+# Builds the mocked flavour of the app and runs the Maestro flows against it.
+#
+# Requires a running emulator or a connected device, and maestro-runner on the path. See
+# maestro/README.md for how to install it. maestro-runner installs the app itself, so the device
+# is the only other prerequisite.
+#
+# Optionally provide the INPUT_VERSION_CODE or INPUT_VERSION_NAME environment variables for being
+# able to defer them to the gradle commands.
+
+APK_PATH="app/build/outputs/apk/mock/debug/app-mock-debug.apk"
+REPORT_DIR="app/build/reports/maestro"
+
+# Counts only, no names, paths or machine identifiers. Off in CI regardless.
+export MAESTRO_RUNNER_NO_TELEMETRY=1
+
+# Record the screen for every flow. The recording is written into the flow's report assets and is
+# embedded in the HTML report. Set to "on-failure" to keep recordings only for flows that fail,
+# or "never" to turn recording off.
+MAESTRO_VIDEO="${MAESTRO_VIDEO:-always}"
+export MAESTRO_VIDEO
+
+if ! command -v maestro-runner > /dev/null 2>&1
+then
+  echo "maestro-runner was not found on the path." >&2
+  echo "See maestro/README.md for how to install it." >&2
+  exit 1
+fi
+
+# INPUT_VERSION_CODE or INPUT_VERSION_NAME are empty
+if [[ -z "${INPUT_VERSION_CODE}" || -z "${INPUT_VERSION_NAME}" ]]
+then
+  echo "Assembling the mocked app without environment variables (local development)..."
+  ./gradlew \
+    :app:assembleMockDebug \
+    --stacktrace
+else
+  echo "Assembling the mocked app with environment variables (GitHub workflow)..."
+  ./gradlew \
+    :app:assembleMockDebug \
+    -PversionCode="${INPUT_VERSION_CODE}" \
+    -PversionName="${INPUT_VERSION_NAME}" \
+    --stacktrace
+fi
+
+echo "Running Maestro flows..."
+maestro-runner test \
+  --app-file "${APK_PATH}" \
+  --output "${REPORT_DIR}" \
+  --flatten \
+  maestro/flows
