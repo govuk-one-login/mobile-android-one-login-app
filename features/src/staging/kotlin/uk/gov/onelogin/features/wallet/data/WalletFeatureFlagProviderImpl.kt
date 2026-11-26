@@ -7,5 +7,5 @@ class WalletFeatureFlagProviderImpl
 @Inject
 constructor() : WalletFeatureFlagProvider {
     override fun provideFeatureFlags(): Set<WalletFeatureFlag> =
-        setOf(WalletFeatureFlag.sharing(false))
+        setOf(WalletFeatureFlag.sharing(true))
 }
