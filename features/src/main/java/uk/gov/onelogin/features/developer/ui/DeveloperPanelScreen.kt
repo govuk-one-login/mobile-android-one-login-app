@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import uk.gov.android.onelogin.core.R
+import uk.gov.onelogin.developer.developerExtraTabs
 import uk.gov.onelogin.features.developer.ui.app.AppTabScreen
 import uk.gov.onelogin.features.developer.ui.appintegrity.AppIntegrityTabScreen
 import uk.gov.onelogin.features.developer.ui.auth.AuthTabScreen
@@ -55,7 +57,7 @@ import uk.gov.onelogin.features.developer.ui.tokens.TokenTabScreen
 @Suppress("LongMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabView(goBack: () -> Unit) {
+fun TabView(goBack: () -> Unit) = Surface {
     val tabs =
         listOf(
             TabItem(R.string.app_developer_tab_app, Icons.Filled.Home) { AppTabScreen() },
@@ -87,10 +89,10 @@ fun TabView(goBack: () -> Unit) {
             TabItem(R.string.app_developer_tab_logging, Icons.Filled.Info) {
                 LoggingTabScreen()
             },
-        )
+        ) + developerExtraTabs
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
-    Column(Modifier.background(MaterialTheme.colorScheme.background)) {
+    Column {
         CenterAlignedTopAppBar(
             colors =
                 TopAppBarDefaults.topAppBarColors(

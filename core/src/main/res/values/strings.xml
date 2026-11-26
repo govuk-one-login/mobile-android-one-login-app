@@ -127,6 +127,7 @@
     <string name="app_developer_tab_tokens" translatable="false">Tokens</string>
     <string name="app_developer_tab_cri_orchestartor_dev_menu" translatable="false">Cri Orchestrator Dev Menu</string>
     <string name="app_developer_tab_logging" translatable="false">Logging</string>
+    <string name="app_developer_tab_mock_network" translatable="false">Mock Network</string>
     <string name="app_developer_logging_crash" translatable="false">Crash app</string>
     <string name="app_developer_logging_error" translatable="false">Log error</string>
     <string name="app_developer_logging_info" translatable="false">Log info</string>

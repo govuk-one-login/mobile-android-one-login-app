@@ -16,7 +16,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 [versions]
 jose4j = "0.9.6"
 kotlin = "2.4.21"
-agp = "9.3.1"
+agp = "9.5.1"
 core-ktx = "1.19.0"
 androidx-test-ext-junit = "1.3.0"
 espresso-core = "3.7.0"
@@ -48,8 +48,8 @@ govuk-ui = "20.2.0"
 govuk-logging = "1.0.1"
 compose-runtime = "1.9.4"
 auth = "5.1.0"
-wallet = "v4.119.0"
-cri-orchestrator = "0.72.0"
+wallet = "v4.156.0"
+cri-orchestrator = "0.73.0"
 junitVersion = "4.13.2"
 robolectric = "4.16.1"
 aboutLibraries = "15.0.3"
@@ -64,6 +64,17 @@ integrity = "1.6.0"
 bouncycastle = "1.85" # https://www.bouncycastle.org/download/bouncy-castle-java/#release-notes
 ktor = "3.5.1" # https://github.com/ktorio/ktor/releases
 turbine = "1.2.1" # https://github.com/cashapp/turbine/releases
+# Transitive via AGP's Unified Test Platform (grpc-netty). Updated to patch a batch of
+# Dependabot CVEs. Test/build-time only; netty is not on any app runtime classpath.
+# https://netty.io/news/ — bump as new advisories require.
+netty = "4.1.137.Final"
+# Transitive security patches for build/test tooling (Android Lint, ktlint, annotation
+# processors). None of these are on the app runtime classpath. Updated to clear Dependabot CVEs.
+guava = "33.7.2-android" # CVE-2026-102554 etc.
+commonsCompress = "1.27.1" # CVE-2024-25710 / CVE-2024-26308
+commonsLang3 = "3.18.0" # CVE-2025-48924
+httpclient = "4.5.14" # CVE-2020-13956
+logbackCore = "1.5.34" # CVE-2026-1225 / 9828 / 10532
 
 [libraries]
 jose4j = { module = "org.bitbucket.b_c:jose4j", version.ref = "jose4j" }
@@ -82,7 +93,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime-jvm", version = "0.8.0" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
-mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "5.4.0" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version = "6.4.0" }
 mockito-android = { group = "org.mockito", name = "mockito-android", version = "5.23.0" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version = "2.0.20" }
@@ -92,6 +103,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivityCompose" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle-runtime-compose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "andoridxBrowser" }
@@ -123,7 +135,7 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 classgraph = { group = "io.github.classgraph", name = "classgraph", version.ref = "classgraph" }
 roboelectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
-bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdLib" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
@@ -162,8 +174,55 @@ aboutlibraries-compose-core = { module = "com.mikepenz:aboutlibraries-compose", 
 aboutlibraries-compose-m3 = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutLibraries" }
 integrity = { group = "com.google.android.play", name = "integrity", version.ref = "integrity" }
 
+# Security patches
+# Transitive netty constraints (via AGP Unified Test Platform / grpc-netty; not on the app
+# runtime classpath). Declared as the full set of flagged modules so the group stays
+# version-aligned, raised to a patched version to clear Dependabot CVEs.
+patch-netty-handler = { group = "io.netty", name = "netty-handler", version.ref = "netty" }
+patch-netty-handler-proxy = { group = "io.netty", name = "netty-handler-proxy", version.ref = "netty" }
+patch-netty-common = { group = "io.netty", name = "netty-common", version.ref = "netty" }
+patch-netty-codec = { group = "io.netty", name = "netty-codec", version.ref = "netty" }
+patch-netty-codec-http = { group = "io.netty", name = "netty-codec-http", version.ref = "netty" }
+patch-netty-codec-http2 = { group = "io.netty", name = "netty-codec-http2", version.ref = "netty" }
+# Transitive constraints for build/test tooling (not on the app runtime classpath),
+# raised to patched versions to clear Dependabot CVEs.
+patch-guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+patch-commons-compress = { group = "org.apache.commons", name = "commons-compress", version.ref = "commonsCompress" }
+patch-commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commonsLang3" }
+patch-httpclient = { group = "org.apache.httpcomponents", name = "httpclient", version.ref = "httpclient" }
+patch-logback-core = { group = "ch.qos.logback", name = "logback-core", version.ref = "logbackCore" }
+# bouncycastle constraints for the plugin/build classpath. The whole group is declared so the
+# modules stay version-aligned — mixing bcprov with older bcutil/bcpkix causes a runtime error.
+bouncycastle-bcprov = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcutil = { group = "org.bouncycastle", name = "bcutil-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix = { group = "org.bouncycastle", name = "bcpkix-jdk18on", version.ref = "bouncycastle" }
+
 [bundles]
 cri-orchestrator-bundle = ["uk-gov-idcheck-hilt-config", "cri-orchestrator-dev"]
+# Transitive netty modules flagged by Dependabot, updated as a group for security patching.
+tooling-security-netty = [
+  "patch-netty-handler",
+  "patch-netty-handler-proxy",
+  "patch-netty-common",
+  "patch-netty-codec",
+  "patch-netty-codec-http",
+  "patch-netty-codec-http2",
+]
+# Transitive build/test tooling dependencies flagged by Dependabot, updated for security.
+tooling-security-other = [
+  "patch-guava",
+  "patch-commons-compress",
+  "patch-commons-lang3",
+  "patch-httpclient",
+  "patch-logback-core",
+]
+# bouncycastle modules flagged by Dependabot, updated as a group so the modules stay
+# version-aligned (mixing bcprov with older bcutil/bcpkix causes a runtime error).
+tooling-security-bouncycastle = [
+  "bouncycastle-bcprov",
+  "bouncycastle-bcutil",
+  "bouncycastle-bcpkix",
+]
 firebase = [
   "firebase-appcheck",
   "firebase-appcheck-debug",

@@ -1,11 +1,9 @@
 package uk.gov.onelogin.wallet
 
 import android.content.Context
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import uk.gov.android.localauth.LocalAuthManager
@@ -17,8 +15,8 @@ import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
-import uk.gov.onelogin.core.ui.wallet.WalletDisplayer
-import uk.gov.onelogin.core.ui.wallet.WalletDisplayerImpl
+import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
+import uk.gov.onelogin.features.wallet.data.WalletFeatureFlagProvider
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -34,24 +32,20 @@ object WalletModule {
         deleteAllDataUseCase: DeleteAllDataUseCase,
         localAuthManager: LocalAuthManager,
         logger: Logger,
+        certificateProvider: WalletCertificateProvider,
+        featureFlagProvider: WalletFeatureFlagProvider,
     ): WalletSdk {
         val config =
-            WalletSdk.Configuration(
+            WalletSdk.ConfigurationV2(
                 clientId = context.resources.getString(R.string.stsClientId),
                 analyticsLogger = analyticsLogger,
                 localAuthManger = localAuthManager,
                 deleteAllDataUseCase = deleteAllDataUseCase,
                 logger = logger,
                 networkService = networkService,
+                trustedReaderCertificates = certificateProvider.getTrustedReaderAuthCertificates(),
+                featureFlags = featureFlagProvider.provideFeatureFlags(),
             )
         return WalletSdkImpl(navigator, config, context)
     }
-}
-
-@InstallIn(ViewModelComponent::class)
-@Module
-interface WalletUiModule {
-
-    @Binds
-    fun bindWalletAppDisplayer(walletAppDisplayerImpl: WalletDisplayerImpl): WalletDisplayer
 }

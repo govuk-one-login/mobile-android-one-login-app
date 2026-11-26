@@ -21,6 +21,7 @@ constructor(
         MutableStateFlow(
             secureStoreRepository.isLocalDataDeleteFailEnabled(),
         )
+
     val overrideWallet: StateFlow<Boolean>
         get() = _overrideWallet.asStateFlow()
     val enableDeletionFail: StateFlow<Boolean>

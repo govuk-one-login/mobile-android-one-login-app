@@ -66,6 +66,7 @@ import uk.gov.onelogin.features.login.domain.appintegrity.AttestationResult
 import uk.gov.onelogin.login.KeyManagerModule
 import uk.gov.onelogin.login.LoginSessionModule
 import uk.gov.onelogin.login.VerifyIdModule
+import uk.gov.onelogin.login.appintegrity.AppIntegrityManagerModule
 import uk.gov.onelogin.login.appintegrity.AppIntegrityModule
 import uk.gov.onelogin.login.localauth.BiometricsModule
 import uk.gov.onelogin.utils.TestUtils
@@ -78,6 +79,7 @@ import uk.gov.onelogin.utils.TestUtils
     AppInfoApiModule::class,
     AppCheckerModule::class,
     AppIntegrityModule::class,
+    AppIntegrityManagerModule::class,
     VerifyIdModule::class,
     KeyManagerModule::class,
 )
