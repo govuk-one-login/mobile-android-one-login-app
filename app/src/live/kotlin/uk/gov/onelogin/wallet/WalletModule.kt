@@ -6,17 +6,19 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.localauth.LocalAuthManager
 import uk.gov.android.network.service.v2.NetworkService
 import uk.gov.android.onelogin.core.R
 import uk.gov.android.wallet.core.deletedata.DeleteAllDataUseCase
 import uk.gov.android.wallet.core.navigation.Navigator
+import uk.gov.android.wallet.sdk.WalletFeatureFlag
 import uk.gov.android.wallet.sdk.WalletSdk
 import uk.gov.android.wallet.sdk.WalletSdkImpl
 import uk.gov.logging.api.analytics.logging.v3.AnalyticsLogger
 import uk.gov.logging.api.v3.Logger
+import uk.gov.onelogin.features.featureflags.data.WalletSharingFeatureFlag
 import uk.gov.onelogin.features.wallet.data.WalletCertificateProvider
-import uk.gov.onelogin.features.wallet.data.WalletFeatureFlagProvider
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -33,7 +35,7 @@ object WalletModule {
         localAuthManager: LocalAuthManager,
         logger: Logger,
         certificateProvider: WalletCertificateProvider,
-        featureFlagProvider: WalletFeatureFlagProvider,
+        featureFlags: FeatureFlags,
     ): WalletSdk {
         val config =
             WalletSdk.ConfigurationV2(
@@ -44,7 +46,9 @@ object WalletModule {
                 logger = logger,
                 networkService = networkService,
                 trustedReaderCertificates = certificateProvider.getTrustedReaderAuthCertificates(),
-                featureFlags = featureFlagProvider.provideFeatureFlags(),
+                featureFlags = setOf(
+                    WalletFeatureFlag.sharing(featureFlags[WalletSharingFeatureFlag.ENABLED]),
+                ),
             )
         return WalletSdkImpl(navigator, config, context)
     }
