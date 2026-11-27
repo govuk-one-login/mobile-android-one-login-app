@@ -385,6 +385,7 @@ jobs:
         with:
           sonar-token: ${{ secrets.SONAR_PROJECT_SCANNING_KEY }}
           version-name: ${{ needs.set-up.outputs.version-name }}
+          version-code: ${{ needs.set-up.outputs.version-code }}
 
       - name: Bundle reports folder
         if: ${{ always() }}
