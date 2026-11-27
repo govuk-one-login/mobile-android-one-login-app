@@ -15,16 +15,6 @@ inputs:
   version-name:
     description: 'Version name'
     required: true
-  app-check-token:
-    description: 'App check token'
-    required: false
-    default: ''
-  github-token:
-    description: 'Service account access token that allows building project'
-    required: true
-  github-actor:
-    description: 'Service account name that allows building project'
-    required: true
 
 runs:
   using: "composite"
@@ -52,9 +42,7 @@ runs:
           -Dsonar.pullrequest.branch=${{ github.head_ref || github.ref_name }} \
           -Dsonar.pullrequest.key=${{ github.event.number }} \
           -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME \
-          -Pgpr.user=$GITHUB_ACTOR \
-          -Pgpr.token=$GITHUB_TOKEN
+          -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true
@@ -62,9 +50,6 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
-        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
-        GITHUB_ACTOR: ${{ inputs.github-actor }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
 
     - name: Run Sonarqube Branch Analysis
       if: ${{ github.event_name != 'pull_request' }}
@@ -75,9 +60,7 @@ runs:
           -Dsonar.token=$SONAR_TOKEN \
           -Dsonar.projectVersion=$PROJECT_VERSION \
           -PversionCode=$INPUT_VERSION_CODE \
-          -PversionName=$INPUT_VERSION_NAME \
-          -Pgpr.user=$GITHUB_ACTOR \
-          -Pgpr.token=$GITHUB_TOKEN
+          -PversionName=$INPUT_VERSION_NAME
       shell: bash
       env:
         CI: true
@@ -85,7 +68,4 @@ runs:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         INPUT_VERSION_CODE: ${{ inputs.version-code }}
         INPUT_VERSION_NAME: ${{ inputs.version-name }}
-        BUILD_DEBUG_APP_CHECK_TOKEN: ${{ inputs.app-check-token }}
         BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-        GITHUB_ACTOR: ${{ inputs.github-actor }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
