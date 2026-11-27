@@ -9,6 +9,7 @@ class AvailableFeatures(private val features: MutableSet<FeatureFlag>) : Iterabl
         listOf(
             AppIntegrityFeatureFlag.entries.toTypedArray(),
             CriOrchestratorFeatureFlag.entries.toTypedArray(),
+            WalletSharingFeatureFlag.entries.toTypedArray(),
         ).flatMap {
             it.asIterable()
         }.toMutableSet(),

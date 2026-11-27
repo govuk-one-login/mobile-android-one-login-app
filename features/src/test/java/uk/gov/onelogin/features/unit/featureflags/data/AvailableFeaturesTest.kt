@@ -8,6 +8,7 @@ import uk.gov.android.featureflags.FeatureFlag
 import uk.gov.onelogin.features.featureflags.data.AppIntegrityFeatureFlag
 import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
 import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
+import uk.gov.onelogin.features.featureflags.data.WalletSharingFeatureFlag
 
 class AvailableFeaturesTest {
     private val availableFeatures by lazy {
@@ -53,6 +54,7 @@ class AvailableFeaturesTest {
     fun `available features contains included feature`() {
         Assertions.assertTrue(availableFeatures.contains(AppIntegrityFeatureFlag.ENABLED))
         Assertions.assertTrue(availableFeatures.contains(CriOrchestratorFeatureFlag.ENABLED))
+        Assertions.assertTrue(availableFeatures.contains(WalletSharingFeatureFlag.ENABLED))
     }
 
     @Test
@@ -67,7 +69,7 @@ class AvailableFeaturesTest {
     @Test
     fun `to String`() {
         Assertions.assertEquals(
-            "AvailableFeatures[ENABLED, ENABLED]",
+            "AvailableFeatures[ENABLED, ENABLED, ENABLED]",
             availableFeatures.toString(),
         )
     }
@@ -101,6 +103,6 @@ class AvailableFeaturesTest {
     }
 
     companion object {
-        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 2
+        private const val TOTAL_FEATURE_FLAG_IMPLEMENTATIONS = 3
     }
 }

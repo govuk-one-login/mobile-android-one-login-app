@@ -1,5 +1,6 @@
 package uk.gov.onelogin.featureflags
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -8,7 +9,8 @@ import javax.inject.Singleton
 import uk.gov.android.featureflags.FeatureFlags
 import uk.gov.android.featureflags.InMemoryFeatureFlags
 import uk.gov.onelogin.features.featureflags.data.AvailableFeatures
-import uk.gov.onelogin.features.featureflags.data.CriOrchestratorFeatureFlag
+import uk.gov.onelogin.features.featureflags.data.InitialFeatureFlagProvider
+import uk.gov.onelogin.features.featureflags.data.InitialFeatureFlagProviderImpl
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetter
 import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetterImpl
 
@@ -16,21 +18,24 @@ import uk.gov.onelogin.features.featureflags.domain.FeatureFlagSetterImpl
 @InstallIn(
     SingletonComponent::class,
 )
-object FeaturesModule {
-    @Provides
-    @Singleton
-    fun providesFeatureFlags(): FeatureFlags = InMemoryFeatureFlags(
-        setOf(
-            CriOrchestratorFeatureFlag.ENABLED,
-        ),
-    )
+interface FeaturesModule {
+    companion object {
+        @Provides
+        @Singleton
+        fun providesFeatureFlags(
+            initialFeatureFlagProvider: InitialFeatureFlagProvider,
+        ): FeatureFlags = InMemoryFeatureFlags(initialFeatureFlagProvider.provideFeatureFlags())
 
-    @Provides
-    @Singleton
-    fun provideFeatureFlagSetter(featureFlags: FeatureFlags): FeatureFlagSetter =
-        FeatureFlagSetterImpl(featureFlags)
+        @Provides
+        @Singleton
+        fun providesAvailableFeatures(): AvailableFeatures = AvailableFeatures()
+    }
 
-    @Provides
+    @Binds
     @Singleton
-    fun providesAvailableFeatures(): AvailableFeatures = AvailableFeatures()
+    fun bindInitialFeatureFlags(impl: InitialFeatureFlagProviderImpl): InitialFeatureFlagProvider
+
+    @Binds
+    @Singleton
+    fun bindFeatureFlagSetter(impl: FeatureFlagSetterImpl): FeatureFlagSetter
 }
